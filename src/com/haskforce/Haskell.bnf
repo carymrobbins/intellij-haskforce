@@ -6,7 +6,7 @@
 
 {
   parserClass="com.haskforce.parser.HaskellParser"
-  stubParserClass="org.intellij.grammar.parser.GeneratedParserUtilBase"
+  parserUtilClass="org.intellij.grammar.parser.GeneratedParserUtilBase"
 
   extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 
