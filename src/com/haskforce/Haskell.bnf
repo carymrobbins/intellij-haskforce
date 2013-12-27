@@ -18,10 +18,12 @@
   elementTypeHolderClass="com.haskforce.psi.HaskellTypes"
   elementTypeClass="com.haskforce.psi.HaskellElementType"
   tokenTypeClass="com.haskforce.psi.HaskellTokenType"
+
+  psiImplUtilClass="com.haskforce.psi.impl.HaskellPsiImplUtil"
 }
 
 simpleFile ::= item_*
 
 private item_ ::= (property|COMMENT|CRLF)
 
-property ::= (KEY? SEPARATOR VALUE?) | KEY
+property ::= (KEY? SEPARATOR VALUE?) | KEY {methods=[getKey getValue]}

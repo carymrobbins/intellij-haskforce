@@ -22,4 +22,12 @@ public class HaskellPropertyImpl extends ASTWrapperPsiElement implements Haskell
     else super.accept(visitor);
   }
 
+  public String getKey() {
+    return HaskellPsiImplUtil.getKey(this);
+  }
+
+  public String getValue() {
+    return HaskellPsiImplUtil.getValue(this);
+  }
+
 }
