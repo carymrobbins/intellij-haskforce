@@ -11,14 +11,14 @@ import static com.haskforce.psi.HaskellTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class SimplePropertyImpl extends ASTWrapperPsiElement implements SimpleProperty {
+public class HaskellPropertyImpl extends ASTWrapperPsiElement implements HaskellProperty {
 
-  public SimplePropertyImpl(ASTNode node) {
+  public HaskellPropertyImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof SimpleVisitor) ((SimpleVisitor)visitor).visitProperty(this);
+    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitProperty(this);
     else super.accept(visitor);
   }
 

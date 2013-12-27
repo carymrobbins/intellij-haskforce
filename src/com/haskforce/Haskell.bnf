@@ -10,7 +10,7 @@
 
   extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 
-  psiClassPrefix="Simple"
+  psiClassPrefix="Haskell"
   psiImplClassSuffix="Impl"
   psiPackage="com.haskforce.psi"
   psiImplPackage="com.haskforce.psi.impl"

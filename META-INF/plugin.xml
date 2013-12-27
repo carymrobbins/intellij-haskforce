@@ -35,5 +35,6 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <fileTypeFactory implementation="com.haskforce.HaskellFileTypeFactory"/>
+    <lang.parserDefinition language="Haskell" implementationClass="com.haskforce.HaskellParserDefinition"/>
   </extensions>
 </idea-plugin>

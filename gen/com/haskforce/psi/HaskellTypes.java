@@ -20,7 +20,7 @@ public interface HaskellTypes {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
        if (type == PROPERTY) {
-        return new SimplePropertyImpl(node);
+        return new HaskellPropertyImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);
     }
