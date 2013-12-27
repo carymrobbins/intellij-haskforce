@@ -1,0 +1,27 @@
+/*
+ * Use Command + Shift + G to generate parser in gen/ directory.
+ * Be sure to add the gen/ directory to your sources.
+ * In Intellij, right-click the gen directory and choose Mark Directory As > Sources.
+ */
+
+{
+  parserClass="com.haskforce.parser.HaskellParser"
+  stubParserClass="org.intellij.grammar.parser.GeneratedParserUtilBase"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Simple"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.haskforce.psi"
+  psiImplPackage="com.haskforce.psi.impl"
+
+  elementTypeHolderClass="com.haskforce.psi.HaskellTypes"
+  elementTypeClass="com.haskforce.psi.HaskellElementType"
+  tokenTypeClass="com.haskforce.psi.HaskellTokenType"
+}
+
+simpleFile ::= item_*
+
+private item_ ::= (property|COMMENT|CRLF)
+
+property ::= (KEY? SEPARATOR VALUE?) | KEY

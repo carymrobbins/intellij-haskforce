@@ -1,4 +1,8 @@
 /*
+ * Modified version of GeneratedParserUtilBase for use with Grammar-Kit plugin.
+ */
+
+/*
  * Copyright 2011-2013 Gregory Shrago
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
