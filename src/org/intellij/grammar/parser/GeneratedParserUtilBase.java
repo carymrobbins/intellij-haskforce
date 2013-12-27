@@ -427,8 +427,8 @@ public class GeneratedParserUtilBase {
             IElementType extensionTokenType = null;
             // whitespace prefix makes the very first frame offset bigger than marker start offset which is always 0
             if (latestDoneMarker instanceof PsiBuilder.Marker &&
-                    frame.position >= latestDoneMarker.getStartIndex() &&
-                    frame.position <= latestDoneMarker.getEndIndex()) {
+                    frame.position >= latestDoneMarker.getStartOffset() &&
+                    frame.position <= latestDoneMarker.getEndOffset()) {
                 extensionMarker = ((PsiBuilder.Marker)latestDoneMarker).precede();
                 extensionTokenType = latestDoneMarker.getTokenType();
                 ((PsiBuilder.Marker)latestDoneMarker).drop();
@@ -491,7 +491,7 @@ public class GeneratedParserUtilBase {
         if (elementType != null && marker != null) {
             if ((frame.modifiers & _COLLAPSE_) != 0) {
                 PsiBuilderImpl.ProductionMarker last = result || pinned? (PsiBuilderImpl.ProductionMarker)builder_.getLatestDoneMarker() : null;
-                if (last != null && last.getStartIndex() == frame.position &&
+                if (last != null && last.getStartOffset() == frame.position &&
                         state.typeExtends(last.getTokenType(), elementType)) {
                     IElementType resultType = last.getTokenType();
                     ((PsiBuilder.Marker)last).drop();
@@ -542,7 +542,7 @@ public class GeneratedParserUtilBase {
         }
         else {
             if (frame != null) {
-                int position = ((PsiBuilderImpl.ProductionMarker)marker).getStartIndex();
+                int position = ((PsiBuilderImpl.ProductionMarker)marker).getStartOffset();
                 if (frame.errorReportedAt > position) {
                     frame.errorReportedAt = frame.errorReportedAtPrev;
                 }
