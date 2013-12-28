@@ -24,8 +24,8 @@ public class HaskellWhitespaceImpl extends ASTWrapperPsiElement implements Haske
 
   @Override
   @NotNull
-  public List<HaskellIgnoredchar> getIgnoredcharList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellIgnoredchar.class);
+  public List<HaskellWhitetoken> getWhitetokenList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellWhitetoken.class);
   }
 
 }

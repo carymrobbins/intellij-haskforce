@@ -22,13 +22,17 @@ EOL="\r"|"\n"|"\r\n"
 LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 
+DASHES=--(-)*
 ASCSMALL=[a-z]
 ASCLARGE=[A-Z]
 ASCDIGIT=[0-9]
 HEXIT=[0-9a-fA-F]
 OCTIT=[0-7]
+OCTALESCAPE=o[0-7][0-7]*
+HEXADECIMALESCAPE=x[0-9a-fA-F][0-9a-fA-F]*
 OCTALPREFIX=0(o|O)
 HEXADECIMALPREFIX=0(x|X)
+CHARESC=(a|b|f|n|r|t|v|\|\"|'|&)
 
 %%
 <YYINITIAL> {
@@ -50,10 +54,9 @@ HEXADECIMALPREFIX=0(x|X)
   "\\f"                    { return FORMFEED; }
   " "                      { return SPACE; }
   "\\t"                    { return TAB; }
-  "--"                     { return DASHES; }
   "{-"                     { return OPENCOM; }
   "-}"                     { return CLOSECOM; }
-  "\\""                    { return DOUBLEQUOTE; }
+  "\""                    { return DOUBLEQUOTE; }
   "'"                      { return SINGLEQUOTE; }
   "_"                      { return UNDERSCORE; }
   "!"                      { return EXLAMATION; }
@@ -81,58 +84,6 @@ HEXADECIMALPREFIX=0(x|X)
   "->"                     { return RIGHTARROW; }
   "=>"                     { return DOUBLEARROW; }
   "\\&"                    { return NULLCHARACTER; }
-  "a"                      { return ACHARLOWER; }
-  "b"                      { return BCHARLOWER; }
-  "c"                      { return CCHARLOWER; }
-  "d"                      { return DCHARLOWER; }
-  "e"                      { return ECHARLOWER; }
-  "f"                      { return FCHARLOWER; }
-  "g"                      { return GCHARLOWER; }
-  "h"                      { return HCHARLOWER; }
-  "i"                      { return ICHARLOWER; }
-  "j"                      { return JCHARLOWER; }
-  "k"                      { return KCHARLOWER; }
-  "l"                      { return LCHARLOWER; }
-  "m"                      { return MCHARLOWER; }
-  "n"                      { return NCHARLOWER; }
-  "o"                      { return OCHARLOWER; }
-  "p"                      { return PCHARLOWER; }
-  "q"                      { return QCHARLOWER; }
-  "r"                      { return RCHARLOWER; }
-  "s"                      { return SCHARLOWER; }
-  "t"                      { return TCHARLOWER; }
-  "u"                      { return UCHARLOWER; }
-  "v"                      { return VCHARLOWER; }
-  "w"                      { return WCHARLOWER; }
-  "x"                      { return XCHARLOWER; }
-  "y"                      { return YCHARLOWER; }
-  "z"                      { return ZCHARLOWER; }
-  "A"                      { return ACHARUPPER; }
-  "B"                      { return BCHARUPPER; }
-  "C"                      { return CCHARUPPER; }
-  "D"                      { return DCHARUPPER; }
-  "E"                      { return ECHARUPPER; }
-  "F"                      { return FCHARUPPER; }
-  "G"                      { return GCHARUPPER; }
-  "H"                      { return HCHARUPPER; }
-  "I"                      { return ICHARUPPER; }
-  "J"                      { return JCHARUPPER; }
-  "K"                      { return KCHARUPPER; }
-  "L"                      { return LCHARUPPER; }
-  "M"                      { return MCHARUPPER; }
-  "N"                      { return NCHARUPPER; }
-  "O"                      { return OCHARUPPER; }
-  "P"                      { return PCHARUPPER; }
-  "Q"                      { return QCHARUPPER; }
-  "R"                      { return RCHARUPPER; }
-  "S"                      { return SCHARUPPER; }
-  "T"                      { return TCHARUPPER; }
-  "U"                      { return UCHARUPPER; }
-  "V"                      { return VCHARUPPER; }
-  "W"                      { return WCHARUPPER; }
-  "X"                      { return XCHARUPPER; }
-  "Y"                      { return YCHARUPPER; }
-  "Z"                      { return ZCHARUPPER; }
   "class"                  { return CLASSTOKEN; }
   "case"                   { return CASE; }
   "data"                   { return DATA; }
@@ -157,13 +108,17 @@ HEXADECIMALPREFIX=0(x|X)
   "where"                  { return WHERE; }
   "ascii"                  { return ASCII; }
 
+  {DASHES}                 { return DASHES; }
   {ASCSMALL}               { return ASCSMALL; }
   {ASCLARGE}               { return ASCLARGE; }
   {ASCDIGIT}               { return ASCDIGIT; }
   {HEXIT}                  { return HEXIT; }
   {OCTIT}                  { return OCTIT; }
+  {OCTALESCAPE}            { return OCTALESCAPE; }
+  {HEXADECIMALESCAPE}      { return HEXADECIMALESCAPE; }
   {OCTALPREFIX}            { return OCTALPREFIX; }
   {HEXADECIMALPREFIX}      { return HEXADECIMALPREFIX; }
+  {CHARESC}                { return CHARESC; }
 
   [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }

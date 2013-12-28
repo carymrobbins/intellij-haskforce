@@ -11,7 +11,6 @@ public interface HaskellTypes {
   IElementType ANY = new HaskellElementType("ANY");
   IElementType ANY_1 = new HaskellElementType("ANY_1");
   IElementType ASC_SYMBOL = new HaskellElementType("ASC_SYMBOL");
-  IElementType CHARESC = new HaskellElementType("CHARESC");
   IElementType CHARTOKEN = new HaskellElementType("CHARTOKEN");
   IElementType COMMENT = new HaskellElementType("COMMENT");
   IElementType CONID = new HaskellElementType("CONID");
@@ -24,7 +23,6 @@ public interface HaskellTypes {
   IElementType GAP = new HaskellElementType("GAP");
   IElementType GRAPHIC = new HaskellElementType("GRAPHIC");
   IElementType HEXADECIMAL = new HaskellElementType("HEXADECIMAL");
-  IElementType IGNOREDCHAR = new HaskellElementType("IGNOREDCHAR");
   IElementType INTEGERTOKEN = new HaskellElementType("INTEGERTOKEN");
   IElementType LARGE = new HaskellElementType("LARGE");
   IElementType LEXEME = new HaskellElementType("LEXEME");
@@ -50,9 +48,8 @@ public interface HaskellTypes {
   IElementType VARSYM = new HaskellElementType("VARSYM");
   IElementType WHITECHAR = new HaskellElementType("WHITECHAR");
   IElementType WHITESPACE = new HaskellElementType("WHITESPACE");
+  IElementType WHITETOKEN = new HaskellElementType("WHITETOKEN");
 
-  IElementType ACHARLOWER = new HaskellTokenType("a");
-  IElementType ACHARUPPER = new HaskellTokenType("A");
   IElementType AMPERSAND = new HaskellTokenType("&");
   IElementType AMPERSAT = new HaskellTokenType("@");
   IElementType ASCDIGIT = new HaskellTokenType("ascDigit");
@@ -62,20 +59,15 @@ public interface HaskellTypes {
   IElementType ASTERISK = new HaskellTokenType("*");
   IElementType BACKSLASH = new HaskellTokenType("\\");
   IElementType BACKTICK = new HaskellTokenType("`");
-  IElementType BCHARLOWER = new HaskellTokenType("b");
-  IElementType BCHARUPPER = new HaskellTokenType("B");
   IElementType CARET = new HaskellTokenType("^");
   IElementType CASE = new HaskellTokenType("case");
-  IElementType CCHARLOWER = new HaskellTokenType("c");
-  IElementType CCHARUPPER = new HaskellTokenType("C");
+  IElementType CHARESC = new HaskellTokenType("charesc");
   IElementType CLASSTOKEN = new HaskellTokenType("class");
   IElementType CLOSECOM = new HaskellTokenType("-}");
   IElementType COLON = new HaskellTokenType(":");
   IElementType COMMA = new HaskellTokenType(",");
-  IElementType DASHES = new HaskellTokenType("--");
+  IElementType DASHES = new HaskellTokenType("dashes");
   IElementType DATA = new HaskellTokenType("data");
-  IElementType DCHARLOWER = new HaskellTokenType("d");
-  IElementType DCHARUPPER = new HaskellTokenType("D");
   IElementType DEFAULT = new HaskellTokenType("default");
   IElementType DERIVING = new HaskellTokenType("deriving");
   IElementType DO = new HaskellTokenType("do");
@@ -84,25 +76,16 @@ public interface HaskellTypes {
   IElementType DOUBLECOLON = new HaskellTokenType("::");
   IElementType DOUBLEPERIOD = new HaskellTokenType("..");
   IElementType DOUBLEQUOTE = new HaskellTokenType("\"");
-  IElementType ECHARLOWER = new HaskellTokenType("e");
-  IElementType ECHARUPPER = new HaskellTokenType("E");
   IElementType ELSE = new HaskellTokenType("else");
   IElementType EQUALS = new HaskellTokenType("=");
   IElementType EXLAMATION = new HaskellTokenType("!");
-  IElementType FCHARLOWER = new HaskellTokenType("f");
-  IElementType FCHARUPPER = new HaskellTokenType("F");
   IElementType FOREIGN = new HaskellTokenType("foreign");
   IElementType FORMFEED = new HaskellTokenType("\\f");
-  IElementType GCHARLOWER = new HaskellTokenType("g");
-  IElementType GCHARUPPER = new HaskellTokenType("G");
   IElementType GREATERTHAN = new HaskellTokenType(">");
   IElementType HASH = new HaskellTokenType("#");
-  IElementType HCHARLOWER = new HaskellTokenType("h");
-  IElementType HCHARUPPER = new HaskellTokenType("H");
+  IElementType HEXADECIMALESCAPE = new HaskellTokenType("hexadecimalEscape");
   IElementType HEXADECIMALPREFIX = new HaskellTokenType("hexadecimalPrefix");
   IElementType HEXIT = new HaskellTokenType("hexit");
-  IElementType ICHARLOWER = new HaskellTokenType("i");
-  IElementType ICHARUPPER = new HaskellTokenType("I");
   IElementType IF = new HaskellTokenType("if");
   IElementType IMPORT = new HaskellTokenType("import");
   IElementType IN = new HaskellTokenType("in");
@@ -110,76 +93,43 @@ public interface HaskellTypes {
   IElementType INFIXL = new HaskellTokenType("infixl");
   IElementType INFIXR = new HaskellTokenType("infixr");
   IElementType INSTANCE = new HaskellTokenType("instance");
-  IElementType JCHARLOWER = new HaskellTokenType("j");
-  IElementType JCHARUPPER = new HaskellTokenType("J");
-  IElementType KCHARLOWER = new HaskellTokenType("k");
-  IElementType KCHARUPPER = new HaskellTokenType("K");
   IElementType LBRACE = new HaskellTokenType("{");
   IElementType LBRACKET = new HaskellTokenType("[");
-  IElementType LCHARLOWER = new HaskellTokenType("l");
-  IElementType LCHARUPPER = new HaskellTokenType("L");
   IElementType LEFTARROW = new HaskellTokenType("<-");
   IElementType LESSTHAN = new HaskellTokenType("<");
   IElementType LET = new HaskellTokenType("let");
   IElementType LINEFEED = new HaskellTokenType("\\r");
   IElementType LPAREN = new HaskellTokenType("(");
-  IElementType MCHARLOWER = new HaskellTokenType("m");
-  IElementType MCHARUPPER = new HaskellTokenType("M");
   IElementType MINUS = new HaskellTokenType("-");
   IElementType MODULE = new HaskellTokenType("module");
-  IElementType NCHARLOWER = new HaskellTokenType("n");
-  IElementType NCHARUPPER = new HaskellTokenType("N");
   IElementType NEWTYPE = new HaskellTokenType("newtype");
   IElementType NULLCHARACTER = new HaskellTokenType("\\&");
-  IElementType OCHARLOWER = new HaskellTokenType("o");
-  IElementType OCHARUPPER = new HaskellTokenType("O");
+  IElementType OCTALESCAPE = new HaskellTokenType("octalEscape");
   IElementType OCTALPREFIX = new HaskellTokenType("octalPrefix");
   IElementType OCTIT = new HaskellTokenType("octit");
   IElementType OF = new HaskellTokenType("of");
   IElementType OPENCOM = new HaskellTokenType("{-");
-  IElementType PCHARLOWER = new HaskellTokenType("p");
-  IElementType PCHARUPPER = new HaskellTokenType("P");
   IElementType PERCENT = new HaskellTokenType("%");
   IElementType PERIOD = new HaskellTokenType(".");
   IElementType PIPE = new HaskellTokenType("|");
   IElementType PLUS = new HaskellTokenType("+");
-  IElementType QCHARLOWER = new HaskellTokenType("q");
-  IElementType QCHARUPPER = new HaskellTokenType("Q");
   IElementType QUESTION = new HaskellTokenType("?");
   IElementType RBRACE = new HaskellTokenType("}");
   IElementType RBRACKET = new HaskellTokenType("]");
-  IElementType RCHARLOWER = new HaskellTokenType("r");
-  IElementType RCHARUPPER = new HaskellTokenType("R");
   IElementType RETURN = new HaskellTokenType("\\n");
   IElementType RIGHTARROW = new HaskellTokenType("->");
   IElementType RPAREN = new HaskellTokenType(")");
-  IElementType SCHARLOWER = new HaskellTokenType("s");
-  IElementType SCHARUPPER = new HaskellTokenType("S");
   IElementType SEMICOLON = new HaskellTokenType(";");
   IElementType SINGLEQUOTE = new HaskellTokenType("'");
   IElementType SLASH = new HaskellTokenType("/");
   IElementType SPACE = new HaskellTokenType(" ");
   IElementType TAB = new HaskellTokenType("\\t");
-  IElementType TCHARLOWER = new HaskellTokenType("t");
-  IElementType TCHARUPPER = new HaskellTokenType("T");
   IElementType THEN = new HaskellTokenType("then");
   IElementType TILDE = new HaskellTokenType("~");
   IElementType TYPE = new HaskellTokenType("type");
-  IElementType UCHARLOWER = new HaskellTokenType("u");
-  IElementType UCHARUPPER = new HaskellTokenType("U");
   IElementType UNDERSCORE = new HaskellTokenType("_");
-  IElementType VCHARLOWER = new HaskellTokenType("v");
-  IElementType VCHARUPPER = new HaskellTokenType("V");
   IElementType VERTAB = new HaskellTokenType("\\v");
-  IElementType WCHARLOWER = new HaskellTokenType("w");
-  IElementType WCHARUPPER = new HaskellTokenType("W");
   IElementType WHERE = new HaskellTokenType("where");
-  IElementType XCHARLOWER = new HaskellTokenType("x");
-  IElementType XCHARUPPER = new HaskellTokenType("X");
-  IElementType YCHARLOWER = new HaskellTokenType("y");
-  IElementType YCHARUPPER = new HaskellTokenType("Y");
-  IElementType ZCHARLOWER = new HaskellTokenType("z");
-  IElementType ZCHARUPPER = new HaskellTokenType("Z");
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {
@@ -192,9 +142,6 @@ public interface HaskellTypes {
       }
       else if (type == ASC_SYMBOL) {
         return new HaskellAscSymbolImpl(node);
-      }
-      else if (type == CHARESC) {
-        return new HaskellCharescImpl(node);
       }
       else if (type == CHARTOKEN) {
         return new HaskellChartokenImpl(node);
@@ -231,9 +178,6 @@ public interface HaskellTypes {
       }
       else if (type == HEXADECIMAL) {
         return new HaskellHexadecimalImpl(node);
-      }
-      else if (type == IGNOREDCHAR) {
-        return new HaskellIgnoredcharImpl(node);
       }
       else if (type == INTEGERTOKEN) {
         return new HaskellIntegertokenImpl(node);
@@ -309,6 +253,9 @@ public interface HaskellTypes {
       }
       else if (type == WHITESPACE) {
         return new HaskellWhitespaceImpl(node);
+      }
+      else if (type == WHITETOKEN) {
+        return new HaskellWhitetokenImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

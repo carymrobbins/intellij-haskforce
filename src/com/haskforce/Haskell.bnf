@@ -41,7 +41,7 @@
     formfeed='\f'
     space=' '
     tab='\t'
-    dashes='--'
+    dashes='regexp:--(-)*'
     opencom='{-'
     closecom='-}'
     doublequote='"'
@@ -71,6 +71,8 @@
     ascDigit='regexp:[0-9]'
     hexit='regexp:[0-9a-fA-F]'
     octit='regexp:[0-7]'
+    octalEscape='regexp:o[0-7][0-7]*'
+    hexadecimalEscape='regexp:x[0-9a-fA-F][0-9a-fA-F]*'
     doubleperiod='..'
     doublecolon='::'
     leftarrow='<-'
@@ -79,59 +81,8 @@
     octalPrefix='regexp:0(o|O)'
     hexadecimalPrefix='regexp:0(x|X)'
     nullCharacter='\&'
-    aCharLower='a'
-    bCharLower='b'
-    cCharLower='c'
-    dCharLower='d'
-    eCharLower='e'
-    fCharLower='f'
-    gCharLower='g'
-    hCharLower='h'
-    iCharLower='i'
-    jCharLower='j'
-    kCharLower='k'
-    lCharLower='l'
-    mCharLower='m'
-    nCharLower='n'
-    oCharLower='o'
-    pCharLower='p'
-    qCharLower='q'
-    rCharLower='r'
-    sCharLower='s'
-    tCharLower='t'
-    uCharLower='u'
-    vCharLower='v'
-    wCharLower='w'
-    xCharLower='x'
-    yCharLower='y'
-    zCharLower='z'
-    ACharUpper='A'
-    BCharUpper='B'
-    CCharUpper='C'
-    DCharUpper='D'
-    ECharUpper='E'
-    FCharUpper='F'
-    GCharUpper='G'
-    HCharUpper='H'
-    ICharUpper='I'
-    JCharUpper='J'
-    KCharUpper='K'
-    LCharUpper='L'
-    MCharUpper='M'
-    NCharUpper='N'
-    OCharUpper='O'
-    PCharUpper='P'
-    QCharUpper='Q'
-    RCharUpper='R'
-    SCharUpper='S'
-    TCharUpper='T'
-    UCharUpper='U'
-    VCharUpper='V'
-    WCharUpper='W'
-    XCharUpper='X'
-    YCharUpper='Y'
-    ZCharUpper='Z'
     classtoken='class'
+    charesc="regexp:(a|b|f|n|r|t|v|\|\"|'|&)"
   ]
 }
 
@@ -142,8 +93,8 @@ lexeme      ::= qvarid | qconid | qvarsym | qconsym
               |	literal | special | reservedop | reservedid
 literal     ::= integertoken | floattoken | chartoken | stringtoken
 special     ::= '(' | ')' | ',' | ';' | '[' | ']' | '`' | '{' | '}'
-whitespace  ::= ignoredchar {ignoredchar} *
-ignoredchar ::= whitechar | comment | ncomment
+whitespace  ::= whitetoken {whitetoken} *
+whitetoken  ::= whitechar | comment | ncomment
 whitechar   ::= newline | vertab | space | tab
 newline     ::= return linefeed | return | linefeed | formfeed
 comment     ::= dashes [ !symbol any1 {any1} * ] !newline
@@ -204,7 +155,6 @@ exponent    ::= ('e' | 'E') ['+' | '-'] decimal
 chartoken   ::= "'" (!("'" | '\') graphic | space | !'\&' escape) "'"
 stringtoken ::= '"' { !('"' | '\') graphic | space | escape | gap} * '"'
 escape      ::= '\' ( charesc | ascii | decimal | 'o' octal | 'x' hexadecimal )
-charesc     ::= 'a' | 'b' | 'f' | 'n' | 'r' | 't' | 'v' | '\' | '"' | "'" | '&'
 /* TODO:
 ascii ::= ^cntrl | NUL | SOH | STX | ETX | EOT | ENQ | ACK
 | BEL | BS | HT | LF | VT | FF | CR | SO | SI | DLE

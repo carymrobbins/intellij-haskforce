@@ -19,10 +19,6 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitCharesc(@NotNull HaskellCharesc o) {
-    visitPsiElement(o);
-  }
-
   public void visitChartoken(@NotNull HaskellChartoken o) {
     visitPsiElement(o);
   }
@@ -68,10 +64,6 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitHexadecimal(@NotNull HaskellHexadecimal o) {
-    visitPsiElement(o);
-  }
-
-  public void visitIgnoredchar(@NotNull HaskellIgnoredchar o) {
     visitPsiElement(o);
   }
 
@@ -172,6 +164,10 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitWhitespace(@NotNull HaskellWhitespace o) {
+    visitPsiElement(o);
+  }
+
+  public void visitWhitetoken(@NotNull HaskellWhitetoken o) {
     visitPsiElement(o);
   }
 

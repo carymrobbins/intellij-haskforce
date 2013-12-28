@@ -11,14 +11,14 @@ import static com.haskforce.psi.HaskellTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellIgnoredcharImpl extends ASTWrapperPsiElement implements HaskellIgnoredchar {
+public class HaskellWhitetokenImpl extends ASTWrapperPsiElement implements HaskellWhitetoken {
 
-  public HaskellIgnoredcharImpl(ASTNode node) {
+  public HaskellWhitetokenImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitIgnoredchar(this);
+    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitWhitetoken(this);
     else super.accept(visitor);
   }
 

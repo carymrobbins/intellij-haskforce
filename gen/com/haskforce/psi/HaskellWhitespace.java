@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface HaskellWhitespace extends PsiElement {
 
   @NotNull
-  List<HaskellIgnoredchar> getIgnoredcharList();
+  List<HaskellWhitetoken> getWhitetokenList();
 
 }

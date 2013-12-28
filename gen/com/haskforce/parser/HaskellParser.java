@@ -29,9 +29,6 @@ public class HaskellParser implements PsiParser {
     else if (root_ == ASC_SYMBOL) {
       result_ = ascSymbol(builder_, 0);
     }
-    else if (root_ == CHARESC) {
-      result_ = charesc(builder_, 0);
-    }
     else if (root_ == CHARTOKEN) {
       result_ = chartoken(builder_, 0);
     }
@@ -67,9 +64,6 @@ public class HaskellParser implements PsiParser {
     }
     else if (root_ == HEXADECIMAL) {
       result_ = hexadecimal(builder_, 0);
-    }
-    else if (root_ == IGNOREDCHAR) {
-      result_ = ignoredchar(builder_, 0);
     }
     else if (root_ == INTEGERTOKEN) {
       result_ = integertoken(builder_, 0);
@@ -146,6 +140,9 @@ public class HaskellParser implements PsiParser {
     else if (root_ == WHITESPACE) {
       result_ = whitespace(builder_, 0);
     }
+    else if (root_ == WHITETOKEN) {
+      result_ = whitetoken(builder_, 0);
+    }
     else {
       result_ = parse_root_(root_, builder_, 0);
     }
@@ -210,27 +207,6 @@ public class HaskellParser implements PsiParser {
     if (!result_) result_ = consumeToken(builder_, TILDE);
     if (!result_) result_ = consumeToken(builder_, COLON);
     exit_section_(builder_, level_, marker_, ASC_SYMBOL, result_, false, null);
-    return result_;
-  }
-
-  /* ********************************************************** */
-  // 'a' | 'b' | 'f' | 'n' | 'r' | 't' | 'v' | '\' | '"' | "'" | '&'
-  public static boolean charesc(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "charesc")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<charesc>");
-    result_ = consumeToken(builder_, ACHARLOWER);
-    if (!result_) result_ = consumeToken(builder_, BCHARLOWER);
-    if (!result_) result_ = consumeToken(builder_, FCHARLOWER);
-    if (!result_) result_ = consumeToken(builder_, NCHARLOWER);
-    if (!result_) result_ = consumeToken(builder_, RCHARLOWER);
-    if (!result_) result_ = consumeToken(builder_, TCHARLOWER);
-    if (!result_) result_ = consumeToken(builder_, VCHARLOWER);
-    if (!result_) result_ = consumeToken(builder_, BACKSLASH);
-    if (!result_) result_ = consumeToken(builder_, DOUBLEQUOTE);
-    if (!result_) result_ = consumeToken(builder_, SINGLEQUOTE);
-    if (!result_) result_ = consumeToken(builder_, AMPERSAND);
-    exit_section_(builder_, level_, marker_, CHARESC, result_, false, null);
     return result_;
   }
 
@@ -547,7 +523,7 @@ public class HaskellParser implements PsiParser {
     if (!recursion_guard_(builder_, level_, "escape_1")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = charesc(builder_, level_ + 1);
+    result_ = consumeToken(builder_, CHARESC);
     if (!result_) result_ = consumeToken(builder_, ASCII);
     if (!result_) result_ = decimal(builder_, level_ + 1);
     if (!result_) result_ = escape_1_3(builder_, level_ + 1);
@@ -561,7 +537,7 @@ public class HaskellParser implements PsiParser {
     if (!recursion_guard_(builder_, level_, "escape_1_3")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, OCHARLOWER);
+    result_ = consumeToken(builder_, "o");
     result_ = result_ && octal(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
@@ -572,7 +548,7 @@ public class HaskellParser implements PsiParser {
     if (!recursion_guard_(builder_, level_, "escape_1_4")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, XCHARLOWER);
+    result_ = consumeToken(builder_, "x");
     result_ = result_ && hexadecimal(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
@@ -582,7 +558,6 @@ public class HaskellParser implements PsiParser {
   // ('e' | 'E') ['+' | '-'] decimal
   public static boolean exponent(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "exponent")) return false;
-    if (!nextTokenIs(builder_, "<exponent>", ECHARUPPER, ECHARLOWER)) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<exponent>");
     result_ = exponent_0(builder_, level_ + 1);
@@ -597,8 +572,8 @@ public class HaskellParser implements PsiParser {
     if (!recursion_guard_(builder_, level_, "exponent_0")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, ECHARLOWER);
-    if (!result_) result_ = consumeToken(builder_, ECHARUPPER);
+    result_ = consumeToken(builder_, "e");
+    if (!result_) result_ = consumeToken(builder_, "E");
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -746,22 +721,9 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // whitechar | comment | ncomment
-  public static boolean ignoredchar(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "ignoredchar")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<ignoredchar>");
-    result_ = whitechar(builder_, level_ + 1);
-    if (!result_) result_ = comment(builder_, level_ + 1);
-    if (!result_) result_ = ncomment(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, IGNOREDCHAR, result_, false, null);
-    return result_;
-  }
-
-  /* ********************************************************** */
   // decimal
-  //               | octalPrefix octal
-  //               | hexadecimalPrefix hexadecimal
+  //                | octalPrefix octal
+  //                | hexadecimalPrefix hexadecimal
   public static boolean integertoken(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "integertoken")) return false;
     boolean result_ = false;
@@ -1559,18 +1521,18 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // ignoredchar {ignoredchar} *
+  // whitetoken {whitetoken} *
   public static boolean whitespace(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "whitespace")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<whitespace>");
-    result_ = ignoredchar(builder_, level_ + 1);
+    result_ = whitetoken(builder_, level_ + 1);
     result_ = result_ && whitespace_1(builder_, level_ + 1);
     exit_section_(builder_, level_, marker_, WHITESPACE, result_, false, null);
     return result_;
   }
 
-  // {ignoredchar} *
+  // {whitetoken} *
   private static boolean whitespace_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "whitespace_1")) return false;
     int pos_ = current_position_(builder_);
@@ -1582,13 +1544,26 @@ public class HaskellParser implements PsiParser {
     return true;
   }
 
-  // {ignoredchar}
+  // {whitetoken}
   private static boolean whitespace_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "whitespace_1_0")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = ignoredchar(builder_, level_ + 1);
+    result_ = whitetoken(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // whitechar | comment | ncomment
+  public static boolean whitetoken(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "whitetoken")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<whitetoken>");
+    result_ = whitechar(builder_, level_ + 1);
+    if (!result_) result_ = comment(builder_, level_ + 1);
+    if (!result_) result_ = ncomment(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, WHITETOKEN, result_, false, null);
     return result_;
   }
 

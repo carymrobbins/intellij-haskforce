@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellIgnoredchar extends PsiElement {
+public interface HaskellWhitetoken extends PsiElement {
 
   @Nullable
   HaskellComment getComment();
