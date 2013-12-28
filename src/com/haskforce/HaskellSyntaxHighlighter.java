@@ -37,24 +37,12 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
     @NotNull
     @Override
     public Lexer getHighlightingLexer() {
-        return new FlexAdapter(new HaskellLexer((Reader) null));
+        return new HaskellLexer();
     }
 
     @NotNull
     @Override
     public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
-        if (tokenType.equals(HaskellTypes.SEPARATOR)) {
-            return SEPARATOR_KEYS;
-        } else if (tokenType.equals(HaskellTypes.KEY)) {
-            return KEY_KEYS;
-        } else if (tokenType.equals(HaskellTypes.VALUE)) {
-            return VALUE_KEYS;
-        } else if (tokenType.equals(HaskellTypes.COMMENT)) {
-            return COMMENT_KEYS;
-        } else if (tokenType.equals(TokenType.BAD_CHARACTER)) {
-            return BAD_CHAR_KEYS;
-        } else {
-            return EMPTY_KEYS;
-        }
+        return EMPTY_KEYS;
     }
 }

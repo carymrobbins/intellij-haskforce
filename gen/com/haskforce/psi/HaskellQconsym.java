@@ -5,10 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellProperty extends PsiElement {
+public interface HaskellQconsym extends PsiElement {
 
-  String getKey();
+  @NotNull
+  HaskellConsym getConsym();
 
-  String getValue();
+  @Nullable
+  HaskellModid getModid();
 
 }

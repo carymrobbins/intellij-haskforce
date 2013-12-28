@@ -11,23 +11,21 @@ import static com.haskforce.psi.HaskellTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellPropertyImpl extends ASTWrapperPsiElement implements HaskellProperty {
+public class HaskellSeqImpl extends ASTWrapperPsiElement implements HaskellSeq {
 
-  public HaskellPropertyImpl(ASTNode node) {
+  public HaskellSeqImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitProperty(this);
+    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitSeq(this);
     else super.accept(visitor);
   }
 
-  public String getKey() {
-    return HaskellPsiImplUtil.getKey(this);
-  }
-
-  public String getValue() {
-    return HaskellPsiImplUtil.getValue(this);
+  @Override
+  @NotNull
+  public List<HaskellAny> getAnyList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellAny.class);
   }
 
 }

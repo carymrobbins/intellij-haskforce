@@ -1,5 +1,8 @@
 /*
  * Use Command + Shift + G to generate parser in gen/ directory.
+ * Then generate the lexer using Tools > Generate JFlex Lexer.
+ * The DOUBLEQUOTE seems to be created as "\\"" instead of "\"".
+ * This needs to be manually corrected for now.
  * Be sure to add the gen/ directory to your sources.
  * In Intellij, right-click the gen directory and choose Mark Directory As > Sources.
  */
@@ -20,10 +23,193 @@
   tokenTypeClass="com.haskforce.psi.HaskellTokenType"
 
   psiImplUtilClass="com.haskforce.psi.impl.HaskellPsiImplUtil"
+
+  tokens=[
+    lparen='('
+    rparen=')'
+    pipe='|'
+    comma=','
+    semicolon=';'
+    lbracket='['
+    rbracket=']'
+    backtick='`'
+    lbrace='{'
+    rbrace='}'
+    return='\n'
+    linefeed='\r'
+    vertab='\v'
+    formfeed='\f'
+    space=' '
+    tab='\t'
+    dashes='--'
+    opencom='{-'
+    closecom='-}'
+    doublequote='"'
+    singlequote="'"
+    underscore='_'
+    ascSmall='regexp:[a-z]'
+    ascLarge='regexp:[A-Z]'
+    exlamation='!'
+    hash='#'
+    dollar='$'
+    percent='%'
+    ampersand='&'
+    asterisk='*'
+    plus='+'
+    period='.'
+    slash='/'
+    lessthan='<'
+    equals='='
+    greaterthan='>'
+    question='?'
+    ampersat='@'
+    backslash='\'
+    caret='^'
+    minus='-'
+    tilde='~'
+    colon=':'
+    ascDigit='regexp:[0-9]'
+    hexit='regexp:[0-9a-fA-F]'
+    octit='regexp:[0-7]'
+    doubleperiod='..'
+    doublecolon='::'
+    leftarrow='<-'
+    rightarrow='->'
+    doublearrow='=>'
+    octalPrefix='regexp:0(o|O)'
+    hexadecimalPrefix='regexp:0(x|X)'
+    nullCharacter='\&'
+    aCharLower='a'
+    bCharLower='b'
+    cCharLower='c'
+    dCharLower='d'
+    eCharLower='e'
+    fCharLower='f'
+    gCharLower='g'
+    hCharLower='h'
+    iCharLower='i'
+    jCharLower='j'
+    kCharLower='k'
+    lCharLower='l'
+    mCharLower='m'
+    nCharLower='n'
+    oCharLower='o'
+    pCharLower='p'
+    qCharLower='q'
+    rCharLower='r'
+    sCharLower='s'
+    tCharLower='t'
+    uCharLower='u'
+    vCharLower='v'
+    wCharLower='w'
+    xCharLower='x'
+    yCharLower='y'
+    zCharLower='z'
+    ACharUpper='A'
+    BCharUpper='B'
+    CCharUpper='C'
+    DCharUpper='D'
+    ECharUpper='E'
+    FCharUpper='F'
+    GCharUpper='G'
+    HCharUpper='H'
+    ICharUpper='I'
+    JCharUpper='J'
+    KCharUpper='K'
+    LCharUpper='L'
+    MCharUpper='M'
+    NCharUpper='N'
+    OCharUpper='O'
+    PCharUpper='P'
+    QCharUpper='Q'
+    RCharUpper='R'
+    SCharUpper='S'
+    TCharUpper='T'
+    UCharUpper='U'
+    VCharUpper='V'
+    WCharUpper='W'
+    XCharUpper='X'
+    YCharUpper='Y'
+    ZCharUpper='Z'
+    classtoken='class'
+  ]
 }
 
-simpleFile ::= item_*
+// Haskell 2010 Report - http://www.haskell.org/onlinereport/haskell2010/haskellch2.html#x7-140002
 
-private item_ ::= (property|COMMENT|CRLF)
+program     ::= { lexeme | whitespace } *
+lexeme      ::= qvarid | qconid | qvarsym | qconsym
+              |	literal | special | reservedop | reservedid
+literal     ::= integertoken | floattoken | chartoken | stringtoken
+special     ::= '(' | ')' | ',' | ';' | '[' | ']' | '`' | '{' | '}'
+whitespace  ::= ignoredchar {ignoredchar} *
+ignoredchar  ::= whitechar | comment | ncomment
+whitechar   ::= newline | vertab | space | tab
+newline     ::= return linefeed | return | linefeed | formfeed
+comment     ::= dashes [ !symbol any1 {any1} * ] !newline
+ncomment    ::= opencom any seq {ncomment any seq} * closecom
+any seq     ::= !({any} * ( opencom | closecom ) {any} *) {any} *
+any         ::= graphic | whitechar
+any1        ::= graphic | space | tab
+graphic     ::= small | large | symbol | digit | special | '"' | "'"
 
-property ::= (KEY? SEPARATOR VALUE?) | KEY {methods=[getKey getValue]}
+small       ::= ascSmall | '_'
+large       ::= ascLarge
+symbol      ::= ascSymbol
+
+ascSymbol   ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '=' | '>' | '?' | '@'
+              | '\' | '^' | '|' | '-' | '~' | ':'
+digit       ::= ascDigit
+
+varid       ::= !reservedid (small {small | large | digit | "'" } *)
+conid       ::= large {small | large | digit | "'" } *
+reservedid  ::= case | classtoken | data | default | deriving | do | else
+              | foreign | if | import | in | infix | infixl
+              | infixr | instance | let | module | newtype | of
+              | then | type | where | '_'
+
+varsym      ::= !(reservedop | dashes) ( !':' symbol {symbol} * )
+consym      ::= !reservedopWithoutCons ( ':' {symbol} *)
+reservedop  ::= reservedopWithCons
+
+reservedopWithoutCons ::= '..' | '::' | '=' | '\' | '|' | '<-' | '->' | '@' | '~' | '=>'
+reservedopWithCons    ::= ':' | reservedopWithoutCons
+
+/* Unused:
+tyvar       ::= varid
+tycon       ::= conid
+tycls       ::= conid
+*/
+modid       ::= {conid '.'} * conid
+
+qvarid	    ::= [modid '.'] varid
+qconid	    ::= [modid '.'] conid
+/* Unused:
+qtycon	    ::= [modid '.'] tycon
+qtycls	    ::= [modid '.'] tycls
+*/
+qvarsym	    ::= [modid '.'] varsym
+qconsym	    ::= [modid '.'] consym
+
+decimal     ::= digit {digit} *
+octal       ::= octit {octit} *
+hexadecimal ::= hexit {hexit} *
+integertoken     ::= decimal
+              | octalPrefix octal
+              | hexadecimalPrefix hexadecimal
+floattoken       ::= decimal '.' decimal [exponent]
+              | decimal exponent
+exponent    ::= ('e' | 'E') ['+' | '-'] decimal
+
+chartoken        ::= "'" (!("'" | '\') graphic | space | !'\&' escape) "'"
+stringtoken ::= '"' { !('"' | '\') graphic | space | escape | gap} * '"'
+escape ::= '\' ( charesc | ascii | decimal | 'o' octal | 'x' hexadecimal )
+charesc ::= 'a' | 'b' | 'f' | 'n' | 'r' | 't' | 'v' | '\' | '"' | "'" | '&'
+/* TODO:
+ascii ::= ^cntrl | NUL | SOH | STX | ETX | EOT | ENQ | ACK
+| BEL | BS | HT | LF | VT | FF | CR | SO | SI | DLE
+| DC1 | DC2 | DC3 | DC4 | NAK | SYN | ETB | CAN
+| EM | SUB | ESC | FS | GS | RS | US | SP | DEL
+cntrl ::= ascLarge | @ | [ | \ | ] | ^ | _
+*/
+gap ::= '\' whitechar {whitechar} * '\'

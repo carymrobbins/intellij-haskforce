@@ -30,7 +30,7 @@ public class HaskellParserDefinition implements ParserDefinition{
     @NotNull
     @Override
     public Lexer createLexer(Project project) {
-        return new FlexAdapter(new HaskellLexer((Reader) null));
+        return new HaskellLexer();
     }
 
     @NotNull
