@@ -143,7 +143,7 @@ lexeme      ::= qvarid | qconid | qvarsym | qconsym
 literal     ::= integertoken | floattoken | chartoken | stringtoken
 special     ::= '(' | ')' | ',' | ';' | '[' | ']' | '`' | '{' | '}'
 whitespace  ::= ignoredchar {ignoredchar} *
-ignoredchar  ::= whitechar | comment | ncomment
+ignoredchar ::= whitechar | comment | ncomment
 whitechar   ::= newline | vertab | space | tab
 newline     ::= return linefeed | return | linefeed | formfeed
 comment     ::= dashes [ !symbol any1 {any1} * ] !newline
@@ -194,17 +194,17 @@ qconsym	    ::= [modid '.'] consym
 decimal     ::= digit {digit} *
 octal       ::= octit {octit} *
 hexadecimal ::= hexit {hexit} *
-integertoken     ::= decimal
-              | octalPrefix octal
-              | hexadecimalPrefix hexadecimal
-floattoken       ::= decimal '.' decimal [exponent]
+integertoken ::= decimal
+               | octalPrefix octal
+               | hexadecimalPrefix hexadecimal
+floattoken  ::= decimal '.' decimal [exponent]
               | decimal exponent
 exponent    ::= ('e' | 'E') ['+' | '-'] decimal
 
-chartoken        ::= "'" (!("'" | '\') graphic | space | !'\&' escape) "'"
+chartoken   ::= "'" (!("'" | '\') graphic | space | !'\&' escape) "'"
 stringtoken ::= '"' { !('"' | '\') graphic | space | escape | gap} * '"'
-escape ::= '\' ( charesc | ascii | decimal | 'o' octal | 'x' hexadecimal )
-charesc ::= 'a' | 'b' | 'f' | 'n' | 'r' | 't' | 'v' | '\' | '"' | "'" | '&'
+escape      ::= '\' ( charesc | ascii | decimal | 'o' octal | 'x' hexadecimal )
+charesc     ::= 'a' | 'b' | 'f' | 'n' | 'r' | 't' | 'v' | '\' | '"' | "'" | '&'
 /* TODO:
 ascii ::= ^cntrl | NUL | SOH | STX | ETX | EOT | ENQ | ACK
 | BEL | BS | HT | LF | VT | FF | CR | SO | SI | DLE
@@ -212,4 +212,4 @@ ascii ::= ^cntrl | NUL | SOH | STX | ETX | EOT | ENQ | ACK
 | EM | SUB | ESC | FS | GS | RS | US | SP | DEL
 cntrl ::= ascLarge | @ | [ | \ | ] | ^ | _
 */
-gap ::= '\' whitechar {whitechar} * '\'
+gap         ::= '\' whitechar {whitechar} * '\'
