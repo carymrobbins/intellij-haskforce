@@ -30,24 +30,6 @@ public class HaskellEscapeImpl extends ASTWrapperPsiElement implements HaskellEs
 
   @Override
   @Nullable
-  public HaskellHexadecimal getHexadecimal() {
-    return findChildByClass(HaskellHexadecimal.class);
-  }
-
-  @Override
-  @Nullable
-  public HaskellOctal getOctal() {
-    return findChildByClass(HaskellOctal.class);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getAscii() {
-    return findChildByType(ASCII);
-  }
-
-  @Override
-  @Nullable
   public PsiElement getCharesc() {
     return findChildByType(CHARESC);
   }

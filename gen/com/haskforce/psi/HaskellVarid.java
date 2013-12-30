@@ -7,13 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellVarid extends PsiElement {
 
-  @NotNull
-  List<HaskellDigit> getDigitList();
-
-  @NotNull
-  List<HaskellLarge> getLargeList();
-
-  @NotNull
-  List<HaskellSmall> getSmallList();
-
 }

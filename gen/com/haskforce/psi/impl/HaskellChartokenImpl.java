@@ -30,14 +30,8 @@ public class HaskellChartokenImpl extends ASTWrapperPsiElement implements Haskel
 
   @Override
   @Nullable
-  public HaskellGraphic getGraphic() {
-    return findChildByClass(HaskellGraphic.class);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getSpace() {
-    return findChildByType(SPACE);
+  public PsiElement getGraphic() {
+    return findChildByType(GRAPHIC);
   }
 
 }

@@ -13,7 +13,4 @@ public interface HaskellStringtoken extends PsiElement {
   @NotNull
   List<HaskellGap> getGapList();
 
-  @NotNull
-  List<HaskellGraphic> getGraphicList();
-
 }

@@ -28,16 +28,4 @@ public class HaskellIntegertokenImpl extends ASTWrapperPsiElement implements Has
     return findChildByClass(HaskellDecimal.class);
   }
 
-  @Override
-  @Nullable
-  public HaskellHexadecimal getHexadecimal() {
-    return findChildByClass(HaskellHexadecimal.class);
-  }
-
-  @Override
-  @Nullable
-  public HaskellOctal getOctal() {
-    return findChildByClass(HaskellOctal.class);
-  }
-
 }

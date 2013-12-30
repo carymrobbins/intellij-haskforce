@@ -7,27 +7,11 @@ import com.intellij.psi.PsiElement;
 
 public class HaskellVisitor extends PsiElementVisitor {
 
-  public void visitAny(@NotNull HaskellAny o) {
-    visitPsiElement(o);
-  }
-
-  public void visitAny1(@NotNull HaskellAny1 o) {
-    visitPsiElement(o);
-  }
-
-  public void visitAscSymbol(@NotNull HaskellAscSymbol o) {
+  public void visitAnyseq(@NotNull HaskellAnyseq o) {
     visitPsiElement(o);
   }
 
   public void visitChartoken(@NotNull HaskellChartoken o) {
-    visitPsiElement(o);
-  }
-
-  public void visitComment(@NotNull HaskellComment o) {
-    visitPsiElement(o);
-  }
-
-  public void visitConid(@NotNull HaskellConid o) {
     visitPsiElement(o);
   }
 
@@ -36,10 +20,6 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitDecimal(@NotNull HaskellDecimal o) {
-    visitPsiElement(o);
-  }
-
-  public void visitDigit(@NotNull HaskellDigit o) {
     visitPsiElement(o);
   }
 
@@ -59,23 +39,7 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitGraphic(@NotNull HaskellGraphic o) {
-    visitPsiElement(o);
-  }
-
-  public void visitHexadecimal(@NotNull HaskellHexadecimal o) {
-    visitPsiElement(o);
-  }
-
   public void visitIntegertoken(@NotNull HaskellIntegertoken o) {
-    visitPsiElement(o);
-  }
-
-  public void visitLarge(@NotNull HaskellLarge o) {
-    visitPsiElement(o);
-  }
-
-  public void visitLexeme(@NotNull HaskellLexeme o) {
     visitPsiElement(o);
   }
 
@@ -88,14 +52,6 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitNcomment(@NotNull HaskellNcomment o) {
-    visitPsiElement(o);
-  }
-
-  public void visitNewline(@NotNull HaskellNewline o) {
-    visitPsiElement(o);
-  }
-
-  public void visitOctal(@NotNull HaskellOctal o) {
     visitPsiElement(o);
   }
 
@@ -123,19 +79,7 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitReservedopWithCons(@NotNull HaskellReservedopWithCons o) {
-    visitPsiElement(o);
-  }
-
   public void visitReservedopWithoutCons(@NotNull HaskellReservedopWithoutCons o) {
-    visitPsiElement(o);
-  }
-
-  public void visitSeq(@NotNull HaskellSeq o) {
-    visitPsiElement(o);
-  }
-
-  public void visitSmall(@NotNull HaskellSmall o) {
     visitPsiElement(o);
   }
 
@@ -156,18 +100,6 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitVarsym(@NotNull HaskellVarsym o) {
-    visitPsiElement(o);
-  }
-
-  public void visitWhitechar(@NotNull HaskellWhitechar o) {
-    visitPsiElement(o);
-  }
-
-  public void visitWhitespace(@NotNull HaskellWhitespace o) {
-    visitPsiElement(o);
-  }
-
-  public void visitWhitetoken(@NotNull HaskellWhitetoken o) {
     visitPsiElement(o);
   }
 

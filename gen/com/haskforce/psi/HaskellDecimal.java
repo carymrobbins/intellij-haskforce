@@ -7,7 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellDecimal extends PsiElement {
 
-  @NotNull
-  List<HaskellDigit> getDigitList();
-
 }

@@ -34,10 +34,4 @@ public class HaskellStringtokenImpl extends ASTWrapperPsiElement implements Hask
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellGap.class);
   }
 
-  @Override
-  @NotNull
-  public List<HaskellGraphic> getGraphicList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellGraphic.class);
-  }
-
 }

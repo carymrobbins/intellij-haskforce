@@ -24,20 +24,14 @@ public class HaskellNcommentImpl extends ASTWrapperPsiElement implements Haskell
 
   @Override
   @NotNull
-  public List<HaskellAny> getAnyList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellAny.class);
+  public List<HaskellAnyseq> getAnyseqList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellAnyseq.class);
   }
 
   @Override
   @NotNull
   public List<HaskellNcomment> getNcommentList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellNcomment.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellSeq> getSeqList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellSeq.class);
   }
 
   @Override

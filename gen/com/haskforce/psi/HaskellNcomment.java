@@ -8,13 +8,10 @@ import com.intellij.psi.PsiElement;
 public interface HaskellNcomment extends PsiElement {
 
   @NotNull
-  List<HaskellAny> getAnyList();
+  List<HaskellAnyseq> getAnyseqList();
 
   @NotNull
   List<HaskellNcomment> getNcommentList();
-
-  @NotNull
-  List<HaskellSeq> getSeqList();
 
   @NotNull
   PsiElement getClosecom();

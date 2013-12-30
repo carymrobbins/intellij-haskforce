@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellReservedop extends PsiElement {
 
-  @NotNull
-  HaskellReservedopWithCons getReservedopWithCons();
+  @Nullable
+  HaskellReservedopWithoutCons getReservedopWithoutCons();
 
 }

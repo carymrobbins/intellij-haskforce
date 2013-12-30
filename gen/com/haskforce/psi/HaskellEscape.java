@@ -11,15 +11,6 @@ public interface HaskellEscape extends PsiElement {
   HaskellDecimal getDecimal();
 
   @Nullable
-  HaskellHexadecimal getHexadecimal();
-
-  @Nullable
-  HaskellOctal getOctal();
-
-  @Nullable
-  PsiElement getAscii();
-
-  @Nullable
   PsiElement getCharesc();
 
 }

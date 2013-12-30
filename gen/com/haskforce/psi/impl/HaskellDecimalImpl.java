@@ -22,10 +22,4 @@ public class HaskellDecimalImpl extends ASTWrapperPsiElement implements HaskellD
     else super.accept(visitor);
   }
 
-  @Override
-  @NotNull
-  public List<HaskellDigit> getDigitList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellDigit.class);
-  }
-
 }

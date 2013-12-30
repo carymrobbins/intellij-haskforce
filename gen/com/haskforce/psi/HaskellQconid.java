@@ -7,10 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellQconid extends PsiElement {
 
-  @NotNull
-  HaskellConid getConid();
-
   @Nullable
   HaskellModid getModid();
+
+  @NotNull
+  PsiElement getConid();
 
 }

@@ -7,7 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellSymbol extends PsiElement {
 
-  @NotNull
-  HaskellAscSymbol getAscSymbol();
-
 }

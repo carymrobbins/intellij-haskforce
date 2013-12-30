@@ -22,22 +22,4 @@ public class HaskellVaridImpl extends ASTWrapperPsiElement implements HaskellVar
     else super.accept(visitor);
   }
 
-  @Override
-  @NotNull
-  public List<HaskellDigit> getDigitList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellDigit.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellLarge> getLargeList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellLarge.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellSmall> getSmallList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellSmall.class);
-  }
-
 }

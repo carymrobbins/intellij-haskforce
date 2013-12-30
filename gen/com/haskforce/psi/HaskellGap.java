@@ -7,7 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellGap extends PsiElement {
 
-  @NotNull
-  List<HaskellWhitechar> getWhitecharList();
-
 }

@@ -22,10 +22,4 @@ public class HaskellSymbolImpl extends ASTWrapperPsiElement implements HaskellSy
     else super.accept(visitor);
   }
 
-  @Override
-  @NotNull
-  public HaskellAscSymbol getAscSymbol() {
-    return findNotNullChildByClass(HaskellAscSymbol.class);
-  }
-
 }

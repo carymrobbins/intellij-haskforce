@@ -8,29 +8,18 @@ import com.haskforce.psi.impl.*;
 
 public interface HaskellTypes {
 
-  IElementType ANY = new HaskellElementType("ANY");
-  IElementType ANY_1 = new HaskellElementType("ANY_1");
-  IElementType ASC_SYMBOL = new HaskellElementType("ASC_SYMBOL");
+  IElementType ANYSEQ = new HaskellElementType("ANYSEQ");
   IElementType CHARTOKEN = new HaskellElementType("CHARTOKEN");
-  IElementType COMMENT = new HaskellElementType("COMMENT");
-  IElementType CONID = new HaskellElementType("CONID");
   IElementType CONSYM = new HaskellElementType("CONSYM");
   IElementType DECIMAL = new HaskellElementType("DECIMAL");
-  IElementType DIGIT = new HaskellElementType("DIGIT");
   IElementType ESCAPE = new HaskellElementType("ESCAPE");
   IElementType EXPONENT = new HaskellElementType("EXPONENT");
   IElementType FLOATTOKEN = new HaskellElementType("FLOATTOKEN");
   IElementType GAP = new HaskellElementType("GAP");
-  IElementType GRAPHIC = new HaskellElementType("GRAPHIC");
-  IElementType HEXADECIMAL = new HaskellElementType("HEXADECIMAL");
   IElementType INTEGERTOKEN = new HaskellElementType("INTEGERTOKEN");
-  IElementType LARGE = new HaskellElementType("LARGE");
-  IElementType LEXEME = new HaskellElementType("LEXEME");
   IElementType LITERAL = new HaskellElementType("LITERAL");
   IElementType MODID = new HaskellElementType("MODID");
   IElementType NCOMMENT = new HaskellElementType("NCOMMENT");
-  IElementType NEWLINE = new HaskellElementType("NEWLINE");
-  IElementType OCTAL = new HaskellElementType("OCTAL");
   IElementType QCONID = new HaskellElementType("QCONID");
   IElementType QCONSYM = new HaskellElementType("QCONSYM");
   IElementType QVARID = new HaskellElementType("QVARID");
@@ -38,76 +27,45 @@ public interface HaskellTypes {
   IElementType RESERVEDID = new HaskellElementType("RESERVEDID");
   IElementType RESERVEDOP = new HaskellElementType("RESERVEDOP");
   IElementType RESERVEDOP_WITHOUT_CONS = new HaskellElementType("RESERVEDOP_WITHOUT_CONS");
-  IElementType RESERVEDOP_WITH_CONS = new HaskellElementType("RESERVEDOP_WITH_CONS");
-  IElementType SEQ = new HaskellElementType("SEQ");
-  IElementType SMALL = new HaskellElementType("SMALL");
   IElementType SPECIAL = new HaskellElementType("SPECIAL");
   IElementType STRINGTOKEN = new HaskellElementType("STRINGTOKEN");
   IElementType SYMBOL = new HaskellElementType("SYMBOL");
   IElementType VARID = new HaskellElementType("VARID");
   IElementType VARSYM = new HaskellElementType("VARSYM");
-  IElementType WHITECHAR = new HaskellElementType("WHITECHAR");
-  IElementType WHITESPACE = new HaskellElementType("WHITESPACE");
-  IElementType WHITETOKEN = new HaskellElementType("WHITETOKEN");
 
   IElementType AMPERSAND = new HaskellTokenType("&");
   IElementType AMPERSAT = new HaskellTokenType("@");
-  IElementType ASCDIGIT = new HaskellTokenType("ascDigit");
-  IElementType ASCII = new HaskellTokenType("ascii");
-  IElementType ASCLARGE = new HaskellTokenType("ascLarge");
-  IElementType ASCSMALL = new HaskellTokenType("ascSmall");
   IElementType ASTERISK = new HaskellTokenType("*");
   IElementType BACKSLASH = new HaskellTokenType("\\");
   IElementType BACKTICK = new HaskellTokenType("`");
   IElementType CARET = new HaskellTokenType("^");
-  IElementType CASE = new HaskellTokenType("case");
   IElementType CHARESC = new HaskellTokenType("charesc");
   IElementType CLASSTOKEN = new HaskellTokenType("class");
   IElementType CLOSECOM = new HaskellTokenType("-}");
   IElementType COLON = new HaskellTokenType(":");
   IElementType COMMA = new HaskellTokenType(",");
+  IElementType COMMENT = new HaskellTokenType("comment");
+  IElementType CONID = new HaskellTokenType("conid");
   IElementType DASHES = new HaskellTokenType("dashes");
-  IElementType DATA = new HaskellTokenType("data");
-  IElementType DEFAULT = new HaskellTokenType("default");
-  IElementType DERIVING = new HaskellTokenType("deriving");
-  IElementType DO = new HaskellTokenType("do");
+  IElementType DIGIT = new HaskellTokenType("digit");
   IElementType DOLLAR = new HaskellTokenType("$");
-  IElementType DOUBLEARROW = new HaskellTokenType("=>");
-  IElementType DOUBLECOLON = new HaskellTokenType("::");
-  IElementType DOUBLEPERIOD = new HaskellTokenType("..");
-  IElementType DOUBLEQUOTE = new HaskellTokenType("\"");
-  IElementType ELSE = new HaskellTokenType("else");
+  IElementType DOUBLEQUOTE = new HaskellTokenType("doublequote");
   IElementType EQUALS = new HaskellTokenType("=");
   IElementType EXLAMATION = new HaskellTokenType("!");
-  IElementType FOREIGN = new HaskellTokenType("foreign");
-  IElementType FORMFEED = new HaskellTokenType("\\f");
+  IElementType EXPONENTPREFIX = new HaskellTokenType("exponentPrefix");
+  IElementType GRAPHIC = new HaskellTokenType("graphic");
   IElementType GREATERTHAN = new HaskellTokenType(">");
   IElementType HASH = new HaskellTokenType("#");
   IElementType HEXADECIMALESCAPE = new HaskellTokenType("hexadecimalEscape");
-  IElementType HEXADECIMALPREFIX = new HaskellTokenType("hexadecimalPrefix");
-  IElementType HEXIT = new HaskellTokenType("hexit");
-  IElementType IF = new HaskellTokenType("if");
-  IElementType IMPORT = new HaskellTokenType("import");
-  IElementType IN = new HaskellTokenType("in");
-  IElementType INFIX = new HaskellTokenType("infix");
-  IElementType INFIXL = new HaskellTokenType("infixl");
-  IElementType INFIXR = new HaskellTokenType("infixr");
-  IElementType INSTANCE = new HaskellTokenType("instance");
+  IElementType HEXADECIMALLITERAL = new HaskellTokenType("hexadecimalLiteral");
   IElementType LBRACE = new HaskellTokenType("{");
   IElementType LBRACKET = new HaskellTokenType("[");
-  IElementType LEFTARROW = new HaskellTokenType("<-");
   IElementType LESSTHAN = new HaskellTokenType("<");
-  IElementType LET = new HaskellTokenType("let");
-  IElementType LINEFEED = new HaskellTokenType("\\r");
   IElementType LPAREN = new HaskellTokenType("(");
   IElementType MINUS = new HaskellTokenType("-");
-  IElementType MODULE = new HaskellTokenType("module");
-  IElementType NEWTYPE = new HaskellTokenType("newtype");
   IElementType NULLCHARACTER = new HaskellTokenType("\\&");
   IElementType OCTALESCAPE = new HaskellTokenType("octalEscape");
-  IElementType OCTALPREFIX = new HaskellTokenType("octalPrefix");
-  IElementType OCTIT = new HaskellTokenType("octit");
-  IElementType OF = new HaskellTokenType("of");
+  IElementType OCTALLITERAL = new HaskellTokenType("octalLiteral");
   IElementType OPENCOM = new HaskellTokenType("{-");
   IElementType PERCENT = new HaskellTokenType("%");
   IElementType PERIOD = new HaskellTokenType(".");
@@ -116,50 +74,29 @@ public interface HaskellTypes {
   IElementType QUESTION = new HaskellTokenType("?");
   IElementType RBRACE = new HaskellTokenType("}");
   IElementType RBRACKET = new HaskellTokenType("]");
-  IElementType RETURN = new HaskellTokenType("\\n");
-  IElementType RIGHTARROW = new HaskellTokenType("->");
   IElementType RPAREN = new HaskellTokenType(")");
   IElementType SEMICOLON = new HaskellTokenType(";");
   IElementType SINGLEQUOTE = new HaskellTokenType("'");
   IElementType SLASH = new HaskellTokenType("/");
-  IElementType SPACE = new HaskellTokenType(" ");
-  IElementType TAB = new HaskellTokenType("\\t");
-  IElementType THEN = new HaskellTokenType("then");
+  IElementType SYMBOL = new HaskellTokenType("symbol");
   IElementType TILDE = new HaskellTokenType("~");
-  IElementType TYPE = new HaskellTokenType("type");
-  IElementType UNDERSCORE = new HaskellTokenType("_");
-  IElementType VERTAB = new HaskellTokenType("\\v");
-  IElementType WHERE = new HaskellTokenType("where");
+  IElementType VARIDREGEXP = new HaskellTokenType("varidRegexp");
+  IElementType WHITECHAR = new HaskellTokenType("whitechar");
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
-       if (type == ANY) {
-        return new HaskellAnyImpl(node);
-      }
-      else if (type == ANY_1) {
-        return new HaskellAny1Impl(node);
-      }
-      else if (type == ASC_SYMBOL) {
-        return new HaskellAscSymbolImpl(node);
+       if (type == ANYSEQ) {
+        return new HaskellAnyseqImpl(node);
       }
       else if (type == CHARTOKEN) {
         return new HaskellChartokenImpl(node);
-      }
-      else if (type == COMMENT) {
-        return new HaskellCommentImpl(node);
-      }
-      else if (type == CONID) {
-        return new HaskellConidImpl(node);
       }
       else if (type == CONSYM) {
         return new HaskellConsymImpl(node);
       }
       else if (type == DECIMAL) {
         return new HaskellDecimalImpl(node);
-      }
-      else if (type == DIGIT) {
-        return new HaskellDigitImpl(node);
       }
       else if (type == ESCAPE) {
         return new HaskellEscapeImpl(node);
@@ -173,20 +110,8 @@ public interface HaskellTypes {
       else if (type == GAP) {
         return new HaskellGapImpl(node);
       }
-      else if (type == GRAPHIC) {
-        return new HaskellGraphicImpl(node);
-      }
-      else if (type == HEXADECIMAL) {
-        return new HaskellHexadecimalImpl(node);
-      }
       else if (type == INTEGERTOKEN) {
         return new HaskellIntegertokenImpl(node);
-      }
-      else if (type == LARGE) {
-        return new HaskellLargeImpl(node);
-      }
-      else if (type == LEXEME) {
-        return new HaskellLexemeImpl(node);
       }
       else if (type == LITERAL) {
         return new HaskellLiteralImpl(node);
@@ -196,12 +121,6 @@ public interface HaskellTypes {
       }
       else if (type == NCOMMENT) {
         return new HaskellNcommentImpl(node);
-      }
-      else if (type == NEWLINE) {
-        return new HaskellNewlineImpl(node);
-      }
-      else if (type == OCTAL) {
-        return new HaskellOctalImpl(node);
       }
       else if (type == QCONID) {
         return new HaskellQconidImpl(node);
@@ -224,15 +143,6 @@ public interface HaskellTypes {
       else if (type == RESERVEDOP_WITHOUT_CONS) {
         return new HaskellReservedopWithoutConsImpl(node);
       }
-      else if (type == RESERVEDOP_WITH_CONS) {
-        return new HaskellReservedopWithConsImpl(node);
-      }
-      else if (type == SEQ) {
-        return new HaskellSeqImpl(node);
-      }
-      else if (type == SMALL) {
-        return new HaskellSmallImpl(node);
-      }
       else if (type == SPECIAL) {
         return new HaskellSpecialImpl(node);
       }
@@ -247,15 +157,6 @@ public interface HaskellTypes {
       }
       else if (type == VARSYM) {
         return new HaskellVarsymImpl(node);
-      }
-      else if (type == WHITECHAR) {
-        return new HaskellWhitecharImpl(node);
-      }
-      else if (type == WHITESPACE) {
-        return new HaskellWhitespaceImpl(node);
-      }
-      else if (type == WHITETOKEN) {
-        return new HaskellWhitetokenImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

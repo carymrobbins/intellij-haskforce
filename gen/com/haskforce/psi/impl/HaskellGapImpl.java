@@ -22,10 +22,4 @@ public class HaskellGapImpl extends ASTWrapperPsiElement implements HaskellGap {
     else super.accept(visitor);
   }
 
-  @Override
-  @NotNull
-  public List<HaskellWhitechar> getWhitecharList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellWhitechar.class);
-  }
-
 }

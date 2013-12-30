@@ -23,9 +23,9 @@ public class HaskellReservedopImpl extends ASTWrapperPsiElement implements Haske
   }
 
   @Override
-  @NotNull
-  public HaskellReservedopWithCons getReservedopWithCons() {
-    return findNotNullChildByClass(HaskellReservedopWithCons.class);
+  @Nullable
+  public HaskellReservedopWithoutCons getReservedopWithoutCons() {
+    return findChildByClass(HaskellReservedopWithoutCons.class);
   }
 
 }

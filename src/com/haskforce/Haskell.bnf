@@ -1,8 +1,6 @@
 /*
  * Use Command + Shift + G to generate parser in gen/ directory.
- * Then generate the lexer using Tools > Generate JFlex Lexer.
- * The DOUBLEQUOTE seems to be created as "\\"" instead of "\"".
- * This needs to be manually corrected for now.
+ * Then generate the lexer using Tools > Generate JFlex Lexer, then use Command + Shift + G on the lexer.
  * Be sure to add the gen/ directory to your sources.
  * In Intellij, right-click the gen directory and choose Mark Directory As > Sources.
  */
@@ -35,20 +33,21 @@
     backtick='`'
     lbrace='{'
     rbrace='}'
-    return='\n'
-    linefeed='\r'
-    vertab='\v'
-    formfeed='\f'
-    space=' '
-    tab='\t'
+    //return="\n"
+    //linefeed="\r"
+    //formfeed="\f"
+    //vertab="\v"
+    //tab="\t"
+    //space=' '
+    comment='regexp:--[^\r\n]*'
     dashes='regexp:--(-)*'
     opencom='{-'
     closecom='-}'
-    doublequote='"'
+    doublequote='regexp:"'
     singlequote="'"
-    underscore='_'
-    ascSmall='regexp:[a-z]'
-    ascLarge='regexp:[A-Z]'
+    //underscore='_'
+    //ascSmall='regexp:[a-z]'
+    //ascLarge='regexp:[A-Z]'
     exlamation='!'
     hash='#'
     dollar='$'
@@ -68,63 +67,69 @@
     minus='-'
     tilde='~'
     colon=':'
-    ascDigit='regexp:[0-9]'
-    hexit='regexp:[0-9a-fA-F]'
-    octit='regexp:[0-7]'
+    digit='regexp:[0-9]'
+    //hexit='regexp:[0-9a-fA-F]'
+    //octit='regexp:[0-7]'
     octalEscape='regexp:o[0-7][0-7]*'
     hexadecimalEscape='regexp:x[0-9a-fA-F][0-9a-fA-F]*'
-    doubleperiod='..'
+    /*doubleperiod='..'
     doublecolon='::'
     leftarrow='<-'
     rightarrow='->'
-    doublearrow='=>'
-    octalPrefix='regexp:0(o|O)'
-    hexadecimalPrefix='regexp:0(x|X)'
+    doublearrow='=>'*/
+    octalLiteral='regexp:0(o|O)[0-7]+'
+    hexadecimalLiteral='regexp:0(x|X)[0-9a-fA-F]+'
     nullCharacter='\&'
     classtoken='class'
-    charesc="regexp:(a|b|f|n|r|t|v|\|\"|'|&)"
+    charesc="regexp:[\a\b\f\n\r\t\v\\\"\|'&]"
+    exponentPrefix='regexp:(e|E)(\+|\-)?'
+    varidRegexp="regexp:[a-z_][a-zA-Z_0-9']*"
+    conid="regexp:[A-Z][a-zA-Z_0-9']*"
+    symbol="regexp:[!#$%&*+./<=>?@'\^\|\-~:]"
+    graphic="regexp:[a-zA-Z0-9\"'!#$%&*+./<=>?@'\^\|\-~:(),;\[\]`{}]"
+    whitechar="regexp:[\r\n\v\t]"
+    //reservedopWithoutCons="regexp:(\.\.|::|=|\\|\||<-|->|@|~|=>)"
+    //reservedop="regexp:(:|\.\.|::|=|\\|\||<-|->|@|~|=>)"
   ]
 }
 
 // Haskell 2010 Report - http://www.haskell.org/onlinereport/haskell2010/haskellch2.html#x7-140002
 
-program     ::= { lexeme | whitespace } *
-lexeme      ::= qvarid | qconid | qvarsym | qconsym
-              |	literal | special | reservedop | reservedid
-literal     ::= integertoken | floattoken | chartoken | stringtoken
-special     ::= '(' | ')' | ',' | ';' | '[' | ']' | '`' | '{' | '}'
-whitespace  ::= whitetoken {whitetoken} *
-whitetoken  ::= whitechar | comment | ncomment
-whitechar   ::= newline | vertab | space | tab
-newline     ::= return linefeed | return | linefeed | formfeed
-comment     ::= dashes [ !symbol any1 {any1} * ] !newline
-ncomment    ::= opencom any seq {ncomment any seq} * closecom
-any seq     ::= !({any} * ( opencom | closecom ) {any} *) {any} *
-any         ::= graphic | whitechar
-any1        ::= graphic | space | tab
-graphic     ::= small | large | symbol | digit | special | '"' | "'"
+program ::= { lexeme | whitespace } *
+private lexeme ::= qvarid | qconid | qvarsym | qconsym
+                 | literal | special | reservedop | reservedid
+literal ::= integertoken | floattoken | chartoken | stringtoken
+special ::= '(' | ')' | ',' | ';' | '[' | ']' | '`' | '{' | '}'
+private whitespace ::= whitetoken {whitetoken} *
+private whitetoken ::= whitechar | comment | ncomment
+//newline ::= EOL //("\r" "\n") | "\n" | "\r" | "\f"
+//whitechar ::= /*newline |*/ "\v" | ' ' | "\t"
+//comment ::= linecomment //dashes {any1} * newline
+ncomment ::= opencom anyseq {ncomment anyseq} * closecom
+anyseq ::= !( opencom | closecom ) lexeme *
+//any ::= graphic | whitechar
+//any1 ::= graphic | ' ' | "\t"
+//graphic ::= small | large | symbol | digit | special | doublequote | "'"
 
-small       ::= ascSmall | '_'
-large       ::= ascLarge
-symbol      ::= ascSymbol
+//small ::= ascSmall | '_'
+//large ::= ascLarge
+symbol ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '=' | '>' | '?' | '@'
+         | '\' | '^' | '|' | '-' | '~' | ':'
+//digit ::= ascDigit
 
-ascSymbol   ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '=' | '>' | '?' | '@'
-              | '\' | '^' | '|' | '-' | '~' | ':'
-digit       ::= ascDigit
+varid ::= !(reservedid | dashes) varidRegexp
+//conid ::= large {small | large | digit | "'" } *
 
-varid       ::= !reservedid (small {small | large | digit | "'" } *)
-conid       ::= large {small | large | digit | "'" } *
-reservedid  ::= case | classtoken | data | default | deriving | do | else
-              | foreign | if | import | in | infix | infixl
-              | infixr | instance | let | module | newtype | of
-              | then | type | where | '_'
+reservedid  ::= 'case' | 'classtoken' | 'data' | 'default' | 'deriving' | 'do' | 'else'
+              | 'foreign' | 'if' | 'import' | 'infix' | 'infixl' | 'infixr'
+              | 'instance' | 'in' | 'let' | 'module' | 'newtype' | 'of' | 'then' | 'type'
+              | 'where' | '_'
 
-varsym      ::= !(reservedop | dashes) ( !':' symbol {symbol} * )
-consym      ::= !reservedopWithoutCons ( ':' {symbol} *)
-reservedop  ::= reservedopWithCons
+varsym ::= !(reservedop whitetoken) ( !':' symbol {symbol} * )
+consym ::= !reservedopWithoutCons ( ':' {symbol} *)
 
 reservedopWithoutCons ::= '..' | '::' | '=' | '\' | '|' | '<-' | '->' | '@' | '~' | '=>'
-reservedopWithCons    ::= ':' | reservedopWithoutCons
+reservedop ::= ':' | reservedopWithoutCons
 
 /* Unused:
 tyvar       ::= varid
@@ -143,18 +148,18 @@ qvarsym	    ::= [modid '.'] varsym
 qconsym	    ::= [modid '.'] consym
 
 decimal     ::= digit {digit} *
-octal       ::= octit {octit} *
-hexadecimal ::= hexit {hexit} *
+//octal       ::= octit {octit} *
+//hexadecimal ::= hexit {hexit} *
 integertoken ::= decimal
-               | octalPrefix octal
-               | hexadecimalPrefix hexadecimal
+               | octalLiteral
+               | hexadecimalLiteral
 floattoken  ::= decimal '.' decimal [exponent]
               | decimal exponent
-exponent    ::= ('e' | 'E') ['+' | '-'] decimal
+exponent    ::= exponentPrefix decimal
 
-chartoken   ::= "'" (!("'" | '\') graphic | space | !'\&' escape) "'"
-stringtoken ::= '"' { !('"' | '\') graphic | space | escape | gap} * '"'
-escape      ::= '\' ( charesc | ascii | decimal | 'o' octal | 'x' hexadecimal )
+chartoken   ::= "'" (!("'" | '\') graphic | ' ' | !'\&' escape) "'"
+stringtoken ::= doublequote { !(doublequote | '\') graphic | ' ' | escape | gap} * doublequote
+escape      ::= charesc | ('\' decimal | octalEscape | hexadecimalEscape /* TODO: | ascii */ )
 /* TODO:
 ascii ::= ^cntrl | NUL | SOH | STX | ETX | EOT | ENQ | ACK
 | BEL | BS | HT | LF | VT | FF | CR | SO | SI | DLE

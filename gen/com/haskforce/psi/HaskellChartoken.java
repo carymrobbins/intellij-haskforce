@@ -11,9 +11,6 @@ public interface HaskellChartoken extends PsiElement {
   HaskellEscape getEscape();
 
   @Nullable
-  HaskellGraphic getGraphic();
-
-  @Nullable
-  PsiElement getSpace();
+  PsiElement getGraphic();
 
 }

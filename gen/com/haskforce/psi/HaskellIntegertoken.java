@@ -10,10 +10,4 @@ public interface HaskellIntegertoken extends PsiElement {
   @Nullable
   HaskellDecimal getDecimal();
 
-  @Nullable
-  HaskellHexadecimal getHexadecimal();
-
-  @Nullable
-  HaskellOctal getOctal();
-
 }
