@@ -24,6 +24,7 @@ import com.haskforce.psi.HaskellTypes;
 public class HaskellParserDefinition implements ParserDefinition {
     public static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
     public static final TokenSet COMMENTS = TokenSet.create(HaskellTypes.COMMENT);
+    public static final TokenSet STRINGS = TokenSet.create(HaskellTypes.STRINGTOKEN);
 
     public static final IFileElementType FILE = new IFileElementType(Language.<HaskellLanguage>findInstance(HaskellLanguage.class));
 
@@ -45,7 +46,7 @@ public class HaskellParserDefinition implements ParserDefinition {
 
     @NotNull
     public TokenSet getStringLiteralElements() {
-        return TokenSet.EMPTY;
+        return STRINGS;
     }
 
     @NotNull

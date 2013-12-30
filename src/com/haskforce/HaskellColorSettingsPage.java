@@ -13,9 +13,19 @@ import java.util.Map;
 
 public class HaskellColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[] {
-            new AttributesDescriptor("Key", HaskellSyntaxHighlighter.KEY),
-            new AttributesDescriptor("Separator", HaskellSyntaxHighlighter.SEPARATOR),
-            new AttributesDescriptor("Value", HaskellSyntaxHighlighter.VALUE),
+            new AttributesDescriptor("Reserved Word", HaskellSyntaxHighlighter.RESERVEDID),
+            new AttributesDescriptor("Constructor", HaskellSyntaxHighlighter.CONID),
+            new AttributesDescriptor("Variable", HaskellSyntaxHighlighter.VARID),
+            new AttributesDescriptor("Symbol", HaskellSyntaxHighlighter.VARSYM),
+            new AttributesDescriptor("Special", HaskellSyntaxHighlighter.SPECIAL),
+            new AttributesDescriptor("String", HaskellSyntaxHighlighter.STRING),
+            new AttributesDescriptor("Integer", HaskellSyntaxHighlighter.INTEGER),
+            new AttributesDescriptor("Float", HaskellSyntaxHighlighter.FLOAT),
+            new AttributesDescriptor("Char", HaskellSyntaxHighlighter.CHAR),
+            new AttributesDescriptor("Line Comment", HaskellSyntaxHighlighter.COMMENT),
+            new AttributesDescriptor("Block Comment", HaskellSyntaxHighlighter.NCOMMENT),
+            new AttributesDescriptor("Doc Comment", HaskellSyntaxHighlighter.HADDOCK),
+            new AttributesDescriptor("Escape", HaskellSyntaxHighlighter.ESCAPE)
     };
 
     @Nullable
@@ -33,7 +43,7 @@ public class HaskellColorSettingsPage implements ColorSettingsPage {
     @NotNull
     @Override
     public String getDemoText() {
-        return  "module AStack( Stack, push, pop, top, size, (<~>) ) where                       \n" +
+        return  "module AStack( Stack, push, pop, top, size, (<~>) ) where\n" +
                 "\n" +
                 "import Control.Monad (liftM2)\n" +
                 "import Control.Monad.Zip\n" +

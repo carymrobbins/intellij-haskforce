@@ -22,7 +22,8 @@ EOL="\r"|"\n"|"\r\n"
 LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 
-COMMENT=--[^\r\n]*
+COMMENT=--[^\^\r\n][^\r\n]*
+HADDOCK=--\^[^\r\n]*
 DASHES=--(-)*
 DOUBLEQUOTE=\"
 DIGIT=[0-9]
@@ -34,7 +35,6 @@ CHARESC=\\(a|b|f|n|r|t|v|\\|\"|\||'|&)
 EXPONENTPREFIX=(e|E)(\+|\-)?
 VARIDREGEXP=[a-z_][a-zA-Z_0-9']*
 CONID=[A-Z][a-zA-Z_0-9']*
-SYMBOL=[!#$%&*+./<=>?@'\^\|\-~:]
 GRAPHIC=[a-zA-Z0-9\"'!#$%&*+./<=>?@'\^\|\-~:(),;\[\]`{}]
 WHITEESCAPES=[\r\n\v\t]
 
@@ -84,6 +84,7 @@ WHITEESCAPES=[\r\n\v\t]
   "class"                   { return CLASSTOKEN; }
 
   {COMMENT}                 { return COMMENT; }
+  {HADDOCK}                 { return HADDOCK; }
   {DASHES}                  { return DASHES; }
   {DOUBLEQUOTE}             { return DOUBLEQUOTE; }
   {DIGIT}                   { return DIGIT; }
@@ -95,7 +96,6 @@ WHITEESCAPES=[\r\n\v\t]
   {EXPONENTPREFIX}          { return EXPONENTPREFIX; }
   {VARIDREGEXP}             { return VARIDREGEXP; }
   {CONID}                   { return CONID; }
-  {SYMBOL}                  { return SYMBOL; }
   {GRAPHIC}                 { return GRAPHIC; }
   {WHITEESCAPES}            { return WHITEESCAPES; }
 

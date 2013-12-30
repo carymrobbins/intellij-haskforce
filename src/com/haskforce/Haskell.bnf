@@ -33,21 +33,14 @@
     backtick='`'
     lbrace='{'
     rbrace='}'
-    //return="\n"
-    //linefeed="\r"
-    //formfeed="\f"
-    //vertab="\v"
-    //tab="\t"
     space=' '
-    comment='regexp:--[^\r\n]*'
+    comment='regexp:--[^\^\r\n][^\r\n]*'
+    haddock='regexp:--\^[^\r\n]*'
     dashes='regexp:--(-)*'
     opencom='{-'
     closecom='-}'
     doublequote='regexp:"'
     singlequote="'"
-    //underscore='_'
-    //ascSmall='regexp:[a-z]'
-    //ascLarge='regexp:[A-Z]'
     exlamation='!'
     hash='#'
     dollar='$'
@@ -68,8 +61,6 @@
     tilde='~'
     colon=':'
     digit='regexp:[0-9]'
-    //hexit='regexp:[0-9a-fA-F]'
-    //octit='regexp:[0-7]'
     octalEscape='regexp:o[0-7][0-7]*'
     hexadecimalEscape='regexp:x[0-9a-fA-F][0-9a-fA-F]*'
     doubleperiod='..'
@@ -85,11 +76,8 @@
     exponentPrefix='regexp:(e|E)(\+|\-)?'
     varidRegexp="regexp:[a-z_][a-zA-Z_0-9']*"
     conid="regexp:[A-Z][a-zA-Z_0-9']*"
-    symbol="regexp:[!#$%&*+./<=>?@'\^\|\-~:]"
     graphic="regexp:[a-zA-Z0-9\"'!#$%&*+./<=>?@'\^\|\-~:(),;\[\]`{}]"
     whiteEscapes="regexp:[\r\n\v\t]"
-    //reservedopWithoutCons="regexp:(\.\.|::|=|\\|\||<-|->|@|~|=>)"
-    //reservedop="regexp:(:|\.\.|::|=|\\|\||<-|->|@|~|=>)"
   ]
 }
 
@@ -101,26 +89,14 @@ private lexeme ::= qvarid | qconid | qvarsym | qconsym
 literal ::= integertoken | floattoken | chartoken | stringtoken
 special ::= '(' | ')' | ',' | ';' | '[' | ']' | '`' | '{' | '}'
 private whitespace ::= whitetoken {whitetoken} *
-private whitetoken ::= space | whitechar | comment | ncomment
-//newline ::= EOL //("\r" "\n") | "\n" | "\r" | "\f"
+private whitetoken ::= space | whitechar | comment | ncomment | haddock
 whitechar ::= space | whiteEscapes
-//comment ::= linecomment //dashes {any1} * newline
 ncomment ::= opencom anyseq {ncomment anyseq} * closecom
 anyseq ::= !( opencom | closecom ) (lexeme | space) *
-//any ::= graphic | whitechar
-//any1 ::= graphic | ' ' | "\t"
-//graphic ::= small | large | symbol | digit | special | doublequote | "'"
-
-//small ::= ascSmall | '_'
-//large ::= ascLarge
 symbol ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '=' | '>' | '?' | '@'
          | '\' | '^' | '|' | '-' | '~' | ':'
-//digit ::= ascDigit
-
 varid ::= !(reservedid | dashes) varidRegexp
-//conid ::= large {small | large | digit | "'" } *
-
-reservedid  ::= 'case' | 'classtoken' | 'data' | 'default' | 'deriving' | 'do' | 'else'
+reservedid  ::= 'case' | classtoken | 'data' | 'default' | 'deriving' | 'do' | 'else'
               | 'foreign' | 'if' | 'import' | 'infix' | 'infixl' | 'infixr'
               | 'instance' | 'in' | 'let' | 'module' | 'newtype' | 'of' | 'then' | 'type'
               | 'where' | '_'
@@ -131,25 +107,14 @@ consym ::= !reservedopWithoutCons ( ':' {symbol} *)
 reservedopWithoutCons ::= '..' | '::' | '=' | '\' | '|' | '<-' | '->' | '@' | '~' | '=>'
 reservedop ::= ':' | reservedopWithoutCons
 
-/* Unused:
-tyvar       ::= varid
-tycon       ::= conid
-tycls       ::= conid
-*/
 modid       ::= {conid '.'} * conid
 
 qvarid	    ::= [modid '.'] varid
 qconid	    ::= [modid '.'] conid
-/* Unused:
-qtycon	    ::= [modid '.'] tycon
-qtycls	    ::= [modid '.'] tycls
-*/
 qvarsym	    ::= [modid '.'] varsym
 qconsym	    ::= [modid '.'] consym
 
 decimal     ::= digit {digit} *
-//octal       ::= octit {octit} *
-//hexadecimal ::= hexit {hexit} *
 integertoken ::= decimal
                | octalLiteral
                | hexadecimalLiteral
@@ -159,14 +124,7 @@ exponent    ::= exponentPrefix decimal
 
 chartoken   ::= "'" ((!("'" | '\') graphic) | space | !'\&' escape) "'"
 stringtoken ::= doublequote
-                { !(doublequote | '\') graphic | space | conid | symbol | varid | escape | gap} *
+                { !(doublequote | '\') graphic | space | conid | symbol | varid | escape | gap } *
                 doublequote
-escape      ::= charesc | ('\' decimal | octalEscape | hexadecimalEscape /* TODO: | ascii */ )
-/* TODO:
-ascii ::= ^cntrl | NUL | SOH | STX | ETX | EOT | ENQ | ACK
-| BEL | BS | HT | LF | VT | FF | CR | SO | SI | DLE
-| DC1 | DC2 | DC3 | DC4 | NAK | SYN | ETB | CAN
-| EM | SUB | ESC | FS | GS | RS | US | SP | DEL
-cntrl ::= ascLarge | @ | [ | \ | ] | ^ | _
-*/
+escape      ::= charesc | ('\' decimal | octalEscape | hexadecimalEscape)
 gap         ::= '\' whitechar {whitechar} * '\'
