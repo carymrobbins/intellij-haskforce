@@ -30,13 +30,13 @@ OCTALESCAPE=o[0-7][0-7]*
 HEXADECIMALESCAPE=x[0-9a-fA-F][0-9a-fA-F]*
 OCTALLITERAL=0(o|O)[0-7]+
 HEXADECIMALLITERAL=0(x|X)[0-9a-fA-F]+
-CHARESC=[\a\b\f\n\r\t\v\\\"\|'&]
+CHARESC=\\(a|b|f|n|r|t|v|\\|\"|\||'|&)
 EXPONENTPREFIX=(e|E)(\+|\-)?
 VARIDREGEXP=[a-z_][a-zA-Z_0-9']*
 CONID=[A-Z][a-zA-Z_0-9']*
 SYMBOL=[!#$%&*+./<=>?@'\^\|\-~:]
 GRAPHIC=[a-zA-Z0-9\"'!#$%&*+./<=>?@'\^\|\-~:(),;\[\]`{}]
-WHITECHAR=[\r\n\v\t]
+WHITEESCAPES=[\r\n\v\t]
 
 %%
 <YYINITIAL> {
@@ -52,6 +52,7 @@ WHITECHAR=[\r\n\v\t]
   "`"                       { return BACKTICK; }
   "{"                       { return LBRACE; }
   "}"                       { return RBRACE; }
+  " "                       { return SPACE; }
   "{-"                      { return OPENCOM; }
   "-}"                      { return CLOSECOM; }
   "'"                       { return SINGLEQUOTE; }
@@ -74,6 +75,11 @@ WHITECHAR=[\r\n\v\t]
   "-"                       { return MINUS; }
   "~"                       { return TILDE; }
   ":"                       { return COLON; }
+  ".."                      { return DOUBLEPERIOD; }
+  "::"                      { return DOUBLECOLON; }
+  "<-"                      { return LEFTARROW; }
+  "->"                      { return RIGHTARROW; }
+  "=>"                      { return DOUBLEARROW; }
   "\\&"                     { return NULLCHARACTER; }
   "class"                   { return CLASSTOKEN; }
 
@@ -91,7 +97,7 @@ WHITECHAR=[\r\n\v\t]
   {CONID}                   { return CONID; }
   {SYMBOL}                  { return SYMBOL; }
   {GRAPHIC}                 { return GRAPHIC; }
-  {WHITECHAR}               { return WHITECHAR; }
+  {WHITEESCAPES}            { return WHITEESCAPES; }
 
   [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }

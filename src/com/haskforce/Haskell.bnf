@@ -87,7 +87,7 @@
     conid="regexp:[A-Z][a-zA-Z_0-9']*"
     symbol="regexp:[!#$%&*+./<=>?@'\^\|\-~:]"
     graphic="regexp:[a-zA-Z0-9\"'!#$%&*+./<=>?@'\^\|\-~:(),;\[\]`{}]"
-    whitechar="regexp:[\r\n\v\t]"
+    whiteEscapes="regexp:[\r\n\v\t]"
     //reservedopWithoutCons="regexp:(\.\.|::|=|\\|\||<-|->|@|~|=>)"
     //reservedop="regexp:(:|\.\.|::|=|\\|\||<-|->|@|~|=>)"
   ]
@@ -103,7 +103,7 @@ special ::= '(' | ')' | ',' | ';' | '[' | ']' | '`' | '{' | '}'
 private whitespace ::= whitetoken {whitetoken} *
 private whitetoken ::= space | whitechar | comment | ncomment
 //newline ::= EOL //("\r" "\n") | "\n" | "\r" | "\f"
-//whitechar ::= /*newline |*/ "\v" | ' ' | "\t"
+whitechar ::= space | whiteEscapes
 //comment ::= linecomment //dashes {any1} * newline
 ncomment ::= opencom anyseq {ncomment anyseq} * closecom
 anyseq ::= !( opencom | closecom ) (lexeme | space) *
@@ -158,7 +158,9 @@ floattoken  ::= decimal '.' decimal [exponent]
 exponent    ::= exponentPrefix decimal
 
 chartoken   ::= "'" ((!("'" | '\') graphic) | space | !'\&' escape) "'"
-stringtoken ::= doublequote { !(doublequote | '\') graphic | ' ' | escape | gap} * doublequote
+stringtoken ::= doublequote
+                { !(doublequote | '\') graphic | space | conid | symbol | varid | escape | gap} *
+                doublequote
 escape      ::= charesc | ('\' decimal | octalEscape | hexadecimalEscape /* TODO: | ascii */ )
 /* TODO:
 ascii ::= ^cntrl | NUL | SOH | STX | ETX | EOT | ENQ | ACK
