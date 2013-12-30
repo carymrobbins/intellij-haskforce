@@ -38,7 +38,7 @@
     //formfeed="\f"
     //vertab="\v"
     //tab="\t"
-    //space=' '
+    space=' '
     comment='regexp:--[^\r\n]*'
     dashes='regexp:--(-)*'
     opencom='{-'
@@ -72,16 +72,16 @@
     //octit='regexp:[0-7]'
     octalEscape='regexp:o[0-7][0-7]*'
     hexadecimalEscape='regexp:x[0-9a-fA-F][0-9a-fA-F]*'
-    /*doubleperiod='..'
+    doubleperiod='..'
     doublecolon='::'
     leftarrow='<-'
     rightarrow='->'
-    doublearrow='=>'*/
+    doublearrow='=>'
     octalLiteral='regexp:0(o|O)[0-7]+'
     hexadecimalLiteral='regexp:0(x|X)[0-9a-fA-F]+'
     nullCharacter='\&'
     classtoken='class'
-    charesc="regexp:[\a\b\f\n\r\t\v\\\"\|'&]"
+    charesc="regexp:\\(a|b|f|n|r|t|v|\\|\"|\||'|&)"
     exponentPrefix='regexp:(e|E)(\+|\-)?'
     varidRegexp="regexp:[a-z_][a-zA-Z_0-9']*"
     conid="regexp:[A-Z][a-zA-Z_0-9']*"
@@ -101,12 +101,12 @@ private lexeme ::= qvarid | qconid | qvarsym | qconsym
 literal ::= integertoken | floattoken | chartoken | stringtoken
 special ::= '(' | ')' | ',' | ';' | '[' | ']' | '`' | '{' | '}'
 private whitespace ::= whitetoken {whitetoken} *
-private whitetoken ::= whitechar | comment | ncomment
+private whitetoken ::= space | whitechar | comment | ncomment
 //newline ::= EOL //("\r" "\n") | "\n" | "\r" | "\f"
 //whitechar ::= /*newline |*/ "\v" | ' ' | "\t"
 //comment ::= linecomment //dashes {any1} * newline
 ncomment ::= opencom anyseq {ncomment anyseq} * closecom
-anyseq ::= !( opencom | closecom ) lexeme *
+anyseq ::= !( opencom | closecom ) (lexeme | space) *
 //any ::= graphic | whitechar
 //any1 ::= graphic | ' ' | "\t"
 //graphic ::= small | large | symbol | digit | special | doublequote | "'"
@@ -157,7 +157,7 @@ floattoken  ::= decimal '.' decimal [exponent]
               | decimal exponent
 exponent    ::= exponentPrefix decimal
 
-chartoken   ::= "'" (!("'" | '\') graphic | ' ' | !'\&' escape) "'"
+chartoken   ::= "'" ((!("'" | '\') graphic) | space | !'\&' escape) "'"
 stringtoken ::= doublequote { !(doublequote | '\') graphic | ' ' | escape | gap} * doublequote
 escape      ::= charesc | ('\' decimal | octalEscape | hexadecimalEscape /* TODO: | ascii */ )
 /* TODO:
