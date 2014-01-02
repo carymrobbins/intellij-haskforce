@@ -10,7 +10,7 @@ Building the plugin
 
 1. Check out the Community Edition source files.
 
-    $ git clone git@github.com:JetBrains/intellij-community.git idea
+    ````$ git clone git@github.com:JetBrains/intellij-community.git idea````
 
 1. Configure SDK and source files.
   * Create a new project from existing sources (pointed to your cloned HaskForce directory).
