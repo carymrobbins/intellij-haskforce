@@ -1,6 +1,8 @@
 HaskForce - The IntelliJ plugin for Haskell.
 =========
 
+***This plugin is in its early stages and is not ready for use.***
+
 Building the plugin
 --------
 
