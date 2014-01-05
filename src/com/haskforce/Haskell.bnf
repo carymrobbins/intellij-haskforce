@@ -42,16 +42,17 @@
   psiImplUtilClass="com.haskforce.psi.impl.HaskellPsiImplUtil"
 
   tokens=[
-    lparen='('
-    rparen=')'
+    special='regexp:[\(\)\,\;\[\]\`\{\}]'
+    //lparen='('
+    //rparen=')'
     pipe='|'
-    comma=','
-    semicolon=';'
-    lbracket='['
-    rbracket=']'
-    backtick='`'
-    lbrace='{'
-    rbrace='}'
+    //comma=','
+    //semicolon=';'
+    //lbracket='['
+    //rbracket=']'
+    //backtick='`'
+    //lbrace='{'
+    //rbrace='}'
     opencom='{-'
     closecom='-}'
     space=' '
@@ -100,23 +101,24 @@
 
 // Haskell 2010 Report - http://www.haskell.org/onlinereport/haskell2010/haskellch2.html#x7-140002
 
-program ::= {pragma} * { whitespace | lexeme } *
+program ::= {pragma (whitechar) *} * { whitespace | lexeme } *
 private lexeme ::= qvarid | qconid | qvarsym | qconsym
                  | literal | special | reservedop | reservedid
 private literal ::= integertoken | floattoken | chartoken | stringtoken
-special ::= '(' | ')' | ',' | ';' | '[' | ']' | '`' | '{' | '}'
 private whitespace ::= whitetoken {whitetoken} *
 private whitetoken ::= space | whitechar | comment | ncomment | haddock
 whitechar ::= space | whiteEscapes
-ncomment ::= opencom anyseq {ncomment anyseq} * closecom
+ncomment ::= opencom anyseq? {ncomment anyseq?} * closecom
 anyseq ::= !( opencom | closecom ) (lexeme | space) *
 symbol ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '=' | '>' | '?' | '@'
          | '\' | '^' | '|' | '-' | '~' | ':'
 varid ::= !(reservedid | dashes) varidRegexp
-reservedid  ::= 'case' | 'class' | 'data' | 'default' | 'deriving' | 'do' | 'else'
-              | 'foreign' | 'if' | 'import' | 'infix' | 'infixl' | 'infixr'
-              | 'instance' | 'in' | 'let' | 'module' | 'newtype' | 'of' | 'then' | 'type'
-              | 'where' | '_'
+reservedExpr ::= 'case' | 'do' | 'else' | 'if' | 'in' | 'let' | 'of' | 'then'
+reservedDecl ::= 'class' | 'data' | 'default' | 'deriving' | 'foreign' | 'instance'
+               | 'module' | 'newtype' | 'type' | 'where'
+reservedMeta ::= 'as' | 'import' | 'infix' | 'infixl' | 'infixr'
+reservedVar ::= '_'
+reservedid  ::= reservedExpr | reservedDecl | reservedMeta | reservedVar
 
 varsym ::= !(reservedop whitetoken) ( !':' symbol {symbol} * )
 consym ::= !reservedopWithoutCons ( ':' {symbol} *)
@@ -124,9 +126,9 @@ consym ::= !reservedopWithoutCons ( ':' {symbol} *)
 reservedopWithoutCons ::= '..' | '::' | '=' | '\' | '|' | '<-' | '->' | '@' | '~' | '=>'
 reservedop ::= ':' | reservedopWithoutCons
 
-modid       ::= {conid '.'} * conid
+modid ::= {conid '.'} * conid
 
-qvarid	    ::= [modid '.'] varid
-qconid	    ::= [modid '.'] conid
-qvarsym	    ::= [modid '.'] varsym
-qconsym	    ::= [modid '.'] consym
+qvarid ::= [modid '.'] varid
+qconid ::= [modid '.'] conid
+qvarsym ::= [modid '.'] varsym
+qconsym ::= [modid '.'] consym

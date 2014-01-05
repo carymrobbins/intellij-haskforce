@@ -14,36 +14,6 @@ public class HaskellAnnotator implements Annotator {
     public void annotate(@NotNull final PsiElement element, @NotNull final AnnotationHolder holder) {
         element.accept(new HaskellVisitor() {
             @Override
-            public void visitStringtoken(@NotNull HaskellStringtoken o) {
-                super.visitStringtoken(o);
-                setHighlighting(o, holder, HaskellSyntaxHighlighter.STRING);
-            }
-
-            @Override
-            public void visitIntegertoken(@NotNull HaskellIntegertoken o) {
-                super.visitIntegertoken(o);
-                setHighlighting(o, holder, HaskellSyntaxHighlighter.INTEGER);
-            }
-
-            @Override
-            public void visitFloattoken(@NotNull HaskellFloattoken o) {
-                super.visitFloattoken(o);
-                setHighlighting(o, holder, HaskellSyntaxHighlighter.FLOAT);
-            }
-
-            @Override
-            public void visitChartoken(@NotNull HaskellChartoken o) {
-                super.visitChartoken(o);
-                setHighlighting(o, holder, HaskellSyntaxHighlighter.CHAR);
-            }
-
-            @Override
-            public void visitSpecial(@NotNull HaskellSpecial o) {
-                super.visitSpecial(o);
-                setHighlighting(o, holder, HaskellSyntaxHighlighter.SPECIAL);
-            }
-
-            @Override
             public void visitNcomment(@NotNull HaskellNcomment o) {
                 super.visitNcomment(o);
                 setHighlightingRecursive(o, holder, HaskellSyntaxHighlighter.NCOMMENT);
@@ -56,9 +26,27 @@ public class HaskellAnnotator implements Annotator {
             }
 
             @Override
-            public void visitReservedid(@NotNull HaskellReservedid o) {
-                super.visitReservedid(o);
-                setHighlighting(o, holder, HaskellSyntaxHighlighter.RESERVEDID);
+            public void visitReservedExpr(@NotNull HaskellReservedExpr o) {
+                super.visitReservedExpr(o);
+                setHighlighting(o, holder, HaskellSyntaxHighlighter.RESERVEDEXPR);
+            }
+
+            @Override
+            public void visitReservedDecl(@NotNull HaskellReservedDecl o) {
+                super.visitReservedDecl(o);
+                setHighlighting(o, holder, HaskellSyntaxHighlighter.RESERVEDDECL);
+            }
+
+            @Override
+            public void visitReservedMeta(@NotNull HaskellReservedMeta o) {
+                super.visitReservedMeta(o);
+                setHighlighting(o, holder, HaskellSyntaxHighlighter.RESERVEDMETA);
+            }
+
+            @Override
+            public void visitReservedVar(@NotNull HaskellReservedVar o) {
+                super.visitReservedVar(o);
+                setHighlighting(o, holder, HaskellSyntaxHighlighter.RESERVEDVAR);
             }
 
             @Override
@@ -83,12 +71,6 @@ public class HaskellAnnotator implements Annotator {
             public void visitModid(@NotNull HaskellModid o) {
                 super.visitModid(o);
                 setHighlighting(o, holder, HaskellSyntaxHighlighter.MODULE);
-            }
-
-            @Override
-            public void visitEscape(@NotNull HaskellEscape o) {
-                super.visitEscape(o);
-                setHighlighting(o, holder, HaskellSyntaxHighlighter.ESCAPE);
             }
         });
     }

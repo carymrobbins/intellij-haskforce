@@ -14,8 +14,17 @@ import java.io.Reader;
 import com.haskforce.psi.HaskellTypes;
 
 public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
-    public static final TextAttributesKey RESERVEDID = DefaultLanguageHighlighterColors.KEYWORD;
-    public static final TextAttributesKey[] RESERVEDID_KEYS = new TextAttributesKey[]{RESERVEDID};
+    public static final TextAttributesKey RESERVEDEXPR = DefaultLanguageHighlighterColors.KEYWORD;
+    public static final TextAttributesKey[] RESERVEDEXPR_KEYS = new TextAttributesKey[]{RESERVEDEXPR};
+
+    public static final TextAttributesKey RESERVEDDECL = DefaultLanguageHighlighterColors.KEYWORD;
+    public static final TextAttributesKey[] RESERVEDDECL_KEYS = new TextAttributesKey[]{RESERVEDDECL};
+
+    public static final TextAttributesKey RESERVEDVAR = DefaultLanguageHighlighterColors.KEYWORD;
+    public static final TextAttributesKey[] RESERVEDVAR_KEYS = new TextAttributesKey[]{RESERVEDVAR};
+
+    public static final TextAttributesKey RESERVEDMETA = DefaultLanguageHighlighterColors.KEYWORD;
+    public static final TextAttributesKey[] RESERVEDMETA_KEYS = new TextAttributesKey[]{RESERVEDMETA};
 
     public static final TextAttributesKey RESERVEDOP = DefaultLanguageHighlighterColors.KEYWORD;
     public static final TextAttributesKey[] RESERVEDOP_KEYS = new TextAttributesKey[]{RESERVEDOP};
@@ -59,6 +68,9 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey HADDOCK = DefaultLanguageHighlighterColors.DOC_COMMENT;
     public static final TextAttributesKey[] HADDOCK_KEYS = new TextAttributesKey[]{HADDOCK};
 
+    public static final TextAttributesKey PRAGMA = DefaultLanguageHighlighterColors.METADATA;
+    public static final TextAttributesKey[] PRAGMA_KEYS = new TextAttributesKey[]{PRAGMA};
+
     public static final TextAttributesKey ESCAPE = DefaultLanguageHighlighterColors.VALID_STRING_ESCAPE;
     public static final TextAttributesKey[] ESCAPE_KEYS = new TextAttributesKey[]{ESCAPE};
 
@@ -77,6 +89,18 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
             return COMMENT_KEYS;
         } else if (tokenType.equals(HaskellTypes.HADDOCK)) {
             return HADDOCK_KEYS;
+        } else if (tokenType.equals(HaskellTypes.INTEGERTOKEN)) {
+            return INTEGER_KEYS;
+        } else if (tokenType.equals(HaskellTypes.FLOATTOKEN)) {
+            return FLOAT_KEYS;
+        } else if (tokenType.equals(HaskellTypes.CHARTOKEN)) {
+            return CHAR_KEYS;
+        } else if (tokenType.equals(HaskellTypes.STRINGTOKEN)) {
+            return STRING_KEYS;
+        } else if (tokenType.equals(HaskellTypes.PRAGMA)) {
+            return PRAGMA_KEYS;
+        } else if (tokenType.equals(HaskellTypes.SPECIAL)) {
+            return SPECIAL_KEYS;
         }
         return EMPTY;
     }

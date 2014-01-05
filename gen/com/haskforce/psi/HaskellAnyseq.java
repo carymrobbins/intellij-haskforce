@@ -25,7 +25,4 @@ public interface HaskellAnyseq extends PsiElement {
   @NotNull
   List<HaskellReservedop> getReservedopList();
 
-  @NotNull
-  List<HaskellSpecial> getSpecialList();
-
 }

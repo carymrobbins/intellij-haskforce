@@ -11,14 +11,14 @@ import static com.haskforce.psi.HaskellTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellSpecialImpl extends ASTWrapperPsiElement implements HaskellSpecial {
+public class HaskellReservedDeclImpl extends ASTWrapperPsiElement implements HaskellReservedDecl {
 
-  public HaskellSpecialImpl(ASTNode node) {
+  public HaskellReservedDeclImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitSpecial(this);
+    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitReservedDecl(this);
     else super.accept(visitor);
   }
 

@@ -44,6 +44,18 @@ public class HaskellParser implements PsiParser {
     else if (root_ == QVARSYM) {
       result_ = qvarsym(builder_, 0);
     }
+    else if (root_ == RESERVED_DECL) {
+      result_ = reservedDecl(builder_, 0);
+    }
+    else if (root_ == RESERVED_EXPR) {
+      result_ = reservedExpr(builder_, 0);
+    }
+    else if (root_ == RESERVED_META) {
+      result_ = reservedMeta(builder_, 0);
+    }
+    else if (root_ == RESERVED_VAR) {
+      result_ = reservedVar(builder_, 0);
+    }
     else if (root_ == RESERVEDID) {
       result_ = reservedid(builder_, 0);
     }
@@ -52,9 +64,6 @@ public class HaskellParser implements PsiParser {
     }
     else if (root_ == RESERVEDOP_WITHOUT_CONS) {
       result_ = reservedopWithoutCons(builder_, 0);
-    }
-    else if (root_ == SPECIAL) {
-      result_ = special(builder_, 0);
     }
     else if (root_ == SYMBOL) {
       result_ = symbol(builder_, 0);
@@ -203,7 +212,7 @@ public class HaskellParser implements PsiParser {
     if (!result_) result_ = qvarsym(builder_, level_ + 1);
     if (!result_) result_ = qconsym(builder_, level_ + 1);
     if (!result_) result_ = literal(builder_, level_ + 1);
-    if (!result_) result_ = special(builder_, level_ + 1);
+    if (!result_) result_ = consumeToken(builder_, SPECIAL);
     if (!result_) result_ = reservedop(builder_, level_ + 1);
     if (!result_) result_ = reservedid(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
@@ -261,21 +270,28 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // opencom anyseq {ncomment anyseq} * closecom
+  // opencom anyseq? {ncomment anyseq?} * closecom
   public static boolean ncomment(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "ncomment")) return false;
     if (!nextTokenIs(builder_, OPENCOM)) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, OPENCOM);
-    result_ = result_ && anyseq(builder_, level_ + 1);
+    result_ = result_ && ncomment_1(builder_, level_ + 1);
     result_ = result_ && ncomment_2(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, CLOSECOM);
     exit_section_(builder_, marker_, NCOMMENT, result_);
     return result_;
   }
 
-  // {ncomment anyseq} *
+  // anyseq?
+  private static boolean ncomment_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "ncomment_1")) return false;
+    anyseq(builder_, level_ + 1);
+    return true;
+  }
+
+  // {ncomment anyseq?} *
   private static boolean ncomment_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "ncomment_2")) return false;
     int pos_ = current_position_(builder_);
@@ -287,19 +303,26 @@ public class HaskellParser implements PsiParser {
     return true;
   }
 
-  // ncomment anyseq
+  // ncomment anyseq?
   private static boolean ncomment_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "ncomment_2_0")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = ncomment(builder_, level_ + 1);
-    result_ = result_ && anyseq(builder_, level_ + 1);
+    result_ = result_ && ncomment_2_0_1(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
+  // anyseq?
+  private static boolean ncomment_2_0_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "ncomment_2_0_1")) return false;
+    anyseq(builder_, level_ + 1);
+    return true;
+  }
+
   /* ********************************************************** */
-  // {pragma} * { whitespace | lexeme } *
+  // {pragma (whitechar) *} * { whitespace | lexeme } *
   static boolean program(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "program")) return false;
     boolean result_ = false;
@@ -310,16 +333,49 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // {pragma} *
+  // {pragma (whitechar) *} *
   private static boolean program_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "program_0")) return false;
     int pos_ = current_position_(builder_);
     while (true) {
-      if (!consumeToken(builder_, PRAGMA)) break;
+      if (!program_0_0(builder_, level_ + 1)) break;
       if (!empty_element_parsed_guard_(builder_, "program_0", pos_)) break;
       pos_ = current_position_(builder_);
     }
     return true;
+  }
+
+  // pragma (whitechar) *
+  private static boolean program_0_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "program_0_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, PRAGMA);
+    result_ = result_ && program_0_0_1(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // (whitechar) *
+  private static boolean program_0_0_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "program_0_0_1")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!program_0_0_1_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "program_0_0_1", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
+  }
+
+  // (whitechar)
+  private static boolean program_0_0_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "program_0_0_1_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = whitechar(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
   }
 
   // { whitespace | lexeme } *
@@ -469,37 +525,79 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // 'case' | 'class' | 'data' | 'default' | 'deriving' | 'do' | 'else'
-  //               | 'foreign' | 'if' | 'import' | 'infix' | 'infixl' | 'infixr'
-  //               | 'instance' | 'in' | 'let' | 'module' | 'newtype' | 'of' | 'then' | 'type'
-  //               | 'where' | '_'
+  // 'class' | 'data' | 'default' | 'deriving' | 'foreign' | 'instance'
+  //                | 'module' | 'newtype' | 'type' | 'where'
+  public static boolean reservedDecl(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "reservedDecl")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<reserved decl>");
+    result_ = consumeToken(builder_, CLASSTOKEN);
+    if (!result_) result_ = consumeToken(builder_, "data");
+    if (!result_) result_ = consumeToken(builder_, "default");
+    if (!result_) result_ = consumeToken(builder_, "deriving");
+    if (!result_) result_ = consumeToken(builder_, "foreign");
+    if (!result_) result_ = consumeToken(builder_, "instance");
+    if (!result_) result_ = consumeToken(builder_, "module");
+    if (!result_) result_ = consumeToken(builder_, "newtype");
+    if (!result_) result_ = consumeToken(builder_, "type");
+    if (!result_) result_ = consumeToken(builder_, "where");
+    exit_section_(builder_, level_, marker_, RESERVED_DECL, result_, false, null);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // 'case' | 'do' | 'else' | 'if' | 'in' | 'let' | 'of' | 'then'
+  public static boolean reservedExpr(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "reservedExpr")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<reserved expr>");
+    result_ = consumeToken(builder_, "case");
+    if (!result_) result_ = consumeToken(builder_, "do");
+    if (!result_) result_ = consumeToken(builder_, "else");
+    if (!result_) result_ = consumeToken(builder_, "if");
+    if (!result_) result_ = consumeToken(builder_, "in");
+    if (!result_) result_ = consumeToken(builder_, "let");
+    if (!result_) result_ = consumeToken(builder_, "of");
+    if (!result_) result_ = consumeToken(builder_, "then");
+    exit_section_(builder_, level_, marker_, RESERVED_EXPR, result_, false, null);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // 'import' | 'infix' | 'infixl' | 'infixr'
+  public static boolean reservedMeta(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "reservedMeta")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<reserved meta>");
+    result_ = consumeToken(builder_, "import");
+    if (!result_) result_ = consumeToken(builder_, "infix");
+    if (!result_) result_ = consumeToken(builder_, "infixl");
+    if (!result_) result_ = consumeToken(builder_, "infixr");
+    exit_section_(builder_, level_, marker_, RESERVED_META, result_, false, null);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // '_'
+  public static boolean reservedVar(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "reservedVar")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<reserved var>");
+    result_ = consumeToken(builder_, "_");
+    exit_section_(builder_, level_, marker_, RESERVED_VAR, result_, false, null);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // reservedExpr | reservedDecl | reservedMeta | reservedVar
   public static boolean reservedid(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "reservedid")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<reservedid>");
-    result_ = consumeToken(builder_, "case");
-    if (!result_) result_ = consumeToken(builder_, CLASSTOKEN);
-    if (!result_) result_ = consumeToken(builder_, "data");
-    if (!result_) result_ = consumeToken(builder_, "default");
-    if (!result_) result_ = consumeToken(builder_, "deriving");
-    if (!result_) result_ = consumeToken(builder_, "do");
-    if (!result_) result_ = consumeToken(builder_, "else");
-    if (!result_) result_ = consumeToken(builder_, "foreign");
-    if (!result_) result_ = consumeToken(builder_, "if");
-    if (!result_) result_ = consumeToken(builder_, "import");
-    if (!result_) result_ = consumeToken(builder_, "infix");
-    if (!result_) result_ = consumeToken(builder_, "infixl");
-    if (!result_) result_ = consumeToken(builder_, "infixr");
-    if (!result_) result_ = consumeToken(builder_, "instance");
-    if (!result_) result_ = consumeToken(builder_, "in");
-    if (!result_) result_ = consumeToken(builder_, "let");
-    if (!result_) result_ = consumeToken(builder_, "module");
-    if (!result_) result_ = consumeToken(builder_, "newtype");
-    if (!result_) result_ = consumeToken(builder_, "of");
-    if (!result_) result_ = consumeToken(builder_, "then");
-    if (!result_) result_ = consumeToken(builder_, "type");
-    if (!result_) result_ = consumeToken(builder_, "where");
-    if (!result_) result_ = consumeToken(builder_, "_");
+    result_ = reservedExpr(builder_, level_ + 1);
+    if (!result_) result_ = reservedDecl(builder_, level_ + 1);
+    if (!result_) result_ = reservedMeta(builder_, level_ + 1);
+    if (!result_) result_ = reservedVar(builder_, level_ + 1);
     exit_section_(builder_, level_, marker_, RESERVEDID, result_, false, null);
     return result_;
   }
@@ -533,25 +631,6 @@ public class HaskellParser implements PsiParser {
     if (!result_) result_ = consumeToken(builder_, TILDE);
     if (!result_) result_ = consumeToken(builder_, DOUBLEARROW);
     exit_section_(builder_, level_, marker_, RESERVEDOP_WITHOUT_CONS, result_, false, null);
-    return result_;
-  }
-
-  /* ********************************************************** */
-  // '(' | ')' | ',' | ';' | '[' | ']' | '`' | '{' | '}'
-  public static boolean special(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "special")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<special>");
-    result_ = consumeToken(builder_, LPAREN);
-    if (!result_) result_ = consumeToken(builder_, RPAREN);
-    if (!result_) result_ = consumeToken(builder_, COMMA);
-    if (!result_) result_ = consumeToken(builder_, SEMICOLON);
-    if (!result_) result_ = consumeToken(builder_, LBRACKET);
-    if (!result_) result_ = consumeToken(builder_, RBRACKET);
-    if (!result_) result_ = consumeToken(builder_, BACKTICK);
-    if (!result_) result_ = consumeToken(builder_, LBRACE);
-    if (!result_) result_ = consumeToken(builder_, RBRACE);
-    exit_section_(builder_, level_, marker_, SPECIAL, result_, false, null);
     return result_;
   }
 

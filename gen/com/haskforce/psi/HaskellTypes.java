@@ -19,7 +19,10 @@ public interface HaskellTypes {
   IElementType RESERVEDID = new HaskellElementType("RESERVEDID");
   IElementType RESERVEDOP = new HaskellElementType("RESERVEDOP");
   IElementType RESERVEDOP_WITHOUT_CONS = new HaskellElementType("RESERVEDOP_WITHOUT_CONS");
-  IElementType SPECIAL = new HaskellElementType("SPECIAL");
+  IElementType RESERVED_DECL = new HaskellElementType("RESERVED_DECL");
+  IElementType RESERVED_EXPR = new HaskellElementType("RESERVED_EXPR");
+  IElementType RESERVED_META = new HaskellElementType("RESERVED_META");
+  IElementType RESERVED_VAR = new HaskellElementType("RESERVED_VAR");
   IElementType SYMBOL = new HaskellElementType("SYMBOL");
   IElementType VARID = new HaskellElementType("VARID");
   IElementType VARSYM = new HaskellElementType("VARSYM");
@@ -29,14 +32,12 @@ public interface HaskellTypes {
   IElementType AMPERSAT = new HaskellTokenType("@");
   IElementType ASTERISK = new HaskellTokenType("*");
   IElementType BACKSLASH = new HaskellTokenType("\\");
-  IElementType BACKTICK = new HaskellTokenType("`");
   IElementType CARET = new HaskellTokenType("^");
   IElementType CHARESC = new HaskellTokenType("charesc");
   IElementType CHARTOKEN = new HaskellTokenType("chartoken");
   IElementType CLASSTOKEN = new HaskellTokenType("class");
   IElementType CLOSECOM = new HaskellTokenType("-}");
   IElementType COLON = new HaskellTokenType(":");
-  IElementType COMMA = new HaskellTokenType(",");
   IElementType COMMENT = new HaskellTokenType("comment");
   IElementType CONID = new HaskellTokenType("conid");
   IElementType DASHES = new HaskellTokenType("dashes");
@@ -52,11 +53,8 @@ public interface HaskellTypes {
   IElementType HADDOCK = new HaskellTokenType("haddock");
   IElementType HASH = new HaskellTokenType("#");
   IElementType INTEGERTOKEN = new HaskellTokenType("integertoken");
-  IElementType LBRACE = new HaskellTokenType("{");
-  IElementType LBRACKET = new HaskellTokenType("[");
   IElementType LEFTARROW = new HaskellTokenType("<-");
   IElementType LESSTHAN = new HaskellTokenType("<");
-  IElementType LPAREN = new HaskellTokenType("(");
   IElementType MINUS = new HaskellTokenType("-");
   IElementType NULLCHARACTER = new HaskellTokenType("\\&");
   IElementType OPENCOM = new HaskellTokenType("{-");
@@ -66,14 +64,11 @@ public interface HaskellTypes {
   IElementType PLUS = new HaskellTokenType("+");
   IElementType PRAGMA = new HaskellTokenType("pragma");
   IElementType QUESTION = new HaskellTokenType("?");
-  IElementType RBRACE = new HaskellTokenType("}");
-  IElementType RBRACKET = new HaskellTokenType("]");
   IElementType RIGHTARROW = new HaskellTokenType("->");
-  IElementType RPAREN = new HaskellTokenType(")");
-  IElementType SEMICOLON = new HaskellTokenType(";");
   IElementType SINGLEQUOTE = new HaskellTokenType("'");
   IElementType SLASH = new HaskellTokenType("/");
   IElementType SPACE = new HaskellTokenType(" ");
+  IElementType SPECIAL = new HaskellTokenType("special");
   IElementType STRINGTOKEN = new HaskellTokenType("stringtoken");
   IElementType TILDE = new HaskellTokenType("~");
   IElementType VARIDREGEXP = new HaskellTokenType("varidRegexp");
@@ -115,8 +110,17 @@ public interface HaskellTypes {
       else if (type == RESERVEDOP_WITHOUT_CONS) {
         return new HaskellReservedopWithoutConsImpl(node);
       }
-      else if (type == SPECIAL) {
-        return new HaskellSpecialImpl(node);
+      else if (type == RESERVED_DECL) {
+        return new HaskellReservedDeclImpl(node);
+      }
+      else if (type == RESERVED_EXPR) {
+        return new HaskellReservedExprImpl(node);
+      }
+      else if (type == RESERVED_META) {
+        return new HaskellReservedMetaImpl(node);
+      }
+      else if (type == RESERVED_VAR) {
+        return new HaskellReservedVarImpl(node);
       }
       else if (type == SYMBOL) {
         return new HaskellSymbolImpl(node);

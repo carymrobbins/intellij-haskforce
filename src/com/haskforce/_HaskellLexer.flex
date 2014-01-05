@@ -22,6 +22,7 @@ EOL="\r"|"\n"|"\r\n"
 LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 
+SPECIAL=[\(\)\,\;\[\]\`\{\}]
 DOUBLEQUOTE=\"
 CHARESC=\\(a|b|f|n|r|t|v|\\|\||'|&)
 VARIDREGEXP=[a-z_][a-zA-Z_0-9']*
@@ -40,16 +41,7 @@ PRAGMA=\{\-\#[^\#]+\#\-\}
 <YYINITIAL> {
   {WHITE_SPACE}       { return com.intellij.psi.TokenType.WHITE_SPACE; }
 
-  "("                 { return LPAREN; }
-  ")"                 { return RPAREN; }
   "|"                 { return PIPE; }
-  ","                 { return COMMA; }
-  ";"                 { return SEMICOLON; }
-  "["                 { return LBRACKET; }
-  "]"                 { return RBRACKET; }
-  "`"                 { return BACKTICK; }
-  "{"                 { return LBRACE; }
-  "}"                 { return RBRACE; }
   "{-"                { return OPENCOM; }
   "-}"                { return CLOSECOM; }
   " "                 { return SPACE; }
@@ -81,6 +73,7 @@ PRAGMA=\{\-\#[^\#]+\#\-\}
   "\\&"               { return NULLCHARACTER; }
   "class"             { return CLASSTOKEN; }
 
+  {SPECIAL}           { return SPECIAL; }
   {DOUBLEQUOTE}       { return DOUBLEQUOTE; }
   {CHARESC}           { return CHARESC; }
   {VARIDREGEXP}       { return VARIDREGEXP; }
