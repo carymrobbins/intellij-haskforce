@@ -11,15 +11,7 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitChartoken(@NotNull HaskellChartoken o) {
-    visitPsiElement(o);
-  }
-
   public void visitConsym(@NotNull HaskellConsym o) {
-    visitPsiElement(o);
-  }
-
-  public void visitEscape(@NotNull HaskellEscape o) {
     visitPsiElement(o);
   }
 
@@ -28,10 +20,6 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitFloattoken(@NotNull HaskellFloattoken o) {
-    visitPsiElement(o);
-  }
-
-  public void visitGap(@NotNull HaskellGap o) {
     visitPsiElement(o);
   }
 
@@ -76,10 +64,6 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitSpecial(@NotNull HaskellSpecial o) {
-    visitPsiElement(o);
-  }
-
-  public void visitStringtoken(@NotNull HaskellStringtoken o) {
     visitPsiElement(o);
   }
 

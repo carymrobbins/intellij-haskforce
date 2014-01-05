@@ -24,12 +24,6 @@ public class HaskellAnyseqImpl extends ASTWrapperPsiElement implements HaskellAn
 
   @Override
   @NotNull
-  public List<HaskellChartoken> getChartokenList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellChartoken.class);
-  }
-
-  @Override
-  @NotNull
   public List<HaskellFloattoken> getFloattokenList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellFloattoken.class);
   }
@@ -80,12 +74,6 @@ public class HaskellAnyseqImpl extends ASTWrapperPsiElement implements HaskellAn
   @NotNull
   public List<HaskellSpecial> getSpecialList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellSpecial.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellStringtoken> getStringtokenList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellStringtoken.class);
   }
 
 }

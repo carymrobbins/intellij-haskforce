@@ -23,23 +23,14 @@ public class HaskellParser implements PsiParser {
     if (root_ == ANYSEQ) {
       result_ = anyseq(builder_, 0);
     }
-    else if (root_ == CHARTOKEN) {
-      result_ = chartoken(builder_, 0);
-    }
     else if (root_ == CONSYM) {
       result_ = consym(builder_, 0);
-    }
-    else if (root_ == ESCAPE) {
-      result_ = escape(builder_, 0);
     }
     else if (root_ == EXPONENT) {
       result_ = exponent(builder_, 0);
     }
     else if (root_ == FLOATTOKEN) {
       result_ = floattoken(builder_, 0);
-    }
-    else if (root_ == GAP) {
-      result_ = gap(builder_, 0);
     }
     else if (root_ == INTEGERTOKEN) {
       result_ = integertoken(builder_, 0);
@@ -73,9 +64,6 @@ public class HaskellParser implements PsiParser {
     }
     else if (root_ == SPECIAL) {
       result_ = special(builder_, 0);
-    }
-    else if (root_ == STRINGTOKEN) {
-      result_ = stringtoken(builder_, 0);
     }
     else if (root_ == SYMBOL) {
       result_ = symbol(builder_, 0);
@@ -153,85 +141,6 @@ public class HaskellParser implements PsiParser {
     result_ = lexeme(builder_, level_ + 1);
     if (!result_) result_ = consumeToken(builder_, SPACE);
     exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  /* ********************************************************** */
-  // "'" ((!("'" | '\') graphic) | space | !'\&' escape) "'"
-  public static boolean chartoken(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "chartoken")) return false;
-    if (!nextTokenIs(builder_, SINGLEQUOTE)) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, SINGLEQUOTE);
-    result_ = result_ && chartoken_1(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, SINGLEQUOTE);
-    exit_section_(builder_, marker_, CHARTOKEN, result_);
-    return result_;
-  }
-
-  // (!("'" | '\') graphic) | space | !'\&' escape
-  private static boolean chartoken_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "chartoken_1")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = chartoken_1_0(builder_, level_ + 1);
-    if (!result_) result_ = consumeToken(builder_, SPACE);
-    if (!result_) result_ = chartoken_1_2(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // !("'" | '\') graphic
-  private static boolean chartoken_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "chartoken_1_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = chartoken_1_0_0(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, GRAPHIC);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // !("'" | '\')
-  private static boolean chartoken_1_0_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "chartoken_1_0_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NOT_, null);
-    result_ = !chartoken_1_0_0_0(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, null, result_, false, null);
-    return result_;
-  }
-
-  // "'" | '\'
-  private static boolean chartoken_1_0_0_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "chartoken_1_0_0_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, SINGLEQUOTE);
-    if (!result_) result_ = consumeToken(builder_, BACKSLASH);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // !'\&' escape
-  private static boolean chartoken_1_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "chartoken_1_2")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = chartoken_1_2_0(builder_, level_ + 1);
-    result_ = result_ && escape(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // !'\&'
-  private static boolean chartoken_1_2_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "chartoken_1_2_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NOT_, null);
-    result_ = !consumeToken(builder_, NULLCHARACTER);
-    exit_section_(builder_, level_, marker_, null, result_, false, null);
     return result_;
   }
 
@@ -317,41 +226,6 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // charesc | ('\' decimal | octalEscape | hexadecimalEscape)
-  public static boolean escape(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "escape")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<escape>");
-    result_ = consumeToken(builder_, CHARESC);
-    if (!result_) result_ = escape_1(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, ESCAPE, result_, false, null);
-    return result_;
-  }
-
-  // '\' decimal | octalEscape | hexadecimalEscape
-  private static boolean escape_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "escape_1")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = escape_1_0(builder_, level_ + 1);
-    if (!result_) result_ = consumeToken(builder_, OCTALESCAPE);
-    if (!result_) result_ = consumeToken(builder_, HEXADECIMALESCAPE);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // '\' decimal
-  private static boolean escape_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "escape_1_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, BACKSLASH);
-    result_ = result_ && decimal(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  /* ********************************************************** */
   // exponentPrefix decimal
   public static boolean exponent(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "exponent")) return false;
@@ -405,43 +279,6 @@ public class HaskellParser implements PsiParser {
     Marker marker_ = enter_section_(builder_);
     result_ = decimal(builder_, level_ + 1);
     result_ = result_ && exponent(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  /* ********************************************************** */
-  // '\' whitechar {whitechar} * '\'
-  public static boolean gap(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "gap")) return false;
-    if (!nextTokenIs(builder_, BACKSLASH)) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, BACKSLASH);
-    result_ = result_ && whitechar(builder_, level_ + 1);
-    result_ = result_ && gap_2(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, BACKSLASH);
-    exit_section_(builder_, marker_, GAP, result_);
-    return result_;
-  }
-
-  // {whitechar} *
-  private static boolean gap_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "gap_2")) return false;
-    int pos_ = current_position_(builder_);
-    while (true) {
-      if (!gap_2_0(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "gap_2", pos_)) break;
-      pos_ = current_position_(builder_);
-    }
-    return true;
-  }
-
-  // {whitechar}
-  private static boolean gap_2_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "gap_2_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = whitechar(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -511,8 +348,8 @@ public class HaskellParser implements PsiParser {
     Marker marker_ = enter_section_(builder_);
     result_ = integertoken(builder_, level_ + 1);
     if (!result_) result_ = floattoken(builder_, level_ + 1);
-    if (!result_) result_ = chartoken(builder_, level_ + 1);
-    if (!result_) result_ = stringtoken(builder_, level_ + 1);
+    if (!result_) result_ = consumeToken(builder_, CHARTOKEN);
+    if (!result_) result_ = consumeToken(builder_, STRINGTOKEN);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -822,82 +659,6 @@ public class HaskellParser implements PsiParser {
     if (!result_) result_ = consumeToken(builder_, LBRACE);
     if (!result_) result_ = consumeToken(builder_, RBRACE);
     exit_section_(builder_, level_, marker_, SPECIAL, result_, false, null);
-    return result_;
-  }
-
-  /* ********************************************************** */
-  // doublequote
-  //                 { !(doublequote | '\') graphic | space | conid | symbol | varid | escape | gap } *
-  //                 doublequote
-  public static boolean stringtoken(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "stringtoken")) return false;
-    if (!nextTokenIs(builder_, DOUBLEQUOTE)) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, DOUBLEQUOTE);
-    result_ = result_ && stringtoken_1(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, DOUBLEQUOTE);
-    exit_section_(builder_, marker_, STRINGTOKEN, result_);
-    return result_;
-  }
-
-  // { !(doublequote | '\') graphic | space | conid | symbol | varid | escape | gap } *
-  private static boolean stringtoken_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "stringtoken_1")) return false;
-    int pos_ = current_position_(builder_);
-    while (true) {
-      if (!stringtoken_1_0(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "stringtoken_1", pos_)) break;
-      pos_ = current_position_(builder_);
-    }
-    return true;
-  }
-
-  // !(doublequote | '\') graphic | space | conid | symbol | varid | escape | gap
-  private static boolean stringtoken_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "stringtoken_1_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = stringtoken_1_0_0(builder_, level_ + 1);
-    if (!result_) result_ = consumeToken(builder_, SPACE);
-    if (!result_) result_ = consumeToken(builder_, CONID);
-    if (!result_) result_ = symbol(builder_, level_ + 1);
-    if (!result_) result_ = varid(builder_, level_ + 1);
-    if (!result_) result_ = escape(builder_, level_ + 1);
-    if (!result_) result_ = gap(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // !(doublequote | '\') graphic
-  private static boolean stringtoken_1_0_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "stringtoken_1_0_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = stringtoken_1_0_0_0(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, GRAPHIC);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // !(doublequote | '\')
-  private static boolean stringtoken_1_0_0_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "stringtoken_1_0_0_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NOT_, null);
-    result_ = !stringtoken_1_0_0_0_0(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, null, result_, false, null);
-    return result_;
-  }
-
-  // doublequote | '\'
-  private static boolean stringtoken_1_0_0_0_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "stringtoken_1_0_0_0_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, DOUBLEQUOTE);
-    if (!result_) result_ = consumeToken(builder_, BACKSLASH);
-    exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 

@@ -9,12 +9,9 @@ import com.haskforce.psi.impl.*;
 public interface HaskellTypes {
 
   IElementType ANYSEQ = new HaskellElementType("ANYSEQ");
-  IElementType CHARTOKEN = new HaskellElementType("CHARTOKEN");
   IElementType CONSYM = new HaskellElementType("CONSYM");
-  IElementType ESCAPE = new HaskellElementType("ESCAPE");
   IElementType EXPONENT = new HaskellElementType("EXPONENT");
   IElementType FLOATTOKEN = new HaskellElementType("FLOATTOKEN");
-  IElementType GAP = new HaskellElementType("GAP");
   IElementType INTEGERTOKEN = new HaskellElementType("INTEGERTOKEN");
   IElementType MODID = new HaskellElementType("MODID");
   IElementType NCOMMENT = new HaskellElementType("NCOMMENT");
@@ -26,7 +23,6 @@ public interface HaskellTypes {
   IElementType RESERVEDOP = new HaskellElementType("RESERVEDOP");
   IElementType RESERVEDOP_WITHOUT_CONS = new HaskellElementType("RESERVEDOP_WITHOUT_CONS");
   IElementType SPECIAL = new HaskellElementType("SPECIAL");
-  IElementType STRINGTOKEN = new HaskellElementType("STRINGTOKEN");
   IElementType SYMBOL = new HaskellElementType("SYMBOL");
   IElementType VARID = new HaskellElementType("VARID");
   IElementType VARSYM = new HaskellElementType("VARSYM");
@@ -39,6 +35,7 @@ public interface HaskellTypes {
   IElementType BACKTICK = new HaskellTokenType("`");
   IElementType CARET = new HaskellTokenType("^");
   IElementType CHARESC = new HaskellTokenType("charesc");
+  IElementType CHARTOKEN = new HaskellTokenType("chartoken");
   IElementType CLASSTOKEN = new HaskellTokenType("class");
   IElementType CLOSECOM = new HaskellTokenType("-}");
   IElementType COLON = new HaskellTokenType(":");
@@ -84,6 +81,7 @@ public interface HaskellTypes {
   IElementType SINGLEQUOTE = new HaskellTokenType("'");
   IElementType SLASH = new HaskellTokenType("/");
   IElementType SPACE = new HaskellTokenType(" ");
+  IElementType STRINGTOKEN = new HaskellTokenType("stringtoken");
   IElementType TILDE = new HaskellTokenType("~");
   IElementType VARIDREGEXP = new HaskellTokenType("varidRegexp");
   IElementType WHITEESCAPES = new HaskellTokenType("whiteEscapes");
@@ -94,23 +92,14 @@ public interface HaskellTypes {
        if (type == ANYSEQ) {
         return new HaskellAnyseqImpl(node);
       }
-      else if (type == CHARTOKEN) {
-        return new HaskellChartokenImpl(node);
-      }
       else if (type == CONSYM) {
         return new HaskellConsymImpl(node);
-      }
-      else if (type == ESCAPE) {
-        return new HaskellEscapeImpl(node);
       }
       else if (type == EXPONENT) {
         return new HaskellExponentImpl(node);
       }
       else if (type == FLOATTOKEN) {
         return new HaskellFloattokenImpl(node);
-      }
-      else if (type == GAP) {
-        return new HaskellGapImpl(node);
       }
       else if (type == INTEGERTOKEN) {
         return new HaskellIntegertokenImpl(node);
@@ -144,9 +133,6 @@ public interface HaskellTypes {
       }
       else if (type == SPECIAL) {
         return new HaskellSpecialImpl(node);
-      }
-      else if (type == STRINGTOKEN) {
-        return new HaskellStringtokenImpl(node);
       }
       else if (type == SYMBOL) {
         return new HaskellSymbolImpl(node);

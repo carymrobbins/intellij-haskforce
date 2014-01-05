@@ -91,12 +91,14 @@
     hexadecimalLiteral='regexp:0(x|X)[0-9a-fA-F]+'
     nullCharacter='\&'
     classtoken='class'
-    charesc="regexp:\\(a|b|f|n|r|t|v|\\|\"|\||'|&)"
+    charesc="regexp:\\(a|b|f|n|r|t|v|\\|\||'|&)"
     exponentPrefix='regexp:(e|E)(\+|\-)?'
     varidRegexp="regexp:[a-z_][a-zA-Z_0-9']*"
     conid="regexp:[A-Z][a-zA-Z_0-9']*"
     graphic="regexp:[a-zA-Z0-9\"'!#$%&*+./<=>?@'\^\|\-~:(),;\[\]`{}]"
     whiteEscapes="regexp:[\r\n\v\t]"
+    stringtoken='regexp:"(\\\s+\\|\\"|[^"])*"'
+    chartoken="regexp:'(\\.|[^'])'"
   ]
 }
 
@@ -140,10 +142,3 @@ integertoken ::= (decimal
 floattoken  ::= decimal '.' decimal [exponent]
               | decimal exponent
 exponent    ::= exponentPrefix decimal
-
-chartoken   ::= "'" ((!("'" | '\') graphic) | space | !'\&' escape) "'"
-stringtoken ::= doublequote
-                { !(doublequote | '\') graphic | space | conid | symbol | varid | escape | gap } *
-                doublequote
-escape      ::= charesc | ('\' decimal | octalEscape | hexadecimalEscape)
-gap         ::= '\' whitechar {whitechar} * '\'
