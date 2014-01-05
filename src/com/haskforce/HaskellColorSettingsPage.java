@@ -5,6 +5,8 @@ import com.intellij.openapi.fileTypes.SyntaxHighlighter;
 import com.intellij.openapi.options.colors.AttributesDescriptor;
 import com.intellij.openapi.options.colors.ColorDescriptor;
 import com.intellij.openapi.options.colors.ColorSettingsPage;
+import gnu.trove.THashMap;
+import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,13 +45,13 @@ public class HaskellColorSettingsPage implements ColorSettingsPage {
     @NotNull
     @Override
     public String getDemoText() {
-        return  "module AStack( Stack, push, pop, top, size, (<~>) ) where\n" +
+        return  "<r>module</r> AStack<sp>(</sp> Stack<sp>,</sp> <v>push</v><sp>,</sp> <v>pop</v><sp>,</sp> <v>top</v><sp>,</sp> <v>size</v><sp>,</sp> <sp>(</sp><vs><~></vs><sp>)</sp> <sp>)</sp> <r>where</r>\n" +
                 "\n" +
-                "import Control.Monad (liftM2)\n" +
-                "import Control.Monad.Zip\n" +
+                "<r>import</r> Control.Monad <sp>(</sp><v>liftM2</v><sp>)</sp>\n" +
+                "<r>import</r> Control.Monad.Zip\n" +
                 "\n" +
-                "data Stack a = Empty\n" +
-                "             | MkStack a (Stack a)\n" +
+                "<r>data</r> Stack <v>a</v> = Empty\n" +
+                "             <vs>|</vs> MkStack <v>a</v> <sp>(</sp>Stack <v>a</v><sp>)</sp>\n" +
                 "\n" +
                 "push :: a -> Stack a -> Stack a\n" +
                 "push x s = MkStack x s\n" +
@@ -85,7 +87,13 @@ public class HaskellColorSettingsPage implements ColorSettingsPage {
     @Nullable
     @Override
     public Map<String, TextAttributesKey> getAdditionalHighlightingTagToDescriptorMap() {
-        return null;
+        @NonNls
+        final Map<String, TextAttributesKey> map = new THashMap<String, TextAttributesKey>();
+        map.put("r", HaskellSyntaxHighlighter.RESERVEDID);
+        map.put("sp", HaskellSyntaxHighlighter.SPECIAL);
+        map.put("vs", HaskellSyntaxHighlighter.VARSYM);
+        map.put("v", HaskellSyntaxHighlighter.VARID);
+        return map;
     }
 
     @NotNull

@@ -7,9 +7,6 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellFloattoken extends PsiElement {
 
-  @NotNull
-  List<HaskellDecimal> getDecimalList();
-
   @Nullable
   HaskellExponent getExponent();
 

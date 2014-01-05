@@ -19,10 +19,6 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitDecimal(@NotNull HaskellDecimal o) {
-    visitPsiElement(o);
-  }
-
   public void visitEscape(@NotNull HaskellEscape o) {
     visitPsiElement(o);
   }
@@ -40,10 +36,6 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitIntegertoken(@NotNull HaskellIntegertoken o) {
-    visitPsiElement(o);
-  }
-
-  public void visitLiteral(@NotNull HaskellLiteral o) {
     visitPsiElement(o);
   }
 

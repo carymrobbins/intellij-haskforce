@@ -7,7 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellIntegertoken extends PsiElement {
 
-  @Nullable
-  HaskellDecimal getDecimal();
-
 }

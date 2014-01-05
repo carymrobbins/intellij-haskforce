@@ -29,9 +29,6 @@ public class HaskellParser implements PsiParser {
     else if (root_ == CONSYM) {
       result_ = consym(builder_, 0);
     }
-    else if (root_ == DECIMAL) {
-      result_ = decimal(builder_, 0);
-    }
     else if (root_ == ESCAPE) {
       result_ = escape(builder_, 0);
     }
@@ -46,9 +43,6 @@ public class HaskellParser implements PsiParser {
     }
     else if (root_ == INTEGERTOKEN) {
       result_ = integertoken(builder_, 0);
-    }
-    else if (root_ == LITERAL) {
-      result_ = literal(builder_, 0);
     }
     else if (root_ == MODID) {
       result_ = modid(builder_, 0);
@@ -299,14 +293,14 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // digit {digit} *
-  public static boolean decimal(PsiBuilder builder_, int level_) {
+  static boolean decimal(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "decimal")) return false;
     if (!nextTokenIs(builder_, DIGIT)) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, DIGIT);
     result_ = result_ && decimal_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, DECIMAL, result_);
+    exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
@@ -453,17 +447,40 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // decimal
-  //                | octalLiteral
-  //                | hexadecimalLiteral
+  // (decimal
+  //                   | octalLiteral
+  //                   | hexadecimalLiteral) !'.'
   public static boolean integertoken(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "integertoken")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<integertoken>");
+    result_ = integertoken_0(builder_, level_ + 1);
+    result_ = result_ && integertoken_1(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, INTEGERTOKEN, result_, false, null);
+    return result_;
+  }
+
+  // decimal
+  //                   | octalLiteral
+  //                   | hexadecimalLiteral
+  private static boolean integertoken_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "integertoken_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
     result_ = decimal(builder_, level_ + 1);
     if (!result_) result_ = consumeToken(builder_, OCTALLITERAL);
     if (!result_) result_ = consumeToken(builder_, HEXADECIMALLITERAL);
-    exit_section_(builder_, level_, marker_, INTEGERTOKEN, result_, false, null);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // !'.'
+  private static boolean integertoken_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "integertoken_1")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NOT_, null);
+    result_ = !consumeToken(builder_, PERIOD);
+    exit_section_(builder_, level_, marker_, null, result_, false, null);
     return result_;
   }
 
@@ -488,15 +505,15 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // integertoken | floattoken | chartoken | stringtoken
-  public static boolean literal(PsiBuilder builder_, int level_) {
+  static boolean literal(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "literal")) return false;
     boolean result_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<literal>");
+    Marker marker_ = enter_section_(builder_);
     result_ = integertoken(builder_, level_ + 1);
     if (!result_) result_ = floattoken(builder_, level_ + 1);
     if (!result_) result_ = chartoken(builder_, level_ + 1);
     if (!result_) result_ = stringtoken(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, LITERAL, result_, false, null);
+    exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 

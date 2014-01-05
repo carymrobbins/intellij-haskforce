@@ -24,12 +24,6 @@ public class HaskellEscapeImpl extends ASTWrapperPsiElement implements HaskellEs
 
   @Override
   @Nullable
-  public HaskellDecimal getDecimal() {
-    return findChildByClass(HaskellDecimal.class);
-  }
-
-  @Override
-  @Nullable
   public PsiElement getCharesc() {
     return findChildByType(CHARESC);
   }

@@ -11,13 +11,11 @@ public interface HaskellTypes {
   IElementType ANYSEQ = new HaskellElementType("ANYSEQ");
   IElementType CHARTOKEN = new HaskellElementType("CHARTOKEN");
   IElementType CONSYM = new HaskellElementType("CONSYM");
-  IElementType DECIMAL = new HaskellElementType("DECIMAL");
   IElementType ESCAPE = new HaskellElementType("ESCAPE");
   IElementType EXPONENT = new HaskellElementType("EXPONENT");
   IElementType FLOATTOKEN = new HaskellElementType("FLOATTOKEN");
   IElementType GAP = new HaskellElementType("GAP");
   IElementType INTEGERTOKEN = new HaskellElementType("INTEGERTOKEN");
-  IElementType LITERAL = new HaskellElementType("LITERAL");
   IElementType MODID = new HaskellElementType("MODID");
   IElementType NCOMMENT = new HaskellElementType("NCOMMENT");
   IElementType QCONID = new HaskellElementType("QCONID");
@@ -102,9 +100,6 @@ public interface HaskellTypes {
       else if (type == CONSYM) {
         return new HaskellConsymImpl(node);
       }
-      else if (type == DECIMAL) {
-        return new HaskellDecimalImpl(node);
-      }
       else if (type == ESCAPE) {
         return new HaskellEscapeImpl(node);
       }
@@ -119,9 +114,6 @@ public interface HaskellTypes {
       }
       else if (type == INTEGERTOKEN) {
         return new HaskellIntegertokenImpl(node);
-      }
-      else if (type == LITERAL) {
-        return new HaskellLiteralImpl(node);
       }
       else if (type == MODID) {
         return new HaskellModidImpl(node);

@@ -23,12 +23,6 @@ public class HaskellFloattokenImpl extends ASTWrapperPsiElement implements Haske
   }
 
   @Override
-  @NotNull
-  public List<HaskellDecimal> getDecimalList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellDecimal.class);
-  }
-
-  @Override
   @Nullable
   public HaskellExponent getExponent() {
     return findChildByClass(HaskellExponent.class);

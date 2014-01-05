@@ -8,7 +8,13 @@ import com.intellij.psi.PsiElement;
 public interface HaskellAnyseq extends PsiElement {
 
   @NotNull
-  List<HaskellLiteral> getLiteralList();
+  List<HaskellChartoken> getChartokenList();
+
+  @NotNull
+  List<HaskellFloattoken> getFloattokenList();
+
+  @NotNull
+  List<HaskellIntegertoken> getIntegertokenList();
 
   @NotNull
   List<HaskellQconid> getQconidList();
@@ -30,5 +36,8 @@ public interface HaskellAnyseq extends PsiElement {
 
   @NotNull
   List<HaskellSpecial> getSpecialList();
+
+  @NotNull
+  List<HaskellStringtoken> getStringtokenList();
 
 }

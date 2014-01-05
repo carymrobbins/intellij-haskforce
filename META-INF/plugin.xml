@@ -38,5 +38,6 @@
     <lang.parserDefinition language="Haskell" implementationClass="com.haskforce.HaskellParserDefinition"/>
     <lang.syntaxHighlighterFactory key="Haskell" implementationClass="com.haskforce.HaskellSyntaxHighlighterFactory"/>
     <colorSettingsPage implementation="com.haskforce.HaskellColorSettingsPage"/>
+    <annotator language="Haskell" implementationClass="com.haskforce.HaskellAnnotator" />
   </extensions>
 </idea-plugin>

@@ -7,7 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellExponent extends PsiElement {
 
-  @NotNull
-  HaskellDecimal getDecimal();
-
 }

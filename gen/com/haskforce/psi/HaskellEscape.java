@@ -8,9 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface HaskellEscape extends PsiElement {
 
   @Nullable
-  HaskellDecimal getDecimal();
-
-  @Nullable
   PsiElement getCharesc();
 
 }

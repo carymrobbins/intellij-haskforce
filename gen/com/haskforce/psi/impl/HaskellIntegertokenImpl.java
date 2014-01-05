@@ -22,10 +22,4 @@ public class HaskellIntegertokenImpl extends ASTWrapperPsiElement implements Has
     else super.accept(visitor);
   }
 
-  @Override
-  @Nullable
-  public HaskellDecimal getDecimal() {
-    return findChildByClass(HaskellDecimal.class);
-  }
-
 }

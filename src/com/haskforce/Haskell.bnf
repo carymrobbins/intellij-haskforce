@@ -105,7 +105,7 @@
 program ::= { lexeme | whitespace } *
 private lexeme ::= qvarid | qconid | qvarsym | qconsym
                  | literal | special | reservedop | reservedid
-literal ::= integertoken | floattoken | chartoken | stringtoken
+private literal ::= integertoken | floattoken | chartoken | stringtoken
 special ::= '(' | ')' | ',' | ';' | '[' | ']' | '`' | '{' | '}'
 private whitespace ::= whitetoken {whitetoken} *
 private whitetoken ::= space | whitechar | comment | ncomment | haddock
@@ -133,10 +133,10 @@ qconid	    ::= [modid '.'] conid
 qvarsym	    ::= [modid '.'] varsym
 qconsym	    ::= [modid '.'] consym
 
-decimal     ::= digit {digit} *
-integertoken ::= decimal
-               | octalLiteral
-               | hexadecimalLiteral
+private decimal     ::= digit {digit} *
+integertoken ::= (decimal
+                  | octalLiteral
+                  | hexadecimalLiteral) !'.'
 floattoken  ::= decimal '.' decimal [exponent]
               | decimal exponent
 exponent    ::= exponentPrefix decimal

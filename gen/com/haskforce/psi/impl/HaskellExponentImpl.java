@@ -22,10 +22,4 @@ public class HaskellExponentImpl extends ASTWrapperPsiElement implements Haskell
     else super.accept(visitor);
   }
 
-  @Override
-  @NotNull
-  public HaskellDecimal getDecimal() {
-    return findNotNullChildByClass(HaskellDecimal.class);
-  }
-
 }
