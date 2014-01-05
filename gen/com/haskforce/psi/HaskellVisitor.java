@@ -15,18 +15,6 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitExponent(@NotNull HaskellExponent o) {
-    visitPsiElement(o);
-  }
-
-  public void visitFloattoken(@NotNull HaskellFloattoken o) {
-    visitPsiElement(o);
-  }
-
-  public void visitIntegertoken(@NotNull HaskellIntegertoken o) {
-    visitPsiElement(o);
-  }
-
   public void visitModid(@NotNull HaskellModid o) {
     visitPsiElement(o);
   }

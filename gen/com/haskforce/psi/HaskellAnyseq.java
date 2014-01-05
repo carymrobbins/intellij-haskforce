@@ -8,12 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface HaskellAnyseq extends PsiElement {
 
   @NotNull
-  List<HaskellFloattoken> getFloattokenList();
-
-  @NotNull
-  List<HaskellIntegertoken> getIntegertokenList();
-
-  @NotNull
   List<HaskellQconid> getQconidList();
 
   @NotNull

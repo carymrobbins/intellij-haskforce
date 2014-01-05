@@ -24,18 +24,6 @@ public class HaskellAnyseqImpl extends ASTWrapperPsiElement implements HaskellAn
 
   @Override
   @NotNull
-  public List<HaskellFloattoken> getFloattokenList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellFloattoken.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellIntegertoken> getIntegertokenList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellIntegertoken.class);
-  }
-
-  @Override
-  @NotNull
   public List<HaskellQconid> getQconidList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQconid.class);
   }

@@ -26,15 +26,6 @@ public class HaskellParser implements PsiParser {
     else if (root_ == CONSYM) {
       result_ = consym(builder_, 0);
     }
-    else if (root_ == EXPONENT) {
-      result_ = exponent(builder_, 0);
-    }
-    else if (root_ == FLOATTOKEN) {
-      result_ = floattoken(builder_, 0);
-    }
-    else if (root_ == INTEGERTOKEN) {
-      result_ = integertoken(builder_, 0);
-    }
     else if (root_ == MODID) {
       result_ = modid(builder_, 0);
     }
@@ -201,127 +192,6 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // digit {digit} *
-  static boolean decimal(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "decimal")) return false;
-    if (!nextTokenIs(builder_, DIGIT)) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, DIGIT);
-    result_ = result_ && decimal_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // {digit} *
-  private static boolean decimal_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "decimal_1")) return false;
-    int pos_ = current_position_(builder_);
-    while (true) {
-      if (!consumeToken(builder_, DIGIT)) break;
-      if (!empty_element_parsed_guard_(builder_, "decimal_1", pos_)) break;
-      pos_ = current_position_(builder_);
-    }
-    return true;
-  }
-
-  /* ********************************************************** */
-  // exponentPrefix decimal
-  public static boolean exponent(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "exponent")) return false;
-    if (!nextTokenIs(builder_, EXPONENTPREFIX)) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, EXPONENTPREFIX);
-    result_ = result_ && decimal(builder_, level_ + 1);
-    exit_section_(builder_, marker_, EXPONENT, result_);
-    return result_;
-  }
-
-  /* ********************************************************** */
-  // decimal '.' decimal [exponent]
-  //               | decimal exponent
-  public static boolean floattoken(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "floattoken")) return false;
-    if (!nextTokenIs(builder_, DIGIT)) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = floattoken_0(builder_, level_ + 1);
-    if (!result_) result_ = floattoken_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, FLOATTOKEN, result_);
-    return result_;
-  }
-
-  // decimal '.' decimal [exponent]
-  private static boolean floattoken_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "floattoken_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = decimal(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, PERIOD);
-    result_ = result_ && decimal(builder_, level_ + 1);
-    result_ = result_ && floattoken_0_3(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // [exponent]
-  private static boolean floattoken_0_3(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "floattoken_0_3")) return false;
-    exponent(builder_, level_ + 1);
-    return true;
-  }
-
-  // decimal exponent
-  private static boolean floattoken_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "floattoken_1")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = decimal(builder_, level_ + 1);
-    result_ = result_ && exponent(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  /* ********************************************************** */
-  // (decimal
-  //                   | octalLiteral
-  //                   | hexadecimalLiteral) !'.'
-  public static boolean integertoken(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "integertoken")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<integertoken>");
-    result_ = integertoken_0(builder_, level_ + 1);
-    result_ = result_ && integertoken_1(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, INTEGERTOKEN, result_, false, null);
-    return result_;
-  }
-
-  // decimal
-  //                   | octalLiteral
-  //                   | hexadecimalLiteral
-  private static boolean integertoken_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "integertoken_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = decimal(builder_, level_ + 1);
-    if (!result_) result_ = consumeToken(builder_, OCTALLITERAL);
-    if (!result_) result_ = consumeToken(builder_, HEXADECIMALLITERAL);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // !'.'
-  private static boolean integertoken_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "integertoken_1")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NOT_, null);
-    result_ = !consumeToken(builder_, PERIOD);
-    exit_section_(builder_, level_, marker_, null, result_, false, null);
-    return result_;
-  }
-
-  /* ********************************************************** */
   // qvarid | qconid | qvarsym | qconsym
   //                  | literal | special | reservedop | reservedid
   static boolean lexeme(PsiBuilder builder_, int level_) {
@@ -346,8 +216,8 @@ public class HaskellParser implements PsiParser {
     if (!recursion_guard_(builder_, level_, "literal")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = integertoken(builder_, level_ + 1);
-    if (!result_) result_ = floattoken(builder_, level_ + 1);
+    result_ = consumeToken(builder_, INTEGERTOKEN);
+    if (!result_) result_ = consumeToken(builder_, FLOATTOKEN);
     if (!result_) result_ = consumeToken(builder_, CHARTOKEN);
     if (!result_) result_ = consumeToken(builder_, STRINGTOKEN);
     exit_section_(builder_, marker_, null, result_);
@@ -429,25 +299,48 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // { lexeme | whitespace } *
+  // {pragma} * { whitespace | lexeme } *
   static boolean program(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "program")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = program_0(builder_, level_ + 1);
+    result_ = result_ && program_1(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // {pragma} *
+  private static boolean program_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "program_0")) return false;
     int pos_ = current_position_(builder_);
     while (true) {
-      if (!program_0(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "program", pos_)) break;
+      if (!consumeToken(builder_, PRAGMA)) break;
+      if (!empty_element_parsed_guard_(builder_, "program_0", pos_)) break;
       pos_ = current_position_(builder_);
     }
     return true;
   }
 
-  // lexeme | whitespace
-  private static boolean program_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "program_0")) return false;
+  // { whitespace | lexeme } *
+  private static boolean program_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "program_1")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!program_1_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "program_1", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
+  }
+
+  // whitespace | lexeme
+  private static boolean program_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "program_1_0")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = lexeme(builder_, level_ + 1);
-    if (!result_) result_ = whitespace(builder_, level_ + 1);
+    result_ = whitespace(builder_, level_ + 1);
+    if (!result_) result_ = lexeme(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }

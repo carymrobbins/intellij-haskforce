@@ -52,12 +52,9 @@
     backtick='`'
     lbrace='{'
     rbrace='}'
-    space=' '
-    comment='regexp:--[^\^\r\n][^\r\n]*'
-    haddock='regexp:--\^[^\r\n]*'
-    dashes='regexp:--(-)*'
     opencom='{-'
     closecom='-}'
+    space=' '
     doublequote='regexp:"'
     singlequote="'"
     exlamation='!'
@@ -79,32 +76,31 @@
     minus='-'
     tilde='~'
     colon=':'
-    digit='regexp:[0-9]'
-    octalEscape='regexp:o[0-7][0-7]*'
-    hexadecimalEscape='regexp:x[0-9a-fA-F][0-9a-fA-F]*'
     doubleperiod='..'
     doublecolon='::'
     leftarrow='<-'
     rightarrow='->'
     doublearrow='=>'
-    octalLiteral='regexp:0(o|O)[0-7]+'
-    hexadecimalLiteral='regexp:0(x|X)[0-9a-fA-F]+'
     nullCharacter='\&'
     classtoken='class'
     charesc="regexp:\\(a|b|f|n|r|t|v|\\|\||'|&)"
-    exponentPrefix='regexp:(e|E)(\+|\-)?'
     varidRegexp="regexp:[a-z_][a-zA-Z_0-9']*"
     conid="regexp:[A-Z][a-zA-Z_0-9']*"
-    graphic="regexp:[a-zA-Z0-9\"'!#$%&*+./<=>?@'\^\|\-~:(),;\[\]`{}]"
     whiteEscapes="regexp:[\r\n\v\t]"
     stringtoken='regexp:"(\\\s+\\|\\"|[^"])*"'
     chartoken="regexp:'(\\.|[^'])'"
+    integertoken="regexp:(0(o|O)[0-7]+|0(x|X)[0-9a-fA-F]+|[0-9]+)[^\.]"
+    floattoken="regexp:([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))"
+    comment='regexp:--[^\^\r\n][^\r\n]*'
+    haddock='regexp:--\^[^\r\n]*'
+    dashes='regexp:--(-)*'
+    pragma='regexp:\{\-\#[^\#]+\#\-\}'
   ]
 }
 
 // Haskell 2010 Report - http://www.haskell.org/onlinereport/haskell2010/haskellch2.html#x7-140002
 
-program ::= { lexeme | whitespace } *
+program ::= {pragma} * { whitespace | lexeme } *
 private lexeme ::= qvarid | qconid | qvarsym | qconsym
                  | literal | special | reservedop | reservedid
 private literal ::= integertoken | floattoken | chartoken | stringtoken
@@ -134,11 +130,3 @@ qvarid	    ::= [modid '.'] varid
 qconid	    ::= [modid '.'] conid
 qvarsym	    ::= [modid '.'] varsym
 qconsym	    ::= [modid '.'] consym
-
-private decimal     ::= digit {digit} *
-integertoken ::= (decimal
-                  | octalLiteral
-                  | hexadecimalLiteral) !'.'
-floattoken  ::= decimal '.' decimal [exponent]
-              | decimal exponent
-exponent    ::= exponentPrefix decimal
