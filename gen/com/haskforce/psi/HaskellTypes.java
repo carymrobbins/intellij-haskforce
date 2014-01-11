@@ -10,10 +10,11 @@ public interface HaskellTypes {
 
   IElementType ANYSEQ = new HaskellElementType("ANYSEQ");
   IElementType CONSYM = new HaskellElementType("CONSYM");
-  IElementType MODID = new HaskellElementType("MODID");
+  IElementType MODULE_PREFIX = new HaskellElementType("MODULE_PREFIX");
   IElementType NCOMMENT = new HaskellElementType("NCOMMENT");
   IElementType QCONID = new HaskellElementType("QCONID");
   IElementType QCONSYM = new HaskellElementType("QCONSYM");
+  IElementType QINFIXVARID = new HaskellElementType("QINFIXVARID");
   IElementType QVARID = new HaskellElementType("QVARID");
   IElementType QVARSYM = new HaskellElementType("QVARSYM");
   IElementType RESERVEDID = new HaskellElementType("RESERVEDID");
@@ -23,6 +24,7 @@ public interface HaskellTypes {
   IElementType RESERVED_EXPR = new HaskellElementType("RESERVED_EXPR");
   IElementType RESERVED_META = new HaskellElementType("RESERVED_META");
   IElementType RESERVED_VAR = new HaskellElementType("RESERVED_VAR");
+  IElementType SPECIAL = new HaskellElementType("SPECIAL");
   IElementType SYMBOL = new HaskellElementType("SYMBOL");
   IElementType VARID = new HaskellElementType("VARID");
   IElementType VARSYM = new HaskellElementType("VARSYM");
@@ -32,12 +34,14 @@ public interface HaskellTypes {
   IElementType AMPERSAT = new HaskellTokenType("@");
   IElementType ASTERISK = new HaskellTokenType("*");
   IElementType BACKSLASH = new HaskellTokenType("\\");
+  IElementType BACKTICK = new HaskellTokenType("`");
   IElementType CARET = new HaskellTokenType("^");
   IElementType CHARESC = new HaskellTokenType("charesc");
   IElementType CHARTOKEN = new HaskellTokenType("chartoken");
   IElementType CLASSTOKEN = new HaskellTokenType("class");
   IElementType CLOSECOM = new HaskellTokenType("-}");
   IElementType COLON = new HaskellTokenType(":");
+  IElementType COMMA = new HaskellTokenType(",");
   IElementType COMMENT = new HaskellTokenType("comment");
   IElementType CONID = new HaskellTokenType("conid");
   IElementType DASHES = new HaskellTokenType("dashes");
@@ -53,8 +57,11 @@ public interface HaskellTypes {
   IElementType HADDOCK = new HaskellTokenType("haddock");
   IElementType HASH = new HaskellTokenType("#");
   IElementType INTEGERTOKEN = new HaskellTokenType("integertoken");
+  IElementType LBRACE = new HaskellTokenType("{");
+  IElementType LBRACKET = new HaskellTokenType("[");
   IElementType LEFTARROW = new HaskellTokenType("<-");
   IElementType LESSTHAN = new HaskellTokenType("<");
+  IElementType LPAREN = new HaskellTokenType("(");
   IElementType MINUS = new HaskellTokenType("-");
   IElementType NULLCHARACTER = new HaskellTokenType("\\&");
   IElementType OPENCOM = new HaskellTokenType("{-");
@@ -64,11 +71,14 @@ public interface HaskellTypes {
   IElementType PLUS = new HaskellTokenType("+");
   IElementType PRAGMA = new HaskellTokenType("pragma");
   IElementType QUESTION = new HaskellTokenType("?");
+  IElementType RBRACE = new HaskellTokenType("}");
+  IElementType RBRACKET = new HaskellTokenType("]");
   IElementType RIGHTARROW = new HaskellTokenType("->");
+  IElementType RPAREN = new HaskellTokenType(")");
+  IElementType SEMICOLON = new HaskellTokenType(";");
   IElementType SINGLEQUOTE = new HaskellTokenType("'");
   IElementType SLASH = new HaskellTokenType("/");
   IElementType SPACE = new HaskellTokenType(" ");
-  IElementType SPECIAL = new HaskellTokenType("special");
   IElementType STRINGTOKEN = new HaskellTokenType("stringtoken");
   IElementType TILDE = new HaskellTokenType("~");
   IElementType VARIDREGEXP = new HaskellTokenType("varidRegexp");
@@ -83,8 +93,8 @@ public interface HaskellTypes {
       else if (type == CONSYM) {
         return new HaskellConsymImpl(node);
       }
-      else if (type == MODID) {
-        return new HaskellModidImpl(node);
+      else if (type == MODULE_PREFIX) {
+        return new HaskellModulePrefixImpl(node);
       }
       else if (type == NCOMMENT) {
         return new HaskellNcommentImpl(node);
@@ -94,6 +104,9 @@ public interface HaskellTypes {
       }
       else if (type == QCONSYM) {
         return new HaskellQconsymImpl(node);
+      }
+      else if (type == QINFIXVARID) {
+        return new HaskellQinfixvaridImpl(node);
       }
       else if (type == QVARID) {
         return new HaskellQvaridImpl(node);
@@ -121,6 +134,9 @@ public interface HaskellTypes {
       }
       else if (type == RESERVED_VAR) {
         return new HaskellReservedVarImpl(node);
+      }
+      else if (type == SPECIAL) {
+        return new HaskellSpecialImpl(node);
       }
       else if (type == SYMBOL) {
         return new HaskellSymbolImpl(node);

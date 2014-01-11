@@ -14,6 +14,9 @@ public interface HaskellAnyseq extends PsiElement {
   List<HaskellQconsym> getQconsymList();
 
   @NotNull
+  List<HaskellQinfixvarid> getQinfixvaridList();
+
+  @NotNull
   List<HaskellQvarid> getQvaridList();
 
   @NotNull
@@ -24,5 +27,8 @@ public interface HaskellAnyseq extends PsiElement {
 
   @NotNull
   List<HaskellReservedop> getReservedopList();
+
+  @NotNull
+  List<HaskellSpecial> getSpecialList();
 
 }

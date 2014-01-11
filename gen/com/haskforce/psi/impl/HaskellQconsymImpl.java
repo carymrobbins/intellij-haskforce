@@ -30,8 +30,8 @@ public class HaskellQconsymImpl extends ASTWrapperPsiElement implements HaskellQ
 
   @Override
   @Nullable
-  public HaskellModid getModid() {
-    return findChildByClass(HaskellModid.class);
+  public HaskellModulePrefix getModulePrefix() {
+    return findChildByClass(HaskellModulePrefix.class);
   }
 
 }

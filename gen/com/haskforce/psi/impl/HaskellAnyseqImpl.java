@@ -36,6 +36,12 @@ public class HaskellAnyseqImpl extends ASTWrapperPsiElement implements HaskellAn
 
   @Override
   @NotNull
+  public List<HaskellQinfixvarid> getQinfixvaridList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQinfixvarid.class);
+  }
+
+  @Override
+  @NotNull
   public List<HaskellQvarid> getQvaridList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQvarid.class);
   }
@@ -56,6 +62,12 @@ public class HaskellAnyseqImpl extends ASTWrapperPsiElement implements HaskellAn
   @NotNull
   public List<HaskellReservedop> getReservedopList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellReservedop.class);
+  }
+
+  @Override
+  @NotNull
+  public List<HaskellSpecial> getSpecialList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellSpecial.class);
   }
 
 }

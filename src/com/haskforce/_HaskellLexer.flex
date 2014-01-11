@@ -22,7 +22,6 @@ EOL="\r"|"\n"|"\r\n"
 LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 
-SPECIAL=[\(\)\,\;\[\]\`\{\}]
 DOUBLEQUOTE=\"
 CHARESC=\\(a|b|f|n|r|t|v|\\|\||'|&)
 VARIDREGEXP=[a-z_][a-zA-Z_0-9']*
@@ -30,7 +29,7 @@ CONID=[A-Z][a-zA-Z_0-9']*
 WHITEESCAPES=[\r\n\v\t]
 STRINGTOKEN=\"(\\[ tnx0Bfr]+\\|\\\"|[^\"])*\"
 CHARTOKEN='(\\.|[^'])'
-INTEGERTOKEN=(0(o|O)[0-7]+|0(x|X)[0-9a-fA-F]+|[0-9]+)[^\.]
+INTEGERTOKEN=(0(o|O)[0-7]+|0(x|X)[0-9a-fA-F]+|[0-9]+)
 FLOATTOKEN=([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))
 COMMENT=--[^\^\r\n][^\r\n]*
 HADDOCK=--\^[^\r\n]*
@@ -41,7 +40,16 @@ PRAGMA=\{\-\#[^\#]+\#\-\}
 <YYINITIAL> {
   {WHITE_SPACE}       { return com.intellij.psi.TokenType.WHITE_SPACE; }
 
+  "("                 { return LPAREN; }
+  ")"                 { return RPAREN; }
   "|"                 { return PIPE; }
+  ","                 { return COMMA; }
+  ";"                 { return SEMICOLON; }
+  "["                 { return LBRACKET; }
+  "]"                 { return RBRACKET; }
+  "`"                 { return BACKTICK; }
+  "{"                 { return LBRACE; }
+  "}"                 { return RBRACE; }
   "{-"                { return OPENCOM; }
   "-}"                { return CLOSECOM; }
   " "                 { return SPACE; }
@@ -73,7 +81,6 @@ PRAGMA=\{\-\#[^\#]+\#\-\}
   "\\&"               { return NULLCHARACTER; }
   "class"             { return CLASSTOKEN; }
 
-  {SPECIAL}           { return SPECIAL; }
   {DOUBLEQUOTE}       { return DOUBLEQUOTE; }
   {CHARESC}           { return CHARESC; }
   {VARIDREGEXP}       { return VARIDREGEXP; }

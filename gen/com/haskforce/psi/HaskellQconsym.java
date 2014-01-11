@@ -11,6 +11,6 @@ public interface HaskellQconsym extends PsiElement {
   HaskellConsym getConsym();
 
   @Nullable
-  HaskellModid getModid();
+  HaskellModulePrefix getModulePrefix();
 
 }

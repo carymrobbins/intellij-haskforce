@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement;
 public interface HaskellQconid extends PsiElement {
 
   @Nullable
-  HaskellModid getModid();
+  HaskellModulePrefix getModulePrefix();
 
   @NotNull
   PsiElement getConid();

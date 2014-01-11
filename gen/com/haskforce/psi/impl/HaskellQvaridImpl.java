@@ -24,8 +24,8 @@ public class HaskellQvaridImpl extends ASTWrapperPsiElement implements HaskellQv
 
   @Override
   @Nullable
-  public HaskellModid getModid() {
-    return findChildByClass(HaskellModid.class);
+  public HaskellModulePrefix getModulePrefix() {
+    return findChildByClass(HaskellModulePrefix.class);
   }
 
   @Override

@@ -20,9 +20,27 @@ public class HaskellAnnotator implements Annotator {
             }
 
             @Override
-            public void visitVarid(@NotNull HaskellVarid o) {
-                super.visitVarid(o);
-                setHighlighting(o, holder, HaskellSyntaxHighlighter.VARID);
+            public void visitQvarid(@NotNull HaskellQvarid o) {
+                super.visitQvarid(o);
+                setHighlightingRecursive(o, holder, HaskellSyntaxHighlighter.VARID);
+            }
+
+            @Override
+            public void visitQinfixvarid(@NotNull HaskellQinfixvarid o) {
+                super.visitQinfixvarid(o);
+                setHighlightingRecursive(o, holder, HaskellSyntaxHighlighter.INFIXVARID);
+            }
+
+            @Override
+            public void visitQvarsym(@NotNull HaskellQvarsym o) {
+                super.visitQvarsym(o);
+                setHighlightingRecursive(o, holder, HaskellSyntaxHighlighter.VARSYM);
+            }
+
+            @Override
+            public void visitQconsym(@NotNull HaskellQconsym o) {
+                super.visitQconsym(o);
+                setHighlightingRecursive(o, holder, HaskellSyntaxHighlighter.CONSYM);
             }
 
             @Override
@@ -50,27 +68,9 @@ public class HaskellAnnotator implements Annotator {
             }
 
             @Override
-            public void visitVarsym(@NotNull HaskellVarsym o) {
-                super.visitVarsym(o);
-                setHighlighting(o, holder, HaskellSyntaxHighlighter.VARSYM);
-            }
-
-            @Override
-            public void visitConsym(@NotNull HaskellConsym o) {
-                super.visitConsym(o);
-                setHighlighting(o, holder, HaskellSyntaxHighlighter.CONSYM);
-            }
-
-            @Override
             public void visitReservedop(@NotNull HaskellReservedop o) {
                 super.visitReservedop(o);
                 setHighlighting(o, holder, HaskellSyntaxHighlighter.RESERVEDOP);
-            }
-
-            @Override
-            public void visitModid(@NotNull HaskellModid o) {
-                super.visitModid(o);
-                setHighlighting(o, holder, HaskellSyntaxHighlighter.MODULE);
             }
         });
     }

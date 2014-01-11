@@ -11,14 +11,14 @@ import static com.haskforce.psi.HaskellTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellModidImpl extends ASTWrapperPsiElement implements HaskellModid {
+public class HaskellModulePrefixImpl extends ASTWrapperPsiElement implements HaskellModulePrefix {
 
-  public HaskellModidImpl(ASTNode node) {
+  public HaskellModulePrefixImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitModid(this);
+    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitModulePrefix(this);
     else super.accept(visitor);
   }
 

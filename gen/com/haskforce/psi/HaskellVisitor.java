@@ -15,7 +15,7 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitModid(@NotNull HaskellModid o) {
+  public void visitModulePrefix(@NotNull HaskellModulePrefix o) {
     visitPsiElement(o);
   }
 
@@ -28,6 +28,10 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitQconsym(@NotNull HaskellQconsym o) {
+    visitPsiElement(o);
+  }
+
+  public void visitQinfixvarid(@NotNull HaskellQinfixvarid o) {
     visitPsiElement(o);
   }
 
@@ -64,6 +68,10 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitReservedopWithoutCons(@NotNull HaskellReservedopWithoutCons o) {
+    visitPsiElement(o);
+  }
+
+  public void visitSpecial(@NotNull HaskellSpecial o) {
     visitPsiElement(o);
   }
 

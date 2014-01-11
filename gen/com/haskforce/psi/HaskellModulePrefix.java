@@ -5,12 +5,6 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellQvarsym extends PsiElement {
-
-  @Nullable
-  HaskellModulePrefix getModulePrefix();
-
-  @NotNull
-  HaskellVarsym getVarsym();
+public interface HaskellModulePrefix extends PsiElement {
 
 }

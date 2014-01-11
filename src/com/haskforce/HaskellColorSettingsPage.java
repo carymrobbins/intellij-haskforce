@@ -22,6 +22,7 @@ public class HaskellColorSettingsPage implements ColorSettingsPage {
             new AttributesDescriptor("Reserved Variable", HaskellSyntaxHighlighter.RESERVEDVAR),
             new AttributesDescriptor("Constructor", HaskellSyntaxHighlighter.CONID),
             new AttributesDescriptor("Variable", HaskellSyntaxHighlighter.VARID),
+            new AttributesDescriptor("Infix Function", HaskellSyntaxHighlighter.INFIXVARID),
             new AttributesDescriptor("Symbol", HaskellSyntaxHighlighter.VARSYM),
             new AttributesDescriptor("Special", HaskellSyntaxHighlighter.SPECIAL),
             new AttributesDescriptor("String", HaskellSyntaxHighlighter.STRING),
@@ -50,10 +51,11 @@ public class HaskellColorSettingsPage implements ColorSettingsPage {
     @Override
     public String getDemoText() {
         return  "{-# LANGUAGE OverloadedStrings #-}\n" +
-                "<rd>module</rd> Example (<vi>foo</vi>, <vi>bar</vi>) <rd>where</rd>\n" +
+                "<rd>module</rd> Example <sp>(</sp><vi>foo</vi><sp>,</sp> <vi>bar</vi><sp>)</sp> <rd>where</rd>\n" +
                 "\n" +
-                "<rm>import</rm> Control.Monad (<vi>liftM2</vi>)\n" +
-                "<rm>import</rm> Control.Monad.Zip <rm>as</rm> Z\n" +
+                "<rm>import</rm> <ci>Control.Monad</ci> <rm>as</rm> <ci>M</ci>\n" +
+                "<rm>import</rm> <ci>Control.Monad</ci> <sp>(</sp><vi>liftM2</vi><sp>)</sp>\n" +
+                "<rm>import</rm> <ci>Control.Monad.Zip</ci> <rm>as</rm> <ci>Z</ci>\n" +
                 "\n" +
                 "<nc>{-\n" +
                 " - Multiline comment\n" +
@@ -62,24 +64,35 @@ public class HaskellColorSettingsPage implements ColorSettingsPage {
                 " -  -}\n" +
                 " -}</nc>\n" +
                 "\n" +
-                "<rd>class</rd> Fooable <vi>a</vi> <rd>where</rd>\n" +
+                "<rd>class</rd> <ci>Fooable</ci> <vi>a</vi> <rd>where</rd>\n" +
                 "    <vi>foo</vi> <ro>::</ro> <vi>a</vi> --^ Haddock comment\n" +
-                "           <ro>-></ro> String\n" +
+                "           <ro>-></ro> <ci>String</ci>\n" +
                 "\n" +
                 "-- Line comment.\n" +
                 "\n" +
-                "<rd>instance</rd> MonadZip Maybe <rd>where</rd>\n" +
-                "    <vi>mzip</vi> <ro>=</ro> liftM2 (,)\n" +
+                "<rd>instance</rd> <ci>MonadZip</ci> <ci>Maybe</ci> <rd>where</rd>\n" +
+                "    <vi>mzip</vi> <ro>=</ro> <vi>liftM2</vi> <sp>(</sp><sp>,</sp><sp>)</sp>\n" +
                 "\n" +
-                "(<vs><~></vs>) <ro>::</ro> Maybe <vi>a</vi> <ro>-></ro> Maybe <vi>b</vi> <ro>-></ro> Maybe (<ro>a</ro>, <ro>b</ro>)\n" +
+                "(<vs><~></vs>) <ro>::</ro> <ci>Maybe</ci> <vi>a</vi> <ro>-></ro> <ci>Maybe</ci> <vi>b</vi> <ro>-></ro> <ci>Maybe</ci> <sp>(</sp><vi>a</vi><sp>,</sp> <vi>b</vi><sp>)</sp>\n" +
                 "(<vs><~></vs>) <ro>=</ro> <vi>mzip</vi>\n" +
                 "\n" +
-                "<vi>bar</vi> <ro>::</ro> [<vi>a</vi>] <ro>-></ro> Int <ro>-></ro> [<vi>a</vi>]\n" +
-                "<vi>bar</vi> <vi>xs</vi> 0 <ro>=</ro> []\n" +
-                "<vi>bar</vi> <vi>xs</vi> <vi>n</vi> <ro>=</ro> <vi>xs</vi> <vs>++</vs> (<vi>bar</vi> <vi>xs</vi> (<vi>n</vi> - 1))\n" +
+                "<vi>bar</vi> <ro>::</ro> [<vi>a</vi>] <ro>-></ro> <ci>Int</ci> <ro>-></ro> <sp>[</sp><vi>a</vi><sp>]</sp>\n" +
+                "<vi>bar</vi> <vi>xs</vi> 0 <ro>=</ro> <sp>[</sp><sp>]</sp>\n" +
+                "<vi>bar</vi> <vi>xs</vi> <vi>n</vi> <ro>=</ro> <vi>xs</vi> <vs>++</vs> <sp>(</sp><vi>bar</vi> <vi>xs</vi> <sp>(</sp><vi>n</vi> <vs>-</vs> 1<sp>)</sp><sp>)</sp>\n" +
+                "\n" +
+                "<vi>listToBool</vi> <ro>::</ro> <sp>[</sp><vi>a</vi><sp>]</sp> <ro>-></ro> <ci>Bool</ci>\n" +
+                "<vi>listToBool</vi> <sp>[</sp><sp>]</sp> <ro>=</ro> <ci>False</ci>\n" +
+                "<vi>listToBool</vi> <rv>_</rv> <ro>=</ro> <ci>True</ci>\n" +
+                "\n" +
+                "<vi>listToBool'</vi> <vi>xs</vi> <ro>=</ro> <re>if</re> <vi>length</vi> <vi>xs</vi> <vs>></vs> 0 <re>then</re> <ci>True</ci> <re>else</re> <ci>False</ci>\n" +
+                "\n" +
+                "<vi>listToBool''</vi> <ro>=</ro> <vi>not</vi> <vs>.</vs> <vi>null</vi>\n" +
+                "\n" +
+                "<vi>x</vi> <ro>=</ro> <sp>(</sp><vs>+</vs>1<sp>)</sp> <iv>`M.liftM`</iv> <sp>(</sp>Just 3<sp>)</sp>\n" +
                 "\n" +
                 "<vi>int</vi> <ro>=</ro> 1\n" +
                 "<vi>float</vi> <ro>=</ro> 1.2\n" +
+                "<vi>char</vi> <ro>=</ro> 'a'\n" +
                 "<vi>string</vi> <ro>=</ro> \"I'm a string.\"\n" +
                 "<vi>multiline</vi> <ro>=</ro> \"\\\n" +
                 "    \\This string \\\n" +
@@ -93,12 +106,17 @@ public class HaskellColorSettingsPage implements ColorSettingsPage {
     public Map<String, TextAttributesKey> getAdditionalHighlightingTagToDescriptorMap() {
         @NonNls
         final Map<String, TextAttributesKey> map = new THashMap<String, TextAttributesKey>();
+        map.put("re", HaskellSyntaxHighlighter.RESERVEDEXPR);
+        map.put("rv", HaskellSyntaxHighlighter.RESERVEDVAR);
         map.put("rd", HaskellSyntaxHighlighter.RESERVEDDECL);
         map.put("rm", HaskellSyntaxHighlighter.RESERVEDMETA);
         map.put("vs", HaskellSyntaxHighlighter.VARSYM);
         map.put("vi", HaskellSyntaxHighlighter.VARID);
+        map.put("ci", HaskellSyntaxHighlighter.CONID);
+        map.put("iv", HaskellSyntaxHighlighter.INFIXVARID);
         map.put("nc", HaskellSyntaxHighlighter.NCOMMENT);
         map.put("ro", HaskellSyntaxHighlighter.RESERVEDOP);
+        map.put("sp", HaskellSyntaxHighlighter.SPECIAL);
         return map;
     }
 

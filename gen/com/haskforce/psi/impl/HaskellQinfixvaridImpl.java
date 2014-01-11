@@ -11,14 +11,14 @@ import static com.haskforce.psi.HaskellTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellQconidImpl extends ASTWrapperPsiElement implements HaskellQconid {
+public class HaskellQinfixvaridImpl extends ASTWrapperPsiElement implements HaskellQinfixvarid {
 
-  public HaskellQconidImpl(ASTNode node) {
+  public HaskellQinfixvaridImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitQconid(this);
+    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitQinfixvarid(this);
     else super.accept(visitor);
   }
 
@@ -30,8 +30,8 @@ public class HaskellQconidImpl extends ASTWrapperPsiElement implements HaskellQc
 
   @Override
   @NotNull
-  public PsiElement getConid() {
-    return findNotNullChildByType(CONID);
+  public HaskellVarid getVarid() {
+    return findNotNullChildByClass(HaskellVarid.class);
   }
 
 }
