@@ -20,6 +20,12 @@ public class HaskellAnnotator implements Annotator {
             }
 
             @Override
+            public void visitPragma(@NotNull HaskellPragma o) {
+                super.visitPragma(o);
+                setHighlightingRecursive(o, holder, HaskellSyntaxHighlighter.PRAGMA);
+            }
+
+            @Override
             public void visitQvarid(@NotNull HaskellQvarid o) {
                 super.visitQvarid(o);
                 setHighlightingRecursive(o, holder, HaskellSyntaxHighlighter.VARID);

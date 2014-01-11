@@ -12,6 +12,7 @@ public interface HaskellTypes {
   IElementType CONSYM = new HaskellElementType("CONSYM");
   IElementType MODULE_PREFIX = new HaskellElementType("MODULE_PREFIX");
   IElementType NCOMMENT = new HaskellElementType("NCOMMENT");
+  IElementType PRAGMA = new HaskellElementType("PRAGMA");
   IElementType QCONID = new HaskellElementType("QCONID");
   IElementType QCONSYM = new HaskellElementType("QCONSYM");
   IElementType QINFIXVARID = new HaskellElementType("QINFIXVARID");
@@ -40,6 +41,7 @@ public interface HaskellTypes {
   IElementType CHARTOKEN = new HaskellTokenType("chartoken");
   IElementType CLASSTOKEN = new HaskellTokenType("class");
   IElementType CLOSECOM = new HaskellTokenType("-}");
+  IElementType CLOSEPRAGMA = new HaskellTokenType("#-}");
   IElementType COLON = new HaskellTokenType(":");
   IElementType COMMA = new HaskellTokenType(",");
   IElementType COMMENT = new HaskellTokenType("comment");
@@ -65,11 +67,11 @@ public interface HaskellTypes {
   IElementType MINUS = new HaskellTokenType("-");
   IElementType NULLCHARACTER = new HaskellTokenType("\\&");
   IElementType OPENCOM = new HaskellTokenType("{-");
+  IElementType OPENPRAGMA = new HaskellTokenType("{-#");
   IElementType PERCENT = new HaskellTokenType("%");
   IElementType PERIOD = new HaskellTokenType(".");
   IElementType PIPE = new HaskellTokenType("|");
   IElementType PLUS = new HaskellTokenType("+");
-  IElementType PRAGMA = new HaskellTokenType("pragma");
   IElementType QUESTION = new HaskellTokenType("?");
   IElementType RBRACE = new HaskellTokenType("}");
   IElementType RBRACKET = new HaskellTokenType("]");
@@ -98,6 +100,9 @@ public interface HaskellTypes {
       }
       else if (type == NCOMMENT) {
         return new HaskellNcommentImpl(node);
+      }
+      else if (type == PRAGMA) {
+        return new HaskellPragmaImpl(node);
       }
       else if (type == QCONID) {
         return new HaskellQconidImpl(node);

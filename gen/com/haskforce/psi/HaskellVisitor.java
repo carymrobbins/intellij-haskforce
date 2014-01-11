@@ -23,6 +23,10 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitPragma(@NotNull HaskellPragma o) {
+    visitPsiElement(o);
+  }
+
   public void visitQconid(@NotNull HaskellQconid o) {
     visitPsiElement(o);
   }

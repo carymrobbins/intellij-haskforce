@@ -54,6 +54,8 @@
     rbrace='}'
     opencom='{-'
     closecom='-}'
+    openpragma='{-#'
+    closepragma='#-}'
     space=' '
     doublequote='regexp:"'
     singlequote="'"
@@ -94,7 +96,6 @@
     comment='regexp:--[^\^\r\n][^\r\n]*'
     haddock='regexp:--\^[^\r\n]*'
     dashes='regexp:--(-)*'
-    pragma='regexp:\{\-\#[^\#]+\#\-\}'
   ]
 }
 
@@ -107,6 +108,7 @@ private literal ::= floattoken | integertoken | chartoken | stringtoken
 private whitespace ::= whitetoken {whitetoken} *
 private whitetoken ::= space | whitechar | comment | ncomment | haddock
 whitechar ::= space | whiteEscapes
+pragma ::= openpragma {!closepragma (lexeme | space)} * closepragma
 ncomment ::= opencom anyseq? {ncomment anyseq?} * closecom
 anyseq ::= !( opencom | closecom ) (lexeme | space) *
 special ::= '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}'

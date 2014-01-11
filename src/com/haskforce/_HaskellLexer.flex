@@ -34,7 +34,6 @@ FLOATTOKEN=([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))
 COMMENT=--[^\^\r\n][^\r\n]*
 HADDOCK=--\^[^\r\n]*
 DASHES=--(-)*
-PRAGMA=\{\-\#[^\#]+\#\-\}
 
 %%
 <YYINITIAL> {
@@ -52,6 +51,8 @@ PRAGMA=\{\-\#[^\#]+\#\-\}
   "}"                 { return RBRACE; }
   "{-"                { return OPENCOM; }
   "-}"                { return CLOSECOM; }
+  "{-#"               { return OPENPRAGMA; }
+  "#-}"               { return CLOSEPRAGMA; }
   " "                 { return SPACE; }
   "'"                 { return SINGLEQUOTE; }
   "!"                 { return EXLAMATION; }
@@ -93,7 +94,6 @@ PRAGMA=\{\-\#[^\#]+\#\-\}
   {COMMENT}           { return COMMENT; }
   {HADDOCK}           { return HADDOCK; }
   {DASHES}            { return DASHES; }
-  {PRAGMA}            { return PRAGMA; }
 
   [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
