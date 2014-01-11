@@ -52,6 +52,7 @@ public interface HaskellTypes {
   IElementType DOUBLECOLON = new HaskellTokenType("::");
   IElementType DOUBLEPERIOD = new HaskellTokenType("..");
   IElementType DOUBLEQUOTE = new HaskellTokenType("doublequote");
+  IElementType EOL = new HaskellTokenType("EOL");
   IElementType EQUALS = new HaskellTokenType("=");
   IElementType EXLAMATION = new HaskellTokenType("!");
   IElementType FLOATTOKEN = new HaskellTokenType("floattoken");
@@ -63,6 +64,7 @@ public interface HaskellTypes {
   IElementType LBRACKET = new HaskellTokenType("[");
   IElementType LEFTARROW = new HaskellTokenType("<-");
   IElementType LESSTHAN = new HaskellTokenType("<");
+  IElementType LINE_WS = new HaskellTokenType("LINE_WS");
   IElementType LPAREN = new HaskellTokenType("(");
   IElementType MINUS = new HaskellTokenType("-");
   IElementType NULLCHARACTER = new HaskellTokenType("\\&");
@@ -80,11 +82,9 @@ public interface HaskellTypes {
   IElementType SEMICOLON = new HaskellTokenType(";");
   IElementType SINGLEQUOTE = new HaskellTokenType("'");
   IElementType SLASH = new HaskellTokenType("/");
-  IElementType SPACE = new HaskellTokenType(" ");
   IElementType STRINGTOKEN = new HaskellTokenType("stringtoken");
   IElementType TILDE = new HaskellTokenType("~");
   IElementType VARIDREGEXP = new HaskellTokenType("varidRegexp");
-  IElementType WHITEESCAPES = new HaskellTokenType("whiteEscapes");
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {

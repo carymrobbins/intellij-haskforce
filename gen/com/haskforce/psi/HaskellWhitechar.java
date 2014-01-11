@@ -7,7 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellWhitechar extends PsiElement {
 
-  @Nullable
-  PsiElement getSpace();
-
 }

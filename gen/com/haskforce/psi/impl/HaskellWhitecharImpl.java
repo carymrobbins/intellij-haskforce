@@ -22,10 +22,4 @@ public class HaskellWhitecharImpl extends ASTWrapperPsiElement implements Haskel
     else super.accept(visitor);
   }
 
-  @Override
-  @Nullable
-  public PsiElement getSpace() {
-    return findChildByType(SPACE);
-  }
-
 }

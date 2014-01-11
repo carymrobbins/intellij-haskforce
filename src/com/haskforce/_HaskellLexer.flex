@@ -26,8 +26,7 @@ DOUBLEQUOTE=\"
 CHARESC=\\(a|b|f|n|r|t|v|\\|\||'|&)
 VARIDREGEXP=[a-z_][a-zA-Z_0-9']*
 CONID=[A-Z][a-zA-Z_0-9']*
-WHITEESCAPES=[\r\n\v\t]
-STRINGTOKEN=\"(\\[ tnx0Bfr]+\\|\\\"|[^\"])*\"
+STRINGTOKEN=\"(\\[ tnx0Bfr]+\\|\\\"|[^\"\n])*\"
 CHARTOKEN='(\\.|[^'])'
 INTEGERTOKEN=(0(o|O)[0-7]+|0(x|X)[0-9a-fA-F]+|[0-9]+)
 FLOATTOKEN=([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))
@@ -53,7 +52,6 @@ DASHES=--(-)*
   "-}"                { return CLOSECOM; }
   "{-#"               { return OPENPRAGMA; }
   "#-}"               { return CLOSEPRAGMA; }
-  " "                 { return SPACE; }
   "'"                 { return SINGLEQUOTE; }
   "!"                 { return EXLAMATION; }
   "#"                 { return HASH; }
@@ -81,12 +79,13 @@ DASHES=--(-)*
   "=>"                { return DOUBLEARROW; }
   "\\&"               { return NULLCHARACTER; }
   "class"             { return CLASSTOKEN; }
+  "LINE_WS"           { return LINE_WS; }
+  "EOL"               { return EOL; }
 
   {DOUBLEQUOTE}       { return DOUBLEQUOTE; }
   {CHARESC}           { return CHARESC; }
   {VARIDREGEXP}       { return VARIDREGEXP; }
   {CONID}             { return CONID; }
-  {WHITEESCAPES}      { return WHITEESCAPES; }
   {STRINGTOKEN}       { return STRINGTOKEN; }
   {CHARTOKEN}         { return CHARTOKEN; }
   {INTEGERTOKEN}      { return INTEGERTOKEN; }

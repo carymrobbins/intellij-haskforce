@@ -53,9 +53,9 @@ public class HaskellColorSettingsPage implements ColorSettingsPage {
         return  "{-# LANGUAGE OverloadedStrings #-}\n" +
                 "<rd>module</rd> Example <sp>(</sp><vi>foo</vi><sp>,</sp> <vi>bar</vi><sp>)</sp> <rd>where</rd>\n" +
                 "\n" +
-                "<rm>import</rm> <ci>Control.Monad</ci> <rm>as</rm> <ci>M</ci>\n" +
-                "<rm>import</rm> <ci>Control.Monad</ci> <sp>(</sp><vi>liftM2</vi><sp>)</sp>\n" +
-                "<rm>import</rm> <ci>Control.Monad.Zip</ci> <rm>as</rm> <ci>Z</ci>\n" +
+                "<rm>import</rm> Control.Monad <rm>as</rm> M\n" +
+                "<rm>import</rm> Control.Monad <sp>(</sp><vi>liftM2</vi><sp>)</sp>\n" +
+                "<rm>import</rm> Control.Monad.Zip <rm>as</rm> Z\n" +
                 "\n" +
                 "<nc>{-\n" +
                 " - Multiline comment\n" +
@@ -64,27 +64,27 @@ public class HaskellColorSettingsPage implements ColorSettingsPage {
                 " -  -}\n" +
                 " -}</nc>\n" +
                 "\n" +
-                "<rd>class</rd> <ci>Fooable</ci> <vi>a</vi> <rd>where</rd>\n" +
+                "<rd>class</rd> Fooable <vi>a</vi> <rd>where</rd>\n" +
                 "    <vi>foo</vi> <ro>::</ro> <vi>a</vi> --^ Haddock comment\n" +
-                "           <ro>-></ro> <ci>String</ci>\n" +
+                "           <ro>-></ro> String\n" +
                 "\n" +
                 "-- Line comment.\n" +
                 "\n" +
-                "<rd>instance</rd> <ci>MonadZip</ci> <ci>Maybe</ci> <rd>where</rd>\n" +
+                "<rd>instance</rd> MonadZip Maybe <rd>where</rd>\n" +
                 "    <vi>mzip</vi> <ro>=</ro> <vi>liftM2</vi> <sp>(</sp><sp>,</sp><sp>)</sp>\n" +
                 "\n" +
-                "(<vs><~></vs>) <ro>::</ro> <ci>Maybe</ci> <vi>a</vi> <ro>-></ro> <ci>Maybe</ci> <vi>b</vi> <ro>-></ro> <ci>Maybe</ci> <sp>(</sp><vi>a</vi><sp>,</sp> <vi>b</vi><sp>)</sp>\n" +
+                "(<vs><~></vs>) <ro>::</ro> Maybe <vi>a</vi> <ro>-></ro> Maybe <vi>b</vi> <ro>-></ro> Maybe <sp>(</sp><vi>a</vi><sp>,</sp> <vi>b</vi><sp>)</sp>\n" +
                 "(<vs><~></vs>) <ro>=</ro> <vi>mzip</vi>\n" +
                 "\n" +
-                "<vi>bar</vi> <ro>::</ro> [<vi>a</vi>] <ro>-></ro> <ci>Int</ci> <ro>-></ro> <sp>[</sp><vi>a</vi><sp>]</sp>\n" +
+                "<vi>bar</vi> <ro>::</ro> [<vi>a</vi>] <ro>-></ro> Int <ro>-></ro> <sp>[</sp><vi>a</vi><sp>]</sp>\n" +
                 "<vi>bar</vi> <vi>xs</vi> 0 <ro>=</ro> <sp>[</sp><sp>]</sp>\n" +
                 "<vi>bar</vi> <vi>xs</vi> <vi>n</vi> <ro>=</ro> <vi>xs</vi> <vs>++</vs> <sp>(</sp><vi>bar</vi> <vi>xs</vi> <sp>(</sp><vi>n</vi> <vs>-</vs> 1<sp>)</sp><sp>)</sp>\n" +
                 "\n" +
-                "<vi>listToBool</vi> <ro>::</ro> <sp>[</sp><vi>a</vi><sp>]</sp> <ro>-></ro> <ci>Bool</ci>\n" +
-                "<vi>listToBool</vi> <sp>[</sp><sp>]</sp> <ro>=</ro> <ci>False</ci>\n" +
-                "<vi>listToBool</vi> <rv>_</rv> <ro>=</ro> <ci>True</ci>\n" +
+                "<vi>listToBool</vi> <ro>::</ro> <sp>[</sp><vi>a</vi><sp>]</sp> <ro>-></ro> Bool\n" +
+                "<vi>listToBool</vi> <sp>[</sp><sp>]</sp> <ro>=</ro> False\n" +
+                "<vi>listToBool</vi> <rv>_</rv> <ro>=</ro> True\n" +
                 "\n" +
-                "<vi>listToBool'</vi> <vi>xs</vi> <ro>=</ro> <re>if</re> <vi>length</vi> <vi>xs</vi> <vs>></vs> 0 <re>then</re> <ci>True</ci> <re>else</re> <ci>False</ci>\n" +
+                "<vi>listToBool'</vi> <vi>xs</vi> <ro>=</ro> <re>if</re> <vi>length</vi> <vi>xs</vi> <vs>></vs> 0 <re>then</re> True <re>else</re> False\n" +
                 "\n" +
                 "<vi>listToBool''</vi> <ro>=</ro> <vi>not</vi> <vs>.</vs> <vi>null</vi>\n" +
                 "\n" +
@@ -112,7 +112,6 @@ public class HaskellColorSettingsPage implements ColorSettingsPage {
         map.put("rm", HaskellSyntaxHighlighter.RESERVEDMETA);
         map.put("vs", HaskellSyntaxHighlighter.VARSYM);
         map.put("vi", HaskellSyntaxHighlighter.VARID);
-        map.put("ci", HaskellSyntaxHighlighter.CONID);
         map.put("iv", HaskellSyntaxHighlighter.INFIXVARID);
         map.put("nc", HaskellSyntaxHighlighter.NCOMMENT);
         map.put("ro", HaskellSyntaxHighlighter.RESERVEDOP);

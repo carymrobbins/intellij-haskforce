@@ -148,7 +148,7 @@ public class HaskellParser implements PsiParser {
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = lexeme(builder_, level_ + 1);
-    if (!result_) result_ = consumeToken(builder_, SPACE);
+    if (!result_) result_ = space(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -322,6 +322,12 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
+  // EOL
+  static boolean newline(PsiBuilder builder_, int level_) {
+    return consumeToken(builder_, EOL);
+  }
+
+  /* ********************************************************** */
   // openpragma {!closepragma (lexeme | space)} * closepragma
   public static boolean pragma(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "pragma")) return false;
@@ -374,7 +380,7 @@ public class HaskellParser implements PsiParser {
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = lexeme(builder_, level_ + 1);
-    if (!result_) result_ = consumeToken(builder_, SPACE);
+    if (!result_) result_ = space(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -673,6 +679,12 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
+  // LINE_WS
+  static boolean space(PsiBuilder builder_, int level_) {
+    return consumeToken(builder_, LINE_WS);
+  }
+
+  /* ********************************************************** */
   // '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}'
   public static boolean special(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "special")) return false;
@@ -833,14 +845,14 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // space | whiteEscapes
+  // space | newline
   public static boolean whitechar(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "whitechar")) return false;
-    if (!nextTokenIs(builder_, "<whitechar>", SPACE, WHITEESCAPES)) return false;
+    if (!nextTokenIs(builder_, "<whitechar>", EOL, LINE_WS)) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<whitechar>");
-    result_ = consumeToken(builder_, SPACE);
-    if (!result_) result_ = consumeToken(builder_, WHITEESCAPES);
+    result_ = space(builder_, level_ + 1);
+    if (!result_) result_ = newline(builder_, level_ + 1);
     exit_section_(builder_, level_, marker_, WHITECHAR, result_, false, null);
     return result_;
   }
@@ -885,7 +897,7 @@ public class HaskellParser implements PsiParser {
     if (!recursion_guard_(builder_, level_, "whitetoken")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, SPACE);
+    result_ = space(builder_, level_ + 1);
     if (!result_) result_ = whitechar(builder_, level_ + 1);
     if (!result_) result_ = consumeToken(builder_, COMMENT);
     if (!result_) result_ = ncomment(builder_, level_ + 1);
