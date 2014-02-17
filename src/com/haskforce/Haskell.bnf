@@ -93,6 +93,7 @@
     comment='regexp:--[^\^\r\n][^\r\n]*'
     haddock='regexp:--\^[^\r\n]*'
     dashes='regexp:--(-)*'
+    stringtoken='regexp:"(\\\s+\\|\\"|[^"\n])*"'
   ]
 }
 
@@ -102,10 +103,11 @@ program ::= {pragma (whitechar) *} * { whitespace | lexeme } *
 private lexeme ::= qinfixvarid | qvarid | qconid | qvarsym | qconsym
                  | literal | special | reservedop | reservedid
 private literal ::= floattoken | integertoken | chartoken | stringtoken
-stringtoken ::= doublequote { '\' WHITE_SPACE '\' | escapedDoublequote | charesc |
-                              !(doublequote | newline) (lexeme | space) } *
-                doublequote
-escapedDoublequote ::= '\' doublequote
+//stringtoken ::= doublequote { '\' WHITE_SPACE '\' | escapedDoublequote | charesc |
+//                              !(doublequote | newline) (lexeme | space)
+//                            } *
+//                doublequote
+//escapedDoublequote ::= '\' doublequote
 private whitespace ::= whitetoken {whitetoken} *
 private space ::= LINE_WS
 private newline ::= EOL

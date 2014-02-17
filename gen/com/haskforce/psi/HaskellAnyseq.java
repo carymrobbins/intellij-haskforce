@@ -31,7 +31,4 @@ public interface HaskellAnyseq extends PsiElement {
   @NotNull
   List<HaskellSpecial> getSpecialList();
 
-  @NotNull
-  List<HaskellStringtoken> getStringtokenList();
-
 }

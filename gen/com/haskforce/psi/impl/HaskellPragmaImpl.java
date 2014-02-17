@@ -72,12 +72,6 @@ public class HaskellPragmaImpl extends ASTWrapperPsiElement implements HaskellPr
 
   @Override
   @NotNull
-  public List<HaskellStringtoken> getStringtokenList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellStringtoken.class);
-  }
-
-  @Override
-  @NotNull
   public PsiElement getClosepragma() {
     return findNotNullChildByType(CLOSEPRAGMA);
   }

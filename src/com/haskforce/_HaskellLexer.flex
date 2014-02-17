@@ -32,6 +32,7 @@ FLOATTOKEN=([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))
 COMMENT=--[^\^\r\n][^\r\n]*
 HADDOCK=--\^[^\r\n]*
 DASHES=--(-)*
+STRINGTOKEN=\"(\\[ tnx0Bfr]+\\|\\\"|[^\"])*\"
 
 %%
 <YYINITIAL> {
@@ -78,7 +79,6 @@ DASHES=--(-)*
   "=>"                { return DOUBLEARROW; }
   "\\&"               { return NULLCHARACTER; }
   "class"             { return CLASSTOKEN; }
-  "WHITE_SPACE"       { return WHITE_SPACE; }
   "LINE_WS"           { return LINE_WS; }
   "EOL"               { return EOL; }
 
@@ -92,6 +92,7 @@ DASHES=--(-)*
   {COMMENT}           { return COMMENT; }
   {HADDOCK}           { return HADDOCK; }
   {DASHES}            { return DASHES; }
+  {STRINGTOKEN}       { return STRINGTOKEN; }
 
   [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }

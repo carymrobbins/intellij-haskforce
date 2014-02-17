@@ -32,9 +32,6 @@ public interface HaskellPragma extends PsiElement {
   List<HaskellSpecial> getSpecialList();
 
   @NotNull
-  List<HaskellStringtoken> getStringtokenList();
-
-  @NotNull
   PsiElement getClosepragma();
 
   @NotNull
