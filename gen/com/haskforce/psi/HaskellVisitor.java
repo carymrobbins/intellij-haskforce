@@ -15,6 +15,10 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitEscapedDoublequote(@NotNull HaskellEscapedDoublequote o) {
+    visitPsiElement(o);
+  }
+
   public void visitModulePrefix(@NotNull HaskellModulePrefix o) {
     visitPsiElement(o);
   }
@@ -76,6 +80,10 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitSpecial(@NotNull HaskellSpecial o) {
+    visitPsiElement(o);
+  }
+
+  public void visitStringtoken(@NotNull HaskellStringtoken o) {
     visitPsiElement(o);
   }
 

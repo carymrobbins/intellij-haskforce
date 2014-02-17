@@ -10,6 +10,7 @@ public interface HaskellTypes {
 
   IElementType ANYSEQ = new HaskellElementType("ANYSEQ");
   IElementType CONSYM = new HaskellElementType("CONSYM");
+  IElementType ESCAPED_DOUBLEQUOTE = new HaskellElementType("ESCAPED_DOUBLEQUOTE");
   IElementType MODULE_PREFIX = new HaskellElementType("MODULE_PREFIX");
   IElementType NCOMMENT = new HaskellElementType("NCOMMENT");
   IElementType PRAGMA = new HaskellElementType("PRAGMA");
@@ -26,6 +27,7 @@ public interface HaskellTypes {
   IElementType RESERVED_META = new HaskellElementType("RESERVED_META");
   IElementType RESERVED_VAR = new HaskellElementType("RESERVED_VAR");
   IElementType SPECIAL = new HaskellElementType("SPECIAL");
+  IElementType STRINGTOKEN = new HaskellElementType("STRINGTOKEN");
   IElementType SYMBOL = new HaskellElementType("SYMBOL");
   IElementType VARID = new HaskellElementType("VARID");
   IElementType VARSYM = new HaskellElementType("VARSYM");
@@ -82,9 +84,9 @@ public interface HaskellTypes {
   IElementType SEMICOLON = new HaskellTokenType(";");
   IElementType SINGLEQUOTE = new HaskellTokenType("'");
   IElementType SLASH = new HaskellTokenType("/");
-  IElementType STRINGTOKEN = new HaskellTokenType("stringtoken");
   IElementType TILDE = new HaskellTokenType("~");
   IElementType VARIDREGEXP = new HaskellTokenType("varidRegexp");
+  IElementType WHITE_SPACE = new HaskellTokenType("WHITE_SPACE");
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {
@@ -94,6 +96,9 @@ public interface HaskellTypes {
       }
       else if (type == CONSYM) {
         return new HaskellConsymImpl(node);
+      }
+      else if (type == ESCAPED_DOUBLEQUOTE) {
+        return new HaskellEscapedDoublequoteImpl(node);
       }
       else if (type == MODULE_PREFIX) {
         return new HaskellModulePrefixImpl(node);
@@ -142,6 +147,9 @@ public interface HaskellTypes {
       }
       else if (type == SPECIAL) {
         return new HaskellSpecialImpl(node);
+      }
+      else if (type == STRINGTOKEN) {
+        return new HaskellStringtokenImpl(node);
       }
       else if (type == SYMBOL) {
         return new HaskellSymbolImpl(node);

@@ -11,15 +11,21 @@ import static com.haskforce.psi.HaskellTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellAnyseqImpl extends ASTWrapperPsiElement implements HaskellAnyseq {
+public class HaskellStringtokenImpl extends ASTWrapperPsiElement implements HaskellStringtoken {
 
-  public HaskellAnyseqImpl(ASTNode node) {
+  public HaskellStringtokenImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitAnyseq(this);
+    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitStringtoken(this);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public List<HaskellEscapedDoublequote> getEscapedDoublequoteList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellEscapedDoublequote.class);
   }
 
   @Override

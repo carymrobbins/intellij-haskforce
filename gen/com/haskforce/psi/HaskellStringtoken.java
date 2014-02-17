@@ -5,7 +5,10 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellAnyseq extends PsiElement {
+public interface HaskellStringtoken extends PsiElement {
+
+  @NotNull
+  List<HaskellEscapedDoublequote> getEscapedDoublequoteList();
 
   @NotNull
   List<HaskellQconid> getQconidList();

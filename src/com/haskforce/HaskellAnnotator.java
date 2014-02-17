@@ -50,6 +50,12 @@ public class HaskellAnnotator implements Annotator {
             }
 
             @Override
+            public void visitStringtoken(@NotNull HaskellStringtoken o) {
+                super.visitStringtoken(o);
+                setHighlightingRecursive(o, holder, HaskellSyntaxHighlighter.STRING);
+            }
+
+            @Override
             public void visitReservedExpr(@NotNull HaskellReservedExpr o) {
                 super.visitReservedExpr(o);
                 setHighlighting(o, holder, HaskellSyntaxHighlighter.RESERVEDEXPR);

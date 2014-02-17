@@ -71,30 +71,30 @@ public class HaskellColorSettingsPage implements ColorSettingsPage {
                 "-- Line comment.\n" +
                 "\n" +
                 "<rd>instance</rd> MonadZip Maybe <rd>where</rd>\n" +
-                "    <vi>mzip</vi> <ro>=</ro> <vi>liftM2</vi> <sp>(</sp><sp>,</sp><sp>)</sp>\n" +
+                "    <vi>mzip</vi> = <vi>liftM2</vi> <sp>(</sp><sp>,</sp><sp>)</sp>\n" +
                 "\n" +
                 "(<vs><~></vs>) <ro>::</ro> Maybe <vi>a</vi> <ro>-></ro> Maybe <vi>b</vi> <ro>-></ro> Maybe <sp>(</sp><vi>a</vi><sp>,</sp> <vi>b</vi><sp>)</sp>\n" +
-                "(<vs><~></vs>) <ro>=</ro> <vi>mzip</vi>\n" +
+                "(<vs><~></vs>) = <vi>mzip</vi>\n" +
                 "\n" +
                 "<vi>bar</vi> <ro>::</ro> [<vi>a</vi>] <ro>-></ro> Int <ro>-></ro> <sp>[</sp><vi>a</vi><sp>]</sp>\n" +
-                "<vi>bar</vi> <vi>xs</vi> 0 <ro>=</ro> <sp>[</sp><sp>]</sp>\n" +
-                "<vi>bar</vi> <vi>xs</vi> <vi>n</vi> <ro>=</ro> <vi>xs</vi> <vs>++</vs> <sp>(</sp><vi>bar</vi> <vi>xs</vi> <sp>(</sp><vi>n</vi> <vs>-</vs> 1<sp>)</sp><sp>)</sp>\n" +
+                "<vi>bar</vi> <vi>xs</vi> 0 = <sp>[</sp><sp>]</sp>\n" +
+                "<vi>bar</vi> <vi>xs</vi> <vi>n</vi> = <vi>xs</vi> <vs>++</vs> <sp>(</sp><vi>bar</vi> <vi>xs</vi> <sp>(</sp><vi>n</vi> <vs>-</vs> 1<sp>)</sp><sp>)</sp>\n" +
                 "\n" +
                 "<vi>listToBool</vi> <ro>::</ro> <sp>[</sp><vi>a</vi><sp>]</sp> <ro>-></ro> Bool\n" +
-                "<vi>listToBool</vi> <sp>[</sp><sp>]</sp> <ro>=</ro> False\n" +
-                "<vi>listToBool</vi> <rv>_</rv> <ro>=</ro> True\n" +
+                "<vi>listToBool</vi> <sp>[</sp><sp>]</sp> = False\n" +
+                "<vi>listToBool</vi> <rv>_</rv> = True\n" +
                 "\n" +
-                "<vi>listToBool'</vi> <vi>xs</vi> <ro>=</ro> <re>if</re> <vi>length</vi> <vi>xs</vi> <vs>></vs> 0 <re>then</re> True <re>else</re> False\n" +
+                "<vi>listToBool'</vi> <vi>xs</vi> = <re>if</re> <vi>length</vi> <vi>xs</vi> <vs>></vs> 0 <re>then</re> True <re>else</re> False\n" +
                 "\n" +
-                "<vi>listToBool''</vi> <ro>=</ro> <vi>not</vi> <vs>.</vs> <vi>null</vi>\n" +
+                "<vi>listToBool''</vi> = <vi>not</vi> <vs>.</vs> <vi>null</vi>\n" +
                 "\n" +
-                "<vi>x</vi> <ro>=</ro> <sp>(</sp><vs>+</vs>1<sp>)</sp> <iv>`M.liftM`</iv> <sp>(</sp>Just 3<sp>)</sp>\n" +
+                "<vi>x</vi> = <sp>(</sp><vs>+</vs>1<sp>)</sp> <iv>`M.liftM`</iv> <sp>(</sp>Just 3<sp>)</sp>\n" +
                 "\n" +
-                "<vi>int</vi> <ro>=</ro> 1\n" +
-                "<vi>float</vi> <ro>=</ro> 1.2\n" +
-                "<vi>char</vi> <ro>=</ro> 'a'\n" +
-                "<vi>string</vi> <ro>=</ro> \"I'm a string.\"\n" +
-                "<vi>multiline</vi> <ro>=</ro> \"\\\n" +
+                "<vi>int</vi> = 1\n" +
+                "<vi>float</vi> = 1.2\n" +
+                "<vi>char</vi> = 'a'\n" +
+                "<vi>string</vi> = \"I'm a string.\"\n" +
+                "<vi>multiline</vi> = \"\\\n" +
                 "    \\This string \\\n" +
                 "    \\spans \\\"multiple\\\" \\\n" +
                 "    \\lines!\\\n" +
