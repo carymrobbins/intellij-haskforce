@@ -2,7 +2,7 @@
   <id>com.haskforce</id>
   <name>HaskForce</name>
   <version>1.0</version>
-  <vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>
+  <!--<vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>-->
 
   <description>Plugin for Haskell language support.</description>
 
@@ -30,10 +30,16 @@
   </project-components>
 
   <actions>
-    <!-- Add your actions here -->
+      <action id="Haskell.NewHaskellFile" class="com.haskforce.actions.CreateHaskellFileAction"
+              text="Haskell File" description="Create new Haskell file">
+          <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+      </action>
   </actions>
 
   <extensions defaultExtensionNs="com.intellij">
+      <internalFileTemplate name="Haskell Module"/>
+      <moduleType id="HASKELL_MODULE" implementationClass="com.haskforce.HaskellModuleType"/>
+      <sdkType implementation="com.haskforce.HaskellSdkType"/>
       <fileTypeFactory implementation="com.haskforce.HaskellFileTypeFactory"/>
       <lang.parserDefinition language="Haskell" implementationClass="com.haskforce.HaskellParserDefinition"/>
       <lang.syntaxHighlighterFactory key="Haskell" implementationClass="com.haskforce.HaskellSyntaxHighlighterFactory"/>
