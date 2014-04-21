@@ -1,0 +1,18 @@
+Haskell File
+  HaskellQvaridImpl(QVARID)
+    HaskellModulePrefixImpl(MODULE_PREFIX)
+      <empty list>
+    HaskellVaridImpl(VARID)
+      PsiElement(HaskellTokenType.varidRegexp)('main')
+  HaskellQvarsymImpl(QVARSYM)
+    HaskellModulePrefixImpl(MODULE_PREFIX)
+      <empty list>
+    HaskellVarsymImpl(VARSYM)
+      HaskellSymbolImpl(SYMBOL)
+        PsiElement(HaskellTokenType.=)('=')
+  HaskellQvaridImpl(QVARID)
+    HaskellModulePrefixImpl(MODULE_PREFIX)
+      <empty list>
+    HaskellVaridImpl(VARID)
+      PsiElement(HaskellTokenType.varidRegexp)('print')
+  PsiElement(HaskellTokenType.stringtoken)('"Hello, World!"')
