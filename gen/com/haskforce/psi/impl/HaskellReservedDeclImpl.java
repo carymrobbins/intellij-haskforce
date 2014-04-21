@@ -22,4 +22,10 @@ public class HaskellReservedDeclImpl extends ASTWrapperPsiElement implements Has
     else super.accept(visitor);
   }
 
+  @Override
+  @Nullable
+  public PsiElement getClasstoken() {
+    return findChildByType(CLASSTOKEN);
+  }
+
 }

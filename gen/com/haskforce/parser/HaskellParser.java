@@ -607,6 +607,7 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // 'as' | 'import' | 'infix' | 'infixl' | 'infixr' | 'qualified'
+  //                | 'hiding'
   public static boolean reservedMeta(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "reservedMeta")) return false;
     boolean result_ = false;
@@ -617,6 +618,7 @@ public class HaskellParser implements PsiParser {
     if (!result_) result_ = consumeToken(builder_, "infixl");
     if (!result_) result_ = consumeToken(builder_, "infixr");
     if (!result_) result_ = consumeToken(builder_, "qualified");
+    if (!result_) result_ = consumeToken(builder_, "hiding");
     exit_section_(builder_, level_, marker_, RESERVED_META, result_, false, null);
     return result_;
   }

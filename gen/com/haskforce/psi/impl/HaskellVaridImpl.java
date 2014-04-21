@@ -22,4 +22,10 @@ public class HaskellVaridImpl extends ASTWrapperPsiElement implements HaskellVar
     else super.accept(visitor);
   }
 
+  @Override
+  @NotNull
+  public PsiElement getVaridRegexp() {
+    return findNotNullChildByType(VARIDREGEXP);
+  }
+
 }

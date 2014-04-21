@@ -19,10 +19,8 @@ Haskell File
     HaskellModulePrefixImpl(MODULE_PREFIX)
       <empty list>
     PsiElement(HaskellTokenType.conid)('Prelude')
-  HaskellQvaridImpl(QVARID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
-    HaskellVaridImpl(VARID)
+  HaskellReservedidImpl(RESERVEDID)
+    HaskellReservedMetaImpl(RESERVED_META)
       PsiElement(HaskellTokenType.varidRegexp)('hiding')
   HaskellSpecialImpl(SPECIAL)
     PsiElement(HaskellTokenType.()('(')

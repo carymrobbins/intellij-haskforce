@@ -10,4 +10,7 @@ public interface HaskellReservedop extends PsiElement {
   @Nullable
   HaskellReservedopWithoutCons getReservedopWithoutCons();
 
+  @Nullable
+  PsiElement getColon();
+
 }
