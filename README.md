@@ -27,3 +27,16 @@ Building the plugin
   * Go to Preferences.  Below the IDE Settings section locate JFlex.  Set the path and skeleton to the
     idea/tools/lexer files.
 1. Set the project SDK to the IDEA SDK.
+
+Testing the plugin
+--------
+
+To run the tests:
+
+  Run HaskellTestCase in tests/com/haskforce.
+
+To add more tests:
+
+  Edit Haskell*Test.java files to add more tests of the same kind that already
+  exists. Edit HaskellTestCase.java if you need to add tests of a different
+  kind.
