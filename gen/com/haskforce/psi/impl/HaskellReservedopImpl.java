@@ -28,4 +28,10 @@ public class HaskellReservedopImpl extends ASTWrapperPsiElement implements Haske
     return findChildByClass(HaskellReservedopWithoutCons.class);
   }
 
+  @Override
+  @Nullable
+  public PsiElement getColon() {
+    return findChildByType(COLON);
+  }
+
 }

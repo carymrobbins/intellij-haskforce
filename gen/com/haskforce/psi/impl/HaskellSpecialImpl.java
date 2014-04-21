@@ -22,4 +22,52 @@ public class HaskellSpecialImpl extends ASTWrapperPsiElement implements HaskellS
     else super.accept(visitor);
   }
 
+  @Override
+  @Nullable
+  public PsiElement getComma() {
+    return findChildByType(COMMA);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getLbrace() {
+    return findChildByType(LBRACE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getLbracket() {
+    return findChildByType(LBRACKET);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getLparen() {
+    return findChildByType(LPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRbrace() {
+    return findChildByType(RBRACE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRbracket() {
+    return findChildByType(RBRACKET);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRparen() {
+    return findChildByType(RPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getSemicolon() {
+    return findChildByType(SEMICOLON);
+  }
+
 }

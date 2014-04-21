@@ -7,4 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellReservedDecl extends PsiElement {
 
+  @Nullable
+  PsiElement getClasstoken();
+
 }

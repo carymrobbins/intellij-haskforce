@@ -7,4 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellVarid extends PsiElement {
 
+  @NotNull
+  PsiElement getVaridRegexp();
+
 }

@@ -7,4 +7,28 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellSpecial extends PsiElement {
 
+  @Nullable
+  PsiElement getComma();
+
+  @Nullable
+  PsiElement getLbrace();
+
+  @Nullable
+  PsiElement getLbracket();
+
+  @Nullable
+  PsiElement getLparen();
+
+  @Nullable
+  PsiElement getRbrace();
+
+  @Nullable
+  PsiElement getRbracket();
+
+  @Nullable
+  PsiElement getRparen();
+
+  @Nullable
+  PsiElement getSemicolon();
+
 }
