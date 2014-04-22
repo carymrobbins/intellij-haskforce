@@ -46,7 +46,6 @@ public interface HaskellTypes {
   IElementType COMMA = new HaskellTokenType(",");
   IElementType COMMENT = new HaskellTokenType("comment");
   IElementType CONID = new HaskellTokenType("conid");
-  IElementType DASHES = new HaskellTokenType("dashes");
   IElementType DOLLAR = new HaskellTokenType("$");
   IElementType DOUBLEARROW = new HaskellTokenType("=>");
   IElementType DOUBLECOLON = new HaskellTokenType("::");

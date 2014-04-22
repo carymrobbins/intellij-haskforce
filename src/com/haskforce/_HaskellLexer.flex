@@ -29,9 +29,8 @@ CONID=[A-Z][a-zA-Z_0-9']*
 CHARTOKEN='(\\.|[^'])'
 INTEGERTOKEN=(0(o|O)[0-7]+|0(x|X)[0-9a-fA-F]+|[0-9]+)
 FLOATTOKEN=([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))
-COMMENT=--[^\^\r\n][^\r\n]*
+COMMENT=--([^\^\r\n][^\r\n]*|[\r\n])
 HADDOCK=--\^[^\r\n]*
-DASHES=--(-)*
 STRINGTOKEN=\"(\\\n[ \t\n\x0B\f\r]*\\|\\\"|[^\"\n])*\"
 
 %%
@@ -91,7 +90,6 @@ STRINGTOKEN=\"(\\\n[ \t\n\x0B\f\r]*\\|\\\"|[^\"\n])*\"
   {FLOATTOKEN}        { return FLOATTOKEN; }
   {COMMENT}           { return COMMENT; }
   {HADDOCK}           { return HADDOCK; }
-  {DASHES}            { return DASHES; }
   {STRINGTOKEN}       { return STRINGTOKEN; }
 
   [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
