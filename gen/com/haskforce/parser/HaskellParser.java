@@ -736,7 +736,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // !(reservedid | dashes) varidRegexp
+  // !reservedid varidRegexp
   public static boolean varid(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varid")) return false;
     if (!nextTokenIs(builder_, VARIDREGEXP)) return false;
@@ -748,24 +748,13 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // !(reservedid | dashes)
+  // !reservedid
   private static boolean varid_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varid_0")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NOT_, null);
-    result_ = !varid_0_0(builder_, level_ + 1);
+    result_ = !reservedid(builder_, level_ + 1);
     exit_section_(builder_, level_, marker_, null, result_, false, null);
-    return result_;
-  }
-
-  // reservedid | dashes
-  private static boolean varid_0_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "varid_0_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = reservedid(builder_, level_ + 1);
-    if (!result_) result_ = consumeToken(builder_, DASHES);
-    exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 

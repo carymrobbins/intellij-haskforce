@@ -114,7 +114,7 @@ anyseq ::= !( opencom | closecom ) (lexeme | space) *
 special ::= '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}'
 symbol ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '=' | '>' | '?' | '@'
          | '\' | '^' | '|' | '-' | '~' | ':'
-varid ::= !(reservedid | dashes) varidRegexp
+varid ::= !reservedid varidRegexp
 reservedExpr ::= 'case' | 'do' | 'else' | 'if' | 'in' | 'let' | 'of' | 'then'
 reservedDecl ::= 'class' | 'data' | 'default' | 'deriving' | 'foreign' | 'instance'
                | 'module' | 'newtype' | 'type' | 'where'

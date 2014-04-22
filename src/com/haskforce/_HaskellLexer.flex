@@ -32,7 +32,7 @@ FLOATTOKEN=([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))
 COMMENT=--[^\^\r\n][^\r\n]*
 HADDOCK=--\^[^\r\n]*
 DASHES=--(-)*
-STRINGTOKEN=\"(\\\n[ tnx0Bfr]*\\|\\\"|[^\"\n])*\"
+STRINGTOKEN=\"(\\\n[ \t\n\x0B\f\r]*\\|\\\"|[^\"\n])*\"
 
 %%
 <YYINITIAL> {
