@@ -81,6 +81,7 @@ public interface HaskellTypes {
   IElementType SINGLEQUOTE = new HaskellTokenType("'");
   IElementType SLASH = new HaskellTokenType("/");
   IElementType STRINGTOKEN = new HaskellTokenType("stringtoken");
+  IElementType THQUOTE = new HaskellTokenType("''");
   IElementType TILDE = new HaskellTokenType("~");
   IElementType VARIDREGEXP = new HaskellTokenType("varidRegexp");
 

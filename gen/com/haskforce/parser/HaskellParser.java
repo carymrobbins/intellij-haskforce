@@ -673,7 +673,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}'
+  // '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}' | thquote
   public static boolean special(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "special")) return false;
     boolean result_ = false;
@@ -686,6 +686,7 @@ public class HaskellParser implements PsiParser {
     if (!result_) result_ = consumeToken(builder_, RBRACKET);
     if (!result_) result_ = consumeToken(builder_, LBRACE);
     if (!result_) result_ = consumeToken(builder_, RBRACE);
+    if (!result_) result_ = consumeToken(builder_, THQUOTE);
     exit_section_(builder_, level_, marker_, SPECIAL, result_, false, null);
     return result_;
   }

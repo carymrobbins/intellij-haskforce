@@ -57,6 +57,7 @@
     openpragma='{-#'
     closepragma='#-}'
     doublequote='regexp:"'
+    thquote="''"
     singlequote="'"
     exlamation='!'
     hash='#'
@@ -110,7 +111,7 @@ whitechar ::= space | newline
 pragma ::= openpragma {!closepragma (lexeme | space)} * closepragma
 ncomment ::= opencom anyseq? {ncomment anyseq?} * closecom
 anyseq ::= !( opencom | closecom ) (lexeme | space) *
-special ::= '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}'
+special ::= '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}' | thquote
 symbol ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '=' | '>' | '?' | '@'
          | '\' | '^' | '|' | '-' | '~' | ':'
 varid ::= !reservedid varidRegexp

@@ -70,4 +70,10 @@ public class HaskellSpecialImpl extends ASTWrapperPsiElement implements HaskellS
     return findChildByType(SEMICOLON);
   }
 
+  @Override
+  @Nullable
+  public PsiElement getThquote() {
+    return findChildByType(THQUOTE);
+  }
+
 }
