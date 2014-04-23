@@ -25,14 +25,14 @@ package com.haskforce.parser;
 import com.haskforce.HaskellParserDefinition;
 
 public class HaskellParserTest extends HaskellParserTestBase {
-  public HaskellParserTest() {
-    super("parser", "hs", new HaskellParserDefinition());
-  }
+    public HaskellParserTest() {
+        super("parser", "hs", new HaskellParserDefinition());
+    }
 
-  public void testHello1()        { doTest(true, false); }
-  public void testHello2()        { doTest(true, false); }
-  public void testImport1()       { doTest(true, false); }
-  public void testComment1()      { doTest(true, false); }
-  public void testLambda1()       { doTest(true, false); }
-  public void testPragma00001()   { doTest(true, false); }
+    public void testHello00001()        { doTest(true, false); }
+    public void testHello00002()        { doTest(true, false); }
+    public void testImport00001()       { doTest(true, false); }
+    public void testComment00001()      { doTest(true, false); }
+    public void testLambda00001()       { doTest(true, false); }
+    public void testPragma00001()       { doTest(true, false); }
 }
