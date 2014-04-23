@@ -51,6 +51,7 @@ STRINGTOKEN=\"(\\\n[ \t\n\x0B\f\r]*\\|\\\"|[^\"\n])*\"
   "-}"                { return CLOSECOM; }
   "{-#"               { return OPENPRAGMA; }
   "#-}"               { return CLOSEPRAGMA; }
+  "''"                { return THQUOTE; }
   "'"                 { return SINGLEQUOTE; }
   "!"                 { return EXLAMATION; }
   "#"                 { return HASH; }

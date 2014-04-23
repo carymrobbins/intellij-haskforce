@@ -31,4 +31,7 @@ public interface HaskellSpecial extends PsiElement {
   @Nullable
   PsiElement getSemicolon();
 
+  @Nullable
+  PsiElement getThquote();
+
 }

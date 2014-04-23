@@ -35,6 +35,10 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitQinfixconid(@NotNull HaskellQinfixconid o) {
+    visitPsiElement(o);
+  }
+
   public void visitQinfixvarid(@NotNull HaskellQinfixvarid o) {
     visitPsiElement(o);
   }

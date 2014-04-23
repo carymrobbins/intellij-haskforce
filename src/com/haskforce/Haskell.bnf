@@ -57,6 +57,7 @@
     openpragma='{-#'
     closepragma='#-}'
     doublequote='regexp:"'
+    thquote="''"
     singlequote="'"
     exlamation='!'
     hash='#'
@@ -99,8 +100,9 @@
 // Haskell 2010 Report - http://www.haskell.org/onlinereport/haskell2010/haskellch2.html#x7-140002
 
 program ::= {pragma (whitechar) *} * { whitespace | lexeme } *
-private lexeme ::= qinfixvarid | qvarid | qconid | qvarsym | qconsym
-                 | literal | special | reservedop | reservedid | pragma
+private lexeme ::= qinfixvarid | qvarid | qinfixconid |qconid | qvarsym
+                 | qconsym | literal | special | reservedop | reservedid
+                 | pragma
 private literal ::= floattoken | integertoken | chartoken | stringtoken
 private whitespace ::= whitetoken {whitetoken} *
 private space ::= LINE_WS
@@ -109,8 +111,8 @@ private whitetoken ::= space | whitechar | comment | ncomment | haddock
 whitechar ::= space | newline
 pragma ::= openpragma {!closepragma (lexeme | space)} * closepragma
 ncomment ::= opencom anyseq? {ncomment anyseq?} * closecom
-anyseq ::= !( opencom | closecom ) (lexeme | space) *
-special ::= '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}'
+anyseq ::= !( opencom | closecom ) (lexeme | whitechar) *
+special ::= '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}' | thquote
 symbol ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '=' | '>' | '?' | '@'
          | '\' | '^' | '|' | '-' | '~' | ':'
 varid ::= !reservedid varidRegexp
@@ -132,5 +134,6 @@ modulePrefix ::= {conid '.'} *
 qvarid ::= [modulePrefix] varid
 qinfixvarid ::= '`' [modulePrefix] varid '`'
 qconid ::= [modulePrefix] conid
+qinfixconid ::= '`' [modulePrefix] conid '`'
 qvarsym ::= [modulePrefix] varsym
 qconsym ::= [modulePrefix] consym

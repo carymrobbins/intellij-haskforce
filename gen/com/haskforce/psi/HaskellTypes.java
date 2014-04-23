@@ -15,6 +15,7 @@ public interface HaskellTypes {
   IElementType PRAGMA = new HaskellElementType("PRAGMA");
   IElementType QCONID = new HaskellElementType("QCONID");
   IElementType QCONSYM = new HaskellElementType("QCONSYM");
+  IElementType QINFIXCONID = new HaskellElementType("QINFIXCONID");
   IElementType QINFIXVARID = new HaskellElementType("QINFIXVARID");
   IElementType QVARID = new HaskellElementType("QVARID");
   IElementType QVARSYM = new HaskellElementType("QVARSYM");
@@ -81,6 +82,7 @@ public interface HaskellTypes {
   IElementType SINGLEQUOTE = new HaskellTokenType("'");
   IElementType SLASH = new HaskellTokenType("/");
   IElementType STRINGTOKEN = new HaskellTokenType("stringtoken");
+  IElementType THQUOTE = new HaskellTokenType("''");
   IElementType TILDE = new HaskellTokenType("~");
   IElementType VARIDREGEXP = new HaskellTokenType("varidRegexp");
 
@@ -107,6 +109,9 @@ public interface HaskellTypes {
       }
       else if (type == QCONSYM) {
         return new HaskellQconsymImpl(node);
+      }
+      else if (type == QINFIXCONID) {
+        return new HaskellQinfixconidImpl(node);
       }
       else if (type == QINFIXVARID) {
         return new HaskellQinfixvaridImpl(node);

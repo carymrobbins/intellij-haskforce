@@ -17,6 +17,9 @@ public interface HaskellPragma extends PsiElement {
   List<HaskellQconsym> getQconsymList();
 
   @NotNull
+  List<HaskellQinfixconid> getQinfixconidList();
+
+  @NotNull
   List<HaskellQinfixvarid> getQinfixvaridList();
 
   @NotNull
