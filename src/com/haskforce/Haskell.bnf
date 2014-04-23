@@ -84,13 +84,13 @@
     doublearrow='=>'
     nullCharacter='\&'
     classtoken='class'
-    charesc="regexp:\\(a|b|f|n|r|t|v|\\|\||'|&)"
     varidRegexp="regexp:[a-z_][a-zA-Z_0-9']*"
     conid="regexp:[A-Z][a-zA-Z_0-9']*"
     chartoken="regexp:'(\\.|[^'])'"
     integertoken="regexp:(0(o|O)[0-7]+|0(x|X)[0-9a-fA-F]+|[0-9]+)"
     floattoken="regexp:([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))"
     comment='regexp:--([^\^\r\n][^\r\n]*|[\r\n])'
+    dashes='regexp:--(-)?'
     haddock='regexp:--\^[^\r\n]*'
     stringtoken='regexp:"(\\\n\s*\\|\\"|[^"\n])*"'
   ]
@@ -100,7 +100,7 @@
 
 program ::= {pragma (whitechar) *} * { whitespace | lexeme } *
 private lexeme ::= qinfixvarid | qvarid | qconid | qvarsym | qconsym
-                 | literal | special | reservedop | reservedid
+                 | literal | special | reservedop | reservedid | pragma
 private literal ::= floattoken | integertoken | chartoken | stringtoken
 private whitespace ::= whitetoken {whitetoken} *
 private space ::= LINE_WS
@@ -122,11 +122,10 @@ reservedMeta ::= 'as' | 'import' | 'infix' | 'infixl' | 'infixr' | 'qualified'
 reservedVar ::= '_'
 reservedid  ::= reservedExpr | reservedDecl | reservedMeta | reservedVar
 
-varsym ::= !(reservedop whitetoken) ( !':' symbol {symbol} * )
-consym ::= !reservedopWithoutCons ( ':' {symbol} *)
+varsym ::= !(reservedop whitetoken | dashes ) ( !':' symbol {symbol} * )
+consym ::= !reservedop ( ':' {symbol} *)
 
-reservedopWithoutCons ::= '..' | '::' | '=' | '\' | '|' | '<-' | '->' | '@' | '~' | '=>'
-reservedop ::= ':' | reservedopWithoutCons
+reservedop ::= '..' | '::' | '=' | '\' | '|' | '<-' | '->' | '@' | '~' | '=>'
 
 modulePrefix ::= {conid '.'} *
 

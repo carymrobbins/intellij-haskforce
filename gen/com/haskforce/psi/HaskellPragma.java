@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface HaskellPragma extends PsiElement {
 
   @NotNull
+  List<HaskellPragma> getPragmaList();
+
+  @NotNull
   List<HaskellQconid> getQconidList();
 
   @NotNull

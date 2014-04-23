@@ -68,9 +68,6 @@ public class HaskellParser implements PsiParser {
     else if (root_ == RESERVEDOP) {
       result_ = reservedop(builder_, 0);
     }
-    else if (root_ == RESERVEDOP_WITHOUT_CONS) {
-      result_ = reservedopWithoutCons(builder_, 0);
-    }
     else if (root_ == SPECIAL) {
       result_ = special(builder_, 0);
     }
@@ -154,7 +151,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // !reservedopWithoutCons ( ':' {symbol} *)
+  // !reservedop ( ':' {symbol} *)
   public static boolean consym(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "consym")) return false;
     if (!nextTokenIs(builder_, COLON)) return false;
@@ -166,12 +163,12 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // !reservedopWithoutCons
+  // !reservedop
   private static boolean consym_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "consym_0")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NOT_, null);
-    result_ = !reservedopWithoutCons(builder_, level_ + 1);
+    result_ = !reservedop(builder_, level_ + 1);
     exit_section_(builder_, level_, marker_, null, result_, false, null);
     return result_;
   }
@@ -211,7 +208,7 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // qinfixvarid | qvarid | qconid | qvarsym | qconsym
-  //                  | literal | special | reservedop | reservedid
+  //                  | literal | special | reservedop | reservedid | pragma
   static boolean lexeme(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexeme")) return false;
     boolean result_ = false;
@@ -225,6 +222,7 @@ public class HaskellParser implements PsiParser {
     if (!result_) result_ = special(builder_, level_ + 1);
     if (!result_) result_ = reservedop(builder_, level_ + 1);
     if (!result_) result_ = reservedid(builder_, level_ + 1);
+    if (!result_) result_ = pragma(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -649,23 +647,11 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // ':' | reservedopWithoutCons
+  // '..' | '::' | '=' | '\' | '|' | '<-' | '->' | '@' | '~' | '=>'
   public static boolean reservedop(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "reservedop")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<reservedop>");
-    result_ = consumeToken(builder_, COLON);
-    if (!result_) result_ = reservedopWithoutCons(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, RESERVEDOP, result_, false, null);
-    return result_;
-  }
-
-  /* ********************************************************** */
-  // '..' | '::' | '=' | '\' | '|' | '<-' | '->' | '@' | '~' | '=>'
-  public static boolean reservedopWithoutCons(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "reservedopWithoutCons")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<reservedop without cons>");
     result_ = consumeToken(builder_, DOUBLEPERIOD);
     if (!result_) result_ = consumeToken(builder_, DOUBLECOLON);
     if (!result_) result_ = consumeToken(builder_, EQUALS);
@@ -676,7 +662,7 @@ public class HaskellParser implements PsiParser {
     if (!result_) result_ = consumeToken(builder_, AMPERSAT);
     if (!result_) result_ = consumeToken(builder_, TILDE);
     if (!result_) result_ = consumeToken(builder_, DOUBLEARROW);
-    exit_section_(builder_, level_, marker_, RESERVEDOP_WITHOUT_CONS, result_, false, null);
+    exit_section_(builder_, level_, marker_, RESERVEDOP, result_, false, null);
     return result_;
   }
 
@@ -759,7 +745,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // !(reservedop whitetoken) ( !':' symbol {symbol} * )
+  // !(reservedop whitetoken | dashes ) ( !':' symbol {symbol} * )
   public static boolean varsym(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varsym")) return false;
     boolean result_ = false;
@@ -770,7 +756,7 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // !(reservedop whitetoken)
+  // !(reservedop whitetoken | dashes )
   private static boolean varsym_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varsym_0")) return false;
     boolean result_ = false;
@@ -780,9 +766,20 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // reservedop whitetoken
+  // reservedop whitetoken | dashes
   private static boolean varsym_0_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varsym_0_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = varsym_0_0_0(builder_, level_ + 1);
+    if (!result_) result_ = consumeToken(builder_, DASHES);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // reservedop whitetoken
+  private static boolean varsym_0_0_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "varsym_0_0_0")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = reservedop(builder_, level_ + 1);
