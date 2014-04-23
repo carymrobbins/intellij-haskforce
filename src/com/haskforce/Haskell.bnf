@@ -111,7 +111,7 @@ private whitetoken ::= space | whitechar | comment | ncomment | haddock
 whitechar ::= space | newline
 pragma ::= openpragma {!closepragma (lexeme | space)} * closepragma
 ncomment ::= opencom anyseq? {ncomment anyseq?} * closecom
-anyseq ::= !( opencom | closecom ) (lexeme | space) *
+anyseq ::= !( opencom | closecom ) (lexeme | whitechar) *
 special ::= '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}' | thquote
 symbol ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '=' | '>' | '?' | '@'
          | '\' | '^' | '|' | '-' | '~' | ':'

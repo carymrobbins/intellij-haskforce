@@ -82,4 +82,10 @@ public class HaskellAnyseqImpl extends ASTWrapperPsiElement implements HaskellAn
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellSpecial.class);
   }
 
+  @Override
+  @NotNull
+  public List<HaskellWhitechar> getWhitecharList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellWhitechar.class);
+  }
+
 }
