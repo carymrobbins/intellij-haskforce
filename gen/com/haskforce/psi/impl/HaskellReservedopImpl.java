@@ -24,14 +24,62 @@ public class HaskellReservedopImpl extends ASTWrapperPsiElement implements Haske
 
   @Override
   @Nullable
-  public HaskellReservedopWithoutCons getReservedopWithoutCons() {
-    return findChildByClass(HaskellReservedopWithoutCons.class);
+  public PsiElement getAmpersat() {
+    return findChildByType(AMPERSAT);
   }
 
   @Override
   @Nullable
-  public PsiElement getColon() {
-    return findChildByType(COLON);
+  public PsiElement getBackslash() {
+    return findChildByType(BACKSLASH);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getDoublearrow() {
+    return findChildByType(DOUBLEARROW);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getDoublecolon() {
+    return findChildByType(DOUBLECOLON);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getDoubleperiod() {
+    return findChildByType(DOUBLEPERIOD);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getEquals() {
+    return findChildByType(EQUALS);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getLeftarrow() {
+    return findChildByType(LEFTARROW);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getPipe() {
+    return findChildByType(PIPE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRightarrow() {
+    return findChildByType(RIGHTARROW);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getTilde() {
+    return findChildByType(TILDE);
   }
 
 }

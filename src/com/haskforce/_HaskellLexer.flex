@@ -23,13 +23,13 @@ LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 
 DOUBLEQUOTE=\"
-CHARESC=\\(a|b|f|n|r|t|v|\\|\||'|&)
 VARIDREGEXP=[a-z_][a-zA-Z_0-9']*
 CONID=[A-Z][a-zA-Z_0-9']*
 CHARTOKEN='(\\.|[^'])'
 INTEGERTOKEN=(0(o|O)[0-7]+|0(x|X)[0-9a-fA-F]+|[0-9]+)
 FLOATTOKEN=([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))
 COMMENT=--([^\^\r\n][^\r\n]*|[\r\n])
+DASHES=--(-)?
 HADDOCK=--\^[^\r\n]*
 STRINGTOKEN=\"(\\\n[ \t\n\x0B\f\r]*\\|\\\"|[^\"\n])*\"
 
@@ -82,13 +82,13 @@ STRINGTOKEN=\"(\\\n[ \t\n\x0B\f\r]*\\|\\\"|[^\"\n])*\"
   "EOL"               { return EOL; }
 
   {DOUBLEQUOTE}       { return DOUBLEQUOTE; }
-  {CHARESC}           { return CHARESC; }
   {VARIDREGEXP}       { return VARIDREGEXP; }
   {CONID}             { return CONID; }
   {CHARTOKEN}         { return CHARTOKEN; }
   {INTEGERTOKEN}      { return INTEGERTOKEN; }
   {FLOATTOKEN}        { return FLOATTOKEN; }
   {COMMENT}           { return COMMENT; }
+  {DASHES}            { return DASHES; }
   {HADDOCK}           { return HADDOCK; }
   {STRINGTOKEN}       { return STRINGTOKEN; }
 

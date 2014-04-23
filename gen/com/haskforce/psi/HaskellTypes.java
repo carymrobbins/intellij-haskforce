@@ -20,7 +20,6 @@ public interface HaskellTypes {
   IElementType QVARSYM = new HaskellElementType("QVARSYM");
   IElementType RESERVEDID = new HaskellElementType("RESERVEDID");
   IElementType RESERVEDOP = new HaskellElementType("RESERVEDOP");
-  IElementType RESERVEDOP_WITHOUT_CONS = new HaskellElementType("RESERVEDOP_WITHOUT_CONS");
   IElementType RESERVED_DECL = new HaskellElementType("RESERVED_DECL");
   IElementType RESERVED_EXPR = new HaskellElementType("RESERVED_EXPR");
   IElementType RESERVED_META = new HaskellElementType("RESERVED_META");
@@ -37,7 +36,6 @@ public interface HaskellTypes {
   IElementType BACKSLASH = new HaskellTokenType("\\");
   IElementType BACKTICK = new HaskellTokenType("`");
   IElementType CARET = new HaskellTokenType("^");
-  IElementType CHARESC = new HaskellTokenType("charesc");
   IElementType CHARTOKEN = new HaskellTokenType("chartoken");
   IElementType CLASSTOKEN = new HaskellTokenType("class");
   IElementType CLOSECOM = new HaskellTokenType("-}");
@@ -46,6 +44,7 @@ public interface HaskellTypes {
   IElementType COMMA = new HaskellTokenType(",");
   IElementType COMMENT = new HaskellTokenType("comment");
   IElementType CONID = new HaskellTokenType("conid");
+  IElementType DASHES = new HaskellTokenType("dashes");
   IElementType DOLLAR = new HaskellTokenType("$");
   IElementType DOUBLEARROW = new HaskellTokenType("=>");
   IElementType DOUBLECOLON = new HaskellTokenType("::");
@@ -123,9 +122,6 @@ public interface HaskellTypes {
       }
       else if (type == RESERVEDOP) {
         return new HaskellReservedopImpl(node);
-      }
-      else if (type == RESERVEDOP_WITHOUT_CONS) {
-        return new HaskellReservedopWithoutConsImpl(node);
       }
       else if (type == RESERVED_DECL) {
         return new HaskellReservedDeclImpl(node);
