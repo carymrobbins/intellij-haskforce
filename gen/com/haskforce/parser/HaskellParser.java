@@ -41,6 +41,9 @@ public class HaskellParser implements PsiParser {
     else if (root_ == QCONSYM) {
       result_ = qconsym(builder_, 0);
     }
+    else if (root_ == QINFIXCONID) {
+      result_ = qinfixconid(builder_, 0);
+    }
     else if (root_ == QINFIXVARID) {
       result_ = qinfixvarid(builder_, 0);
     }
@@ -207,14 +210,16 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // qinfixvarid | qvarid | qconid | qvarsym | qconsym
-  //                  | literal | special | reservedop | reservedid | pragma
+  // qinfixvarid | qvarid | qinfixconid |qconid | qvarsym
+  //                  | qconsym | literal | special | reservedop | reservedid
+  //                  | pragma
   static boolean lexeme(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexeme")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = qinfixvarid(builder_, level_ + 1);
     if (!result_) result_ = qvarid(builder_, level_ + 1);
+    if (!result_) result_ = qinfixconid(builder_, level_ + 1);
     if (!result_) result_ = qconid(builder_, level_ + 1);
     if (!result_) result_ = qvarsym(builder_, level_ + 1);
     if (!result_) result_ = qconsym(builder_, level_ + 1);
@@ -499,6 +504,28 @@ public class HaskellParser implements PsiParser {
   // [modulePrefix]
   private static boolean qconsym_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qconsym_0")) return false;
+    modulePrefix(builder_, level_ + 1);
+    return true;
+  }
+
+  /* ********************************************************** */
+  // '`' [modulePrefix] conid '`'
+  public static boolean qinfixconid(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "qinfixconid")) return false;
+    if (!nextTokenIs(builder_, BACKTICK)) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, BACKTICK);
+    result_ = result_ && qinfixconid_1(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, CONID);
+    result_ = result_ && consumeToken(builder_, BACKTICK);
+    exit_section_(builder_, marker_, QINFIXCONID, result_);
+    return result_;
+  }
+
+  // [modulePrefix]
+  private static boolean qinfixconid_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "qinfixconid_1")) return false;
     modulePrefix(builder_, level_ + 1);
     return true;
   }

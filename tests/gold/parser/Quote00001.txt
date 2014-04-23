@@ -1,0 +1,41 @@
+Haskell File
+  HaskellReservedidImpl(RESERVEDID)
+    HaskellReservedDeclImpl(RESERVED_DECL)
+      PsiElement(HaskellTokenType.varidRegexp)('module')
+  HaskellQconidImpl(QCONID)
+    HaskellModulePrefixImpl(MODULE_PREFIX)
+      <empty list>
+    PsiElement(HaskellTokenType.conid)('Quote00001')
+  HaskellReservedidImpl(RESERVEDID)
+    HaskellReservedDeclImpl(RESERVED_DECL)
+      PsiElement(HaskellTokenType.varidRegexp)('where')
+  HaskellQvaridImpl(QVARID)
+    HaskellModulePrefixImpl(MODULE_PREFIX)
+      <empty list>
+    HaskellVaridImpl(VARID)
+      PsiElement(HaskellTokenType.varidRegexp)('f')
+  HaskellQvarsymImpl(QVARSYM)
+    HaskellModulePrefixImpl(MODULE_PREFIX)
+      <empty list>
+    HaskellVarsymImpl(VARSYM)
+      HaskellSymbolImpl(SYMBOL)
+        PsiElement(HaskellTokenType.=)('=')
+  HaskellQvaridImpl(QVARID)
+    HaskellModulePrefixImpl(MODULE_PREFIX)
+      <empty list>
+    HaskellVaridImpl(VARID)
+      PsiElement(HaskellTokenType.varidRegexp)('map')
+  HaskellSpecialImpl(SPECIAL)
+    PsiElement(HaskellTokenType.()('(')
+  HaskellQinfixconidImpl(QINFIXCONID)
+    PsiElement(HaskellTokenType.`)('`')
+    HaskellModulePrefixImpl(MODULE_PREFIX)
+      <empty list>
+    PsiElement(HaskellTokenType.conid)('Declaration')
+    PsiElement(HaskellTokenType.`)('`')
+  HaskellQconidImpl(QCONID)
+    HaskellModulePrefixImpl(MODULE_PREFIX)
+      <empty list>
+    PsiElement(HaskellTokenType.conid)('Nothing')
+  HaskellSpecialImpl(SPECIAL)
+    PsiElement(HaskellTokenType.))(')')

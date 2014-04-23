@@ -42,6 +42,12 @@ public class HaskellPragmaImpl extends ASTWrapperPsiElement implements HaskellPr
 
   @Override
   @NotNull
+  public List<HaskellQinfixconid> getQinfixconidList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQinfixconid.class);
+  }
+
+  @Override
+  @NotNull
   public List<HaskellQinfixvarid> getQinfixvaridList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQinfixvarid.class);
   }
