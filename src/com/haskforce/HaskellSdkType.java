@@ -1,13 +1,17 @@
 package com.haskforce;
 
+import com.haskforce.utils.ExecUtil;
 import com.intellij.openapi.projectRoots.*;
+import com.intellij.openapi.util.SystemInfo;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.io.File;
 
 public class HaskellSdkType extends SdkType {
+
     public HaskellSdkType() {
         // TODO
         super("Haskell SDK");
@@ -32,7 +36,7 @@ public class HaskellSdkType extends SdkType {
 
     @Override
     public String getPresentableName() {
-        return null;
+        return "Haskell SDK";
     }
 
     @Override
@@ -41,19 +45,25 @@ public class HaskellSdkType extends SdkType {
 
     @Override
     public boolean isValidSdkHome(String path) {
-        // TODO
-        return false;
+        File f = new File(path, SystemInfo.isWindows ? "ghc.exe" : "ghc");
+        return f.canExecute();
     }
 
     @Override
     public String suggestSdkName(String currentSdkName, String sdkHome) {
-        return null;
+        return new File(sdkHome).getName();
+    }
+
+    @Nullable
+    @Override
+    public String getVersionString(@NotNull final String sdkHome) {
+        return new File(sdkHome).getName();
     }
 
     @Nullable
     @Override
     public String suggestHomePath() {
-        // TODO
-        return null;
+        // UNIX only, TODO: Windows
+        return ExecUtil.exec("cat $(which ghc) | grep \"exedir=\\\".*\\\"\" | sed -E \"s/exedir=\\\"(.*)\\\"/\\1/\"");
     }
 }
