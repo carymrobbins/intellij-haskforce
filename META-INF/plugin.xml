@@ -37,6 +37,7 @@
   </actions>
 
   <extensions defaultExtensionNs="com.intellij">
+      <!-- Haskell support -->
       <internalFileTemplate name="Haskell Module"/>
       <moduleType id="HASKELL_MODULE" implementationClass="com.haskforce.HaskellModuleType"/>
       <sdkType implementation="com.haskforce.HaskellSdkType"/>
@@ -46,5 +47,8 @@
       <lang.braceMatcher language="Haskell" implementationClass="com.haskforce.HaskellBraceMatcher"/>
       <colorSettingsPage implementation="com.haskforce.HaskellColorSettingsPage"/>
       <annotator language="Haskell" implementationClass="com.haskforce.HaskellAnnotator" />
+
+      <!-- Cabal support -->
+      <fileTypeFactory implementation="com.haskforce.cabal.CabalFileTypeFactory"/>
   </extensions>
 </idea-plugin>
