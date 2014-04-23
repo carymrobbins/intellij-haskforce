@@ -31,12 +31,15 @@ Building the plugin
 Testing the plugin
 --------
 
-To run the tests:
+To run the tests, you'll need to create a run configuration:
 
-  Run HaskellTestCase in tests/com/haskforce.
+1. Go to **Run > Edit Configurations**
+1. Click on the `+` sign and choose **JUnit**
+1. In the Class field enter **HaskellTestCase**, which should auto-complete for you.
+1. Click **OK** and run your new test configuration.
 
 To add more tests:
 
-  Edit Haskell*Test.java files to add more tests of the same kind that already
-  exists. Edit HaskellTestCase.java if you need to add tests of a different
+* Edit Haskell*Test.java files to add more tests of the same kind that already exists.
+* Edit HaskellTestCase.java if you need to add tests of a different
   kind.
