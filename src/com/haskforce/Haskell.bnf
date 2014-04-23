@@ -100,7 +100,7 @@
 
 program ::= {pragma (whitechar) *} * { whitespace | lexeme } *
 private lexeme ::= qinfixvarid | qvarid | qconid | qvarsym | qconsym
-                 | literal | special | reservedop | reservedid
+                 | literal | special | reservedop | reservedid | pragma
 private literal ::= floattoken | integertoken | chartoken | stringtoken
 private whitespace ::= whitetoken {whitetoken} *
 private space ::= LINE_WS

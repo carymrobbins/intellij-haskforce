@@ -208,7 +208,7 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // qinfixvarid | qvarid | qconid | qvarsym | qconsym
-  //                  | literal | special | reservedop | reservedid
+  //                  | literal | special | reservedop | reservedid | pragma
   static boolean lexeme(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexeme")) return false;
     boolean result_ = false;
@@ -222,6 +222,7 @@ public class HaskellParser implements PsiParser {
     if (!result_) result_ = special(builder_, level_ + 1);
     if (!result_) result_ = reservedop(builder_, level_ + 1);
     if (!result_) result_ = reservedid(builder_, level_ + 1);
+    if (!result_) result_ = pragma(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
