@@ -16,7 +16,7 @@ public class CabalFileType extends LanguageFileType {
     @NotNull
     @Override
     public String getName() {
-        return "Cabal file";
+        return "Cabal";
     }
 
     @NotNull

@@ -16,7 +16,7 @@ public class HaskellFileType extends LanguageFileType {
     @NotNull
     @Override
     public String getName() {
-        return "Haskell file";
+        return "Haskell";
     }
 
     @NotNull
