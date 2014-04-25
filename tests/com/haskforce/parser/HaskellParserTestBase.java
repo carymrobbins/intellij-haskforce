@@ -27,6 +27,12 @@ import com.intellij.lang.LanguageExtensionPoint;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.openapi.extensions.Extensions;
 import com.intellij.testFramework.ParsingTestCase;
+import com.intellij.psi.PsiFile;
+import com.intellij.testFramework.TestDataFile;
+import org.jetbrains.annotations.NonNls;
+
+import java.io.File;
+import java.io.IOException;
 
 public abstract class HaskellParserTestBase extends ParsingTestCase {
   public HaskellParserTestBase(String dataPath, String fileExt, ParserDefinition... definitions) {
@@ -35,7 +41,7 @@ public abstract class HaskellParserTestBase extends ParsingTestCase {
 
   @Override
   protected String getTestDataPath() {
-    return "tests/gold";
+    return "tests" + File.separator + "gold";
   }
 
   @Override
@@ -52,6 +58,17 @@ public abstract class HaskellParserTestBase extends ParsingTestCase {
       );
     }
   }
+    /*
+     * Ensure that expected outputs live in some other directory than the test
+     * inputs.
+     *
+     * Expected outputs go <path>/<component>/expected/, putting the parser
+     * outputs in test/gold/parser/expected.
+     */
+    @Override
+    protected void checkResult(@NonNls @TestDataFile String targetDataName, final PsiFile file) throws IOException {
+        doCheckResult(myFullDataPath, file, checkAllPsiRoots(), "expected" + File.separator + targetDataName, skipSpaces(), includeRanges());
+    }
 
   @Override
   protected void setUp() throws Exception {
