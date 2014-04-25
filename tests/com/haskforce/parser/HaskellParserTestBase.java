@@ -35,29 +35,29 @@ import java.io.File;
 import java.io.IOException;
 
 public abstract class HaskellParserTestBase extends ParsingTestCase {
-  public HaskellParserTestBase(String dataPath, String fileExt, ParserDefinition... definitions) {
-    super(dataPath, fileExt, definitions);
-  }
-
-  @Override
-  protected String getTestDataPath() {
-    return "tests" + File.separator + "gold";
-  }
-
-  @Override
-  protected boolean skipSpaces() {
-    return true;
-  }
-
-  protected void doTest(boolean checkResult, boolean suppressErrors) {
-    doTest(true);
-    if (!suppressErrors) {
-      assertFalse(
-        "PsiFile contains error elements",
-        toParseTreeText(myFile, skipSpaces(), includeRanges()).contains("PsiErrorElement")
-      );
+    public HaskellParserTestBase(String dataPath, String fileExt, ParserDefinition... definitions) {
+        super(dataPath, fileExt, definitions);
     }
-  }
+
+    @Override
+    protected String getTestDataPath() {
+        return "tests" + File.separator + "gold";
+    }
+
+    @Override
+    protected boolean skipSpaces() {
+        return true;
+    }
+
+    protected void doTest(boolean checkResult, boolean suppressErrors) {
+        doTest(true);
+        if (!suppressErrors) {
+            assertFalse(
+                    "PsiFile contains error elements",
+                    toParseTreeText(myFile, skipSpaces(), includeRanges()).contains("PsiErrorElement")
+            );
+        }
+    }
     /*
      * Ensure that expected outputs live in some other directory than the test
      * inputs.
@@ -70,10 +70,10 @@ public abstract class HaskellParserTestBase extends ParsingTestCase {
         doCheckResult(myFullDataPath, file, checkAllPsiRoots(), "expected" + File.separator + targetDataName, skipSpaces(), includeRanges());
     }
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-    CoreApplicationEnvironment.registerExtensionPoint(Extensions.getRootArea(), "com.intellij.lang.braceMatcher", LanguageExtensionPoint.class);
-  }
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        CoreApplicationEnvironment.registerExtensionPoint(Extensions.getRootArea(), "com.intellij.lang.braceMatcher", LanguageExtensionPoint.class);
+    }
 
 }
