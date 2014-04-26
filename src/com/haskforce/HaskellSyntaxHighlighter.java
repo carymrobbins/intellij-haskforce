@@ -14,6 +14,12 @@ import java.io.Reader;
 import com.haskforce.psi.HaskellTypes;
 
 public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
+    /*
+     * Constructors, type classes, data types, .., are nice to distinguish
+     * from the keywords. Borrow the color of INSTANCE_FIELD since it stands
+     * out from the keywords by default and we are unlikely need it for other
+     * purposes.
+     */
     public static final TextAttributesKey RESERVEDEXPR = TextAttributesKey.createTextAttributesKey(
             "HASKELL_RESERVEDEXPR", DefaultLanguageHighlighterColors.KEYWORD);
     public static final TextAttributesKey[] RESERVEDEXPR_KEYS = new TextAttributesKey[]{RESERVEDEXPR};
@@ -39,7 +45,7 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey[] MODULE_KEYS = new TextAttributesKey[]{MODULE};
 
     public static final TextAttributesKey CONID =  TextAttributesKey.createTextAttributesKey(
-            "HASKELL_CONID", DefaultLanguageHighlighterColors.FUNCTION_DECLARATION);
+            "HASKELL_CONID", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
     public static final TextAttributesKey[] CONID_KEYS = new TextAttributesKey[]{CONID};
 
     public static final TextAttributesKey VARID = TextAttributesKey.createTextAttributesKey(
@@ -59,7 +65,7 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey[] CONSYM_KEYS = new TextAttributesKey[]{CONSYM};
 
     public static final TextAttributesKey SPECIAL = TextAttributesKey.createTextAttributesKey(
-            "HASKELL_SPECIAL", DefaultLanguageHighlighterColors.PARENTHESES);
+            "HASKELL_SPECIAL", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
     public static final TextAttributesKey[] SPECIAL_KEYS = new TextAttributesKey[]{SPECIAL};
 
     public static final TextAttributesKey STRING = TextAttributesKey.createTextAttributesKey(
@@ -121,6 +127,16 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
             return CHAR_KEYS;
         } else if (tokenType.equals(HaskellTypes.STRINGTOKEN)) {
             return STRING_KEYS;
+        } else if (tokenType.equals(HaskellTypes.SPECIAL)) {
+            return SPECIAL_KEYS;
+        } else if (tokenType.equals(HaskellTypes.NCOMMENT)) {
+            return NCOMMENT_KEYS;
+        } else if (tokenType.equals(HaskellTypes.PRAGMA)) {
+            return PRAGMA_KEYS;
+        } else if (tokenType.equals(HaskellTypes.CONSYM)) {
+            return CONSYM_KEYS;
+        } else if (tokenType.equals(HaskellTypes.VARSYM)) {
+            return VARSYM_KEYS;
         }
         return EMPTY;
     }
