@@ -30,8 +30,8 @@ public class HaskellQvaridImpl extends ASTWrapperPsiElement implements HaskellQv
 
   @Override
   @NotNull
-  public HaskellVarid getVarid() {
-    return findNotNullChildByClass(HaskellVarid.class);
+  public PsiElement getVaridRegexp() {
+    return findNotNullChildByType(VARIDREGEXP);
   }
 
 }

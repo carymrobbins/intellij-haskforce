@@ -67,10 +67,6 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitVarid(@NotNull HaskellVarid o) {
-    visitPsiElement(o);
-  }
-
   public void visitVarsym(@NotNull HaskellVarsym o) {
     visitPsiElement(o);
   }

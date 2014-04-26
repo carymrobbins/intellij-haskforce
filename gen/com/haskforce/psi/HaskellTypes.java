@@ -23,7 +23,6 @@ public interface HaskellTypes {
   IElementType RESERVEDOP = new HaskellElementType("RESERVEDOP");
   IElementType SPECIAL = new HaskellElementType("SPECIAL");
   IElementType SYMBOL = new HaskellElementType("SYMBOL");
-  IElementType VARID = new HaskellElementType("VARID");
   IElementType VARSYM = new HaskellElementType("VARSYM");
   IElementType WHITECHAR = new HaskellElementType("WHITECHAR");
 
@@ -129,9 +128,6 @@ public interface HaskellTypes {
       }
       else if (type == SYMBOL) {
         return new HaskellSymbolImpl(node);
-      }
-      else if (type == VARID) {
-        return new HaskellVaridImpl(node);
       }
       else if (type == VARSYM) {
         return new HaskellVarsymImpl(node);

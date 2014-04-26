@@ -115,7 +115,7 @@ anyseq ::= !( opencom | closecom ) (lexeme | whitechar | '`')+
 special ::= '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}' | thquote | backtick
 symbol ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '=' | '>' | '?' | '@'
          | '\' | '^' | '|' | '-' | '~' | ':'
-varid ::= !reservedid varidRegexp
+private varid ::= !reservedid varidRegexp
 private reservedExpr ::= 'case' | 'do' | 'else' | 'if' | 'in' | 'let' | 'of' | 'then'
 private reservedDecl ::= 'class' | 'data' | 'default' | 'deriving' | 'foreign' | 'instance'
                        | 'module' | 'newtype' | 'type' | 'where'

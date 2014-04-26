@@ -30,8 +30,8 @@ public class HaskellQinfixvaridImpl extends ASTWrapperPsiElement implements Hask
 
   @Override
   @NotNull
-  public HaskellVarid getVarid() {
-    return findNotNullChildByClass(HaskellVarid.class);
+  public PsiElement getVaridRegexp() {
+    return findNotNullChildByType(VARIDREGEXP);
   }
 
 }

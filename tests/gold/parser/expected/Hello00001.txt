@@ -1,10 +1,8 @@
 Haskell File
   HaskellQvaridImpl(QVARID)
-    HaskellVaridImpl(VARID)
-      PsiElement(HaskellTokenType.varidRegexp)('main')
+    PsiElement(HaskellTokenType.varidRegexp)('main')
   HaskellReservedopImpl(RESERVEDOP)
     PsiElement(HaskellTokenType.=)('=')
   HaskellQvaridImpl(QVARID)
-    HaskellVaridImpl(VARID)
-      PsiElement(HaskellTokenType.varidRegexp)('print')
+    PsiElement(HaskellTokenType.varidRegexp)('print')
   PsiElement(HaskellTokenType.stringtoken)('"Hello, World!"')

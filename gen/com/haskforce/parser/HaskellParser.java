@@ -65,9 +65,6 @@ public class HaskellParser implements PsiParser {
     else if (root_ == SYMBOL) {
       result_ = symbol(builder_, 0);
     }
-    else if (root_ == VARID) {
-      result_ = varid(builder_, 0);
-    }
     else if (root_ == VARSYM) {
       result_ = varsym(builder_, 0);
     }
@@ -681,14 +678,14 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // !reservedid varidRegexp
-  public static boolean varid(PsiBuilder builder_, int level_) {
+  static boolean varid(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varid")) return false;
     if (!nextTokenIs(builder_, VARIDREGEXP)) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = varid_0(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, VARIDREGEXP);
-    exit_section_(builder_, marker_, VARID, result_);
+    exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
