@@ -215,24 +215,24 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // qinfixvarid | qvarid | qinfixconid |qconid | qvarsym
-  //                  | qconsym | literal | special | reservedop | reservedid
-  //                  | pragma
+  // literal | special | reservedop | reservedid | pragma
+  //                  | qinfixvarid | qvarid | qinfixconid | qconid | qvarsym
+  //                  | qconsym
   static boolean lexeme(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexeme")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = qinfixvarid(builder_, level_ + 1);
+    result_ = literal(builder_, level_ + 1);
+    if (!result_) result_ = special(builder_, level_ + 1);
+    if (!result_) result_ = reservedop(builder_, level_ + 1);
+    if (!result_) result_ = reservedid(builder_, level_ + 1);
+    if (!result_) result_ = pragma(builder_, level_ + 1);
+    if (!result_) result_ = qinfixvarid(builder_, level_ + 1);
     if (!result_) result_ = qvarid(builder_, level_ + 1);
     if (!result_) result_ = qinfixconid(builder_, level_ + 1);
     if (!result_) result_ = qconid(builder_, level_ + 1);
     if (!result_) result_ = qvarsym(builder_, level_ + 1);
     if (!result_) result_ = qconsym(builder_, level_ + 1);
-    if (!result_) result_ = literal(builder_, level_ + 1);
-    if (!result_) result_ = special(builder_, level_ + 1);
-    if (!result_) result_ = reservedop(builder_, level_ + 1);
-    if (!result_) result_ = reservedid(builder_, level_ + 1);
-    if (!result_) result_ = pragma(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }

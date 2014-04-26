@@ -100,9 +100,9 @@
 // Haskell 2010 Report - http://www.haskell.org/onlinereport/haskell2010/haskellch2.html#x7-140002
 
 program ::= ( whitespace | lexeme )*
-private lexeme ::= qinfixvarid | qvarid | qinfixconid |qconid | qvarsym
-                 | qconsym | literal | special | reservedop | reservedid
-                 | pragma
+private lexeme ::= literal | special | reservedop | reservedid | pragma
+                 | qinfixvarid | qvarid | qinfixconid | qconid | qvarsym
+                 | qconsym
 private literal ::= floattoken | integertoken | chartoken | stringtoken
 private whitespace ::= whitestuff +
 private space ::= LINE_WS
