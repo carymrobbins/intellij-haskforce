@@ -8,4 +8,9 @@ public class HaskellLanguage extends Language {
     private HaskellLanguage() {
         super("Haskell");
     }
+
+    @Override
+    public boolean isCaseSensitive() {
+        return true;
+    }
 }
