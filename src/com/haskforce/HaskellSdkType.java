@@ -12,9 +12,11 @@ import java.io.File;
 
 public class HaskellSdkType extends SdkType {
 
+    public static final String HASKELL_SDK_TYPE_ID = "Haskell SDK";
+
     public HaskellSdkType() {
         // TODO
-        super("Haskell SDK");
+        super(HASKELL_SDK_TYPE_ID);
     }
 
     @NotNull
@@ -36,7 +38,7 @@ public class HaskellSdkType extends SdkType {
 
     @Override
     public String getPresentableName() {
-        return "Haskell SDK";
+        return HASKELL_SDK_TYPE_ID;
     }
 
     @Override
