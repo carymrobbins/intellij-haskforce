@@ -8,14 +8,14 @@ Building the plugin
 
 1. Clone HaskForce.
 
-1. Download and install IntelliJ IDEA.
+1. If you haven't already, download and install IntelliJ IDEA and Java JDK.
 
 1. Check out the Community Edition source files.
 
     ````$ git clone git@github.com:JetBrains/intellij-community.git idea````
 
 1. Configure SDK and source files.
-  * Create a new project from existing sources (pointed to your cloned HaskForce directory).
+  * Create a new **IntelliJ Platform Project** from existing sources (pointed to your cloned HaskForce directory).
   * Go to File > Project Structure.  Add SDKs for JDK and IDEA Plugins.  For the IDEA Plugins, add sources
     from cloned IntelliJ to the Sourcepath.
 1. Install and enable additional plugins.
@@ -27,6 +27,12 @@ Building the plugin
   * Go to Preferences.  Below the IDE Settings section locate JFlex.  Set the path and skeleton to the
     idea/tools/lexer files.
 1. Set the project SDK to the IDEA SDK.
+1. Right-click on the following directories and **Mark Directory As**:
+  * `gen/` as Sources Root
+  * `resources` as Resources Root
+  * `tests/` as Test Sources Root
+1. From the menu go to **Run > Edit Configurations**
+1. Click on the `+` sign and choose **Plugin**, click **OK**, then run your new configuration.
 
 Testing the plugin
 --------

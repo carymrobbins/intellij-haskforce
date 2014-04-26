@@ -9,6 +9,8 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HaskellSdkType extends SdkType {
 
@@ -47,25 +49,57 @@ public class HaskellSdkType extends SdkType {
 
     @Override
     public boolean isValidSdkHome(String path) {
-        File f = new File(path, SystemInfo.isWindows ? "ghc.exe" : "ghc");
-        return f.canExecute();
+        return getVersionString(path) != null;
     }
 
     @Override
     public String suggestSdkName(String currentSdkName, String sdkHome) {
-        return new File(sdkHome).getName();
+        return "GHC";
     }
 
     @Nullable
     @Override
     public String getVersionString(@NotNull final String sdkHome) {
-        return new File(sdkHome).getName();
+        File ghc = getExecutable(sdkHome);
+        if (ghc.canExecute()) {
+            final String versionText = ExecUtil.exec(String.format("\"%s\" --version", ghc.getPath()));
+            if (versionText != null) {
+                Pattern p = Pattern.compile(".*, version (\\d+\\.\\d+\\.\\d+)");
+                Matcher m = p.matcher(versionText);
+                if (m.matches()) {
+                    return m.group(1);
+                }
+            }
+        }
+        return null;
     }
 
     @Nullable
     @Override
     public String suggestHomePath() {
-        // UNIX only, TODO: Windows
+        return SystemInfo.isWindows ? suggestHomePathForWindows() : suggestHomePathForUNIX();
+    }
+
+    @Nullable
+    public static String suggestHomePathForWindows() {
+        final String ghcPath = ExecUtil.exec("where ghc.exe");
+        if (ghcPath != null) {
+            File ghc = new File(ghcPath);
+            if (ghc.canExecute()) {
+                return ghc.getParent();
+            }
+        }
+        return null;
+    }
+
+    @Nullable
+    public static String suggestHomePathForUNIX() {
+        // Attempt to parse the ghc shell script for UNIX systems.
         return ExecUtil.exec("cat $(which ghc) | grep \"exedir=\\\".*\\\"\" | sed -E \"s/exedir=\\\"(.*)\\\"/\\1/\"");
+    }
+
+    @NotNull
+    public static File getExecutable(@NotNull final String path) {
+        return new File(path, SystemInfo.isWindows ? "ghc.exe" : "ghc");
     }
 }
