@@ -336,7 +336,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // openpragma {!closepragma (lexeme | space)} * closepragma
+  // openpragma (!closepragma (lexeme | space))+ closepragma
   public static boolean pragma(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "pragma")) return false;
     if (!nextTokenIs(builder_, OPENPRAGMA)) return false;
@@ -349,16 +349,20 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // {!closepragma (lexeme | space)} *
+  // (!closepragma (lexeme | space))+
   private static boolean pragma_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "pragma_1")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = pragma_1_0(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
-    while (true) {
+    while (result_) {
       if (!pragma_1_0(builder_, level_ + 1)) break;
       if (!empty_element_parsed_guard_(builder_, "pragma_1", pos_)) break;
       pos_ = current_position_(builder_);
     }
-    return true;
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
   }
 
   // !closepragma (lexeme | space)
