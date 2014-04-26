@@ -21,12 +21,8 @@ Haskell File
       <empty list>
     HaskellVaridImpl(VARID)
       PsiElement(HaskellTokenType.varidRegexp)('a')
-  HaskellQvarsymImpl(QVARSYM)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
-    HaskellVarsymImpl(VARSYM)
-      HaskellSymbolImpl(SYMBOL)
-        PsiElement(HaskellTokenType.=)('=')
+  HaskellReservedopImpl(RESERVEDOP)
+    PsiElement(HaskellTokenType.=)('=')
   HaskellQconidImpl(QCONID)
     HaskellModulePrefixImpl(MODULE_PREFIX)
       <empty list>

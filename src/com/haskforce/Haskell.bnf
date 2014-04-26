@@ -99,7 +99,7 @@
 
 // Haskell 2010 Report - http://www.haskell.org/onlinereport/haskell2010/haskellch2.html#x7-140002
 
-program ::= (pragma whitechar* )* ( whitespace | lexeme )*
+program ::= ( whitespace | lexeme )*
 private lexeme ::= qinfixvarid | qvarid | qinfixconid |qconid | qvarsym
                  | qconsym | literal | special | reservedop | reservedid
                  | pragma
@@ -124,7 +124,7 @@ reservedMeta ::= 'as' | 'import' | 'infix' | 'infixl' | 'infixr' | 'qualified'
 reservedVar ::= '_'
 reservedid  ::= reservedExpr | reservedDecl | reservedMeta | reservedVar
 
-varsym ::= !(reservedop whitestuff | dashes ) ( !':' symbol {symbol} * )
+varsym ::= !(reservedop | dashes ) ( !':' symbol+ )
 consym ::= !reservedop ( ':' {symbol} *)
 
 reservedop ::= '..' | '::' | '=' | '\' | '|' | '<-' | '->' | '@' | '~' | '=>'

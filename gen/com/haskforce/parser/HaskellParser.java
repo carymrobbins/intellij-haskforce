@@ -390,67 +390,21 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // (pragma whitechar* )* ( whitespace | lexeme )*
+  // ( whitespace | lexeme )*
   static boolean program(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "program")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = program_0(builder_, level_ + 1);
-    result_ = result_ && program_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // (pragma whitechar* )*
-  private static boolean program_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "program_0")) return false;
     int pos_ = current_position_(builder_);
     while (true) {
-      if (!program_0_0(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "program_0", pos_)) break;
-      pos_ = current_position_(builder_);
-    }
-    return true;
-  }
-
-  // pragma whitechar*
-  private static boolean program_0_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "program_0_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = pragma(builder_, level_ + 1);
-    result_ = result_ && program_0_0_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // whitechar*
-  private static boolean program_0_0_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "program_0_0_1")) return false;
-    int pos_ = current_position_(builder_);
-    while (true) {
-      if (!whitechar(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "program_0_0_1", pos_)) break;
-      pos_ = current_position_(builder_);
-    }
-    return true;
-  }
-
-  // ( whitespace | lexeme )*
-  private static boolean program_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "program_1")) return false;
-    int pos_ = current_position_(builder_);
-    while (true) {
-      if (!program_1_0(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "program_1", pos_)) break;
+      if (!program_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "program", pos_)) break;
       pos_ = current_position_(builder_);
     }
     return true;
   }
 
   // whitespace | lexeme
-  private static boolean program_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "program_1_0")) return false;
+  private static boolean program_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "program_0")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = whitespace(builder_, level_ + 1);
@@ -764,7 +718,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // !(reservedop whitestuff | dashes ) ( !':' symbol {symbol} * )
+  // !(reservedop | dashes ) ( !':' symbol+ )
   public static boolean varsym(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varsym")) return false;
     boolean result_ = false;
@@ -775,7 +729,7 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // !(reservedop whitestuff | dashes )
+  // !(reservedop | dashes )
   private static boolean varsym_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varsym_0")) return false;
     boolean result_ = false;
@@ -785,36 +739,24 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // reservedop whitestuff | dashes
+  // reservedop | dashes
   private static boolean varsym_0_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varsym_0_0")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = varsym_0_0_0(builder_, level_ + 1);
+    result_ = reservedop(builder_, level_ + 1);
     if (!result_) result_ = consumeToken(builder_, DASHES);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // reservedop whitestuff
-  private static boolean varsym_0_0_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "varsym_0_0_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = reservedop(builder_, level_ + 1);
-    result_ = result_ && whitestuff(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // !':' symbol {symbol} *
+  // !':' symbol+
   private static boolean varsym_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varsym_1")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = varsym_1_0(builder_, level_ + 1);
-    result_ = result_ && symbol(builder_, level_ + 1);
-    result_ = result_ && varsym_1_2(builder_, level_ + 1);
+    result_ = result_ && varsym_1_1(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -829,24 +771,18 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // {symbol} *
-  private static boolean varsym_1_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "varsym_1_2")) return false;
-    int pos_ = current_position_(builder_);
-    while (true) {
-      if (!varsym_1_2_0(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "varsym_1_2", pos_)) break;
-      pos_ = current_position_(builder_);
-    }
-    return true;
-  }
-
-  // {symbol}
-  private static boolean varsym_1_2_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "varsym_1_2_0")) return false;
+  // symbol+
+  private static boolean varsym_1_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "varsym_1_1")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = symbol(builder_, level_ + 1);
+    int pos_ = current_position_(builder_);
+    while (result_) {
+      if (!symbol(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "varsym_1_1", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }

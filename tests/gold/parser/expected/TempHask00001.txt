@@ -40,12 +40,8 @@ Haskell File
       <empty list>
     HaskellVaridImpl(VARID)
       PsiElement(HaskellTokenType.varidRegexp)('t')
-  HaskellQvarsymImpl(QVARSYM)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
-    HaskellVarsymImpl(VARSYM)
-      HaskellSymbolImpl(SYMBOL)
-        PsiElement(HaskellTokenType.=)('=')
+  HaskellReservedopImpl(RESERVEDOP)
+    PsiElement(HaskellTokenType.=)('=')
   HaskellQvaridImpl(QVARID)
     HaskellModulePrefixImpl(MODULE_PREFIX)
       <empty list>

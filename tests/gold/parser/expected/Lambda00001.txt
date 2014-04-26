@@ -14,12 +14,8 @@ Haskell File
       <empty list>
     HaskellVaridImpl(VARID)
       PsiElement(HaskellTokenType.varidRegexp)('zip'')
-  HaskellQvarsymImpl(QVARSYM)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
-    HaskellVarsymImpl(VARSYM)
-      HaskellSymbolImpl(SYMBOL)
-        PsiElement(HaskellTokenType.=)('=')
+  HaskellReservedopImpl(RESERVEDOP)
+    PsiElement(HaskellTokenType.=)('=')
   HaskellQvaridImpl(QVARID)
     HaskellModulePrefixImpl(MODULE_PREFIX)
       <empty list>
@@ -27,12 +23,8 @@ Haskell File
       PsiElement(HaskellTokenType.varidRegexp)('zipWith')
   HaskellSpecialImpl(SPECIAL)
     PsiElement(HaskellTokenType.()('(')
-  HaskellQvarsymImpl(QVARSYM)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
-    HaskellVarsymImpl(VARSYM)
-      HaskellSymbolImpl(SYMBOL)
-        PsiElement(HaskellTokenType.\)('\')
+  HaskellReservedopImpl(RESERVEDOP)
+    PsiElement(HaskellTokenType.\)('\')
   HaskellQvaridImpl(QVARID)
     HaskellModulePrefixImpl(MODULE_PREFIX)
       <empty list>
