@@ -111,7 +111,7 @@ private whitestuff ::= whitechar | comment | ncomment | haddock
 whitechar ::= space | newline | '\t'
 pragma ::= openpragma (!closepragma (lexeme | space))+ closepragma
 ncomment ::= opencom anyseq? (ncomment anyseq?)* closecom
-anyseq ::= !( opencom | closecom ) (lexeme | whitechar | '`')+
+anyseq ::= !( opencom | closecom ) (lexeme | whitechar)+
 special ::= '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}' | thquote | backtick
 symbol ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '=' | '>' | '?' | '@'
          | '\' | '^' | '|' | '-' | '~' | ':'

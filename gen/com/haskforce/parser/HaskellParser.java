@@ -83,7 +83,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // !( opencom | closecom ) (lexeme | whitechar | '`')+
+  // !( opencom | closecom ) (lexeme | whitechar)+
   public static boolean anyseq(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "anyseq")) return false;
     boolean result_ = false;
@@ -115,7 +115,7 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // (lexeme | whitechar | '`')+
+  // (lexeme | whitechar)+
   private static boolean anyseq_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "anyseq_1")) return false;
     boolean result_ = false;
@@ -131,14 +131,13 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // lexeme | whitechar | '`'
+  // lexeme | whitechar
   private static boolean anyseq_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "anyseq_1_0")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = lexeme(builder_, level_ + 1);
     if (!result_) result_ = whitechar(builder_, level_ + 1);
-    if (!result_) result_ = consumeToken(builder_, BACKTICK);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
