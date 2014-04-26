@@ -66,12 +66,6 @@ public class HaskellAnyseqImpl extends ASTWrapperPsiElement implements HaskellAn
 
   @Override
   @NotNull
-  public List<HaskellReservedid> getReservedidList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellReservedid.class);
-  }
-
-  @Override
-  @NotNull
   public List<HaskellReservedop> getReservedopList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellReservedop.class);
   }

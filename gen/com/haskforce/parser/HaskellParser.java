@@ -53,9 +53,6 @@ public class HaskellParser implements PsiParser {
     else if (root_ == QVARSYM) {
       result_ = qvarsym(builder_, 0);
     }
-    else if (root_ == RESERVEDID) {
-      result_ = reservedid(builder_, 0);
-    }
     else if (root_ == RESERVEDOP) {
       result_ = reservedop(builder_, 0);
     }
@@ -529,15 +526,15 @@ public class HaskellParser implements PsiParser {
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, CLASSTOKEN);
-    if (!result_) result_ = consumeToken(builder_, "data");
-    if (!result_) result_ = consumeToken(builder_, "default");
-    if (!result_) result_ = consumeToken(builder_, "deriving");
-    if (!result_) result_ = consumeToken(builder_, "foreign");
-    if (!result_) result_ = consumeToken(builder_, "instance");
-    if (!result_) result_ = consumeToken(builder_, "module");
-    if (!result_) result_ = consumeToken(builder_, "newtype");
-    if (!result_) result_ = consumeToken(builder_, "type");
-    if (!result_) result_ = consumeToken(builder_, "where");
+    if (!result_) result_ = consumeToken(builder_, DATA);
+    if (!result_) result_ = consumeToken(builder_, DEFAULT);
+    if (!result_) result_ = consumeToken(builder_, DERIVING);
+    if (!result_) result_ = consumeToken(builder_, FOREIGN);
+    if (!result_) result_ = consumeToken(builder_, INSTANCE);
+    if (!result_) result_ = consumeToken(builder_, MODULE);
+    if (!result_) result_ = consumeToken(builder_, NEWTYPE);
+    if (!result_) result_ = consumeToken(builder_, TYPE);
+    if (!result_) result_ = consumeToken(builder_, WHERE);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -548,14 +545,14 @@ public class HaskellParser implements PsiParser {
     if (!recursion_guard_(builder_, level_, "reservedExpr")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, "case");
-    if (!result_) result_ = consumeToken(builder_, "do");
-    if (!result_) result_ = consumeToken(builder_, "else");
-    if (!result_) result_ = consumeToken(builder_, "if");
-    if (!result_) result_ = consumeToken(builder_, "in");
-    if (!result_) result_ = consumeToken(builder_, "let");
-    if (!result_) result_ = consumeToken(builder_, "of");
-    if (!result_) result_ = consumeToken(builder_, "then");
+    result_ = consumeToken(builder_, CASE);
+    if (!result_) result_ = consumeToken(builder_, DO);
+    if (!result_) result_ = consumeToken(builder_, ELSE);
+    if (!result_) result_ = consumeToken(builder_, IF);
+    if (!result_) result_ = consumeToken(builder_, IN);
+    if (!result_) result_ = consumeToken(builder_, LET);
+    if (!result_) result_ = consumeToken(builder_, OF);
+    if (!result_) result_ = consumeToken(builder_, THEN);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -567,13 +564,13 @@ public class HaskellParser implements PsiParser {
     if (!recursion_guard_(builder_, level_, "reservedMeta")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, "as");
-    if (!result_) result_ = consumeToken(builder_, "import");
-    if (!result_) result_ = consumeToken(builder_, "infix");
-    if (!result_) result_ = consumeToken(builder_, "infixl");
-    if (!result_) result_ = consumeToken(builder_, "infixr");
-    if (!result_) result_ = consumeToken(builder_, "qualified");
-    if (!result_) result_ = consumeToken(builder_, "hiding");
+    result_ = consumeToken(builder_, AS);
+    if (!result_) result_ = consumeToken(builder_, IMPORT);
+    if (!result_) result_ = consumeToken(builder_, INFIX);
+    if (!result_) result_ = consumeToken(builder_, INFIXL);
+    if (!result_) result_ = consumeToken(builder_, INFIXR);
+    if (!result_) result_ = consumeToken(builder_, QUALIFIED);
+    if (!result_) result_ = consumeToken(builder_, HIDING);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -586,15 +583,15 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // reservedExpr | reservedDecl | reservedMeta | reservedVar
-  public static boolean reservedid(PsiBuilder builder_, int level_) {
+  static boolean reservedid(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "reservedid")) return false;
     boolean result_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<reservedid>");
+    Marker marker_ = enter_section_(builder_);
     result_ = reservedExpr(builder_, level_ + 1);
     if (!result_) result_ = reservedDecl(builder_, level_ + 1);
     if (!result_) result_ = reservedMeta(builder_, level_ + 1);
     if (!result_) result_ = reservedVar(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, RESERVEDID, result_, false, null);
+    exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 

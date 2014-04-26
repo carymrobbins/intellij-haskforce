@@ -79,6 +79,30 @@ STRINGTOKEN=\"(\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\|\\\"|[^\"\n])*\"
   "=>"                { return DOUBLEARROW; }
   "\\&"               { return NULLCHARACTER; }
   "class"             { return CLASSTOKEN; }
+  "data"              { return DATA; }
+  "default"           { return DEFAULT; }
+  "deriving"          { return DERIVING; }
+  "foreign"           { return FOREIGN; }
+  "instance"          { return INSTANCE; }
+  "module"            { return MODULE; }
+  "newtype"           { return NEWTYPE; }
+  "type"              { return TYPE; }
+  "where"             { return WHERE; }
+  "as"                { return AS; }
+  "import"            { return IMPORT; }
+  "infix"             { return INFIX; }
+  "infixl"            { return INFIXL; }
+  "infixr"            { return INFIXR; }
+  "qualified"         { return QUALIFIED; }
+  "hiding"            { return HIDING; }
+  "case"              { return CASE; }
+  "do"                { return DO; }
+  "else"              { return ELSE; }
+  "if"                { return IF; }
+  "in"                { return IN; }
+  "let"               { return LET; }
+  "of"                { return OF; }
+  "then"              { return THEN; }
   "LINE_WS"           { return LINE_WS; }
   "EOL"               { return EOL; }
 

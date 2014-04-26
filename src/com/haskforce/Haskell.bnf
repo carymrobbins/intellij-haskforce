@@ -94,6 +94,32 @@
     dashes='regexp:--(-)?'
     haddock='regexp:--\^[^\r\n]*'
     stringtoken='regexp:"(\\\s*\n\s*\\|\\"|[^"\n])*"'
+    // Reserved IDs. Should be tokens for IntelliJ reasons. Gives us a nicer
+    // PSI tree as side effect.
+    DATA='data'
+    DEFAULT='default'
+    DERIVING='deriving'
+    FOREIGN='foreign'
+    INSTANCE='instance'
+    MODULE='module'
+    NEWTYPE='newtype'
+    TYPE='type'
+    WHERE='where'
+    AS='as'
+    IMPORT='import'
+    INFIX='infix'
+    INFIXL='infixl'
+    INFIXR='infixr'
+    QUALIFIED='qualified'
+    HIDING='hiding'
+    CASE='case'
+    DO='do'
+    ELSE='else'
+    IF='if'
+    IN='in'
+    LET='let'
+    OF='of'
+    THEN='then'
   ]
 }
 
@@ -122,7 +148,7 @@ private reservedDecl ::= 'class' | 'data' | 'default' | 'deriving' | 'foreign' |
 private reservedMeta ::= 'as' | 'import' | 'infix' | 'infixl' | 'infixr' | 'qualified'
                        | 'hiding'
 private reservedVar ::= '_'
-reservedid  ::= reservedExpr | reservedDecl | reservedMeta | reservedVar
+private reservedid  ::= reservedExpr | reservedDecl | reservedMeta | reservedVar
 
 varsym ::= !(reservedop | dashes ) ( !':' symbol+ )
 consym ::= !reservedop ( ':' symbol* )

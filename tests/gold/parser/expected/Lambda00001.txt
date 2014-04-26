@@ -1,10 +1,8 @@
 Haskell File
-  HaskellReservedidImpl(RESERVEDID)
-    PsiElement(HaskellTokenType.varidRegexp)('module')
+  PsiElement(HaskellTokenType.module)('module')
   HaskellQconidImpl(QCONID)
     PsiElement(HaskellTokenType.conid)('Lambda1')
-  HaskellReservedidImpl(RESERVEDID)
-    PsiElement(HaskellTokenType.varidRegexp)('where')
+  PsiElement(HaskellTokenType.where)('where')
   HaskellQvaridImpl(QVARID)
     PsiElement(HaskellTokenType.varidRegexp)('zip'')
   HaskellReservedopImpl(RESERVEDOP)
