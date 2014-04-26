@@ -98,7 +98,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // !( opencom | closecom ) (lexeme | whitechar | '`') *
+  // !( opencom | closecom ) (lexeme | whitechar | '`')+
   public static boolean anyseq(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "anyseq")) return false;
     boolean result_ = false;
@@ -130,16 +130,20 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // (lexeme | whitechar | '`') *
+  // (lexeme | whitechar | '`')+
   private static boolean anyseq_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "anyseq_1")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = anyseq_1_0(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
-    while (true) {
+    while (result_) {
       if (!anyseq_1_0(builder_, level_ + 1)) break;
       if (!empty_element_parsed_guard_(builder_, "anyseq_1", pos_)) break;
       pos_ = current_position_(builder_);
     }
-    return true;
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
   }
 
   // lexeme | whitechar | '`'
@@ -274,7 +278,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // opencom anyseq? {ncomment anyseq?} * closecom
+  // opencom anyseq? (ncomment anyseq?)* closecom
   public static boolean ncomment(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "ncomment")) return false;
     if (!nextTokenIs(builder_, OPENCOM)) return false;
@@ -295,7 +299,7 @@ public class HaskellParser implements PsiParser {
     return true;
   }
 
-  // {ncomment anyseq?} *
+  // (ncomment anyseq?)*
   private static boolean ncomment_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "ncomment_2")) return false;
     int pos_ = current_position_(builder_);

@@ -110,8 +110,8 @@ private newline ::= EOL
 private whitestuff ::= whitechar | comment | ncomment | haddock
 whitechar ::= space | newline | '\t'
 pragma ::= openpragma {!closepragma (lexeme | space)} * closepragma
-ncomment ::= opencom anyseq? {ncomment anyseq?} * closecom
-anyseq ::= !( opencom | closecom ) (lexeme | whitechar | '`') *
+ncomment ::= opencom anyseq? (ncomment anyseq?)* closecom
+anyseq ::= !( opencom | closecom ) (lexeme | whitechar | '`')+
 special ::= '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}' | thquote
 symbol ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '=' | '>' | '?' | '@'
          | '\' | '^' | '|' | '-' | '~' | ':'
