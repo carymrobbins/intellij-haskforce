@@ -159,7 +159,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // !reservedop ( ':' {symbol} *)
+  // !reservedop ( ':' symbol* )
   public static boolean consym(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "consym")) return false;
     if (!nextTokenIs(builder_, COLON)) return false;
@@ -181,7 +181,7 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // ':' {symbol} *
+  // ':' symbol*
   private static boolean consym_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "consym_1")) return false;
     boolean result_ = false;
@@ -192,26 +192,16 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // {symbol} *
+  // symbol*
   private static boolean consym_1_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "consym_1_1")) return false;
     int pos_ = current_position_(builder_);
     while (true) {
-      if (!consym_1_1_0(builder_, level_ + 1)) break;
+      if (!symbol(builder_, level_ + 1)) break;
       if (!empty_element_parsed_guard_(builder_, "consym_1_1", pos_)) break;
       pos_ = current_position_(builder_);
     }
     return true;
-  }
-
-  // {symbol}
-  private static boolean consym_1_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "consym_1_1_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = symbol(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
   }
 
   /* ********************************************************** */

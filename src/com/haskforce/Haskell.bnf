@@ -125,7 +125,7 @@ reservedVar ::= '_'
 reservedid  ::= reservedExpr | reservedDecl | reservedMeta | reservedVar
 
 varsym ::= !(reservedop | dashes ) ( !':' symbol+ )
-consym ::= !reservedop ( ':' {symbol} *)
+consym ::= !reservedop ( ':' symbol* )
 
 reservedop ::= '..' | '::' | '=' | '\' | '|' | '<-' | '->' | '@' | '~' | '=>'
 
