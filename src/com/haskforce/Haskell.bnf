@@ -129,7 +129,7 @@ consym ::= !reservedop ( ':' symbol* )
 
 reservedop ::= '..' | '::' | '=' | '\' | '|' | '<-' | '->' | '@' | '~' | '=>'
 
-modulePrefix ::= {conid '.'} *
+modulePrefix ::= (conid '.')+
 
 qvarid ::= [modulePrefix] varid
 qinfixvarid ::= '`' [modulePrefix] varid '`'

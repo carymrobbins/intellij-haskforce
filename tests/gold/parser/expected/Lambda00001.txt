@@ -3,22 +3,16 @@ Haskell File
     HaskellReservedDeclImpl(RESERVED_DECL)
       PsiElement(HaskellTokenType.varidRegexp)('module')
   HaskellQconidImpl(QCONID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     PsiElement(HaskellTokenType.conid)('Lambda1')
   HaskellReservedidImpl(RESERVEDID)
     HaskellReservedDeclImpl(RESERVED_DECL)
       PsiElement(HaskellTokenType.varidRegexp)('where')
   HaskellQvaridImpl(QVARID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     HaskellVaridImpl(VARID)
       PsiElement(HaskellTokenType.varidRegexp)('zip'')
   HaskellReservedopImpl(RESERVEDOP)
     PsiElement(HaskellTokenType.=)('=')
   HaskellQvaridImpl(QVARID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     HaskellVaridImpl(VARID)
       PsiElement(HaskellTokenType.varidRegexp)('zipWith')
   HaskellSpecialImpl(SPECIAL)
@@ -26,13 +20,9 @@ Haskell File
   HaskellReservedopImpl(RESERVEDOP)
     PsiElement(HaskellTokenType.\)('\')
   HaskellQvaridImpl(QVARID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     HaskellVaridImpl(VARID)
       PsiElement(HaskellTokenType.varidRegexp)('a')
   HaskellQvaridImpl(QVARID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     HaskellVaridImpl(VARID)
       PsiElement(HaskellTokenType.varidRegexp)('b')
   HaskellReservedopImpl(RESERVEDOP)
@@ -40,15 +30,11 @@ Haskell File
   HaskellSpecialImpl(SPECIAL)
     PsiElement(HaskellTokenType.()('(')
   HaskellQvaridImpl(QVARID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     HaskellVaridImpl(VARID)
       PsiElement(HaskellTokenType.varidRegexp)('a')
   HaskellSpecialImpl(SPECIAL)
     PsiElement(HaskellTokenType.,)(',')
   HaskellQvaridImpl(QVARID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     HaskellVaridImpl(VARID)
       PsiElement(HaskellTokenType.varidRegexp)('b')
   HaskellSpecialImpl(SPECIAL)

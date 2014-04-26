@@ -3,22 +3,16 @@ Haskell File
     HaskellReservedDeclImpl(RESERVED_DECL)
       PsiElement(HaskellTokenType.varidRegexp)('module')
   HaskellQconidImpl(QCONID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     PsiElement(HaskellTokenType.conid)('Hello2')
   HaskellReservedidImpl(RESERVEDID)
     HaskellReservedDeclImpl(RESERVED_DECL)
       PsiElement(HaskellTokenType.varidRegexp)('where')
   HaskellQvaridImpl(QVARID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     HaskellVaridImpl(VARID)
       PsiElement(HaskellTokenType.varidRegexp)('main')
   HaskellReservedopImpl(RESERVEDOP)
     PsiElement(HaskellTokenType.=)('=')
   HaskellQvaridImpl(QVARID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     HaskellVaridImpl(VARID)
       PsiElement(HaskellTokenType.varidRegexp)('print')
   PsiElement(HaskellTokenType.stringtoken)('"Hello, World!"')

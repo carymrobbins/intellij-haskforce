@@ -3,8 +3,6 @@ Haskell File
     HaskellReservedDeclImpl(RESERVED_DECL)
       PsiElement(HaskellTokenType.varidRegexp)('module')
   HaskellQconidImpl(QCONID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     PsiElement(HaskellTokenType.conid)('Pragma00001')
   HaskellReservedidImpl(RESERVEDID)
     HaskellReservedDeclImpl(RESERVED_DECL)
@@ -13,38 +11,24 @@ Haskell File
     HaskellReservedDeclImpl(RESERVED_DECL)
       PsiElement(HaskellTokenType.varidRegexp)('type')
   HaskellQconidImpl(QCONID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     PsiElement(HaskellTokenType.conid)('Vector')
   HaskellQvaridImpl(QVARID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     HaskellVaridImpl(VARID)
       PsiElement(HaskellTokenType.varidRegexp)('a')
   HaskellReservedopImpl(RESERVEDOP)
     PsiElement(HaskellTokenType.=)('=')
   HaskellQconidImpl(QCONID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     PsiElement(HaskellTokenType.conid)('Pull')
   HaskellQconidImpl(QCONID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     PsiElement(HaskellTokenType.conid)('DIM1')
   HaskellQvaridImpl(QVARID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     HaskellVaridImpl(VARID)
       PsiElement(HaskellTokenType.varidRegexp)('a')
   HaskellPragmaImpl(PRAGMA)
     PsiElement(HaskellTokenType.{-#)('{-#')
     HaskellQconidImpl(QCONID)
-      HaskellModulePrefixImpl(MODULE_PREFIX)
-        <empty list>
       PsiElement(HaskellTokenType.conid)('DEPRECATED')
     HaskellQconidImpl(QCONID)
-      HaskellModulePrefixImpl(MODULE_PREFIX)
-        <empty list>
       PsiElement(HaskellTokenType.conid)('Vector')
     PsiElement(HaskellTokenType.stringtoken)('"Use Pull instead"')
     PsiElement(HaskellTokenType.#-})('#-}')

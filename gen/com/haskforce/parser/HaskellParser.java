@@ -242,18 +242,21 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // {conid '.'} *
+  // (conid '.')+
   public static boolean modulePrefix(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "modulePrefix")) return false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<module prefix>");
+    if (!nextTokenIs(builder_, CONID)) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = modulePrefix_0(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
-    while (true) {
+    while (result_) {
       if (!modulePrefix_0(builder_, level_ + 1)) break;
       if (!empty_element_parsed_guard_(builder_, "modulePrefix", pos_)) break;
       pos_ = current_position_(builder_);
     }
-    exit_section_(builder_, level_, marker_, MODULE_PREFIX, true, false, null);
-    return true;
+    exit_section_(builder_, marker_, MODULE_PREFIX, result_);
+    return result_;
   }
 
   // conid '.'

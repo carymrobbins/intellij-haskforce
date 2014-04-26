@@ -1,14 +1,10 @@
 Haskell File
   HaskellQvaridImpl(QVARID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     HaskellVaridImpl(VARID)
       PsiElement(HaskellTokenType.varidRegexp)('main')
   HaskellReservedopImpl(RESERVEDOP)
     PsiElement(HaskellTokenType.=)('=')
   HaskellQvaridImpl(QVARID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     HaskellVaridImpl(VARID)
       PsiElement(HaskellTokenType.varidRegexp)('print')
   PsiElement(HaskellTokenType.stringtoken)('"Hello, World!"')

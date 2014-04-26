@@ -3,15 +3,11 @@ Haskell File
     HaskellReservedDeclImpl(RESERVED_DECL)
       PsiElement(HaskellTokenType.varidRegexp)('module')
   HaskellQconidImpl(QCONID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     PsiElement(HaskellTokenType.conid)('String00001')
   HaskellReservedidImpl(RESERVEDID)
     HaskellReservedDeclImpl(RESERVED_DECL)
       PsiElement(HaskellTokenType.varidRegexp)('where')
   HaskellQvaridImpl(QVARID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     HaskellVaridImpl(VARID)
       PsiElement(HaskellTokenType.varidRegexp)('s')
   HaskellReservedopImpl(RESERVEDOP)

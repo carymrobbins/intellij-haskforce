@@ -3,8 +3,6 @@ Haskell File
     HaskellReservedDeclImpl(RESERVED_DECL)
       PsiElement(HaskellTokenType.varidRegexp)('module')
   HaskellQconidImpl(QCONID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     PsiElement(HaskellTokenType.conid)('Import1')
   HaskellReservedidImpl(RESERVEDID)
     HaskellReservedDeclImpl(RESERVED_DECL)
@@ -16,8 +14,6 @@ Haskell File
     HaskellReservedMetaImpl(RESERVED_META)
       PsiElement(HaskellTokenType.varidRegexp)('qualified')
   HaskellQconidImpl(QCONID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     PsiElement(HaskellTokenType.conid)('Prelude')
   HaskellReservedidImpl(RESERVEDID)
     HaskellReservedMetaImpl(RESERVED_META)
@@ -25,15 +21,11 @@ Haskell File
   HaskellSpecialImpl(SPECIAL)
     PsiElement(HaskellTokenType.()('(')
   HaskellQvaridImpl(QVARID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     HaskellVaridImpl(VARID)
       PsiElement(HaskellTokenType.varidRegexp)('zipWith')
   HaskellSpecialImpl(SPECIAL)
     PsiElement(HaskellTokenType.,)(',')
   HaskellQvaridImpl(QVARID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     HaskellVaridImpl(VARID)
       PsiElement(HaskellTokenType.varidRegexp)('head')
   HaskellSpecialImpl(SPECIAL)
@@ -49,15 +41,11 @@ Haskell File
   HaskellSpecialImpl(SPECIAL)
     PsiElement(HaskellTokenType.()('(')
   HaskellQvaridImpl(QVARID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     HaskellVaridImpl(VARID)
       PsiElement(HaskellTokenType.varidRegexp)('fromMaybe')
   HaskellSpecialImpl(SPECIAL)
     PsiElement(HaskellTokenType.,)(',')
   HaskellQvaridImpl(QVARID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     HaskellVaridImpl(VARID)
       PsiElement(HaskellTokenType.varidRegexp)('isJust')
   HaskellSpecialImpl(SPECIAL)
@@ -76,8 +64,6 @@ Haskell File
   HaskellSpecialImpl(SPECIAL)
     PsiElement(HaskellTokenType.()('(')
   HaskellQconidImpl(QCONID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     PsiElement(HaskellTokenType.conid)('Maybe')
   HaskellSpecialImpl(SPECIAL)
     PsiElement(HaskellTokenType.()('(')
@@ -94,13 +80,9 @@ Haskell File
     HaskellReservedMetaImpl(RESERVED_META)
       PsiElement(HaskellTokenType.varidRegexp)('qualified')
   HaskellQconidImpl(QCONID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     PsiElement(HaskellTokenType.conid)('Prelude')
   HaskellReservedidImpl(RESERVEDID)
     HaskellReservedMetaImpl(RESERVED_META)
       PsiElement(HaskellTokenType.varidRegexp)('as')
   HaskellQconidImpl(QCONID)
-    HaskellModulePrefixImpl(MODULE_PREFIX)
-      <empty list>
     PsiElement(HaskellTokenType.conid)('P')
