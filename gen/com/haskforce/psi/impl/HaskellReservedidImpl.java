@@ -24,26 +24,8 @@ public class HaskellReservedidImpl extends ASTWrapperPsiElement implements Haske
 
   @Override
   @Nullable
-  public HaskellReservedDecl getReservedDecl() {
-    return findChildByClass(HaskellReservedDecl.class);
-  }
-
-  @Override
-  @Nullable
-  public HaskellReservedExpr getReservedExpr() {
-    return findChildByClass(HaskellReservedExpr.class);
-  }
-
-  @Override
-  @Nullable
-  public HaskellReservedMeta getReservedMeta() {
-    return findChildByClass(HaskellReservedMeta.class);
-  }
-
-  @Override
-  @Nullable
-  public HaskellReservedVar getReservedVar() {
-    return findChildByClass(HaskellReservedVar.class);
+  public PsiElement getClasstoken() {
+    return findChildByType(CLASSTOKEN);
   }
 
 }

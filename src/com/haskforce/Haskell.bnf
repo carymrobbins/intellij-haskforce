@@ -116,12 +116,12 @@ special ::= '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}' | thquote | backtick
 symbol ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '=' | '>' | '?' | '@'
          | '\' | '^' | '|' | '-' | '~' | ':'
 varid ::= !reservedid varidRegexp
-reservedExpr ::= 'case' | 'do' | 'else' | 'if' | 'in' | 'let' | 'of' | 'then'
-reservedDecl ::= 'class' | 'data' | 'default' | 'deriving' | 'foreign' | 'instance'
-               | 'module' | 'newtype' | 'type' | 'where'
-reservedMeta ::= 'as' | 'import' | 'infix' | 'infixl' | 'infixr' | 'qualified'
-               | 'hiding'
-reservedVar ::= '_'
+private reservedExpr ::= 'case' | 'do' | 'else' | 'if' | 'in' | 'let' | 'of' | 'then'
+private reservedDecl ::= 'class' | 'data' | 'default' | 'deriving' | 'foreign' | 'instance'
+                       | 'module' | 'newtype' | 'type' | 'where'
+private reservedMeta ::= 'as' | 'import' | 'infix' | 'infixl' | 'infixr' | 'qualified'
+                       | 'hiding'
+private reservedVar ::= '_'
 reservedid  ::= reservedExpr | reservedDecl | reservedMeta | reservedVar
 
 varsym ::= !(reservedop | dashes ) ( !':' symbol+ )

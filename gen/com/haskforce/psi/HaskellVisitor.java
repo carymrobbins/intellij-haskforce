@@ -51,22 +51,6 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitReservedDecl(@NotNull HaskellReservedDecl o) {
-    visitPsiElement(o);
-  }
-
-  public void visitReservedExpr(@NotNull HaskellReservedExpr o) {
-    visitPsiElement(o);
-  }
-
-  public void visitReservedMeta(@NotNull HaskellReservedMeta o) {
-    visitPsiElement(o);
-  }
-
-  public void visitReservedVar(@NotNull HaskellReservedVar o) {
-    visitPsiElement(o);
-  }
-
   public void visitReservedid(@NotNull HaskellReservedid o) {
     visitPsiElement(o);
   }

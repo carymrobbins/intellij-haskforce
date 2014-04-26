@@ -53,18 +53,6 @@ public class HaskellParser implements PsiParser {
     else if (root_ == QVARSYM) {
       result_ = qvarsym(builder_, 0);
     }
-    else if (root_ == RESERVED_DECL) {
-      result_ = reservedDecl(builder_, 0);
-    }
-    else if (root_ == RESERVED_EXPR) {
-      result_ = reservedExpr(builder_, 0);
-    }
-    else if (root_ == RESERVED_META) {
-      result_ = reservedMeta(builder_, 0);
-    }
-    else if (root_ == RESERVED_VAR) {
-      result_ = reservedVar(builder_, 0);
-    }
     else if (root_ == RESERVEDID) {
       result_ = reservedid(builder_, 0);
     }
@@ -539,11 +527,11 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // 'class' | 'data' | 'default' | 'deriving' | 'foreign' | 'instance'
-  //                | 'module' | 'newtype' | 'type' | 'where'
-  public static boolean reservedDecl(PsiBuilder builder_, int level_) {
+  //                        | 'module' | 'newtype' | 'type' | 'where'
+  static boolean reservedDecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "reservedDecl")) return false;
     boolean result_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<reserved decl>");
+    Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, CLASSTOKEN);
     if (!result_) result_ = consumeToken(builder_, "data");
     if (!result_) result_ = consumeToken(builder_, "default");
@@ -554,16 +542,16 @@ public class HaskellParser implements PsiParser {
     if (!result_) result_ = consumeToken(builder_, "newtype");
     if (!result_) result_ = consumeToken(builder_, "type");
     if (!result_) result_ = consumeToken(builder_, "where");
-    exit_section_(builder_, level_, marker_, RESERVED_DECL, result_, false, null);
+    exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   /* ********************************************************** */
   // 'case' | 'do' | 'else' | 'if' | 'in' | 'let' | 'of' | 'then'
-  public static boolean reservedExpr(PsiBuilder builder_, int level_) {
+  static boolean reservedExpr(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "reservedExpr")) return false;
     boolean result_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<reserved expr>");
+    Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, "case");
     if (!result_) result_ = consumeToken(builder_, "do");
     if (!result_) result_ = consumeToken(builder_, "else");
@@ -572,17 +560,17 @@ public class HaskellParser implements PsiParser {
     if (!result_) result_ = consumeToken(builder_, "let");
     if (!result_) result_ = consumeToken(builder_, "of");
     if (!result_) result_ = consumeToken(builder_, "then");
-    exit_section_(builder_, level_, marker_, RESERVED_EXPR, result_, false, null);
+    exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   /* ********************************************************** */
   // 'as' | 'import' | 'infix' | 'infixl' | 'infixr' | 'qualified'
-  //                | 'hiding'
-  public static boolean reservedMeta(PsiBuilder builder_, int level_) {
+  //                        | 'hiding'
+  static boolean reservedMeta(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "reservedMeta")) return false;
     boolean result_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<reserved meta>");
+    Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, "as");
     if (!result_) result_ = consumeToken(builder_, "import");
     if (!result_) result_ = consumeToken(builder_, "infix");
@@ -590,19 +578,14 @@ public class HaskellParser implements PsiParser {
     if (!result_) result_ = consumeToken(builder_, "infixr");
     if (!result_) result_ = consumeToken(builder_, "qualified");
     if (!result_) result_ = consumeToken(builder_, "hiding");
-    exit_section_(builder_, level_, marker_, RESERVED_META, result_, false, null);
+    exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   /* ********************************************************** */
   // '_'
-  public static boolean reservedVar(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "reservedVar")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<reserved var>");
-    result_ = consumeToken(builder_, "_");
-    exit_section_(builder_, level_, marker_, RESERVED_VAR, result_, false, null);
-    return result_;
+  static boolean reservedVar(PsiBuilder builder_, int level_) {
+    return consumeToken(builder_, "_");
   }
 
   /* ********************************************************** */

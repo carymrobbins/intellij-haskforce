@@ -56,30 +56,6 @@ public class HaskellAnnotator implements Annotator {
 //            }
 
             @Override
-            public void visitReservedExpr(@NotNull HaskellReservedExpr o) {
-                super.visitReservedExpr(o);
-                setHighlighting(o, holder, HaskellSyntaxHighlighter.RESERVEDEXPR);
-            }
-
-            @Override
-            public void visitReservedDecl(@NotNull HaskellReservedDecl o) {
-                super.visitReservedDecl(o);
-                setHighlighting(o, holder, HaskellSyntaxHighlighter.RESERVEDDECL);
-            }
-
-            @Override
-            public void visitReservedMeta(@NotNull HaskellReservedMeta o) {
-                super.visitReservedMeta(o);
-                setHighlighting(o, holder, HaskellSyntaxHighlighter.RESERVEDMETA);
-            }
-
-            @Override
-            public void visitReservedVar(@NotNull HaskellReservedVar o) {
-                super.visitReservedVar(o);
-                setHighlighting(o, holder, HaskellSyntaxHighlighter.RESERVEDVAR);
-            }
-
-            @Override
             public void visitReservedop(@NotNull HaskellReservedop o) {
                 super.visitReservedop(o);
                 setHighlighting(o, holder, HaskellSyntaxHighlighter.RESERVEDOP);

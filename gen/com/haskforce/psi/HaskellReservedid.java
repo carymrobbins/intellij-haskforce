@@ -8,15 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface HaskellReservedid extends PsiElement {
 
   @Nullable
-  HaskellReservedDecl getReservedDecl();
-
-  @Nullable
-  HaskellReservedExpr getReservedExpr();
-
-  @Nullable
-  HaskellReservedMeta getReservedMeta();
-
-  @Nullable
-  HaskellReservedVar getReservedVar();
+  PsiElement getClasstoken();
 
 }

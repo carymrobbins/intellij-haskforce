@@ -21,10 +21,6 @@ public interface HaskellTypes {
   IElementType QVARSYM = new HaskellElementType("QVARSYM");
   IElementType RESERVEDID = new HaskellElementType("RESERVEDID");
   IElementType RESERVEDOP = new HaskellElementType("RESERVEDOP");
-  IElementType RESERVED_DECL = new HaskellElementType("RESERVED_DECL");
-  IElementType RESERVED_EXPR = new HaskellElementType("RESERVED_EXPR");
-  IElementType RESERVED_META = new HaskellElementType("RESERVED_META");
-  IElementType RESERVED_VAR = new HaskellElementType("RESERVED_VAR");
   IElementType SPECIAL = new HaskellElementType("SPECIAL");
   IElementType SYMBOL = new HaskellElementType("SYMBOL");
   IElementType VARID = new HaskellElementType("VARID");
@@ -127,18 +123,6 @@ public interface HaskellTypes {
       }
       else if (type == RESERVEDOP) {
         return new HaskellReservedopImpl(node);
-      }
-      else if (type == RESERVED_DECL) {
-        return new HaskellReservedDeclImpl(node);
-      }
-      else if (type == RESERVED_EXPR) {
-        return new HaskellReservedExprImpl(node);
-      }
-      else if (type == RESERVED_META) {
-        return new HaskellReservedMetaImpl(node);
-      }
-      else if (type == RESERVED_VAR) {
-        return new HaskellReservedVarImpl(node);
       }
       else if (type == SPECIAL) {
         return new HaskellSpecialImpl(node);
