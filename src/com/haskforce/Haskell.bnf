@@ -99,16 +99,16 @@
 
 // Haskell 2010 Report - http://www.haskell.org/onlinereport/haskell2010/haskellch2.html#x7-140002
 
-program ::= {pragma (whitechar) *} * { whitespace | lexeme } *
+program ::= (pragma whitechar* )* ( whitespace | lexeme )*
 private lexeme ::= qinfixvarid | qvarid | qinfixconid |qconid | qvarsym
                  | qconsym | literal | special | reservedop | reservedid
                  | pragma
 private literal ::= floattoken | integertoken | chartoken | stringtoken
-private whitespace ::= whitetoken {whitetoken} *
+private whitespace ::= whitestuff +
 private space ::= LINE_WS
 private newline ::= EOL
-private whitetoken ::= space | whitechar | comment | ncomment | haddock
-whitechar ::= space | newline
+private whitestuff ::= whitechar | comment | ncomment | haddock
+whitechar ::= space | newline | '\t'
 pragma ::= openpragma {!closepragma (lexeme | space)} * closepragma
 ncomment ::= opencom anyseq? {ncomment anyseq?} * closecom
 anyseq ::= !( opencom | closecom ) (lexeme | whitechar | '`') *
@@ -124,7 +124,7 @@ reservedMeta ::= 'as' | 'import' | 'infix' | 'infixl' | 'infixr' | 'qualified'
 reservedVar ::= '_'
 reservedid  ::= reservedExpr | reservedDecl | reservedMeta | reservedVar
 
-varsym ::= !(reservedop whitetoken | dashes ) ( !':' symbol {symbol} * )
+varsym ::= !(reservedop whitestuff | dashes ) ( !':' symbol {symbol} * )
 consym ::= !reservedop ( ':' {symbol} *)
 
 reservedop ::= '..' | '::' | '=' | '\' | '|' | '<-' | '->' | '@' | '~' | '=>'

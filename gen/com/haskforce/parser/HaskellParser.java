@@ -390,7 +390,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // {pragma (whitechar) *} * { whitespace | lexeme } *
+  // (pragma whitechar* )* ( whitespace | lexeme )*
   static boolean program(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "program")) return false;
     boolean result_ = false;
@@ -401,7 +401,7 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // {pragma (whitechar) *} *
+  // (pragma whitechar* )*
   private static boolean program_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "program_0")) return false;
     int pos_ = current_position_(builder_);
@@ -413,7 +413,7 @@ public class HaskellParser implements PsiParser {
     return true;
   }
 
-  // pragma (whitechar) *
+  // pragma whitechar*
   private static boolean program_0_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "program_0_0")) return false;
     boolean result_ = false;
@@ -424,29 +424,19 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // (whitechar) *
+  // whitechar*
   private static boolean program_0_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "program_0_0_1")) return false;
     int pos_ = current_position_(builder_);
     while (true) {
-      if (!program_0_0_1_0(builder_, level_ + 1)) break;
+      if (!whitechar(builder_, level_ + 1)) break;
       if (!empty_element_parsed_guard_(builder_, "program_0_0_1", pos_)) break;
       pos_ = current_position_(builder_);
     }
     return true;
   }
 
-  // (whitechar)
-  private static boolean program_0_0_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "program_0_0_1_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = whitechar(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // { whitespace | lexeme } *
+  // ( whitespace | lexeme )*
   private static boolean program_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "program_1")) return false;
     int pos_ = current_position_(builder_);
@@ -774,7 +764,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // !(reservedop whitetoken | dashes ) ( !':' symbol {symbol} * )
+  // !(reservedop whitestuff | dashes ) ( !':' symbol {symbol} * )
   public static boolean varsym(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varsym")) return false;
     boolean result_ = false;
@@ -785,7 +775,7 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // !(reservedop whitetoken | dashes )
+  // !(reservedop whitestuff | dashes )
   private static boolean varsym_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varsym_0")) return false;
     boolean result_ = false;
@@ -795,7 +785,7 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // reservedop whitetoken | dashes
+  // reservedop whitestuff | dashes
   private static boolean varsym_0_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varsym_0_0")) return false;
     boolean result_ = false;
@@ -806,13 +796,13 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // reservedop whitetoken
+  // reservedop whitestuff
   private static boolean varsym_0_0_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varsym_0_0_0")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = reservedop(builder_, level_ + 1);
-    result_ = result_ && whitetoken(builder_, level_ + 1);
+    result_ = result_ && whitestuff(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -862,60 +852,42 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // space | newline
+  // space | newline | '\t'
   public static boolean whitechar(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "whitechar")) return false;
-    if (!nextTokenIs(builder_, "<whitechar>", EOL, LINE_WS)) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<whitechar>");
     result_ = space(builder_, level_ + 1);
     if (!result_) result_ = newline(builder_, level_ + 1);
+    if (!result_) result_ = consumeToken(builder_, "\\t");
     exit_section_(builder_, level_, marker_, WHITECHAR, result_, false, null);
     return result_;
   }
 
   /* ********************************************************** */
-  // whitetoken {whitetoken} *
+  // whitestuff +
   static boolean whitespace(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "whitespace")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = whitetoken(builder_, level_ + 1);
-    result_ = result_ && whitespace_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // {whitetoken} *
-  private static boolean whitespace_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "whitespace_1")) return false;
+    result_ = whitestuff(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
-    while (true) {
-      if (!whitespace_1_0(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "whitespace_1", pos_)) break;
+    while (result_) {
+      if (!whitestuff(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "whitespace", pos_)) break;
       pos_ = current_position_(builder_);
     }
-    return true;
-  }
-
-  // {whitetoken}
-  private static boolean whitespace_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "whitespace_1_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = whitetoken(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   /* ********************************************************** */
-  // space | whitechar | comment | ncomment | haddock
-  static boolean whitetoken(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "whitetoken")) return false;
+  // whitechar | comment | ncomment | haddock
+  static boolean whitestuff(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "whitestuff")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = space(builder_, level_ + 1);
-    if (!result_) result_ = whitechar(builder_, level_ + 1);
+    result_ = whitechar(builder_, level_ + 1);
     if (!result_) result_ = consumeToken(builder_, COMMENT);
     if (!result_) result_ = ncomment(builder_, level_ + 1);
     if (!result_) result_ = consumeToken(builder_, HADDOCK);
