@@ -93,7 +93,7 @@
     comment='regexp:--([^\^\r\n][^\r\n]*|[\r\n])'
     dashes='regexp:--(-)?'
     haddock='regexp:--\^[^\r\n]*'
-    stringtoken='regexp:"(\\\n\s*\\|\\"|[^"\n])*"'
+    stringtoken='regexp:"(\\\s*\n\s*\\|\\"|[^"\n])*"'
   ]
 }
 
