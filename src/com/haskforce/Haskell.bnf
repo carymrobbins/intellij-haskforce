@@ -100,9 +100,9 @@
 // Haskell 2010 Report - http://www.haskell.org/onlinereport/haskell2010/haskellch2.html#x7-140002
 
 program ::= ( whitespace | lexeme )*
-private lexeme ::= literal | special | reservedop | reservedid | pragma
-                 | qinfixvarid | qvarid | qinfixconid | qconid | qvarsym
-                 | qconsym
+private lexeme ::= literal | reservedop | reservedid | pragma
+                 | qconid | qinfixvarid | qvarid | qinfixconid | qvarsym
+                 | qconsym | special
 private literal ::= floattoken | integertoken | chartoken | stringtoken
 private whitespace ::= whitestuff +
 private space ::= LINE_WS
@@ -112,7 +112,7 @@ whitechar ::= space | newline | '\t'
 pragma ::= openpragma (!closepragma (lexeme | space))+ closepragma
 ncomment ::= opencom anyseq? (ncomment anyseq?)* closecom
 anyseq ::= !( opencom | closecom ) (lexeme | whitechar | '`')+
-special ::= '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}' | thquote
+special ::= '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}' | thquote | backtick
 symbol ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '=' | '>' | '?' | '@'
          | '\' | '^' | '|' | '-' | '~' | ':'
 varid ::= !reservedid varidRegexp

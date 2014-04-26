@@ -24,6 +24,12 @@ public class HaskellSpecialImpl extends ASTWrapperPsiElement implements HaskellS
 
   @Override
   @Nullable
+  public PsiElement getBacktick() {
+    return findChildByType(BACKTICK);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getComma() {
     return findChildByType(COMMA);
   }

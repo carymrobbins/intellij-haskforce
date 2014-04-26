@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface HaskellSpecial extends PsiElement {
 
   @Nullable
+  PsiElement getBacktick();
+
+  @Nullable
   PsiElement getComma();
 
   @Nullable
