@@ -29,7 +29,7 @@ Building the plugin
 1. Set the project SDK to the IDEA SDK.
 1. Right-click on the following directories and **Mark Directory As**:
   * `gen/` as Sources Root
-  * `resources` as Resources Root
+  * `resources/` as Resources Root
   * `tests/` as Test Sources Root
 1. From the menu go to **Run > Edit Configurations**
 1. Click on the `+` sign and choose **Plugin**, click **OK**, then run your new configuration.
