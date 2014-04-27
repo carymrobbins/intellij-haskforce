@@ -6,12 +6,16 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.editor.colors.CodeInsightColors;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.util.containers.HashSet;
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.*;
 import java.io.Reader;
+import java.util.*;
 
 import com.haskforce.psi.HaskellTypes;
+
+import static com.haskforce.psi.HaskellTypes.*;
 
 public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
     /*
@@ -92,6 +96,17 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
             "HASKELL_ESCAPE", DefaultLanguageHighlighterColors.VALID_STRING_ESCAPE);
     public static final TextAttributesKey[] ESCAPE_KEYS = new TextAttributesKey[]{ESCAPE};
 
+    /**
+     * Tokens of reserved IDs.
+     *
+     * Used for mapping how the token should be highlighted.
+     */
+    private static final HashSet<IElementType> reservedIds = new HashSet<>(
+            Arrays.asList(new IElementType[]{AS, CASE, CLASSTOKEN, DATA, DEFAULT
+                    , DERIVING, DO, ELSE, FOREIGN, HIDING, IF, IMPORT, IN, INFIX
+                    , INFIXL, INFIXR, INSTANCE, LET, HaskellTypes.MODULE
+                    , NEWTYPE, OF, QUALIFIED, THEN, TYPE, WHERE}));
+
     @NotNull
     @Override
     public Lexer getHighlightingLexer() {
@@ -125,6 +140,10 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
             return CONSYM_KEYS;
         } else if (tokenType.equals(HaskellTypes.VARSYM)) {
             return VARSYM_KEYS;
+        } else if (tokenType.equals(HaskellTypes.RESERVEDOP)) {
+            return RESERVEDOP_KEYS;
+        } else if (reservedIds.contains(tokenType)) {
+            return RESERVEDID_KEYS;
         }
         return EMPTY;
     }
