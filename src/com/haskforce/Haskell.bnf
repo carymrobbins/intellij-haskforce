@@ -131,13 +131,13 @@ module ::= (whitespace | pragma) module
          | "module" qconid [exports] "where" body
          | body
 
-exports ::= '(' export (',' (export | &')'))* ')' {pin(".*")=1}
+exports ::= <<commaSeparate2 export>>
 export ::= qvar
         | qtycon ["(..)" | cnames]
         | qtycls ["(..)" | qvars]
         | "module" qconid
 
-cnames ::= '(' cname (',' cname)* ')' {pin(".*")=1}
+cnames ::= <<commaSeparate cname>>
 cname ::= var | con
 
 body ::= ( whitespace | lexeme )*
@@ -186,6 +186,14 @@ qvarsym ::= [modulePrefix] varsym
 qconsym ::= [modulePrefix] consym
 
 var ::= varid | '(' varsym ')'
-qvars ::= '(' qvar (',' qvar)* ')' {pin(".*")=1}
+qvars ::= <<commaSeparate qvar>>
 qvar ::= qvarid | qvarsym
 con ::= conid | '(' consym ')'
+
+
+// Meta-Helpers
+
+// Comma-separate a list of the parameter.
+private meta commaSeparate ::= '(' <<p>> (',' <<p>>)* ')' {pin(".*")=1}
+// Comma-separate a list of the parameter with a trailing comma.
+private meta commaSeparate2 ::= '(' <<p>> (',' (<<p>> | &')'))* ')' {pin(".*")=1}

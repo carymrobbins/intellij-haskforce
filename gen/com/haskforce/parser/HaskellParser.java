@@ -220,45 +220,120 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // '(' cname (',' cname)* ')'
+  // <<commaSeparate cname>>
   public static boolean cnames(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "cnames")) return false;
+    if (!nextTokenIs(builder_, LPAREN)) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = commaSeparate(builder_, level_ + 1, cname_parser_);
+    exit_section_(builder_, marker_, CNAMES, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // '(' <<p>> (',' <<p>>)* ')'
+  static boolean commaSeparate(PsiBuilder builder_, int level_, final Parser p) {
+    if (!recursion_guard_(builder_, level_, "commaSeparate")) return false;
     if (!nextTokenIs(builder_, LPAREN)) return false;
     boolean result_ = false;
     boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, LPAREN);
     pinned_ = result_; // pin = 1
-    result_ = result_ && report_error_(builder_, cname(builder_, level_ + 1));
-    result_ = pinned_ && report_error_(builder_, cnames_2(builder_, level_ + 1)) && result_;
+    result_ = result_ && report_error_(builder_, p.parse(builder_, level_));
+    result_ = pinned_ && report_error_(builder_, commaSeparate_2(builder_, level_ + 1, p)) && result_;
     result_ = pinned_ && consumeToken(builder_, RPAREN) && result_;
-    exit_section_(builder_, level_, marker_, CNAMES, result_, pinned_, null);
+    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
     return result_ || pinned_;
   }
 
-  // (',' cname)*
-  private static boolean cnames_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "cnames_2")) return false;
+  // (',' <<p>>)*
+  private static boolean commaSeparate_2(PsiBuilder builder_, int level_, final Parser p) {
+    if (!recursion_guard_(builder_, level_, "commaSeparate_2")) return false;
     int pos_ = current_position_(builder_);
     while (true) {
-      if (!cnames_2_0(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "cnames_2", pos_)) break;
+      if (!commaSeparate_2_0(builder_, level_ + 1, p)) break;
+      if (!empty_element_parsed_guard_(builder_, "commaSeparate_2", pos_)) break;
       pos_ = current_position_(builder_);
     }
     return true;
   }
 
-  // ',' cname
-  private static boolean cnames_2_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "cnames_2_0")) return false;
+  // ',' <<p>>
+  private static boolean commaSeparate_2_0(PsiBuilder builder_, int level_, final Parser p) {
+    if (!recursion_guard_(builder_, level_, "commaSeparate_2_0")) return false;
     boolean result_ = false;
     boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, COMMA);
     pinned_ = result_; // pin = 1
-    result_ = result_ && cname(builder_, level_ + 1);
+    result_ = result_ && p.parse(builder_, level_);
     exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
     return result_ || pinned_;
+  }
+
+  /* ********************************************************** */
+  // '(' <<p>> (',' (<<p>> | &')'))* ')'
+  static boolean commaSeparate2(PsiBuilder builder_, int level_, final Parser p) {
+    if (!recursion_guard_(builder_, level_, "commaSeparate2")) return false;
+    if (!nextTokenIs(builder_, LPAREN)) return false;
+    boolean result_ = false;
+    boolean pinned_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
+    result_ = consumeToken(builder_, LPAREN);
+    pinned_ = result_; // pin = 1
+    result_ = result_ && report_error_(builder_, p.parse(builder_, level_));
+    result_ = pinned_ && report_error_(builder_, commaSeparate2_2(builder_, level_ + 1, p)) && result_;
+    result_ = pinned_ && consumeToken(builder_, RPAREN) && result_;
+    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
+    return result_ || pinned_;
+  }
+
+  // (',' (<<p>> | &')'))*
+  private static boolean commaSeparate2_2(PsiBuilder builder_, int level_, final Parser p) {
+    if (!recursion_guard_(builder_, level_, "commaSeparate2_2")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!commaSeparate2_2_0(builder_, level_ + 1, p)) break;
+      if (!empty_element_parsed_guard_(builder_, "commaSeparate2_2", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
+  }
+
+  // ',' (<<p>> | &')')
+  private static boolean commaSeparate2_2_0(PsiBuilder builder_, int level_, final Parser p) {
+    if (!recursion_guard_(builder_, level_, "commaSeparate2_2_0")) return false;
+    boolean result_ = false;
+    boolean pinned_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
+    result_ = consumeToken(builder_, COMMA);
+    pinned_ = result_; // pin = 1
+    result_ = result_ && commaSeparate2_2_0_1(builder_, level_ + 1, p);
+    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
+    return result_ || pinned_;
+  }
+
+  // <<p>> | &')'
+  private static boolean commaSeparate2_2_0_1(PsiBuilder builder_, int level_, final Parser p) {
+    if (!recursion_guard_(builder_, level_, "commaSeparate2_2_0_1")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = p.parse(builder_, level_);
+    if (!result_) result_ = commaSeparate2_2_0_1_1(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // &')'
+  private static boolean commaSeparate2_2_0_1_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "commaSeparate2_2_0_1_1")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _AND_, null);
+    result_ = consumeToken(builder_, RPAREN);
+    exit_section_(builder_, level_, marker_, null, result_, false, null);
+    return result_;
   }
 
   /* ********************************************************** */
@@ -419,65 +494,14 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // '(' export (',' (export | &')'))* ')'
+  // <<commaSeparate2 export>>
   public static boolean exports(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "exports")) return false;
     if (!nextTokenIs(builder_, LPAREN)) return false;
     boolean result_ = false;
-    boolean pinned_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = consumeToken(builder_, LPAREN);
-    pinned_ = result_; // pin = 1
-    result_ = result_ && report_error_(builder_, export(builder_, level_ + 1));
-    result_ = pinned_ && report_error_(builder_, exports_2(builder_, level_ + 1)) && result_;
-    result_ = pinned_ && consumeToken(builder_, RPAREN) && result_;
-    exit_section_(builder_, level_, marker_, EXPORTS, result_, pinned_, null);
-    return result_ || pinned_;
-  }
-
-  // (',' (export | &')'))*
-  private static boolean exports_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "exports_2")) return false;
-    int pos_ = current_position_(builder_);
-    while (true) {
-      if (!exports_2_0(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "exports_2", pos_)) break;
-      pos_ = current_position_(builder_);
-    }
-    return true;
-  }
-
-  // ',' (export | &')')
-  private static boolean exports_2_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "exports_2_0")) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = consumeToken(builder_, COMMA);
-    pinned_ = result_; // pin = 1
-    result_ = result_ && exports_2_0_1(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
-    return result_ || pinned_;
-  }
-
-  // export | &')'
-  private static boolean exports_2_0_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "exports_2_0_1")) return false;
-    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = export(builder_, level_ + 1);
-    if (!result_) result_ = exports_2_0_1_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // &')'
-  private static boolean exports_2_0_1_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "exports_2_0_1_1")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _AND_, null);
-    result_ = consumeToken(builder_, RPAREN);
-    exit_section_(builder_, level_, marker_, null, result_, false, null);
+    result_ = commaSeparate2(builder_, level_ + 1, export_parser_);
+    exit_section_(builder_, marker_, EXPORTS, result_);
     return result_;
   }
 
@@ -882,45 +906,15 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // '(' qvar (',' qvar)* ')'
+  // <<commaSeparate qvar>>
   public static boolean qvars(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qvars")) return false;
     if (!nextTokenIs(builder_, LPAREN)) return false;
     boolean result_ = false;
-    boolean pinned_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = consumeToken(builder_, LPAREN);
-    pinned_ = result_; // pin = 1
-    result_ = result_ && report_error_(builder_, qvar(builder_, level_ + 1));
-    result_ = pinned_ && report_error_(builder_, qvars_2(builder_, level_ + 1)) && result_;
-    result_ = pinned_ && consumeToken(builder_, RPAREN) && result_;
-    exit_section_(builder_, level_, marker_, QVARS, result_, pinned_, null);
-    return result_ || pinned_;
-  }
-
-  // (',' qvar)*
-  private static boolean qvars_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "qvars_2")) return false;
-    int pos_ = current_position_(builder_);
-    while (true) {
-      if (!qvars_2_0(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "qvars_2", pos_)) break;
-      pos_ = current_position_(builder_);
-    }
-    return true;
-  }
-
-  // ',' qvar
-  private static boolean qvars_2_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "qvars_2_0")) return false;
-    boolean result_ = false;
-    boolean pinned_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = consumeToken(builder_, COMMA);
-    pinned_ = result_; // pin = 1
-    result_ = result_ && qvar(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
-    return result_ || pinned_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = commaSeparate(builder_, level_ + 1, qvar_parser_);
+    exit_section_(builder_, marker_, QVARS, result_);
+    return result_;
   }
 
   /* ********************************************************** */
@@ -1293,4 +1287,19 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
+  final static Parser cname_parser_ = new Parser() {
+    public boolean parse(PsiBuilder builder_, int level_) {
+      return cname(builder_, level_ + 1);
+    }
+  };
+  final static Parser export_parser_ = new Parser() {
+    public boolean parse(PsiBuilder builder_, int level_) {
+      return export(builder_, level_ + 1);
+    }
+  };
+  final static Parser qvar_parser_ = new Parser() {
+    public boolean parse(PsiBuilder builder_, int level_) {
+      return qvar(builder_, level_ + 1);
+    }
+  };
 }
