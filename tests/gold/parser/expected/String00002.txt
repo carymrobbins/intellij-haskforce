@@ -1,0 +1,10 @@
+Haskell File
+  PsiElement(HaskellTokenType.module)('module')
+  HaskellQconidImpl(QCONID)
+    PsiElement(HaskellTokenType.conid)('String00002')
+  PsiElement(HaskellTokenType.where)('where')
+  HaskellQvaridImpl(QVARID)
+    PsiElement(HaskellTokenType.varidRegexp)('s')
+  HaskellReservedopImpl(RESERVEDOP)
+    PsiElement(HaskellTokenType.=)('=')
+  PsiElement(HaskellTokenType.stringtoken)('"\\n    \Remove any backslash (except the first one) and put it back.\\n    \The syntax highlighting will break!\\n    \To fix, modify the first line of this string literal.\\n\"')

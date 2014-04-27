@@ -37,6 +37,7 @@ public class HaskellParserTest extends HaskellParserTestBase {
     public void testLambda00001()       { doTest(true, false); }
     public void testPragma00001()       { doTest(true, false); }
     public void testString00001()       { doTest(true, false); }
+    public void testString00002()       { doTest(true, false); }
     public void testTempHask00001()     { doTest(true, false); }
     public void testQuote00001()        { doTest(true, false); }
 }
