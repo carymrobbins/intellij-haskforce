@@ -9,7 +9,13 @@ import com.haskforce.psi.impl.*;
 public interface HaskellTypes {
 
   IElementType ANYSEQ = new HaskellElementType("ANYSEQ");
+  IElementType BODY = new HaskellElementType("BODY");
+  IElementType CNAME = new HaskellElementType("CNAME");
+  IElementType CNAMES = new HaskellElementType("CNAMES");
+  IElementType CON = new HaskellElementType("CON");
   IElementType CONSYM = new HaskellElementType("CONSYM");
+  IElementType EXPORT = new HaskellElementType("EXPORT");
+  IElementType EXPORTS = new HaskellElementType("EXPORTS");
   IElementType MODULE_PREFIX = new HaskellElementType("MODULE_PREFIX");
   IElementType NCOMMENT = new HaskellElementType("NCOMMENT");
   IElementType PRAGMA = new HaskellElementType("PRAGMA");
@@ -17,11 +23,19 @@ public interface HaskellTypes {
   IElementType QCONSYM = new HaskellElementType("QCONSYM");
   IElementType QINFIXCONID = new HaskellElementType("QINFIXCONID");
   IElementType QINFIXVARID = new HaskellElementType("QINFIXVARID");
+  IElementType QTYCLS = new HaskellElementType("QTYCLS");
+  IElementType QTYCON = new HaskellElementType("QTYCON");
+  IElementType QVAR = new HaskellElementType("QVAR");
   IElementType QVARID = new HaskellElementType("QVARID");
+  IElementType QVARS = new HaskellElementType("QVARS");
   IElementType QVARSYM = new HaskellElementType("QVARSYM");
   IElementType RESERVEDOP = new HaskellElementType("RESERVEDOP");
   IElementType SPECIAL = new HaskellElementType("SPECIAL");
   IElementType SYMBOL = new HaskellElementType("SYMBOL");
+  IElementType TYCLS = new HaskellElementType("TYCLS");
+  IElementType TYCON = new HaskellElementType("TYCON");
+  IElementType TYVAR = new HaskellElementType("TYVAR");
+  IElementType VAR = new HaskellElementType("VAR");
   IElementType VARSYM = new HaskellElementType("VARSYM");
   IElementType WHITECHAR = new HaskellElementType("WHITECHAR");
 
@@ -110,8 +124,26 @@ public interface HaskellTypes {
        if (type == ANYSEQ) {
         return new HaskellAnyseqImpl(node);
       }
+      else if (type == BODY) {
+        return new HaskellBodyImpl(node);
+      }
+      else if (type == CNAME) {
+        return new HaskellCnameImpl(node);
+      }
+      else if (type == CNAMES) {
+        return new HaskellCnamesImpl(node);
+      }
+      else if (type == CON) {
+        return new HaskellConImpl(node);
+      }
       else if (type == CONSYM) {
         return new HaskellConsymImpl(node);
+      }
+      else if (type == EXPORT) {
+        return new HaskellExportImpl(node);
+      }
+      else if (type == EXPORTS) {
+        return new HaskellExportsImpl(node);
       }
       else if (type == MODULE_PREFIX) {
         return new HaskellModulePrefixImpl(node);
@@ -134,8 +166,20 @@ public interface HaskellTypes {
       else if (type == QINFIXVARID) {
         return new HaskellQinfixvaridImpl(node);
       }
+      else if (type == QTYCLS) {
+        return new HaskellQtyclsImpl(node);
+      }
+      else if (type == QTYCON) {
+        return new HaskellQtyconImpl(node);
+      }
+      else if (type == QVAR) {
+        return new HaskellQvarImpl(node);
+      }
       else if (type == QVARID) {
         return new HaskellQvaridImpl(node);
+      }
+      else if (type == QVARS) {
+        return new HaskellQvarsImpl(node);
       }
       else if (type == QVARSYM) {
         return new HaskellQvarsymImpl(node);
@@ -148,6 +192,18 @@ public interface HaskellTypes {
       }
       else if (type == SYMBOL) {
         return new HaskellSymbolImpl(node);
+      }
+      else if (type == TYCLS) {
+        return new HaskellTyclsImpl(node);
+      }
+      else if (type == TYCON) {
+        return new HaskellTyconImpl(node);
+      }
+      else if (type == TYVAR) {
+        return new HaskellTyvarImpl(node);
+      }
+      else if (type == VAR) {
+        return new HaskellVarImpl(node);
       }
       else if (type == VARSYM) {
         return new HaskellVarsymImpl(node);

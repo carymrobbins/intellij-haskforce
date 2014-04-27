@@ -11,7 +11,31 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitBody(@NotNull HaskellBody o) {
+    visitPsiElement(o);
+  }
+
+  public void visitCname(@NotNull HaskellCname o) {
+    visitPsiElement(o);
+  }
+
+  public void visitCnames(@NotNull HaskellCnames o) {
+    visitPsiElement(o);
+  }
+
+  public void visitCon(@NotNull HaskellCon o) {
+    visitPsiElement(o);
+  }
+
   public void visitConsym(@NotNull HaskellConsym o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExport(@NotNull HaskellExport o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExports(@NotNull HaskellExports o) {
     visitPsiElement(o);
   }
 
@@ -43,7 +67,23 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitQtycls(@NotNull HaskellQtycls o) {
+    visitPsiElement(o);
+  }
+
+  public void visitQtycon(@NotNull HaskellQtycon o) {
+    visitPsiElement(o);
+  }
+
+  public void visitQvar(@NotNull HaskellQvar o) {
+    visitPsiElement(o);
+  }
+
   public void visitQvarid(@NotNull HaskellQvarid o) {
+    visitPsiElement(o);
+  }
+
+  public void visitQvars(@NotNull HaskellQvars o) {
     visitPsiElement(o);
   }
 
@@ -60,6 +100,22 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitSymbol(@NotNull HaskellSymbol o) {
+    visitPsiElement(o);
+  }
+
+  public void visitTycls(@NotNull HaskellTycls o) {
+    visitPsiElement(o);
+  }
+
+  public void visitTycon(@NotNull HaskellTycon o) {
+    visitPsiElement(o);
+  }
+
+  public void visitTyvar(@NotNull HaskellTyvar o) {
+    visitPsiElement(o);
+  }
+
+  public void visitVar(@NotNull HaskellVar o) {
     visitPsiElement(o);
   }
 

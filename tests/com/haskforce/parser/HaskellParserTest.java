@@ -29,15 +29,16 @@ public class HaskellParserTest extends HaskellParserTestBase {
         super("parser", "hs", new HaskellParserDefinition());
     }
 
-    public void testHello00001()        { doTest(true, false); }
-    public void testHello00002()        { doTest(true, false); }
-    public void testImport00001()       { doTest(true, false); }
-    public void testComment00001()      { doTest(true, false); }
-    public void testComment00002()      { doTest(true, false); }
-    public void testLambda00001()       { doTest(true, false); }
-    public void testPragma00001()       { doTest(true, false); }
-    public void testString00001()       { doTest(true, false); }
-    public void testString00002()       { doTest(true, false); }
-    public void testTempHask00001()     { doTest(true, false); }
-    public void testQuote00001()        { doTest(true, false); }
+    public void testHello00001()        { doTest(true, true); }
+    public void testHello00002()        { doTest(true, true); }
+    public void testHello00003()        { doTest(true, false); }
+    public void testImport00001()       { doTest(true, true); }
+    public void testComment00001()      { doTest(true, true); }
+    public void testComment00002()      { doTest(true, true); }
+    public void testLambda00001()       { doTest(true, true); }
+    public void testPragma00001()       { doTest(true, true); }
+    public void testString00001()       { doTest(true, true); }
+    public void testString00002()       { doTest(true, true); }
+    public void testTempHask00001()     { doTest(true, true); }
+    public void testQuote00001()        { doTest(true, true); }
 }

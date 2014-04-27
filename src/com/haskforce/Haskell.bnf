@@ -127,7 +127,21 @@
 
 // Haskell 2010 Report - http://www.haskell.org/onlinereport/haskell2010/haskellch2.html#x7-140002
 
-program ::= ( whitespace | lexeme )*
+module ::= (whitespace | pragma) module
+         | "module" qconid [exports] "where" body
+         | body
+
+exports ::= '(' export (',' (export | &')'))* ')' {pin(".*")=1}
+export ::= qvar
+        | qtycon ["(..)" | cnames]
+        | qtycls ["(..)" | qvars]
+        | "module" qconid
+
+cnames ::= '(' cname (',' cname)* ')' {pin(".*")=1}
+cname ::= var | con
+
+body ::= ( whitespace | lexeme )*
+
 private lexeme ::= literal | reservedop | reservedid | pragma
                  | qconid | qinfixvarid | qvarid | qinfixconid | qvarsym
                  | qconsym | special
@@ -146,7 +160,7 @@ symbol ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '=' | '>'
 private varid ::= !reservedid varidRegexp
 private reservedExpr ::= 'case' | 'do' | 'else' | 'if' | 'in' | 'let' | 'of' | 'then'
 private reservedDecl ::= 'class' | 'data' | 'default' | 'deriving' | 'foreign' | 'instance'
-                       | 'module' | 'newtype' | 'type' | 'where'
+                       | 'newtype' | 'type' | 'where'
 private reservedMeta ::= 'as' | 'import' | 'infix' | 'infixl' | 'infixr' | 'qualified'
                        | 'hiding'
 private reservedVar ::= '_'
@@ -157,11 +171,21 @@ consym ::= !reservedop ( ':' symbol* )
 
 reservedop ::= '..' | '::' | '=' | '\' | '|' | '<-' | '->' | '@' | '~' | '=>'
 
+tyvar ::= varid
+tycon ::= conid
+tycls ::= conid
 modulePrefix ::= (conid '.')+
 
 qvarid ::= [modulePrefix] varid
 qinfixvarid ::= '`' [modulePrefix] varid '`'
 qconid ::= [modulePrefix] conid
 qinfixconid ::= '`' [modulePrefix] conid '`'
+qtycon ::= [modulePrefix] tycon
+qtycls ::= [modulePrefix] tycls
 qvarsym ::= [modulePrefix] varsym
 qconsym ::= [modulePrefix] consym
+
+var ::= varid | '(' varsym ')'
+qvars ::= '(' qvar (',' qvar)* ')' {pin(".*")=1}
+qvar ::= qvarid | qvarsym
+con ::= conid | '(' consym ')'

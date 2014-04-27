@@ -49,9 +49,9 @@ public abstract class HaskellParserTestBase extends ParsingTestCase {
         return true;
     }
 
-    protected void doTest(boolean checkResult, boolean suppressErrors) {
+    protected void doTest(boolean checkResult, boolean shouldPass) {
         doTest(true);
-        if (!suppressErrors) {
+        if (shouldPass) {
             assertFalse(
                     "PsiFile contains error elements",
                     toParseTreeText(myFile, skipSpaces(), includeRanges()).contains("PsiErrorElement")
