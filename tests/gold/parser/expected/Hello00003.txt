@@ -17,4 +17,4 @@ Haskell File
   PsiElement(HaskellTokenType.where)('where')
   PsiElement(HaskellTokenType.varidRegexp)('main')
   PsiElement(HaskellTokenType.=)('=')
-  PsiElement(HaskellTokenType.stringtoken)('"cool"')
+  PsiElement(HaskellTokenType.stringtoken)('"I'm invisible!"')
