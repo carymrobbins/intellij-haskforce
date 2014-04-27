@@ -39,6 +39,14 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitImpdecl(@NotNull HaskellImpdecl o) {
+    visitPsiElement(o);
+  }
+
+  public void visitImportt(@NotNull HaskellImportt o) {
+    visitPsiElement(o);
+  }
+
   public void visitModulePrefix(@NotNull HaskellModulePrefix o) {
     visitPsiElement(o);
   }
@@ -116,6 +124,10 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitVar(@NotNull HaskellVar o) {
+    visitPsiElement(o);
+  }
+
+  public void visitVars(@NotNull HaskellVars o) {
     visitPsiElement(o);
   }
 

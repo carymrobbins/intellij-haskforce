@@ -16,6 +16,8 @@ public interface HaskellTypes {
   IElementType CONSYM = new HaskellElementType("CONSYM");
   IElementType EXPORT = new HaskellElementType("EXPORT");
   IElementType EXPORTS = new HaskellElementType("EXPORTS");
+  IElementType IMPDECL = new HaskellElementType("IMPDECL");
+  IElementType IMPORTT = new HaskellElementType("IMPORTT");
   IElementType MODULE_PREFIX = new HaskellElementType("MODULE_PREFIX");
   IElementType NCOMMENT = new HaskellElementType("NCOMMENT");
   IElementType PRAGMA = new HaskellElementType("PRAGMA");
@@ -36,6 +38,7 @@ public interface HaskellTypes {
   IElementType TYCON = new HaskellElementType("TYCON");
   IElementType TYVAR = new HaskellElementType("TYVAR");
   IElementType VAR = new HaskellElementType("VAR");
+  IElementType VARS = new HaskellElementType("VARS");
   IElementType VARSYM = new HaskellElementType("VARSYM");
   IElementType WHITECHAR = new HaskellElementType("WHITECHAR");
 
@@ -145,6 +148,12 @@ public interface HaskellTypes {
       else if (type == EXPORTS) {
         return new HaskellExportsImpl(node);
       }
+      else if (type == IMPDECL) {
+        return new HaskellImpdeclImpl(node);
+      }
+      else if (type == IMPORTT) {
+        return new HaskellImporttImpl(node);
+      }
       else if (type == MODULE_PREFIX) {
         return new HaskellModulePrefixImpl(node);
       }
@@ -204,6 +213,9 @@ public interface HaskellTypes {
       }
       else if (type == VAR) {
         return new HaskellVarImpl(node);
+      }
+      else if (type == VARS) {
+        return new HaskellVarsImpl(node);
       }
       else if (type == VARSYM) {
         return new HaskellVarsymImpl(node);

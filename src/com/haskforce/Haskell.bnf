@@ -131,16 +131,28 @@ module ::= (whitespace | pragma) module
          | "module" qconid [exports] "where" body
          | body
 
+body ::= impdecl* topdecl*
+
 exports ::= <<commaSeparate2 export>>
 export ::= qvar
         | qtycon ["(..)" | cnames]
         | qtycls ["(..)" | qvars]
         | "module" qconid
 
+impdecl ::= "import" ["qualified"] qconid ["as" qconid] [impspec]
+
+private impspec ::= <<commaSeparate2 importt>>
+                  | "hiding" <<commaSeparate2 importt>>
+
+// Workaround for https://github.com/JetBrains/Grammar-Kit/issues/32.
+importt ::= var
+          | tycon ["(..)" | cnames]
+          | tycls ["(..)" | vars]
+
 cnames ::= <<commaSeparate cname>>
 cname ::= var | con
 
-body ::= ( whitespace | lexeme )*
+private topdecl ::= ( whitespace | lexeme )
 
 private lexeme ::= literal | reservedop | reservedid | pragma
                  | qconid | qinfixvarid | qvarid | qinfixconid | qvarsym
@@ -161,8 +173,9 @@ private varid ::= !reservedid varidRegexp
 private reservedExpr ::= 'case' | 'do' | 'else' | 'if' | 'in' | 'let' | 'of' | 'then'
 private reservedDecl ::= 'class' | 'data' | 'default' | 'deriving' | 'foreign' | 'instance'
                        | 'newtype' | 'type' | 'where'
-private reservedMeta ::= 'as' | 'import' | 'infix' | 'infixl' | 'infixr' | 'qualified'
-                       | 'hiding'
+// TODO: Remove 'as' when the rest of the parser is in place.
+// Import00002.hs will change expected output when that is done.
+private reservedMeta ::= 'as' | 'infix' | 'infixl' | 'infixr'
 private reservedVar ::= '_'
 private reservedid  ::= reservedExpr | reservedDecl | reservedMeta | reservedVar
 
@@ -185,6 +198,7 @@ qtycls ::= [modulePrefix] tycls
 qvarsym ::= [modulePrefix] varsym
 qconsym ::= [modulePrefix] consym
 
+vars ::= <<commaSeparate var>>
 var ::= varid | '(' varsym ')'
 qvars ::= <<commaSeparate qvar>>
 qvar ::= qvarid | qvarsym

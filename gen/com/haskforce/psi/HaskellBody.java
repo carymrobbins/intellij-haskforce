@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface HaskellBody extends PsiElement {
 
   @NotNull
+  List<HaskellImpdecl> getImpdeclList();
+
+  @NotNull
   List<HaskellNcomment> getNcommentList();
 
   @NotNull

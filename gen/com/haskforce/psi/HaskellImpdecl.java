@@ -5,12 +5,15 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellExports extends PsiElement {
+public interface HaskellImpdecl extends PsiElement {
 
   @Nullable
-  HaskellExport getExport();
+  HaskellImportt getImportt();
 
   @NotNull
+  List<HaskellQconid> getQconidList();
+
+  @Nullable
   PsiElement getLparen();
 
   @Nullable

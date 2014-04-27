@@ -5,6 +5,15 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellReservedMeta extends PsiElement {
+public interface HaskellVars extends PsiElement {
+
+  @NotNull
+  List<HaskellVar> getVarList();
+
+  @NotNull
+  PsiElement getLparen();
+
+  @Nullable
+  PsiElement getRparen();
 
 }

@@ -11,21 +11,21 @@ import static com.haskforce.psi.HaskellTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellExportsImpl extends ASTWrapperPsiElement implements HaskellExports {
+public class HaskellVarsImpl extends ASTWrapperPsiElement implements HaskellVars {
 
-  public HaskellExportsImpl(ASTNode node) {
+  public HaskellVarsImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitExports(this);
+    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitVars(this);
     else super.accept(visitor);
   }
 
   @Override
-  @Nullable
-  public HaskellExport getExport() {
-    return findChildByClass(HaskellExport.class);
+  @NotNull
+  public List<HaskellVar> getVarList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVar.class);
   }
 
   @Override
