@@ -20,21 +20,9 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
      * out from the keywords by default and we are unlikely need it for other
      * purposes.
      */
-    public static final TextAttributesKey RESERVEDEXPR = TextAttributesKey.createTextAttributesKey(
-            "HASKELL_RESERVEDEXPR", DefaultLanguageHighlighterColors.KEYWORD);
-    public static final TextAttributesKey[] RESERVEDEXPR_KEYS = new TextAttributesKey[]{RESERVEDEXPR};
-
-    public static final TextAttributesKey RESERVEDDECL = TextAttributesKey.createTextAttributesKey(
-            "HASKELL_RESERVEDDECL", DefaultLanguageHighlighterColors.KEYWORD);
-    public static final TextAttributesKey[] RESERVEDDECL_KEYS = new TextAttributesKey[]{RESERVEDDECL};
-
-    public static final TextAttributesKey RESERVEDVAR = TextAttributesKey.createTextAttributesKey(
-            "HASKELL_RESERVEDVAR", DefaultLanguageHighlighterColors.KEYWORD);
-    public static final TextAttributesKey[] RESERVEDVAR_KEYS = new TextAttributesKey[]{RESERVEDVAR};
-
-    public static final TextAttributesKey RESERVEDMETA = TextAttributesKey.createTextAttributesKey(
-            "HASKELL_RESERVEDMETA", DefaultLanguageHighlighterColors.KEYWORD);
-    public static final TextAttributesKey[] RESERVEDMETA_KEYS = new TextAttributesKey[]{RESERVEDMETA};
+    public static final TextAttributesKey RESERVEDID = TextAttributesKey.createTextAttributesKey(
+            "HASKELL_RESERVEDID", DefaultLanguageHighlighterColors.KEYWORD);
+    public static final TextAttributesKey[] RESERVEDID_KEYS = new TextAttributesKey[]{RESERVEDID};
 
     public static final TextAttributesKey RESERVEDOP = TextAttributesKey.createTextAttributesKey(
             "HASKELL_RESERVEDOP", DefaultLanguageHighlighterColors.KEYWORD);
