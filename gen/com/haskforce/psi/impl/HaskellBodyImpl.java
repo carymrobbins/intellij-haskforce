@@ -24,14 +24,56 @@ public class HaskellBodyImpl extends ASTWrapperPsiElement implements HaskellBody
 
   @Override
   @NotNull
+  public List<HaskellCdecl> getCdeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellCdecl.class);
+  }
+
+  @Override
+  @NotNull
+  public List<HaskellConstrs> getConstrsList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellConstrs.class);
+  }
+
+  @Override
+  @NotNull
+  public List<HaskellContext> getContextList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellContext.class);
+  }
+
+  @Override
+  @NotNull
+  public List<HaskellFdecl> getFdeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellFdecl.class);
+  }
+
+  @Override
+  @NotNull
+  public List<HaskellIdecl> getIdeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellIdecl.class);
+  }
+
+  @Override
+  @NotNull
   public List<HaskellImpdecl> getImpdeclList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellImpdecl.class);
   }
 
   @Override
   @NotNull
+  public List<HaskellInst> getInstList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellInst.class);
+  }
+
+  @Override
+  @NotNull
   public List<HaskellNcomment> getNcommentList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellNcomment.class);
+  }
+
+  @Override
+  @NotNull
+  public List<HaskellNewconstr> getNewconstrList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellNewconstr.class);
   }
 
   @Override
@@ -66,6 +108,12 @@ public class HaskellBodyImpl extends ASTWrapperPsiElement implements HaskellBody
 
   @Override
   @NotNull
+  public List<HaskellQtycls> getQtyclsList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQtycls.class);
+  }
+
+  @Override
+  @NotNull
   public List<HaskellQvarid> getQvaridList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQvarid.class);
   }
@@ -84,8 +132,38 @@ public class HaskellBodyImpl extends ASTWrapperPsiElement implements HaskellBody
 
   @Override
   @NotNull
+  public List<HaskellScontext> getScontextList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellScontext.class);
+  }
+
+  @Override
+  @NotNull
   public List<HaskellSpecial> getSpecialList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellSpecial.class);
+  }
+
+  @Override
+  @NotNull
+  public List<HaskellTycls> getTyclsList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTycls.class);
+  }
+
+  @Override
+  @NotNull
+  public List<HaskellTycon> getTyconList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTycon.class);
+  }
+
+  @Override
+  @NotNull
+  public List<HaskellTypee> getTypeeList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTypee.class);
+  }
+
+  @Override
+  @NotNull
+  public List<HaskellTyvar> getTyvarList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTyvar.class);
   }
 
   @Override

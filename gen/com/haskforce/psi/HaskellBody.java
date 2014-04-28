@@ -8,10 +8,31 @@ import com.intellij.psi.PsiElement;
 public interface HaskellBody extends PsiElement {
 
   @NotNull
+  List<HaskellCdecl> getCdeclList();
+
+  @NotNull
+  List<HaskellConstrs> getConstrsList();
+
+  @NotNull
+  List<HaskellContext> getContextList();
+
+  @NotNull
+  List<HaskellFdecl> getFdeclList();
+
+  @NotNull
+  List<HaskellIdecl> getIdeclList();
+
+  @NotNull
   List<HaskellImpdecl> getImpdeclList();
 
   @NotNull
+  List<HaskellInst> getInstList();
+
+  @NotNull
   List<HaskellNcomment> getNcommentList();
+
+  @NotNull
+  List<HaskellNewconstr> getNewconstrList();
 
   @NotNull
   List<HaskellPragma> getPragmaList();
@@ -29,6 +50,9 @@ public interface HaskellBody extends PsiElement {
   List<HaskellQinfixvarid> getQinfixvaridList();
 
   @NotNull
+  List<HaskellQtycls> getQtyclsList();
+
+  @NotNull
   List<HaskellQvarid> getQvaridList();
 
   @NotNull
@@ -38,7 +62,22 @@ public interface HaskellBody extends PsiElement {
   List<HaskellReservedop> getReservedopList();
 
   @NotNull
+  List<HaskellScontext> getScontextList();
+
+  @NotNull
   List<HaskellSpecial> getSpecialList();
+
+  @NotNull
+  List<HaskellTycls> getTyclsList();
+
+  @NotNull
+  List<HaskellTycon> getTyconList();
+
+  @NotNull
+  List<HaskellTypee> getTypeeList();
+
+  @NotNull
+  List<HaskellTyvar> getTyvarList();
 
   @NotNull
   List<HaskellWhitechar> getWhitecharList();

@@ -23,8 +23,17 @@ public class HaskellParser implements PsiParser {
     if (root_ == ANYSEQ) {
       result_ = anyseq(builder_, 0);
     }
+    else if (root_ == ATYPE) {
+      result_ = atype(builder_, 0);
+    }
     else if (root_ == BODY) {
       result_ = body(builder_, 0);
+    }
+    else if (root_ == CDECL) {
+      result_ = cdecl(builder_, 0);
+    }
+    else if (root_ == CLASSS) {
+      result_ = classs(builder_, 0);
     }
     else if (root_ == CNAME) {
       result_ = cname(builder_, 0);
@@ -35,8 +44,20 @@ public class HaskellParser implements PsiParser {
     else if (root_ == CON) {
       result_ = con(builder_, 0);
     }
+    else if (root_ == CONOP) {
+      result_ = conop(builder_, 0);
+    }
+    else if (root_ == CONSTR) {
+      result_ = constr(builder_, 0);
+    }
+    else if (root_ == CONSTRS) {
+      result_ = constrs(builder_, 0);
+    }
     else if (root_ == CONSYM) {
       result_ = consym(builder_, 0);
+    }
+    else if (root_ == CONTEXT) {
+      result_ = context(builder_, 0);
     }
     else if (root_ == EXPORT) {
       result_ = export(builder_, 0);
@@ -44,11 +65,32 @@ public class HaskellParser implements PsiParser {
     else if (root_ == EXPORTS) {
       result_ = exports(builder_, 0);
     }
+    else if (root_ == FDECL) {
+      result_ = fdecl(builder_, 0);
+    }
+    else if (root_ == FIXITY) {
+      result_ = fixity(builder_, 0);
+    }
+    else if (root_ == FUNLHS) {
+      result_ = funlhs(builder_, 0);
+    }
+    else if (root_ == GCONSYM) {
+      result_ = gconsym(builder_, 0);
+    }
+    else if (root_ == GENDECL) {
+      result_ = gendecl(builder_, 0);
+    }
+    else if (root_ == IDECL) {
+      result_ = idecl(builder_, 0);
+    }
     else if (root_ == IMPDECL) {
       result_ = impdecl(builder_, 0);
     }
     else if (root_ == IMPORTT) {
       result_ = importt(builder_, 0);
+    }
+    else if (root_ == INST) {
+      result_ = inst(builder_, 0);
     }
     else if (root_ == MODULE_PREFIX) {
       result_ = modulePrefix(builder_, 0);
@@ -56,11 +98,26 @@ public class HaskellParser implements PsiParser {
     else if (root_ == NCOMMENT) {
       result_ = ncomment(builder_, 0);
     }
+    else if (root_ == NEWCONSTR) {
+      result_ = newconstr(builder_, 0);
+    }
+    else if (root_ == OP) {
+      result_ = op(builder_, 0);
+    }
+    else if (root_ == OPS) {
+      result_ = ops(builder_, 0);
+    }
     else if (root_ == PRAGMA) {
       result_ = pragma(builder_, 0);
     }
+    else if (root_ == QCON) {
+      result_ = qcon(builder_, 0);
+    }
     else if (root_ == QCONID) {
       result_ = qconid(builder_, 0);
+    }
+    else if (root_ == QCONOP) {
+      result_ = qconop(builder_, 0);
     }
     else if (root_ == QCONSYM) {
       result_ = qconsym(builder_, 0);
@@ -70,6 +127,9 @@ public class HaskellParser implements PsiParser {
     }
     else if (root_ == QINFIXVARID) {
       result_ = qinfixvarid(builder_, 0);
+    }
+    else if (root_ == QOP) {
+      result_ = qop(builder_, 0);
     }
     else if (root_ == QTYCLS) {
       result_ = qtycls(builder_, 0);
@@ -83,6 +143,9 @@ public class HaskellParser implements PsiParser {
     else if (root_ == QVARID) {
       result_ = qvarid(builder_, 0);
     }
+    else if (root_ == QVAROP) {
+      result_ = qvarop(builder_, 0);
+    }
     else if (root_ == QVARS) {
       result_ = qvars(builder_, 0);
     }
@@ -91,6 +154,12 @@ public class HaskellParser implements PsiParser {
     }
     else if (root_ == RESERVEDOP) {
       result_ = reservedop(builder_, 0);
+    }
+    else if (root_ == RHS) {
+      result_ = rhs(builder_, 0);
+    }
+    else if (root_ == SCONTEXT) {
+      result_ = scontext(builder_, 0);
     }
     else if (root_ == SPECIAL) {
       result_ = special(builder_, 0);
@@ -104,11 +173,17 @@ public class HaskellParser implements PsiParser {
     else if (root_ == TYCON) {
       result_ = tycon(builder_, 0);
     }
+    else if (root_ == TYPEE) {
+      result_ = typee(builder_, 0);
+    }
     else if (root_ == TYVAR) {
       result_ = tyvar(builder_, 0);
     }
     else if (root_ == VAR) {
       result_ = var(builder_, 0);
+    }
+    else if (root_ == VAROP) {
+      result_ = varop(builder_, 0);
     }
     else if (root_ == VARS) {
       result_ = vars(builder_, 0);
@@ -191,6 +266,49 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
+  // gtycon
+  //         | tyvar
+  //         | <<commaSeparate typee>>
+  //         | '[' typee ']'
+  //         | '(' typee ')'
+  public static boolean atype(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "atype")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<atype>");
+    result_ = gtycon(builder_, level_ + 1);
+    if (!result_) result_ = tyvar(builder_, level_ + 1);
+    if (!result_) result_ = commaSeparate(builder_, level_ + 1, typee_parser_);
+    if (!result_) result_ = atype_3(builder_, level_ + 1);
+    if (!result_) result_ = atype_4(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, ATYPE, result_, false, null);
+    return result_;
+  }
+
+  // '[' typee ']'
+  private static boolean atype_3(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "atype_3")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, LBRACKET);
+    result_ = result_ && typee(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RBRACKET);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // '(' typee ')'
+  private static boolean atype_4(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "atype_4")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, LPAREN);
+    result_ = result_ && typee(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RPAREN);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
   // impdecl* topdecl*
   public static boolean body(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "body")) return false;
@@ -224,6 +342,120 @@ public class HaskellParser implements PsiParser {
       pos_ = current_position_(builder_);
     }
     return true;
+  }
+
+  /* ********************************************************** */
+  // atype btype
+  //                 | atype
+  static boolean btype(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "btype")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = btype_0(builder_, level_ + 1);
+    if (!result_) result_ = atype(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // atype btype
+  private static boolean btype_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "btype_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = atype(builder_, level_ + 1);
+    result_ = result_ && btype(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // gendecl
+  //              | (funlhs | var) rhs
+  public static boolean cdecl(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "cdecl")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _LEFT_, "<cdecl>");
+    result_ = gendecl(builder_, level_ + 1);
+    if (!result_) result_ = cdecl_1(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, CDECL, result_, false, null);
+    return result_;
+  }
+
+  // (funlhs | var) rhs
+  private static boolean cdecl_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "cdecl_1")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = cdecl_1_0(builder_, level_ + 1);
+    result_ = result_ && rhs(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // funlhs | var
+  private static boolean cdecl_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "cdecl_1_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = funlhs(builder_, level_ + 1);
+    if (!result_) result_ = var(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // qtycls tyvar
+  //         | qtycls '(' tyvar atype+ ')'
+  public static boolean classs(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "classs")) return false;
+    if (!nextTokenIs(builder_, CONID)) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = classs_0(builder_, level_ + 1);
+    if (!result_) result_ = classs_1(builder_, level_ + 1);
+    exit_section_(builder_, marker_, CLASSS, result_);
+    return result_;
+  }
+
+  // qtycls tyvar
+  private static boolean classs_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "classs_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = qtycls(builder_, level_ + 1);
+    result_ = result_ && tyvar(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // qtycls '(' tyvar atype+ ')'
+  private static boolean classs_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "classs_1")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = qtycls(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, LPAREN);
+    result_ = result_ && tyvar(builder_, level_ + 1);
+    result_ = result_ && classs_1_3(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RPAREN);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // atype+
+  private static boolean classs_1_3(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "classs_1_3")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = atype(builder_, level_ + 1);
+    int pos_ = current_position_(builder_);
+    while (result_) {
+      if (!atype(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "classs_1_3", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
   }
 
   /* ********************************************************** */
@@ -381,6 +613,232 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
+  // consym | '`' conid '`'
+  public static boolean conop(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "conop")) return false;
+    if (!nextTokenIs(builder_, "<conop>", COLON, BACKTICK)) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<conop>");
+    result_ = consym(builder_, level_ + 1);
+    if (!result_) result_ = conop_1(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, CONOP, result_, false, null);
+    return result_;
+  }
+
+  // '`' conid '`'
+  private static boolean conop_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "conop_1")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, BACKTICK);
+    result_ = result_ && consumeToken(builder_, CONID);
+    result_ = result_ && consumeToken(builder_, BACKTICK);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // con (['!'] atype)*
+  //         | (btype | '!'atype) conop (btype | '!'atype)
+  //         | con '{' ((fielddecl ',')* fielddecl)? '}'
+  public static boolean constr(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constr")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<constr>");
+    result_ = constr_0(builder_, level_ + 1);
+    if (!result_) result_ = constr_1(builder_, level_ + 1);
+    if (!result_) result_ = constr_2(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, CONSTR, result_, false, null);
+    return result_;
+  }
+
+  // con (['!'] atype)*
+  private static boolean constr_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constr_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = con(builder_, level_ + 1);
+    result_ = result_ && constr_0_1(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // (['!'] atype)*
+  private static boolean constr_0_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constr_0_1")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!constr_0_1_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "constr_0_1", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
+  }
+
+  // ['!'] atype
+  private static boolean constr_0_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constr_0_1_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = constr_0_1_0_0(builder_, level_ + 1);
+    result_ = result_ && atype(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // ['!']
+  private static boolean constr_0_1_0_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constr_0_1_0_0")) return false;
+    consumeToken(builder_, EXLAMATION);
+    return true;
+  }
+
+  // (btype | '!'atype) conop (btype | '!'atype)
+  private static boolean constr_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constr_1")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = constr_1_0(builder_, level_ + 1);
+    result_ = result_ && conop(builder_, level_ + 1);
+    result_ = result_ && constr_1_2(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // btype | '!'atype
+  private static boolean constr_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constr_1_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = btype(builder_, level_ + 1);
+    if (!result_) result_ = constr_1_0_1(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // '!'atype
+  private static boolean constr_1_0_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constr_1_0_1")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, EXLAMATION);
+    result_ = result_ && atype(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // btype | '!'atype
+  private static boolean constr_1_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constr_1_2")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = btype(builder_, level_ + 1);
+    if (!result_) result_ = constr_1_2_1(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // '!'atype
+  private static boolean constr_1_2_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constr_1_2_1")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, EXLAMATION);
+    result_ = result_ && atype(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // con '{' ((fielddecl ',')* fielddecl)? '}'
+  private static boolean constr_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constr_2")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = con(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, LBRACE);
+    result_ = result_ && constr_2_2(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RBRACE);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // ((fielddecl ',')* fielddecl)?
+  private static boolean constr_2_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constr_2_2")) return false;
+    constr_2_2_0(builder_, level_ + 1);
+    return true;
+  }
+
+  // (fielddecl ',')* fielddecl
+  private static boolean constr_2_2_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constr_2_2_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = constr_2_2_0_0(builder_, level_ + 1);
+    result_ = result_ && fielddecl(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // (fielddecl ',')*
+  private static boolean constr_2_2_0_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constr_2_2_0_0")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!constr_2_2_0_0_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "constr_2_2_0_0", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
+  }
+
+  // fielddecl ','
+  private static boolean constr_2_2_0_0_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constr_2_2_0_0_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = fielddecl(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, COMMA);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // constr ('|' constr)*
+  public static boolean constrs(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constrs")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<constrs>");
+    result_ = constr(builder_, level_ + 1);
+    result_ = result_ && constrs_1(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, CONSTRS, result_, false, null);
+    return result_;
+  }
+
+  // ('|' constr)*
+  private static boolean constrs_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constrs_1")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!constrs_1_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "constrs_1", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
+  }
+
+  // '|' constr
+  private static boolean constrs_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constrs_1_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, PIPE);
+    result_ = result_ && constr(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
   // !reservedop ( ':' symbol* )
   public static boolean consym(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "consym")) return false;
@@ -424,6 +882,62 @@ public class HaskellParser implements PsiParser {
       pos_ = current_position_(builder_);
     }
     return true;
+  }
+
+  /* ********************************************************** */
+  // classs
+  //           | <<commaSeparate classs>>
+  public static boolean context(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "context")) return false;
+    if (!nextTokenIs(builder_, "<context>", LPAREN, CONID)) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<context>");
+    result_ = classs(builder_, level_ + 1);
+    if (!result_) result_ = commaSeparate(builder_, level_ + 1, classs_parser_);
+    exit_section_(builder_, level_, marker_, CONTEXT, result_, false, null);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // qtycls
+  static boolean dclass(PsiBuilder builder_, int level_) {
+    return qtycls(builder_, level_ + 1);
+  }
+
+  /* ********************************************************** */
+  // whitespace | lexeme
+  static boolean decl(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "decl")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = whitespace(builder_, level_ + 1);
+    if (!result_) result_ = lexeme(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // "deriving" (dclass|<<commaSeparate dclass>>)
+  static boolean deriving(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "deriving")) return false;
+    if (!nextTokenIs(builder_, DERIVING)) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, DERIVING);
+    result_ = result_ && deriving_1(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // dclass|<<commaSeparate dclass>>
+  private static boolean deriving_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "deriving_1")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = dclass(builder_, level_ + 1);
+    if (!result_) result_ = commaSeparate(builder_, level_ + 1, dclass_parser_);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
   }
 
   /* ********************************************************** */
@@ -521,6 +1035,258 @@ public class HaskellParser implements PsiParser {
     Marker marker_ = enter_section_(builder_);
     result_ = commaSeparate2(builder_, level_ + 1, export_parser_);
     exit_section_(builder_, marker_, EXPORTS, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // decl+
+  public static boolean fdecl(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "fdecl")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<fdecl>");
+    result_ = decl(builder_, level_ + 1);
+    int pos_ = current_position_(builder_);
+    while (result_) {
+      if (!decl(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "fdecl", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    exit_section_(builder_, level_, marker_, FDECL, result_, false, null);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // vars '::' (typee | '!' atype)
+  static boolean fielddecl(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "fielddecl")) return false;
+    if (!nextTokenIs(builder_, "", LPAREN, VARIDREGEXP)) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = vars(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, DOUBLECOLON);
+    result_ = result_ && fielddecl_2(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // typee | '!' atype
+  private static boolean fielddecl_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "fielddecl_2")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = typee(builder_, level_ + 1);
+    if (!result_) result_ = fielddecl_2_1(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // '!' atype
+  private static boolean fielddecl_2_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "fielddecl_2_1")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, EXLAMATION);
+    result_ = result_ && atype(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // "infix" | "infixr" | "infixl"
+  public static boolean fixity(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "fixity")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<fixity>");
+    result_ = consumeToken(builder_, INFIX);
+    if (!result_) result_ = consumeToken(builder_, INFIXR);
+    if (!result_) result_ = consumeToken(builder_, INFIXL);
+    exit_section_(builder_, level_, marker_, FIXITY, result_, false, null);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // decl+
+  public static boolean funlhs(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "funlhs")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<funlhs>");
+    result_ = decl(builder_, level_ + 1);
+    int pos_ = current_position_(builder_);
+    while (result_) {
+      if (!decl(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "funlhs", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    exit_section_(builder_, level_, marker_, FUNLHS, result_, false, null);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // ':' | qconsym
+  public static boolean gconsym(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "gconsym")) return false;
+    if (!nextTokenIs(builder_, "<gconsym>", COLON, CONID)) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<gconsym>");
+    result_ = consumeToken(builder_, COLON);
+    if (!result_) result_ = qconsym(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, GCONSYM, result_, false, null);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // vars '::' [context '=>'] typee
+  //          | fixity [integertoken] ops
+  public static boolean gendecl(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "gendecl")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<gendecl>");
+    result_ = gendecl_0(builder_, level_ + 1);
+    if (!result_) result_ = gendecl_1(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, GENDECL, result_, false, null);
+    return result_;
+  }
+
+  // vars '::' [context '=>'] typee
+  private static boolean gendecl_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "gendecl_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = vars(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, DOUBLECOLON);
+    result_ = result_ && gendecl_0_2(builder_, level_ + 1);
+    result_ = result_ && typee(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // [context '=>']
+  private static boolean gendecl_0_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "gendecl_0_2")) return false;
+    gendecl_0_2_0(builder_, level_ + 1);
+    return true;
+  }
+
+  // context '=>'
+  private static boolean gendecl_0_2_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "gendecl_0_2_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = context(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, DOUBLEARROW);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // fixity [integertoken] ops
+  private static boolean gendecl_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "gendecl_1")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = fixity(builder_, level_ + 1);
+    result_ = result_ && gendecl_1_1(builder_, level_ + 1);
+    result_ = result_ && ops(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // [integertoken]
+  private static boolean gendecl_1_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "gendecl_1_1")) return false;
+    consumeToken(builder_, INTEGERTOKEN);
+    return true;
+  }
+
+  /* ********************************************************** */
+  // qtycon
+  //                  | "()"
+  //                  | "[]"
+  //                  | '(' "->" ')'
+  //                  | '(' ',' (',')+ ')'
+  static boolean gtycon(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "gtycon")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = qtycon(builder_, level_ + 1);
+    if (!result_) result_ = consumeToken(builder_, "()");
+    if (!result_) result_ = consumeToken(builder_, "[]");
+    if (!result_) result_ = gtycon_3(builder_, level_ + 1);
+    if (!result_) result_ = gtycon_4(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // '(' "->" ')'
+  private static boolean gtycon_3(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "gtycon_3")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, LPAREN);
+    result_ = result_ && consumeToken(builder_, RIGHTARROW);
+    result_ = result_ && consumeToken(builder_, RPAREN);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // '(' ',' (',')+ ')'
+  private static boolean gtycon_4(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "gtycon_4")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, LPAREN);
+    result_ = result_ && consumeToken(builder_, COMMA);
+    result_ = result_ && gtycon_4_2(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RPAREN);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // (',')+
+  private static boolean gtycon_4_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "gtycon_4_2")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = gtycon_4_2_0(builder_, level_ + 1);
+    int pos_ = current_position_(builder_);
+    while (result_) {
+      if (!gtycon_4_2_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "gtycon_4_2", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // (',')
+  private static boolean gtycon_4_2_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "gtycon_4_2_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, COMMA);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // (funlhs | var) rhs
+  public static boolean idecl(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "idecl")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<idecl>");
+    result_ = idecl_0(builder_, level_ + 1);
+    result_ = result_ && rhs(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, IDECL, result_, false, null);
+    return result_;
+  }
+
+  // funlhs | var
+  private static boolean idecl_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "idecl_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = funlhs(builder_, level_ + 1);
+    if (!result_) result_ = var(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
@@ -666,6 +1432,114 @@ public class HaskellParser implements PsiParser {
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, HIDING);
     result_ = result_ && commaSeparate2(builder_, level_ + 1, importt_parser_);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // gtycon
+  //        | '(' gtycon tyvar* ')'
+  //        | '(' tyvar ',' (tyvar ',')* tyvar ')'        // No commaSep, >= 2 args.
+  //        | '[' tyvar ']'
+  //        | '(' tyvar "->" tyvar ')'
+  public static boolean inst(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "inst")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<inst>");
+    result_ = gtycon(builder_, level_ + 1);
+    if (!result_) result_ = inst_1(builder_, level_ + 1);
+    if (!result_) result_ = inst_2(builder_, level_ + 1);
+    if (!result_) result_ = inst_3(builder_, level_ + 1);
+    if (!result_) result_ = inst_4(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, INST, result_, false, null);
+    return result_;
+  }
+
+  // '(' gtycon tyvar* ')'
+  private static boolean inst_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "inst_1")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, LPAREN);
+    result_ = result_ && gtycon(builder_, level_ + 1);
+    result_ = result_ && inst_1_2(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RPAREN);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // tyvar*
+  private static boolean inst_1_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "inst_1_2")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!tyvar(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "inst_1_2", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
+  }
+
+  // '(' tyvar ',' (tyvar ',')* tyvar ')'
+  private static boolean inst_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "inst_2")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, LPAREN);
+    result_ = result_ && tyvar(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, COMMA);
+    result_ = result_ && inst_2_3(builder_, level_ + 1);
+    result_ = result_ && tyvar(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RPAREN);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // (tyvar ',')*
+  private static boolean inst_2_3(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "inst_2_3")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!inst_2_3_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "inst_2_3", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
+  }
+
+  // tyvar ','
+  private static boolean inst_2_3_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "inst_2_3_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = tyvar(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, COMMA);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // '[' tyvar ']'
+  private static boolean inst_3(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "inst_3")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, LBRACKET);
+    result_ = result_ && tyvar(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RBRACKET);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // '(' tyvar "->" tyvar ')'
+  private static boolean inst_4(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "inst_4")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, LPAREN);
+    result_ = result_ && tyvar(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RIGHTARROW);
+    result_ = result_ && tyvar(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RPAREN);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -847,9 +1721,72 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
+  // con atype
+  //             | con '{' var '::' typee '}'
+  public static boolean newconstr(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "newconstr")) return false;
+    if (!nextTokenIs(builder_, "<newconstr>", LPAREN, CONID)) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<newconstr>");
+    result_ = newconstr_0(builder_, level_ + 1);
+    if (!result_) result_ = newconstr_1(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, NEWCONSTR, result_, false, null);
+    return result_;
+  }
+
+  // con atype
+  private static boolean newconstr_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "newconstr_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = con(builder_, level_ + 1);
+    result_ = result_ && atype(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // con '{' var '::' typee '}'
+  private static boolean newconstr_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "newconstr_1")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = con(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, LBRACE);
+    result_ = result_ && var(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, DOUBLECOLON);
+    result_ = result_ && typee(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RBRACE);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
   // EOL
   static boolean newline(PsiBuilder builder_, int level_) {
     return consumeToken(builder_, EOL);
+  }
+
+  /* ********************************************************** */
+  // varop | conop
+  public static boolean op(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "op")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<op>");
+    result_ = varop(builder_, level_ + 1);
+    if (!result_) result_ = conop(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, OP, result_, false, null);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // <<sequence op>>
+  public static boolean ops(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "ops")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<ops>");
+    result_ = sequence(builder_, level_ + 1, op_parser_);
+    exit_section_(builder_, level_, marker_, OPS, result_, false, null);
+    return result_;
   }
 
   /* ********************************************************** */
@@ -915,6 +1852,31 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
+  // qconid | '(' gconsym ')'
+  public static boolean qcon(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "qcon")) return false;
+    if (!nextTokenIs(builder_, "<qcon>", LPAREN, CONID)) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<qcon>");
+    result_ = qconid(builder_, level_ + 1);
+    if (!result_) result_ = qcon_1(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, QCON, result_, false, null);
+    return result_;
+  }
+
+  // '(' gconsym ')'
+  private static boolean qcon_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "qcon_1")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, LPAREN);
+    result_ = result_ && gconsym(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RPAREN);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
   // [modulePrefix] conid
   public static boolean qconid(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qconid")) return false;
@@ -932,6 +1894,30 @@ public class HaskellParser implements PsiParser {
     if (!recursion_guard_(builder_, level_, "qconid_0")) return false;
     modulePrefix(builder_, level_ + 1);
     return true;
+  }
+
+  /* ********************************************************** */
+  // gconsym | '`' qconid '`'
+  public static boolean qconop(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "qconop")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<qconop>");
+    result_ = gconsym(builder_, level_ + 1);
+    if (!result_) result_ = qconop_1(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, QCONOP, result_, false, null);
+    return result_;
+  }
+
+  // '`' qconid '`'
+  private static boolean qconop_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "qconop_1")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, BACKTICK);
+    result_ = result_ && qconid(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, BACKTICK);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
   }
 
   /* ********************************************************** */
@@ -999,6 +1985,18 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
+  // qvarop | qconop
+  public static boolean qop(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "qop")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<qop>");
+    result_ = qvarop(builder_, level_ + 1);
+    if (!result_) result_ = qconop(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, QOP, result_, false, null);
+    return result_;
+  }
+
+  /* ********************************************************** */
   // [modulePrefix] tycls
   public static boolean qtycls(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qtycls")) return false;
@@ -1039,14 +2037,26 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // qvarid | qvarsym
+  // qvarid | '(' qvarsym ')'
   public static boolean qvar(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qvar")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<qvar>");
     result_ = qvarid(builder_, level_ + 1);
-    if (!result_) result_ = qvarsym(builder_, level_ + 1);
+    if (!result_) result_ = qvar_1(builder_, level_ + 1);
     exit_section_(builder_, level_, marker_, QVAR, result_, false, null);
+    return result_;
+  }
+
+  // '(' qvarsym ')'
+  private static boolean qvar_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "qvar_1")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, LPAREN);
+    result_ = result_ && qvarsym(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RPAREN);
+    exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
@@ -1068,6 +2078,30 @@ public class HaskellParser implements PsiParser {
     if (!recursion_guard_(builder_, level_, "qvarid_0")) return false;
     modulePrefix(builder_, level_ + 1);
     return true;
+  }
+
+  /* ********************************************************** */
+  // qvarsym | '`' qvarid '`'
+  public static boolean qvarop(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "qvarop")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<qvarop>");
+    result_ = qvarsym(builder_, level_ + 1);
+    if (!result_) result_ = qvarop_1(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, QVAROP, result_, false, null);
+    return result_;
+  }
+
+  // '`' qvarid '`'
+  private static boolean qvarop_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "qvarop_1")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, BACKTICK);
+    result_ = result_ && qvarid(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, BACKTICK);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
   }
 
   /* ********************************************************** */
@@ -1194,6 +2228,114 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
+  // decl+
+  public static boolean rhs(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "rhs")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<rhs>");
+    result_ = decl(builder_, level_ + 1);
+    int pos_ = current_position_(builder_);
+    while (result_) {
+      if (!decl(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "rhs", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    exit_section_(builder_, level_, marker_, RHS, result_, false, null);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // simpleclass
+  //            | <<commaSeparate simpleclass>>
+  public static boolean scontext(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "scontext")) return false;
+    if (!nextTokenIs(builder_, "<scontext>", LPAREN, CONID)) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<scontext>");
+    result_ = simpleclass(builder_, level_ + 1);
+    if (!result_) result_ = commaSeparate(builder_, level_ + 1, simpleclass_parser_);
+    exit_section_(builder_, level_, marker_, SCONTEXT, result_, false, null);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // <<p>> (',' <<p>>)*
+  static boolean sequence(PsiBuilder builder_, int level_, final Parser p) {
+    if (!recursion_guard_(builder_, level_, "sequence")) return false;
+    boolean result_ = false;
+    boolean pinned_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
+    result_ = p.parse(builder_, level_);
+    pinned_ = result_; // pin = 1
+    result_ = result_ && sequence_1(builder_, level_ + 1, p);
+    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
+    return result_ || pinned_;
+  }
+
+  // (',' <<p>>)*
+  private static boolean sequence_1(PsiBuilder builder_, int level_, final Parser p) {
+    if (!recursion_guard_(builder_, level_, "sequence_1")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!sequence_1_0(builder_, level_ + 1, p)) break;
+      if (!empty_element_parsed_guard_(builder_, "sequence_1", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
+  }
+
+  // ',' <<p>>
+  private static boolean sequence_1_0(PsiBuilder builder_, int level_, final Parser p) {
+    if (!recursion_guard_(builder_, level_, "sequence_1_0")) return false;
+    boolean result_ = false;
+    boolean pinned_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
+    result_ = consumeToken(builder_, COMMA);
+    pinned_ = result_; // pin = 1
+    result_ = result_ && p.parse(builder_, level_);
+    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
+    return result_ || pinned_;
+  }
+
+  /* ********************************************************** */
+  // qtycls tyvar
+  static boolean simpleclass(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "simpleclass")) return false;
+    if (!nextTokenIs(builder_, CONID)) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = qtycls(builder_, level_ + 1);
+    result_ = result_ && tyvar(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // tycon tyvar*
+  static boolean simpletype(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "simpletype")) return false;
+    if (!nextTokenIs(builder_, CONID)) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = tycon(builder_, level_ + 1);
+    result_ = result_ && simpletype_1(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // tyvar*
+  private static boolean simpletype_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "simpletype_1")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!tyvar(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "simpletype_1", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
+  }
+
+  /* ********************************************************** */
   // LINE_WS
   static boolean space(PsiBuilder builder_, int level_) {
     return consumeToken(builder_, LINE_WS);
@@ -1251,13 +2393,306 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // whitespace | lexeme
+  // "type" simpletype "=" typee
+  //                   | "data" [context "=>"] simpletype ["=" constrs] [deriving]
+  //                   | "newtype" [context "=>"] simpletype "=" newconstr [deriving]
+  //                   | "class" [scontext "=>"] tycls tyvar ["where" cdecl+]
+  //                   | "instance" [scontext "=>"] qtycls inst ["where" idecl+]
+  //                   | "default" <<commaSeparate typee>>
+  //                   | "foreign" fdecl
+  //                   | decl+
   static boolean topdecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "topdecl")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = whitespace(builder_, level_ + 1);
-    if (!result_) result_ = lexeme(builder_, level_ + 1);
+    result_ = topdecl_0(builder_, level_ + 1);
+    if (!result_) result_ = topdecl_1(builder_, level_ + 1);
+    if (!result_) result_ = topdecl_2(builder_, level_ + 1);
+    if (!result_) result_ = topdecl_3(builder_, level_ + 1);
+    if (!result_) result_ = topdecl_4(builder_, level_ + 1);
+    if (!result_) result_ = topdecl_5(builder_, level_ + 1);
+    if (!result_) result_ = topdecl_6(builder_, level_ + 1);
+    if (!result_) result_ = topdecl_7(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // "type" simpletype "=" typee
+  private static boolean topdecl_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, TYPE);
+    result_ = result_ && simpletype(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, EQUALS);
+    result_ = result_ && typee(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // "data" [context "=>"] simpletype ["=" constrs] [deriving]
+  private static boolean topdecl_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_1")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, DATA);
+    result_ = result_ && topdecl_1_1(builder_, level_ + 1);
+    result_ = result_ && simpletype(builder_, level_ + 1);
+    result_ = result_ && topdecl_1_3(builder_, level_ + 1);
+    result_ = result_ && topdecl_1_4(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // [context "=>"]
+  private static boolean topdecl_1_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_1_1")) return false;
+    topdecl_1_1_0(builder_, level_ + 1);
+    return true;
+  }
+
+  // context "=>"
+  private static boolean topdecl_1_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_1_1_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = context(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, DOUBLEARROW);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // ["=" constrs]
+  private static boolean topdecl_1_3(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_1_3")) return false;
+    topdecl_1_3_0(builder_, level_ + 1);
+    return true;
+  }
+
+  // "=" constrs
+  private static boolean topdecl_1_3_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_1_3_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, EQUALS);
+    result_ = result_ && constrs(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // [deriving]
+  private static boolean topdecl_1_4(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_1_4")) return false;
+    deriving(builder_, level_ + 1);
+    return true;
+  }
+
+  // "newtype" [context "=>"] simpletype "=" newconstr [deriving]
+  private static boolean topdecl_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_2")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, NEWTYPE);
+    result_ = result_ && topdecl_2_1(builder_, level_ + 1);
+    result_ = result_ && simpletype(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, EQUALS);
+    result_ = result_ && newconstr(builder_, level_ + 1);
+    result_ = result_ && topdecl_2_5(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // [context "=>"]
+  private static boolean topdecl_2_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_2_1")) return false;
+    topdecl_2_1_0(builder_, level_ + 1);
+    return true;
+  }
+
+  // context "=>"
+  private static boolean topdecl_2_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_2_1_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = context(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, DOUBLEARROW);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // [deriving]
+  private static boolean topdecl_2_5(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_2_5")) return false;
+    deriving(builder_, level_ + 1);
+    return true;
+  }
+
+  // "class" [scontext "=>"] tycls tyvar ["where" cdecl+]
+  private static boolean topdecl_3(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_3")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, CLASSTOKEN);
+    result_ = result_ && topdecl_3_1(builder_, level_ + 1);
+    result_ = result_ && tycls(builder_, level_ + 1);
+    result_ = result_ && tyvar(builder_, level_ + 1);
+    result_ = result_ && topdecl_3_4(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // [scontext "=>"]
+  private static boolean topdecl_3_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_3_1")) return false;
+    topdecl_3_1_0(builder_, level_ + 1);
+    return true;
+  }
+
+  // scontext "=>"
+  private static boolean topdecl_3_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_3_1_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = scontext(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, DOUBLEARROW);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // ["where" cdecl+]
+  private static boolean topdecl_3_4(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_3_4")) return false;
+    topdecl_3_4_0(builder_, level_ + 1);
+    return true;
+  }
+
+  // "where" cdecl+
+  private static boolean topdecl_3_4_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_3_4_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, WHERE);
+    result_ = result_ && topdecl_3_4_0_1(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // cdecl+
+  private static boolean topdecl_3_4_0_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_3_4_0_1")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = cdecl(builder_, level_ + 1);
+    int pos_ = current_position_(builder_);
+    while (result_) {
+      if (!cdecl(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "topdecl_3_4_0_1", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // "instance" [scontext "=>"] qtycls inst ["where" idecl+]
+  private static boolean topdecl_4(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_4")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, INSTANCE);
+    result_ = result_ && topdecl_4_1(builder_, level_ + 1);
+    result_ = result_ && qtycls(builder_, level_ + 1);
+    result_ = result_ && inst(builder_, level_ + 1);
+    result_ = result_ && topdecl_4_4(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // [scontext "=>"]
+  private static boolean topdecl_4_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_4_1")) return false;
+    topdecl_4_1_0(builder_, level_ + 1);
+    return true;
+  }
+
+  // scontext "=>"
+  private static boolean topdecl_4_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_4_1_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = scontext(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, DOUBLEARROW);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // ["where" idecl+]
+  private static boolean topdecl_4_4(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_4_4")) return false;
+    topdecl_4_4_0(builder_, level_ + 1);
+    return true;
+  }
+
+  // "where" idecl+
+  private static boolean topdecl_4_4_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_4_4_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, WHERE);
+    result_ = result_ && topdecl_4_4_0_1(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // idecl+
+  private static boolean topdecl_4_4_0_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_4_4_0_1")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = idecl(builder_, level_ + 1);
+    int pos_ = current_position_(builder_);
+    while (result_) {
+      if (!idecl(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "topdecl_4_4_0_1", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // "default" <<commaSeparate typee>>
+  private static boolean topdecl_5(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_5")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, DEFAULT);
+    result_ = result_ && commaSeparate(builder_, level_ + 1, typee_parser_);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // "foreign" fdecl
+  private static boolean topdecl_6(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_6")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, FOREIGN);
+    result_ = result_ && fdecl(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // decl+
+  private static boolean topdecl_7(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_7")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = decl(builder_, level_ + 1);
+    int pos_ = current_position_(builder_);
+    while (result_) {
+      if (!decl(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "topdecl_7", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -1283,6 +2718,36 @@ public class HaskellParser implements PsiParser {
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, CONID);
     exit_section_(builder_, marker_, TYCON, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // btype ['->' typee]
+  public static boolean typee(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "typee")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<typee>");
+    result_ = btype(builder_, level_ + 1);
+    result_ = result_ && typee_1(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, TYPEE, result_, false, null);
+    return result_;
+  }
+
+  // ['->' typee]
+  private static boolean typee_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "typee_1")) return false;
+    typee_1_0(builder_, level_ + 1);
+    return true;
+  }
+
+  // '->' typee
+  private static boolean typee_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "typee_1_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, RIGHTARROW);
+    result_ = result_ && typee(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
@@ -1347,14 +2812,38 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // <<commaSeparate var>>
-  public static boolean vars(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "vars")) return false;
-    if (!nextTokenIs(builder_, LPAREN)) return false;
+  // varsym | '`' varid '`'
+  public static boolean varop(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "varop")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<varop>");
+    result_ = varsym(builder_, level_ + 1);
+    if (!result_) result_ = varop_1(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, VAROP, result_, false, null);
+    return result_;
+  }
+
+  // '`' varid '`'
+  private static boolean varop_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "varop_1")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = commaSeparate(builder_, level_ + 1, var_parser_);
-    exit_section_(builder_, marker_, VARS, result_);
+    result_ = consumeToken(builder_, BACKTICK);
+    result_ = result_ && varid(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, BACKTICK);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // <<sequence var>>
+  public static boolean vars(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "vars")) return false;
+    if (!nextTokenIs(builder_, "<vars>", LPAREN, VARIDREGEXP)) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<vars>");
+    result_ = sequence(builder_, level_ + 1, var_parser_);
+    exit_section_(builder_, level_, marker_, VARS, result_, false, null);
     return result_;
   }
 
@@ -1472,9 +2961,19 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
+  final static Parser classs_parser_ = new Parser() {
+    public boolean parse(PsiBuilder builder_, int level_) {
+      return classs(builder_, level_ + 1);
+    }
+  };
   final static Parser cname_parser_ = new Parser() {
     public boolean parse(PsiBuilder builder_, int level_) {
       return cname(builder_, level_ + 1);
+    }
+  };
+  final static Parser dclass_parser_ = new Parser() {
+    public boolean parse(PsiBuilder builder_, int level_) {
+      return dclass(builder_, level_ + 1);
     }
   };
   final static Parser export_parser_ = new Parser() {
@@ -1487,9 +2986,24 @@ public class HaskellParser implements PsiParser {
       return importt(builder_, level_ + 1);
     }
   };
+  final static Parser op_parser_ = new Parser() {
+    public boolean parse(PsiBuilder builder_, int level_) {
+      return op(builder_, level_ + 1);
+    }
+  };
   final static Parser qvar_parser_ = new Parser() {
     public boolean parse(PsiBuilder builder_, int level_) {
       return qvar(builder_, level_ + 1);
+    }
+  };
+  final static Parser simpleclass_parser_ = new Parser() {
+    public boolean parse(PsiBuilder builder_, int level_) {
+      return simpleclass(builder_, level_ + 1);
+    }
+  };
+  final static Parser typee_parser_ = new Parser() {
+    public boolean parse(PsiBuilder builder_, int level_) {
+      return typee(builder_, level_ + 1);
     }
   };
   final static Parser var_parser_ = new Parser() {

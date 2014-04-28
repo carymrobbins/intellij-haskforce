@@ -13,4 +13,10 @@ public interface HaskellQvar extends PsiElement {
   @Nullable
   HaskellQvarsym getQvarsym();
 
+  @Nullable
+  PsiElement getLparen();
+
+  @Nullable
+  PsiElement getRparen();
+
 }

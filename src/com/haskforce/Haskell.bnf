@@ -152,7 +152,93 @@ importt ::= var
 cnames ::= <<commaSeparate cname>>
 cname ::= var | con
 
-private topdecl ::= ( whitespace | lexeme )
+private topdecl ::= "type" simpletype "=" typee
+                  | "data" [context "=>"] simpletype ["=" constrs] [deriving]
+                  | "newtype" [context "=>"] simpletype "=" newconstr [deriving]
+                  | "class" [scontext "=>"] tycls tyvar ["where" cdecl+]
+                  | "instance" [scontext "=>"] qtycls inst ["where" idecl+]
+                  | "default" <<commaSeparate typee>>
+                  | "foreign" fdecl
+                  | decl+      // FIXME: Remove + when implementing decl.
+
+left cdecl ::= gendecl
+             | (funlhs | var) rhs
+
+idecl ::= (funlhs | var) rhs
+
+gendecl ::= vars '::' [context '=>'] typee
+         | fixity [integertoken] ops
+//         | /* Empty */
+
+ops ::= <<sequence op>>
+vars ::= <<sequence var>>
+fixity ::= "infix" | "infixr" | "infixl"
+
+// Type already taken so we get collisions in generated code. Sigh.
+typee ::= btype ['->' typee]
+
+private btype ::= atype btype
+                | atype
+
+atype ::= gtycon
+        | tyvar
+        | <<commaSeparate typee>>
+        | '[' typee ']'
+        | '(' typee ')'
+
+private gtycon ::= qtycon
+                 | "()"
+                 | "[]"
+                 | '(' "->" ')'
+                 | '(' ',' (',')+ ')'
+
+context ::= classs
+          | <<commaSeparate classs>>
+
+// "Class" is reserved in Java.
+classs ::= qtycls tyvar
+        | qtycls '(' tyvar atype+ ')'
+
+scontext ::= simpleclass
+           | <<commaSeparate simpleclass>>
+private simpleclass ::= qtycls tyvar
+
+private simpletype ::= tycon tyvar*
+
+constrs ::= constr ('|' constr)*
+
+constr ::= con (['!'] atype)*
+        | (btype | '!'atype) conop (btype | '!'atype)
+        | con '{' ((fielddecl ',')* fielddecl)? '}'
+
+newconstr ::= con atype
+            | con '{' var '::' typee '}'
+
+private fielddecl ::= vars '::' (typee | '!' atype)
+
+private deriving ::= "deriving" (dclass|<<commaSeparate dclass>>)
+private dclass ::= qtycls
+
+inst ::= gtycon
+       | '(' gtycon tyvar* ')'
+       | '(' tyvar ',' (tyvar ',')* tyvar ')'        // No commaSep, >= 2 args.
+       | '[' tyvar ']'
+       | '(' tyvar "->" tyvar ')'
+
+// FIXME: Replace with full implementation.
+fdecl ::= decl+ // "import" callconv [safety] impent var '::' ftype
+        // | "export" callconv expent var "::" ftype
+
+// FIXME: Replace with full implementation.
+funlhs ::= decl+ // var apat+
+        // | pat varop pat
+        // | '(' funlhs ')' apat+
+
+// FIXME: Replace with full implementation.
+rhs ::= decl+ // exp ["where" decls]
+//       | gdrhs ["where" decls]
+
+private decl ::= ( whitespace | lexeme )
 
 private lexeme ::= literal | reservedop | reservedid | pragma
                  | qconid | qinfixvarid | qvarid | qinfixconid | qvarsym
@@ -198,12 +284,18 @@ qtycls ::= [modulePrefix] tycls
 qvarsym ::= [modulePrefix] varsym
 qconsym ::= [modulePrefix] consym
 
-vars ::= <<commaSeparate var>>
 var ::= varid | '(' varsym ')'
 qvars ::= <<commaSeparate qvar>>
-qvar ::= qvarid | qvarsym
+qvar ::= qvarid | '(' qvarsym ')'
 con ::= conid | '(' consym ')'
-
+qcon ::= qconid | '(' gconsym ')'
+varop ::= varsym | '`' varid '`'
+qvarop ::= qvarsym | '`' qvarid '`'
+conop ::= consym | '`' conid '`'
+qconop ::= gconsym | '`' qconid '`'
+op ::= varop | conop
+qop ::= qvarop | qconop
+gconsym ::= ':' | qconsym
 
 // Meta-Helpers
 
@@ -211,3 +303,5 @@ con ::= conid | '(' consym ')'
 private meta commaSeparate ::= '(' <<p>> (',' <<p>>)* ')' {pin(".*")=1}
 // Comma-separate a list of the parameter with a trailing comma.
 private meta commaSeparate2 ::= '(' <<p>> (',' (<<p>> | &')'))* ')' {pin(".*")=1}
+
+private meta sequence ::= <<p>> (',' <<p>>)*  {pin(".*")=1}
