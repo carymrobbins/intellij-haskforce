@@ -28,4 +28,10 @@ public class HaskellConsymImpl extends ASTWrapperPsiElement implements HaskellCo
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellSymbol.class);
   }
 
+  @Override
+  @NotNull
+  public PsiElement getColon() {
+    return findNotNullChildByType(COLON);
+  }
+
 }

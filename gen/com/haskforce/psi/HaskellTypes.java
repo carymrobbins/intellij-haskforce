@@ -24,8 +24,11 @@ public interface HaskellTypes {
   IElementType CPP = new HaskellElementType("CPP");
   IElementType EXPORT = new HaskellElementType("EXPORT");
   IElementType EXPORTS = new HaskellElementType("EXPORTS");
+  IElementType FATYPE = new HaskellElementType("FATYPE");
   IElementType FDECL = new HaskellElementType("FDECL");
   IElementType FIXITY = new HaskellElementType("FIXITY");
+  IElementType FRTYPE = new HaskellElementType("FRTYPE");
+  IElementType FTYPE = new HaskellElementType("FTYPE");
   IElementType FUNLHS = new HaskellElementType("FUNLHS");
   IElementType GCONSYM = new HaskellElementType("GCONSYM");
   IElementType GENDECL = new HaskellElementType("GENDECL");
@@ -201,11 +204,20 @@ public interface HaskellTypes {
       else if (type == EXPORTS) {
         return new HaskellExportsImpl(node);
       }
+      else if (type == FATYPE) {
+        return new HaskellFatypeImpl(node);
+      }
       else if (type == FDECL) {
         return new HaskellFdeclImpl(node);
       }
       else if (type == FIXITY) {
         return new HaskellFixityImpl(node);
+      }
+      else if (type == FRTYPE) {
+        return new HaskellFrtypeImpl(node);
+      }
+      else if (type == FTYPE) {
+        return new HaskellFtypeImpl(node);
       }
       else if (type == FUNLHS) {
         return new HaskellFunlhsImpl(node);

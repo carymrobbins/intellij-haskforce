@@ -11,6 +11,30 @@ public interface HaskellSpecial extends PsiElement {
   PsiElement getBacktick();
 
   @Nullable
+  PsiElement getComma();
+
+  @Nullable
+  PsiElement getLbrace();
+
+  @Nullable
+  PsiElement getLbracket();
+
+  @Nullable
+  PsiElement getLparen();
+
+  @Nullable
+  PsiElement getRbrace();
+
+  @Nullable
+  PsiElement getRbracket();
+
+  @Nullable
+  PsiElement getRparen();
+
+  @Nullable
+  PsiElement getSemicolon();
+
+  @Nullable
   PsiElement getThquote();
 
 }

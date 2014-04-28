@@ -31,7 +31,7 @@ FLOATTOKEN=([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))
 COMMENT=--([^\^\r\n][^\r\n]*|[\r\n])
 DASHES=--(-)?
 HADDOCK=--\^[^\r\n]*
-STRINGTOKEN=\"(\\[ tnx0Bfr]*\n[ tnx0Bfr]*\\|\\\"|[^\"\n])*\"
+STRINGTOKEN=\"(\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\|\\\"|[^\"\n])*\"
 CPPIF=#if ([^\r\n]*)
 
 %%

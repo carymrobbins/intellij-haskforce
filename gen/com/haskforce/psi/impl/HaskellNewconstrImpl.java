@@ -46,4 +46,22 @@ public class HaskellNewconstrImpl extends ASTWrapperPsiElement implements Haskel
     return findChildByClass(HaskellVar.class);
   }
 
+  @Override
+  @Nullable
+  public PsiElement getDoublecolon() {
+    return findChildByType(DOUBLECOLON);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getLbrace() {
+    return findChildByType(LBRACE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRbrace() {
+    return findChildByType(RBRACE);
+  }
+
 }

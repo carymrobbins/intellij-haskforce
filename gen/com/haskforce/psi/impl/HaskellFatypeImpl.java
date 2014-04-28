@@ -11,39 +11,27 @@ import static com.haskforce.psi.HaskellTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellFdeclImpl extends ASTWrapperPsiElement implements HaskellFdecl {
+public class HaskellFatypeImpl extends ASTWrapperPsiElement implements HaskellFatype {
 
-  public HaskellFdeclImpl(ASTNode node) {
+  public HaskellFatypeImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitFdecl(this);
+    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitFatype(this);
     else super.accept(visitor);
   }
 
   @Override
   @NotNull
-  public HaskellFtype getFtype() {
-    return findNotNullChildByClass(HaskellFtype.class);
+  public List<HaskellAtype> getAtypeList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellAtype.class);
   }
 
   @Override
   @NotNull
-  public HaskellVar getVar() {
-    return findNotNullChildByClass(HaskellVar.class);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement getDoublecolon() {
-    return findNotNullChildByType(DOUBLECOLON);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getStringtoken() {
-    return findChildByType(STRINGTOKEN);
+  public HaskellQtycon getQtycon() {
+    return findNotNullChildByClass(HaskellQtycon.class);
   }
 
 }

@@ -54,6 +54,18 @@ public class HaskellGendeclImpl extends ASTWrapperPsiElement implements HaskellG
 
   @Override
   @Nullable
+  public PsiElement getDoublearrow() {
+    return findChildByType(DOUBLEARROW);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getDoublecolon() {
+    return findChildByType(DOUBLECOLON);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getIntegertoken() {
     return findChildByType(INTEGERTOKEN);
   }

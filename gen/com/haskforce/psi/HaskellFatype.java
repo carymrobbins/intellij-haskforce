@@ -5,12 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellQinfixvarid extends PsiElement {
-
-  @Nullable
-  HaskellModulePrefix getModulePrefix();
+public interface HaskellFatype extends PsiElement {
 
   @NotNull
-  PsiElement getVaridRegexp();
+  List<HaskellAtype> getAtypeList();
+
+  @NotNull
+  HaskellQtycon getQtycon();
 
 }

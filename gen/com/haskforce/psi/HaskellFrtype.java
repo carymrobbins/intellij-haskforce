@@ -5,12 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellQinfixvarid extends PsiElement {
+public interface HaskellFrtype extends PsiElement {
 
   @Nullable
-  HaskellModulePrefix getModulePrefix();
-
-  @NotNull
-  PsiElement getVaridRegexp();
+  HaskellFatype getFatype();
 
 }

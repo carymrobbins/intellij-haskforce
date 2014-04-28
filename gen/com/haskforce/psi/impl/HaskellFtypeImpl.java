@@ -11,39 +11,39 @@ import static com.haskforce.psi.HaskellTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellFdeclImpl extends ASTWrapperPsiElement implements HaskellFdecl {
+public class HaskellFtypeImpl extends ASTWrapperPsiElement implements HaskellFtype {
 
-  public HaskellFdeclImpl(ASTNode node) {
+  public HaskellFtypeImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitFdecl(this);
+    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitFtype(this);
     else super.accept(visitor);
   }
 
   @Override
-  @NotNull
-  public HaskellFtype getFtype() {
-    return findNotNullChildByClass(HaskellFtype.class);
-  }
-
-  @Override
-  @NotNull
-  public HaskellVar getVar() {
-    return findNotNullChildByClass(HaskellVar.class);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement getDoublecolon() {
-    return findNotNullChildByType(DOUBLECOLON);
+  @Nullable
+  public HaskellFatype getFatype() {
+    return findChildByClass(HaskellFatype.class);
   }
 
   @Override
   @Nullable
-  public PsiElement getStringtoken() {
-    return findChildByType(STRINGTOKEN);
+  public HaskellFrtype getFrtype() {
+    return findChildByClass(HaskellFrtype.class);
+  }
+
+  @Override
+  @Nullable
+  public HaskellFtype getFtype() {
+    return findChildByClass(HaskellFtype.class);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRightarrow() {
+    return findChildByType(RIGHTARROW);
   }
 
 }

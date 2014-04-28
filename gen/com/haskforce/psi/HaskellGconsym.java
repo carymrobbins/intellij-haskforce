@@ -10,4 +10,7 @@ public interface HaskellGconsym extends PsiElement {
   @Nullable
   HaskellQconsym getQconsym();
 
+  @Nullable
+  PsiElement getColon();
+
 }

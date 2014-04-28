@@ -22,4 +22,10 @@ public interface HaskellConstr extends PsiElement {
   @NotNull
   List<HaskellVars> getVarsList();
 
+  @Nullable
+  PsiElement getLbrace();
+
+  @Nullable
+  PsiElement getRbrace();
+
 }

@@ -34,4 +34,10 @@ public class HaskellTypeeImpl extends ASTWrapperPsiElement implements HaskellTyp
     return findChildByClass(HaskellTypee.class);
   }
 
+  @Override
+  @Nullable
+  public PsiElement getRightarrow() {
+    return findChildByType(RIGHTARROW);
+  }
+
 }

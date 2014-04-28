@@ -10,4 +10,10 @@ public interface HaskellCnames extends PsiElement {
   @NotNull
   List<HaskellCname> getCnameList();
 
+  @NotNull
+  PsiElement getLparen();
+
+  @Nullable
+  PsiElement getRparen();
+
 }

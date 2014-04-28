@@ -11,27 +11,21 @@ import static com.haskforce.psi.HaskellTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellVaropImpl extends ASTWrapperPsiElement implements HaskellVarop {
+public class HaskellFrtypeImpl extends ASTWrapperPsiElement implements HaskellFrtype {
 
-  public HaskellVaropImpl(ASTNode node) {
+  public HaskellFrtypeImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitVarop(this);
+    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitFrtype(this);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
-  public HaskellVarsym getVarsym() {
-    return findChildByClass(HaskellVarsym.class);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getVaridRegexp() {
-    return findChildByType(VARIDREGEXP);
+  public HaskellFatype getFatype() {
+    return findChildByClass(HaskellFatype.class);
   }
 
 }

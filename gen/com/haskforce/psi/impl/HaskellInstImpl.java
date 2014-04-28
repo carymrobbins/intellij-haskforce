@@ -34,4 +34,34 @@ public class HaskellInstImpl extends ASTWrapperPsiElement implements HaskellInst
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTyvar.class);
   }
 
+  @Override
+  @Nullable
+  public PsiElement getLbracket() {
+    return findChildByType(LBRACKET);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getLparen() {
+    return findChildByType(LPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRbracket() {
+    return findChildByType(RBRACKET);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRightarrow() {
+    return findChildByType(RIGHTARROW);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRparen() {
+    return findChildByType(RPAREN);
+  }
+
 }

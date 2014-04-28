@@ -16,4 +16,19 @@ public interface HaskellAtype extends PsiElement {
   @Nullable
   HaskellTyvar getTyvar();
 
+  @Nullable
+  PsiElement getLbracket();
+
+  @Nullable
+  PsiElement getLparen();
+
+  @Nullable
+  PsiElement getRbracket();
+
+  @Nullable
+  PsiElement getRightarrow();
+
+  @Nullable
+  PsiElement getRparen();
+
 }

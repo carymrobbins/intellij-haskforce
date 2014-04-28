@@ -28,4 +28,10 @@ public class HaskellQinfixvaridImpl extends ASTWrapperPsiElement implements Hask
     return findChildByClass(HaskellModulePrefix.class);
   }
 
+  @Override
+  @NotNull
+  public PsiElement getVaridRegexp() {
+    return findNotNullChildByType(VARIDREGEXP);
+  }
+
 }

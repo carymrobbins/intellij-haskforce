@@ -52,4 +52,16 @@ public class HaskellConstrImpl extends ASTWrapperPsiElement implements HaskellCo
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVars.class);
   }
 
+  @Override
+  @Nullable
+  public PsiElement getLbrace() {
+    return findChildByType(LBRACE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRbrace() {
+    return findChildByType(RBRACE);
+  }
+
 }

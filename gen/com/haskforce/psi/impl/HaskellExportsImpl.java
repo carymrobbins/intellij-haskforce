@@ -28,4 +28,16 @@ public class HaskellExportsImpl extends ASTWrapperPsiElement implements HaskellE
     return findChildByClass(HaskellExport.class);
   }
 
+  @Override
+  @NotNull
+  public PsiElement getLparen() {
+    return findNotNullChildByType(LPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRparen() {
+    return findChildByType(RPAREN);
+  }
+
 }

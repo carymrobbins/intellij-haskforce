@@ -71,11 +71,23 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitFatype(@NotNull HaskellFatype o) {
+    visitPsiElement(o);
+  }
+
   public void visitFdecl(@NotNull HaskellFdecl o) {
     visitPsiElement(o);
   }
 
   public void visitFixity(@NotNull HaskellFixity o) {
+    visitPsiElement(o);
+  }
+
+  public void visitFrtype(@NotNull HaskellFrtype o) {
+    visitPsiElement(o);
+  }
+
+  public void visitFtype(@NotNull HaskellFtype o) {
     visitPsiElement(o);
   }
 

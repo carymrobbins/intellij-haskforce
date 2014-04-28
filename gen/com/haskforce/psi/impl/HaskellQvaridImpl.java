@@ -28,4 +28,10 @@ public class HaskellQvaridImpl extends ASTWrapperPsiElement implements HaskellQv
     return findChildByClass(HaskellModulePrefix.class);
   }
 
+  @Override
+  @NotNull
+  public PsiElement getVaridRegexp() {
+    return findNotNullChildByType(VARIDREGEXP);
+  }
+
 }

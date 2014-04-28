@@ -229,9 +229,30 @@ inst ::= gtycon
        | '[' tyvar ']'
        | '(' tyvar "->" tyvar ')'
 
-// FIXME: Replace with full implementation.
-fdecl ::= decl+ // "import" callconv [safety] impent var '::' ftype
-        // | "export" callconv expent var "::" ftype
+
+fdecl ::= "import" callconv [safety] [impent] var "::" ftype
+        | "export" callconv expent var "::" ftype
+
+private callconv ::= "ccall" | "stdcall" | "cplusplus"
+                   | "jvm" | "dotnet" // FIXME: Add system specific call conv.
+
+// Listed in Section 8.5.1.
+private impent ::= '\"' "wrapper" '\"'
+                 | '\"' "dynamic" '\"'
+                 | stringtoken // TODO: Refine from stringtoken.
+private expent ::= '\"' [cid] '\"'
+
+private cid ::= "regexp:[a-zA-Z][a-zA-Z_0-9]*"
+
+ftype ::= frtype
+        | fatype "->" ftype
+
+frtype ::= fatype
+        | "()"
+
+fatype ::= qtycon atype*
+
+private safety ::= "unsafe" | "safe"
 
 // FIXME: Replace with full implementation.
 funlhs ::= decl+ // var apat+

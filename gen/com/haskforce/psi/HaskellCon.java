@@ -13,4 +13,10 @@ public interface HaskellCon extends PsiElement {
   @Nullable
   PsiElement getConid();
 
+  @Nullable
+  PsiElement getLparen();
+
+  @Nullable
+  PsiElement getRparen();
+
 }

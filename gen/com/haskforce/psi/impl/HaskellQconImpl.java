@@ -34,4 +34,16 @@ public class HaskellQconImpl extends ASTWrapperPsiElement implements HaskellQcon
     return findChildByClass(HaskellQconid.class);
   }
 
+  @Override
+  @Nullable
+  public PsiElement getLparen() {
+    return findChildByType(LPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRparen() {
+    return findChildByType(RPAREN);
+  }
+
 }

@@ -13,4 +13,10 @@ public interface HaskellQcon extends PsiElement {
   @Nullable
   HaskellQconid getQconid();
 
+  @Nullable
+  PsiElement getLparen();
+
+  @Nullable
+  PsiElement getRparen();
+
 }

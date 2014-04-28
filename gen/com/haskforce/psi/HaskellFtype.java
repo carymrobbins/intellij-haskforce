@@ -5,18 +5,18 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellFdecl extends PsiElement {
-
-  @NotNull
-  HaskellFtype getFtype();
-
-  @NotNull
-  HaskellVar getVar();
-
-  @NotNull
-  PsiElement getDoublecolon();
+public interface HaskellFtype extends PsiElement {
 
   @Nullable
-  PsiElement getStringtoken();
+  HaskellFatype getFatype();
+
+  @Nullable
+  HaskellFrtype getFrtype();
+
+  @Nullable
+  HaskellFtype getFtype();
+
+  @Nullable
+  PsiElement getRightarrow();
 
 }
