@@ -7,11 +7,11 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellScontext extends PsiElement {
 
-  @Nullable
-  HaskellQtycls getQtycls();
+  @NotNull
+  List<HaskellQtycls> getQtyclsList();
 
-  @Nullable
-  HaskellTyvar getTyvar();
+  @NotNull
+  List<HaskellTyvar> getTyvarList();
 
   @Nullable
   PsiElement getLparen();

@@ -32,6 +32,7 @@ COMMENT=--([^\^\r\n][^\r\n]*|[\r\n])
 DASHES=--(-)?
 HADDOCK=--\^[^\r\n]*
 STRINGTOKEN=\"[^\"]*\"
+CPPIF=#if ([^\r\n]*)
 
 %%
 <YYINITIAL> {
@@ -98,6 +99,8 @@ STRINGTOKEN=\"[^\"]*\"
   "case"              { return CASE; }
   "do"                { return DO; }
   "else"              { return ELSE; }
+  "#else"             { return CPPELSE; }
+  "#endif"            { return CPPENDIF; }
   "if"                { return IF; }
   "in"                { return IN; }
   "let"               { return LET; }
@@ -116,6 +119,7 @@ STRINGTOKEN=\"[^\"]*\"
   {DASHES}            { return DASHES; }
   {HADDOCK}           { return HADDOCK; }
   {STRINGTOKEN}       { return STRINGTOKEN; }
+  {CPPIF}             { return CPPIF; }
 
   [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }

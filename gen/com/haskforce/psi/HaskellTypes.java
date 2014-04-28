@@ -21,6 +21,7 @@ public interface HaskellTypes {
   IElementType CONSTRS = new HaskellElementType("CONSTRS");
   IElementType CONSYM = new HaskellElementType("CONSYM");
   IElementType CONTEXT = new HaskellElementType("CONTEXT");
+  IElementType CPP = new HaskellElementType("CPP");
   IElementType EXPORT = new HaskellElementType("EXPORT");
   IElementType EXPORTS = new HaskellElementType("EXPORTS");
   IElementType FDECL = new HaskellElementType("FDECL");
@@ -83,6 +84,9 @@ public interface HaskellTypes {
   IElementType COMMA = new HaskellTokenType(",");
   IElementType COMMENT = new HaskellTokenType("comment");
   IElementType CONID = new HaskellTokenType("conid");
+  IElementType CPPELSE = new HaskellTokenType("#else");
+  IElementType CPPENDIF = new HaskellTokenType("#endif");
+  IElementType CPPIF = new HaskellTokenType("CPPIF");
   IElementType DASHES = new HaskellTokenType("dashes");
   IElementType DATA = new HaskellTokenType("data");
   IElementType DEFAULT = new HaskellTokenType("default");
@@ -187,6 +191,9 @@ public interface HaskellTypes {
       }
       else if (type == CONTEXT) {
         return new HaskellContextImpl(node);
+      }
+      else if (type == CPP) {
+        return new HaskellCppImpl(node);
       }
       else if (type == EXPORT) {
         return new HaskellExportImpl(node);

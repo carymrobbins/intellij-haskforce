@@ -23,9 +23,9 @@ public class HaskellContextImpl extends ASTWrapperPsiElement implements HaskellC
   }
 
   @Override
-  @Nullable
-  public HaskellClasss getClasss() {
-    return findChildByClass(HaskellClasss.class);
+  @NotNull
+  public List<HaskellClasss> getClasssList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellClasss.class);
   }
 
   @Override

@@ -10,8 +10,8 @@ public interface HaskellAtype extends PsiElement {
   @Nullable
   HaskellQtycon getQtycon();
 
-  @Nullable
-  HaskellTypee getTypee();
+  @NotNull
+  List<HaskellTypee> getTypeeList();
 
   @Nullable
   HaskellTyvar getTyvar();

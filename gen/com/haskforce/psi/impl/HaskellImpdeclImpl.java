@@ -23,9 +23,15 @@ public class HaskellImpdeclImpl extends ASTWrapperPsiElement implements HaskellI
   }
 
   @Override
-  @NotNull
-  public List<HaskellImportt> getImporttList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellImportt.class);
+  @Nullable
+  public HaskellCpp getCpp() {
+    return findChildByClass(HaskellCpp.class);
+  }
+
+  @Override
+  @Nullable
+  public HaskellImportt getImportt() {
+    return findChildByClass(HaskellImportt.class);
   }
 
   @Override

@@ -23,15 +23,15 @@ public class HaskellScontextImpl extends ASTWrapperPsiElement implements Haskell
   }
 
   @Override
-  @Nullable
-  public HaskellQtycls getQtycls() {
-    return findChildByClass(HaskellQtycls.class);
+  @NotNull
+  public List<HaskellQtycls> getQtyclsList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQtycls.class);
   }
 
   @Override
-  @Nullable
-  public HaskellTyvar getTyvar() {
-    return findChildByClass(HaskellTyvar.class);
+  @NotNull
+  public List<HaskellTyvar> getTyvarList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTyvar.class);
   }
 
   @Override

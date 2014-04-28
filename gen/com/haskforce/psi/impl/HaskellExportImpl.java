@@ -30,6 +30,12 @@ public class HaskellExportImpl extends ASTWrapperPsiElement implements HaskellEx
 
   @Override
   @Nullable
+  public HaskellCpp getCpp() {
+    return findChildByClass(HaskellCpp.class);
+  }
+
+  @Override
+  @Nullable
   public HaskellQconid getQconid() {
     return findChildByClass(HaskellQconid.class);
   }

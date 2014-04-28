@@ -117,6 +117,9 @@
     CASE='case'
     DO='do'
     ELSE='else'
+    CPPELSE='#else'
+    CPPENDIF='#endif'
+    CPPIF='regexp:#if ([^\r\n]*)'
     IF='if'
     IN='in'
     LET='let'
@@ -127,19 +130,21 @@
 
 // Haskell 2010 Report - http://www.haskell.org/onlinereport/haskell2010/haskellch2.html#x7-140002
 
-module ::= (whitespace | pragma) module
+module ::= (whitespace | pragma | cpp) module
          | "module" qconid [exports] "where" body
          | body
 
 body ::= impdecl* topdecl*
 
 exports ::= <<commaSeparate2 export>>
-export ::= qvar
+export ::= cpp
+        | qvar
         | qtycon ["(..)" | cnames]
         | qtycls ["(..)" | qvars]
         | "module" qconid
 
-impdecl ::= "import" ["qualified"] qconid ["as" qconid] [impspec]
+impdecl ::= cpp
+          | "import" ["qualified"] qconid ["as" qconid] [impspec]
 
 private impspec ::= <<commaSeparate2 importt>>
                   | "hiding" <<commaSeparate2 importt>>
@@ -152,7 +157,8 @@ importt ::= var
 cnames ::= <<commaSeparate cname>>
 cname ::= var | con
 
-private topdecl ::= "type" simpletype "=" typee
+private topdecl ::= cpp
+                  | "type" simpletype "=" typee
                   | "data" [context "=>"] simpletype ["=" constrs] [deriving]
                   | "newtype" [context "=>"] simpletype "=" newconstr [deriving]
                   | "class" [scontext "=>"] tycls tyvar ["where" cdecl+]
@@ -296,6 +302,10 @@ qconop ::= gconsym | '`' qconid '`'
 op ::= varop | conop
 qop ::= qvarop | qconop
 gconsym ::= ':' | qconsym
+
+// Misc cross-cutting stuff.
+
+cpp ::= CPPIF | CPPELSE | CPPENDIF
 
 // Meta-Helpers
 

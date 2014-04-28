@@ -17,6 +17,9 @@ public interface HaskellBody extends PsiElement {
   List<HaskellContext> getContextList();
 
   @NotNull
+  List<HaskellCpp> getCppList();
+
+  @NotNull
   List<HaskellFdecl> getFdeclList();
 
   @NotNull

@@ -5,15 +5,9 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellContext extends PsiElement {
-
-  @NotNull
-  List<HaskellClasss> getClasssList();
+public interface HaskellCpp extends PsiElement {
 
   @Nullable
-  PsiElement getLparen();
-
-  @Nullable
-  PsiElement getRparen();
+  PsiElement getCppif();
 
 }
