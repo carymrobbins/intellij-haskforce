@@ -7,37 +7,58 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellApat extends PsiElement {
 
-  @NotNull
-  List<HaskellNcomment> getNcommentList();
+  @Nullable
+  HaskellApat getApat();
+
+  @Nullable
+  HaskellGcon getGcon();
 
   @NotNull
-  List<HaskellPragma> getPragmaList();
+  List<HaskellPat> getPatList();
+
+  @Nullable
+  HaskellQcon getQcon();
 
   @NotNull
-  List<HaskellQconid> getQconidList();
+  List<HaskellQvar> getQvarList();
 
-  @NotNull
-  List<HaskellQconsym> getQconsymList();
+  @Nullable
+  HaskellVar getVar();
 
-  @NotNull
-  List<HaskellQinfixconid> getQinfixconidList();
+  @Nullable
+  PsiElement getAmpersat();
 
-  @NotNull
-  List<HaskellQinfixvarid> getQinfixvaridList();
+  @Nullable
+  PsiElement getChartoken();
 
-  @NotNull
-  List<HaskellQvarid> getQvaridList();
+  @Nullable
+  PsiElement getFloattoken();
 
-  @NotNull
-  List<HaskellQvarsym> getQvarsymList();
+  @Nullable
+  PsiElement getIntegertoken();
 
-  @NotNull
-  List<HaskellReservedop> getReservedopList();
+  @Nullable
+  PsiElement getLbrace();
 
-  @NotNull
-  List<HaskellSpecial> getSpecialList();
+  @Nullable
+  PsiElement getLbracket();
 
-  @NotNull
-  List<HaskellWhitechar> getWhitecharList();
+  @Nullable
+  PsiElement getLparen();
+
+  @Nullable
+  PsiElement getRbrace();
+
+  @Nullable
+  PsiElement getRbracket();
+
+  @Nullable
+  PsiElement getRparen();
+
+  @Nullable
+  PsiElement getStringtoken();
+
+  @Nullable
+  PsiElement getTilde();
 
 }

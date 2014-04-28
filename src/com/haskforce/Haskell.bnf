@@ -320,11 +320,21 @@ private fbind ::= qvar '=' exp
 pat ::= lpat qconop pat
       | lpat
 
-lpat ::= apat+ // FIXME: Remove after implementing apat.
+lpat ::= apat
        | '-' (integertoken|floattoken)
        | gcon apat+
 
-apat ::= (whitespace | lexeme)+
+apat ::= var ['@' apat]
+       | gcon
+       | qcon '{' (fpat ',')* fpat '}'
+       | literal
+       | '_'
+       | '(' pat ')'
+       | '(' pat ',' (pat ',')* pat ')'
+       | '[' pat (',' pat)* ']'
+       | '~' apat
+
+private fpat ::= qvar '=' pat
 
 gcon ::= "()"
         | "[]"

@@ -23,9 +23,9 @@ public class HaskellLpatImpl extends ASTWrapperPsiElement implements HaskellLpat
   }
 
   @Override
-  @NotNull
-  public List<HaskellApat> getApatList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellApat.class);
+  @Nullable
+  public HaskellApat getApat() {
+    return findChildByClass(HaskellApat.class);
   }
 
   @Override

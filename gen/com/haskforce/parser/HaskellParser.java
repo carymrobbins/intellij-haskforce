@@ -810,29 +810,191 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // (whitespace | lexeme)+
+  // var ['@' apat]
+  //        | gcon
+  //        | qcon '{' (fpat ',')* fpat '}'
+  //        | literal
+  //        | '_'
+  //        | '(' pat ')'
+  //        | '(' pat ',' (pat ',')* pat ')'
+  //        | '[' pat (',' pat)* ']'
+  //        | '~' apat
   public static boolean apat(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<apat>");
     result_ = apat_0(builder_, level_ + 1);
-    int pos_ = current_position_(builder_);
-    while (result_) {
-      if (!apat_0(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "apat", pos_)) break;
-      pos_ = current_position_(builder_);
-    }
+    if (!result_) result_ = gcon(builder_, level_ + 1);
+    if (!result_) result_ = apat_2(builder_, level_ + 1);
+    if (!result_) result_ = literal(builder_, level_ + 1);
+    if (!result_) result_ = consumeToken(builder_, "_");
+    if (!result_) result_ = apat_5(builder_, level_ + 1);
+    if (!result_) result_ = apat_6(builder_, level_ + 1);
+    if (!result_) result_ = apat_7(builder_, level_ + 1);
+    if (!result_) result_ = apat_8(builder_, level_ + 1);
     exit_section_(builder_, level_, marker_, APAT, result_, false, null);
     return result_;
   }
 
-  // whitespace | lexeme
+  // var ['@' apat]
   private static boolean apat_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat_0")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = whitespace(builder_, level_ + 1);
-    if (!result_) result_ = lexeme(builder_, level_ + 1);
+    result_ = var(builder_, level_ + 1);
+    result_ = result_ && apat_0_1(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // ['@' apat]
+  private static boolean apat_0_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "apat_0_1")) return false;
+    apat_0_1_0(builder_, level_ + 1);
+    return true;
+  }
+
+  // '@' apat
+  private static boolean apat_0_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "apat_0_1_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, AMPERSAT);
+    result_ = result_ && apat(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // qcon '{' (fpat ',')* fpat '}'
+  private static boolean apat_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "apat_2")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = qcon(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, LBRACE);
+    result_ = result_ && apat_2_2(builder_, level_ + 1);
+    result_ = result_ && fpat(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RBRACE);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // (fpat ',')*
+  private static boolean apat_2_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "apat_2_2")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!apat_2_2_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "apat_2_2", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
+  }
+
+  // fpat ','
+  private static boolean apat_2_2_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "apat_2_2_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = fpat(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, COMMA);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // '(' pat ')'
+  private static boolean apat_5(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "apat_5")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, LPAREN);
+    result_ = result_ && pat(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RPAREN);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // '(' pat ',' (pat ',')* pat ')'
+  private static boolean apat_6(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "apat_6")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, LPAREN);
+    result_ = result_ && pat(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, COMMA);
+    result_ = result_ && apat_6_3(builder_, level_ + 1);
+    result_ = result_ && pat(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RPAREN);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // (pat ',')*
+  private static boolean apat_6_3(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "apat_6_3")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!apat_6_3_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "apat_6_3", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
+  }
+
+  // pat ','
+  private static boolean apat_6_3_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "apat_6_3_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = pat(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, COMMA);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // '[' pat (',' pat)* ']'
+  private static boolean apat_7(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "apat_7")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, LBRACKET);
+    result_ = result_ && pat(builder_, level_ + 1);
+    result_ = result_ && apat_7_2(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RBRACKET);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // (',' pat)*
+  private static boolean apat_7_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "apat_7_2")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!apat_7_2_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "apat_7_2", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
+  }
+
+  // ',' pat
+  private static boolean apat_7_2_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "apat_7_2_0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, COMMA);
+    result_ = result_ && pat(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // '~' apat
+  private static boolean apat_8(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "apat_8")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, TILDE);
+    result_ = result_ && apat(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -1881,6 +2043,19 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
+  // qvar '=' pat
+  static boolean fpat(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "fpat")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = qvar(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, EQUALS);
+    result_ = result_ && pat(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
   // fatype
   //         | "()"
   public static boolean frtype(PsiBuilder builder_, int level_) {
@@ -2875,33 +3050,17 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // apat+ // FIXME: Remove after implementing apat.
+  // apat
   //        | '-' (integertoken|floattoken)
   //        | gcon apat+
   public static boolean lpat(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lpat")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<lpat>");
-    result_ = lpat_0(builder_, level_ + 1);
+    result_ = apat(builder_, level_ + 1);
     if (!result_) result_ = lpat_1(builder_, level_ + 1);
     if (!result_) result_ = lpat_2(builder_, level_ + 1);
     exit_section_(builder_, level_, marker_, LPAT, result_, false, null);
-    return result_;
-  }
-
-  // apat+
-  private static boolean lpat_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "lpat_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = apat(builder_, level_ + 1);
-    int pos_ = current_position_(builder_);
-    while (result_) {
-      if (!apat(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "lpat_0", pos_)) break;
-      pos_ = current_position_(builder_);
-    }
-    exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 

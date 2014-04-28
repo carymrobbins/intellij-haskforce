@@ -23,69 +23,111 @@ public class HaskellApatImpl extends ASTWrapperPsiElement implements HaskellApat
   }
 
   @Override
-  @NotNull
-  public List<HaskellNcomment> getNcommentList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellNcomment.class);
+  @Nullable
+  public HaskellApat getApat() {
+    return findChildByClass(HaskellApat.class);
+  }
+
+  @Override
+  @Nullable
+  public HaskellGcon getGcon() {
+    return findChildByClass(HaskellGcon.class);
   }
 
   @Override
   @NotNull
-  public List<HaskellPragma> getPragmaList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPragma.class);
+  public List<HaskellPat> getPatList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPat.class);
+  }
+
+  @Override
+  @Nullable
+  public HaskellQcon getQcon() {
+    return findChildByClass(HaskellQcon.class);
   }
 
   @Override
   @NotNull
-  public List<HaskellQconid> getQconidList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQconid.class);
+  public List<HaskellQvar> getQvarList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQvar.class);
   }
 
   @Override
-  @NotNull
-  public List<HaskellQconsym> getQconsymList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQconsym.class);
+  @Nullable
+  public HaskellVar getVar() {
+    return findChildByClass(HaskellVar.class);
   }
 
   @Override
-  @NotNull
-  public List<HaskellQinfixconid> getQinfixconidList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQinfixconid.class);
+  @Nullable
+  public PsiElement getAmpersat() {
+    return findChildByType(AMPERSAT);
   }
 
   @Override
-  @NotNull
-  public List<HaskellQinfixvarid> getQinfixvaridList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQinfixvarid.class);
+  @Nullable
+  public PsiElement getChartoken() {
+    return findChildByType(CHARTOKEN);
   }
 
   @Override
-  @NotNull
-  public List<HaskellQvarid> getQvaridList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQvarid.class);
+  @Nullable
+  public PsiElement getFloattoken() {
+    return findChildByType(FLOATTOKEN);
   }
 
   @Override
-  @NotNull
-  public List<HaskellQvarsym> getQvarsymList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQvarsym.class);
+  @Nullable
+  public PsiElement getIntegertoken() {
+    return findChildByType(INTEGERTOKEN);
   }
 
   @Override
-  @NotNull
-  public List<HaskellReservedop> getReservedopList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellReservedop.class);
+  @Nullable
+  public PsiElement getLbrace() {
+    return findChildByType(LBRACE);
   }
 
   @Override
-  @NotNull
-  public List<HaskellSpecial> getSpecialList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellSpecial.class);
+  @Nullable
+  public PsiElement getLbracket() {
+    return findChildByType(LBRACKET);
   }
 
   @Override
-  @NotNull
-  public List<HaskellWhitechar> getWhitecharList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellWhitechar.class);
+  @Nullable
+  public PsiElement getLparen() {
+    return findChildByType(LPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRbrace() {
+    return findChildByType(RBRACE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRbracket() {
+    return findChildByType(RBRACKET);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRparen() {
+    return findChildByType(RPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getStringtoken() {
+    return findChildByType(STRINGTOKEN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getTilde() {
+    return findChildByType(TILDE);
   }
 
 }

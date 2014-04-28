@@ -7,8 +7,8 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellLpat extends PsiElement {
 
-  @NotNull
-  List<HaskellApat> getApatList();
+  @Nullable
+  HaskellApat getApat();
 
   @Nullable
   HaskellGcon getGcon();
