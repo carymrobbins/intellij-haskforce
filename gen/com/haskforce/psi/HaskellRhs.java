@@ -46,7 +46,7 @@ public interface HaskellRhs extends PsiElement {
   @NotNull
   List<HaskellWhitechar> getWhitecharList();
 
-  @Nullable
+  @NotNull
   PsiElement getEquals();
 
   @Nullable

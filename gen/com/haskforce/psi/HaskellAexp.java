@@ -14,9 +14,6 @@ public interface HaskellAexp extends PsiElement {
   HaskellExp getExp();
 
   @Nullable
-  HaskellFunlhs getFunlhs();
-
-  @Nullable
   HaskellGcon getGcon();
 
   @Nullable

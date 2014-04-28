@@ -101,9 +101,9 @@ public class HaskellRhsImpl extends ASTWrapperPsiElement implements HaskellRhs {
   }
 
   @Override
-  @Nullable
+  @NotNull
   public PsiElement getEquals() {
-    return findChildByType(EQUALS);
+    return findNotNullChildByType(EQUALS);
   }
 
   @Override

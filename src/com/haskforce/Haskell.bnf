@@ -258,7 +258,7 @@ funlhs ::= var apat+
          | pat varop pat
          | '(' funlhs ')' apat+
 
-rhs ::= exp ["where" decl+]
+rhs ::= '=' exp ["where" decl+]
       | gdrhs ["where" decl+]
 
 private gdrhs ::= guards '=' exp [gdrhs]

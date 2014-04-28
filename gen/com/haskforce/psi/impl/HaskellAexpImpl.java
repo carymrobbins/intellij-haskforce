@@ -36,12 +36,6 @@ public class HaskellAexpImpl extends ASTWrapperPsiElement implements HaskellAexp
 
   @Override
   @Nullable
-  public HaskellFunlhs getFunlhs() {
-    return findChildByClass(HaskellFunlhs.class);
-  }
-
-  @Override
-  @Nullable
   public HaskellGcon getGcon() {
     return findChildByClass(HaskellGcon.class);
   }
