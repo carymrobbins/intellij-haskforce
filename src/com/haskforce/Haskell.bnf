@@ -93,9 +93,7 @@
     comment='regexp:--([^\^\r\n][^\r\n]*|[\r\n])'
     dashes='regexp:--(-)?'
     haddock='regexp:--\^[^\r\n]*'
-    // There's a few things that should be weeded out from stringtoken,
-    // but when in doubt, be liberal with what you accept.
-    stringtoken='regexp:"[^"]*"'
+    stringtoken='regexp:"(\\\s*\n\s*\\|\\"|[^"\n])*"'
     // Reserved IDs. Should be tokens for IntelliJ reasons. Gives us a nicer
     // PSI tree as side effect.
     DATA='data'
