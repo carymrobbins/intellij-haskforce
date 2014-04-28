@@ -254,14 +254,82 @@ fatype ::= qtycon atype*
 
 private safety ::= "unsafe" | "safe"
 
-// FIXME: Replace with full implementation.
-funlhs ::= decl+ // var apat+
-        // | pat varop pat
-        // | '(' funlhs ')' apat+
+funlhs ::= var apat+
+         | pat varop pat
+         | '(' funlhs ')' apat+
 
-// FIXME: Replace with full implementation.
-rhs ::= decl+ // exp ["where" decls]
-//       | gdrhs ["where" decls]
+rhs ::= exp ["where" decl+]
+      | gdrhs ["where" decl+]
+
+private gdrhs ::= guards '=' exp [gdrhs]
+
+private guards ::= '|' (guard ',')* guard
+guard ::= pat '<-' infixexp
+        | "let" decl+
+        | infixexp
+
+exp ::= infixexp "::" [context "=>"] typee
+      | infixexp
+
+infixexp ::= lexp qop infixexp
+           | '-' infixexp
+           | lexp
+
+lexp ::= '\' apat+ '->' exp
+        | "let" decl+ "in" exp
+        | "if" exp [';'] "then" exp [';'] "else" exp
+        | "case" exp "of" '{' alts '}'
+        | "do" '{' stmts '}'
+        | fexp
+
+fexp ::= aexp fexp
+       | aexp
+
+left aexp ::= qvar
+       | gcon
+       | literal
+       | '(' exp ')'
+       | '(' exp ',' (exp ',')* exp ')'
+       | '[' exp [(',' exp)*] ']'
+       | '[' exp [',' exp] '..' [exp] ']'
+       | '[' exp '|' (qual ',')* qual ']'
+       | '(' infixexp qop ')'
+       | '(' (!'-' qop) infixexp ')'
+       | qcon '{' (fbind ',')* fbind '}'
+       | (!qcon aexp) '{' (fbind ',')* fbind '}'
+
+qual ::= pat '<-' exp
+       | "let" decl+
+       | exp
+
+alts ::= (alt ';')* alt
+
+alt ::= pat '->' exp ["where" decl+]
+      | pat gdpat ["where" decl+]
+
+private gdpat ::= guards '->' exp [gdpat]
+
+stmts ::= stmt* exp
+stmt ::= exp
+       | pat '<-' exp
+       | "let" decl+
+//       | ';'
+
+private fbind ::= qvar '=' exp
+
+pat ::= lpat qconop pat
+      | lpat
+
+lpat ::= apat+ // FIXME: Remove after implementing apat.
+       | '-' (integertoken|floattoken)
+       | gcon apat+
+
+apat ::= (whitespace | lexeme)+
+
+gcon ::= "()"
+        | "[]"
+        | '(' ',' (',')* ')'
+        | qcon
 
 private decl ::= ( whitespace | lexeme )
 

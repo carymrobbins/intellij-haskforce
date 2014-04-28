@@ -11,27 +11,15 @@ import static com.haskforce.psi.HaskellTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellRhsImpl extends ASTWrapperPsiElement implements HaskellRhs {
+public class HaskellApatImpl extends ASTWrapperPsiElement implements HaskellApat {
 
-  public HaskellRhsImpl(ASTNode node) {
+  public HaskellApatImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitRhs(this);
+    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitApat(this);
     else super.accept(visitor);
-  }
-
-  @Override
-  @NotNull
-  public HaskellExp getExp() {
-    return findNotNullChildByClass(HaskellExp.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellGuard> getGuardList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellGuard.class);
   }
 
   @Override
@@ -98,18 +86,6 @@ public class HaskellRhsImpl extends ASTWrapperPsiElement implements HaskellRhs {
   @NotNull
   public List<HaskellWhitechar> getWhitecharList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellWhitechar.class);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getEquals() {
-    return findChildByType(EQUALS);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getPipe() {
-    return findChildByType(PIPE);
   }
 
 }

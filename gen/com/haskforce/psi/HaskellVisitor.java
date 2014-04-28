@@ -7,7 +7,23 @@ import com.intellij.psi.PsiElement;
 
 public class HaskellVisitor extends PsiElementVisitor {
 
+  public void visitAexp(@NotNull HaskellAexp o) {
+    visitPsiElement(o);
+  }
+
+  public void visitAlt(@NotNull HaskellAlt o) {
+    visitPsiElement(o);
+  }
+
+  public void visitAlts(@NotNull HaskellAlts o) {
+    visitPsiElement(o);
+  }
+
   public void visitAnyseq(@NotNull HaskellAnyseq o) {
+    visitPsiElement(o);
+  }
+
+  public void visitApat(@NotNull HaskellApat o) {
     visitPsiElement(o);
   }
 
@@ -63,6 +79,10 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitExp(@NotNull HaskellExp o) {
+    visitPsiElement(o);
+  }
+
   public void visitExport(@NotNull HaskellExport o) {
     visitPsiElement(o);
   }
@@ -76,6 +96,10 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitFdecl(@NotNull HaskellFdecl o) {
+    visitPsiElement(o);
+  }
+
+  public void visitFexp(@NotNull HaskellFexp o) {
     visitPsiElement(o);
   }
 
@@ -95,11 +119,19 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitGcon(@NotNull HaskellGcon o) {
+    visitPsiElement(o);
+  }
+
   public void visitGconsym(@NotNull HaskellGconsym o) {
     visitPsiElement(o);
   }
 
   public void visitGendecl(@NotNull HaskellGendecl o) {
+    visitPsiElement(o);
+  }
+
+  public void visitGuard(@NotNull HaskellGuard o) {
     visitPsiElement(o);
   }
 
@@ -115,7 +147,19 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitInfixexp(@NotNull HaskellInfixexp o) {
+    visitPsiElement(o);
+  }
+
   public void visitInst(@NotNull HaskellInst o) {
+    visitPsiElement(o);
+  }
+
+  public void visitLexp(@NotNull HaskellLexp o) {
+    visitPsiElement(o);
+  }
+
+  public void visitLpat(@NotNull HaskellLpat o) {
     visitPsiElement(o);
   }
 
@@ -136,6 +180,10 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitOps(@NotNull HaskellOps o) {
+    visitPsiElement(o);
+  }
+
+  public void visitPat(@NotNull HaskellPat o) {
     visitPsiElement(o);
   }
 
@@ -179,6 +227,10 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitQual(@NotNull HaskellQual o) {
+    visitPsiElement(o);
+  }
+
   public void visitQvar(@NotNull HaskellQvar o) {
     visitPsiElement(o);
   }
@@ -212,6 +264,14 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitSpecial(@NotNull HaskellSpecial o) {
+    visitPsiElement(o);
+  }
+
+  public void visitStmt(@NotNull HaskellStmt o) {
+    visitPsiElement(o);
+  }
+
+  public void visitStmts(@NotNull HaskellStmts o) {
     visitPsiElement(o);
   }
 

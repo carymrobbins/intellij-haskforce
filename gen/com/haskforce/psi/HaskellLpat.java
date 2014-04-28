@@ -5,27 +5,21 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellFunlhs extends PsiElement {
+public interface HaskellLpat extends PsiElement {
 
   @NotNull
   List<HaskellApat> getApatList();
 
   @Nullable
-  HaskellFunlhs getFunlhs();
-
-  @NotNull
-  List<HaskellPat> getPatList();
+  HaskellGcon getGcon();
 
   @Nullable
-  HaskellVar getVar();
+  PsiElement getFloattoken();
 
   @Nullable
-  HaskellVarop getVarop();
+  PsiElement getIntegertoken();
 
   @Nullable
-  PsiElement getLparen();
-
-  @Nullable
-  PsiElement getRparen();
+  PsiElement getMinus();
 
 }

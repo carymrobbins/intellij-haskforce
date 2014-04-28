@@ -11,33 +11,33 @@ import static com.haskforce.psi.HaskellTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellRhsImpl extends ASTWrapperPsiElement implements HaskellRhs {
+public class HaskellGuardImpl extends ASTWrapperPsiElement implements HaskellGuard {
 
-  public HaskellRhsImpl(ASTNode node) {
+  public HaskellGuardImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitRhs(this);
+    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitGuard(this);
     else super.accept(visitor);
   }
 
   @Override
-  @NotNull
-  public HaskellExp getExp() {
-    return findNotNullChildByClass(HaskellExp.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellGuard> getGuardList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellGuard.class);
+  @Nullable
+  public HaskellInfixexp getInfixexp() {
+    return findChildByClass(HaskellInfixexp.class);
   }
 
   @Override
   @NotNull
   public List<HaskellNcomment> getNcommentList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellNcomment.class);
+  }
+
+  @Override
+  @Nullable
+  public HaskellPat getPat() {
+    return findChildByClass(HaskellPat.class);
   }
 
   @Override
@@ -102,14 +102,8 @@ public class HaskellRhsImpl extends ASTWrapperPsiElement implements HaskellRhs {
 
   @Override
   @Nullable
-  public PsiElement getEquals() {
-    return findChildByType(EQUALS);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getPipe() {
-    return findChildByType(PIPE);
+  public PsiElement getLeftarrow() {
+    return findChildByType(LEFTARROW);
   }
 
 }

@@ -11,14 +11,14 @@ import static com.haskforce.psi.HaskellTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellFunlhsImpl extends ASTWrapperPsiElement implements HaskellFunlhs {
+public class HaskellLpatImpl extends ASTWrapperPsiElement implements HaskellLpat {
 
-  public HaskellFunlhsImpl(ASTNode node) {
+  public HaskellLpatImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitFunlhs(this);
+    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitLpat(this);
     else super.accept(visitor);
   }
 
@@ -30,38 +30,26 @@ public class HaskellFunlhsImpl extends ASTWrapperPsiElement implements HaskellFu
 
   @Override
   @Nullable
-  public HaskellFunlhs getFunlhs() {
-    return findChildByClass(HaskellFunlhs.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellPat> getPatList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPat.class);
+  public HaskellGcon getGcon() {
+    return findChildByClass(HaskellGcon.class);
   }
 
   @Override
   @Nullable
-  public HaskellVar getVar() {
-    return findChildByClass(HaskellVar.class);
+  public PsiElement getFloattoken() {
+    return findChildByType(FLOATTOKEN);
   }
 
   @Override
   @Nullable
-  public HaskellVarop getVarop() {
-    return findChildByClass(HaskellVarop.class);
+  public PsiElement getIntegertoken() {
+    return findChildByType(INTEGERTOKEN);
   }
 
   @Override
   @Nullable
-  public PsiElement getLparen() {
-    return findChildByType(LPAREN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getRparen() {
-    return findChildByType(RPAREN);
+  public PsiElement getMinus() {
+    return findChildByType(MINUS);
   }
 
 }

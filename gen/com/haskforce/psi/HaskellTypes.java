@@ -8,7 +8,11 @@ import com.haskforce.psi.impl.*;
 
 public interface HaskellTypes {
 
+  IElementType AEXP = new HaskellElementType("AEXP");
+  IElementType ALT = new HaskellElementType("ALT");
+  IElementType ALTS = new HaskellElementType("ALTS");
   IElementType ANYSEQ = new HaskellElementType("ANYSEQ");
+  IElementType APAT = new HaskellElementType("APAT");
   IElementType ATYPE = new HaskellElementType("ATYPE");
   IElementType BODY = new HaskellElementType("BODY");
   IElementType CDECL = new HaskellElementType("CDECL");
@@ -22,25 +26,33 @@ public interface HaskellTypes {
   IElementType CONSYM = new HaskellElementType("CONSYM");
   IElementType CONTEXT = new HaskellElementType("CONTEXT");
   IElementType CPP = new HaskellElementType("CPP");
+  IElementType EXP = new HaskellElementType("EXP");
   IElementType EXPORT = new HaskellElementType("EXPORT");
   IElementType EXPORTS = new HaskellElementType("EXPORTS");
   IElementType FATYPE = new HaskellElementType("FATYPE");
   IElementType FDECL = new HaskellElementType("FDECL");
+  IElementType FEXP = new HaskellElementType("FEXP");
   IElementType FIXITY = new HaskellElementType("FIXITY");
   IElementType FRTYPE = new HaskellElementType("FRTYPE");
   IElementType FTYPE = new HaskellElementType("FTYPE");
   IElementType FUNLHS = new HaskellElementType("FUNLHS");
+  IElementType GCON = new HaskellElementType("GCON");
   IElementType GCONSYM = new HaskellElementType("GCONSYM");
   IElementType GENDECL = new HaskellElementType("GENDECL");
+  IElementType GUARD = new HaskellElementType("GUARD");
   IElementType IDECL = new HaskellElementType("IDECL");
   IElementType IMPDECL = new HaskellElementType("IMPDECL");
   IElementType IMPORTT = new HaskellElementType("IMPORTT");
+  IElementType INFIXEXP = new HaskellElementType("INFIXEXP");
   IElementType INST = new HaskellElementType("INST");
+  IElementType LEXP = new HaskellElementType("LEXP");
+  IElementType LPAT = new HaskellElementType("LPAT");
   IElementType MODULE_PREFIX = new HaskellElementType("MODULE_PREFIX");
   IElementType NCOMMENT = new HaskellElementType("NCOMMENT");
   IElementType NEWCONSTR = new HaskellElementType("NEWCONSTR");
   IElementType OP = new HaskellElementType("OP");
   IElementType OPS = new HaskellElementType("OPS");
+  IElementType PAT = new HaskellElementType("PAT");
   IElementType PRAGMA = new HaskellElementType("PRAGMA");
   IElementType QCON = new HaskellElementType("QCON");
   IElementType QCONID = new HaskellElementType("QCONID");
@@ -51,6 +63,7 @@ public interface HaskellTypes {
   IElementType QOP = new HaskellElementType("QOP");
   IElementType QTYCLS = new HaskellElementType("QTYCLS");
   IElementType QTYCON = new HaskellElementType("QTYCON");
+  IElementType QUAL = new HaskellElementType("QUAL");
   IElementType QVAR = new HaskellElementType("QVAR");
   IElementType QVARID = new HaskellElementType("QVARID");
   IElementType QVAROP = new HaskellElementType("QVAROP");
@@ -60,6 +73,8 @@ public interface HaskellTypes {
   IElementType RHS = new HaskellElementType("RHS");
   IElementType SCONTEXT = new HaskellElementType("SCONTEXT");
   IElementType SPECIAL = new HaskellElementType("SPECIAL");
+  IElementType STMT = new HaskellElementType("STMT");
+  IElementType STMTS = new HaskellElementType("STMTS");
   IElementType SYMBOL = new HaskellElementType("SYMBOL");
   IElementType TYCLS = new HaskellElementType("TYCLS");
   IElementType TYCON = new HaskellElementType("TYCON");
@@ -156,8 +171,20 @@ public interface HaskellTypes {
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
-       if (type == ANYSEQ) {
+       if (type == AEXP) {
+        return new HaskellAexpImpl(node);
+      }
+      else if (type == ALT) {
+        return new HaskellAltImpl(node);
+      }
+      else if (type == ALTS) {
+        return new HaskellAltsImpl(node);
+      }
+      else if (type == ANYSEQ) {
         return new HaskellAnyseqImpl(node);
+      }
+      else if (type == APAT) {
+        return new HaskellApatImpl(node);
       }
       else if (type == ATYPE) {
         return new HaskellAtypeImpl(node);
@@ -198,6 +225,9 @@ public interface HaskellTypes {
       else if (type == CPP) {
         return new HaskellCppImpl(node);
       }
+      else if (type == EXP) {
+        return new HaskellExpImpl(node);
+      }
       else if (type == EXPORT) {
         return new HaskellExportImpl(node);
       }
@@ -209,6 +239,9 @@ public interface HaskellTypes {
       }
       else if (type == FDECL) {
         return new HaskellFdeclImpl(node);
+      }
+      else if (type == FEXP) {
+        return new HaskellFexpImpl(node);
       }
       else if (type == FIXITY) {
         return new HaskellFixityImpl(node);
@@ -222,11 +255,17 @@ public interface HaskellTypes {
       else if (type == FUNLHS) {
         return new HaskellFunlhsImpl(node);
       }
+      else if (type == GCON) {
+        return new HaskellGconImpl(node);
+      }
       else if (type == GCONSYM) {
         return new HaskellGconsymImpl(node);
       }
       else if (type == GENDECL) {
         return new HaskellGendeclImpl(node);
+      }
+      else if (type == GUARD) {
+        return new HaskellGuardImpl(node);
       }
       else if (type == IDECL) {
         return new HaskellIdeclImpl(node);
@@ -237,8 +276,17 @@ public interface HaskellTypes {
       else if (type == IMPORTT) {
         return new HaskellImporttImpl(node);
       }
+      else if (type == INFIXEXP) {
+        return new HaskellInfixexpImpl(node);
+      }
       else if (type == INST) {
         return new HaskellInstImpl(node);
+      }
+      else if (type == LEXP) {
+        return new HaskellLexpImpl(node);
+      }
+      else if (type == LPAT) {
+        return new HaskellLpatImpl(node);
       }
       else if (type == MODULE_PREFIX) {
         return new HaskellModulePrefixImpl(node);
@@ -254,6 +302,9 @@ public interface HaskellTypes {
       }
       else if (type == OPS) {
         return new HaskellOpsImpl(node);
+      }
+      else if (type == PAT) {
+        return new HaskellPatImpl(node);
       }
       else if (type == PRAGMA) {
         return new HaskellPragmaImpl(node);
@@ -285,6 +336,9 @@ public interface HaskellTypes {
       else if (type == QTYCON) {
         return new HaskellQtyconImpl(node);
       }
+      else if (type == QUAL) {
+        return new HaskellQualImpl(node);
+      }
       else if (type == QVAR) {
         return new HaskellQvarImpl(node);
       }
@@ -311,6 +365,12 @@ public interface HaskellTypes {
       }
       else if (type == SPECIAL) {
         return new HaskellSpecialImpl(node);
+      }
+      else if (type == STMT) {
+        return new HaskellStmtImpl(node);
+      }
+      else if (type == STMTS) {
+        return new HaskellStmtsImpl(node);
       }
       else if (type == SYMBOL) {
         return new HaskellSymbolImpl(node);

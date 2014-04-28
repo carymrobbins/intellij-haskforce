@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellRhs extends PsiElement {
+public interface HaskellAlt extends PsiElement {
 
   @NotNull
   HaskellExp getExp();
@@ -15,6 +15,9 @@ public interface HaskellRhs extends PsiElement {
 
   @NotNull
   List<HaskellNcomment> getNcommentList();
+
+  @NotNull
+  HaskellPat getPat();
 
   @NotNull
   List<HaskellPragma> getPragmaList();
@@ -47,9 +50,9 @@ public interface HaskellRhs extends PsiElement {
   List<HaskellWhitechar> getWhitecharList();
 
   @Nullable
-  PsiElement getEquals();
-
-  @Nullable
   PsiElement getPipe();
+
+  @NotNull
+  PsiElement getRightarrow();
 
 }
