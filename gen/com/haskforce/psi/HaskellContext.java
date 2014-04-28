@@ -10,10 +10,4 @@ public interface HaskellContext extends PsiElement {
   @NotNull
   List<HaskellClasss> getClasssList();
 
-  @Nullable
-  PsiElement getLparen();
-
-  @Nullable
-  PsiElement getRparen();
-
 }

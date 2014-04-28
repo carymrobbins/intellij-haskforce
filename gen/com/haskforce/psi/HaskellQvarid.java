@@ -10,7 +10,4 @@ public interface HaskellQvarid extends PsiElement {
   @Nullable
   HaskellModulePrefix getModulePrefix();
 
-  @NotNull
-  PsiElement getVaridRegexp();
-
 }

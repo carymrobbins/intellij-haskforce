@@ -34,16 +34,4 @@ public class HaskellConImpl extends ASTWrapperPsiElement implements HaskellCon {
     return findChildByType(CONID);
   }
 
-  @Override
-  @Nullable
-  public PsiElement getLparen() {
-    return findChildByType(LPAREN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getRparen() {
-    return findChildByType(RPAREN);
-  }
-
 }

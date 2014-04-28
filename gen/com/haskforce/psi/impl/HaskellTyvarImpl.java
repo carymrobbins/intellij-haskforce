@@ -22,10 +22,4 @@ public class HaskellTyvarImpl extends ASTWrapperPsiElement implements HaskellTyv
     else super.accept(visitor);
   }
 
-  @Override
-  @NotNull
-  public PsiElement getVaridRegexp() {
-    return findNotNullChildByType(VARIDREGEXP);
-  }
-
 }

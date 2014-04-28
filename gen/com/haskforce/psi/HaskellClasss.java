@@ -16,10 +16,4 @@ public interface HaskellClasss extends PsiElement {
   @NotNull
   HaskellTyvar getTyvar();
 
-  @Nullable
-  PsiElement getLparen();
-
-  @Nullable
-  PsiElement getRparen();
-
 }

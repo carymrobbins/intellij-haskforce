@@ -19,13 +19,4 @@ public interface HaskellNewconstr extends PsiElement {
   @Nullable
   HaskellVar getVar();
 
-  @Nullable
-  PsiElement getDoublecolon();
-
-  @Nullable
-  PsiElement getLbrace();
-
-  @Nullable
-  PsiElement getRbrace();
-
 }

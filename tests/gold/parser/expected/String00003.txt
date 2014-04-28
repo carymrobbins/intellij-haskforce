@@ -1,0 +1,11 @@
+Haskell File
+  PsiElement(HaskellTokenType.module)('module')
+  HaskellQconidImpl(QCONID)
+    PsiElement(HaskellTokenType.conid)('String00003')
+  PsiElement(HaskellTokenType.where)('where')
+  HaskellBodyImpl(BODY)
+    HaskellQvaridImpl(QVARID)
+      PsiElement(HaskellTokenType.varidRegexp)('s')
+    HaskellReservedopImpl(RESERVEDOP)
+      PsiElement(HaskellTokenType.=)('=')
+    PsiElement(HaskellTokenType.stringtoken)('"\\n    \Strings should allow \"escaped double quotes\"\\n    \as well as multi-line strings.  Also, the closing\\n    \quote of this string can be preceded by a backslash\\n    \since the backslash indicates line continuation, not\\n    \quote escaping!\\n\"')

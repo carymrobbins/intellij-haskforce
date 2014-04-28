@@ -13,7 +13,4 @@ public interface HaskellTypee extends PsiElement {
   @Nullable
   HaskellTypee getTypee();
 
-  @Nullable
-  PsiElement getRightarrow();
-
 }

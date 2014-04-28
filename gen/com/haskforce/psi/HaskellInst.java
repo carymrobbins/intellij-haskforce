@@ -13,19 +13,4 @@ public interface HaskellInst extends PsiElement {
   @NotNull
   List<HaskellTyvar> getTyvarList();
 
-  @Nullable
-  PsiElement getLbracket();
-
-  @Nullable
-  PsiElement getLparen();
-
-  @Nullable
-  PsiElement getRbracket();
-
-  @Nullable
-  PsiElement getRightarrow();
-
-  @Nullable
-  PsiElement getRparen();
-
 }

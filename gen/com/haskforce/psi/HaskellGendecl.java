@@ -23,12 +23,6 @@ public interface HaskellGendecl extends PsiElement {
   HaskellVars getVars();
 
   @Nullable
-  PsiElement getDoublearrow();
-
-  @Nullable
-  PsiElement getDoublecolon();
-
-  @Nullable
   PsiElement getIntegertoken();
 
 }

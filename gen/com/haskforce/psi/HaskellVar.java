@@ -10,13 +10,4 @@ public interface HaskellVar extends PsiElement {
   @Nullable
   HaskellVarsym getVarsym();
 
-  @Nullable
-  PsiElement getLparen();
-
-  @Nullable
-  PsiElement getRparen();
-
-  @Nullable
-  PsiElement getVaridRegexp();
-
 }

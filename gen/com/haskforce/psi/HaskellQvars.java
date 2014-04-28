@@ -10,10 +10,4 @@ public interface HaskellQvars extends PsiElement {
   @NotNull
   List<HaskellQvar> getQvarList();
 
-  @NotNull
-  PsiElement getLparen();
-
-  @Nullable
-  PsiElement getRparen();
-
 }

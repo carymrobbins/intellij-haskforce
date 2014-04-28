@@ -40,34 +40,4 @@ public class HaskellAtypeImpl extends ASTWrapperPsiElement implements HaskellAty
     return findChildByClass(HaskellTyvar.class);
   }
 
-  @Override
-  @Nullable
-  public PsiElement getLbracket() {
-    return findChildByType(LBRACKET);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getLparen() {
-    return findChildByType(LPAREN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getRbracket() {
-    return findChildByType(RBRACKET);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getRightarrow() {
-    return findChildByType(RIGHTARROW);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getRparen() {
-    return findChildByType(RPAREN);
-  }
-
 }

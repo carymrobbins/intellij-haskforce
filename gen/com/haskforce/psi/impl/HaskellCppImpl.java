@@ -22,10 +22,4 @@ public class HaskellCppImpl extends ASTWrapperPsiElement implements HaskellCpp {
     else super.accept(visitor);
   }
 
-  @Override
-  @Nullable
-  public PsiElement getCppif() {
-    return findChildByType(CPPIF);
-  }
-
 }

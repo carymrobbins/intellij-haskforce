@@ -10,7 +10,4 @@ public interface HaskellQinfixvarid extends PsiElement {
   @Nullable
   HaskellModulePrefix getModulePrefix();
 
-  @NotNull
-  PsiElement getVaridRegexp();
-
 }

@@ -16,10 +16,4 @@ public interface HaskellImpdecl extends PsiElement {
   @NotNull
   List<HaskellQconid> getQconidList();
 
-  @Nullable
-  PsiElement getLparen();
-
-  @Nullable
-  PsiElement getRparen();
-
 }

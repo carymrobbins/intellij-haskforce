@@ -13,10 +13,4 @@ public interface HaskellScontext extends PsiElement {
   @NotNull
   List<HaskellTyvar> getTyvarList();
 
-  @Nullable
-  PsiElement getLparen();
-
-  @Nullable
-  PsiElement getRparen();
-
 }

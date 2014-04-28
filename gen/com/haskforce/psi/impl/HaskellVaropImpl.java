@@ -28,10 +28,4 @@ public class HaskellVaropImpl extends ASTWrapperPsiElement implements HaskellVar
     return findChildByClass(HaskellVarsym.class);
   }
 
-  @Override
-  @Nullable
-  public PsiElement getVaridRegexp() {
-    return findChildByType(VARIDREGEXP);
-  }
-
 }

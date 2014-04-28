@@ -24,8 +24,8 @@ public class HaskellVarsImpl extends ASTWrapperPsiElement implements HaskellVars
 
   @Override
   @NotNull
-  public HaskellVar getVar() {
-    return findNotNullChildByClass(HaskellVar.class);
+  public List<HaskellVar> getVarList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVar.class);
   }
 
 }

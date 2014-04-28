@@ -10,7 +10,4 @@ public interface HaskellVarop extends PsiElement {
   @Nullable
   HaskellVarsym getVarsym();
 
-  @Nullable
-  PsiElement getVaridRegexp();
-
 }

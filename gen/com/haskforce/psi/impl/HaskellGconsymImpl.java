@@ -28,10 +28,4 @@ public class HaskellGconsymImpl extends ASTWrapperPsiElement implements HaskellG
     return findChildByClass(HaskellQconsym.class);
   }
 
-  @Override
-  @Nullable
-  public PsiElement getColon() {
-    return findChildByType(COLON);
-  }
-
 }

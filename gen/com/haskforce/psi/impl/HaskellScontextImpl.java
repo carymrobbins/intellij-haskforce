@@ -34,16 +34,4 @@ public class HaskellScontextImpl extends ASTWrapperPsiElement implements Haskell
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTyvar.class);
   }
 
-  @Override
-  @Nullable
-  public PsiElement getLparen() {
-    return findChildByType(LPAREN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getRparen() {
-    return findChildByType(RPAREN);
-  }
-
 }

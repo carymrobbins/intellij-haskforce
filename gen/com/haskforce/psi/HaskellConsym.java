@@ -10,7 +10,4 @@ public interface HaskellConsym extends PsiElement {
   @NotNull
   List<HaskellSymbol> getSymbolList();
 
-  @NotNull
-  PsiElement getColon();
-
 }

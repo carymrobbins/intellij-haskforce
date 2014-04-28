@@ -7,7 +7,4 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellCpp extends PsiElement {
 
-  @Nullable
-  PsiElement getCppif();
-
 }
