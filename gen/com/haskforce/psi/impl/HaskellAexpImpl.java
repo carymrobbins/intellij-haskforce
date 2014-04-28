@@ -84,12 +84,6 @@ public class HaskellAexpImpl extends ASTWrapperPsiElement implements HaskellAexp
 
   @Override
   @Nullable
-  public HaskellVar getVar() {
-    return findChildByClass(HaskellVar.class);
-  }
-
-  @Override
-  @Nullable
   public PsiElement getChartoken() {
     return findChildByType(CHARTOKEN);
   }

@@ -11,6 +11,15 @@ public interface HaskellCname extends PsiElement {
   HaskellCon getCon();
 
   @Nullable
-  HaskellVar getVar();
+  HaskellVarsym getVarsym();
+
+  @Nullable
+  PsiElement getLparen();
+
+  @Nullable
+  PsiElement getRparen();
+
+  @Nullable
+  PsiElement getVaridRegexp();
 
 }

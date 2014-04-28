@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface HaskellVars extends PsiElement {
 
   @NotNull
-  List<HaskellVar> getVarList();
+  List<HaskellVarsym> getVarsymList();
 
 }

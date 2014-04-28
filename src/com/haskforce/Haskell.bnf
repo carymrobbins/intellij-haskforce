@@ -387,7 +387,7 @@ qtycls ::= [modulePrefix] tycls
 qvarsym ::= [modulePrefix] varsym
 qconsym ::= [modulePrefix] consym
 
-var ::= varid | '(' varsym ')'
+private var ::= varid | '(' varsym ')'
 qvars ::= <<commaSeparate qvar>>
 qvar ::= qvarid | '(' qvarsym ')'
 con ::= conid | '(' consym ')'

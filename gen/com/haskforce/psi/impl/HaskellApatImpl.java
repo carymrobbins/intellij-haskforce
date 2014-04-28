@@ -54,8 +54,8 @@ public class HaskellApatImpl extends ASTWrapperPsiElement implements HaskellApat
 
   @Override
   @Nullable
-  public HaskellVar getVar() {
-    return findChildByClass(HaskellVar.class);
+  public HaskellVarsym getVarsym() {
+    return findChildByClass(HaskellVarsym.class);
   }
 
   @Override
@@ -128,6 +128,12 @@ public class HaskellApatImpl extends ASTWrapperPsiElement implements HaskellApat
   @Nullable
   public PsiElement getTilde() {
     return findChildByType(TILDE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getVaridRegexp() {
+    return findChildByType(VARIDREGEXP);
   }
 
 }

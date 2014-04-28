@@ -17,7 +17,7 @@ public interface HaskellNewconstr extends PsiElement {
   HaskellTypee getTypee();
 
   @Nullable
-  HaskellVar getVar();
+  HaskellVarsym getVarsym();
 
   @Nullable
   PsiElement getDoublecolon();
@@ -26,6 +26,15 @@ public interface HaskellNewconstr extends PsiElement {
   PsiElement getLbrace();
 
   @Nullable
+  PsiElement getLparen();
+
+  @Nullable
   PsiElement getRbrace();
+
+  @Nullable
+  PsiElement getRparen();
+
+  @Nullable
+  PsiElement getVaridRegexp();
 
 }

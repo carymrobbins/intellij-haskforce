@@ -38,9 +38,6 @@ public interface HaskellAexp extends PsiElement {
   HaskellStmt getStmt();
 
   @Nullable
-  HaskellVar getVar();
-
-  @Nullable
   PsiElement getChartoken();
 
   @Nullable

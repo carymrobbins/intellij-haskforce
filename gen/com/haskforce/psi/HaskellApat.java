@@ -23,7 +23,7 @@ public interface HaskellApat extends PsiElement {
   List<HaskellQvar> getQvarList();
 
   @Nullable
-  HaskellVar getVar();
+  HaskellVarsym getVarsym();
 
   @Nullable
   PsiElement getAmpersat();
@@ -60,5 +60,8 @@ public interface HaskellApat extends PsiElement {
 
   @Nullable
   PsiElement getTilde();
+
+  @Nullable
+  PsiElement getVaridRegexp();
 
 }

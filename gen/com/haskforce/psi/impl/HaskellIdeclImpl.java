@@ -36,8 +36,26 @@ public class HaskellIdeclImpl extends ASTWrapperPsiElement implements HaskellIde
 
   @Override
   @Nullable
-  public HaskellVar getVar() {
-    return findChildByClass(HaskellVar.class);
+  public HaskellVarsym getVarsym() {
+    return findChildByClass(HaskellVarsym.class);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getLparen() {
+    return findChildByType(LPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRparen() {
+    return findChildByType(RPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getVaridRegexp() {
+    return findChildByType(VARIDREGEXP);
   }
 
 }

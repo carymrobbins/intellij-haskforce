@@ -80,7 +80,6 @@ public interface HaskellTypes {
   IElementType TYCON = new HaskellElementType("TYCON");
   IElementType TYPEE = new HaskellElementType("TYPEE");
   IElementType TYVAR = new HaskellElementType("TYVAR");
-  IElementType VAR = new HaskellElementType("VAR");
   IElementType VAROP = new HaskellElementType("VAROP");
   IElementType VARS = new HaskellElementType("VARS");
   IElementType VARSYM = new HaskellElementType("VARSYM");
@@ -386,9 +385,6 @@ public interface HaskellTypes {
       }
       else if (type == TYVAR) {
         return new HaskellTyvarImpl(node);
-      }
-      else if (type == VAR) {
-        return new HaskellVarImpl(node);
       }
       else if (type == VAROP) {
         return new HaskellVaropImpl(node);

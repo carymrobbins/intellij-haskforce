@@ -236,9 +236,6 @@ public class HaskellParser implements PsiParser {
     else if (root_ == TYVAR) {
       result_ = tyvar(builder_, 0);
     }
-    else if (root_ == VAR) {
-      result_ = var(builder_, 0);
-    }
     else if (root_ == VAROP) {
       result_ = varop(builder_, 0);
     }
@@ -4555,14 +4552,14 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // varid | '(' varsym ')'
-  public static boolean var(PsiBuilder builder_, int level_) {
+  static boolean var(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "var")) return false;
-    if (!nextTokenIs(builder_, "<var>", LPAREN, VARIDREGEXP)) return false;
+    if (!nextTokenIs(builder_, "", LPAREN, VARIDREGEXP)) return false;
     boolean result_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<var>");
+    Marker marker_ = enter_section_(builder_);
     result_ = varid(builder_, level_ + 1);
     if (!result_) result_ = var_1(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, VAR, result_, false, null);
+    exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 

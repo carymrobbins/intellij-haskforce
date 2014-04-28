@@ -42,14 +42,32 @@ public class HaskellImporttImpl extends ASTWrapperPsiElement implements HaskellI
 
   @Override
   @Nullable
-  public HaskellVar getVar() {
-    return findChildByClass(HaskellVar.class);
+  public HaskellVars getVars() {
+    return findChildByClass(HaskellVars.class);
   }
 
   @Override
   @Nullable
-  public HaskellVars getVars() {
-    return findChildByClass(HaskellVars.class);
+  public HaskellVarsym getVarsym() {
+    return findChildByClass(HaskellVarsym.class);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getLparen() {
+    return findChildByType(LPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRparen() {
+    return findChildByType(RPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getVaridRegexp() {
+    return findChildByType(VARIDREGEXP);
   }
 
 }

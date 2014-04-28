@@ -29,9 +29,9 @@ public class HaskellFdeclImpl extends ASTWrapperPsiElement implements HaskellFde
   }
 
   @Override
-  @NotNull
-  public HaskellVar getVar() {
-    return findNotNullChildByClass(HaskellVar.class);
+  @Nullable
+  public HaskellVarsym getVarsym() {
+    return findChildByClass(HaskellVarsym.class);
   }
 
   @Override
@@ -42,8 +42,26 @@ public class HaskellFdeclImpl extends ASTWrapperPsiElement implements HaskellFde
 
   @Override
   @Nullable
+  public PsiElement getLparen() {
+    return findChildByType(LPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRparen() {
+    return findChildByType(RPAREN);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getStringtoken() {
     return findChildByType(STRINGTOKEN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getVaridRegexp() {
+    return findChildByType(VARIDREGEXP);
   }
 
 }

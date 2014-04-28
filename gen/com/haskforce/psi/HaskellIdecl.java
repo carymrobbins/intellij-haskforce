@@ -14,6 +14,15 @@ public interface HaskellIdecl extends PsiElement {
   HaskellRhs getRhs();
 
   @Nullable
-  HaskellVar getVar();
+  HaskellVarsym getVarsym();
+
+  @Nullable
+  PsiElement getLparen();
+
+  @Nullable
+  PsiElement getRparen();
+
+  @Nullable
+  PsiElement getVaridRegexp();
 
 }

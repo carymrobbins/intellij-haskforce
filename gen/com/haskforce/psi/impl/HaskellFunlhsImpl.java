@@ -42,14 +42,14 @@ public class HaskellFunlhsImpl extends ASTWrapperPsiElement implements HaskellFu
 
   @Override
   @Nullable
-  public HaskellVar getVar() {
-    return findChildByClass(HaskellVar.class);
+  public HaskellVarop getVarop() {
+    return findChildByClass(HaskellVarop.class);
   }
 
   @Override
   @Nullable
-  public HaskellVarop getVarop() {
-    return findChildByClass(HaskellVarop.class);
+  public HaskellVarsym getVarsym() {
+    return findChildByClass(HaskellVarsym.class);
   }
 
   @Override
@@ -62,6 +62,12 @@ public class HaskellFunlhsImpl extends ASTWrapperPsiElement implements HaskellFu
   @Nullable
   public PsiElement getRparen() {
     return findChildByType(RPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getVaridRegexp() {
+    return findChildByType(VARIDREGEXP);
   }
 
 }

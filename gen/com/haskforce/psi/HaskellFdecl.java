@@ -10,13 +10,22 @@ public interface HaskellFdecl extends PsiElement {
   @NotNull
   HaskellFtype getFtype();
 
-  @NotNull
-  HaskellVar getVar();
+  @Nullable
+  HaskellVarsym getVarsym();
 
   @NotNull
   PsiElement getDoublecolon();
 
   @Nullable
+  PsiElement getLparen();
+
+  @Nullable
+  PsiElement getRparen();
+
+  @Nullable
   PsiElement getStringtoken();
+
+  @Nullable
+  PsiElement getVaridRegexp();
 
 }

@@ -17,9 +17,18 @@ public interface HaskellImportt extends PsiElement {
   HaskellTycon getTycon();
 
   @Nullable
-  HaskellVar getVar();
+  HaskellVars getVars();
 
   @Nullable
-  HaskellVars getVars();
+  HaskellVarsym getVarsym();
+
+  @Nullable
+  PsiElement getLparen();
+
+  @Nullable
+  PsiElement getRparen();
+
+  @Nullable
+  PsiElement getVaridRegexp();
 
 }

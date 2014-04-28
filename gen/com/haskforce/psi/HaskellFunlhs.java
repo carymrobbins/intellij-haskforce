@@ -17,15 +17,18 @@ public interface HaskellFunlhs extends PsiElement {
   List<HaskellPat> getPatList();
 
   @Nullable
-  HaskellVar getVar();
+  HaskellVarop getVarop();
 
   @Nullable
-  HaskellVarop getVarop();
+  HaskellVarsym getVarsym();
 
   @Nullable
   PsiElement getLparen();
 
   @Nullable
   PsiElement getRparen();
+
+  @Nullable
+  PsiElement getVaridRegexp();
 
 }
