@@ -1,4 +1,4 @@
-module String00002 where
+module String00003 where
 
 s = "\
     \Strings should allow \"escaped double quotes\"\
