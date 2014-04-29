@@ -1,5 +1,6 @@
 package com.haskforce;
 
+import com.haskforce.highlighting.HaskellSyntaxHighlighter;
 import com.haskforce.psi.*;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;

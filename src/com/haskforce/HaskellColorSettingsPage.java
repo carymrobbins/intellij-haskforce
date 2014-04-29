@@ -1,5 +1,6 @@
 package com.haskforce;
 
+import com.haskforce.highlighting.HaskellSyntaxHighlighter;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
 import com.intellij.openapi.options.colors.AttributesDescriptor;

@@ -1,4 +1,4 @@
-package com.haskforce;
+package com.haskforce.highlighting;
 
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterFactory;

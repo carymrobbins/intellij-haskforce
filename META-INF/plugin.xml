@@ -43,7 +43,7 @@
       <sdkType implementation="com.haskforce.HaskellSdkType"/>
       <fileTypeFactory implementation="com.haskforce.HaskellFileTypeFactory"/>
       <lang.parserDefinition language="Haskell" implementationClass="com.haskforce.HaskellParserDefinition"/>
-      <lang.syntaxHighlighterFactory key="Haskell" implementationClass="com.haskforce.HaskellSyntaxHighlighterFactory"/>
+      <lang.syntaxHighlighterFactory key="Haskell" implementationClass="com.haskforce.highlighting.HaskellSyntaxHighlighterFactory"/>
       <lang.braceMatcher language="Haskell" implementationClass="com.haskforce.HaskellBraceMatcher"/>
       <colorSettingsPage implementation="com.haskforce.HaskellColorSettingsPage"/>
       <annotator language="Haskell" implementationClass="com.haskforce.HaskellAnnotator" />

@@ -1,4 +1,4 @@
-package com.haskforce;
+package com.haskforce.highlighting;
 
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
@@ -110,7 +110,7 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
     @NotNull
     @Override
     public Lexer getHighlightingLexer() {
-        return new HaskellLexer();
+        return new HaskellSyntaxHighlightingLexer();
     }
 
     @NotNull
