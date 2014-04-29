@@ -50,11 +50,11 @@ public class HaskellAnnotator implements Annotator {
                 setHighlightingRecursive(o, holder, HaskellSyntaxHighlighter.CONSYM);
             }
 
-//            @Override
-//            public void visitStringtoken(@NotNull HaskellStringtoken o) {
-//                super.visitStringtoken(o);
-//                setHighlightingRecursive(o, holder, HaskellSyntaxHighlighter.STRING);
-//            }
+            @Override
+            public void visitPstringtoken(@NotNull HaskellPstringtoken o) {
+                super.visitPstringtoken(o);
+                setHighlightingRecursive(o, holder, HaskellSyntaxHighlighter.STRING);
+            }
 
             @Override
             public void visitReservedop(@NotNull HaskellReservedop o) {

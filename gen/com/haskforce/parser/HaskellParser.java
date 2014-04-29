@@ -158,6 +158,9 @@ public class HaskellParser implements PsiParser {
     else if (root_ == PRAGMA) {
       result_ = pragma(builder_, 0);
     }
+    else if (root_ == PSTRINGTOKEN) {
+      result_ = pstringtoken(builder_, 0);
+    }
     else if (root_ == QCON) {
       result_ = qcon(builder_, 0);
     }
@@ -2591,14 +2594,14 @@ public class HaskellParser implements PsiParser {
   /* ********************************************************** */
   // '\"' "wrapper" '\"'
   //                  | '\"' "dynamic" '\"'
-  //                  | stringtoken
+  //                  | pstringtoken
   static boolean impent(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "impent")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = impent_0(builder_, level_ + 1);
     if (!result_) result_ = impent_1(builder_, level_ + 1);
-    if (!result_) result_ = consumeToken(builder_, STRINGTOKEN);
+    if (!result_) result_ = pstringtoken(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -3033,7 +3036,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // floattoken | integertoken | chartoken | stringtoken
+  // floattoken | integertoken | chartoken | pstringtoken
   static boolean literal(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "literal")) return false;
     boolean result_ = false;
@@ -3041,7 +3044,7 @@ public class HaskellParser implements PsiParser {
     result_ = consumeToken(builder_, FLOATTOKEN);
     if (!result_) result_ = consumeToken(builder_, INTEGERTOKEN);
     if (!result_) result_ = consumeToken(builder_, CHARTOKEN);
-    if (!result_) result_ = consumeToken(builder_, STRINGTOKEN);
+    if (!result_) result_ = pstringtoken(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -3403,6 +3406,18 @@ public class HaskellParser implements PsiParser {
     result_ = lexeme(builder_, level_ + 1);
     if (!result_) result_ = space(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // stringtoken
+  public static boolean pstringtoken(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "pstringtoken")) return false;
+    if (!nextTokenIs(builder_, STRINGTOKEN)) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, STRINGTOKEN);
+    exit_section_(builder_, marker_, PSTRINGTOKEN, result_);
     return result_;
   }
 

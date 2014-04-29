@@ -48,6 +48,12 @@ public class HaskellAexpImpl extends ASTWrapperPsiElement implements HaskellAexp
 
   @Override
   @Nullable
+  public HaskellPstringtoken getPstringtoken() {
+    return findChildByClass(HaskellPstringtoken.class);
+  }
+
+  @Override
+  @Nullable
   public HaskellQcon getQcon() {
     return findChildByClass(HaskellQcon.class);
   }
@@ -140,12 +146,6 @@ public class HaskellAexpImpl extends ASTWrapperPsiElement implements HaskellAexp
   @Nullable
   public PsiElement getRparen() {
     return findChildByType(RPAREN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getStringtoken() {
-    return findChildByType(STRINGTOKEN);
   }
 
 }

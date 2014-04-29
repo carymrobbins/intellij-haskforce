@@ -239,7 +239,7 @@ private callconv ::= "ccall" | "stdcall" | "cplusplus"
 // Listed in Section 8.5.1.
 private impent ::= '\"' "wrapper" '\"'
                  | '\"' "dynamic" '\"'
-                 | stringtoken // TODO: Refine from stringtoken.
+                 | pstringtoken // TODO: Refine from stringtoken.
 private expent ::= '\"' [cid] '\"'
 
 private cid ::= "regexp:[a-zA-Z][a-zA-Z_0-9]*"
@@ -346,7 +346,7 @@ private decl ::= ( whitespace | lexeme )
 private lexeme ::= literal | reservedop | reservedid | pragma
                  | qconid | qinfixvarid | qvarid | qinfixconid | qvarsym
                  | qconsym | special
-private literal ::= floattoken | integertoken | chartoken | stringtoken
+private literal ::= floattoken | integertoken | chartoken | pstringtoken
 private whitespace ::= whitestuff +
 private space ::= LINE_WS
 private newline ::= EOL
@@ -399,6 +399,8 @@ qconop ::= gconsym | '`' qconid '`'
 op ::= varop | conop
 qop ::= qvarop | qconop
 gconsym ::= ':' | qconsym
+
+pstringtoken ::= stringtoken
 
 // Misc cross-cutting stuff.
 

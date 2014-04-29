@@ -30,6 +30,12 @@ public class HaskellPragmaImpl extends ASTWrapperPsiElement implements HaskellPr
 
   @Override
   @NotNull
+  public List<HaskellPstringtoken> getPstringtokenList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPstringtoken.class);
+  }
+
+  @Override
+  @NotNull
   public List<HaskellQconid> getQconidList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQconid.class);
   }

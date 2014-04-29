@@ -42,6 +42,12 @@ public class HaskellApatImpl extends ASTWrapperPsiElement implements HaskellApat
 
   @Override
   @Nullable
+  public HaskellPstringtoken getPstringtoken() {
+    return findChildByClass(HaskellPstringtoken.class);
+  }
+
+  @Override
+  @Nullable
   public HaskellQcon getQcon() {
     return findChildByClass(HaskellQcon.class);
   }
@@ -116,12 +122,6 @@ public class HaskellApatImpl extends ASTWrapperPsiElement implements HaskellApat
   @Nullable
   public PsiElement getRparen() {
     return findChildByType(RPAREN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getStringtoken() {
-    return findChildByType(STRINGTOKEN);
   }
 
   @Override

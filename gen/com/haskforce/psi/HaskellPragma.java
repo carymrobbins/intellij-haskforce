@@ -11,6 +11,9 @@ public interface HaskellPragma extends PsiElement {
   List<HaskellPragma> getPragmaList();
 
   @NotNull
+  List<HaskellPstringtoken> getPstringtokenList();
+
+  @NotNull
   List<HaskellQconid> getQconidList();
 
   @NotNull

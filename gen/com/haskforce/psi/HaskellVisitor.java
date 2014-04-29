@@ -191,6 +191,10 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitPstringtoken(@NotNull HaskellPstringtoken o) {
+    visitPsiElement(o);
+  }
+
   public void visitQcon(@NotNull HaskellQcon o) {
     visitPsiElement(o);
   }

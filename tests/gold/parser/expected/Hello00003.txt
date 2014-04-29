@@ -10,7 +10,8 @@ Haskell File
       PsiElement(HaskellTokenType.=)('=')
     HaskellQvaridImpl(QVARID)
       PsiElement(HaskellTokenType.varidRegexp)('print')
-    PsiElement(HaskellTokenType.stringtoken)('"Hello, World!"')
+    HaskellPstringtokenImpl(PSTRINGTOKEN)
+      PsiElement(HaskellTokenType.stringtoken)('"Hello, World!"')
   PsiErrorElement:<cpp>, <qconsym>, <qvarid>, <qvarsym>, <reservedop>, <special>, <whitechar>, HaskellTokenType.`, HaskellTokenType.as, HaskellTokenType.case, HaskellTokenType.chartoken, HaskellTokenType.class, HaskellTokenType.comment, HaskellTokenType.conid, HaskellTokenType.data, HaskellTokenType.default, HaskellTokenType.deriving, HaskellTokenType.do, HaskellTokenType.else, HaskellTokenType.floattoken, HaskellTokenType.foreign, HaskellTokenType.haddock, HaskellTokenType.if, HaskellTokenType.in, HaskellTokenType.infix, HaskellTokenType.infixl, HaskellTokenType.infixr, HaskellTokenType.instance, HaskellTokenType.integertoken, HaskellTokenType.let, HaskellTokenType.newtype, HaskellTokenType.of, HaskellTokenType.stringtoken, HaskellTokenType.then, HaskellTokenType.type, HaskellTokenType.where, HaskellTokenType.{-, HaskellTokenType.{-# or _ expected, got 'module'
     PsiElement(HaskellTokenType.module)('module')
   PsiElement(HaskellTokenType.conid)('Illegal')

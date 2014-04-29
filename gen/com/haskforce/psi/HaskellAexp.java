@@ -20,6 +20,9 @@ public interface HaskellAexp extends PsiElement {
   HaskellInfixexp getInfixexp();
 
   @Nullable
+  HaskellPstringtoken getPstringtoken();
+
+  @Nullable
   HaskellQcon getQcon();
 
   @NotNull
@@ -66,8 +69,5 @@ public interface HaskellAexp extends PsiElement {
 
   @Nullable
   PsiElement getRparen();
-
-  @Nullable
-  PsiElement getStringtoken();
 
 }

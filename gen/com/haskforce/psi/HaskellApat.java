@@ -17,6 +17,9 @@ public interface HaskellApat extends PsiElement {
   List<HaskellPat> getPatList();
 
   @Nullable
+  HaskellPstringtoken getPstringtoken();
+
+  @Nullable
   HaskellQcon getQcon();
 
   @NotNull
@@ -54,9 +57,6 @@ public interface HaskellApat extends PsiElement {
 
   @Nullable
   PsiElement getRparen();
-
-  @Nullable
-  PsiElement getStringtoken();
 
   @Nullable
   PsiElement getTilde();

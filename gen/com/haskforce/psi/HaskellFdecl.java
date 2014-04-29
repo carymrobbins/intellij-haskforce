@@ -11,6 +11,9 @@ public interface HaskellFdecl extends PsiElement {
   HaskellFtype getFtype();
 
   @Nullable
+  HaskellPstringtoken getPstringtoken();
+
+  @Nullable
   HaskellVarsym getVarsym();
 
   @NotNull
@@ -21,9 +24,6 @@ public interface HaskellFdecl extends PsiElement {
 
   @Nullable
   PsiElement getRparen();
-
-  @Nullable
-  PsiElement getStringtoken();
 
   @Nullable
   PsiElement getVaridRegexp();

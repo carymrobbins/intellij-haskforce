@@ -30,6 +30,12 @@ public class HaskellFdeclImpl extends ASTWrapperPsiElement implements HaskellFde
 
   @Override
   @Nullable
+  public HaskellPstringtoken getPstringtoken() {
+    return findChildByClass(HaskellPstringtoken.class);
+  }
+
+  @Override
+  @Nullable
   public HaskellVarsym getVarsym() {
     return findChildByClass(HaskellVarsym.class);
   }
@@ -50,12 +56,6 @@ public class HaskellFdeclImpl extends ASTWrapperPsiElement implements HaskellFde
   @Nullable
   public PsiElement getRparen() {
     return findChildByType(RPAREN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getStringtoken() {
-    return findChildByType(STRINGTOKEN);
   }
 
   @Override

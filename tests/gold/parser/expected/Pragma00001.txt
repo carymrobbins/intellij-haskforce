@@ -28,5 +28,6 @@ Haskell File
         PsiElement(HaskellTokenType.conid)('DEPRECATED')
       HaskellQconidImpl(QCONID)
         PsiElement(HaskellTokenType.conid)('Vector')
-      PsiElement(HaskellTokenType.stringtoken)('"Use Pull instead"')
+      HaskellPstringtokenImpl(PSTRINGTOKEN)
+        PsiElement(HaskellTokenType.stringtoken)('"Use Pull instead"')
       PsiElement(HaskellTokenType.#-})('#-}')

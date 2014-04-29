@@ -41,6 +41,9 @@ public interface HaskellBody extends PsiElement {
   List<HaskellPragma> getPragmaList();
 
   @NotNull
+  List<HaskellPstringtoken> getPstringtokenList();
+
+  @NotNull
   List<HaskellQconid> getQconidList();
 
   @NotNull

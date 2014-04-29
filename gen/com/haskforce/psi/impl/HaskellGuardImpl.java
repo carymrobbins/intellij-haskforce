@@ -48,6 +48,12 @@ public class HaskellGuardImpl extends ASTWrapperPsiElement implements HaskellGua
 
   @Override
   @NotNull
+  public List<HaskellPstringtoken> getPstringtokenList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPstringtoken.class);
+  }
+
+  @Override
+  @NotNull
   public List<HaskellQconid> getQconidList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQconid.class);
   }

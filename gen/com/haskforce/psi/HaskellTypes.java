@@ -54,6 +54,7 @@ public interface HaskellTypes {
   IElementType OPS = new HaskellElementType("OPS");
   IElementType PAT = new HaskellElementType("PAT");
   IElementType PRAGMA = new HaskellElementType("PRAGMA");
+  IElementType PSTRINGTOKEN = new HaskellElementType("PSTRINGTOKEN");
   IElementType QCON = new HaskellElementType("QCON");
   IElementType QCONID = new HaskellElementType("QCONID");
   IElementType QCONOP = new HaskellElementType("QCONOP");
@@ -307,6 +308,9 @@ public interface HaskellTypes {
       }
       else if (type == PRAGMA) {
         return new HaskellPragmaImpl(node);
+      }
+      else if (type == PSTRINGTOKEN) {
+        return new HaskellPstringtokenImpl(node);
       }
       else if (type == QCON) {
         return new HaskellQconImpl(node);
