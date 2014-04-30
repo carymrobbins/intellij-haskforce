@@ -123,6 +123,7 @@
     LET='let'
     OF='of'
     THEN='then'
+    EXPORTTOKEN='export'
   ]
 }
 
@@ -155,195 +156,11 @@ importt ::= var
 cnames ::= <<commaSeparate cname>>
 cname ::= var | con
 
-private topdecl ::= cpp
-                  | "type" simpletype "=" typee
-                  | "data" [context "=>"] simpletype ["=" constrs] [deriving]
-                  | "newtype" [context "=>"] simpletype "=" newconstr [deriving]
-                  | "class" [scontext "=>"] tycls tyvar ["where" cdecl+]
-                  | "instance" [scontext "=>"] qtycls inst ["where" idecl+]
-                  | "default" <<commaSeparate typee>>
-                  | "foreign" fdecl
-                  | decl+      // FIXME: Remove + when implementing decl.
-
-left cdecl ::= gendecl
-             | (funlhs | var) rhs
-
-idecl ::= (funlhs | var) rhs
-
-gendecl ::= vars '::' [context '=>'] typee
-         | fixity [integertoken] ops
-//         | /* Empty */
-
-ops ::= <<sequence op>>
 vars ::= <<sequence var>>
-fixity ::= "infix" | "infixr" | "infixl"
 
-// Type already taken so we get collisions in generated code. Sigh.
-typee ::= btype ['->' typee]
+private topdecl ::= ( whitespace | lexeme )
 
-private btype ::= atype btype
-                | atype
-
-atype ::= gtycon
-        | tyvar
-        | <<commaSeparate typee>>
-        | '[' typee ']'
-        | '(' typee ')'
-
-private gtycon ::= qtycon
-                 | "()"
-                 | "[]"
-                 | '(' "->" ')'
-                 | '(' ',' (',')+ ')'
-
-context ::= classs
-          | <<commaSeparate classs>>
-
-// "Class" is reserved in Java.
-classs ::= qtycls tyvar
-        | qtycls '(' tyvar atype+ ')'
-
-scontext ::= simpleclass
-           | <<commaSeparate simpleclass>>
-private simpleclass ::= qtycls tyvar
-
-private simpletype ::= tycon tyvar*
-
-constrs ::= constr ('|' constr)*
-
-constr ::= con (['!'] atype)*
-        | (btype | '!'atype) conop (btype | '!'atype)
-        | con '{' ((fielddecl ',')* fielddecl)? '}'
-
-newconstr ::= con atype
-            | con '{' var '::' typee '}'
-
-private fielddecl ::= vars '::' (typee | '!' atype)
-
-private deriving ::= "deriving" (dclass|<<commaSeparate dclass>>)
-private dclass ::= qtycls
-
-inst ::= gtycon
-       | '(' gtycon tyvar* ')'
-       | '(' tyvar ',' (tyvar ',')* tyvar ')'        // No commaSep, >= 2 args.
-       | '[' tyvar ']'
-       | '(' tyvar "->" tyvar ')'
-
-
-fdecl ::= "import" callconv [safety] [impent] var "::" ftype
-        | "export" callconv expent var "::" ftype
-
-private callconv ::= "ccall" | "stdcall" | "cplusplus"
-                   | "jvm" | "dotnet" // FIXME: Add system specific call conv.
-
-// Listed in Section 8.5.1.
-private impent ::= '\"' "wrapper" '\"'
-                 | '\"' "dynamic" '\"'
-                 | pstringtoken // TODO: Refine from stringtoken.
-private expent ::= '\"' [cid] '\"'
-
-private cid ::= "regexp:[a-zA-Z][a-zA-Z_0-9]*"
-
-ftype ::= frtype
-        | fatype "->" ftype
-
-frtype ::= fatype
-        | "()"
-
-fatype ::= qtycon atype*
-
-private safety ::= "unsafe" | "safe"
-
-funlhs ::= var apat+
-         | pat varop pat
-         | '(' funlhs ')' apat+
-
-rhs ::= '=' exp ["where" decl+]
-      | gdrhs ["where" decl+]
-
-private gdrhs ::= guards '=' exp [gdrhs]
-
-private guards ::= '|' (guard ',')* guard
-guard ::= pat '<-' infixexp
-        | "let" decl+
-        | infixexp
-
-exp ::= infixexp "::" [context "=>"] typee
-      | infixexp
-
-infixexp ::= lexp qop infixexp
-           | '-' infixexp
-           | lexp
-
-lexp ::= '\' apat+ '->' exp
-        | "let" decl+ "in" exp
-        | "if" exp [';'] "then" exp [';'] "else" exp
-        | "case" exp "of" '{' alts '}'
-        | "do" '{' stmts '}'
-        | fexp
-
-fexp ::= aexp fexp
-       | aexp
-
-left aexp ::= qvar
-       | gcon
-       | literal
-       | '(' exp ')'
-       | '(' exp ',' (exp ',')* exp ')'
-       | '[' exp [(',' exp)*] ']'
-       | '[' exp [',' exp] '..' [exp] ']'
-       | '[' exp '|' (qual ',')* qual ']'
-       | '(' infixexp qop ')'
-       | '(' (!'-' qop) infixexp ')'
-       | qcon '{' (fbind ',')* fbind '}'
-       | (!qcon aexp) '{' (fbind ',')* fbind '}'
-
-qual ::= pat '<-' exp
-       | "let" decl+
-       | exp
-
-alts ::= (alt ';')* alt
-
-alt ::= pat '->' exp ["where" decl+]
-      | pat gdpat ["where" decl+]
-
-private gdpat ::= guards '->' exp [gdpat]
-
-stmts ::= stmt* exp
-stmt ::= exp
-       | pat '<-' exp
-       | "let" decl+
-//       | ';'
-
-private fbind ::= qvar '=' exp
-
-pat ::= lpat qconop pat
-      | lpat
-
-lpat ::= apat
-       | '-' (integertoken|floattoken)
-       | gcon apat+
-
-apat ::= var ['@' apat]
-       | gcon
-       | qcon '{' (fpat ',')* fpat '}'
-       | literal
-       | '_'
-       | '(' pat ')'
-       | '(' pat ',' (pat ',')* pat ')'
-       | '[' pat (',' pat)* ']'
-       | '~' apat
-
-private fpat ::= qvar '=' pat
-
-gcon ::= "()"
-        | "[]"
-        | '(' ',' (',')* ')'
-        | qcon
-
-private decl ::= ( whitespace | lexeme )
-
-private lexeme ::= literal | reservedop | reservedid | pragma
+private lexeme ::= cpp | literal | reservedop | reservedid | pragma
                  | qconid | qinfixvarid | qvarid | qinfixconid | qvarsym
                  | qconsym | special
 private literal ::= floattoken | integertoken | chartoken | pstringtoken
@@ -362,9 +179,8 @@ private varid ::= !reservedid varidRegexp
 private reservedExpr ::= 'case' | 'do' | 'else' | 'if' | 'in' | 'let' | 'of' | 'then'
 private reservedDecl ::= 'class' | 'data' | 'default' | 'deriving' | 'foreign' | 'instance'
                        | 'newtype' | 'type' | 'where'
-// TODO: Remove 'as' when the rest of the parser is in place.
-// Import00002.hs will change expected output when that is done.
-private reservedMeta ::= 'as' | 'infix' | 'infixl' | 'infixr'
+private reservedMeta ::= 'as' | 'export' | 'foreign' | 'import' | 'infix'
+                       | 'infixl' | 'infixr'
 private reservedVar ::= '_'
 private reservedid  ::= reservedExpr | reservedDecl | reservedMeta | reservedVar
 
@@ -391,14 +207,6 @@ private var ::= varid | '(' varsym ')'
 qvars ::= <<commaSeparate qvar>>
 qvar ::= qvarid | '(' qvarsym ')'
 con ::= conid | '(' consym ')'
-qcon ::= qconid | '(' gconsym ')'
-varop ::= varsym | '`' varid '`'
-qvarop ::= qvarsym | '`' qvarid '`'
-conop ::= consym | '`' conid '`'
-qconop ::= gconsym | '`' qconid '`'
-op ::= varop | conop
-qop ::= qvarop | qconop
-gconsym ::= ':' | qconsym
 
 pstringtoken ::= stringtoken
 

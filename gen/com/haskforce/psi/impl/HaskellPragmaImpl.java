@@ -24,6 +24,12 @@ public class HaskellPragmaImpl extends ASTWrapperPsiElement implements HaskellPr
 
   @Override
   @NotNull
+  public List<HaskellCpp> getCppList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellCpp.class);
+  }
+
+  @Override
+  @NotNull
   public List<HaskellPragma> getPragmaList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPragma.class);
   }

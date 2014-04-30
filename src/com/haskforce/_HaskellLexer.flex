@@ -106,6 +106,7 @@ CPPIF=#if ([^\r\n]*)
   "let"               { return LET; }
   "of"                { return OF; }
   "then"              { return THEN; }
+  "export"            { return EXPORTTOKEN; }
   "LINE_WS"           { return LINE_WS; }
   "EOL"               { return EOL; }
 

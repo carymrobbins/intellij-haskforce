@@ -24,6 +24,12 @@ public class HaskellAnyseqImpl extends ASTWrapperPsiElement implements HaskellAn
 
   @Override
   @NotNull
+  public List<HaskellCpp> getCppList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellCpp.class);
+  }
+
+  @Override
+  @NotNull
   public List<HaskellPragma> getPragmaList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPragma.class);
   }

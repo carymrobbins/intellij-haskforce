@@ -48,6 +48,7 @@ CPPIF=#if ([^\r\n]*)
   "data"              { return DATA; }
   "default"           { return DEFAULT; }
   "deriving"          { return DERIVING; }
+  "export"            { return EXPORTTOKEN; }
   "foreign"           { return FOREIGN; }
   "instance"          { return INSTANCE; }
   "module"            { return MODULE; }
