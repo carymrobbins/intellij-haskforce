@@ -31,7 +31,7 @@ import static com.haskforce.psi.HaskellTypes.*;
 %eof{  return;
 %eof}
 
-EOL="\r"|"\n"|"\r\n"
+EOL=\r|\n|\r\n
 LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 
@@ -152,9 +152,12 @@ CPPIF=#if ([^\r\n]*)
                         }
                         return CLOSECOM;
                       }
+
     "{-"              {
                         commentLevel++;
                         return OPENCOM;
                       }
+
+    [^-{}]+           { return COMMENT; }
     [^]               { return COMMENT; }
 }
