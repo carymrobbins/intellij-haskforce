@@ -22,14 +22,20 @@
 
 package com.haskforce;
 
-import com.haskforce.parser.*;
+import com.haskforce.highlighting.HaskellLexerTest;
+import com.haskforce.parser.HaskellParserTest;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
+/**
+ * Main testsuite driver. Specifies which components that should be tested.
+ * Test cases belong in the individual test suites.
+ */
 @SuppressWarnings("ALL")
 public class HaskellTestCase extends TestCase {
   public static TestSuite suite() {
     TestSuite suite = new TestSuite();
+    suite.addTestSuite(HaskellLexerTest.class);
     suite.addTestSuite(HaskellParserTest.class);
     return suite;
   }
