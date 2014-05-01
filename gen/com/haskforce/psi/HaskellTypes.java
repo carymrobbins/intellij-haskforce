@@ -8,7 +8,6 @@ import com.haskforce.psi.impl.*;
 
 public interface HaskellTypes {
 
-  IElementType ANYSEQ = new HaskellElementType("ANYSEQ");
   IElementType BODY = new HaskellElementType("BODY");
   IElementType CNAME = new HaskellElementType("CNAME");
   IElementType CNAMES = new HaskellElementType("CNAMES");
@@ -58,6 +57,7 @@ public interface HaskellTypes {
   IElementType COLON = new HaskellTokenType(":");
   IElementType COMMA = new HaskellTokenType(",");
   IElementType COMMENT = new HaskellTokenType("comment");
+  IElementType COMMENTTEXT = new HaskellTokenType("commenttext");
   IElementType CONID = new HaskellTokenType("conid");
   IElementType CPPELSE = new HaskellTokenType("#else");
   IElementType CPPENDIF = new HaskellTokenType("#endif");
@@ -129,10 +129,7 @@ public interface HaskellTypes {
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
-       if (type == ANYSEQ) {
-        return new HaskellAnyseqImpl(node);
-      }
-      else if (type == BODY) {
+       if (type == BODY) {
         return new HaskellBodyImpl(node);
       }
       else if (type == CNAME) {

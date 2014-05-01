@@ -7,16 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellVars extends PsiElement {
 
-  @Nullable
-  HaskellVarsym getVarsym();
-
-  @Nullable
-  PsiElement getLparen();
-
-  @Nullable
-  PsiElement getRparen();
-
-  @Nullable
-  PsiElement getVaridRegexp();
+  @NotNull
+  List<HaskellVarsym> getVarsymList();
 
 }

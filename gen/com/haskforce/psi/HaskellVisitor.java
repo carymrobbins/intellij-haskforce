@@ -7,10 +7,6 @@ import com.intellij.psi.PsiElement;
 
 public class HaskellVisitor extends PsiElementVisitor {
 
-  public void visitAnyseq(@NotNull HaskellAnyseq o) {
-    visitPsiElement(o);
-  }
-
   public void visitBody(@NotNull HaskellBody o) {
     visitPsiElement(o);
   }

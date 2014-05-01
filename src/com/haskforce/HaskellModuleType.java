@@ -1,6 +1,7 @@
 package com.haskforce;
 
 import com.intellij.ide.util.projectWizard.ModuleWizardStep;
+import com.intellij.ide.util.projectWizard.ProjectJdkForModuleStep;
 import com.intellij.ide.util.projectWizard.WizardContext;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.module.ModuleTypeManager;
@@ -46,13 +47,5 @@ public class HaskellModuleType extends ModuleType<HaskellModuleBuilder> {
     @Override
     public Icon getNodeIcon(@Deprecated boolean isOpened) {
         return HaskellIcons.FILE;
-    }
-
-    @NotNull
-    @Override
-    public ModuleWizardStep[] createWizardSteps(@NotNull WizardContext wizardContext,
-                                                @NotNull HaskellModuleBuilder moduleBuilder,
-                                                @NotNull ModulesProvider modulesProvider) {
-        return super.createWizardSteps(wizardContext, moduleBuilder, modulesProvider);
     }
 }

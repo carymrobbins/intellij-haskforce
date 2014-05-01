@@ -1,5 +1,6 @@
 package com.haskforce;
 
+import com.haskforce.highlighting.HaskellSyntaxHighlightingLexer;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.ParserDefinition;
@@ -29,7 +30,7 @@ public class HaskellParserDefinition implements ParserDefinition {
     @NotNull
     @Override
     public Lexer createLexer(Project project) {
-        return new HaskellLexer();
+        return new HaskellSyntaxHighlightingLexer();
     }
 
     @NotNull
