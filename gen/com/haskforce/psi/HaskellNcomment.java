@@ -8,9 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface HaskellNcomment extends PsiElement {
 
   @NotNull
-  List<HaskellAnyseq> getAnyseqList();
-
-  @NotNull
   List<HaskellNcomment> getNcommentList();
 
   @NotNull

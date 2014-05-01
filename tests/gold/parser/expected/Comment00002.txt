@@ -6,5 +6,5 @@ Haskell File
   HaskellBodyImpl(BODY)
     HaskellNcommentImpl(NCOMMENT)
       PsiElement(HaskellTokenType.{-)('{-')
-      PsiComment(HaskellTokenType.comment)(' NOTES:\n\nThe trick of doing a copy at the end, i.e. `tellProg [copyProg loc\ne]`, when compiling WithArray is important.\n')
+      PsiElement(HaskellTokenType.commenttext)(' NOTES:\n\nThe trick of doing a copy at the end, i.e. `tellProg [copyProg loc\ne]`, when compiling WithArray is important.\n')
       PsiElement(HaskellTokenType.-})('-}')

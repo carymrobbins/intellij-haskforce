@@ -158,6 +158,6 @@ CPPIF=#if ([^\r\n]*)
                         return OPENCOM;
                       }
 
-    [^-{}]+           { return COMMENT; }
-    [^]               { return COMMENT; }
+    [^-{}]+           { return COMMENTTEXT; }
+    [^]               { return COMMENTTEXT; }
 }
