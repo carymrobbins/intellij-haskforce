@@ -22,13 +22,13 @@ EOL="\r"|"\n"|"\r\n"
 LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 
-DOUBLEQUOTE=\"
 VARIDREGEXP=[a-z_][a-zA-Z_0-9']*
 CONID=[A-Z][a-zA-Z_0-9']*
 CHARTOKEN='(\\.|[^'])'
 INTEGERTOKEN=(0(o|O)[0-7]+|0(x|X)[0-9a-fA-F]+|[0-9]+)
 FLOATTOKEN=([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))
 COMMENT=--([^\^\r\n][^\r\n]*|[\r\n])
+COMMENTTEXT=[^{}-]+
 DASHES=--(-)?
 HADDOCK=--\^[^\r\n]*
 STRINGTOKEN=\"(\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\|\\\"|[^\"\n])*\"
@@ -52,6 +52,7 @@ CPPIF=#if ([^\r\n]*)
   "-}"                { return CLOSECOM; }
   "{-#"               { return OPENPRAGMA; }
   "#-}"               { return CLOSEPRAGMA; }
+  "\""                { return DOUBLEQUOTE; }
   "''"                { return THQUOTE; }
   "'"                 { return SINGLEQUOTE; }
   "!"                 { return EXLAMATION; }
@@ -110,13 +111,13 @@ CPPIF=#if ([^\r\n]*)
   "LINE_WS"           { return LINE_WS; }
   "EOL"               { return EOL; }
 
-  {DOUBLEQUOTE}       { return DOUBLEQUOTE; }
   {VARIDREGEXP}       { return VARIDREGEXP; }
   {CONID}             { return CONID; }
   {CHARTOKEN}         { return CHARTOKEN; }
   {INTEGERTOKEN}      { return INTEGERTOKEN; }
   {FLOATTOKEN}        { return FLOATTOKEN; }
   {COMMENT}           { return COMMENT; }
+  {COMMENTTEXT}       { return COMMENTTEXT; }
   {DASHES}            { return DASHES; }
   {HADDOCK}           { return HADDOCK; }
   {STRINGTOKEN}       { return STRINGTOKEN; }

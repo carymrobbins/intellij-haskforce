@@ -56,7 +56,7 @@
     closecom='-}'
     openpragma='{-#'
     closepragma='#-}'
-    doublequote='regexp:"'
+    doublequote='"'
     thquote="''"
     singlequote="'"
     exlamation='!'

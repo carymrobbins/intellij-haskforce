@@ -71,7 +71,7 @@ public interface HaskellTypes {
   IElementType DOUBLEARROW = new HaskellTokenType("=>");
   IElementType DOUBLECOLON = new HaskellTokenType("::");
   IElementType DOUBLEPERIOD = new HaskellTokenType("..");
-  IElementType DOUBLEQUOTE = new HaskellTokenType("doublequote");
+  IElementType DOUBLEQUOTE = new HaskellTokenType("\"");
   IElementType ELSE = new HaskellTokenType("else");
   IElementType EOL = new HaskellTokenType("EOL");
   IElementType EQUALS = new HaskellTokenType("=");
