@@ -18,8 +18,11 @@
  * To generate sources from this file -
  *   Delete the gen/ directory.
  *   Use Command + Shift + G to generate parser in gen/ directory.
- *   Then generate the lexer using Tools > Generate JFlex Lexer,
- *     then use Command + Shift + G on the lexer.
+ *
+ *   The lexer belonging to this parser is located in
+ *   highlighting/_HaskellSyntaxHighlightingLexer.flex. See that file for
+ *   instructions on how to generate it.
+ *
  *   Be sure to add the gen/ directory to your sources.
  *   In Intellij, right-click the gen directory and choose Mark Directory As > Sources.
  */
