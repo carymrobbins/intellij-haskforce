@@ -45,7 +45,6 @@ EOL=\r|\n|\r\n
 LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 
-DOUBLEQUOTE=\"
 VARIDREGEXP=[a-z_][a-zA-Z_0-9']*
 CONID=[A-Z][a-zA-Z_0-9']*
 CHARTOKEN='(\\.|[^'])'
@@ -106,6 +105,7 @@ CPPIF=#if ([^\r\n]*)
   "]"                 { return RBRACKET; }
   "''"                { return THQUOTE; }
   "`"                 { return BACKTICK; }
+  "\""                { return DOUBLEQUOTE; }
   "{-#"               { return OPENPRAGMA; }
   "#-}"               { return CLOSEPRAGMA; }
   "{-"                {
@@ -139,7 +139,6 @@ CPPIF=#if ([^\r\n]*)
   "::"                { return DOUBLECOLON; }
   ":"                 { return COLON; }
 
-  {DOUBLEQUOTE}       { return DOUBLEQUOTE; }
   {VARIDREGEXP}       { return VARIDREGEXP; }
   {CONID}             { return CONID; }
   {CHARTOKEN}         { return CHARTOKEN; }
