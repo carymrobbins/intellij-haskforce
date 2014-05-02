@@ -763,7 +763,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // opencom commenttext? (ncomment commenttext?)* closecom
+  // opencom commenttext* (ncomment commenttext*)* closecom
   public static boolean ncomment(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "ncomment")) return false;
     if (!nextTokenIs(builder_, OPENCOM)) return false;
@@ -777,14 +777,19 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // commenttext?
+  // commenttext*
   private static boolean ncomment_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "ncomment_1")) return false;
-    consumeToken(builder_, COMMENTTEXT);
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!consumeToken(builder_, COMMENTTEXT)) break;
+      if (!empty_element_parsed_guard_(builder_, "ncomment_1", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
     return true;
   }
 
-  // (ncomment commenttext?)*
+  // (ncomment commenttext*)*
   private static boolean ncomment_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "ncomment_2")) return false;
     int pos_ = current_position_(builder_);
@@ -796,7 +801,7 @@ public class HaskellParser implements PsiParser {
     return true;
   }
 
-  // ncomment commenttext?
+  // ncomment commenttext*
   private static boolean ncomment_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "ncomment_2_0")) return false;
     boolean result_ = false;
@@ -807,10 +812,15 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // commenttext?
+  // commenttext*
   private static boolean ncomment_2_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "ncomment_2_0_1")) return false;
-    consumeToken(builder_, COMMENTTEXT);
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!consumeToken(builder_, COMMENTTEXT)) break;
+      if (!empty_element_parsed_guard_(builder_, "ncomment_2_0_1", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
     return true;
   }
 

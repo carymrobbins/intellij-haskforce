@@ -171,7 +171,7 @@ private newline ::= EOL
 private whitestuff ::= whitechar | comment | ncomment | haddock
 whitechar ::= space | newline | '\t'
 pragma ::= openpragma (!closepragma (lexeme | space))+ closepragma
-ncomment ::= opencom commenttext? (ncomment commenttext?)* closecom
+ncomment ::= opencom commenttext* (ncomment commenttext*)* closecom
 special ::= '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}' | thquote | backtick
 symbol ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '=' | '>' | '?' | '@'
          | '\' | '^' | '|' | '-' | '~' | ':'
