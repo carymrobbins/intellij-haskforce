@@ -23,9 +23,15 @@ public class HaskellPstringtokenImpl extends ASTWrapperPsiElement implements Has
   }
 
   @Override
-  @NotNull
+  @Nullable
+  public PsiElement getBadstringtoken() {
+    return findChildByType(BADSTRINGTOKEN);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getStringtoken() {
-    return findNotNullChildByType(STRINGTOKEN);
+    return findChildByType(STRINGTOKEN);
   }
 
 }

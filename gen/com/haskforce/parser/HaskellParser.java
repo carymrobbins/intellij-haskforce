@@ -893,14 +893,15 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // stringtoken
+  // stringtoken | badstringtoken
   public static boolean pstringtoken(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "pstringtoken")) return false;
-    if (!nextTokenIs(builder_, STRINGTOKEN)) return false;
+    if (!nextTokenIs(builder_, "<pstringtoken>", BADSTRINGTOKEN, STRINGTOKEN)) return false;
     boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<pstringtoken>");
     result_ = consumeToken(builder_, STRINGTOKEN);
-    exit_section_(builder_, marker_, PSTRINGTOKEN, result_);
+    if (!result_) result_ = consumeToken(builder_, BADSTRINGTOKEN);
+    exit_section_(builder_, level_, marker_, PSTRINGTOKEN, result_, false, null);
     return result_;
   }
 

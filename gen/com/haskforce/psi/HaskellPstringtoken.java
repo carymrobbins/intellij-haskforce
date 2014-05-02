@@ -7,7 +7,10 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellPstringtoken extends PsiElement {
 
-  @NotNull
+  @Nullable
+  PsiElement getBadstringtoken();
+
+  @Nullable
   PsiElement getStringtoken();
 
 }

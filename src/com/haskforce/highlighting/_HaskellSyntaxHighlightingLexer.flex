@@ -54,6 +54,10 @@ COMMENT=--([^\^\r\n][^\r\n]*|[\r\n])
 DASHES=--(-)?
 HADDOCK=--\^[^\r\n]*
 STRINGTOKEN=\"(\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\|\\\"|[^\"\n])*\"
+BADSTRING_NOEND=\"(\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\|\\\"|[^\"\n])*
+BADSTRING_BADGAP1=\"(\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*|\\\"|[^\"\n])*\"
+BADSTRING_BADGAP2=\"(\n[ \t\n\x0B\f\r]*\\|\\\"|[^\"\n])*\"
+BADSTRINGTOKEN=({BADSTRING_NOEND}|{BADSTRING_BADGAP1}|{BADSTRING_BADGAP2})
 CPPIF=#if ([^\r\n]*)
 
 // Avoid "COMMENT" since that collides with the token definition above.
@@ -148,6 +152,7 @@ CPPIF=#if ([^\r\n]*)
   {DASHES}            { return DASHES; }
   {HADDOCK}           { return HADDOCK; }
   {STRINGTOKEN}       { return STRINGTOKEN; }
+  {BADSTRINGTOKEN}    { return BADSTRINGTOKEN; }
   {CPPIF}             { return CPPIF; }
 
   [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }

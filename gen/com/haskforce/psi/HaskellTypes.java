@@ -48,6 +48,7 @@ public interface HaskellTypes {
   IElementType ASTERISK = new HaskellTokenType("*");
   IElementType BACKSLASH = new HaskellTokenType("\\");
   IElementType BACKTICK = new HaskellTokenType("`");
+  IElementType BADSTRINGTOKEN = new HaskellTokenType("badstringtoken");
   IElementType CARET = new HaskellTokenType("^");
   IElementType CASE = new HaskellTokenType("case");
   IElementType CHARTOKEN = new HaskellTokenType("chartoken");

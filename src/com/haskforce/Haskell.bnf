@@ -98,6 +98,7 @@
     dashes='regexp:--(-)?'
     haddock='regexp:--\^[^\r\n]*'
     stringtoken='regexp:"(\\\s*\n\s*\\|\\"|[^"\n])*"'
+    badstringtoken='regexp:"(\\\s*\n\s*|\\"|[^"\n])*'
     // Reserved IDs. Should be tokens for IntelliJ reasons. Gives us a nicer
     // PSI tree as side effect.
     DATA='data'
@@ -211,7 +212,7 @@ qvars ::= <<commaSeparate qvar>>
 qvar ::= qvarid | '(' qvarsym ')'
 con ::= conid | '(' consym ')'
 
-pstringtoken ::= stringtoken
+pstringtoken ::= stringtoken | badstringtoken
 
 // Misc cross-cutting stuff.
 
