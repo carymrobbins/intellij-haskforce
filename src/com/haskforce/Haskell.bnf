@@ -212,7 +212,7 @@ qvars ::= <<commaSeparate qvar>>
 qvar ::= qvarid | '(' qvarsym ')'
 con ::= conid | '(' consym ')'
 
-pstringtoken ::= stringtoken | badstringtoken
+pstringtoken ::= '"' STRINGTOKEN* '"'
 
 // Misc cross-cutting stuff.
 

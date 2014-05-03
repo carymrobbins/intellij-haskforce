@@ -9,4 +9,6 @@ Haskell File
     HaskellReservedopImpl(RESERVEDOP)
       PsiElement(HaskellTokenType.=)('=')
     HaskellPstringtokenImpl(PSTRINGTOKEN)
-      PsiElement(HaskellTokenType.stringtoken)('"There's trailing spaces after this backslash \  \n    \Trust me, they're there!"')
+      PsiElement(HaskellTokenType.")('"')
+      PsiElement(HaskellTokenType.STRINGTOKEN)('There's trailing spaces after this backslash \  \n    \Trust me, they're there!')
+      PsiElement(HaskellTokenType.")('"')

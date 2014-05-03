@@ -22,16 +22,4 @@ public class HaskellPstringtokenImpl extends ASTWrapperPsiElement implements Has
     else super.accept(visitor);
   }
 
-  @Override
-  @Nullable
-  public PsiElement getBadstringtoken() {
-    return findChildByType(BADSTRINGTOKEN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getStringtoken() {
-    return findChildByType(STRINGTOKEN);
-  }
-
 }

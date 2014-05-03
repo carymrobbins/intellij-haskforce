@@ -893,16 +893,29 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // stringtoken | badstringtoken
+  // '"' STRINGTOKEN* '"'
   public static boolean pstringtoken(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "pstringtoken")) return false;
-    if (!nextTokenIs(builder_, "<pstringtoken>", BADSTRINGTOKEN, STRINGTOKEN)) return false;
+    if (!nextTokenIs(builder_, DOUBLEQUOTE)) return false;
     boolean result_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<pstringtoken>");
-    result_ = consumeToken(builder_, STRINGTOKEN);
-    if (!result_) result_ = consumeToken(builder_, BADSTRINGTOKEN);
-    exit_section_(builder_, level_, marker_, PSTRINGTOKEN, result_, false, null);
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, DOUBLEQUOTE);
+    result_ = result_ && pstringtoken_1(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, DOUBLEQUOTE);
+    exit_section_(builder_, marker_, PSTRINGTOKEN, result_);
     return result_;
+  }
+
+  // STRINGTOKEN*
+  private static boolean pstringtoken_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "pstringtoken_1")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!consumeToken(builder_, STRINGTOKEN)) break;
+      if (!empty_element_parsed_guard_(builder_, "pstringtoken_1", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
   }
 
   /* ********************************************************** */

@@ -11,11 +11,15 @@ Haskell File
     HaskellQvaridImpl(QVARID)
       PsiElement(HaskellTokenType.varidRegexp)('print')
     HaskellPstringtokenImpl(PSTRINGTOKEN)
-      PsiElement(HaskellTokenType.stringtoken)('"Hello, World!"')
-  PsiErrorElement:<cpp>, <pstringtoken>, <qconsym>, <qvarid>, <qvarsym>, <reservedop>, <special>, <whitechar>, HaskellTokenType.`, HaskellTokenType.as, HaskellTokenType.case, HaskellTokenType.chartoken, HaskellTokenType.class, HaskellTokenType.comment, HaskellTokenType.conid, HaskellTokenType.data, HaskellTokenType.default, HaskellTokenType.deriving, HaskellTokenType.do, HaskellTokenType.else, HaskellTokenType.export, HaskellTokenType.floattoken, HaskellTokenType.foreign, HaskellTokenType.haddock, HaskellTokenType.if, HaskellTokenType.import, HaskellTokenType.in, HaskellTokenType.infix, HaskellTokenType.infixl, HaskellTokenType.infixr, HaskellTokenType.instance, HaskellTokenType.integertoken, HaskellTokenType.let, HaskellTokenType.newtype, HaskellTokenType.of, HaskellTokenType.then, HaskellTokenType.type, HaskellTokenType.where, HaskellTokenType.{-, HaskellTokenType.{-# or _ expected, got 'module'
+      PsiElement(HaskellTokenType.")('"')
+      PsiElement(HaskellTokenType.STRINGTOKEN)('Hello, World!')
+      PsiElement(HaskellTokenType.")('"')
+  PsiErrorElement:<cpp>, <qconsym>, <qvarid>, <qvarsym>, <reservedop>, <special>, <whitechar>, HaskellTokenType.", HaskellTokenType.`, HaskellTokenType.as, HaskellTokenType.case, HaskellTokenType.chartoken, HaskellTokenType.class, HaskellTokenType.comment, HaskellTokenType.conid, HaskellTokenType.data, HaskellTokenType.default, HaskellTokenType.deriving, HaskellTokenType.do, HaskellTokenType.else, HaskellTokenType.export, HaskellTokenType.floattoken, HaskellTokenType.foreign, HaskellTokenType.haddock, HaskellTokenType.if, HaskellTokenType.import, HaskellTokenType.in, HaskellTokenType.infix, HaskellTokenType.infixl, HaskellTokenType.infixr, HaskellTokenType.instance, HaskellTokenType.integertoken, HaskellTokenType.let, HaskellTokenType.newtype, HaskellTokenType.of, HaskellTokenType.then, HaskellTokenType.type, HaskellTokenType.where, HaskellTokenType.{-, HaskellTokenType.{-# or _ expected, got 'module'
     PsiElement(HaskellTokenType.module)('module')
   PsiElement(HaskellTokenType.conid)('Illegal')
   PsiElement(HaskellTokenType.where)('where')
   PsiElement(HaskellTokenType.varidRegexp)('main')
   PsiElement(HaskellTokenType.=)('=')
-  PsiElement(HaskellTokenType.stringtoken)('"I'm invisible!"')
+  PsiElement(HaskellTokenType.")('"')
+  PsiElement(HaskellTokenType.STRINGTOKEN)('I'm invisible!')
+  PsiElement(HaskellTokenType.")('"')

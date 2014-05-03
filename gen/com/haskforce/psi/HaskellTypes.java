@@ -119,7 +119,7 @@ public interface HaskellTypes {
   IElementType SEMICOLON = new HaskellTokenType(";");
   IElementType SINGLEQUOTE = new HaskellTokenType("'");
   IElementType SLASH = new HaskellTokenType("/");
-  IElementType STRINGTOKEN = new HaskellTokenType("stringtoken");
+  IElementType STRINGTOKEN = new HaskellTokenType("STRINGTOKEN");
   IElementType THEN = new HaskellTokenType("then");
   IElementType THQUOTE = new HaskellTokenType("''");
   IElementType TILDE = new HaskellTokenType("~");

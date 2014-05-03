@@ -14,4 +14,6 @@ Haskell File
     HaskellQvaridImpl(QVARID)
       PsiElement(HaskellTokenType.varidRegexp)('print')
     HaskellPstringtokenImpl(PSTRINGTOKEN)
-      PsiElement(HaskellTokenType.stringtoken)('"Hello, complicated world!"')
+      PsiElement(HaskellTokenType.")('"')
+      PsiElement(HaskellTokenType.STRINGTOKEN)('Hello, complicated world!')
+      PsiElement(HaskellTokenType.")('"')

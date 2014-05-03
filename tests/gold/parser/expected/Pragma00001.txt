@@ -24,5 +24,7 @@ Haskell File
       HaskellQconidImpl(QCONID)
         PsiElement(HaskellTokenType.conid)('Vector')
       HaskellPstringtokenImpl(PSTRINGTOKEN)
-        PsiElement(HaskellTokenType.stringtoken)('"Use Pull instead"')
+        PsiElement(HaskellTokenType.")('"')
+        PsiElement(HaskellTokenType.STRINGTOKEN)('Use Pull instead')
+        PsiElement(HaskellTokenType.")('"')
       PsiElement(HaskellTokenType.#-})('#-}')
