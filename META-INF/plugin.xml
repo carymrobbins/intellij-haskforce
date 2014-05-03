@@ -51,5 +51,6 @@
 
       <!-- Cabal support -->
       <fileTypeFactory implementation="com.haskforce.cabal.CabalFileTypeFactory"/>
+      <lang.commenter language="Cabal" implementationClass="com.haskforce.cabal.CabalCommenter"/>
   </extensions>
 </idea-plugin>
