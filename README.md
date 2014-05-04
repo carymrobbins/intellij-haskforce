@@ -27,6 +27,9 @@ Building the plugin
   * Go to Preferences.  Below the IDE Settings section locate JFlex.  Set the path and skeleton to the
     idea/tools/lexer files.
 1. Set the project SDK to the IDEA SDK.
+1. Generate additional source files -
+  * On UNIX, run `tools/generate.sh`
+  * On Windows, open **src/com/haskforce/Haskell.bnf** and following the instructions in the comments.
 1. Right-click on the following directories and **Mark Directory As**:
   * `gen/` as Sources Root
   * `resources/` as Resources Root
@@ -46,6 +49,6 @@ To run the tests, you'll need to create a run configuration:
 
 To add more tests:
 
-* Edit Haskell*Test.java files to add more tests of the same kind that already exists.
+* Edit Haskell\*Test.java files to add more tests of the same kind that already exists.
 * Edit HaskellTestCase.java if you need to add tests of a different
   kind.
