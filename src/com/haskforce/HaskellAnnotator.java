@@ -21,8 +21,8 @@ public class HaskellAnnotator implements Annotator {
             }
 
             @Override
-            public void visitPragma(@NotNull HaskellPragma o) {
-                super.visitPragma(o);
+            public void visitPpragma(@NotNull HaskellPpragma o) {
+                super.visitPpragma(o);
                 setHighlighting(o, holder, HaskellSyntaxHighlighter.PRAGMA);
             }
 

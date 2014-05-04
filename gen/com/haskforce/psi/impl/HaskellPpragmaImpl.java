@@ -11,33 +11,27 @@ import static com.haskforce.psi.HaskellTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellQvarsImpl extends ASTWrapperPsiElement implements HaskellQvars {
+public class HaskellPpragmaImpl extends ASTWrapperPsiElement implements HaskellPpragma {
 
-  public HaskellQvarsImpl(ASTNode node) {
+  public HaskellPpragmaImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitQvars(this);
+    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitPpragma(this);
     else super.accept(visitor);
   }
 
   @Override
-  @Nullable
-  public HaskellQvar getQvar() {
-    return findChildByClass(HaskellQvar.class);
+  @NotNull
+  public PsiElement getClosepragma() {
+    return findNotNullChildByType(CLOSEPRAGMA);
   }
 
   @Override
   @NotNull
-  public PsiElement getLparen() {
-    return findNotNullChildByType(LPAREN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getRparen() {
-    return findChildByType(RPAREN);
+  public PsiElement getOpenpragma() {
+    return findNotNullChildByType(OPENPRAGMA);
   }
 
 }

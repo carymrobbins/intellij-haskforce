@@ -42,8 +42,8 @@ public class HaskellBodyImpl extends ASTWrapperPsiElement implements HaskellBody
 
   @Override
   @NotNull
-  public List<HaskellPragma> getPragmaList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPragma.class);
+  public List<HaskellPpragma> getPpragmaList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPpragma.class);
   }
 
   @Override

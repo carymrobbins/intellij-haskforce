@@ -56,8 +56,8 @@ public class HaskellParser implements PsiParser {
     else if (root_ == NCOMMENT) {
       result_ = ncomment(builder_, 0);
     }
-    else if (root_ == PRAGMA) {
-      result_ = pragma(builder_, 0);
+    else if (root_ == PPRAGMA) {
+      result_ = ppragma(builder_, 0);
     }
     else if (root_ == PSTRINGTOKEN) {
       result_ = pstringtoken(builder_, 0);
@@ -637,7 +637,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // cpp | literal | reservedop | reservedid | pragma
+  // cpp | literal | reservedop | reservedid | ppragma
   //                  | qconid | qinfixvarid | qvarid | qinfixconid | qvarsym
   //                  | qconsym | special
   static boolean lexeme(PsiBuilder builder_, int level_) {
@@ -648,7 +648,7 @@ public class HaskellParser implements PsiParser {
     if (!result_) result_ = literal(builder_, level_ + 1);
     if (!result_) result_ = reservedop(builder_, level_ + 1);
     if (!result_) result_ = reservedid(builder_, level_ + 1);
-    if (!result_) result_ = pragma(builder_, level_ + 1);
+    if (!result_) result_ = ppragma(builder_, level_ + 1);
     if (!result_) result_ = qconid(builder_, level_ + 1);
     if (!result_) result_ = qinfixvarid(builder_, level_ + 1);
     if (!result_) result_ = qvarid(builder_, level_ + 1);
@@ -675,7 +675,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // (whitespace | pragma | cpp) module
+  // (whitespace | ppragma | cpp) module
   //          | "module" qconid [exports] "where" body
   //          | body
   static boolean module(PsiBuilder builder_, int level_) {
@@ -689,7 +689,7 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // (whitespace | pragma | cpp) module
+  // (whitespace | ppragma | cpp) module
   private static boolean module_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "module_0")) return false;
     boolean result_ = false;
@@ -700,13 +700,13 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // whitespace | pragma | cpp
+  // whitespace | ppragma | cpp
   private static boolean module_0_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "module_0_0")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = whitespace(builder_, level_ + 1);
-    if (!result_) result_ = pragma(builder_, level_ + 1);
+    if (!result_) result_ = ppragma(builder_, level_ + 1);
     if (!result_) result_ = cpp(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
@@ -831,63 +831,31 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // openpragma (!closepragma (lexeme | space))+ closepragma
-  public static boolean pragma(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "pragma")) return false;
+  // openpragma PRAGMA+ closepragma
+  public static boolean ppragma(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "ppragma")) return false;
     if (!nextTokenIs(builder_, OPENPRAGMA)) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, OPENPRAGMA);
-    result_ = result_ && pragma_1(builder_, level_ + 1);
+    result_ = result_ && ppragma_1(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, CLOSEPRAGMA);
-    exit_section_(builder_, marker_, PRAGMA, result_);
+    exit_section_(builder_, marker_, PPRAGMA, result_);
     return result_;
   }
 
-  // (!closepragma (lexeme | space))+
-  private static boolean pragma_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "pragma_1")) return false;
+  // PRAGMA+
+  private static boolean ppragma_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "ppragma_1")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = pragma_1_0(builder_, level_ + 1);
+    result_ = consumeToken(builder_, PRAGMA);
     int pos_ = current_position_(builder_);
     while (result_) {
-      if (!pragma_1_0(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "pragma_1", pos_)) break;
+      if (!consumeToken(builder_, PRAGMA)) break;
+      if (!empty_element_parsed_guard_(builder_, "ppragma_1", pos_)) break;
       pos_ = current_position_(builder_);
     }
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // !closepragma (lexeme | space)
-  private static boolean pragma_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "pragma_1_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = pragma_1_0_0(builder_, level_ + 1);
-    result_ = result_ && pragma_1_0_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // !closepragma
-  private static boolean pragma_1_0_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "pragma_1_0_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NOT_, null);
-    result_ = !consumeToken(builder_, CLOSEPRAGMA);
-    exit_section_(builder_, level_, marker_, null, result_, false, null);
-    return result_;
-  }
-
-  // lexeme | space
-  private static boolean pragma_1_0_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "pragma_1_0_1")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = lexeme(builder_, level_ + 1);
-    if (!result_) result_ = space(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
