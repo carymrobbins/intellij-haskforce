@@ -58,7 +58,7 @@ CPPIF=#if ([^\r\n]*)
 STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
 
 // Avoid "COMMENT" since that collides with the token definition above.
-%state INCOMMENT INSTRING
+%state INCOMMENT INSTRING INPRAGMA
 
 %%
 <YYINITIAL> {
@@ -110,8 +110,10 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         yybegin(INSTRING);
                         return DOUBLEQUOTE;
                       }
-  "{-#"               { return OPENPRAGMA; }
-  "#-}"               { return CLOSEPRAGMA; }
+  "{-#"               {
+                        yybegin(INPRAGMA);
+                        return OPENPRAGMA;
+                      }
   "{-"                {
                         commentLevel = 1;
                         yybegin(INCOMMENT);
@@ -182,4 +184,13 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
     ({STRINGGAP}|\\\"|[^\"\\\n])+   { return STRINGTOKEN; }
 
     [^]                             { return BADSTRINGTOKEN; }
+}
+
+<INPRAGMA> {
+    "#-}"           {
+                        yybegin(YYINITIAL);
+                        return CLOSEPRAGMA;
+                    }
+    [^-}#]+         { return PRAGMA; }
+    [^]             { return PRAGMA; }
 }

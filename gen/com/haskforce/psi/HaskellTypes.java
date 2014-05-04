@@ -20,7 +20,7 @@ public interface HaskellTypes {
   IElementType IMPORTT = new HaskellElementType("IMPORTT");
   IElementType MODULE_PREFIX = new HaskellElementType("MODULE_PREFIX");
   IElementType NCOMMENT = new HaskellElementType("NCOMMENT");
-  IElementType PRAGMA = new HaskellElementType("PRAGMA");
+  IElementType PPRAGMA = new HaskellElementType("PPRAGMA");
   IElementType PSTRINGTOKEN = new HaskellElementType("PSTRINGTOKEN");
   IElementType QCONID = new HaskellElementType("QCONID");
   IElementType QCONSYM = new HaskellElementType("QCONSYM");
@@ -110,6 +110,7 @@ public interface HaskellTypes {
   IElementType PERIOD = new HaskellTokenType(".");
   IElementType PIPE = new HaskellTokenType("|");
   IElementType PLUS = new HaskellTokenType("+");
+  IElementType PRAGMA = new HaskellTokenType("PRAGMA");
   IElementType QUALIFIED = new HaskellTokenType("qualified");
   IElementType QUESTION = new HaskellTokenType("?");
   IElementType RBRACE = new HaskellTokenType("}");
@@ -166,8 +167,8 @@ public interface HaskellTypes {
       else if (type == NCOMMENT) {
         return new HaskellNcommentImpl(node);
       }
-      else if (type == PRAGMA) {
-        return new HaskellPragmaImpl(node);
+      else if (type == PPRAGMA) {
+        return new HaskellPpragmaImpl(node);
       }
       else if (type == PSTRINGTOKEN) {
         return new HaskellPstringtokenImpl(node);

@@ -134,7 +134,7 @@
 
 // Haskell 2010 Report - http://www.haskell.org/onlinereport/haskell2010/haskellch2.html#x7-140002
 
-module ::= (whitespace | pragma | cpp) module
+module ::= (whitespace | ppragma | cpp) module
          | "module" qconid [exports] "where" body
          | body
 
@@ -165,7 +165,7 @@ vars ::= <<sequence var>>
 
 private topdecl ::= ( whitespace | lexeme )
 
-private lexeme ::= cpp | literal | reservedop | reservedid | pragma
+private lexeme ::= cpp | literal | reservedop | reservedid | ppragma
                  | qconid | qinfixvarid | qvarid | qinfixconid | qvarsym
                  | qconsym | special
 private literal ::= floattoken | integertoken | chartoken | pstringtoken
@@ -174,7 +174,7 @@ private space ::= LINE_WS
 private newline ::= EOL
 private whitestuff ::= whitechar | comment | ncomment | haddock
 whitechar ::= space | newline | '\t'
-pragma ::= openpragma (!closepragma (lexeme | space))+ closepragma
+ppragma ::= openpragma PRAGMA+ closepragma
 ncomment ::= opencom commenttext* (ncomment commenttext*)* closecom
 special ::= '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}' | thquote | backtick
 symbol ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '=' | '>' | '?' | '@'

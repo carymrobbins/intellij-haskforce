@@ -5,15 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellCnames extends PsiElement {
-
-  @Nullable
-  HaskellCname getCname();
+public interface HaskellPpragma extends PsiElement {
 
   @NotNull
-  PsiElement getLparen();
+  PsiElement getClosepragma();
 
-  @Nullable
-  PsiElement getRparen();
+  @NotNull
+  PsiElement getOpenpragma();
 
 }
