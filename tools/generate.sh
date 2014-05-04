@@ -31,7 +31,7 @@ fi
 JFLEX="$(cat $DIR/.jflex)"
 JFLEX_SKELETON="$(cat $DIR/.jflex-skeleton)"
 LIB="$(cat $DIR/.lib)"
-GRAMMAR_KIT="$(cat  $DIR/.grammar-kit)"
+GRAMMAR_KIT="$(cat $DIR/.grammar-kit)"
 
 echo_loud "Deleting old gen directory ..."
 rm -rf $PROJECT_DIR/gen
