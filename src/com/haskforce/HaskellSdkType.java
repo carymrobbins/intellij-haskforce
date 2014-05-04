@@ -1,16 +1,24 @@
 package com.haskforce;
 
+import com.haskforce.utils.ExecUtil;
 import com.intellij.openapi.projectRoots.*;
+import com.intellij.openapi.util.SystemInfo;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class HaskellSdkType extends SdkType {
+
+    public static final String HASKELL_SDK_TYPE_ID = "Haskell SDK";
+
     public HaskellSdkType() {
         // TODO
-        super("Haskell SDK");
+        super(HASKELL_SDK_TYPE_ID);
     }
 
     @NotNull
@@ -32,7 +40,7 @@ public class HaskellSdkType extends SdkType {
 
     @Override
     public String getPresentableName() {
-        return null;
+        return HASKELL_SDK_TYPE_ID;
     }
 
     @Override
@@ -41,19 +49,57 @@ public class HaskellSdkType extends SdkType {
 
     @Override
     public boolean isValidSdkHome(String path) {
-        // TODO
-        return false;
+        return getVersionString(path) != null;
     }
 
     @Override
     public String suggestSdkName(String currentSdkName, String sdkHome) {
+        return "GHC";
+    }
+
+    @Nullable
+    @Override
+    public String getVersionString(@NotNull final String sdkHome) {
+        File ghc = getExecutable(sdkHome);
+        if (ghc.canExecute()) {
+            final String versionText = ExecUtil.exec(String.format("\"%s\" --version", ghc.getPath()));
+            if (versionText != null) {
+                Pattern p = Pattern.compile(".*, version (\\d+\\.\\d+\\.\\d+)");
+                Matcher m = p.matcher(versionText);
+                if (m.matches()) {
+                    return m.group(1);
+                }
+            }
+        }
         return null;
     }
 
     @Nullable
     @Override
     public String suggestHomePath() {
-        // TODO
+        return SystemInfo.isWindows ? suggestHomePathForWindows() : suggestHomePathForUNIX();
+    }
+
+    @Nullable
+    public static String suggestHomePathForWindows() {
+        final String ghcPath = ExecUtil.exec("where ghc.exe");
+        if (ghcPath != null) {
+            File ghc = new File(ghcPath);
+            if (ghc.canExecute()) {
+                return ghc.getParent();
+            }
+        }
         return null;
+    }
+
+    @Nullable
+    public static String suggestHomePathForUNIX() {
+        // Attempt to parse the ghc shell script for UNIX systems.
+        return ExecUtil.exec("cat $(which ghc) | grep \"exedir=\\\".*\\\"\" | sed -E \"s/exedir=\\\"(.*)\\\"/\\1/\"");
+    }
+
+    @NotNull
+    public static File getExecutable(@NotNull final String path) {
+        return new File(path, SystemInfo.isWindows ? "ghc.exe" : "ghc");
     }
 }
