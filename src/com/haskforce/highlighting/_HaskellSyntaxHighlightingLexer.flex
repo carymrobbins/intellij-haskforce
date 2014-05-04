@@ -175,7 +175,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
 }
 
 <INSTRING> {
-\"                                  {
+    \"                              {
                                         yybegin(YYINITIAL);
                                         return DOUBLEQUOTE;
                                     }
