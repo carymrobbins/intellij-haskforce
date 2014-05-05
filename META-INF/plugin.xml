@@ -44,7 +44,7 @@
       <fileTypeFactory implementation="com.haskforce.HaskellFileTypeFactory"/>
       <lang.parserDefinition language="Haskell" implementationClass="com.haskforce.HaskellParserDefinition"/>
       <lang.syntaxHighlighterFactory key="Haskell" implementationClass="com.haskforce.highlighting.HaskellSyntaxHighlighterFactory"/>
-      <lang.braceMatcher language="Haskell" implementationClass="com.haskforce.HaskellBraceMatcher"/>
+      <lang.braceMatcher language="Haskell" implementationClass="com.haskforce.features.HaskellBraceMatcher"/>
       <lang.commenter language="Haskell" implementationClass="com.haskforce.features.HaskellCommenter"/>
       <colorSettingsPage implementation="com.haskforce.HaskellColorSettingsPage"/>
       <annotator language="Haskell" implementationClass="com.haskforce.HaskellAnnotator" />

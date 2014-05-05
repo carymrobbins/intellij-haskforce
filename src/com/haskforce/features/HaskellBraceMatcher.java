@@ -1,4 +1,4 @@
-package com.haskforce;
+package com.haskforce.features;
 
 import com.haskforce.psi.HaskellTypes;
 import com.intellij.lang.BracePair;
