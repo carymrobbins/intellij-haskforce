@@ -9,8 +9,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.io.File;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class HaskellSdkType extends SdkType {
 
@@ -62,14 +60,7 @@ public class HaskellSdkType extends SdkType {
     public String getVersionString(@NotNull final String sdkHome) {
         File ghc = getExecutable(sdkHome);
         if (ghc.canExecute()) {
-            final String versionText = ExecUtil.exec(String.format("\"%s\" --version", ghc.getPath()));
-            if (versionText != null) {
-                Pattern p = Pattern.compile(".*, version (\\d+\\.\\d+\\.\\d+)");
-                Matcher m = p.matcher(versionText);
-                if (m.matches()) {
-                    return m.group(1);
-                }
-            }
+            return ExecUtil.exec(String.format("\"%s\" --numeric-version", ghc.getPath()));
         }
         return null;
     }
