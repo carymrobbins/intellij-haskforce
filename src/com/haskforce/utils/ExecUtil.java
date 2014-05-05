@@ -9,18 +9,29 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class ExecUtil {
+
+    /**
+     * Execute a command using the default shell.
+     */
     @Nullable
     public static String exec(@NotNull final String command) {
+        String shell;
+        if (SystemInfo.isWindows) {
+            shell = "cmd /c";
+        } else {
+            // Default to UNIX if not Windows.
+            shell = "sh -c";
+        }
+        return run(shell + ' ' + command);
+    }
+
+    /**
+     * Execute a command without any surrounding shell.
+     */
+    public static String run(@NotNull final String command) {
         try {
-            String[] commands;
-            if (SystemInfo.isWindows) {
-                commands = new String[] {"cmd", "/c", command};
-            } else {
-                // Default to UNIX if not Windows.
-                commands = new String[] {"sh", "-c", command};
-            }
             BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    Runtime.getRuntime().exec(commands).getInputStream()));
+                    Runtime.getRuntime().exec(command).getInputStream()));
             StringBuilder builder = new StringBuilder();
             String aux;
             while ((aux = reader.readLine()) != null) {
