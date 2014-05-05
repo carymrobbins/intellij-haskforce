@@ -49,6 +49,9 @@
       <colorSettingsPage implementation="com.haskforce.HaskellColorSettingsPage"/>
       <annotator language="Haskell" implementationClass="com.haskforce.HaskellAnnotator" />
 
+      <!-- Project settings -->
+      <projectConfigurable instance="com.haskforce.settings.HaskellToolsConfigurable"/>
+
       <!-- Cabal support -->
       <fileTypeFactory implementation="com.haskforce.cabal.CabalFileTypeFactory"/>
       <lang.commenter language="Cabal" implementationClass="com.haskforce.cabal.CabalCommenter"/>
