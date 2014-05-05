@@ -94,8 +94,7 @@ public class HaskellSdkType extends SdkType {
 
     @Nullable
     public static String suggestHomePathForUNIX() {
-        // Attempt to parse the ghc shell script for UNIX systems.
-        return ExecUtil.exec("cat $(which ghc) | grep \"exedir=\\\".*\\\"\" | sed -E \"s/exedir=\\\"(.*)\\\"/\\1/\"");
+        return ExecUtil.run("ghc --print-libdir");
     }
 
     @NotNull
