@@ -181,6 +181,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                                         yybegin(YYINITIAL);
                                         return DOUBLEQUOTE;
                                     }
+    (\\)+                           { return STRINGTOKEN; }
     ({STRINGGAP}|\\\"|[^\"\\\n])+   { return STRINGTOKEN; }
 
     [^]                             { return BADSTRINGTOKEN; }
