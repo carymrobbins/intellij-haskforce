@@ -3,8 +3,6 @@ package com.haskforce.settings;
 
 import com.haskforce.utils.ExecUtil;
 import com.intellij.ide.util.PropertiesComponent;
-import com.intellij.openapi.externalSystem.util.ExternalSystemUiUtil;
-import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
@@ -15,6 +13,9 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
+
+import static com.haskforce.utils.GuiUtil.createDisplayVersion;
+import static com.haskforce.utils.GuiUtil.createExecutableOption;
 
 /**
  * The "Haskell Tools" option in Preferences->Project Settings.
@@ -67,8 +68,8 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
         settings = new JPanel(new GridBagLayout());
 
         // Cabal configuration.
-        cabalPath = createExecutableOption("Cabal");
-        cabalVersion = createDisplayVersion("Cabal");
+        cabalPath = createExecutableOption(settings, "Cabal");
+        cabalVersion = createDisplayVersion(settings, "Cabal");
         if (!oldCabalPath.isEmpty()) {
             cabalPath.setText(oldCabalPath);
             updateVersionInfoFields();
@@ -107,41 +108,6 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
 
     }
 
-    /**
-     * Creates a label and path selector and adds them to the configuration
-     * window.
-     *
-     * @param tool Which tool to configure.
-     * @return The TextFieldWithBrowseButton created.
-     */
-    private TextFieldWithBrowseButton createExecutableOption(String tool) {
-        // Create UI elements.
-        TextFieldWithBrowseButton tf = new TextFieldWithBrowseButton();
-        tf.addBrowseFolderListener("Select " + tool + " path", "", null,
-                FileChooserDescriptorFactory.createSingleLocalFileDescriptor());
-
-        // Add elements to Panel.
-        settings.add(new JLabel(tool + " executable path:"));
-        settings.add(tf, ExternalSystemUiUtil.getFillLineConstraints(0));
-
-        return tf;
-    }
-
-    /**
-     * Creates two labels adds them to the configuration window.
-     *
-     * @param tool Which tool to display version for.
-     * @return The label with dynamic content.
-     */
-    private JLabel createDisplayVersion(String tool) {
-        JLabel tf = new JLabel("");
-
-        // Add elements to Panel.
-        settings.add(new JLabel(tool + " version:"));
-        settings.add(tf, ExternalSystemUiUtil.getFillLineConstraints(0));
-
-        return tf;
-    }
 
     /**
      * Heuristically finds the version number. Current implementation is the

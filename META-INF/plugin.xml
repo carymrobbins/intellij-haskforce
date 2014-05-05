@@ -50,6 +50,9 @@
       <annotator language="Haskell" implementationClass="com.haskforce.HaskellAnnotator" />
 
       <!-- Project settings -->
+      <projectConfigurable instance="com.haskforce.settings.HaskellCompilerConfigurable"
+                           parentId="project.propCompiler" id="Haskell compiler"
+                           displayName="Haskell Compiler"/>
       <projectConfigurable instance="com.haskforce.settings.HaskellToolsConfigurable"/>
 
       <!-- Cabal support -->
