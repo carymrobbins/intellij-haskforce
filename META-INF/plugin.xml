@@ -46,7 +46,7 @@
       <lang.syntaxHighlighterFactory key="Haskell" implementationClass="com.haskforce.highlighting.HaskellSyntaxHighlighterFactory"/>
       <lang.braceMatcher language="Haskell" implementationClass="com.haskforce.features.HaskellBraceMatcher"/>
       <lang.commenter language="Haskell" implementationClass="com.haskforce.features.HaskellCommenter"/>
-      <colorSettingsPage implementation="com.haskforce.HaskellColorSettingsPage"/>
+      <colorSettingsPage implementation="com.haskforce.settings.HaskellColorSettingsPage"/>
       <annotator language="Haskell" implementationClass="com.haskforce.HaskellAnnotator" />
 
       <!-- Project settings -->
