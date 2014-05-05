@@ -2,6 +2,7 @@ package com.haskforce.settings;
 
 
 import com.haskforce.utils.ExecUtil;
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.externalSystem.util.ExternalSystemUiUtil;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.ConfigurationException;
@@ -23,12 +24,17 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
 
     private Project project;
 
+    // Old values to detect user updates.
+    private String oldCabalPath;
+
+    // Swing components.
     private JPanel settings;
     private TextFieldWithBrowseButton cabalPath;
     private JLabel cabalVersion;
 
     public HaskellToolsConfigurable(@NotNull Project inProject) {
         project = inProject;
+        oldCabalPath = PropertiesComponent.getInstance(project).getValue("cabalPath", "");
     }
 
     @NotNull
@@ -59,17 +65,24 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     @Override
     public JComponent createComponent() {
         settings = new JPanel(new GridBagLayout());
+
+        // Cabal configuration.
         cabalPath = createExecutableOption("Cabal");
         cabalVersion = createDisplayVersion("Cabal");
+        if (!oldCabalPath.isEmpty()) {
+            cabalPath.setText(oldCabalPath);
+            updateVersionInfoFields();
+        }
+
         return settings;
     }
 
     /**
-     * Enables the apply button.
+     * Enables the apply button if anything changed.
      */
     @Override
     public boolean isModified() {
-        return true;
+        return !cabalPath.getText().equals(oldCabalPath);
     }
 
     /**
@@ -77,7 +90,8 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
      */
     @Override
     public void apply() throws ConfigurationException {
-        cabalVersion.setText(getVersion(cabalPath.getText(), "--numeric-version"));
+        updateVersionInfoFields();
+        saveState();
     }
 
     /**
@@ -85,7 +99,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
      */
     @Override
     public void reset() {
-
+        restoreState();
     }
 
     @Override
@@ -135,5 +149,26 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
      */
     private static String getVersion(String cmd, String versionflag) {
         return ExecUtil.run(cmd + ' ' + versionflag);
+    }
+
+    /**
+     * Updates the version info fields for all files configured.
+     */
+    private void updateVersionInfoFields() {
+        cabalVersion.setText(getVersion(cabalPath.getText(), "--numeric-version"));
+    }
+
+    /**
+     * Persistent save of the current state.
+     */
+    private void saveState() {
+        PropertiesComponent.getInstance(project).setValue("cabalPath", cabalPath.getText());
+    }
+
+    /**
+     * Restore components to the initial state.
+     */
+    private void restoreState() {
+        cabalPath.setText(oldCabalPath);
     }
 }
