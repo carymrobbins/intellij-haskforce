@@ -49,10 +49,16 @@
       <annotator language="Haskell" implementationClass="com.haskforce.HaskellAnnotator" />
 
       <!-- Project settings -->
+
+      <!-- Tab under compiler in IntelliJ -> Preferences -->
       <projectConfigurable instance="com.haskforce.settings.HaskellCompilerConfigurable"
                            parentId="project.propCompiler" id="Haskell compiler"
                            displayName="Haskell Compiler"/>
+      <!-- Tab in IntelliJ -> Preferences -->
       <projectConfigurable instance="com.haskforce.settings.HaskellToolsConfigurable"/>
+      <!-- File -> Project Structure dialogue. -->
+      <moduleConfigurationEditorProvider implementation="com.haskforce.settings.HaskellModuleConfigurationEditor" order="first"/>
+      <!-- Tab in IntelliJ -> Preferences -->
       <colorSettingsPage implementation="com.haskforce.settings.HaskellColorSettingsPage"/>
 
       <!-- Cabal support -->
