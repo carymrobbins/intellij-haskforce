@@ -42,11 +42,14 @@
       <moduleType id="HASKELL_MODULE" implementationClass="com.haskforce.HaskellModuleType"/>
       <sdkType implementation="com.haskforce.HaskellSdkType"/>
       <fileTypeFactory implementation="com.haskforce.HaskellFileTypeFactory"/>
-      <lang.parserDefinition language="Haskell" implementationClass="com.haskforce.HaskellParserDefinition"/>
       <lang.syntaxHighlighterFactory key="Haskell" implementationClass="com.haskforce.highlighting.HaskellSyntaxHighlighterFactory"/>
+      <lang.parserDefinition language="Haskell" implementationClass="com.haskforce.HaskellParserDefinition"/>
+      <annotator language="Haskell" implementationClass="com.haskforce.HaskellAnnotator" />
+
+      <!-- Editing utils -->
       <lang.braceMatcher language="Haskell" implementationClass="com.haskforce.features.HaskellBraceMatcher"/>
       <lang.commenter language="Haskell" implementationClass="com.haskforce.features.HaskellCommenter"/>
-      <annotator language="Haskell" implementationClass="com.haskforce.HaskellAnnotator" />
+      <quoteHandler fileType="Haskell" className="com.haskforce.features.HaskellQuoteHandler"/>
 
       <!-- Project settings -->
 
