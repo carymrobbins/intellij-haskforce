@@ -1,7 +1,7 @@
-<idea-plugin version="2">
+<idea-plugin version="2" use-idea-classloader="true">
   <id>com.haskforce</id>
   <name>HaskForce</name>
-  <version>1.0</version>
+  <version>0.2</version>
   <!--<vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>-->
 
   <description>Plugin for Haskell language support.</description>
@@ -13,7 +13,7 @@
   </change-notes>
 
   <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-  <idea-version since-build="107.105"/>
+  <idea-version since-build="131.0"/>
 
   <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
        on how to target different products -->
@@ -67,5 +67,8 @@
       <!-- Cabal support -->
       <fileTypeFactory implementation="com.haskforce.cabal.CabalFileTypeFactory"/>
       <lang.commenter language="Cabal" implementationClass="com.haskforce.cabal.CabalCommenter"/>
+
+      <!-- External builder support -->
+      <compileServer.plugin classpath="jps/jps-plugin.jar"/>
   </extensions>
 </idea-plugin>

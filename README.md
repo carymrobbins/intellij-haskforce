@@ -13,11 +13,6 @@ Building the plugin
 1. Check out the Community Edition source files.
 
     ````$ git clone git@github.com:JetBrains/intellij-community.git idea````
-
-1. Configure SDK and source files.
-  * Create a new **IntelliJ Platform Project** from existing sources (pointed to your cloned HaskForce directory).
-  * Go to File > Project Structure.  Add SDKs for JDK and IDEA Plugins.  For the IDEA Plugins, add sources
-    from cloned IntelliJ to the Sourcepath.
 1. Install and enable additional plugins.
   * Grammar-Kit
   * JFlex Support
@@ -26,14 +21,22 @@ Building the plugin
 1. Configure JFlex settings.
   * Go to Preferences.  Below the IDE Settings section locate JFlex.  Set the path and skeleton to the
     idea/tools/lexer files.
+1. Configure SDK and source files.
+  * Create a new **IntelliJ Platform Project** from existing sources (pointed to your cloned HaskForce directory).
+  * Go to File > Project Structure.  Add SDKs for JDK and IDEA Plugins.  For the IDEA Plugins, add sources
+    from cloned IntelliJ to the Sourcepath.
 1. Set the project SDK to the IDEA SDK.
 1. Generate additional source files -
   * On UNIX, run `tools/generate.sh`
-  * On Windows, open **src/com/haskforce/Haskell.bnf** and following the instructions in the comments.
+  * On Windows, open **src/com/haskforce/Haskell.bnf** and follow the instructions in the comments.
 1. Right-click on the following directories and **Mark Directory As**:
   * `gen/` as Sources Root
   * `resources/` as Resources Root
   * `tests/` as Test Sources Root
+1. Go to File -> Project Structure. Add a module called "jps-plugin"
+1. Right-click on the following directories and **Mark Directory As**:
+  * `jps-plugin/src` as Sources Root
+  * `jps-plugin/resources` as Resources Root
 1. From the menu go to **Run > Edit Configurations**
 1. Click on the `+` sign and choose **Plugin**, click **OK**, then run your new configuration.
 
