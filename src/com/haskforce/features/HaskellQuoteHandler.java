@@ -9,6 +9,7 @@ import com.intellij.codeInsight.editorActions.SimpleTokenSetQuoteHandler;
  */
 public class HaskellQuoteHandler extends SimpleTokenSetQuoteHandler {
     public HaskellQuoteHandler() {
-        super(HaskellTypes.STRINGTOKEN, HaskellTypes.BADSTRINGTOKEN, HaskellTypes.DOUBLEQUOTE);
+        super(HaskellTypes.STRINGTOKEN, HaskellTypes.BADSTRINGTOKEN, HaskellTypes.DOUBLEQUOTE,
+                HaskellTypes.CHARTOKEN, HaskellTypes.SINGLEQUOTE);
     }
 }
