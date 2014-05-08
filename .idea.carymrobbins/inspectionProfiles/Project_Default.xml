@@ -1,0 +1,35 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0" is_locked="false">
+    <option name="myName" value="Project Default" />
+    <option name="myLocal" value="false" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <value>
+          <list size="20">
+            <item index="0" class="java.lang.String" itemvalue="cssutils" />
+            <item index="1" class="java.lang.String" itemvalue="python-twitter" />
+            <item index="2" class="java.lang.String" itemvalue="chimpy" />
+            <item index="3" class="java.lang.String" itemvalue="Django" />
+            <item index="4" class="java.lang.String" itemvalue="django-memcache-status" />
+            <item index="5" class="java.lang.String" itemvalue="South" />
+            <item index="6" class="java.lang.String" itemvalue="sorl-thumbnail" />
+            <item index="7" class="java.lang.String" itemvalue="pytz" />
+            <item index="8" class="java.lang.String" itemvalue="django-assets" />
+            <item index="9" class="java.lang.String" itemvalue="django-haystack" />
+            <item index="10" class="java.lang.String" itemvalue="BeautifulSoup" />
+            <item index="11" class="java.lang.String" itemvalue="django-pagination" />
+            <item index="12" class="java.lang.String" itemvalue="requests" />
+            <item index="13" class="java.lang.String" itemvalue="vobject" />
+            <item index="14" class="java.lang.String" itemvalue="python-memcached" />
+            <item index="15" class="java.lang.String" itemvalue="django-devserver" />
+            <item index="16" class="java.lang.String" itemvalue="django-tagging" />
+            <item index="17" class="java.lang.String" itemvalue="pysolr" />
+            <item index="18" class="java.lang.String" itemvalue="asset_bundles" />
+            <item index="19" class="java.lang.String" itemvalue="psycopg2" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="Simple variable usage" enabled="false" level="WEAK WARNING" enabled_by_default="false" />
+  </profile>
+</component>

@@ -1,0 +1,36 @@
+<component name="ProjectDictionaryState">
+  <dictionary name="crobbins">
+    <words>
+      <w>bindir</w>
+      <w>chartoken</w>
+      <w>conid</w>
+      <w>consym</w>
+      <w>decl</w>
+      <w>exedir</w>
+      <w>floattoken</w>
+      <w>fooable</w>
+      <w>hask</w>
+      <w>haskforce</w>
+      <w>integertoken</w>
+      <w>intelli</w>
+      <w>lbrace</w>
+      <w>modid</w>
+      <w>mzip</w>
+      <w>ncomment</w>
+      <w>qconid</w>
+      <w>qconsym</w>
+      <w>qinfixvarid</w>
+      <w>qvarid</w>
+      <w>qvarsym</w>
+      <w>reserveddecl</w>
+      <w>reservedexpr</w>
+      <w>reservedid</w>
+      <w>reservedmeta</w>
+      <w>reservedop</w>
+      <w>reservedvar</w>
+      <w>stringtoken</w>
+      <w>varid</w>
+      <w>varsym</w>
+    </words>
+  </dictionary>
+</component>
