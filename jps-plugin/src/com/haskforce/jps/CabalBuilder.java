@@ -115,19 +115,21 @@ public class CabalBuilder extends ModuleLevelBuilder {
     private static void processOut(CompileContext context, Process process, JpsModule module) {
         final String warningPrefix = "Warning: ";
         Iterator<String> processOut = collectOutput(process);
+        StringBuilder msg = new StringBuilder(1000);
 
         while (processOut.hasNext()) {
             String line = processOut.next();
 
             Matcher matcher = Pattern.compile("(.*):(\\d+):(\\d+):(.*)").matcher(line);
             if (line.startsWith(warningPrefix)) {
-                String text = line.substring(warningPrefix.length()) + '\n' + processOut.next();
+                String text = line.substring(warningPrefix.length()) + System.lineSeparator() + processOut.next();
                 context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.WARNING, text));
             } else if (matcher.find()) {
                 String file = matcher.group(1);
                 long lineNum = Long.parseLong(matcher.group(2));
                 long colNum = Long.parseLong(matcher.group(3));
-                String msg = matcher.group(4);
+                msg.setLength(0);
+                msg.append(matcher.group(4));
                 while (processOut.hasNext()) {
                     String msgLine = processOut.next();
 
@@ -137,12 +139,12 @@ public class CabalBuilder extends ModuleLevelBuilder {
                     if (msgLine.trim().length() == 0) {
                         break;
                     }
-                    msg += msgLine + "\n";
+                    msg.append(msgLine).append(System.lineSeparator());
                 }
 
                 String sourcePath = getContentRootPath(module) + File.separator + file.replace('\\', File.separatorChar);
                 BuildMessage.Kind kind;
-                final String trimmedMessage = msg.trim();
+                final String trimmedMessage = msg.toString().trim();
                 if (trimmedMessage.startsWith("warning") || trimmedMessage.startsWith("Warning")) {
                     kind = BuildMessage.Kind.WARNING;
                 } else {
