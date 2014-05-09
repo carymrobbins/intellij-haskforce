@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="haskforce" default="all">
+  
+  
+  <property file="build.properties"/>
+  <property name="flex.jar" value="JFlex.jar"/>
+  <property name="flex.main" value="JFlex.Main"/>
+  <property name="flex.skeleton" value="idea-flex.skeleton"/>
+  <property name="flex.target.base" value="src/com/haskforce/highlighting/_HaskellSyntaxHighlightingLexer"/>
+  <property name="flex.input.file" value="${flex.target.base}.flex"/>
+  <property name="flex.output.file" value="${flex.target.base}.java"/>
+  <property name="grammar-kit.jar" value="grammar-kit.jar"/>
+  <property name="grammar-kit.main" value="org.intellij.grammar.Main"/>
+  <property name="grammar-kit.output.dir" value="gen"/>
+  <property name="grammar-kit.input.file" value="src/com/haskforce/Haskell.bnf"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="128m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/rcs/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/.pyc/**"/>
+    <exclude name="**/.pyo/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/*.lib/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/.bundle/**"/>
+    <exclude name="**/*.rbc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.war"/>
+    <include name="*.ear"/>
+    <include name="*.apk"/>
+    <include name="*.zip"/>
+    <include name="*.swc"/>
+    <include name="*.ane"/>
+    <include name="*.egg"/>
+    <include name="*.jar"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+  </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin" value="${jdk.home}/bin"/>
+  <path id="jdk.classpath">
+    <fileset dir="${jdk.home}">
+      <include name="${jdk.home}/lib/ant-javafx.jar"/>
+      <include name="${jdk.home}/lib/dt.jar"/>
+      <include name="${jdk.home}/lib/javafx-doclet.jar"/>
+      <include name="${jdk.home}/lib/javafx-mx.jar"/>
+      <include name="${jdk.home}/lib/jconsole.jar"/>
+      <include name="${jdk.home}/lib/sa-jdi.jar"/>
+      <include name="${jdk.home}/lib/tools.jar"/>
+      <include name="${jdk.home}/jre/lib/charsets.jar"/>
+      <include name="${jdk.home}/jre/lib/deploy.jar"/>
+      <include name="${jdk.home}/jre/lib/htmlconverter.jar"/>
+      <include name="${jdk.home}/jre/lib/javaws.jar"/>
+      <include name="${jdk.home}/jre/lib/jce.jar"/>
+      <include name="${jdk.home}/jre/lib/jfr.jar"/>
+      <include name="${jdk.home}/jre/lib/jfxrt.jar"/>
+      <include name="${jdk.home}/jre/lib/JObjC.jar"/>
+      <include name="${jdk.home}/jre/lib/jsse.jar"/>
+      <include name="${jdk.home}/jre/lib/management-agent.jar"/>
+      <include name="${jdk.home}/jre/lib/plugin.jar"/>
+      <include name="${jdk.home}/jre/lib/resources.jar"/>
+      <include name="${jdk.home}/jre/lib/rt.jar"/>
+      <include name="${jdk.home}/jre/lib/ext/dnsns.jar"/>
+      <include name="${jdk.home}/jre/lib/ext/localedata.jar"/>
+      <include name="${jdk.home}/jre/lib/ext/sunec.jar"/>
+      <include name="${jdk.home}/jre/lib/ext/sunjce_provider.jar"/>
+      <include name="${jdk.home}/jre/lib/ext/sunpkcs11.jar"/>
+      <include name="${jdk.home}/jre/lib/ext/zipfs.jar"/>
+      <include name="lib/annotations.jar"/>
+      <include name="lib/asm-commons.jar"/>
+      <include name="lib/asm.jar"/>
+      <include name="lib/asm4-all.jar"/>
+      <include name="lib/automaton.jar"/>
+      <include name="lib/boot.jar"/>
+      <include name="lib/bootstrap.jar"/>
+      <include name="lib/cglib-2.2.2.jar"/>
+      <include name="lib/cli-parser-1.1.jar"/>
+      <include name="lib/commons-codec-1.8.jar"/>
+      <include name="lib/commons-httpclient-3.1-patched.jar"/>
+      <include name="lib/commons-logging-1.1.1.jar"/>
+      <include name="lib/commons-net-3.1.jar"/>
+      <include name="lib/ecj-4.2.1.jar"/>
+      <include name="lib/extensions.jar"/>
+      <include name="lib/forms_rt.jar"/>
+      <include name="lib/groovy-all-2.0.6.jar"/>
+      <include name="lib/gson-2.2.3.jar"/>
+      <include name="lib/guava-14.0.1.jar"/>
+      <include name="lib/icons.jar"/>
+      <include name="lib/idea.jar"/>
+      <include name="lib/idea_rt.jar"/>
+      <include name="lib/isorelax.jar"/>
+      <include name="lib/javac2.jar"/>
+      <include name="lib/jaxen-1.1.3.jar"/>
+      <include name="lib/jayatana-1.2.4.jar"/>
+      <include name="lib/jcip-annotations.jar"/>
+      <include name="lib/jdkAnnotations.jar"/>
+      <include name="lib/jdom.jar"/>
+      <include name="lib/jgoodies-common-1.2.1.jar"/>
+      <include name="lib/jgoodies-forms.jar"/>
+      <include name="lib/jgoodies-looks-2.4.2.jar"/>
+      <include name="lib/jh.jar"/>
+      <include name="lib/jing.jar"/>
+      <include name="lib/jna-utils.jar"/>
+      <include name="lib/jna.jar"/>
+      <include name="lib/jps-launcher.jar"/>
+      <include name="lib/jps-server.jar"/>
+      <include name="lib/jsch-0.1.50.jar"/>
+      <include name="lib/jsr166e.jar"/>
+      <include name="lib/jsr173_1.0_api.jar"/>
+      <include name="lib/junit-4.10.jar"/>
+      <include name="lib/jzlib-1.1.1.jar"/>
+      <include name="lib/log4j.jar"/>
+      <include name="lib/markdownj-core-0.4.2-SNAPSHOT.jar"/>
+      <include name="lib/microba.jar"/>
+      <include name="lib/miglayout-swing.jar"/>
+      <include name="lib/nanoxml-2.2.3.jar"/>
+      <include name="lib/nekohtml-1.9.14.jar"/>
+      <include name="lib/netty-all-4.1.0.Alpha1.jar"/>
+      <include name="lib/openapi.jar"/>
+      <include name="lib/optimizedFileManager.jar"/>
+      <include name="lib/oromatcher.jar"/>
+      <include name="lib/picocontainer.jar"/>
+      <include name="lib/protobuf-2.5.0.jar"/>
+      <include name="lib/proxy-vole_20120920.jar"/>
+      <include name="lib/pty4j-0.3.jar"/>
+      <include name="lib/purejavacomm.jar"/>
+      <include name="lib/resolver.jar"/>
+      <include name="lib/resources.jar"/>
+      <include name="lib/resources_en.jar"/>
+      <include name="lib/rhino-js-1_7R4.jar"/>
+      <include name="lib/rngom-20051226-patched.jar"/>
+      <include name="lib/sanselan-0.98-snapshot.jar"/>
+      <include name="lib/serviceMessages.jar"/>
+      <include name="lib/snappy-java-1.0.5.jar"/>
+      <include name="lib/swingx-core-1.6.2.jar"/>
+      <include name="lib/trang-core.jar"/>
+      <include name="lib/trove4j.jar"/>
+      <include name="lib/trove4j_src.jar"/>
+      <include name="lib/util.jar"/>
+      <include name="lib/velocity.jar"/>
+      <include name="lib/winp-1.17-patched.jar"/>
+      <include name="lib/xbean.jar"/>
+      <include name="lib/xerces.jar"/>
+      <include name="lib/xmlrpc-2.0.jar"/>
+      <include name="lib/xpp3-1.1.4-min.jar"/>
+      <include name="lib/xstream-1.4.3.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home}"/>
+  <property name="project.jdk.bin" value="${jdk.bin}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath"/>
+  
+  
+  <!-- Global Libraries -->
+  <!-- Register Custom Compiler Taskdefs -->
+  <property name="javac2.home" value="${idea.home}/lib"/>
+  <path id="javac2.classpath">
+    <pathelement location="${javac2.home}/javac2.jar"/>
+    <pathelement location="${javac2.home}/jdom.jar"/>
+    <pathelement location="${javac2.home}/asm4-all.jar"/>
+    <pathelement location="${javac2.home}/jgoodies-forms.jar"/>
+  </path>
+  <target name="register.custom.compilers">
+    <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
+    <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="javac2.classpath"/>
+  </target>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module HaskForce -->
+  
+  <dirname property="module.haskforce.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.haskforce" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.haskforce" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.haskforce" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.haskforce" value="-encoding UTF-8 -source 1.7 ${compiler.args}"/>
+  
+  <property name="haskforce.output.dir" value="${module.haskforce.basedir}/out/production/HaskForce"/>
+  <property name="haskforce.testoutput.dir" value="${module.haskforce.basedir}/out/test/HaskForce"/>
+  
+  <path id="haskforce.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="haskforce.module.production.classpath">
+    <path refid="${module.jdk.classpath.haskforce}"/>
+  </path>
+  
+  <path id="haskforce.runtime.production.module.classpath">
+    <pathelement location="${haskforce.output.dir}"/>
+  </path>
+  
+  <path id="haskforce.module.classpath">
+    <path refid="${module.jdk.classpath.haskforce}"/>
+    <pathelement location="${haskforce.output.dir}"/>
+  </path>
+  
+  <path id="haskforce.runtime.module.classpath">
+    <pathelement location="${haskforce.testoutput.dir}"/>
+    <pathelement location="${haskforce.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.haskforce">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.haskforce">
+    <patternset refid="excluded.from.module.haskforce"/>
+  </patternset>
+  
+  <path id="haskforce.module.sourcepath">
+    <dirset dir="${module.haskforce.basedir}">
+      <include name="src"/>
+      <include name="gen"/>
+      <include name="resources"/>
+    </dirset>
+  </path>
+  
+  <path id="haskforce.module.test.sourcepath">
+    <dirset dir="${module.haskforce.basedir}">
+      <include name="tests"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.haskforce" depends="compile.module.haskforce.production,compile.module.haskforce.tests" description="Compile module HaskForce"/>
+  
+  <target name="compile.module.haskforce.production" depends="register.custom.compilers" description="Compile module HaskForce; production classes">
+    <mkdir dir="${haskforce.output.dir}"/>
+    <javac2 destdir="${haskforce.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.haskforce}/javac">
+      <compilerarg line="${compiler.args.haskforce}"/>
+      <bootclasspath refid="haskforce.module.bootclasspath"/>
+      <classpath refid="haskforce.module.production.classpath"/>
+      <src refid="haskforce.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.haskforce"/>
+    </javac2>
+    
+    <copy todir="${haskforce.output.dir}">
+      <fileset dir="${module.haskforce.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.haskforce.basedir}/gen">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.haskforce.basedir}/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.haskforce.tests" depends="register.custom.compilers,compile.module.haskforce.production" description="compile module HaskForce; test classes" unless="skip.tests">
+    <mkdir dir="${haskforce.testoutput.dir}"/>
+    <javac2 destdir="${haskforce.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.haskforce}/javac">
+      <compilerarg line="${compiler.args.haskforce}"/>
+      <bootclasspath refid="haskforce.module.bootclasspath"/>
+      <classpath refid="haskforce.module.classpath"/>
+      <src refid="haskforce.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.haskforce"/>
+    </javac2>
+    
+    <copy todir="${haskforce.testoutput.dir}">
+      <fileset dir="${module.haskforce.basedir}/tests">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="clean.module.haskforce" description="cleanup module">
+    <delete dir="${haskforce.output.dir}"/>
+    <delete dir="${haskforce.testoutput.dir}"/>
+  </target>
+  
+  <property name="haskforce.plugin.path.jar" value="${module.haskforce.basedir}/HaskForce.jar"/>
+  
+  <!-- Build archive for plugin 'HaskForce' -->
+  <target name="plugin.build.jar.haskforce" depends="compile.module.haskforce" description="Build plugin archive for module &#39;HaskForce&#39;">
+    <jar destfile="${haskforce.plugin.path.jar}" duplicate="preserve">
+      <zipfileset dir="${module.haskforce.basedir}/out/production/HaskForce"/>
+      <zipfileset file="${module.haskforce.basedir}/META-INF/plugin.xml" prefix="META-INF"/>
+      <manifest>
+        <attribute name="Created-By" value="IntelliJ IDEA"/>
+        <attribute name="Manifest-Version" value="1.0"/>
+      </manifest>
+    </jar>
+  </target>
+  
+  
+  <!-- Module jps-plugin -->
+  
+  <dirname property="module.jps-plugin.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.jps-plugin" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.jps-plugin" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.jps-plugin" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.jps-plugin" value="-encoding UTF-8 -source 1.7 ${compiler.args}"/>
+  
+  <property name="jps-plugin.output.dir" value="${module.jps-plugin.basedir}/out/production/jps-plugin"/>
+  <property name="jps-plugin.testoutput.dir" value="${module.jps-plugin.basedir}/out/test/jps-plugin"/>
+  
+  <path id="jps-plugin.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="jps-plugin.module.production.classpath">
+    <path refid="${module.jdk.classpath.jps-plugin}"/>
+  </path>
+  
+  <path id="jps-plugin.runtime.production.module.classpath">
+    <pathelement location="${jps-plugin.output.dir}"/>
+  </path>
+  
+  <path id="jps-plugin.module.classpath">
+    <path refid="${module.jdk.classpath.jps-plugin}"/>
+    <pathelement location="${jps-plugin.output.dir}"/>
+  </path>
+  
+  <path id="jps-plugin.runtime.module.classpath">
+    <pathelement location="${jps-plugin.testoutput.dir}"/>
+    <pathelement location="${jps-plugin.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.jps-plugin">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.jps-plugin">
+    <patternset refid="excluded.from.module.jps-plugin"/>
+  </patternset>
+  
+  <path id="jps-plugin.module.sourcepath">
+    <dirset dir="${module.jps-plugin.basedir}/jps-plugin">
+      <include name="src"/>
+      <include name="resources"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.jps-plugin" depends="compile.module.jps-plugin.production,compile.module.jps-plugin.tests" description="Compile module jps-plugin"/>
+  
+  <target name="compile.module.jps-plugin.production" depends="register.custom.compilers" description="Compile module jps-plugin; production classes">
+    <mkdir dir="${jps-plugin.output.dir}"/>
+    <javac2 destdir="${jps-plugin.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jps-plugin}/javac">
+      <compilerarg line="${compiler.args.jps-plugin}"/>
+      <bootclasspath refid="jps-plugin.module.bootclasspath"/>
+      <classpath refid="jps-plugin.module.production.classpath"/>
+      <src refid="jps-plugin.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.jps-plugin"/>
+    </javac2>
+    
+    <copy todir="${jps-plugin.output.dir}">
+      <fileset dir="${module.jps-plugin.basedir}/jps-plugin/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.jps-plugin.basedir}/jps-plugin/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.jps-plugin.tests" depends="register.custom.compilers,compile.module.jps-plugin.production" description="compile module jps-plugin; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.jps-plugin" description="cleanup module">
+    <delete dir="${jps-plugin.output.dir}"/>
+    <delete dir="${jps-plugin.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+
+  <target name="generate-sources" depends="check-jflex-required, jflex, check-grammar-kit-required, grammar-kit"/>
+
+  <target name="check-jflex-required" depends="check-jflex-output-exists, check-jflex-uptodate"/>
+
+  <target name="check-grammar-kit-required" depends="check-grammar-kit-output-exists, check-grammar-kit-uptodate"/>
+
+  <target name="check-jflex-output-exists">
+    <available file="${module.haskforce.basedir}/${flex.output.file}"
+               property="flex.output.exists"/>
+  </target>
+
+  <target name="check-grammar-kit-output-exists">
+    <available file="${module.haskforce.basedir}/${grammar-kit.output.dir}"
+               type="dir"
+               property="grammar-kit.output.exists"/>
+  </target>
+
+  <target name="check-jflex-uptodate" depends="check-jflex-required" if="flex.output.exists">
+    <uptodate property="jflex.notRequired"
+              targetfile="${module.haskforce.basedir}/${flex.input.file}"
+              srcfile="${module.haskforce.basedir}/${flex.input.file}"/>
+  </target>
+
+  <target name="check-grammar-kit-uptodate" depends="check-grammar-kit-required" if="grammar-kit.output.exists">
+      <uptodate property="grammar-kit.notRequired"
+                targetfile="${module.haskforce.basedir}/${flex.input.file}"
+                srcfile="${module.haskforce.basedir}/${flex.input.file}"/>
+  </target>
+
+  <target name="jflex" unless="jflex.notRequired">
+    <delete file="${module.haskforce.basedir}/${flex.output.file}"/>
+    <exec executable="java">
+      <arg value="-cp"/><arg value="${flex.jar}"/>
+      <arg value="${flex.main}"/>
+      <arg value="--skel"/><arg value="${flex.skeleton}"/>
+      <arg value="--charat"/>
+      <arg value="--nobak"/>
+      <arg value="${module.haskforce.basedir}/${flex.input.file}"/>
+    </exec>
+  </target>
+
+  <target name="grammar-kit" unless="grammar-kit.notRequired">
+    <delete dir="gen"/>
+    <exec executable="java">
+      <arg value="-cp"/><arg value="${grammar-kit.jar}:${idea.home}/lib/*"/>
+      <arg value="${grammar-kit.main}"/>
+      <arg value="${module.haskforce.basedir}/${grammar-kit.output.dir}"/>
+      <arg value="${module.haskforce.basedir}/${grammar-kit.input.file}"/>
+    </exec>
+  </target>
+
+  <target name="clean" depends="clean.module.haskforce, clean.module.jps-plugin" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, generate-sources, clean, plugin.build.jar.haskforce, compile.module.jps-plugin" description="build all modules"/>
+  
+  <target name="all" depends="build.modules" description="build all"/>
+</project>

@@ -3,3 +3,4 @@ JFlex.jar
 idea-flex.skeleton
 out
 gen/
+build.properties

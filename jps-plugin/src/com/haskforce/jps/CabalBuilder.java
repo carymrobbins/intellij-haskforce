@@ -75,10 +75,7 @@ public class CabalBuilder extends ModuleLevelBuilder {
                 if (runBuild(context, module, cabal)) return ExitCode.ABORT;
             }
             return ExitCode.OK;
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-            context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.ERROR, e.getMessage()));
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
             context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.ERROR, e.getMessage()));
         }
@@ -203,12 +200,12 @@ public class CabalBuilder extends ModuleLevelBuilder {
 
     private static File getCabalFile(JpsModule module) {
         String pathname = getContentRootPath(module);
+        //noinspection ConstantConditions
         for (File file : new File(pathname).listFiles()) {
             if (file.getName().endsWith(".cabal")) {
                 return file;
             }
         }
-
         return null;
     }
 
