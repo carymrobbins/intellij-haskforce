@@ -4,11 +4,13 @@ import com.haskforce.psi.HaskellTypes;
 import com.intellij.lang.BracePair;
 import com.intellij.lang.PairedBraceMatcher;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Utility class that relates opening and closing "braces".
+ */
 public class HaskellBraceMatcher implements PairedBraceMatcher {
     private static final BracePair[] PAIRS = new BracePair[]{
             new BracePair(HaskellTypes.LPAREN, HaskellTypes.RPAREN, false),
@@ -25,7 +27,7 @@ public class HaskellBraceMatcher implements PairedBraceMatcher {
 
     @Override
     public boolean isPairedBracesAllowedBeforeType(@NotNull IElementType lbraceType, @Nullable IElementType contextType) {
-        return TokenType.WHITE_SPACE == contextType;
+        return true;
     }
 
     @Override

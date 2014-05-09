@@ -50,6 +50,7 @@
       <lang.braceMatcher language="Haskell" implementationClass="com.haskforce.features.HaskellBraceMatcher"/>
       <lang.commenter language="Haskell" implementationClass="com.haskforce.features.HaskellCommenter"/>
       <quoteHandler fileType="Haskell" className="com.haskforce.features.HaskellQuoteHandler"/>
+      <typedHandler implementation="com.haskforce.features.HaskellTypedHandler" id="HaskellFile"/>
 
       <!-- Project settings -->
 
