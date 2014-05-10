@@ -1,7 +1,4 @@
-HaskellTokenType.comment ('--\n')
-HaskellTokenType.comment ('-- Pretend long copyright notice is here.')
-WHITE_SPACE ('\n')
-HaskellTokenType.comment ('--\n')
+HaskellTokenType.comment ('--\n-- Pretend long copyright notice is here.\n--\n')
 WHITE_SPACE ('\n')
 HaskellTokenType.module ('module')
 WHITE_SPACE (' ')

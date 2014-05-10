@@ -1,7 +1,5 @@
 Haskell File
-  PsiComment(HaskellTokenType.comment)('--\n')
-  PsiComment(HaskellTokenType.comment)('-- Pretend long copyright notice is here.')
-  PsiComment(HaskellTokenType.comment)('--\n')
+  PsiComment(HaskellTokenType.comment)('--\n-- Pretend long copyright notice is here.\n--\n')
   PsiElement(HaskellTokenType.module)('module')
   HaskellQconidImpl(QCONID)
     PsiElement(HaskellTokenType.conid)('Comment1')
