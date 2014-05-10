@@ -451,7 +451,8 @@
       <classpath>
         <fileset dir="${idea.home}/lib" includes="*.jar"/>
         <pathelement location="${grammar-kit.jar}"/>
-        <pathelement path="${haskforce.output.dir}"/>
+        <!-- Temporarily removing this to avoid using an outdated class file.  -->
+        <!--<pathelement path="${haskforce.output.dir}"/>-->
       </classpath>
       <arg value="${grammar-kit.output.dir}"/>
       <arg value="${grammar-kit.input.file}"/>
