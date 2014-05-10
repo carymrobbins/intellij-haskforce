@@ -3,12 +3,12 @@
 
 
   <property file="build.properties"/>
-  <property name="flex.jar" value="JFlex.jar"/>
-  <property name="flex.main" value="JFlex.Main"/>
-  <property name="flex.skeleton" value="idea-flex.skeleton"/>
-  <property name="flex.target.base" value="src/com/haskforce/highlighting/_HaskellSyntaxHighlightingLexer"/>
-  <property name="flex.input.file" value="${flex.target.base}.flex"/>
-  <property name="flex.output.file" value="${flex.target.base}.java"/>
+  <property name="jflex.jar" value="JFlex.jar"/>
+  <property name="jflex.main" value="JFlex.Main"/>
+  <property name="jflex.skeleton" value="idea-flex.skeleton"/>
+  <property name="jflex.target.base" value="src/com/haskforce/highlighting/_HaskellSyntaxHighlightingLexer"/>
+  <property name="jflex.input.file" value="${jflex.target.base}.flex"/>
+  <property name="jflex.output.file" value="${jflex.target.base}.java"/>
   <property name="grammar-kit.jar" value="grammar-kit.jar"/>
   <property name="grammar-kit.main" value="org.intellij.grammar.Main"/>
   <property name="grammar-kit.output.dir" value="gen"/>
@@ -421,8 +421,8 @@
   <target name="check.jflex">
     <condition property="jflex.notRequired">
       <and>
-        <available file="${flex.output.file}"/>
-        <uptodate srcfile="${flex.input.file}" targetfile="${flex.output.file}"/>
+        <available file="${jflex.output.file}"/>
+        <uptodate srcfile="${jflex.input.file}" targetfile="${jflex.output.file}"/>
       </and>
     </condition>
   </target>
@@ -437,24 +437,26 @@
   </target>
 
   <target name="generate.jflex" unless="jflex.notRequired">
-    <exec executable="java">
-      <arg value="-cp"/><arg value="${flex.jar}"/>
-      <arg value="${flex.main}"/>
-      <arg value="--skel"/><arg value="${flex.skeleton}"/>
+    <java jar="${jflex.jar}" fork="true">
+      <arg value="--skel"/>
+      <arg value="${jflex.skeleton}"/>
       <arg value="--charat"/>
       <arg value="--nobak"/>
-      <arg value="${flex.input.file}"/>
-    </exec>
+      <arg value="${jflex.input.file}"/>
+    </java>
   </target>
 
   <target name="generate.grammar-kit" unless="grammar-kit.notRequired">
-    <delete dir="gen"/>
-    <exec executable="java">
-      <arg value="-cp"/><arg value="${grammar-kit.jar}:${idea.home}/lib/*"/>
-      <arg value="${grammar-kit.main}"/>
+    <delete dir="${grammar-kit.output.dir}"/>
+    <java classname="org.intellij.grammar.Main">
+      <classpath>
+        <fileset dir="${idea.home}/lib" includes="*.jar"/>
+        <pathelement location="${grammar-kit.jar}"/>
+        <pathelement path="${haskforce.output.dir}"/>
+      </classpath>
       <arg value="${grammar-kit.output.dir}"/>
       <arg value="${grammar-kit.input.file}"/>
-    </exec>
+    </java>
   </target>
 
   <target name="clean" depends="clean.module.haskforce, clean.module.jps-plugin" description="cleanup all"/>
