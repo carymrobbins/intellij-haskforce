@@ -114,43 +114,53 @@ public class CabalBuilder extends ModuleLevelBuilder {
 
     private static void processOut(CompileContext context, Process process, JpsModule module) {
         final String warningPrefix = "Warning: ";
+        boolean oneBehind = false;
+        String line = "";
         Iterator<String> processOut = collectOutput(process);
         StringBuilder msg = new StringBuilder(1000);
+        Pattern compiledPattern = Pattern.compile("(.*):(\\d+):(\\d+):\\s*(.*):(.*)");
 
-        while (processOut.hasNext()) {
-            String line = processOut.next();
+        while (processOut.hasNext() || oneBehind) {
+            if (oneBehind) {
+                oneBehind = false;
+            } else {
+                line = processOut.next();
+            }
 
-            Matcher matcher = Pattern.compile("(.*):(\\d+):(\\d+):(.*)").matcher(line);
+            // See comment after this method for example warning message.
+            Matcher matcher = compiledPattern.matcher(line);
             if (line.startsWith(warningPrefix)) {
+                // Cabal messages
                 String text = line.substring(warningPrefix.length()) + System.lineSeparator() + processOut.next();
                 context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.WARNING, text));
             } else if (matcher.find()) {
+                // GHC Messages
                 String file = matcher.group(1);
                 long lineNum = Long.parseLong(matcher.group(2));
                 long colNum = Long.parseLong(matcher.group(3));
                 msg.setLength(0);
-                msg.append(matcher.group(4));
+                msg.append(matcher.group(5));
                 while (processOut.hasNext()) {
-                    String msgLine = processOut.next();
+                    line = processOut.next();
 
-                    if (msgLine.endsWith("warning generated.")) {
+                    if (line.endsWith("warning generated.") ||
+                            line.trim().length() == 0) {
                         break;
                     }
-                    if (msgLine.trim().length() == 0) {
+                    if (line.startsWith("[") || line.startsWith("In-place")) {
+                        // Fresh line starting, save to process next.
+                        oneBehind = true;
                         break;
                     }
-                    msg.append(msgLine).append(System.lineSeparator());
+                    msg.append(line).append(System.lineSeparator());
                 }
 
+                // RootPath necessary for reasonable error messages by Intellij.
                 String sourcePath = getContentRootPath(module) + File.separator + file.replace('\\', File.separatorChar);
-                BuildMessage.Kind kind;
-                final String trimmedMessage = msg.toString().trim();
-                if (trimmedMessage.startsWith("warning") || trimmedMessage.startsWith("Warning")) {
-                    kind = BuildMessage.Kind.WARNING;
-                } else {
-                    kind = BuildMessage.Kind.ERROR;
-                }
+                BuildMessage.Kind kind = matcher.group(4).contains("arn") ?
+                       BuildMessage.Kind.WARNING : BuildMessage.Kind.ERROR;
 
+                final String trimmedMessage = msg.toString().trim();
                 context.processMessage(new CompilerMessage(
                         "ghc",
                         kind,
@@ -158,11 +168,20 @@ public class CabalBuilder extends ModuleLevelBuilder {
                         sourcePath,
                         -1L, -1L, -1L,
                         lineNum, colNum));
-            } else {
-                context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.INFO, line));
             }
         }
     }
+    /* Example warning:
+
+Preprocessing library feldspar-language-0.6.1.0...
+[74 of 92] Compiling Feldspar.Core.UntypedRepresentation ( src/Feldspar/Core/UntypedRepresentation.hs, dist/build/Feldspar/Core/UntypedRepresentation.o )
+src/Feldspar/Core/UntypedRepresentation.hs:483:5: Warning:
+    Pattern match(es) are overlapped
+    In an equation for `typeof': typeof e = ...
+[74 of 92] Compiling Feldspar.Core.UntypedRepresentation ( src/Feldspar/Core/UntypedRepresentation.hs, dist/build/Feldspar/Core/UntypedRepresentation.p_o )
+<same warning again>
+
+     */
 
     private static Iterator<String> collectOutput(Process process) {
         final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
