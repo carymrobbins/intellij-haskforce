@@ -4,7 +4,6 @@
 
   <property file="build.properties"/>
   <property name="jflex.jar" value="JFlex.jar"/>
-  <property name="jflex.main" value="JFlex.Main"/>
   <property name="jflex.skeleton" value="idea-flex.skeleton"/>
   <property name="jflex.target.base" value="src/com/haskforce/highlighting/_HaskellSyntaxHighlightingLexer"/>
   <property name="jflex.input.file" value="${jflex.target.base}.flex"/>
@@ -448,7 +447,7 @@
 
   <target name="generate.grammar-kit" unless="grammar-kit.notRequired">
     <delete dir="${grammar-kit.output.dir}"/>
-    <java classname="org.intellij.grammar.Main">
+    <java classname="${grammar-kit.main}">
       <classpath>
         <fileset dir="${idea.home}/lib" includes="*.jar"/>
         <pathelement location="${grammar-kit.jar}"/>
