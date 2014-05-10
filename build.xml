@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="haskforce" default="all">
-  
-  
+
+
   <property file="build.properties"/>
   <property name="flex.jar" value="JFlex.jar"/>
   <property name="flex.main" value="JFlex.Main"/>
@@ -201,9 +201,9 @@
   
   
   <!-- Module HaskForce -->
-  
+
   <dirname property="module.haskforce.basedir" file="${ant.file}"/>
-  
+
   
   <property name="module.jdk.home.haskforce" value="${project.jdk.home}"/>
   <property name="module.jdk.bin.haskforce" value="${project.jdk.bin}"/>
@@ -409,65 +409,57 @@
     <delete dir="${jps-plugin.output.dir}"/>
     <delete dir="${jps-plugin.testoutput.dir}"/>
   </target>
-  
+
   <target name="init" description="Build initialization">
     <!-- Perform any build initialization in this target -->
   </target>
 
-  <target name="generate-sources" depends="check-jflex-required, jflex, check-grammar-kit-required, grammar-kit"/>
+  <target name="generate.sources"
+          depends="check.jflex, generate.jflex,
+                   check.grammar-kit, generate.grammar-kit"/>
 
-  <target name="check-jflex-required" depends="check-jflex-output-exists, check-jflex-uptodate"/>
-
-  <target name="check-grammar-kit-required" depends="check-grammar-kit-output-exists, check-grammar-kit-uptodate"/>
-
-  <target name="check-jflex-output-exists">
-    <available file="${module.haskforce.basedir}/${flex.output.file}"
-               property="flex.output.exists"/>
+  <target name="check.jflex">
+    <condition property="jflex.notRequired">
+      <and>
+        <available file="${flex.output.file}"/>
+        <uptodate srcfile="${flex.input.file}" targetfile="${flex.output.file}"/>
+      </and>
+    </condition>
   </target>
 
-  <target name="check-grammar-kit-output-exists">
-    <available file="${module.haskforce.basedir}/${grammar-kit.output.dir}"
-               type="dir"
-               property="grammar-kit.output.exists"/>
+  <target name="check.grammar-kit">
+    <condition property="grammar-kit.notRequired">
+      <and>
+        <available file="${grammar-kit.output.dir}" type="dir"/>
+        <uptodate srcfile="${grammar-kit.input.file}" targetfile="${grammar-kit.output.dir}"/>
+      </and>
+    </condition>
   </target>
 
-  <target name="check-jflex-uptodate" depends="check-jflex-required" if="flex.output.exists">
-    <uptodate property="jflex.notRequired"
-              targetfile="${module.haskforce.basedir}/${flex.input.file}"
-              srcfile="${module.haskforce.basedir}/${flex.input.file}"/>
-  </target>
-
-  <target name="check-grammar-kit-uptodate" depends="check-grammar-kit-required" if="grammar-kit.output.exists">
-      <uptodate property="grammar-kit.notRequired"
-                targetfile="${module.haskforce.basedir}/${flex.input.file}"
-                srcfile="${module.haskforce.basedir}/${flex.input.file}"/>
-  </target>
-
-  <target name="jflex" unless="jflex.notRequired">
-    <delete file="${module.haskforce.basedir}/${flex.output.file}"/>
+  <target name="generate.jflex" unless="jflex.notRequired">
     <exec executable="java">
       <arg value="-cp"/><arg value="${flex.jar}"/>
       <arg value="${flex.main}"/>
       <arg value="--skel"/><arg value="${flex.skeleton}"/>
       <arg value="--charat"/>
       <arg value="--nobak"/>
-      <arg value="${module.haskforce.basedir}/${flex.input.file}"/>
+      <arg value="${flex.input.file}"/>
     </exec>
   </target>
 
-  <target name="grammar-kit" unless="grammar-kit.notRequired">
+  <target name="generate.grammar-kit" unless="grammar-kit.notRequired">
     <delete dir="gen"/>
     <exec executable="java">
       <arg value="-cp"/><arg value="${grammar-kit.jar}:${idea.home}/lib/*"/>
       <arg value="${grammar-kit.main}"/>
-      <arg value="${module.haskforce.basedir}/${grammar-kit.output.dir}"/>
-      <arg value="${module.haskforce.basedir}/${grammar-kit.input.file}"/>
+      <arg value="${grammar-kit.output.dir}"/>
+      <arg value="${grammar-kit.input.file}"/>
     </exec>
   </target>
 
   <target name="clean" depends="clean.module.haskforce, clean.module.jps-plugin" description="cleanup all"/>
-  
-  <target name="build.modules" depends="init, generate-sources, clean, plugin.build.jar.haskforce, compile.module.jps-plugin" description="build all modules"/>
-  
+
+  <target name="build.modules" depends="init, generate.sources, clean, plugin.build.jar.haskforce, compile.module.jps-plugin" description="build all modules"/>
+
   <target name="all" depends="build.modules" description="build all"/>
 </project>
