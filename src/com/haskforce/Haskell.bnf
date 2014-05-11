@@ -44,6 +44,8 @@
 
   psiImplUtilClass="com.haskforce.psi.impl.HaskellPsiImplUtil"
 
+  implements("varid|qvarid")="com.intellij.psi.PsiNamedElement"
+
   tokens=[
     lparen='('
     rparen=')'
@@ -179,7 +181,9 @@ ncomment ::= opencom commenttext* (ncomment commenttext*)* closecom
 special ::= '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}' | thquote | backtick
 symbol ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '=' | '>' | '?' | '@'
          | '\' | '^' | '|' | '-' | '~' | ':'
-private varid ::= !reservedid varidRegexp
+varid ::= !reservedid varidRegexp {
+        methods=[getName setName]
+    }
 private reservedExpr ::= 'case' | 'do' | 'else' | 'if' | 'in' | 'let' | 'of' | 'then'
 private reservedDecl ::= 'class' | 'data' | 'default' | 'deriving' | 'foreign' | 'instance'
                        | 'newtype' | 'type' | 'where'
@@ -198,7 +202,9 @@ tycon ::= conid
 tycls ::= conid
 modulePrefix ::= (conid '.')+
 
-qvarid ::= [modulePrefix] varid
+qvarid ::= [modulePrefix] varid {
+       methods=[getName setName]
+   }
 qinfixvarid ::= '`' [modulePrefix] varid '`'
 qconid ::= [modulePrefix] conid
 qinfixconid ::= '`' [modulePrefix] conid '`'
