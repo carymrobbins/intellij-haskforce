@@ -5,6 +5,7 @@ package com.haskforce.jps;
  * 2014.
  */
 
+import com.haskforce.jps.model.JpsHaskellModuleType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.jps.builders.BuildTargetLoader;

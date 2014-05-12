@@ -1,4 +1,4 @@
-package com.haskforce.jps;
+package com.haskforce.jps.model;
 
 import org.jetbrains.jps.model.JpsDummyElement;
 import org.jetbrains.jps.model.ex.JpsElementTypeWithDummyProperties;

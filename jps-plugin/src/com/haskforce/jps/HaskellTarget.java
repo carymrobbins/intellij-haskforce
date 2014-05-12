@@ -6,6 +6,7 @@ package com.haskforce.jps;
  */
 
 
+import com.haskforce.jps.model.JpsHaskellModuleType;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
