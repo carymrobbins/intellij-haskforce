@@ -34,11 +34,11 @@ import junit.framework.TestSuite;
  */
 @SuppressWarnings("ALL")
 public class HaskellTestCase extends TestCase {
-  public static TestSuite suite() {
-    TestSuite suite = new TestSuite();
-    suite.addTestSuite(HaskellLexerTest.class);
-    suite.addTestSuite(HaskellParserTest.class);
-    suite.addTestSuite(HaskellFeaturesTest.class);
-    return suite;
-  }
+    public static TestSuite suite() {
+        TestSuite suite = new TestSuite();
+        suite.addTestSuite(HaskellLexerTest.class);
+        suite.addTestSuite(HaskellParserTest.class);
+        suite.addTestSuite(HaskellFeaturesTest.class);
+        return suite;
+    }
 }
