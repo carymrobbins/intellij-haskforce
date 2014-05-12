@@ -15,28 +15,28 @@ import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCa
  */
 public abstract class HaskellLightPlatformCodeInsightFixtureTestCase extends LightPlatformCodeInsightFixtureTestCase {
 
-  protected HaskellLightPlatformCodeInsightFixtureTestCase() {
-    super();
-  }
+    protected HaskellLightPlatformCodeInsightFixtureTestCase() {
+        super();
+    }
 
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+    }
 
-  @Override
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+    }
 
-  protected void setUpProjectSdk() {
-    ApplicationManager.getApplication().runWriteAction(new Runnable() {
-      @Override
-      public void run() {
-        Sdk sdk = getProjectDescriptor().getSdk();
-        ProjectJdkTable.getInstance().addJdk(sdk);
-        ProjectRootManager.getInstance(myFixture.getProject()).setProjectSdk(sdk);
-      }
-    });
-  }
+    protected void setUpProjectSdk() {
+        ApplicationManager.getApplication().runWriteAction(new Runnable() {
+            @Override
+            public void run() {
+                Sdk sdk = getProjectDescriptor().getSdk();
+                ProjectJdkTable.getInstance().addJdk(sdk);
+                ProjectRootManager.getInstance(myFixture.getProject()).setProjectSdk(sdk);
+            }
+        });
+    }
 }
