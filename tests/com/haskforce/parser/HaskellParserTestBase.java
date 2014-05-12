@@ -73,7 +73,6 @@ public abstract class HaskellParserTestBase extends ParsingTestCase {
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        CoreApplicationEnvironment.registerExtensionPoint(Extensions.getRootArea(), "com.intellij.lang.braceMatcher", LanguageExtensionPoint.class);
     }
 
 }
