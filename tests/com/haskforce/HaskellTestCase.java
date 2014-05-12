@@ -22,6 +22,7 @@
 
 package com.haskforce;
 
+import com.haskforce.features.HaskellFeaturesTest;
 import com.haskforce.highlighting.HaskellLexerTest;
 import com.haskforce.parser.HaskellParserTest;
 import junit.framework.TestCase;
@@ -37,6 +38,7 @@ public class HaskellTestCase extends TestCase {
     TestSuite suite = new TestSuite();
     suite.addTestSuite(HaskellLexerTest.class);
     suite.addTestSuite(HaskellParserTest.class);
+    suite.addTestSuite(HaskellFeaturesTest.class);
     return suite;
   }
 }
