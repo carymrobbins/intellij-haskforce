@@ -24,4 +24,13 @@ public class HaskellBuildOptions {
 
     @Tag("useDebugInfo")
     public boolean myAddDebugInfoEnabled = true;
+
+    @Override
+    public String toString() {
+        return "HaskellBuildOptions{" +
+                "myUseCabal=" + myUseCabal +
+                ", myUseCabalSandbox=" + myUseCabalSandbox +
+                ", myAddDebugInfoEnabled=" + myAddDebugInfoEnabled +
+                '}';
+    }
 }

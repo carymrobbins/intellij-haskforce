@@ -37,4 +37,11 @@ public class JpsHaskellBuildOptionsExtension extends JpsCompositeElementBase<Jps
         }
         return extension;
     }
+
+    @Override
+    public String toString() {
+        return "JpsHaskellBuildOptionsExtension{" +
+                "myOptions=" + myOptions +
+                '}';
+    }
 }
