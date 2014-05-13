@@ -25,17 +25,12 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
 
     private Project project;
 
-    // Old values to detect user updates.
-    private String oldCabalPath;
-
     // Swing components.
     private JPanel settings;
-    private TextFieldWithBrowseButton cabalPath;
-    private JLabel cabalVersion;
+    // TODO: Add more external tools.
 
     public HaskellToolsConfigurable(@NotNull Project inProject) {
         project = inProject;
-        oldCabalPath = PropertiesComponent.getInstance(project).getValue("cabalPath", "");
     }
 
     @NotNull
@@ -67,14 +62,6 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     public JComponent createComponent() {
         settings = new JPanel(new GridBagLayout());
 
-        // Cabal configuration.
-        cabalPath = createExecutableOption(settings, "Cabal");
-        cabalVersion = createDisplayVersion(settings, "Cabal");
-        if (!oldCabalPath.isEmpty()) {
-            cabalPath.setText(oldCabalPath);
-            updateVersionInfoFields();
-        }
-
         return settings;
     }
 
@@ -83,7 +70,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
      */
     @Override
     public boolean isModified() {
-        return !cabalPath.getText().equals(oldCabalPath);
+        return false;
     }
 
     /**
@@ -121,20 +108,17 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
      * Updates the version info fields for all files configured.
      */
     private void updateVersionInfoFields() {
-        cabalVersion.setText(getVersion(cabalPath.getText(), "--numeric-version"));
     }
 
     /**
      * Persistent save of the current state.
      */
     private void saveState() {
-        PropertiesComponent.getInstance(project).setValue("cabalPath", cabalPath.getText());
     }
 
     /**
      * Restore components to the initial state.
      */
     private void restoreState() {
-        cabalPath.setText(oldCabalPath);
     }
 }

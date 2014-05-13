@@ -1,7 +1,12 @@
 package com.haskforce;
 
+import com.haskforce.jps.model.JpsHaskellModelSerializerExtension;
 import com.haskforce.utils.ExecUtil;
-import com.intellij.openapi.projectRoots.*;
+import com.intellij.openapi.projectRoots.AdditionalDataConfigurable;
+import com.intellij.openapi.projectRoots.SdkAdditionalData;
+import com.intellij.openapi.projectRoots.SdkModel;
+import com.intellij.openapi.projectRoots.SdkModificator;
+import com.intellij.openapi.projectRoots.SdkType;
 import com.intellij.openapi.util.SystemInfo;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
@@ -11,12 +16,8 @@ import javax.swing.*;
 import java.io.File;
 
 public class HaskellSdkType extends SdkType {
-
-    public static final String HASKELL_SDK_TYPE_ID = "Haskell SDK";
-
     public HaskellSdkType() {
-        // TODO
-        super(HASKELL_SDK_TYPE_ID);
+        super(JpsHaskellModelSerializerExtension.HASKELL_SDK_TYPE_ID);
     }
 
     @NotNull
@@ -38,7 +39,7 @@ public class HaskellSdkType extends SdkType {
 
     @Override
     public String getPresentableName() {
-        return HASKELL_SDK_TYPE_ID;
+        return JpsHaskellModelSerializerExtension.HASKELL_SDK_TYPE_ID;
     }
 
     @Override

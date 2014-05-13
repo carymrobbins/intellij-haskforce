@@ -12,7 +12,9 @@ public class HaskellBuildOptions {
     public HaskellBuildOptions(HaskellBuildOptions options) {
         myUseCabal = options.myUseCabal;
         myUseCabalSandbox = options.myUseCabalSandbox;
-        myAddDebugInfoEnabled = options.myAddDebugInfoEnabled;
+        myProfilingBuild = options.myProfilingBuild;
+        myGhcPath = options.myGhcPath;
+        myCabalPath = options.myCabalPath;
     }
 
     @Tag("useCabal")
@@ -21,16 +23,23 @@ public class HaskellBuildOptions {
     @Tag("useCabalSandbox")
     public boolean myUseCabalSandbox = false;
 
+    @Tag("useProfilingBuild")
+    public boolean myProfilingBuild = true;
 
-    @Tag("useDebugInfo")
-    public boolean myAddDebugInfoEnabled = true;
+    @Tag("ghcPath")
+    public String myGhcPath = "ghc";
+
+    @Tag("cabalPath")
+    public String myCabalPath = "cabal";
 
     @Override
     public String toString() {
         return "HaskellBuildOptions{" +
                 "myUseCabal=" + myUseCabal +
                 ", myUseCabalSandbox=" + myUseCabalSandbox +
-                ", myAddDebugInfoEnabled=" + myAddDebugInfoEnabled +
+                ", myProfilingBuild=" + myProfilingBuild +
+                ", myGhcPath=" + myGhcPath +
+                ", myCabalPath=" + myCabalPath +
                 '}';
     }
 }

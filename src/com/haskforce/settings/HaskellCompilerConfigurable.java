@@ -2,7 +2,6 @@ package com.haskforce.settings;
 
 import com.haskforce.utils.ExecUtil;
 import com.intellij.compiler.options.CompilerConfigurable;
-import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
@@ -23,31 +22,25 @@ import static com.haskforce.utils.GuiUtil.createExecutableOption;
 public class HaskellCompilerConfigurable extends CompilerConfigurable {
     public static final String HASKELL_COMPILER_ID = "Haskell compiler";
 
-    private Project project;
-
     // Swing components.
     private JPanel settings;
-    // GHC Binary
+    // GHC Binary components.
     private TextFieldWithBrowseButton ghcPath;
     private JLabel ghcVersion;
-    // Build configuration
+    // Cabal binary components
+    private TextFieldWithBrowseButton cabalPath;
+    private JLabel cabalVersion;
+    // Build configuration components.
+    private JCheckBox profilingBuild;
     private JCheckBox cabalBuild;
     private JCheckBox cabalSandbox;
 
-    // Old values to detect user updates.
-    private String oldGhcPath;
-    private boolean oldCabalBuild;
-    private boolean oldCabalSandbox;
+    // Data container for settings.
+    private final HaskellBuildSettings mySettings;
 
     public HaskellCompilerConfigurable(@NotNull Project inProject) {
         super(inProject);
-        project = inProject;
-
-        PropertiesComponent state = PropertiesComponent.getInstance(project);
-
-        oldGhcPath = state.getValue("ghcPath", "");
-        oldCabalBuild = state.getBoolean("cabalBuild", true);
-        oldCabalSandbox = state.getBoolean("cabalSandbox", false);
+        mySettings = HaskellBuildSettings.getInstance(inProject);
     }
 
     @NotNull
@@ -82,16 +75,20 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         // GHC path configuration.
         ghcPath = createExecutableOption(settings, "GHC");
         ghcVersion = createDisplayVersion(settings, "GHC");
-        if (!oldGhcPath.isEmpty()) {
-            ghcPath.setText(oldGhcPath);
-            updateVersionInfoFields();
-        }
+        ghcPath.setText(mySettings.getGhcPath());
+
+        // Cabal path configuration.
+        cabalPath = createExecutableOption(settings, "Cabal");
+        cabalVersion = createDisplayVersion(settings, "Cabal");
+        cabalPath.setText(mySettings.getCabalPath());
 
         // Build configuration.
+        profilingBuild = createCheckBoxOption(settings, "Build with profiling information");
         cabalBuild = createCheckBoxOption(settings, "Build with Cabal");
         cabalSandbox = createCheckBoxOption(settings, "Build in Sandbox");
-        cabalBuild.setSelected(oldCabalBuild);
-        cabalSandbox.setSelected(oldCabalSandbox);
+        cabalBuild.setSelected(mySettings.isCabalEnabled());
+        cabalSandbox.setSelected(mySettings.isCabalSandboxEnabled());
+        updateVersionInfoFields();
 
         return settings;
     }
@@ -101,9 +98,11 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
      */
     @Override
     public boolean isModified() {
-        return !(ghcPath.getText().equals(oldGhcPath) &&
-                cabalBuild.isSelected() == oldCabalBuild &&
-                cabalSandbox.isSelected() == oldCabalSandbox);
+        return !(ghcPath.getText().equals(mySettings.getGhcPath()) &&
+                cabalPath.getText().equals(mySettings.getCabalPath()) &&
+                profilingBuild.isSelected() == mySettings.isProfilingEnabled() &&
+                cabalBuild.isSelected() == mySettings.isCabalEnabled() &&
+                cabalSandbox.isSelected() == mySettings.isCabalSandboxEnabled());
     }
 
     /**
@@ -132,11 +131,12 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
      * Persistent save of the current state.
      */
     private void saveState() {
-        PropertiesComponent state = PropertiesComponent.getInstance(project);
-
-        state.setValue("ghcPath", ghcPath.getText());
-        state.setValue("cabalBuild", String.valueOf(cabalBuild.isSelected()));
-        state.setValue("cabalSandbox", String.valueOf(cabalSandbox.isSelected()));
+        // Save to disk and to communicate with build server.
+        mySettings.setProfilingBuild(profilingBuild.isSelected());
+        mySettings.setUseCabal(cabalBuild.isSelected());
+        mySettings.setUseCabalSandbox(cabalSandbox.isSelected());
+        mySettings.setGhcPath(ghcPath.getText());
+        mySettings.setCabalPath(cabalPath.getText());
     }
 
     /**
@@ -144,14 +144,17 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
      */
     private void updateVersionInfoFields() {
         ghcVersion.setText(ExecUtil.run(ghcPath.getText() +  " --numeric-version"));
+        cabalVersion.setText(ExecUtil.run(cabalPath.getText() +  " --numeric-version"));
     }
 
     /**
      * Restore components to the initial state.
      */
     private void restoreState() {
-        ghcPath.setText(oldGhcPath);
-        cabalBuild.setSelected(oldCabalBuild);
-        cabalSandbox.setSelected(oldCabalSandbox);
+        ghcPath.setText(mySettings.getGhcPath());
+        cabalPath.setText(mySettings.getCabalPath());
+        profilingBuild.setSelected(mySettings.isProfilingEnabled());
+        cabalBuild.setSelected(mySettings.isCabalEnabled());
+        cabalSandbox.setSelected(mySettings.isCabalSandboxEnabled());
     }
 }

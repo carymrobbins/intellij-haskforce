@@ -20,6 +20,8 @@ package com.haskforce.jps;
  * 2014.
  */
 
+import com.haskforce.jps.model.HaskellBuildOptions;
+import com.haskforce.jps.model.JpsHaskellBuildOptionsExtension;
 import org.jetbrains.jps.incremental.BuilderCategory;
 import org.jetbrains.jps.incremental.ModuleLevelBuilder;
 import com.intellij.openapi.diagnostic.Logger;
@@ -69,7 +71,8 @@ public class CabalBuilder extends ModuleLevelBuilder {
                     //        "Can't find cabal file in " + getContentRootPath(module)));
                     continue;
                 }
-                CabalJspInterface cabal = new CabalJspInterface(cabalFile);
+                HaskellBuildOptions buildOptions = JpsHaskellBuildOptionsExtension.getOrCreateExtension(module.getProject()).getOptions();
+                CabalJspInterface cabal = new CabalJspInterface(buildOptions.myCabalPath, cabalFile);
 
                 if (runConfigure(context, module, cabal)) return ExitCode.ABORT;
                 if (runBuild(context, module, cabal)) return ExitCode.ABORT;

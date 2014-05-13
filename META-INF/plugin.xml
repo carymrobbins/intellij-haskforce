@@ -60,6 +60,8 @@
       <projectConfigurable instance="com.haskforce.settings.HaskellCompilerConfigurable"
                            parentId="project.propCompiler" id="Haskell compiler"
                            displayName="Haskell Compiler"/>
+      <!-- Persistent data + build server communication for compiler settings -->
+      <projectService serviceImplementation="com.haskforce.settings.HaskellBuildSettings" />
       <!-- Tab in IntelliJ -> Preferences -->
       <projectConfigurable instance="com.haskforce.settings.HaskellToolsConfigurable"/>
       <!-- File -> Project Structure dialogue. -->

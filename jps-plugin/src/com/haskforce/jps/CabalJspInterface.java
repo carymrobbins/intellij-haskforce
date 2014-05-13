@@ -16,14 +16,17 @@ import java.io.IOException;
 public class CabalJspInterface {
     @NotNull
     private File myCabalFile;
+    @NotNull
+    private String myCabalPath;
 
-    CabalJspInterface(@NotNull File cabalFile) {
+    CabalJspInterface(@NotNull String cabalPath, @NotNull File cabalFile) {
+        myCabalPath = cabalPath;
         myCabalFile = cabalFile;
     }
 
     private Process runCommand(String command) throws IOException {
         return new ProcessWrapper(myCabalFile.getParentFile().getCanonicalPath()).
-                            getProcess("cabal", command);
+                            getProcess(myCabalPath, command);
     }
 
     public Process configure() throws IOException {

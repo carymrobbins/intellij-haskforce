@@ -10,7 +10,7 @@ public class JpsHaskellBuildOptionsSerializer extends JpsProjectExtensionSeriali
     public static final String HASKELL_BUILD_OPTIONS_COMPONENT_NAME = "HaskellBuildOptions";
 
     public JpsHaskellBuildOptionsSerializer() {
-        super("haskell_compiler.xml", HASKELL_BUILD_OPTIONS_COMPONENT_NAME);
+        super("compiler.xml", HASKELL_BUILD_OPTIONS_COMPONENT_NAME);
     }
 
     @Override
