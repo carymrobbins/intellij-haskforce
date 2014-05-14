@@ -8,7 +8,6 @@ import com.intellij.openapi.roots.ui.configuration.ClasspathEditor;
 import com.intellij.openapi.roots.ui.configuration.DefaultModuleEditorsProvider;
 import com.intellij.openapi.roots.ui.configuration.JavaContentEntriesEditor;
 import com.intellij.openapi.roots.ui.configuration.ModuleConfigurationState;
-import com.intellij.openapi.roots.ui.configuration.OutputEditor;
 
 /**
  * Project Settings->Module panel.
@@ -21,7 +20,7 @@ public class HaskellModuleConfigurationEditor extends DefaultModuleEditorsProvid
         }
         return new ModuleConfigurationEditor[]{
                 new JavaContentEntriesEditor(module.getName(), state),
-                // new OutputEditor(state), TODO: Add when we have Haddock support.
+                new CabalFilesEditor(state),
                 new ClasspathEditor(state),
         };
     }
