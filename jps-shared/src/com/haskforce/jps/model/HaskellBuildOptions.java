@@ -10,6 +10,12 @@ import java.util.List;
  * Serialization object for communicating build settings with the build server.
  */
 public class HaskellBuildOptions {
+    public static final boolean DEFAULT_USE_CABAL = true;
+    public static final boolean DEFAULT_USE_CABAL_SANDBOX = false;
+    public static final boolean DEFAULT_USE_PROFILING_BUILD = true;
+    public static final String DEFAULT_GHC_PATH = "ghc";
+    public static final String DEFAULT_CABAL_PATH = "cabal";
+
     public HaskellBuildOptions() {
     }
 
@@ -22,19 +28,19 @@ public class HaskellBuildOptions {
     }
 
     @Tag("useCabal")
-    public boolean myUseCabal = true;
+    public boolean myUseCabal = DEFAULT_USE_CABAL;
 
     @Tag("useCabalSandbox")
-    public boolean myUseCabalSandbox = false;
+    public boolean myUseCabalSandbox = DEFAULT_USE_CABAL_SANDBOX;
 
     @Tag("useProfilingBuild")
-    public boolean myProfilingBuild = true;
+    public boolean myProfilingBuild = DEFAULT_USE_PROFILING_BUILD;
 
     @Tag("ghcPath")
-    public String myGhcPath = "ghc";
+    public String myGhcPath = DEFAULT_GHC_PATH;
 
     @Tag("cabalPath")
-    public String myCabalPath = "cabal";
+    public String myCabalPath = DEFAULT_CABAL_PATH;
 
     @Tag("cabalFiles")
     @AbstractCollection(surroundWithTag = false, elementTag = "cabalFile")
