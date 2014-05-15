@@ -14,7 +14,7 @@ import java.io.File;
  *
  */
 public class HaskellSourceRootDescriptor extends BuildRootDescriptor {
-    private File root;
+    private final File root;
     private final HaskellTarget target;
 
     public HaskellSourceRootDescriptor(File inRoot, HaskellTarget inTarget) {
