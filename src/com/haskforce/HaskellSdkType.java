@@ -58,10 +58,13 @@ public class HaskellSdkType extends SdkType {
 
     @Nullable
     @Override
-    public String getVersionString(@NotNull final String sdkHome) {
+    public String getVersionString(final String sdkHome) {
+        if (sdkHome == null) {
+            return null;
+        }
         File ghc = getExecutable(sdkHome);
         if (ghc.canExecute()) {
-            return ExecUtil.exec(String.format("\"%s\" --numeric-version", ghc.getPath()));
+            return ExecUtil.run(ghc.getPath() + " --numeric-version");
         }
         return null;
     }
@@ -69,28 +72,30 @@ public class HaskellSdkType extends SdkType {
     @Nullable
     @Override
     public String suggestHomePath() {
-        return SystemInfo.isWindows ? suggestHomePathForWindows() : suggestHomePathForUNIX();
-    }
-
-    @Nullable
-    public static String suggestHomePathForWindows() {
-        final String ghcPath = ExecUtil.exec("where ghc.exe");
-        if (ghcPath != null) {
-            File ghc = new File(ghcPath);
-            if (ghc.canExecute()) {
-                return ghc.getParent();
-            }
+        String libPath = suggestGhcLibDir();
+        if (libPath == null) {
+            return null;
         }
-        return null;
+        return new File(libPath).getParentFile().getParent();
     }
 
+    /**
+     * Returns the value of ghc --print-libdir if ghc is available in PATH.
+     */
     @Nullable
-    public static String suggestHomePathForUNIX() {
+    public static String suggestGhcLibDir() {
+        // Try running whatever GHC we have in $PATH.
         return ExecUtil.run("ghc --print-libdir");
     }
 
+    /**
+     * Best effort at locating GHC according to given path.
+     */
     @NotNull
     public static File getExecutable(@NotNull final String path) {
-        return new File(path, SystemInfo.isWindows ? "ghc.exe" : "ghc");
+        // We might get called with /usr/local/bin, or the true SDK
+        // path. The goal is to run ghc at this stage, so adapt to whatever.
+        String extra = path.endsWith("bin") ? "" : File.separator + "bin";
+        return new File(path + extra, SystemInfo.isWindows ? "ghc.exe" : "ghc");
     }
 }
