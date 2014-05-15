@@ -42,6 +42,7 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
     private final HaskellBuildSettings mySettings;
     // Improved settings if default values.
     private String bestGhcPath;
+    private String bestCabalPath;
 
     private final Project myProject;
 
@@ -50,6 +51,7 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         myProject = inProject;
         mySettings = HaskellBuildSettings.getInstance(myProject);
         bestGhcPath = mySettings.getGhcPath();
+        bestCabalPath = mySettings.getCabalPath();
     }
 
     @NotNull
@@ -85,6 +87,7 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
     public JComponent createComponent() {
         String sdkPath = HaskellSdkType.getHaskellSdkPath(myProject);
         File sdkGhcPath = sdkPath == null ? null : HaskellSdkType.getExecutable(sdkPath);
+        String foundCabalPath = ExecUtil.locateExecutable(HaskellBuildOptions.DEFAULT_CABAL_PATH);
         settings = new JPanel(new GridBagLayout());
 
         // GHC path configuration.
@@ -99,7 +102,11 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         // Cabal path configuration.
         cabalPath = createExecutableOption(settings, "Cabal");
         cabalVersion = createDisplayVersion(settings, "Cabal");
-        cabalPath.setText(mySettings.getCabalPath());
+        if (foundCabalPath != null && !foundCabalPath.isEmpty() &&
+                bestCabalPath.equals(HaskellBuildOptions.DEFAULT_CABAL_PATH)) {
+            bestCabalPath = foundCabalPath;
+        }
+        cabalPath.setText(bestCabalPath);
 
         // Build configuration.
         profilingBuild = createCheckBoxOption(settings, "Build with profiling information");
@@ -117,19 +124,20 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
      */
     @Override
     public boolean isModified() {
-        return !(ghcUnchanged() &&
-                cabalPath.getText().equals(mySettings.getCabalPath()) &&
+        return !(ghcAndCabalUnchanged() &&
                 profilingBuild.isSelected() == mySettings.isProfilingEnabled() &&
                 cabalBuild.isSelected() == mySettings.isCabalEnabled() &&
                 cabalSandbox.isSelected() == mySettings.isCabalSandboxEnabled());
     }
 
     /**
-     * Returns true if the ghc path is unchanged.
+     * Returns true if the ghc and cabal paths are unchanged.
      */
-    private boolean ghcUnchanged() {
-        return ghcPath.getText().equals(mySettings.getGhcPath()) ||
-                ghcPath.getText().equals(bestGhcPath);
+    private boolean ghcAndCabalUnchanged() {
+        return (ghcPath.getText().equals(mySettings.getGhcPath()) ||
+                ghcPath.getText().equals(bestGhcPath)) &&
+                (cabalPath.getText().equals(mySettings.getCabalPath()) ||
+                cabalPath.getText().equals(bestCabalPath));
     }
 
     /**
@@ -164,7 +172,8 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         mySettings.setUseCabalSandbox(cabalSandbox.isSelected());
         bestGhcPath = ghcPath.getText();
         mySettings.setGhcPath(bestGhcPath);
-        mySettings.setCabalPath(cabalPath.getText());
+        bestCabalPath = cabalPath.getText();
+        mySettings.setCabalPath(bestCabalPath);
     }
 
     /**
@@ -180,7 +189,7 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
      */
     private void restoreState() {
         ghcPath.setText(bestGhcPath);
-        cabalPath.setText(mySettings.getCabalPath());
+        cabalPath.setText(bestCabalPath);
         profilingBuild.setSelected(mySettings.isProfilingEnabled());
         cabalBuild.setSelected(mySettings.isCabalEnabled());
         cabalSandbox.setSelected(mySettings.isCabalSandboxEnabled());

@@ -28,6 +28,7 @@ public class ExecUtil {
     /**
      * Execute a command without any surrounding shell.
      */
+    @Nullable
     public static String run(@NotNull final String command) {
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(
@@ -42,5 +43,13 @@ public class ExecUtil {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * Tries to get the absolute path for a command in the PATH.
+     */
+    @Nullable
+    public static String locateExecutable(@NotNull final String command) {
+        return run((SystemInfo.isWindows ? "where" : "which") + ' ' + command);
     }
 }
