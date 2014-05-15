@@ -199,7 +199,91 @@
   </target>
   
   <!-- Modules -->
-  
+
+
+  <!-- Module jps-shared -->
+
+  <dirname property="module.jps-shared.basedir" file="${ant.file}"/>
+
+
+  <property name="module.jdk.home.jps-shared" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.jps-shared" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.jps-shared" value="${project.jdk.classpath}"/>
+
+  <property name="compiler.args.jps-shared" value="-encoding UTF-8 -source 1.7 ${compiler.args}"/>
+
+  <property name="jps-shared.output.dir" value="${module.jps-shared.basedir}/out/production/jps-shared"/>
+  <property name="jps-shared.testoutput.dir" value="${module.jps-shared.basedir}/out/test/jps-shared"/>
+
+  <path id="jps-shared.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+
+  <path id="jps-shared.module.production.classpath">
+    <path refid="${module.jdk.classpath.jps-shared}"/>
+  </path>
+
+  <path id="jps-shared.runtime.production.module.classpath">
+    <pathelement location="${jps-shared.output.dir}"/>
+  </path>
+
+  <path id="jps-shared.module.classpath">
+    <path refid="${module.jdk.classpath.jps-shared}"/>
+    <pathelement location="${jps-shared.output.dir}"/>
+  </path>
+
+  <path id="jps-shared.runtime.module.classpath">
+    <pathelement location="${jps-shared.testoutput.dir}"/>
+    <pathelement location="${jps-shared.output.dir}"/>
+  </path>
+
+
+  <patternset id="excluded.from.module.jps-shared">
+    <patternset refid="ignored.files"/>
+  </patternset>
+
+  <patternset id="excluded.from.compilation.jps-shared">
+    <patternset refid="excluded.from.module.jps-shared"/>
+  </patternset>
+
+  <path id="jps-shared.module.sourcepath">
+    <dirset dir="${module.jps-shared.basedir}/jps-shared">
+      <include name="src"/>
+      <include name="resources"/>
+    </dirset>
+  </path>
+
+
+  <target name="compile.module.jps-shared" depends="compile.module.jps-shared.production,compile.module.jps-shared.tests" description="Compile module jps-shared"/>
+
+  <target name="compile.module.jps-shared.production" depends="register.custom.compilers" description="Compile module jps-shared; production classes">
+    <mkdir dir="${jps-shared.output.dir}"/>
+    <javac2 destdir="${jps-shared.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jps-shared}/javac">
+      <compilerarg line="${compiler.args.jps-shared}"/>
+      <bootclasspath refid="jps-shared.module.bootclasspath"/>
+      <classpath refid="jps-shared.module.production.classpath"/>
+      <src refid="jps-shared.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.jps-shared"/>
+    </javac2>
+
+    <copy todir="${jps-shared.output.dir}">
+      <fileset dir="${module.jps-shared.basedir}/jps-shared/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+      <fileset dir="${module.jps-shared.basedir}/jps-shared/resources">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="compile.module.jps-shared.tests" depends="register.custom.compilers,compile.module.jps-shared.production" description="compile module jps-shared; test classes" unless="skip.tests"/>
+
+  <target name="clean.module.jps-shared" description="cleanup module">
+    <delete dir="${jps-shared.output.dir}"/>
+    <delete dir="${jps-shared.testoutput.dir}"/>
+  </target>
   
   <!-- Module HaskForce -->
 
@@ -221,6 +305,7 @@
   
   <path id="haskforce.module.production.classpath">
     <path refid="${module.jdk.classpath.haskforce}"/>
+    <pathelement path="${jps-shared.output.dir}"/>
   </path>
   
   <path id="haskforce.runtime.production.module.classpath">
@@ -347,6 +432,7 @@
   
   <path id="jps-plugin.module.production.classpath">
     <path refid="${module.jdk.classpath.jps-plugin}"/>
+    <pathelement path="${jps-shared.output.dir}"/>
   </path>
   
   <path id="jps-plugin.runtime.production.module.classpath">
@@ -461,9 +547,9 @@
     </java>
   </target>
 
-  <target name="clean" depends="clean.module.haskforce, clean.module.jps-plugin" description="cleanup all"/>
+  <target name="clean" depends="clean.module.haskforce, clean.module.jps-plugin, clean.module.jps-shared" description="cleanup all"/>
 
-  <target name="build.modules" depends="init, generate.sources, clean, plugin.build.jar.haskforce, compile.module.jps-plugin" description="build all modules"/>
+  <target name="build.modules" depends="init, generate.sources, clean, compile.module.jps-shared, compile.module.jps-plugin, plugin.build.jar.haskforce" description="build all modules"/>
 
   <target name="all" depends="build.modules" description="build all"/>
 </project>
