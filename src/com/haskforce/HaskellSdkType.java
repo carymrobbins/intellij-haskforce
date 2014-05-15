@@ -68,7 +68,7 @@ public class HaskellSdkType extends SdkType {
     @Override
     public boolean isValidSdkHome(String path) {
         // TODO: Validate SdkHome a bit more than just running ghc --version.
-        return getVersionString(path) != null;
+        return !path.endsWith("bin") && getVersionString(path) != null;
     }
 
     /**
