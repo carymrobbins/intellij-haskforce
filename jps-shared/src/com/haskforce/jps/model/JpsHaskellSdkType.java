@@ -18,7 +18,7 @@ public class JpsHaskellSdkType extends JpsSdkType<JpsDummyElement> implements Jp
     }
 
     @NotNull
-    public static File getByteCodeCompilerExecutable(@NotNull final String sdkHome) {
+    public static File getGhcExecutable(@NotNull final String sdkHome) {
         return getExecutable(new File(sdkHome, "bin").getAbsolutePath(), "ghc");
     }
 
