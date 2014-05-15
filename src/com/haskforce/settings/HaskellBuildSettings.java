@@ -12,6 +12,8 @@ import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
+
 @State(
         name = JpsHaskellBuildOptionsSerializer.HASKELL_BUILD_OPTIONS_COMPONENT_NAME,
         storages = {
@@ -75,6 +77,15 @@ public class HaskellBuildSettings implements PersistentStateComponent<HaskellBui
 
     public void setCabalPath(@NotNull String path) {
         myBuildOptions.myCabalPath = path;
+    }
+
+    @NotNull
+    public List<String> getCabalFiles() {
+        return myBuildOptions.myCabalFiles;
+    }
+
+    public void setCabalFiles(@NotNull List<String> files) {
+        myBuildOptions.myCabalFiles = files;
     }
 
     @NotNull

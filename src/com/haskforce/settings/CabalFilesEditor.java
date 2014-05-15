@@ -18,7 +18,7 @@ import com.intellij.ui.TableUtil;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.table.JBTable;
-import com.intellij.util.ArrayUtil;
+import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.ui.ItemRemovable;
 import com.intellij.util.ui.UIUtil;
 import org.jetbrains.annotations.NotNull;
@@ -55,12 +55,12 @@ public class CabalFilesEditor extends ModuleElementsEditor {
     public void saveData() {
         TableUtil.stopEditing(myTable);
         final int count = myTable.getRowCount();
-        String[] urls = ArrayUtil.newStringArray(count);
+        List<String> urls = ContainerUtil.newArrayListWithCapacity(count);
         for (int row = 0; row < count; row++) {
             final TableItem item = ((MyTableModel)myTable.getModel()).getTableItemAt(row);
-            urls[row] = item.getUrl();
+            urls.add(item.getUrl());
         }
-        getModel().getModuleExtension(JavaModuleExternalPaths.class).setExternalAnnotationUrls(urls);
+        HaskellBuildSettings.getInstance(getState().getProject()).setCabalFiles(urls);
     }
 
     @Override
@@ -117,7 +117,7 @@ public class CabalFilesEditor extends ModuleElementsEditor {
 
     protected DefaultTableModel createModel() {
         final MyTableModel tableModel = new MyTableModel();
-        final String[] urls = getModel().getModuleExtension(JavaModuleExternalPaths.class).getExternalAnnotationsUrls();
+        List<String> urls = HaskellBuildSettings.getInstance(getState().getProject()).getCabalFiles();
         for (String javadocUrl : urls) {
             tableModel.addTableItem(new TableItem(javadocUrl));
         }

@@ -1,6 +1,10 @@
 package com.haskforce.jps.model;
 
+import com.intellij.util.containers.ContainerUtil;
+import com.intellij.util.xmlb.annotations.AbstractCollection;
 import com.intellij.util.xmlb.annotations.Tag;
+
+import java.util.List;
 
 /**
  * Serialization object for communicating build settings with the build server.
@@ -32,6 +36,10 @@ public class HaskellBuildOptions {
     @Tag("cabalPath")
     public String myCabalPath = "cabal";
 
+    @Tag("cabalFiles")
+    @AbstractCollection(surroundWithTag = false, elementTag = "cabalFile")
+    public List<String> myCabalFiles = ContainerUtil.newArrayList();
+
     @Override
     public String toString() {
         return "HaskellBuildOptions{" +
@@ -40,6 +48,7 @@ public class HaskellBuildOptions {
                 ", myProfilingBuild=" + myProfilingBuild +
                 ", myGhcPath=" + myGhcPath +
                 ", myCabalPath=" + myCabalPath +
+                ", myCabalFiles=" + myCabalFiles +
                 '}';
     }
 }
