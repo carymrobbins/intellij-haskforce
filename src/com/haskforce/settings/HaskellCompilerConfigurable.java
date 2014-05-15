@@ -1,5 +1,7 @@
 package com.haskforce.settings;
 
+import com.haskforce.HaskellSdkType;
+import com.haskforce.jps.model.HaskellBuildOptions;
 import com.haskforce.utils.ExecUtil;
 import com.intellij.compiler.options.CompilerConfigurable;
 import com.intellij.openapi.options.ConfigurationException;
@@ -11,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 import static com.haskforce.utils.GuiUtil.createCheckBoxOption;
 import static com.haskforce.utils.GuiUtil.createDisplayVersion;
@@ -37,10 +40,16 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
 
     // Data container for settings.
     private final HaskellBuildSettings mySettings;
+    // Improved settings if default values.
+    private String bestGhcPath;
+
+    private final Project myProject;
 
     public HaskellCompilerConfigurable(@NotNull Project inProject) {
         super(inProject);
-        mySettings = HaskellBuildSettings.getInstance(inProject);
+        myProject = inProject;
+        mySettings = HaskellBuildSettings.getInstance(myProject);
+        bestGhcPath = mySettings.getGhcPath();
     }
 
     @NotNull
@@ -67,15 +76,25 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         return null;
     }
 
+    /**
+     * Constructs the compiler panel in Settings->Compiler. Also responsible
+     * for filling in previous values or constructing sane default values.
+     */
     @Nullable
     @Override
     public JComponent createComponent() {
+        String sdkPath = HaskellSdkType.getHaskellSdkPath(myProject);
+        File sdkGhcPath = sdkPath == null ? null : HaskellSdkType.getExecutable(sdkPath);
         settings = new JPanel(new GridBagLayout());
 
         // GHC path configuration.
         ghcPath = createExecutableOption(settings, "GHC");
         ghcVersion = createDisplayVersion(settings, "GHC");
-        ghcPath.setText(mySettings.getGhcPath());
+        if (sdkGhcPath != null &&
+                bestGhcPath.equals(HaskellBuildOptions.DEFAULT_GHC_PATH)) {
+            bestGhcPath = sdkGhcPath.getAbsolutePath();
+        }
+        ghcPath.setText(bestGhcPath);
 
         // Cabal path configuration.
         cabalPath = createExecutableOption(settings, "Cabal");
@@ -98,11 +117,19 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
      */
     @Override
     public boolean isModified() {
-        return !(ghcPath.getText().equals(mySettings.getGhcPath()) &&
+        return !(ghcUnchanged() &&
                 cabalPath.getText().equals(mySettings.getCabalPath()) &&
                 profilingBuild.isSelected() == mySettings.isProfilingEnabled() &&
                 cabalBuild.isSelected() == mySettings.isCabalEnabled() &&
                 cabalSandbox.isSelected() == mySettings.isCabalSandboxEnabled());
+    }
+
+    /**
+     * Returns true if the ghc path is unchanged.
+     */
+    private boolean ghcUnchanged() {
+        return ghcPath.getText().equals(mySettings.getGhcPath()) ||
+                ghcPath.getText().equals(bestGhcPath);
     }
 
     /**
@@ -135,7 +162,8 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         mySettings.setProfilingBuild(profilingBuild.isSelected());
         mySettings.setUseCabal(cabalBuild.isSelected());
         mySettings.setUseCabalSandbox(cabalSandbox.isSelected());
-        mySettings.setGhcPath(ghcPath.getText());
+        bestGhcPath = ghcPath.getText();
+        mySettings.setGhcPath(bestGhcPath);
         mySettings.setCabalPath(cabalPath.getText());
     }
 
@@ -151,7 +179,7 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
      * Restore components to the initial state.
      */
     private void restoreState() {
-        ghcPath.setText(mySettings.getGhcPath());
+        ghcPath.setText(bestGhcPath);
         cabalPath.setText(mySettings.getCabalPath());
         profilingBuild.setSelected(mySettings.isProfilingEnabled());
         cabalBuild.setSelected(mySettings.isCabalEnabled());

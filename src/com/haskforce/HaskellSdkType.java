@@ -2,11 +2,14 @@ package com.haskforce;
 
 import com.haskforce.jps.model.JpsHaskellModelSerializerExtension;
 import com.haskforce.utils.ExecUtil;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.AdditionalDataConfigurable;
+import com.intellij.openapi.projectRoots.Sdk;
 import com.intellij.openapi.projectRoots.SdkAdditionalData;
 import com.intellij.openapi.projectRoots.SdkModel;
 import com.intellij.openapi.projectRoots.SdkModificator;
 import com.intellij.openapi.projectRoots.SdkType;
+import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.util.SystemInfo;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
@@ -15,16 +18,26 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.io.File;
 
+/**
+ * Responsible for the mechanics when pressing "+" in the SDK configuration,
+ * as well as the project SDK configuration.
+ */
 public class HaskellSdkType extends SdkType {
     public HaskellSdkType() {
         super(JpsHaskellModelSerializerExtension.HASKELL_SDK_TYPE_ID);
     }
 
+    /**
+     * Returns the Haskell SDK.
+     */
     @NotNull
     public static HaskellSdkType getInstance() {
         return SdkType.findInstance(HaskellSdkType.class);
     }
 
+    /**
+     * Returns the icon to be used for Haskell things in general.
+     */
     @Override
     public Icon getIcon() {
         return HaskellIcons.FILE;
@@ -42,20 +55,34 @@ public class HaskellSdkType extends SdkType {
         return JpsHaskellModelSerializerExtension.HASKELL_SDK_TYPE_ID;
     }
 
+    /**
+     * Currently a no-op.
+     */
     @Override
     public void saveAdditionalData(@NotNull SdkAdditionalData additionalData, @NotNull Element additional) {
     }
 
+    /**
+     * Approves of a path as SDK home.
+     */
     @Override
     public boolean isValidSdkHome(String path) {
+        // TODO: Validate SdkHome a bit more than just running ghc --version.
         return getVersionString(path) != null;
     }
 
+    /**
+     * Always suggests "GHC" as the SDK name. We do not support anything else
+     * in practice anyways.
+     */
     @Override
     public String suggestSdkName(String currentSdkName, String sdkHome) {
         return "GHC";
     }
 
+    /**
+     * Returns the output of ghc --numeric-version for the given path.
+     */
     @Nullable
     @Override
     public String getVersionString(final String sdkHome) {
@@ -69,6 +96,9 @@ public class HaskellSdkType extends SdkType {
         return null;
     }
 
+    /**
+     * Suggests a home path two levels up from GHC's reported libdir.
+     */
     @Nullable
     @Override
     public String suggestHomePath() {
@@ -77,6 +107,20 @@ public class HaskellSdkType extends SdkType {
             return null;
         }
         return new File(libPath).getParentFile().getParent();
+    }
+
+    /**
+     * Produces the grey "7.6.3" version number next to GHC in the project
+     * settings.
+     */
+    @Override
+    public boolean setupSdkPaths(Sdk sdk, SdkModel sdkModel) {
+        super.setupSdkPaths(sdk, sdkModel);
+        final SdkModificator sdkModificator = sdk.getSdkModificator();
+        final String homePath = sdk.getHomePath();
+        sdkModificator.setVersionString(getVersionString(homePath));
+        sdkModificator.commitChanges();
+        return true;
     }
 
     /**
@@ -97,5 +141,17 @@ public class HaskellSdkType extends SdkType {
         // path. The goal is to run ghc at this stage, so adapt to whatever.
         String extra = path.endsWith("bin") ? "" : File.separator + "bin";
         return new File(path + extra, SystemInfo.isWindows ? "ghc.exe" : "ghc");
+    }
+
+    /**
+     * Gets the Haskell SDK path for a project.
+     */
+    public static String getHaskellSdkPath(@NotNull Project project) {
+        Sdk sdk = ProjectRootManager.getInstance(project).getProjectSdk();
+        // This sdk is not an instanceof HaskellSdkType. Compare with name instead.
+        if (sdk == null || !sdk.getSdkType().toString().equals(JpsHaskellModelSerializerExtension.HASKELL_SDK_TYPE_ID)) {
+            return null;
+        }
+        return sdk.getHomePath();
     }
 }
