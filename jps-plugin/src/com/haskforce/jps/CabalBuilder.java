@@ -44,6 +44,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -209,7 +210,7 @@ src/Feldspar/Core/UntypedRepresentation.hs:483:5: Warning:
             }
 
             @Override
-            public String next() {
+            public String next() throws NoSuchElementException {
                 String result = fetch();
                 line = null;
                 return result;
