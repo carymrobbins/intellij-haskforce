@@ -2,6 +2,7 @@ package com.haskforce;
 
 import com.haskforce.jps.model.JpsHaskellModelSerializerExtension;
 import com.haskforce.utils.ExecUtil;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.AdditionalDataConfigurable;
 import com.intellij.openapi.projectRoots.Sdk;
@@ -23,6 +24,9 @@ import java.io.File;
  * as well as the project SDK configuration.
  */
 public class HaskellSdkType extends SdkType {
+    // Messages go to the log available in Help -> Show log in finder.
+    private final static Logger LOG = Logger.getInstance(HaskellSdkType.class);
+
     public HaskellSdkType() {
         super(JpsHaskellModelSerializerExtension.HASKELL_SDK_TYPE_ID);
     }
@@ -68,7 +72,22 @@ public class HaskellSdkType extends SdkType {
     @Override
     public boolean isValidSdkHome(String path) {
         // TODO: Validate SdkHome a bit more than just running ghc --version.
-        return !path.endsWith("bin") && getVersionString(path) != null;
+        if (path.endsWith("bin")) {
+            LOG.info("The SDK home is the base directory of GHC.");
+            LOG.info("Selected SDK home is: " + path);
+            LOG.info("Aborting since there is no " + path + "/bin/ghc");
+            return false;
+        }
+        String version = getVersionString(path);
+        if (version == null) {
+            // Error logging is performed by ExecUtil.
+            return false;
+        }
+        if (!(version.startsWith("7.") || version.startsWith("8."))) {
+            LOG.warn("Unexpected GHC version: " + version);
+            LOG.warn("Accepting, but HaskForce might not work..");
+        }
+        return true;
     }
 
     /**
@@ -91,7 +110,7 @@ public class HaskellSdkType extends SdkType {
         }
         File ghc = getExecutable(sdkHome);
         if (ghc.canExecute()) {
-            return ExecUtil.run(ghc.getPath() + " --numeric-version");
+            return ExecUtil.exec(ghc.getPath() + " --numeric-version");
         }
         return null;
     }
@@ -104,6 +123,11 @@ public class HaskellSdkType extends SdkType {
     public String suggestHomePath() {
         String libPath = suggestGhcLibDir();
         if (libPath == null) {
+            LOG.warn("Could not run ghc --print-libdir.");
+            LOG.warn("Please ensure that ghc is in your PATH.");
+            return null;
+        } else if (libPath.isEmpty()) {
+            LOG.warn("Did not get any output from ghc --print-libdir.");
             return null;
         }
         return new File(libPath).getParentFile().getParent();
@@ -129,7 +153,7 @@ public class HaskellSdkType extends SdkType {
     @Nullable
     public static String suggestGhcLibDir() {
         // Try running whatever GHC we have in $PATH.
-        return ExecUtil.run("ghc --print-libdir");
+        return ExecUtil.exec("ghc --print-libdir");
     }
 
     /**

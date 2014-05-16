@@ -180,8 +180,8 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
      * Updates the version info fields for all files configured.
      */
     private void updateVersionInfoFields() {
-        ghcVersion.setText(ExecUtil.run(ghcPath.getText() +  " --numeric-version"));
-        cabalVersion.setText(ExecUtil.run(cabalPath.getText() +  " --numeric-version"));
+        ghcVersion.setText(ExecUtil.exec(ghcPath.getText() +  " --numeric-version"));
+        cabalVersion.setText(ExecUtil.exec(cabalPath.getText() +  " --numeric-version"));
     }
 
     /**

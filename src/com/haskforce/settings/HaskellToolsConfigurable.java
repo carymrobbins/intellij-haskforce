@@ -95,13 +95,12 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
 
     }
 
-
     /**
      * Heuristically finds the version number. Current implementation is the
      * identity function since cabal plays nice.
      */
     private static String getVersion(String cmd, String versionflag) {
-        return ExecUtil.run(cmd + ' ' + versionflag);
+        return ExecUtil.exec(cmd + ' ' + versionflag);
     }
 
     /**
