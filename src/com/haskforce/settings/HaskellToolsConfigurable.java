@@ -25,12 +25,21 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
 
     private Project project;
 
+    // Old values to detect user updates.
+    private String oldStylishPath;
+
     // Swing components.
     private JPanel settings;
-    // TODO: Add more external tools.
+    private TextFieldWithBrowseButton stylishPath;
+    private JLabel stylishVersion;
 
     public HaskellToolsConfigurable(@NotNull Project inProject) {
         project = inProject;
+        String guessedStylishPath = ExecUtil.locateExecutable("stylish-haskell");
+        if (guessedStylishPath == null) {
+            guessedStylishPath = "";
+        }
+        oldStylishPath = PropertiesComponent.getInstance(project).getValue("stylishPath", guessedStylishPath);
     }
 
     @NotNull
@@ -57,10 +66,21 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
         return null;
     }
 
+    /**
+     * Creates the GUI panel and sets the text fields to the old values.
+     */
     @Nullable
     @Override
     public JComponent createComponent() {
         settings = new JPanel(new GridBagLayout());
+
+        // Stylish configuration.
+        stylishPath = createExecutableOption(settings, "Stylish-Haskell");
+        stylishVersion = createDisplayVersion(settings, "Stylish-Haskell");
+        if (!oldStylishPath.isEmpty()) {
+            stylishPath.setText(oldStylishPath);
+            updateVersionInfoFields();
+        }
 
         return settings;
     }
@@ -70,7 +90,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
      */
     @Override
     public boolean isModified() {
-        return false;
+        return !stylishPath.getText().equals(oldStylishPath);
     }
 
     /**
@@ -107,17 +127,20 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
      * Updates the version info fields for all files configured.
      */
     private void updateVersionInfoFields() {
+        stylishVersion.setText(getVersion(stylishPath.getText(), "--version"));
     }
 
     /**
      * Persistent save of the current state.
      */
     private void saveState() {
+        PropertiesComponent.getInstance(project).setValue("stylishPath", stylishPath.getText());
     }
 
     /**
      * Restore components to the initial state.
      */
     private void restoreState() {
+        stylishPath.setText(oldStylishPath);
     }
 }

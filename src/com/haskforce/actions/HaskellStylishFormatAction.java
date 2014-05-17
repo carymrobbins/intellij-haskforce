@@ -20,6 +20,7 @@ package com.haskforce.actions;
  * Adapted from the Emacs-formatter in the Erlang plugin. 17 May 2014.
  */
 
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -78,8 +79,7 @@ public class HaskellStylishFormatAction extends AnAction implements DumbAware {
         final String groupId = e.getPresentation().getText();
         try {
             GeneralCommandLine commandLine = new GeneralCommandLine();
-            // TODO: Only works if found in path. Add to configuration dialog.
-            String stylishPath = "stylish-haskell";
+            String stylishPath = PropertiesComponent.getInstance(project).getValue("stylishPath", "");
             if (stylishPath.isEmpty()) {
                 Notifications.Bus.notify(
                         new Notification(groupId, NOTIFICATION_TITLE,
