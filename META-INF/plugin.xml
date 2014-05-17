@@ -34,6 +34,13 @@
               text="Haskell File" description="Create new Haskell file">
           <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
       </action>
+      <action id="HaskForce.StylishFormat"
+              class="com.haskforce.actions.HaskellStylishFormatAction"
+              text="Reformat code with Stylish Haskell"
+              description="Format current file with Stylish-Haskell formatter">
+            <add-to-group group-id="CodeFormatGroup" anchor="last"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl alt E"/>
+      </action>
   </actions>
 
   <extensions defaultExtensionNs="com.intellij">
