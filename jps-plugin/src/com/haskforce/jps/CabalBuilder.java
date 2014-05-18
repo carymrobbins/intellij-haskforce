@@ -60,6 +60,9 @@ public class CabalBuilder extends ModuleLevelBuilder {
         super(BuilderCategory.TRANSLATOR);
     }
 
+    /**
+     * Build the project including all modules with Cabal.
+     */
     public ExitCode build(final CompileContext context,
                           final ModuleChunk chunk,
                           final DirtyFilesHolder<JavaSourceRootDescriptor, ModuleBuildTarget> dirtyFilesHolder,
@@ -86,6 +89,9 @@ public class CabalBuilder extends ModuleLevelBuilder {
         return ExitCode.ABORT;
     }
 
+    /**
+     * Runs cabal build.
+     */
     private static boolean runBuild(CompileContext context, JpsModule module, CabalJspInterface cabal) throws IOException, InterruptedException {
         context.processMessage(new ProgressMessage("cabal build"));
         context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.INFO, "Start build"));
@@ -99,6 +105,9 @@ public class CabalBuilder extends ModuleLevelBuilder {
         return false;
     }
 
+    /**
+     * Runs cabal configure.
+     */
     private static boolean runConfigure(CompileContext context, JpsModule module, CabalJspInterface cabal) throws IOException, InterruptedException {
         context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.INFO, "Start configure"));
 
@@ -116,13 +125,16 @@ public class CabalBuilder extends ModuleLevelBuilder {
         return false;
     }
 
+    /**
+     * Parses output from cabal and signals errors/warnings to the IDE.
+     */
     private static void processOut(CompileContext context, Process process, JpsModule module) {
         final String warningPrefix = "Warning: ";
         boolean oneBehind = false;
         String line = "";
         Iterator<String> processOut = collectOutput(process);
         StringBuilder msg = new StringBuilder(1000);
-        Pattern compiledPattern = Pattern.compile("(.*):(\\d+):(\\d+):\\s*(.*):(.*)");
+        Pattern compiledPattern = Pattern.compile("(.*):(\\d+):(\\d+):(.*)?");
 
         while (processOut.hasNext() || oneBehind) {
             if (oneBehind) {
@@ -143,7 +155,7 @@ public class CabalBuilder extends ModuleLevelBuilder {
                 long lineNum = Long.parseLong(matcher.group(2));
                 long colNum = Long.parseLong(matcher.group(3));
                 msg.setLength(0);
-                msg.append(matcher.group(5));
+                msg.append(matcher.group(4));
                 while (processOut.hasNext()) {
                     line = processOut.next();
 
@@ -161,7 +173,7 @@ public class CabalBuilder extends ModuleLevelBuilder {
 
                 // RootPath necessary for reasonable error messages by Intellij.
                 String sourcePath = getContentRootPath(module) + File.separator + file.replace('\\', File.separatorChar);
-                BuildMessage.Kind kind = matcher.group(4).contains("arn") ?
+                BuildMessage.Kind kind = matcher.group(4).trim().startsWith("Warning") ?
                        BuildMessage.Kind.WARNING : BuildMessage.Kind.ERROR;
 
                 final String trimmedMessage = msg.toString().trim();
@@ -175,7 +187,9 @@ public class CabalBuilder extends ModuleLevelBuilder {
             }
         }
     }
-    /* Example warning:
+    /*
+
+Example warning:
 
 Preprocessing library feldspar-language-0.6.1.0...
 [74 of 92] Compiling Feldspar.Core.UntypedRepresentation ( src/Feldspar/Core/UntypedRepresentation.hs, dist/build/Feldspar/Core/UntypedRepresentation.o )
@@ -185,6 +199,31 @@ src/Feldspar/Core/UntypedRepresentation.hs:483:5: Warning:
 [74 of 92] Compiling Feldspar.Core.UntypedRepresentation ( src/Feldspar/Core/UntypedRepresentation.hs, dist/build/Feldspar/Core/UntypedRepresentation.p_o )
 <same warning again>
 
+Example error:
+
+src/Main.hs:14:3:
+    Could not deduce (ToJSON (ModulePragma l0))
+      arising from a use of `toJSON'
+    from the context (ToJSON l0)
+      bound by the instance declaration at src/Main.hs:14:3-38
+    Possible fix:
+      add an instance declaration for (ToJSON (ModulePragma l0))
+    In the third argument of `vector-0.10.9.1:Data.Vector.Mutable.unsafeWrite', namely
+      `toJSON arg3_a4Di'
+    In a stmt of a 'do' block:
+      vector-0.10.9.1:Data.Vector.Mutable.unsafeWrite
+        mv_a4Dn 2 (toJSON arg3_a4Di)
+    In the first argument of `vector-0.10.9.1:Data.Vector.create', namely
+      `do { mv_a4Dn <- vector-0.10.9.1:Data.Vector.Mutable.unsafeNew 7;
+            vector-0.10.9.1:Data.Vector.Mutable.unsafeWrite
+              mv_a4Dn 0 (toJSON arg1_a4Dg);
+            vector-0.10.9.1:Data.Vector.Mutable.unsafeWrite
+              mv_a4Dn 1 (toJSON arg2_a4Dh);
+            vector-0.10.9.1:Data.Vector.Mutable.unsafeWrite
+              mv_a4Dn 2 (toJSON arg3_a4Di);
+            .... }'
+
+src/Main.hs..
      */
 
     private static Iterator<String> collectOutput(Process process) {
@@ -223,6 +262,9 @@ src/Feldspar/Core/UntypedRepresentation.hs:483:5: Warning:
         };
     }
 
+    /**
+     * Searches for the cabal file in the module top directory.
+     */
     private static File getCabalFile(JpsModule module) {
         String pathname = getContentRootPath(module);
         //noinspection ConstantConditions
@@ -239,6 +281,9 @@ src/Feldspar/Core/UntypedRepresentation.hs:483:5: Warning:
         return url.substring("file://".length());
     }
 
+    /**
+     * Reports that we can compile hs and lhs files.
+     */
     @Override
     public List<String> getCompilableFileExtensions() {
         return Arrays.asList("hs", "lhs");
