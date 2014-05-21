@@ -33,6 +33,7 @@ import com.intellij.openapi.editor.highlighter.HighlighterIterator;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.util.text.CharArrayCharSequence;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -44,10 +45,11 @@ public class HaskellTypedHandler extends TypedHandlerDelegate {
     public Result charTyped(char c, Project project, @NotNull Editor editor, @NotNull PsiFile file) {
         if (!(file instanceof HaskellFile)) return super.charTyped(c, project, editor, file);
 
-        if ((c != '{' && c != '-') || !CodeInsightSettings.getInstance().AUTOINSERT_PAIR_BRACKET) {
+        if ((c != '{' && c != '-' && c != '#') ||
+                !CodeInsightSettings.getInstance().AUTOINSERT_PAIR_BRACKET) {
             return Result.CONTINUE;
         }
-        insertMatchedEndComment(project, editor, file);
+        insertMatchedEndComment(project, editor, file, c);
         return Result.CONTINUE;
     }
 
@@ -58,7 +60,7 @@ public class HaskellTypedHandler extends TypedHandlerDelegate {
      * @see com.intellij.codeInsight.editorActions.TypedHandler
      * @see BraceMatchingUtil
      */
-    private static void insertMatchedEndComment(Project project, Editor editor, PsiFile file) {
+    private static void insertMatchedEndComment(Project project, Editor editor, PsiFile file, char c) {
         if (!(file instanceof HaskellFile)) return;
 
         PsiDocumentManager.getInstance(project).commitAllDocuments();
@@ -98,7 +100,7 @@ public class HaskellTypedHandler extends TypedHandlerDelegate {
 
         if (!BraceMatchingUtil.matchBrace(fileText, fileType, iterator, true, true)) {
             // Some other mechanism has put the closing '}' in the document already.
-            editor.getDocument().insertString(offset, " -");
+            editor.getDocument().insertString(offset, new CharArrayCharSequence(c));
         }
     }
 }
