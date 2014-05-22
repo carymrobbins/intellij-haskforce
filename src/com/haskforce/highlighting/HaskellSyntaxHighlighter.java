@@ -101,7 +101,7 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
      *
      * Used for mapping how the token should be highlighted.
      */
-    private static final HashSet<IElementType> reservedIds = new HashSet<>(
+    private static final HashSet<IElementType> reservedIds = new HashSet<IElementType>(
             Arrays.asList(new IElementType[]{AS, CASE, CLASSTOKEN, DATA, DEFAULT
                     , DERIVING, DO, ELSE, FOREIGN, HIDING, IF, IMPORT, IN, INFIX
                     , INFIXL, INFIXR, INSTANCE, LET, HaskellTypes.MODULE

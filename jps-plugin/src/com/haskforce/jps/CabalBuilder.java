@@ -82,7 +82,10 @@ public class CabalBuilder extends ModuleLevelBuilder {
                 if (runBuild(context, module, cabal)) return ExitCode.ABORT;
             }
             return ExitCode.OK;
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException e) {
+            e.printStackTrace();
+            context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.ERROR, e.getMessage()));
+        } catch (InterruptedException e) {
             e.printStackTrace();
             context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.ERROR, e.getMessage()));
         }
@@ -147,7 +150,7 @@ public class CabalBuilder extends ModuleLevelBuilder {
             Matcher matcher = compiledPattern.matcher(line);
             if (line.startsWith(warningPrefix)) {
                 // Cabal messages
-                String text = line.substring(warningPrefix.length()) + System.lineSeparator() + processOut.next();
+                String text = line.substring(warningPrefix.length()) + System.getProperty("line.separator") + processOut.next();
                 context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.WARNING, text));
             } else if (matcher.find()) {
                 // GHC Messages
@@ -168,7 +171,7 @@ public class CabalBuilder extends ModuleLevelBuilder {
                         oneBehind = true;
                         break;
                     }
-                    msg.append(line).append(System.lineSeparator());
+                    msg.append(line).append(System.getProperty("line.separator"));
                 }
 
                 // RootPath necessary for reasonable error messages by Intellij.
