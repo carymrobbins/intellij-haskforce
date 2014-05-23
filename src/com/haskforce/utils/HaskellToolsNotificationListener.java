@@ -42,8 +42,9 @@ public class HaskellToolsNotificationListener implements NotificationListener {
     @Override
     public void hyperlinkUpdate(@NotNull Notification notification, @NotNull HyperlinkEvent event) {
         if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-            if (event.getDescription().equals("configure") && !myProject.isDisposed()) {
+            if (event.getDescription().equals("configureHaskellTools") && !myProject.isDisposed()) {
                 ShowSettingsUtil.getInstance().showSettingsDialog(myProject, HaskellToolsConfigurable.HASKELL_TOOLS_ID);
+                notification.expire();
             }
         }
     }

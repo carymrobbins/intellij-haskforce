@@ -84,7 +84,7 @@ public class HaskellStylishFormatAction extends AnAction implements DumbAware {
                 Notifications.Bus.notify(
                         new Notification(groupId, NOTIFICATION_TITLE,
                                 "Stylish-Haskell executable path is empty"+
-                                        "<br/><a href='configure'>Configure</a>",
+                                        "<br/><a href='configureHaskellTools'>Configure</a>",
                                 NotificationType.WARNING, new HaskellToolsNotificationListener(project)), project);
                 return;
             }
