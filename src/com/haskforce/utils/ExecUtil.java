@@ -28,8 +28,23 @@ public class ExecUtil {
     @Nullable
     public static String exec(@NotNull final String command) {
         // Find some valid working directory, doesn't matter which one.
-        Project[] projects = ProjectManager.getInstance().getOpenProjects();
+        ProjectManager pm = ProjectManager.getInstance();
+        Project[] projects = pm == null ? null : pm.getOpenProjects();
+        String workDir = ".";
+        // Set the working directory if there is an open project.
+        if (pm == null || projects.length == 0) {
+            LOG.info("No open projects so cannot find a valid path. Using '.'.");
+        } else {
+            workDir = projects[0].getBaseDir().getCanonicalPath();
+        }
+        return exec(workDir, command);
+    }
 
+    /**
+     * Execute a command using the default shell in a given work directory.
+     */
+    @Nullable
+    public static String exec(@NotNull final String workDir, @NotNull final String command) {
         // Setup shell and the GeneralCommandLine.
         //
         // Getting the right PATH among other things is apparently tricky,
@@ -40,12 +55,7 @@ public class ExecUtil {
         //          environment. Install the plugin and make sure that adding
         //          an Haskell SDK still autodetects things right.
         final GeneralCommandLine commandLine = new GeneralCommandLine();
-        // Set the working directory if there is an open project.
-        if (projects.length == 0) {
-            LOG.info("No open projects, cannot find a valid path.");
-        } else {
-            commandLine.setWorkDirectory(projects[0].getBaseDir().getCanonicalPath());
-        }
+        commandLine.setWorkDirectory(workDir);
         commandLine.setPassParentEnvironment(true);
         if (SystemInfo.isWindows) {
             commandLine.setExePath("cmd");
