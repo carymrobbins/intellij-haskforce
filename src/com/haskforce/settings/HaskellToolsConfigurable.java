@@ -110,7 +110,8 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
      */
     @Override
     public boolean isModified() {
-        return !stylishPath.getText().equals(oldStylishPath);
+        return !(parserHelperPath.getText().equals(oldParserHelperPath) &&
+                    stylishPath.getText().equals(oldStylishPath));
     }
 
     /**
