@@ -26,20 +26,32 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     private Project project;
 
     // Old values to detect user updates.
+    private String oldParserHelperPath;
     private String oldStylishPath;
 
     // Swing components.
     private JPanel settings;
+    private TextFieldWithBrowseButton parserHelperPath;
+    private JLabel parserHelperVersion;
     private TextFieldWithBrowseButton stylishPath;
     private JLabel stylishVersion;
 
     public HaskellToolsConfigurable(@NotNull Project inProject) {
         project = inProject;
-        String guessedStylishPath = ExecUtil.locateExecutable("stylish-haskell");
-        if (guessedStylishPath == null) {
-            guessedStylishPath = "";
+
+        // Parser-helper.
+        String guessedPath = ExecUtil.locateExecutable("parser-helper");
+        if (guessedPath == null) {
+            guessedPath = "";
         }
-        oldStylishPath = PropertiesComponent.getInstance(project).getValue("stylishPath", guessedStylishPath);
+        oldParserHelperPath = PropertiesComponent.getInstance(project).getValue("parserHelperPath", guessedPath);
+
+        // Stylish-Haskell
+        guessedPath = ExecUtil.locateExecutable("stylish-haskell");
+        if (guessedPath == null) {
+            guessedPath = "";
+        }
+        oldStylishPath = PropertiesComponent.getInstance(project).getValue("stylishPath", guessedPath);
     }
 
     @NotNull
@@ -74,14 +86,22 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     public JComponent createComponent() {
         settings = new JPanel(new GridBagLayout());
 
+        // Parser-helper configuration.
+        parserHelperPath = createExecutableOption(settings, "Parser-Helper");
+        parserHelperVersion = createDisplayVersion(settings, "Parser-Helper");
+        if (!oldParserHelperPath.isEmpty()) {
+            parserHelperPath.setText(oldParserHelperPath);
+        }
+
+
         // Stylish configuration.
         stylishPath = createExecutableOption(settings, "Stylish-Haskell");
         stylishVersion = createDisplayVersion(settings, "Stylish-Haskell");
         if (!oldStylishPath.isEmpty()) {
             stylishPath.setText(oldStylishPath);
-            updateVersionInfoFields();
         }
 
+        updateVersionInfoFields();
         return settings;
     }
 
@@ -127,13 +147,22 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
      * Updates the version info fields for all files configured.
      */
     private void updateVersionInfoFields() {
-        stylishVersion.setText(getVersion(stylishPath.getText(), "--version"));
+        // Parser-helper.
+        if (!parserHelperPath.getText().isEmpty()) {
+            parserHelperVersion.setText(getVersion(parserHelperPath.getText(), "--numeric-version"));
+        }
+
+        // Stylish-Haskell.
+        if (!stylishPath.getText().isEmpty()) {
+            stylishVersion.setText(getVersion(stylishPath.getText(), "--version"));
+        }
     }
 
     /**
      * Persistent save of the current state.
      */
     private void saveState() {
+        PropertiesComponent.getInstance(project).setValue("parserHelperPath", parserHelperPath.getText());
         PropertiesComponent.getInstance(project).setValue("stylishPath", stylishPath.getText());
     }
 
@@ -141,6 +170,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
      * Restore components to the initial state.
      */
     private void restoreState() {
+        parserHelperPath.setText(oldParserHelperPath);
         stylishPath.setText(oldStylishPath);
     }
 }
