@@ -54,7 +54,7 @@ public abstract class HaskellLightPlatformCodeInsightFixtureTestCase extends Lig
     /**
      * Base path to the test files.
      */
-    protected String getDirPath() {
+    protected static String getDirPath() {
         return "tests" + File.separator + "gold";
     }
 
