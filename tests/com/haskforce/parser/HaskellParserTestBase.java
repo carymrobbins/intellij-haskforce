@@ -22,10 +22,7 @@
 
 package com.haskforce.parser;
 
-import com.intellij.core.CoreApplicationEnvironment;
-import com.intellij.lang.LanguageExtensionPoint;
 import com.intellij.lang.ParserDefinition;
-import com.intellij.openapi.extensions.Extensions;
 import com.intellij.testFramework.ParsingTestCase;
 import com.intellij.psi.PsiFile;
 import com.intellij.testFramework.TestDataFile;
@@ -49,6 +46,10 @@ public abstract class HaskellParserTestBase extends ParsingTestCase {
         return true;
     }
 
+    /**
+     * Perform a test. Add tests that should work but does not work yet with
+     * doTest(false, false).
+     */
     protected void doTest(boolean checkResult, boolean shouldPass) {
         doTest(true);
         if (shouldPass) {
@@ -58,6 +59,7 @@ public abstract class HaskellParserTestBase extends ParsingTestCase {
             );
         }
     }
+
     /*
      * Ensure that expected outputs live in some other directory than the test
      * inputs.
@@ -74,5 +76,4 @@ public abstract class HaskellParserTestBase extends ParsingTestCase {
     protected void setUp() throws Exception {
         super.setUp();
     }
-
 }
