@@ -30,6 +30,7 @@ public class HaskellParserTest extends HaskellParserTestBase {
     }
 
     public void testFFI00001()          { doTest(true, true); }
+    public void testFFI00002()          { doTest(true, true); }
     public void testHello00001()        { doTest(true, true); }
     public void testHello00002()        { doTest(true, true); }
     public void testHello00003()        { doTest(true, false); }
@@ -43,11 +44,13 @@ public class HaskellParserTest extends HaskellParserTestBase {
     public void testComment00003()      { doTest(true, true); }
     public void testLambda00001()       { doTest(true, true); }
     public void testPragma00001()       { doTest(true, true); }
+    public void testPragma00002()       { doTest(true, true); }
     public void testString00001()       { doTest(true, true); }
     public void testString00002()       { doTest(true, true); }
     public void testString00003()       { doTest(true, true); }
     public void testString00004()       { doTest(true, false); }
     public void testString00005()       { doTest(true, true); }
     public void testTempHask00001()     { doTest(true, true); }
+    public void testTempHask00002()     { doTest(true, true); }
     public void testQuote00001()        { doTest(true, true); }
 }
