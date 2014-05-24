@@ -165,6 +165,8 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     private void saveState() {
         PropertiesComponent.getInstance(project).setValue("parserHelperPath", parserHelperPath.getText());
         PropertiesComponent.getInstance(project).setValue("stylishPath", stylishPath.getText());
+        oldParserHelperPath = parserHelperPath.getText();
+        oldStylishPath = stylishPath.getText();
     }
 
     /**
