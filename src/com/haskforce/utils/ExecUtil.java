@@ -9,9 +9,11 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.util.SystemInfo;
+import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -101,5 +103,37 @@ public class ExecUtil {
             LOG.info("Could not find " + command);
         }
         return res;
+    }
+
+    /**
+     * Tries to get the absolute path for a command by defaulting to first
+     * trying to locate the command in path, and falling back to trying likely
+     * directories.
+     */
+    @Nullable
+    public static String locateExecutableByGuessing(@NotNull final String command) {
+        String located = locateExecutable(command);
+        if (located != null && !located.isEmpty()) {
+            // Found it!
+            return located;
+        }
+
+        char sep = File.separatorChar;
+        List<String> paths = ContainerUtil.newArrayList();
+        if (SystemInfo.isWindows) {
+            // TODO: Add windows paths.
+        } else {
+            String homeDir = System.getProperty("user.home");
+
+            paths.add(homeDir + sep + "Library" + sep + "Haskell" + sep + "bin");
+            paths.add(homeDir + sep + ".cabal" + sep + "bin");
+            paths.add(sep + "usr" + "local" + sep + "bin");
+            paths.add(homeDir + sep + "bin");
+        }
+        for (String path : paths) {
+            String cmd = path + sep + command;
+            if (new File(cmd).canExecute()) return cmd;
+        }
+        return null;
     }
 }
