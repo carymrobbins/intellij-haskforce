@@ -9,6 +9,12 @@ public class HaskellLexerTest extends HaskellLexerTestBase {
     }
 
     /* Borrow the test inputs from ParserTest. */
+    public void testFun00001()          { doTest(true, true); }
+    public void testFun00002()          { doTest(true, true); }
+    public void testFun00003()          { doTest(true, true); }
+    public void testFun00004()          { doTest(true, true); }
+    public void testFun00005()          { doTest(true, true); }
+    public void testFun00006()          { doTest(true, true); }
     public void testFFI00001()          { doTest(true, true); }
     public void testFFI00002()          { doTest(true, true); }
     public void testHello00001()        { doTest(true, true); }
