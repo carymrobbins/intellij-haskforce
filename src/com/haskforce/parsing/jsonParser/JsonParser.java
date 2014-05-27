@@ -50,6 +50,20 @@ public class JsonParser {
             return tp;
         }
 
+        String json = getJson(input, parserHelperPath);
+        if (json == null || json.startsWith("ERROR:")) {
+            tp.error = json == null ? "Unable to execute Parser-helper." : json.substring("ERROR:".length());
+            return tp;
+        }
+
+        Gson gson = createJSonDeserializer();
+        return gson.fromJson(json, TopPair.class);
+    }
+
+    /**
+     * Executes parser-helper and returns the result.
+     */
+    public String getJson(@NotNull CharSequence input, @NotNull String parserHelperPath) {
         final String bwPath = ".dist-buildwrapper";
         try {
             String fixedInput = cppPattern.matcher(input).replaceAll(" ");
@@ -60,14 +74,7 @@ public class JsonParser {
             final String stuffToRun = parserHelperPath + ' ' + bwPath + File.separator + tmpFile.getName();
 
             // Run parser-helper.
-            String json = ExecUtil.exec(stuffToRun);
-            if (json == null || json.startsWith("ERROR:")) {
-                tp.error = json == null ? "Unable to execute Parser-helper." : json.substring("ERROR:".length());
-                return tp;
-            }
-
-            Gson gson = createJSonDeserializer();
-            return gson.fromJson(json, TopPair.class);
+            return ExecUtil.exec(stuffToRun);
         } catch (Exception ex) {
             Notifications.Bus.notify(new Notification("Parser2",
                     "Creating a temp file failed.", ExceptionUtil.getUserStackTrace(ex, LOG),

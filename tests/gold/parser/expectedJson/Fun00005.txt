@@ -1,0 +1,1 @@
+ERROR:MultiParamTypeClasses is not enabled

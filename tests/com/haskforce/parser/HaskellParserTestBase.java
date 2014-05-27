@@ -22,6 +22,8 @@
 
 package com.haskforce.parser;
 
+import com.haskforce.parsing.jsonParser.JsonParser;
+import com.haskforce.utils.ExecUtil;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.testFramework.ParsingTestCase;
 import com.intellij.psi.PsiFile;
@@ -32,6 +34,8 @@ import java.io.File;
 import java.io.IOException;
 
 public abstract class HaskellParserTestBase extends ParsingTestCase {
+    private JsonParser jsonParser;
+
     public HaskellParserTestBase(String dataPath, String fileExt, ParserDefinition... definitions) {
         super(dataPath, fileExt, definitions);
     }
@@ -64,16 +68,33 @@ public abstract class HaskellParserTestBase extends ParsingTestCase {
      * Ensure that expected outputs live in some other directory than the test
      * inputs.
      *
+     * Additionally this function performs the JSON parser test because this
+     * is a convenient place to hook into the testing.
+     *
      * Expected outputs go <path>/<component>/expected/, putting the parser
-     * outputs in test/gold/parser/expected.
+     * outputs in tests/gold/parser/expected and jsonParser outputs in
+     * tests/gold/parser/expectedJson.
      */
     @Override
-    protected void checkResult(@NonNls @TestDataFile String targetDataName, final PsiFile file) throws IOException {
-        doCheckResult(myFullDataPath, file, checkAllPsiRoots(), "expected" + File.separator + targetDataName, skipSpaces(), includeRanges());
+    protected void checkResult(@NonNls @TestDataFile String targetDataName,
+                               final PsiFile file) throws IOException {
+        doCheckResult(myFullDataPath, file, checkAllPsiRoots(),
+                "expected" + File.separator + targetDataName, skipSpaces(),
+                includeRanges());
+        String phPath = ExecUtil.locateExecutableByGuessing("parser-helper");
+        if (phPath != null && !phPath.isEmpty()) {
+            String expectedFile = myFullDataPath + File.separator +
+                    "expectedJson" + File.separator + targetDataName + ".txt";
+            assertSameLinesWithFile(expectedFile,
+                    jsonParser.getJson(file.getText(), phPath));
+        } else {
+            assertEquals(true, false); // Always false.
+        }
     }
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
+        jsonParser = new JsonParser(myProject);
     }
 }

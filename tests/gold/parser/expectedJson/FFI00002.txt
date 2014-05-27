@@ -1,0 +1,1 @@
+ERROR:Parse error: "wool-common.h wool_init2"
