@@ -2,3 +2,4 @@ workspace.xml
 bashsupport_project.xml
 dictionaries/*
 emacs.xml
+misc.xml
