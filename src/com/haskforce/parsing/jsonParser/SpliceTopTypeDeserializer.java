@@ -23,13 +23,12 @@ public class SpliceTopTypeDeserializer implements JsonDeserializer<SpliceTopType
                                      JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject objType = jsonElement.getAsJsonObject();
         JsonArray stuff;
-        // TODO: Test SpliceTopType.
-        if ((stuff = objType.getAsJsonArray("IdSplice")) != null) {
+        if ((stuff = objType.getAsJsonArray("IdSplice")) != null) { // TODO: Test.
             IdSplice idSplice = new IdSplice();
             idSplice.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             idSplice.s = jsonDeserializationContext.deserialize(stuff.get(1), String.class);
             return idSplice;
-        } else if ((stuff = objType.getAsJsonArray("ParenSplice")) != null) {
+        } else if ((stuff = objType.getAsJsonArray("ParenSplice")) != null) { // TODO: Test.
             ParenSplice parenSplice = new ParenSplice();
             parenSplice.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             parenSplice.exp = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);

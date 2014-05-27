@@ -205,14 +205,43 @@ public class ExpTopTypeDeserializer implements JsonDeserializer<ExpTopType> {
             spliceExp.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             spliceExp.splice = jsonDeserializationContext.deserialize(stuff.get(1), SpliceTopType.class);
             return spliceExp;
-        } else if ((stuff = objType.getAsJsonArray("QuasiQuote")) != null) {
+        } else if ((stuff = objType.getAsJsonArray("QuasiQuote")) != null) { // TODO: Test.
             QuasiQuote quasiQuote = new QuasiQuote();
             quasiQuote.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             quasiQuote.s1 = jsonDeserializationContext.deserialize(stuff.get(1), String.class);
             quasiQuote.s2 = jsonDeserializationContext.deserialize(stuff.get(2), String.class);
             return quasiQuote;
-        } // TODO: Add Hsx-types.
-        else if ((stuff = objType.getAsJsonArray("CorePragma")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("XTag")) != null) { // TODO: Test.
+            XTag xTag = new XTag();
+            xTag.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
+            xTag.xName = jsonDeserializationContext.deserialize(stuff.get(1), XNameTopType.class);
+            xTag.xAttrs = jsonDeserializationContext.deserialize(stuff.get(2), XAttr[].class);
+            xTag.expMaybe = jsonDeserializationContext.deserialize(stuff.get(3), ExpTopType.class);
+            xTag.exps = jsonDeserializationContext.deserialize(stuff.get(4), ExpTopType[].class);
+            return xTag;
+        } else if ((stuff = objType.getAsJsonArray("XETag")) != null) { // TODO: Test.
+            XETag xeTag = new XETag();
+            xeTag.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
+            xeTag.xName = jsonDeserializationContext.deserialize(stuff.get(1), XNameTopType.class);
+            xeTag.xAttrs = jsonDeserializationContext.deserialize(stuff.get(2), XAttr[].class);
+            xeTag.expMaybe = jsonDeserializationContext.deserialize(stuff.get(3), ExpTopType.class);
+            return xeTag;
+        } else if ((stuff = objType.getAsJsonArray("XPcdata")) != null) { // TODO: Test.
+            XPcdata xPcdata = new XPcdata();
+            xPcdata.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
+            xPcdata.s = jsonDeserializationContext.deserialize(stuff.get(1), String.class);
+            return xPcdata;
+        } else if ((stuff = objType.getAsJsonArray("XExpTag")) != null) { // TODO: Test.
+            XExpTag xExpTag = new XExpTag();
+            xExpTag.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
+            xExpTag.exp = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
+            return xExpTag;
+        } else if ((stuff = objType.getAsJsonArray("XChildTag")) != null) { // TODO: Test.
+            XChildTag xChildTag = new XChildTag();
+            xChildTag.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
+            xChildTag.exps = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType[].class);
+            return xChildTag;
+        } else if ((stuff = objType.getAsJsonArray("CorePragma")) != null) { // TODO: Test.
             CorePragma corePragma = new CorePragma();
             corePragma.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             corePragma.s = jsonDeserializationContext.deserialize(stuff.get(1), String.class);
@@ -230,8 +259,42 @@ public class ExpTopTypeDeserializer implements JsonDeserializer<ExpTopType> {
             genPragma.s = jsonDeserializationContext.deserialize(stuff.get(1), String.class);
             throw new JsonParseException("GenPragma currently  not handled: " + objType.toString());
             // return genPragma;
+        } else if ((stuff = objType.getAsJsonArray("Proc")) != null) { // TODO: Test.
+            Proc proc = new Proc();
+            proc.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
+            proc.pat = jsonDeserializationContext.deserialize(stuff.get(1), PatTopType.class);
+            proc.exp = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
+            return proc;
+        } else if ((stuff = objType.getAsJsonArray("LeftArrApp")) != null) { // TODO: Test.
+            LeftArrApp leftArrApp = new LeftArrApp();
+            leftArrApp.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
+            leftArrApp.e1 = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
+            leftArrApp.e2 = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
+            return leftArrApp;
+        } else if ((stuff = objType.getAsJsonArray("RightArrApp")) != null) { // TODO: Test.
+            RightArrApp rightArrApp = new RightArrApp();
+            rightArrApp.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
+            rightArrApp.e1 = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
+            rightArrApp.e2 = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
+            return rightArrApp;
+        } else if ((stuff = objType.getAsJsonArray("LeftArrHighApp")) != null) { // TODO: Test.
+            LeftArrHighApp leftArrHighApp = new LeftArrHighApp();
+            leftArrHighApp.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
+            leftArrHighApp.e1 = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
+            leftArrHighApp.e2 = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
+            return leftArrHighApp;
+        } else if ((stuff = objType.getAsJsonArray("RightArrHighApp")) != null) { // TODO: Test.
+            RightArrHighApp rightArrHighApp = new RightArrHighApp();
+            rightArrHighApp.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
+            rightArrHighApp.e1 = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
+            rightArrHighApp.e2 = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
+            return rightArrHighApp;
+        } else if ((stuff = objType.getAsJsonArray("LCase")) != null) { // TODO: Test.
+            LCase lCase = new LCase();
+            lCase.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
+            lCase.alts = jsonDeserializationContext.deserialize(stuff.get(1), Alt[].class);
+            return lCase;
         }
-        // TODO: Rest of ExpTopType
         throw new JsonParseException("Unexpected JSON object type: " + objType.toString());
     }
 }
