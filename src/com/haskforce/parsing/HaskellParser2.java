@@ -82,8 +82,9 @@ public class HaskellParser2 implements PsiParser {
 
     private static void parseModuleName(PsiBuilder builder, ModuleName name,  Comment[] comments) {
         builder.getTokenType(); // Need to getTokenType to advance lexer over whitespace.
-        builder.remapCurrentToken(NAME);
-        consumeToken(builder, NAME);
+        // FIXME: NAME is currently not in scope, needs to be added to HaskellTypes
+        //builder.remapCurrentToken(NAME);
+        //consumeToken(builder, NAME);
     }
 
     private static void parseBody(PsiBuilder builder, DeclTopType[] decls, Comment[] comments) {
@@ -215,8 +216,9 @@ public class HaskellParser2 implements PsiParser {
      */
     private static void parseName(PsiBuilder builder, NameTopType nameTopType,  Comment[] comments) {
         if (nameTopType instanceof Ident) {
-            builder.remapCurrentToken(NAME);
-            consumeToken(builder, NAME);
+            // FIXME: NAME is currently not in scope, needs to be added to HaskellTypes
+            //builder.remapCurrentToken(NAME);
+            //consumeToken(builder, NAME);
         } else if (nameTopType instanceof Symbol) {
             builder.remapCurrentToken(SYMBOL);
             consumeToken(builder, SYMBOL);
