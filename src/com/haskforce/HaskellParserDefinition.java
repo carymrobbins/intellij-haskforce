@@ -1,6 +1,7 @@
 package com.haskforce;
 
 import com.haskforce.highlighting.HaskellSyntaxHighlightingLexer;
+import com.haskforce.parsing.HaskellParser2;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.ParserDefinition;
@@ -52,6 +53,7 @@ public class HaskellParserDefinition implements ParserDefinition {
     @NotNull
     public PsiParser createParser(final Project project) {
         return new HaskellParser();
+        // return new HaskellParser2(project);
     }
 
     @Override
