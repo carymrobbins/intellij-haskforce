@@ -1,5 +1,4 @@
 out
-gen/
 build.properties
 *.swp
 .ackrc
