@@ -8,10 +8,6 @@
   <property name="jflex.target.base" value="src/com/haskforce/highlighting/_HaskellSyntaxHighlightingLexer"/>
   <property name="jflex.input.file" value="${jflex.target.base}.flex"/>
   <property name="jflex.output.file" value="${jflex.target.base}.java"/>
-  <property name="grammar-kit.jar" value="grammar-kit.jar"/>
-  <property name="grammar-kit.main" value="org.intellij.grammar.Main"/>
-  <property name="grammar-kit.output.dir" value="gen"/>
-  <property name="grammar-kit.input.file" value="src/com/haskforce/Haskell.bnf"/>
   <!-- Uncomment the following property if no tests compilation is needed -->
   <!-- 
   <property name="skip.tests" value="true"/>
@@ -502,23 +498,13 @@
   </target>
 
   <target name="generate.sources"
-          depends="check.jflex, generate.jflex,
-                   check.grammar-kit, generate.grammar-kit"/>
+          depends="check.jflex, generate.jflex"/>
 
   <target name="check.jflex">
     <condition property="jflex.notRequired">
       <and>
         <available file="${jflex.output.file}"/>
         <uptodate srcfile="${jflex.input.file}" targetfile="${jflex.output.file}"/>
-      </and>
-    </condition>
-  </target>
-
-  <target name="check.grammar-kit">
-    <condition property="grammar-kit.notRequired">
-      <and>
-        <available file="${grammar-kit.output.dir}" type="dir"/>
-        <uptodate srcfile="${grammar-kit.input.file}" targetfile="${grammar-kit.output.dir}"/>
       </and>
     </condition>
   </target>
@@ -530,20 +516,6 @@
       <arg value="--charat"/>
       <arg value="--nobak"/>
       <arg value="${jflex.input.file}"/>
-    </java>
-  </target>
-
-  <target name="generate.grammar-kit" unless="grammar-kit.notRequired">
-    <delete dir="${grammar-kit.output.dir}"/>
-    <java classname="${grammar-kit.main}">
-      <classpath>
-        <fileset dir="${idea.home}/lib" includes="*.jar"/>
-        <pathelement location="${grammar-kit.jar}"/>
-        <!-- Temporarily removing this to avoid using an outdated class file.  -->
-        <!--<pathelement path="${haskforce.output.dir}"/>-->
-      </classpath>
-      <arg value="${grammar-kit.output.dir}"/>
-      <arg value="${grammar-kit.input.file}"/>
     </java>
   </target>
 
