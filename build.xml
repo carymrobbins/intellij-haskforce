@@ -8,6 +8,12 @@
   <property name="jflex.target.base" value="src/com/haskforce/highlighting/_HaskellSyntaxHighlightingLexer"/>
   <property name="jflex.input.file" value="${jflex.target.base}.flex"/>
   <property name="jflex.output.file" value="${jflex.target.base}.java"/>
+  <!-- Set jdk.home if not specified in build.properties. -->
+  <condition property="jdk.home" value="${java.home}/..">
+    <not>
+      <isset property="jdk.home"/>
+    </not>
+  </condition>
   <!-- Uncomment the following property if no tests compilation is needed -->
   <!-- 
   <property name="skip.tests" value="true"/>
@@ -494,7 +500,8 @@
   </target>
 
   <target name="init" description="Build initialization">
-    <!-- Perform any build initialization in this target -->
+    <echo message="Using IDEA home: ${idea.home}"/>
+    <echo message="Using JDK home: ${jdk.home}"/>
   </target>
 
   <target name="generate.sources"
