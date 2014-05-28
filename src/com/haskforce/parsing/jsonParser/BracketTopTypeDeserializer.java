@@ -19,23 +19,22 @@ public class BracketTopTypeDeserializer implements JsonDeserializer<BracketTopTy
                                      JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject objType = jsonElement.getAsJsonObject();
         JsonArray stuff;
-        // TODO: Test BracketTopType.
-        if ((stuff = objType.getAsJsonArray("ExpBracket")) != null) {
+        if ((stuff = objType.getAsJsonArray("ExpBracket")) != null) { // TODO: Test.
             ExpBracket expBracket = new ExpBracket();
             expBracket.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             expBracket.exp = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             return expBracket;
-        } else if ((stuff = objType.getAsJsonArray("PatBracket")) != null) {
+        } else if ((stuff = objType.getAsJsonArray("PatBracket")) != null) { // TODO: Test.
             PatBracket patBracket = new PatBracket();
             patBracket.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             patBracket.pat = jsonDeserializationContext.deserialize(stuff.get(1), PatTopType.class);
             return patBracket;
-        } else if ((stuff = objType.getAsJsonArray("TypeBracket")) != null) {
+        } else if ((stuff = objType.getAsJsonArray("TypeBracket")) != null) { // TODO: Test.
             TypeBracket typeBracket = new TypeBracket();
             typeBracket.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             typeBracket.type = jsonDeserializationContext.deserialize(stuff.get(1), TypeTopType.class);
             return typeBracket;
-        } else if ((stuff = objType.getAsJsonArray("DeclBracket")) != null) {
+        } else if ((stuff = objType.getAsJsonArray("DeclBracket")) != null) { // TODO: Test.
             DeclBracket declBracket = new DeclBracket();
             declBracket.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             declBracket.decls = jsonDeserializationContext.deserialize(stuff.get(1), DeclTopType[].class);
