@@ -121,6 +121,8 @@ public class JsonParser {
         gsonBuilder.registerTypeAdapter(RuleVarTopType.class, new RuleVarTopTypeDeserializer());
         gsonBuilder.registerTypeAdapter(ActivationTopType.class, new ActivationTopTypeDeserializer());
         gsonBuilder.registerTypeAdapter(AnnotationTopType.class, new AnnotationTopTypeDeserializer());
+        gsonBuilder.registerTypeAdapter(PatFieldTopType.class, new PatFieldTopTypeDeserializer());
+        gsonBuilder.registerTypeAdapter(RPatTopType.class, new RPatTopTypeDeserializer());
 
         // Special case parsing for non-sum types.
         gsonBuilder.registerTypeAdapter(TopPair.class, new TopPairDeserializer());
@@ -138,6 +140,7 @@ public class JsonParser {
         gsonBuilder.registerTypeAdapter(GadtDecl.class, new GadtDeclDeserializer());
         gsonBuilder.registerTypeAdapter(FunDep.class, new FunDepDeserializer());
         gsonBuilder.registerTypeAdapter(Rule.class, new RuleDeserializer());
+        gsonBuilder.registerTypeAdapter(PXAttr.class, new PXAttrDeserializer());
 
         Gson gson = gsonBuilder.setPrettyPrinting().create();
         return gson;
