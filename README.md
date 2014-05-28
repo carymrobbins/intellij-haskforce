@@ -14,7 +14,6 @@ Building the plugin
 
     ````$ git clone git@github.com:JetBrains/intellij-community.git idea````
 1. Install and enable additional plugins.
-  * Grammar-Kit
   * JFlex Support
   * Plugin DevKit (already installed)
   * PsiViewer
@@ -26,17 +25,6 @@ Building the plugin
   * Go to File > Project Structure.  Add SDKs for JDK and IDEA Plugins.  For the IDEA Plugins, add sources
     from cloned IntelliJ to the Sourcepath.
 1. Set the project SDK to the IDEA SDK.
-1. Generate additional source files -
-  * On UNIX, run `tools/generate.sh`
-  * On Windows, open **src/com/haskforce/Haskell.bnf** and follow the instructions in the comments.
-1. Right-click on the following directories and **Mark Directory As**:
-  * `gen/` as Sources Root
-  * `resources/` as Resources Root
-  * `tests/` as Test Sources Root
-1. Go to File -> Project Structure. Add a module called "jps-plugin"
-1. Right-click on the following directories and **Mark Directory As**:
-  * `jps-plugin/src` as Sources Root
-  * `jps-plugin/resources` as Resources Root
 1. From the menu go to **Run > Edit Configurations**
 1. Click on the `+` sign and choose **Plugin**, click **OK**, then run your new configuration.
 
