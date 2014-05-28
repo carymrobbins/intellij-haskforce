@@ -111,7 +111,7 @@
       <include name="lib/extensions.jar"/>
       <include name="lib/forms_rt.jar"/>
       <include name="lib/groovy-all-2.0.6.jar"/>
-      <include name="lib/gson-2.2.3.jar"/>
+      <include name="lib/gson-2.2.*.jar"/>
       <include name="lib/guava-14.0.1.jar"/>
       <include name="lib/icons.jar"/>
       <include name="lib/idea.jar"/>
@@ -135,7 +135,7 @@
       <include name="lib/jsch-0.1.50.jar"/>
       <include name="lib/jsr166e.jar"/>
       <include name="lib/jsr173_1.0_api.jar"/>
-      <include name="lib/junit-4.10.jar"/>
+      <include name="lib/junit-4.*.jar"/>
       <include name="lib/jzlib-1.1.1.jar"/>
       <include name="lib/log4j.jar"/>
       <include name="lib/markdownj-core-0.4.2-SNAPSHOT.jar"/>
