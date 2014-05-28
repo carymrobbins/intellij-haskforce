@@ -1,5 +1,7 @@
-HaskForce - The IntelliJ plugin for Haskell.
-=========
+# HaskForce [![Build Status](https://travis-ci.org/carymrobbins/intellij-haskforce.svg?branch=master)](https://travis-ci.org/carymrobbins/intellij-haskforce)
+
+The IntelliJ plugin for Haskell.
+--------
 
 ***This plugin is in its early stages and is not ready for use.***
 
