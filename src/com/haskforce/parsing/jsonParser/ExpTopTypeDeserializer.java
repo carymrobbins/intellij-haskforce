@@ -174,11 +174,11 @@ public class ExpTopTypeDeserializer implements JsonDeserializer<ExpTopType> {
             listComp.qualStmts = jsonDeserializationContext.deserialize(stuff.get(2), QualStmtTopType[].class);
             return listComp;
         } else if ((stuff = objType.getAsJsonArray("ParComp")) != null) { // TODO: Test.
-            ListComp listComp = new ListComp();
-            listComp.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
-            listComp.exp = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
-            listComp.qualStmts = jsonDeserializationContext.deserialize(stuff.get(2), QualStmtTopType[][].class);
-            return listComp;
+            ParComp parComp = new ParComp();
+            parComp.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
+            parComp.exp = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
+            parComp.qualStmts = jsonDeserializationContext.deserialize(stuff.get(2), QualStmtTopType[][].class);
+            return parComp;
         } else if ((stuff = objType.getAsJsonArray("ExpTypeSig")) != null) {
             ExpTypeSig expTypeSig = new ExpTypeSig();
             expTypeSig.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);

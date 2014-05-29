@@ -5,7 +5,7 @@ import java.util.Arrays;
 /**
  * ParComp  l (Exp l) [[QualStmt l]]
  */
-public class ParComp extends ExpTopType { // TODO: Not deserialized?
+public class ParComp extends ExpTopType {
     public SrcInfoSpan srcInfoSpan;
     public ExpTopType exp;
     public QualStmtTopType[][] qualStmts;

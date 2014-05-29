@@ -1,13 +1,13 @@
 package com.haskforce.parsing.srcExtsDatatypes;
 
 /**
- * KindStar l
+ * RPOpt   l
  */
-public class KindStar extends KindTopType {
+public class RPOpt extends RPatOpTopType {
     public SrcInfoSpan srcInfoSpan;
 
     @Override
     public String toString() {
-        return "KindStar";
+        return "RPOpt{}";
     }
 }

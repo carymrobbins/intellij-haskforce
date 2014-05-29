@@ -13,7 +13,6 @@ package com.haskforce.parsing.srcExtsDatatypes;
  *  --   a datatype imported with some of its constructors.
  */
 public class ImportSpecTopType {
-    // TODO
 }
 
 

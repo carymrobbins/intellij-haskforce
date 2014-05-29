@@ -8,5 +8,5 @@ package com.haskforce.parsing.srcExtsDatatypes;
  *  | EThingWith l (QName l) [CName l] -- ^ @T(C_1,...,C_n)@:
  *  | EModuleContents l (ModuleName l) -- ^ @module M@:
  */
-public class ExportSpecTopType { // TODO: Complete me.
+public class ExportSpecTopType {
 }

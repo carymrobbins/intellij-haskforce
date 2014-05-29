@@ -3,16 +3,16 @@ package com.haskforce.parsing.srcExtsDatatypes;
 import java.util.Arrays;
 
 /**
- * BDecls  l [Decl l]
+ * KindList  l [Kind l]
  */
-public class BDecls extends BindsTopType {
+public class KindList extends KindTopType {
     public SrcInfoSpan srcInfoSpan;
-    public DeclTopType[] decls;
+    public KindTopType[] kinds;
 
     @Override
     public String toString() {
-        return "BDecls{" +
-                "decls=" + Arrays.toString(decls) +
+        return "KindList{" +
+                "kinds=" + Arrays.toString(kinds) +
                 '}';
     }
 }

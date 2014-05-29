@@ -5,5 +5,5 @@ package com.haskforce.parsing.srcExtsDatatypes;
  = DeprText l String
  | WarnText l String
  */
-public class WarningTextTopType { // TODO: Deserialize.
+public class WarningTextTopType {
 }

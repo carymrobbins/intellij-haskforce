@@ -5,5 +5,5 @@ package com.haskforce.parsing.srcExtsDatatypes;
  *  = UnGuardedAlt l (Exp l)         -- ^ @->@ /exp/
  *  | GuardedAlts  l [GuardedAlt l]  -- ^ /gdpat/
  */
-public class GuardedAltsTopType { // TODO: Deserialize?
+public class GuardedAltsTopType {
 }

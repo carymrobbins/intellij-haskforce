@@ -1,16 +1,16 @@
 package com.haskforce.parsing.srcExtsDatatypes;
 
 /**
- * UnGuardedAlt l (Exp l)
+ * RPParen l (RPat l)
  */
-public class UnGuardedAlt extends GuardedAltsTopType {
+public class RPParen extends RPatTopType {
     public SrcInfoSpan srcInfoSpan;
-    public ExpTopType exp;
+    public RPatTopType rpat;
 
     @Override
     public String toString() {
-        return "UnGuardedAlt{" +
-                exp +
+        return "RPParen{" +
+                "rpat=" + rpat +
                 '}';
     }
 }

@@ -8,7 +8,7 @@ import java.util.Arrays;
  *   {-forall-} (Maybe [TyVarBind l]) {- . -} (Maybe (Context l))
  *   {- => -} (ConDecl l)
  */
-public class QualConDecl { // TODO: Deserialize.
+public class QualConDecl {
     public SrcInfoSpan srcInfoSpan;
     public TyVarBindTopType[] tyVarBinds;
     public ContextTopType contextMaybe;

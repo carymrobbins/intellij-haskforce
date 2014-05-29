@@ -3,16 +3,16 @@ package com.haskforce.parsing.srcExtsDatatypes;
 import java.util.Arrays;
 
 /**
- * BDecls  l [Decl l]
+ *  IPBinds l [IPBind l]
  */
-public class BDecls extends BindsTopType {
+public class IPBinds extends BindsTopType {
     public SrcInfoSpan srcInfoSpan;
-    public DeclTopType[] decls;
+    public IPBind[] ipBinds;
 
     @Override
     public String toString() {
-        return "BDecls{" +
-                "decls=" + Arrays.toString(decls) +
+        return "IPBinds{" +
+                "ipBinds=" + Arrays.toString(ipBinds) +
                 '}';
     }
 }

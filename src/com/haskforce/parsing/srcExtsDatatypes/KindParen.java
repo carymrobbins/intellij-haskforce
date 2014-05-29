@@ -1,16 +1,16 @@
 package com.haskforce.parsing.srcExtsDatatypes;
 
 /**
- * UnGuardedAlt l (Exp l)
+ * KindParen l (Kind l)
  */
-public class UnGuardedAlt extends GuardedAltsTopType {
+public class KindParen extends KindTopType {
     public SrcInfoSpan srcInfoSpan;
-    public ExpTopType exp;
+    public KindTopType kind;
 
     @Override
     public String toString() {
-        return "UnGuardedAlt{" +
-                exp +
+        return "KindParen{" +
+                kind +
                 '}';
     }
 }

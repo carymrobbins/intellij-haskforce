@@ -3,16 +3,16 @@ package com.haskforce.parsing.srcExtsDatatypes;
 import java.util.Arrays;
 
 /**
- * BDecls  l [Decl l]
+ * RPSeq l [RPat l]
  */
-public class BDecls extends BindsTopType {
+public class RPSeq extends RPatTopType {
     public SrcInfoSpan srcInfoSpan;
-    public DeclTopType[] decls;
+    public RPatTopType[] rpats;
 
     @Override
     public String toString() {
-        return "BDecls{" +
-                "decls=" + Arrays.toString(decls) +
+        return "RPSeq{" +
+                "rpats=" + Arrays.toString(rpats) +
                 '}';
     }
 }
