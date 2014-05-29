@@ -9,5 +9,5 @@ package com.haskforce.parsing.srcExtsDatatypes;
  *  | PromotedTuple l [Promoted l]
  *  | PromotedUnit l
  */
-public class PromotedTopType { // TODO: Make rest of Promoted*
+public class PromotedTopType {
 }

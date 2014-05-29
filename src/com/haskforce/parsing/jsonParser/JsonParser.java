@@ -123,6 +123,7 @@ public class JsonParser {
         gsonBuilder.registerTypeAdapter(AnnotationTopType.class, new AnnotationTopTypeDeserializer());
         gsonBuilder.registerTypeAdapter(PatFieldTopType.class, new PatFieldTopTypeDeserializer());
         gsonBuilder.registerTypeAdapter(RPatTopType.class, new RPatTopTypeDeserializer());
+        gsonBuilder.registerTypeAdapter(ExportSpecTopType.class, new ExportSpecTopTypeDeserializer());
 
         // Special case parsing for non-sum types.
         gsonBuilder.registerTypeAdapter(TopPair.class, new TopPairDeserializer());
