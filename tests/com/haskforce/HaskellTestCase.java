@@ -42,7 +42,8 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(HaskellParserTest.class);
         suite.addTestSuite(HaskellFeaturesTest.class);
         suite.addTestSuite(HaskellFoldingBuilderTest.class);
-        suite.addTestSuite(HaskellTypedHandlerTest.class);
+        // TODO: Enable after new parser is default.
+        // suite.addTestSuite(HaskellTypedHandlerTest.class);
         return suite;
     }
 }
