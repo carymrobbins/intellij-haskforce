@@ -212,7 +212,7 @@
   <property name="module.jdk.bin.jps-shared" value="${project.jdk.bin}"/>
   <property name="module.jdk.classpath.jps-shared" value="${project.jdk.classpath}"/>
 
-  <property name="compiler.args.jps-shared" value="-encoding UTF-8 -source 1.7 ${compiler.args}"/>
+  <property name="compiler.args.jps-shared" value="-encoding UTF-8 ${compiler.args}"/>
 
   <property name="jps-shared.output.dir" value="${module.jps-shared.basedir}/out/production/jps-shared"/>
   <property name="jps-shared.testoutput.dir" value="${module.jps-shared.basedir}/out/test/jps-shared"/>
@@ -296,7 +296,7 @@
   <property name="module.jdk.bin.haskforce" value="${project.jdk.bin}"/>
   <property name="module.jdk.classpath.haskforce" value="${project.jdk.classpath}"/>
   
-  <property name="compiler.args.haskforce" value="-encoding UTF-8 -source 1.7 ${compiler.args}"/>
+  <property name="compiler.args.haskforce" value="-encoding UTF-8 ${compiler.args}"/>
   
   <property name="haskforce.output.dir" value="${module.haskforce.basedir}/out/production/HaskForce"/>
   <property name="haskforce.testoutput.dir" value="${module.haskforce.basedir}/out/test/HaskForce"/>
@@ -423,7 +423,7 @@
   <property name="module.jdk.bin.jps-plugin" value="${project.jdk.bin}"/>
   <property name="module.jdk.classpath.jps-plugin" value="${project.jdk.classpath}"/>
   
-  <property name="compiler.args.jps-plugin" value="-encoding UTF-8 -source 1.7 ${compiler.args}"/>
+  <property name="compiler.args.jps-plugin" value="-encoding UTF-8 ${compiler.args}"/>
   
   <property name="jps-plugin.output.dir" value="${module.jps-plugin.basedir}/out/production/jps-plugin"/>
   <property name="jps-plugin.testoutput.dir" value="${module.jps-plugin.basedir}/out/test/jps-plugin"/>
