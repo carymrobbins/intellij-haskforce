@@ -24,7 +24,7 @@ public class BindsTopTypeDeserializer implements JsonDeserializer<BindsTopType> 
                                      JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject objType = jsonElement.getAsJsonObject();
         JsonArray stuff;
-        if ((stuff = objType.getAsJsonArray("BDecls")) != null) { // TODO: Test.
+        if ((stuff = objType.getAsJsonArray("BDecls")) != null) {
             BDecls bDecls = new BDecls();
             bDecls.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             bDecls.decls = jsonDeserializationContext.deserialize(stuff.get(1), DeclTopType[].class);

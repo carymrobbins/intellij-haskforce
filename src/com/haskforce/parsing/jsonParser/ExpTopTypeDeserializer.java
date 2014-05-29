@@ -63,13 +63,13 @@ public class ExpTopTypeDeserializer implements JsonDeserializer<ExpTopType> {
             lambda.pats = jsonDeserializationContext.deserialize(stuff.get(1), PatTopType[].class);
             lambda.exp = jsonDeserializationContext.deserialize(stuff.get(2), ExpTopType.class);
             return lambda;
-        } else if ((stuff = objType.getAsJsonArray("Let")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("Let")) != null) {
             Let let = new Let();
             let.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             let.binds = jsonDeserializationContext.deserialize(stuff.get(1), BindsTopType.class);
             let.exp = jsonDeserializationContext.deserialize(stuff.get(2), ExpTopType.class);
             return let;
-        } else if ((stuff = objType.getAsJsonArray("If")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("If")) != null) {
             If anIf = new If();
             anIf.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             anIf.cond = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
@@ -87,7 +87,7 @@ public class ExpTopTypeDeserializer implements JsonDeserializer<ExpTopType> {
             aCase.scrutinee= jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             aCase.alts = jsonDeserializationContext.deserialize(stuff.get(2), Alt[].class);
             return aCase;
-        } else if ((stuff = objType.getAsJsonArray("Do")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("Do")) != null) {
             Do aDo = new Do();
             aDo.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             aDo.stmts = jsonDeserializationContext.deserialize(stuff.get(1), StmtTopType[].class);
