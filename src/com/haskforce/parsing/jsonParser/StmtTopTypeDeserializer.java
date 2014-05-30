@@ -33,7 +33,7 @@ public class StmtTopTypeDeserializer implements JsonDeserializer<StmtTopType> {
             generator.pat = jsonDeserializationContext.deserialize(stuff.get(1), PatTopType.class);
             generator.exp = jsonDeserializationContext.deserialize(stuff.get(2), ExpTopType.class);
             return generator;
-        } else if ((stuff = objType.getAsJsonArray("Qualifier")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("Qualifier")) != null) {
             Qualifier qualifier = new Qualifier();
             qualifier.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             qualifier.exp = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);

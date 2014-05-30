@@ -24,7 +24,7 @@ public class GuardedAltsTopTypeDeserializer implements JsonDeserializer<GuardedA
                                      JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject objType = jsonElement.getAsJsonObject();
         JsonArray stuff;
-        if ((stuff = objType.getAsJsonArray("UnGuardedAlt")) != null) { // TODO: Test.
+        if ((stuff = objType.getAsJsonArray("UnGuardedAlt")) != null) {
             UnGuardedAlt unGuardedAlt = new UnGuardedAlt();
             unGuardedAlt.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             unGuardedAlt.exp = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);

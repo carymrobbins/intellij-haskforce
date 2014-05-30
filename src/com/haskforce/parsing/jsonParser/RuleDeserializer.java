@@ -23,7 +23,7 @@ public class RuleDeserializer implements JsonDeserializer<Rule> {
                                      JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject objType = jsonElement.getAsJsonObject();
         JsonArray stuff;
-        if ((stuff = objType.getAsJsonArray("Rule")) != null) { // TODO: Test.
+        if ((stuff = objType.getAsJsonArray("Rule")) != null) {
             Rule rule = new Rule();
             rule.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             rule.s = jsonDeserializationContext.deserialize(stuff.get(1), String.class);

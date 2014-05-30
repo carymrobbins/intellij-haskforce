@@ -31,13 +31,13 @@ public class ModulePragmaTopTypeDeserializer implements JsonDeserializer<ModuleP
             languagePragma.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             languagePragma.names = jsonDeserializationContext.deserialize(stuff.get(1), NameTopType[].class);
             return languagePragma;
-        } else if ((stuff = objType.getAsJsonArray("OptionsPragma")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("OptionsPragma")) != null) {
             OptionsPragma optionsPragma = new OptionsPragma();
             optionsPragma.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             optionsPragma.tool = jsonDeserializationContext.deserialize(stuff.get(1), ToolTopType.class);
             optionsPragma.s = jsonDeserializationContext.deserialize(stuff.get(2), String.class);
             return optionsPragma;
-        } else if ((stuff = objType.getAsJsonArray("AnnModulePragma")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("AnnModulePragma")) != null) {
             AnnModulePragma annModulePragma = new AnnModulePragma();
             annModulePragma.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             annModulePragma.ann = jsonDeserializationContext.deserialize(stuff.get(1), AnnotationTopType.class);

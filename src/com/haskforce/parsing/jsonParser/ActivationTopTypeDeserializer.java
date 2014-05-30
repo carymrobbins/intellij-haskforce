@@ -24,12 +24,12 @@ public class ActivationTopTypeDeserializer implements JsonDeserializer<Activatio
         JsonObject objType = jsonElement.getAsJsonObject();
         JsonArray stuff;
         Gson g = new Gson(); // TODO: Remove with 1.7.
-        if ((stuff = objType.getAsJsonArray("ActiveFrom")) != null) { // TODO: Test.
+        if ((stuff = objType.getAsJsonArray("ActiveFrom")) != null) {
             ActiveFrom activeFrom = new ActiveFrom();
             activeFrom.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             activeFrom.anInt = g.fromJson(stuff.get(1), int.class);
             return activeFrom;
-        } else if ((stuff = objType.getAsJsonArray("ActiveUntil")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("ActiveUntil")) != null) {
             ActiveUntil activeUntil = new ActiveUntil();
             activeUntil.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             activeUntil.anInt = g.fromJson(stuff.get(1), int.class);

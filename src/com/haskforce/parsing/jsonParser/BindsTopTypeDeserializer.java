@@ -29,7 +29,7 @@ public class BindsTopTypeDeserializer implements JsonDeserializer<BindsTopType> 
             bDecls.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             bDecls.decls = jsonDeserializationContext.deserialize(stuff.get(1), DeclTopType[].class);
             return bDecls;
-        } else if ((stuff = objType.getAsJsonArray("TypeAnn")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("TypeAnn")) != null) {
             IPBinds ipBinds = new IPBinds();
             ipBinds.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             ipBinds.ipBinds = jsonDeserializationContext.deserialize(stuff.get(1), IPBind[].class);

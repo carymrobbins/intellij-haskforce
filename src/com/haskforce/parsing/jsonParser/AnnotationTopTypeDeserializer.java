@@ -25,19 +25,19 @@ public class AnnotationTopTypeDeserializer implements JsonDeserializer<Annotatio
                                      JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject objType = jsonElement.getAsJsonObject();
         JsonArray stuff;
-        if ((stuff = objType.getAsJsonArray("Ann")) != null) { // TODO: Test.
+        if ((stuff = objType.getAsJsonArray("Ann")) != null) {
             Ann ann = new Ann();
             ann.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             ann.name = jsonDeserializationContext.deserialize(stuff.get(1), NameTopType.class);
             ann.exp = jsonDeserializationContext.deserialize(stuff.get(2), ExpTopType.class);
             return ann;
-        } else if ((stuff = objType.getAsJsonArray("TypeAnn")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("TypeAnn")) != null) {
             TypeAnn typeAnn = new TypeAnn();
             typeAnn.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             typeAnn.name = jsonDeserializationContext.deserialize(stuff.get(1), NameTopType.class);
             typeAnn.exp = jsonDeserializationContext.deserialize(stuff.get(2), ExpTopType.class);
             return typeAnn;
-        } else if ((stuff = objType.getAsJsonArray("ModuleAnn")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("ModuleAnn")) != null) {
             ModuleAnn moduleAnn = new ModuleAnn();
             moduleAnn.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             moduleAnn.exp = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);

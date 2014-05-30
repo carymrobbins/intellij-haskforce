@@ -155,7 +155,7 @@ public class DeclTopTypeDeserializer implements JsonDeserializer<DeclTopType> {
             forExp.name = jsonDeserializationContext.deserialize(stuff.get(3), NameTopType.class);
             forExp.type = jsonDeserializationContext.deserialize(stuff.get(4), TypeTopType.class);
             return forExp;
-        } else if ((stuff = objType.getAsJsonArray("RulePragmaDecl")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("RulePragmaDecl")) != null) {
             RulePragmaDecl rulePragmaDecl = new RulePragmaDecl();
             rulePragmaDecl.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             rulePragmaDecl.rules = jsonDeserializationContext.deserialize(stuff.get(1), Rule[].class);
@@ -165,12 +165,12 @@ public class DeclTopTypeDeserializer implements JsonDeserializer<DeclTopType> {
             deprPragmaDecl.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             deprPragmaDecl.pragmas = jsonDeserializationContext.deserialize(stuff.get(1), NameStringPair[].class);
             return deprPragmaDecl;
-        } else if ((stuff = objType.getAsJsonArray("WarnPragmaDecl")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("WarnPragmaDecl")) != null) {
             WarnPragmaDecl warnPragmaDecl = new WarnPragmaDecl();
             warnPragmaDecl.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             warnPragmaDecl.pragmas = jsonDeserializationContext.deserialize(stuff.get(1), NameStringPair[].class);
             return warnPragmaDecl;
-        } else if ((stuff = objType.getAsJsonArray("InlineSig")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("InlineSig")) != null) {
             InlineSig inlineSig = new InlineSig();
             Gson g = new Gson(); // TODO: Remove with 1.7.
             inlineSig.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
@@ -178,20 +178,20 @@ public class DeclTopTypeDeserializer implements JsonDeserializer<DeclTopType> {
             inlineSig.activationMaybe = jsonDeserializationContext.deserialize(stuff.get(2), ActivationTopType.class);
             inlineSig.qName = jsonDeserializationContext.deserialize(stuff.get(3), QNameTopType.class);
             return inlineSig;
-        } else if ((stuff = objType.getAsJsonArray("InlineConlikeSig")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("InlineConlikeSig")) != null) {
             InlineConlikeSig inlineConlikeSig = new InlineConlikeSig();
             inlineConlikeSig.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             inlineConlikeSig.activationMaybe = jsonDeserializationContext.deserialize(stuff.get(1), ActivationTopType.class);
             inlineConlikeSig.qName = jsonDeserializationContext.deserialize(stuff.get(2), QNameTopType.class);
             return inlineConlikeSig;
-        } else if ((stuff = objType.getAsJsonArray("SpecSig")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("SpecSig")) != null) {
             SpecSig specSig = new SpecSig();
             specSig.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             specSig.activationMaybe = jsonDeserializationContext.deserialize(stuff.get(1), ActivationTopType.class);
             specSig.qName = jsonDeserializationContext.deserialize(stuff.get(2), QNameTopType.class);
             specSig.types = jsonDeserializationContext.deserialize(stuff.get(3), TypeTopType[].class);
             return specSig;
-        } else if ((stuff = objType.getAsJsonArray("SpecInlineSig")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("SpecInlineSig")) != null) {
             SpecInlineSig specInlineSig = new SpecInlineSig();
             Gson g = new Gson(); // TODO: Remove with 1.7.
             specInlineSig.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
@@ -206,7 +206,7 @@ public class DeclTopTypeDeserializer implements JsonDeserializer<DeclTopType> {
             instSig.contextMaybe = jsonDeserializationContext.deserialize(stuff.get(1), ContextTopType.class);
             instSig.instHead = jsonDeserializationContext.deserialize(stuff.get(2), InstHeadTopType.class);
             return instSig;
-        } else if ((stuff = objType.getAsJsonArray("AnnPragma")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("AnnPragma")) != null) {
             AnnPragma annPragma = new AnnPragma();
             annPragma.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             annPragma.annotation = jsonDeserializationContext.deserialize(stuff.get(1), AnnotationTopType.class);

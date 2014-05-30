@@ -23,7 +23,7 @@ public class ToolTopTypeDeserializer implements JsonDeserializer<ToolTopType> {
     public ToolTopType deserialize(JsonElement jsonElement, Type type,
                                      JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonArray stuff;
-        if (jsonElement.getAsString().equals("GHC")) { // TODO: Test.
+        if (jsonElement.getAsString().equals("GHC")) {
             return new GHC();
         } else if (jsonElement.getAsString().equals("HUGS")) { // TODO: Test.
             return new HUGS();
