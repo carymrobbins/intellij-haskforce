@@ -26,7 +26,7 @@ echo "Creating build.properties file for ant."
 echo "idea.home=$(pwd)/idea-IC" > build.properties
 
 echo "Cloning parser helper."
-git clone git@github.com:pjonsson/parser-helper.git
+git clone https://github.com/pjonsson/parser-helper
 cd parser-helper
 cabal install
 
