@@ -241,13 +241,13 @@ public class ExpTopTypeDeserializer implements JsonDeserializer<ExpTopType> {
             xChildTag.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             xChildTag.exps = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType[].class);
             return xChildTag;
-        } else if ((stuff = objType.getAsJsonArray("CorePragma")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("CorePragma")) != null) {
             CorePragma corePragma = new CorePragma();
             corePragma.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             corePragma.s = jsonDeserializationContext.deserialize(stuff.get(1), String.class);
             corePragma.exp = jsonDeserializationContext.deserialize(stuff.get(2), ExpTopType.class);
             return corePragma;
-        } else if ((stuff = objType.getAsJsonArray("SCCPragma")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("SCCPragma")) != null) {
             SCCPragma sccPragma = new SCCPragma();
             sccPragma.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             sccPragma.s = jsonDeserializationContext.deserialize(stuff.get(1), String.class);
