@@ -110,7 +110,8 @@
       <include name="lib/cglib-2.2.2.jar"/>
       <include name="lib/cli-parser-1.1.jar"/>
       <include name="lib/commons-codec-1.8.jar"/>
-      <include name="lib/commons-httpclient-3.1-patched.jar"/>
+      <include name="lib/httpcore-4.3.1.jar"/>
+      <include name="lib/httpclient-4.3.2.jar"/>
       <include name="lib/commons-logging-1.1.1.jar"/>
       <include name="lib/commons-net-3.1.jar"/>
       <include name="lib/ecj-4.2.1.jar"/>
@@ -260,7 +261,7 @@
 
   <target name="compile.module.jps-shared.production" depends="register.custom.compilers" description="Compile module jps-shared; production classes">
     <mkdir dir="${jps-shared.output.dir}"/>
-    <javac2 destdir="${jps-shared.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jps-shared}/javac">
+    <javac2 source="1.6" target="1.6" destdir="${jps-shared.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jps-shared}/javac">
       <compilerarg line="${compiler.args.jps-shared}"/>
       <bootclasspath refid="jps-shared.module.bootclasspath"/>
       <classpath refid="jps-shared.module.production.classpath"/>
@@ -352,7 +353,7 @@
   
   <target name="compile.module.haskforce.production" depends="register.custom.compilers" description="Compile module HaskForce; production classes">
     <mkdir dir="${haskforce.output.dir}"/>
-    <javac2 destdir="${haskforce.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.haskforce}/javac">
+    <javac2 source="1.6" target="1.6" destdir="${haskforce.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.haskforce}/javac">
       <compilerarg line="${compiler.args.haskforce}"/>
       <bootclasspath refid="haskforce.module.bootclasspath"/>
       <classpath refid="haskforce.module.production.classpath"/>
@@ -378,7 +379,7 @@
   
   <target name="compile.module.haskforce.tests" depends="register.custom.compilers,compile.module.haskforce.production" description="compile module HaskForce; test classes" unless="skip.tests">
     <mkdir dir="${haskforce.testoutput.dir}"/>
-    <javac2 destdir="${haskforce.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.haskforce}/javac">
+    <javac2 source="1.6" target="1.6" destdir="${haskforce.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.haskforce}/javac">
       <compilerarg line="${compiler.args.haskforce}"/>
       <bootclasspath refid="haskforce.module.bootclasspath"/>
       <classpath refid="haskforce.module.classpath"/>
@@ -472,7 +473,7 @@
   
   <target name="compile.module.jps-plugin.production" depends="register.custom.compilers" description="Compile module jps-plugin; production classes">
     <mkdir dir="${jps-plugin.output.dir}"/>
-    <javac2 destdir="${jps-plugin.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jps-plugin}/javac">
+    <javac2 source="1.6" target="1.6" destdir="${jps-plugin.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jps-plugin}/javac">
       <compilerarg line="${compiler.args.jps-plugin}"/>
       <bootclasspath refid="jps-plugin.module.bootclasspath"/>
       <classpath refid="jps-plugin.module.production.classpath"/>
