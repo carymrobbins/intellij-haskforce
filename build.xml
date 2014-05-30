@@ -3,6 +3,7 @@
 
 
   <property file="build.properties"/>
+  <property name="build.compiler" value="modern"/>
   <property name="jflex.jar" value="JFlex.jar"/>
   <property name="jflex.skeleton" value="idea-flex.skeleton"/>
   <property name="jflex.target.base" value="src/com/haskforce/highlighting/_HaskellSyntaxHighlightingLexer"/>
@@ -100,7 +101,9 @@
       <include name="jre/lib/ext/zipfs.jar"/>
     </fileset>
     <pathelement location="${idea.home}/lib/junit-4.11.jar" />
-    <fileset dir="${idea.home}" includes="**/*.jar" />
+    <fileset dir="${idea.home}" includes="**/*.jar">
+      <exclude name="lib/ant/lib/**"/>
+    </fileset>
   </path>
   
   <property name="project.jdk.home" value="${jdk.home}"/>
@@ -113,7 +116,9 @@
   <property name="javac2.home" value="${idea.home}/lib"/>
   <path id="javac2.classpath">
     <pathelement location="${javac2.home}/javac2.jar"/>
-    <fileset dir="${idea.home}" includes="**/*.jar"/>
+    <fileset dir="${idea.home}" includes="**/*.jar">
+      <exclude name="lib/ant/lib/*"/>
+    </fileset>
   </path>
   <target name="register.custom.compilers">
     <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
@@ -459,7 +464,9 @@
       <jvmarg value="-Didea.launcher.bin.path=${idea.home}/bin"/>
       <classpath>
         <pathelement location="${idea.home}/lib/junit-4.11.jar" />
-        <fileset dir="${idea.home}" includes="**/*.jar" />
+        <fileset dir="${idea.home}" includes="**/*.jar">
+          <exclude name="lib/ant/lib/*"/>
+        </fileset>
         <fileset dir="${java.home}/../lib" includes="**/*.jar" />
         <path refid="haskforce.module.classpath"/>
         <pathelement location="${haskforce.testoutput.dir}"/>
