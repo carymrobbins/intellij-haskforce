@@ -25,5 +25,18 @@ mv idea-IC-* idea-IC
 echo "Creating build.properties file for ant."
 echo "idea.home=$(pwd)/idea-IC" > build.properties
 
+echo "Cloning parser helper."
+git clone git@github.com:pjonsson/parser-helper.git
+cd parser-helper
+cabal install
+
+if [ -z $(which parser-helper) ]; then
+    echo "Could not find parser-helper on the path."
+    echo "Current path: $PATH"
+    echo "Contents of ~/.cabal/bin"
+    ls ~/.cabal/bin
+    exit 1
+fi
+
 echo "Starting ant build."
 ant
