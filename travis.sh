@@ -27,7 +27,13 @@ mv idea-IC-* idea-IC
 echo "Creating build.properties file for ant."
 echo "idea.home=$(pwd)/idea-IC" > build.properties
 
-echo "Cloning parser helper."
+if [ -z $(which cabal) ]; then
+    echo "Installing cabal-install."
+    sudo apt-get update
+    sudo apt-get install cabal-install
+fi
+
+echo "Install parser helper."
 git clone https://github.com/pjonsson/parser-helper
 cd parser-helper
 cabal install
