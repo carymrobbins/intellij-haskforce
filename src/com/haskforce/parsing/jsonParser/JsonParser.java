@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  */
 public class JsonParser {
     private static final String NOTIFICATION_TITLE = "Parser-helper notification";
-    private static final Pattern cppPattern = Pattern.compile("^\\s*#(.*)$", Pattern.MULTILINE);
+    private static final Pattern cppPattern = Pattern.compile("^\\s*#[a-z](.*)$", Pattern.MULTILINE);
     private static final Logger LOG = Logger.getInstance(JsonParser.class);
     private final Project myProject;
 
