@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 IDEA_VERSION=13.1.2
 IDEA_TAR=ideaIC-${IDEA_VERSION}.tar.gz
 IDEA_DIR=idea-IC-135.690
