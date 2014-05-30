@@ -2,4 +2,5 @@ language: java
 jdk:
   - openjdk6
   - oraclejdk7
+ghc: 7.6
 script: "./travis.sh"
