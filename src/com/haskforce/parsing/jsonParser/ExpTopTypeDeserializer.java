@@ -52,7 +52,7 @@ public class ExpTopTypeDeserializer implements JsonDeserializer<ExpTopType> {
             app.e1 = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             app.e2 = jsonDeserializationContext.deserialize(stuff.get(2), ExpTopType.class);
             return app;
-        } else if ((stuff = objType.getAsJsonArray("NegApp")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("NegApp")) != null) {
             NegApp negApp = new NegApp();
             negApp.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             negApp.e1 = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
@@ -103,7 +103,7 @@ public class ExpTopTypeDeserializer implements JsonDeserializer<ExpTopType> {
             tuple.boxed = jsonDeserializationContext.deserialize(stuff.get(1), BoxedTopType.class);
             tuple.exps = jsonDeserializationContext.deserialize(stuff.get(2), ExpTopType[].class);
             return tuple;
-        } else if ((stuff = objType.getAsJsonArray("TupleSection")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("TupleSection")) != null) {
             TupleSection tupleSection = new TupleSection();
             tupleSection.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             tupleSection.boxed = jsonDeserializationContext.deserialize(stuff.get(1), BoxedTopType.class);
@@ -119,7 +119,7 @@ public class ExpTopTypeDeserializer implements JsonDeserializer<ExpTopType> {
             paren.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             paren.exp = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             return paren;
-        } else if ((stuff = objType.getAsJsonArray("LeftSection")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("LeftSection")) != null) {
             LeftSection leftSection = new LeftSection();
             leftSection.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             leftSection.exp = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
@@ -143,37 +143,37 @@ public class ExpTopTypeDeserializer implements JsonDeserializer<ExpTopType> {
             recUpdate.exp = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             recUpdate.fieldUpdates = jsonDeserializationContext.deserialize(stuff.get(2), FieldUpdateTopType[].class);
             return recUpdate;
-        } else if ((stuff = objType.getAsJsonArray("EnumFrom")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("EnumFrom")) != null) {
             EnumFrom enumFrom = new EnumFrom();
             enumFrom.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             enumFrom.exp = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             return enumFrom;
-        } else if ((stuff = objType.getAsJsonArray("EnumFromTo")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("EnumFromTo")) != null) {
             EnumFromTo enumFromTo = new EnumFromTo();
             enumFromTo.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             enumFromTo.from = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             enumFromTo.to = jsonDeserializationContext.deserialize(stuff.get(2), ExpTopType.class);
             return enumFromTo;
-        } else if ((stuff = objType.getAsJsonArray("EnumFromThen")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("EnumFromThen")) != null) {
             EnumFromThen enumFromThen = new EnumFromThen();
             enumFromThen.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             enumFromThen.from = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             enumFromThen.step = jsonDeserializationContext.deserialize(stuff.get(2), ExpTopType.class);
             return enumFromThen;
-        } else if ((stuff = objType.getAsJsonArray("EnumFromThenTo")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("EnumFromThenTo")) != null) {
             EnumFromThenTo enumFromThenTo = new EnumFromThenTo();
             enumFromThenTo.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             enumFromThenTo.from = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             enumFromThenTo.step = jsonDeserializationContext.deserialize(stuff.get(2), ExpTopType.class);
             enumFromThenTo.to = jsonDeserializationContext.deserialize(stuff.get(3), ExpTopType.class);
             return enumFromThenTo;
-        } else if ((stuff = objType.getAsJsonArray("ListComp")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("ListComp")) != null) {
             ListComp listComp = new ListComp();
             listComp.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             listComp.exp = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             listComp.qualStmts = jsonDeserializationContext.deserialize(stuff.get(2), QualStmtTopType[].class);
             return listComp;
-        } else if ((stuff = objType.getAsJsonArray("ParComp")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("ParComp")) != null) {
             ParComp parComp = new ParComp();
             parComp.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             parComp.exp = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
