@@ -19,7 +19,7 @@ public class QualStmtTopTypeDeserializer implements JsonDeserializer<QualStmtTop
                                      JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject objType = jsonElement.getAsJsonObject();
         JsonArray stuff;
-        if ((stuff = objType.getAsJsonArray("QualStmt")) != null) { // TODO: Test.
+        if ((stuff = objType.getAsJsonArray("QualStmt")) != null) {
             QualStmt qualStmt = new QualStmt();
             qualStmt.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             qualStmt.stmt = jsonDeserializationContext.deserialize(stuff.get(1), StmtTopType.class);

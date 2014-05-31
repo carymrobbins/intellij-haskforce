@@ -48,6 +48,7 @@ public class HaskellParserTest extends HaskellParserTestBase {
     // TODO: Enable when we have a GHC-API parser.
     // public void testImport00004()       { doTest(true, true); }
     public void testKind00001()         { doTest(true, true); }
+    public void testKind00002()         { doTest(true, true); }
     public void testComment00001()      { doTest(true, true); }
     public void testComment00002()      { doTest(true, true); }
     public void testComment00003()      { doTest(true, true); }

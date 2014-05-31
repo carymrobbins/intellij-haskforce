@@ -63,7 +63,7 @@ public class TypeTopTypeDeserializer implements JsonDeserializer<TypeTopType> {
             tyParen.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             tyParen.type = jsonDeserializationContext.deserialize(stuff.get(1), TypeTopType.class);
             return tyParen;
-        } else if ((stuff = objType.getAsJsonArray("TyInfix")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("TyInfix")) != null) {
             TyInfix tyInfix = new TyInfix();
             tyInfix.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             tyInfix.t1 = jsonDeserializationContext.deserialize(stuff.get(1), TypeTopType.class);

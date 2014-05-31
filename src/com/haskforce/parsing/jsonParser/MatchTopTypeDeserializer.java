@@ -34,7 +34,7 @@ public class MatchTopTypeDeserializer implements JsonDeserializer<MatchTopType> 
             match.rhs = jsonDeserializationContext.deserialize(stuff.get(3), RhsTopType.class);
             match.bindsMaybe = jsonDeserializationContext.deserialize(stuff.get(4), BindsTopType.class);
             return match;
-        } else if ((stuff = objType.getAsJsonArray("InfixMatch")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("InfixMatch")) != null) {
             InfixMatch infixMatch = new InfixMatch();
             infixMatch.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             infixMatch.pat = jsonDeserializationContext.deserialize(stuff.get(1), PatTopType.class);

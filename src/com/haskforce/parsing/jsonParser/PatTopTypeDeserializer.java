@@ -25,7 +25,7 @@ public class PatTopTypeDeserializer implements JsonDeserializer<PatTopType> {
             pVar.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             pVar.name = jsonDeserializationContext.deserialize(stuff.get(1), NameTopType.class);
             return pVar;
-        } else if ((stuff = objType.getAsJsonArray("PLit")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PLit")) != null) {
             PLit pLit = new PLit();
             pLit.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             pLit.lit = jsonDeserializationContext.deserialize(stuff.get(1), LiteralTopType.class);
@@ -41,7 +41,7 @@ public class PatTopTypeDeserializer implements JsonDeserializer<PatTopType> {
             pnPlusK.name = jsonDeserializationContext.deserialize(stuff.get(1), NameTopType.class);
             pnPlusK.i = jsonDeserializationContext.deserialize(stuff.get(2), Integer.class);
             return pnPlusK;
-        } else if ((stuff = objType.getAsJsonArray("PInfixApp")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PInfixApp")) != null) {
             PInfixApp pInfixApp = new PInfixApp();
             pInfixApp.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             pInfixApp.p1 = jsonDeserializationContext.deserialize(stuff.get(1), PatTopType.class);
@@ -54,18 +54,18 @@ public class PatTopTypeDeserializer implements JsonDeserializer<PatTopType> {
             pApp.qName = jsonDeserializationContext.deserialize(stuff.get(1), QNameTopType.class);
             pApp.pats = jsonDeserializationContext.deserialize(stuff.get(2), PatTopType[].class);
             return pApp;
-        } else if ((stuff = objType.getAsJsonArray("PTuple")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PTuple")) != null) {
             PTuple pTuple = new PTuple();
             pTuple.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             pTuple.boxed = jsonDeserializationContext.deserialize(stuff.get(1), Boxed.class);
             pTuple.pats = jsonDeserializationContext.deserialize(stuff.get(2), PatTopType[].class);
             return pTuple;
-        } else if ((stuff = objType.getAsJsonArray("PList")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PList")) != null) {
             PList pList = new PList();
             pList.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             pList.pats = jsonDeserializationContext.deserialize(stuff.get(1), PatTopType[].class);
             return pList;
-        } else if ((stuff = objType.getAsJsonArray("PParen")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PParen")) != null) {
             PParen pParen = new PParen();
             pParen.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             pParen.pat = jsonDeserializationContext.deserialize(stuff.get(1), PatTopType.class);

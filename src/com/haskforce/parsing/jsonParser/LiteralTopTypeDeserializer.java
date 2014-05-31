@@ -20,7 +20,7 @@ public class LiteralTopTypeDeserializer implements JsonDeserializer<LiteralTopTy
                                      JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject objType = jsonElement.getAsJsonObject();
         JsonArray stuff;
-        if ((stuff = objType.getAsJsonArray("Char")) != null) { // TODO: Test.
+        if ((stuff = objType.getAsJsonArray("Char")) != null) {
             CharLit charLit = new CharLit();
             Gson g = new Gson(); // TODO: Remove with 1.7.
             charLit.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);

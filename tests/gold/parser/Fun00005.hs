@@ -1,3 +1,6 @@
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE TypeOperators #-}
 module Fun00005 where
 
 prjF :: Project (sub :|| Type) sup => sup sig -> Maybe ((sub :|| Type) sig)
