@@ -2,11 +2,22 @@
 
 set -e
 
-export PATH=/opt/cabal/1.20/bin:$PATH
-
+GHC_VER=7.6.3
+CABAL_VER=1.20
 IDEA_VERSION=13.1.2
 IDEA_TAR=ideaIC-${IDEA_VERSION}.tar.gz
-IDEA_DIR=idea-IC-135.690
+
+echo "Installing ghc $GHC_VER and cabal-install $CABAL_VER"
+travis_retry sudo add-apt-repository -y ppa:hvr/ghc
+travis_retry sudo apt-get update
+travis_retry sudo apt-get install cabal-install-$CABAL_VER ghc-$GHC_VER
+
+export PATH=/opt/ghc/$GHC_VER/bin:/opt/cabal/$CABAL_VER/bin:$PATH
+
+if [ -z $(which cabal) ]; then
+    echo "Could not find cabal on the path."
+    exit 1
+fi
 
 if [ -f ~/$IDEA_TAR ]; then
     echo "Copying existing IDEA archive."
@@ -33,6 +44,7 @@ echo "Install parser helper."
 git clone https://github.com/pjonsson/parser-helper
 cd parser-helper
 cabal sandbox init
+cabal update
 cabal install
 export PATH=$(pwd)/.cabal-sandbox/bin:$PATH
 cd ..
