@@ -8,9 +8,9 @@ IDEA_VERSION=13.1.2
 IDEA_TAR=ideaIC-${IDEA_VERSION}.tar.gz
 
 echo "Installing ghc $GHC_VER and cabal-install $CABAL_VER"
-travis_retry sudo add-apt-repository -y ppa:hvr/ghc
-travis_retry sudo apt-get update
-travis_retry sudo apt-get install cabal-install-$CABAL_VER ghc-$GHC_VER
+sudo add-apt-repository -y ppa:hvr/ghc
+sudo apt-get update
+sudo apt-get install cabal-install-$CABAL_VER ghc-$GHC_VER
 
 export PATH=/opt/ghc/$GHC_VER/bin:/opt/cabal/$CABAL_VER/bin:$PATH
 
