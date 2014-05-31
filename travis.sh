@@ -2,6 +2,8 @@
 
 set -e
 
+export PATH=/opt/cabal/1.20/bin:$PATH
+
 IDEA_VERSION=13.1.2
 IDEA_TAR=ideaIC-${IDEA_VERSION}.tar.gz
 IDEA_DIR=idea-IC-135.690
@@ -27,22 +29,16 @@ mv idea-IC-* idea-IC
 echo "Creating build.properties file for ant."
 echo "idea.home=$(pwd)/idea-IC" > build.properties
 
-if [ -z $(which cabal) ]; then
-    echo "Installing cabal-install."
-    sudo apt-get update
-    sudo apt-get install cabal-install
-fi
-
 echo "Install parser helper."
 git clone https://github.com/pjonsson/parser-helper
 cd parser-helper
+cabal sandbox init
 cabal install
+export PATH=$(pwd)/.cabal-sandbox/bin:$PATH
+cd ..
 
 if [ -z $(which parser-helper) ]; then
     echo "Could not find parser-helper on the path."
-    echo "Current path: $PATH"
-    echo "Contents of ~/.cabal/bin"
-    ls ~/.cabal/bin
     exit 1
 fi
 
