@@ -4,18 +4,38 @@ set -e
 
 GHC_VER=7.6.3
 CABAL_VER=1.20
+HAPPY_VER=1.19.3
 IDEA_VERSION=13.1.2
 IDEA_TAR=ideaIC-${IDEA_VERSION}.tar.gz
 
-echo "Installing ghc $GHC_VER and cabal-install $CABAL_VER"
+echo "Installing ghc $GHC_VER, cabal-install $CABAL_VER, happy $HAPPY_VER"
 sudo add-apt-repository -y ppa:hvr/ghc
 sudo apt-get update
-sudo apt-get install cabal-install-$CABAL_VER ghc-$GHC_VER
+sudo apt-get install cabal-install-$CABAL_VER ghc-$GHC_VER happy-$HAPPY_VER
 
-export PATH=/opt/ghc/$GHC_VER/bin:/opt/cabal/$CABAL_VER/bin:$PATH
+export PATH=/opt/happy/$HAPPY_VER/bin:/opt/ghc/$GHC_VER/bin:/opt/cabal/$CABAL_VER/bin:$PATH
 
 if [ -z $(which cabal) ]; then
     echo "Could not find cabal on the path."
+    exit 1
+fi
+
+if [ -z $(which happy) ]; then
+    echo "Could not find happy on the path."
+    exit 1
+fi
+
+echo "Install parser helper."
+git clone https://github.com/pjonsson/parser-helper
+cd parser-helper
+cabal sandbox init
+cabal update
+cabal install
+export PATH=$(pwd)/.cabal-sandbox/bin:$PATH
+cd ..
+
+if [ -z $(which parser-helper) ]; then
+    echo "Could not find parser-helper on the path."
     exit 1
 fi
 
@@ -39,20 +59,6 @@ mv idea-IC-* idea-IC
 
 echo "Creating build.properties file for ant."
 echo "idea.home=$(pwd)/idea-IC" > build.properties
-
-echo "Install parser helper."
-git clone https://github.com/pjonsson/parser-helper
-cd parser-helper
-cabal sandbox init
-cabal update
-cabal install
-export PATH=$(pwd)/.cabal-sandbox/bin:$PATH
-cd ..
-
-if [ -z $(which parser-helper) ]; then
-    echo "Could not find parser-helper on the path."
-    exit 1
-fi
 
 echo "Starting ant build."
 ant
