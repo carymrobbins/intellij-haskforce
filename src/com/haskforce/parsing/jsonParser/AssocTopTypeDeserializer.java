@@ -23,15 +23,15 @@ public class AssocTopTypeDeserializer implements JsonDeserializer<AssocTopType> 
                                      JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject objType = jsonElement.getAsJsonObject();
         JsonArray stuff;
-        if ((stuff = objType.getAsJsonArray("AssocNone")) != null) { // TODO: Test.
+        if ((stuff = objType.getAsJsonArray("AssocNone")) != null) {
             AssocNone assocNone = new AssocNone();
             assocNone.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             return assocNone;
-        } else if ((stuff = objType.getAsJsonArray("AssocLeft")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("AssocLeft")) != null) {
             AssocLeft assocLeft = new AssocLeft();
             assocLeft.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             return assocLeft;
-        } else if ((stuff = objType.getAsJsonArray("AssocRight")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("AssocRight")) != null) {
             AssocRight assocRight = new AssocRight();
             assocRight.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             return assocRight;
