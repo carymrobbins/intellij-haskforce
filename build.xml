@@ -462,7 +462,7 @@
       <jvmarg value="-ea"/>
       <jvmarg value="-Didea.plugins.path=${idea.home}/plugins"/>
       <jvmarg value="-Didea.launcher.bin.path=${idea.home}/bin"/>
-      <classpath>
+      <classpath location=".">
         <pathelement location="${idea.home}/lib/junit-4.11.jar" />
         <fileset dir="${idea.home}" includes="**/*.jar">
           <exclude name="lib/ant/lib/*"/>
