@@ -38,7 +38,7 @@ public class DeclHeadTopTypeDeserializer implements JsonDeserializer<DeclHeadTop
             dhInfix.name = jsonDeserializationContext.deserialize(stuff.get(2), NameTopType[].class);
             dhInfix.tb2 = jsonDeserializationContext.deserialize(stuff.get(3), TyVarBindTopType.class);
             return dhInfix;
-        } else if ((stuff = objType.getAsJsonArray("DHParen")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("DHParen")) != null) {
             DHParen dhParen = new DHParen();
             dhParen.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             dhParen.declHead = jsonDeserializationContext.deserialize(stuff.get(1), DeclHeadTopType.class);

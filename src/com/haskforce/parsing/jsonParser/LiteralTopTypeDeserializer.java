@@ -39,47 +39,47 @@ public class LiteralTopTypeDeserializer implements JsonDeserializer<LiteralTopTy
             intLit.value = jsonDeserializationContext.deserialize(stuff.get(1), Integer.class);
             intLit.representation = jsonDeserializationContext.deserialize(stuff.get(2), String.class);
             return intLit;
-        } else if ((stuff = objType.getAsJsonArray("Frac")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("Frac")) != null) {
             FracLit fracLit = new FracLit();
             Gson g = new Gson();  // TODO: Remove with 1.7.
             fracLit.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             fracLit.value = g.fromJson(stuff.get(1), float.class);
             fracLit.representation = jsonDeserializationContext.deserialize(stuff.get(2), String.class);
             return fracLit;
-        } else if ((stuff = objType.getAsJsonArray("PrimInt")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PrimInt")) != null) {
             PrimInt primInt = new PrimInt();
             primInt.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             primInt.value = jsonDeserializationContext.deserialize(stuff.get(1), Integer.class);
             primInt.representation = jsonDeserializationContext.deserialize(stuff.get(2), String.class);
             return primInt;
-        } else if ((stuff = objType.getAsJsonArray("PrimWord")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PrimWord")) != null) {
             PrimWord primWord = new PrimWord();
             primWord.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             primWord.value = jsonDeserializationContext.deserialize(stuff.get(1), Integer.class);
             primWord.representation = jsonDeserializationContext.deserialize(stuff.get(2), String.class);
             return primWord;
-        } else if ((stuff = objType.getAsJsonArray("PrimFloat")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PrimFloat")) != null) {
             PrimFloat primFloat = new PrimFloat();
             Gson g = new Gson();  // TODO: Remove with 1.7.
             primFloat.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             primFloat.value = g.fromJson(stuff.get(1), float.class);
             primFloat.representation = jsonDeserializationContext.deserialize(stuff.get(2), String.class);
             return primFloat;
-        } else if ((stuff = objType.getAsJsonArray("PrimDouble")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PrimDouble")) != null) {
             PrimDouble primDouble = new PrimDouble();
             Gson g = new Gson();  // TODO: Remove with 1.7.
             primDouble.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             primDouble.value = g.fromJson(stuff.get(1), double.class);
             primDouble.representation = jsonDeserializationContext.deserialize(stuff.get(2), String.class);
             return primDouble;
-        } else if ((stuff = objType.getAsJsonArray("PrimChar")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PrimChar")) != null) {
             PrimChar primChar = new PrimChar();
             Gson g = new Gson();  // TODO: Remove with 1.7.
             primChar.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             primChar.value = g.fromJson(stuff.get(1), char.class);
             primChar.representation = jsonDeserializationContext.deserialize(stuff.get(2), String.class);
             return primChar;
-        }  else if ((stuff = objType.getAsJsonArray("PrimString")) != null) { // TODO: Test.
+        }  else if ((stuff = objType.getAsJsonArray("PrimString")) != null) {
             PrimString primString = new PrimString();
             primString.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             primString.value = jsonDeserializationContext.deserialize(stuff.get(1), String.class);

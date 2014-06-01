@@ -29,7 +29,7 @@ public class GuardedAltsTopTypeDeserializer implements JsonDeserializer<GuardedA
             unGuardedAlt.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             unGuardedAlt.exp = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             return unGuardedAlt;
-        } else if ((stuff = objType.getAsJsonArray("GuardedAlts")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("GuardedAlts")) != null) {
             GuardedAlts guardedAlts = new GuardedAlts();
             guardedAlts.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             guardedAlts.alts = jsonDeserializationContext.deserialize(stuff.get(1), GuardedAlt[].class);

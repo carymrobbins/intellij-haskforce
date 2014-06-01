@@ -51,7 +51,7 @@ public class SpecialConTopTypeDeserializer implements JsonDeserializer<SpecialCo
             Cons cons = new Cons();
             cons.srcInfoSpan = jsonDeserializationContext.deserialize(objType.get("Cons"), SrcInfoSpan.class);
             return cons;
-        } else if (objType.has("UnboxedSingleCon")) { // TODO: Test.
+        } else if (objType.has("UnboxedSingleCon")) {
             UnboxedSingleCon unboxedSingleCon = new UnboxedSingleCon();
             unboxedSingleCon.srcInfoSpan = jsonDeserializationContext.deserialize(objType.get("UnboxedSingleCon"), SrcInfoSpan.class);
             return unboxedSingleCon;

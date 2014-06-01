@@ -200,7 +200,7 @@ public class DeclTopTypeDeserializer implements JsonDeserializer<DeclTopType> {
             specInlineSig.qName = jsonDeserializationContext.deserialize(stuff.get(3), QNameTopType.class);
             specInlineSig.types = jsonDeserializationContext.deserialize(stuff.get(4), TypeTopType[].class);
             return specInlineSig;
-        } else if ((stuff = objType.getAsJsonArray("InstSig")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("InstSig")) != null) {
             InstSig instSig = new InstSig();
             instSig.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             instSig.contextMaybe = jsonDeserializationContext.deserialize(stuff.get(1), ContextTopType.class);

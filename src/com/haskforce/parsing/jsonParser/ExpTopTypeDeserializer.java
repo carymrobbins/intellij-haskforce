@@ -131,13 +131,13 @@ public class ExpTopTypeDeserializer implements JsonDeserializer<ExpTopType> {
             rightSection.qop = jsonDeserializationContext.deserialize(stuff.get(1), QOpTopType.class);
             rightSection.exp = jsonDeserializationContext.deserialize(stuff.get(2), ExpTopType.class);
             return rightSection;
-        } else if ((stuff = objType.getAsJsonArray("RecConstr")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("RecConstr")) != null) {
             RecConstr recConstr = new RecConstr();
             recConstr.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             recConstr.qName = jsonDeserializationContext.deserialize(stuff.get(1), QNameTopType.class);
             recConstr.fieldUpdates = jsonDeserializationContext.deserialize(stuff.get(2), FieldUpdateTopType[].class);
             return recConstr;
-        } else if ((stuff = objType.getAsJsonArray("RecUpdate")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("RecUpdate")) != null) {
             RecUpdate recUpdate = new RecUpdate();
             recUpdate.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             recUpdate.exp = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
@@ -205,7 +205,7 @@ public class ExpTopTypeDeserializer implements JsonDeserializer<ExpTopType> {
             spliceExp.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             spliceExp.splice = jsonDeserializationContext.deserialize(stuff.get(1), SpliceTopType.class);
             return spliceExp;
-        } else if ((stuff = objType.getAsJsonArray("QuasiQuote")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("QuasiQuote")) != null) {
             QuasiQuote quasiQuote = new QuasiQuote();
             quasiQuote.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             quasiQuote.s1 = jsonDeserializationContext.deserialize(stuff.get(1), String.class);

@@ -1,4 +1,8 @@
 {-# LANGUAGE ViewPatterns #-}
+{-# LANGUAGE TypeOperators#-}
+{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE UnboxedTuples #-}
 module Fun00004 where
 
 -- | A record with options for explicit passing in rewrite rules.
@@ -20,3 +24,4 @@ viewLiteral :: forall info dom a. ((Literal :|| Type) :<: dom)
 viewLiteral (prjF -> Just (C' (Literal a))) = Just a
 viewLiteral _ = Nothing
 
+g = (# #)
