@@ -22,7 +22,7 @@ public class GadtDeclDeserializer implements JsonDeserializer<GadtDecl> {
                                      JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject objType = jsonElement.getAsJsonObject();
         JsonArray stuff;
-        if ((stuff = objType.getAsJsonArray("GadtDecl")) != null) { // TODO: Test.
+        if ((stuff = objType.getAsJsonArray("GadtDecl")) != null) {
             GadtDecl gadtDecl = new GadtDecl();
             gadtDecl.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             gadtDecl.name = jsonDeserializationContext.deserialize(stuff.get(1), NameTopType.class);

@@ -1,17 +1,13 @@
 {-# LANGUAGE GADTs #-}
-module Fun00003 where
+{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE NPlusKPatterns #-}
+{-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE ViewPatterns #-}
+{-# LANGUAGE PatternGuards #-}
 
--- | Type and size information of a Feldspar program
-data Info a
-  where
-    Info
-      :: (Show (Size a), Lattice (Size a))
-      => { infoType   :: TypeRep a
-         , infoSize   :: Size a
-         , infoVars   :: VarInfo
-         , infoSource :: SourceInfo
-         }
-      -> Info a
+module Fun00003 where
 
 instance Show (Info a)
   where
@@ -24,3 +20,26 @@ instance Show (Info a)
         srcStr = case infoSource i of
           ""  -> ""
           src -> " | " ++ src
+
+data Set (cxt :: * -> (* -> *)) a = Set [a]
+
+g2 :: (forall a. Eq a => [a] -> a -> Bool) -> Int -> Int
+g2 f x | Just m <- f undefined
+       , True
+       = x
+
+f = \(x::Int, y::a) -> x
+g (x::a) = x
+h ((x,y) :: (Int,Bool)) = (y,x)
+
+fac (n+1) = (n+1) * fac n
+
+foc (-1) = 3
+
+lazyFunc, strictFunc :: () -> ()
+
+lazyFunc ~() = ()
+
+strictFunc !v = ()
+
+firstZero (head -> 0) = True

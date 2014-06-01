@@ -14,7 +14,7 @@ import com.haskforce.parsing.srcExtsDatatypes.SrcInfoSpan;
 import java.lang.reflect.Type;
 
 /**
- * Deserializes comments.
+ * Deserializes field declarations.
  */
 public class FieldDeclDeserializer implements JsonDeserializer<FieldDecl> {
     @Override
@@ -22,7 +22,7 @@ public class FieldDeclDeserializer implements JsonDeserializer<FieldDecl> {
                                      JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject objType = jsonElement.getAsJsonObject();
         JsonArray stuff;
-        if ((stuff = objType.getAsJsonArray("FieldDecl")) != null) { // TODO: Test.
+        if ((stuff = objType.getAsJsonArray("FieldDecl")) != null) {
             FieldDecl fieldDecl = new FieldDecl();
             fieldDecl.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             fieldDecl.names = jsonDeserializationContext.deserialize(stuff.get(1), NameTopType[].class);

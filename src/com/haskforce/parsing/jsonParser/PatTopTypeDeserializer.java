@@ -30,12 +30,12 @@ public class PatTopTypeDeserializer implements JsonDeserializer<PatTopType> {
             pLit.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             pLit.lit = jsonDeserializationContext.deserialize(stuff.get(1), LiteralTopType.class);
             return pLit;
-        } else if ((stuff = objType.getAsJsonArray("PNeg")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PNeg")) != null) {
             PNeg pNeg = new PNeg();
             pNeg.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             pNeg.pat = jsonDeserializationContext.deserialize(stuff.get(1), PatTopType.class);
             return pNeg;
-        } else if ((stuff = objType.getAsJsonArray("PNPlusK")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PNPlusK")) != null) {
             PNPlusK pnPlusK = new PNPlusK();
             pnPlusK.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             pnPlusK.name = jsonDeserializationContext.deserialize(stuff.get(1), NameTopType.class);
@@ -70,13 +70,13 @@ public class PatTopTypeDeserializer implements JsonDeserializer<PatTopType> {
             pParen.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             pParen.pat = jsonDeserializationContext.deserialize(stuff.get(1), PatTopType.class);
             return pParen;
-        } else if ((stuff = objType.getAsJsonArray("PRec")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PRec")) != null) {
             PRec pRec = new PRec();
             pRec.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             pRec.qName = jsonDeserializationContext.deserialize(stuff.get(1), QNameTopType.class);
             pRec.patFields = jsonDeserializationContext.deserialize(stuff.get(2), PatFieldTopType[].class);
             return pRec;
-        } else if ((stuff = objType.getAsJsonArray("PAsPat")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PAsPat")) != null) {
             PAsPat pAsPat = new PAsPat();
             pAsPat.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             pAsPat.name = jsonDeserializationContext.deserialize(stuff.get(1), NameTopType.class);
@@ -86,18 +86,18 @@ public class PatTopTypeDeserializer implements JsonDeserializer<PatTopType> {
             PWildCard pWildCard = new PWildCard();
             pWildCard.srcInfoSpan = jsonDeserializationContext.deserialize(stuff2.get("srcInfoSpan"), SrcInfoSpan.class);
             return pWildCard;
-        } else if ((stuff = objType.getAsJsonArray("PIrrPat")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PIrrPat")) != null) {
             PIrrPat pIrrPat = new PIrrPat();
             pIrrPat.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             pIrrPat.pat = jsonDeserializationContext.deserialize(stuff.get(1), PatTopType.class);
             return pIrrPat;
-        } else if ((stuff = objType.getAsJsonArray("PatTypeSig")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PatTypeSig")) != null) {
             PatTypeSig patTypeSig = new PatTypeSig();
             patTypeSig.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             patTypeSig.pat = jsonDeserializationContext.deserialize(stuff.get(1), PatTopType.class);
             patTypeSig.type = jsonDeserializationContext.deserialize(stuff.get(2), TypeTopType.class);
             return patTypeSig;
-        } else if ((stuff = objType.getAsJsonArray("PViewPat")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PViewPat")) != null) {
             PViewPat pViewPat = new PViewPat();
             pViewPat.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             pViewPat.exp = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
@@ -144,7 +144,7 @@ public class PatTopTypeDeserializer implements JsonDeserializer<PatTopType> {
             pQuasiQuote.s1 = jsonDeserializationContext.deserialize(stuff.get(1), String.class);
             pQuasiQuote.s2 = jsonDeserializationContext.deserialize(stuff.get(2), String.class);
             return pQuasiQuote;
-        } else if ((stuff = objType.getAsJsonArray("PBangPat")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PBangPat")) != null) {
             PBangPat pBangPat = new PBangPat();
             pBangPat.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             pBangPat.pat = jsonDeserializationContext.deserialize(stuff.get(1), PatTopType.class);

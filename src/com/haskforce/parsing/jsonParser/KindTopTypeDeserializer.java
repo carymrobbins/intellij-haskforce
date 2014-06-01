@@ -33,7 +33,7 @@ public class KindTopTypeDeserializer implements JsonDeserializer<KindTopType> {
             kindFn.k1 = jsonDeserializationContext.deserialize(stuff.get(1), KindTopType.class);
             kindFn.k2 = jsonDeserializationContext.deserialize(stuff.get(2), KindTopType.class);
             return kindFn;
-        } else if ((stuff = objType.getAsJsonArray("KindParen")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("KindParen")) != null) {
             KindParen kindParen = new KindParen();
             kindParen.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             kindParen.kind = jsonDeserializationContext.deserialize(stuff.get(1), KindTopType.class);

@@ -39,7 +39,7 @@ public class ConDeclTopTypeDeserializer implements JsonDeserializer<ConDeclTopTy
             infixConDecl.name = jsonDeserializationContext.deserialize(stuff.get(2), NameTopType.class);
             infixConDecl.b2 = jsonDeserializationContext.deserialize(stuff.get(3), BangTypeTopType.class);
             return infixConDecl;
-        } else if ((stuff = objType.getAsJsonArray("RecDecl")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("RecDecl")) != null) {
             RecDecl recDecl = new RecDecl();
             recDecl.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             recDecl.name = jsonDeserializationContext.deserialize(stuff.get(1), NameTopType.class);
