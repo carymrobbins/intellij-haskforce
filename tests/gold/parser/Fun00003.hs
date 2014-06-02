@@ -28,6 +28,9 @@ g2 f x | Just m <- f undefined
        , True
        = x
 
+g3 :: (forall a. Eq a => [a] -> a -> Bool :: *) -> Int -> Int
+g3 = undefined
+
 f = \(x::Int, y::a) -> x
 g (x::a) = x
 h ((x,y) :: (Int,Bool)) = (y,x)

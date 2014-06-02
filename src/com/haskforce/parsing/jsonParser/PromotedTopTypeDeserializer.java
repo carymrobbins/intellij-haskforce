@@ -32,21 +32,21 @@ public class PromotedTopTypeDeserializer implements JsonDeserializer<PromotedTop
             promotedString.value = jsonDeserializationContext.deserialize(stuff.get(1), String.class);
             promotedString.representation = jsonDeserializationContext.deserialize(stuff.get(2), String.class);
             return promotedString;
-        } else if ((stuff = objType.getAsJsonArray("PromotedCon")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PromotedCon")) != null) {
             PromotedCon promotedCon = new PromotedCon();
             Gson g = new Gson(); // TODO: Remove with 1.7.
             promotedCon.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             promotedCon.value = g.fromJson(stuff.get(1), boolean.class);
             promotedCon.qName = jsonDeserializationContext.deserialize(stuff.get(2), QNameTopType.class);
             return promotedCon;
-        } else if ((stuff = objType.getAsJsonArray("PromotedList")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PromotedList")) != null) {
             PromotedList promotedList = new PromotedList();
             Gson g = new Gson(); // TODO: Remove with 1.7.
             promotedList.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             promotedList.leadingQuote = g.fromJson(stuff.get(1), boolean.class);
             promotedList.promoteds = jsonDeserializationContext.deserialize(stuff.get(2), PromotedTopType[].class);
             return promotedList;
-        } else if ((stuff = objType.getAsJsonArray("PromotedTuple")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PromotedTuple")) != null) {
             PromotedTuple promotedTuple = new PromotedTuple();
             promotedTuple.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             promotedTuple.promoteds = jsonDeserializationContext.deserialize(stuff.get(1), PromotedTopType[].class);
