@@ -133,6 +133,7 @@ public class CabalBuilder extends ModuleLevelBuilder {
      */
     private static void processOut(CompileContext context, Process process, JpsModule module) {
         final String warningPrefix = "Warning: ";
+        final String cabalPrefix = "cabal: ";
         boolean oneBehind = false;
         String line = "";
         Iterator<String> processOut = collectOutput(process);
@@ -149,8 +150,13 @@ public class CabalBuilder extends ModuleLevelBuilder {
             // See comment after this method for example warning message.
             Matcher matcher = compiledPattern.matcher(line);
             if (line.startsWith(warningPrefix)) {
-                // Cabal messages
+                // Cabal warnings.
                 String text = line.substring(warningPrefix.length()) + System.getProperty("line.separator") + processOut.next();
+                context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.WARNING, text));
+            } else if (line.startsWith(cabalPrefix)) {
+                // Unknown cabal messages. Exit code will tell if they were
+                // errors. Just forward to user.
+                String text = line.substring(cabalPrefix.length()) + System.getProperty("line.separator") + processOut.next();
                 context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.WARNING, text));
             } else if (matcher.find()) {
                 // GHC Messages
@@ -191,6 +197,10 @@ public class CabalBuilder extends ModuleLevelBuilder {
         }
     }
     /*
+
+Path warning:
+
+cabal: The program 'happy' version >=1.17 is required but it could not be found
 
 Example warning:
 
