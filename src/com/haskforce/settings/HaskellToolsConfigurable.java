@@ -40,18 +40,15 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
         project = inProject;
 
         // Parser-helper.
-        String guessedPath = ExecUtil.locateExecutable("parser-helper");
-        if (guessedPath == null) {
-            guessedPath = "";
+        oldParserHelperPath = PropertiesComponent.getInstance(project).getValue("parserHelperPath", "");
+        if (oldParserHelperPath.isEmpty()) {
+            oldParserHelperPath = ExecUtil.locateExecutableByGuessing("parser-helper");
         }
-        oldParserHelperPath = PropertiesComponent.getInstance(project).getValue("parserHelperPath", guessedPath);
-
         // Stylish-Haskell
-        guessedPath = ExecUtil.locateExecutable("stylish-haskell");
-        if (guessedPath == null) {
-            guessedPath = "";
+        oldStylishPath = PropertiesComponent.getInstance(project).getValue("stylishPath", "");
+        if (oldStylishPath.isEmpty()) {
+            oldStylishPath = ExecUtil.locateExecutableByGuessing("stylish-haskell");
         }
-        oldStylishPath = PropertiesComponent.getInstance(project).getValue("stylishPath", guessedPath);
     }
 
     @NotNull
