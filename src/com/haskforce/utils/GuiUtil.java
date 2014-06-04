@@ -3,6 +3,7 @@ package com.haskforce.utils;
 import com.intellij.openapi.externalSystem.util.ExternalSystemUiUtil;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.intellij.ui.TextFieldWithHistory;
 
 import javax.swing.*;
 
@@ -26,6 +27,25 @@ public class GuiUtil {
 
         // Add elements to Panel.
         settings.add(new JLabel(tool + " executable path:"));
+        settings.add(tf, ExternalSystemUiUtil.getFillLineConstraints(0));
+
+        return tf;
+    }
+
+    /**
+     * Creates a label and text field input and adds them to the configuration
+     * window.
+     *
+     * @param settings Panel to add components to.
+     * @param labelText Which text to show to the left of the field.
+     * @return The TextFieldWithBrowseButton created.
+     */
+    public static TextFieldWithHistory createTextfield(JPanel settings, String labelText) {
+        // Create UI elements.
+        TextFieldWithHistory tf = new TextFieldWithHistory();
+
+        // Add elements to Panel.
+        settings.add(new JLabel(labelText + ':'));
         settings.add(tf, ExternalSystemUiUtil.getFillLineConstraints(0));
 
         return tf;

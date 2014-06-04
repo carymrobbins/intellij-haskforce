@@ -7,6 +7,7 @@ import com.intellij.compiler.options.CompilerConfigurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.intellij.ui.TextFieldWithHistory;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,6 +19,7 @@ import java.io.File;
 import static com.haskforce.utils.GuiUtil.createCheckBoxOption;
 import static com.haskforce.utils.GuiUtil.createDisplayVersion;
 import static com.haskforce.utils.GuiUtil.createExecutableOption;
+import static com.haskforce.utils.GuiUtil.createTextfield;
 
 /**
  * The "Haskell Compiler" section in Preferences->Compiler.
@@ -33,6 +35,8 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
     // Cabal binary components
     private TextFieldWithBrowseButton cabalPath;
     private JLabel cabalVersion;
+    // Cabal configure flags.
+    private TextFieldWithHistory cabalFlags;
     // Build configuration components.
     private JCheckBox profilingBuild;
     private JCheckBox cabalBuild;
@@ -108,6 +112,9 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         }
         cabalPath.setText(bestCabalPath);
 
+        // Cabal flags configuration.
+        cabalFlags = createTextfield(settings, "Cabal configure flags");
+
         // Build configuration.
         profilingBuild = createCheckBoxOption(settings, "Build with profiling information");
         cabalBuild = createCheckBoxOption(settings, "Build with Cabal");
@@ -125,6 +132,7 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
     @Override
     public boolean isModified() {
         return !(ghcAndCabalUnchanged() &&
+                cabalFlags.getText().equals(mySettings.getCabalFlags()) &&
                 profilingBuild.isSelected() == mySettings.isProfilingEnabled() &&
                 cabalBuild.isSelected() == mySettings.isCabalEnabled() &&
                 cabalSandbox.isSelected() == mySettings.isCabalSandboxEnabled());
@@ -174,6 +182,7 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         mySettings.setGhcPath(bestGhcPath);
         bestCabalPath = cabalPath.getText();
         mySettings.setCabalPath(bestCabalPath);
+        mySettings.setCabalFlags(cabalFlags.getText());
     }
 
     /**
@@ -190,6 +199,7 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
     private void restoreState() {
         ghcPath.setText(bestGhcPath);
         cabalPath.setText(bestCabalPath);
+        cabalFlags.setText(mySettings.getCabalFlags());
         profilingBuild.setSelected(mySettings.isProfilingEnabled());
         cabalBuild.setSelected(mySettings.isCabalEnabled());
         cabalSandbox.setSelected(mySettings.isCabalSandboxEnabled());

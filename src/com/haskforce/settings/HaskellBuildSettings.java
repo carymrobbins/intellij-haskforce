@@ -80,6 +80,15 @@ public class HaskellBuildSettings implements PersistentStateComponent<HaskellBui
     }
 
     @NotNull
+    public String getCabalFlags() {
+        return myBuildOptions.myCabalFlags;
+    }
+
+    public void setCabalFlags(@NotNull String flags) {
+        myBuildOptions.myCabalFlags = flags;
+    }
+
+    @NotNull
     public List<String> getCabalFiles() {
         return myBuildOptions.myCabalFiles;
     }

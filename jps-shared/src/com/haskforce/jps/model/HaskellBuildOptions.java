@@ -15,6 +15,7 @@ public class HaskellBuildOptions {
     public static final boolean DEFAULT_USE_PROFILING_BUILD = true;
     public static final String DEFAULT_GHC_PATH = "ghc";
     public static final String DEFAULT_CABAL_PATH = "cabal";
+    public static final String DEFAULT_CABAL_FLAGS = "";
 
     public HaskellBuildOptions() {
     }
@@ -25,6 +26,7 @@ public class HaskellBuildOptions {
         myProfilingBuild = options.myProfilingBuild;
         myGhcPath = options.myGhcPath;
         myCabalPath = options.myCabalPath;
+        myCabalFlags = options.myCabalFlags;
     }
 
     @Tag("useCabal")
@@ -42,6 +44,9 @@ public class HaskellBuildOptions {
     @Tag("cabalPath")
     public String myCabalPath = DEFAULT_CABAL_PATH;
 
+    @Tag("cabalFlags")
+    public String myCabalFlags = DEFAULT_CABAL_FLAGS;
+
     @Tag("cabalFiles")
     @AbstractCollection(surroundWithTag = false, elementTag = "cabalFile")
     public List<String> myCabalFiles = ContainerUtil.newArrayList();
@@ -54,6 +59,7 @@ public class HaskellBuildOptions {
                 ", myProfilingBuild=" + myProfilingBuild +
                 ", myGhcPath=" + myGhcPath +
                 ", myCabalPath=" + myCabalPath +
+                ", myCabalFlags=" + myCabalFlags +
                 ", myCabalFiles=" + myCabalFiles +
                 '}';
     }

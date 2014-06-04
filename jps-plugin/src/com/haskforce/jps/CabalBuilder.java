@@ -76,7 +76,8 @@ public class CabalBuilder extends ModuleLevelBuilder {
                     continue;
                 }
                 HaskellBuildOptions buildOptions = JpsHaskellBuildOptionsExtension.getOrCreateExtension(module.getProject()).getOptions();
-                CabalJspInterface cabal = new CabalJspInterface(buildOptions.myCabalPath, cabalFile);
+                CabalJspInterface cabal = new CabalJspInterface(buildOptions.myCabalPath,
+                                                buildOptions.myCabalFlags, cabalFile);
 
                 if (runConfigure(context, module, cabal)) return ExitCode.ABORT;
                 if (runBuild(context, module, cabal)) return ExitCode.ABORT;

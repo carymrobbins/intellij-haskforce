@@ -18,26 +18,31 @@ public class CabalJspInterface {
     private File myCabalFile;
     @NotNull
     private String myCabalPath;
+    @NotNull
+    private String myCabalFlags;
 
-    CabalJspInterface(@NotNull String cabalPath, @NotNull File cabalFile) {
+    CabalJspInterface(@NotNull String cabalPath, @NotNull String cabalFlags,
+                      @NotNull File cabalFile) {
         myCabalPath = cabalPath;
         myCabalFile = cabalFile;
+        myCabalFlags = cabalFlags;
     }
 
-    private Process runCommand(String command) throws IOException {
-        return new ProcessWrapper(myCabalFile.getParentFile().getCanonicalPath()).
-                            getProcess(myCabalPath, command);
+    private Process runCommand(String command, String arg) throws IOException {
+        ProcessWrapper p = new ProcessWrapper(myCabalFile.getParentFile().getCanonicalPath());
+        return arg == null ? p.getProcess(myCabalPath, command)
+                           : p.getProcess(myCabalPath, command, arg);
     }
 
     public Process configure() throws IOException {
-        return runCommand("configure");
+        return runCommand("configure", myCabalFlags);
     }
 
     public Process build() throws IOException {
-        return runCommand("build");
+        return runCommand("build", null);
     }
 
     public Process clean() throws IOException {
-        return runCommand("clean");
+        return runCommand("clean", null);
     }
 }
