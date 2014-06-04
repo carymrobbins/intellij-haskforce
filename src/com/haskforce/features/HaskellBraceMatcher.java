@@ -1,5 +1,6 @@
 package com.haskforce.features;
 
+import com.haskforce.HaskellParserDefinition;
 import com.haskforce.psi.HaskellTypes;
 import com.intellij.lang.BracePair;
 import com.intellij.lang.PairedBraceMatcher;
@@ -27,7 +28,10 @@ public class HaskellBraceMatcher implements PairedBraceMatcher {
 
     @Override
     public boolean isPairedBracesAllowedBeforeType(@NotNull IElementType lbraceType, @Nullable IElementType contextType) {
-        return true;
+        return HaskellParserDefinition.WHITE_SPACES.contains(contextType)
+                || HaskellParserDefinition.COMMENTS.contains(contextType)
+                || HaskellTypes.RPAREN == contextType
+                || null == contextType;
     }
 
     @Override

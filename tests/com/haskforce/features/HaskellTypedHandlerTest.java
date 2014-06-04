@@ -23,8 +23,7 @@ public class HaskellTypedHandlerTest extends HaskellLightPlatformCodeInsightFixt
         super("features", "features");
     }
 
-    // FIXME: Should really be "foo = (<caret>a"
-    public void testNotPaired() throws Throwable { doTest('(', "foo = <caret>a", "foo = (<caret>)a"); }
+    public void testNotPaired() throws Throwable { doTest('(', "foo = <caret>a", "foo = (<caret>a"); }
     public void testPaired()    throws Throwable { doTest('(', "foo <caret>", "foo (<caret>)"); }
 
     private void doTest(char c, String before, String after) {
