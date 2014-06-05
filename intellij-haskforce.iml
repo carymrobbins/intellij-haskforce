@@ -11,6 +11,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="jps-shared" />
+    <orderEntry type="module" module-name="jps-plugin" />
   </component>
 </module>
 
