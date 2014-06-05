@@ -43,11 +43,21 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
         oldParserHelperPath = PropertiesComponent.getInstance(project).getValue("parserHelperPath", "");
         if (oldParserHelperPath.isEmpty()) {
             oldParserHelperPath = ExecUtil.locateExecutableByGuessing("parser-helper");
+            if (oldParserHelperPath == null) {
+                oldParserHelperPath = "";
+            } else {
+                PropertiesComponent.getInstance(project).setValue("parserHelperPath", oldParserHelperPath);
+            }
         }
         // Stylish-Haskell
         oldStylishPath = PropertiesComponent.getInstance(project).getValue("stylishPath", "");
         if (oldStylishPath.isEmpty()) {
             oldStylishPath = ExecUtil.locateExecutableByGuessing("stylish-haskell");
+            if (oldStylishPath == null) {
+                oldStylishPath = "";
+            } else {
+                PropertiesComponent.getInstance(project).setValue("stylishPath", oldStylishPath);
+            }
         }
     }
 
