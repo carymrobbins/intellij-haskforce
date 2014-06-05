@@ -2,18 +2,25 @@ package com.haskforce.settings;
 
 
 import com.haskforce.utils.ExecUtil;
+import com.intellij.execution.ui.layout.Grid;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.intellij.ui.TextAccessor;
+import com.intellij.util.ui.GridBag;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import static com.haskforce.utils.GuiUtil.createButton;
 import static com.haskforce.utils.GuiUtil.createDisplayVersion;
 import static com.haskforce.utils.GuiUtil.createExecutableOption;
 
@@ -38,27 +45,8 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
 
     public HaskellToolsConfigurable(@NotNull Project inProject) {
         project = inProject;
-
-        // Parser-helper.
         oldParserHelperPath = PropertiesComponent.getInstance(project).getValue("parserHelperPath", "");
-        if (oldParserHelperPath.isEmpty()) {
-            oldParserHelperPath = ExecUtil.locateExecutableByGuessing("parser-helper");
-            if (oldParserHelperPath == null) {
-                oldParserHelperPath = "";
-            } else {
-                PropertiesComponent.getInstance(project).setValue("parserHelperPath", oldParserHelperPath);
-            }
-        }
-        // Stylish-Haskell
         oldStylishPath = PropertiesComponent.getInstance(project).getValue("stylishPath", "");
-        if (oldStylishPath.isEmpty()) {
-            oldStylishPath = ExecUtil.locateExecutableByGuessing("stylish-haskell");
-            if (oldStylishPath == null) {
-                oldStylishPath = "";
-            } else {
-                PropertiesComponent.getInstance(project).setValue("stylishPath", oldStylishPath);
-            }
-        }
     }
 
     @NotNull
@@ -92,24 +80,62 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     @Override
     public JComponent createComponent() {
         settings = new JPanel(new GridBagLayout());
+        GridBagConstraints c = new GridBagConstraints();
+        c.anchor = GridBagConstraints.NORTHWEST;
+        c.fill = GridBagConstraints.HORIZONTAL;
+        c.gridheight = 1;
+        c.gridwidth = 1;
+        c.weightx = 1;
+        c.gridx = 0;
 
         // Parser-helper configuration.
-        parserHelperPath = createExecutableOption(settings, "Parser-Helper");
-        parserHelperVersion = createDisplayVersion(settings, "Parser-Helper");
+        c.gridy = 0;
+        parserHelperPath = createExecutableOption(settings, "Parser-Helper", c);
+
+        c.gridy = 1;
+        parserHelperVersion = createDisplayVersion(settings, "Parser-Helper", c);
+
+        c.gridy = 2;
+        c.fill = GridBagConstraints.NONE;
+        createButton(settings, "Auto find", createApplyPathAction(parserHelperPath, "parser-helper"), c);
+
         if (!oldParserHelperPath.isEmpty()) {
             parserHelperPath.setText(oldParserHelperPath);
         }
 
+        c.fill = GridBagConstraints.HORIZONTAL;
 
         // Stylish configuration.
-        stylishPath = createExecutableOption(settings, "Stylish-Haskell");
-        stylishVersion = createDisplayVersion(settings, "Stylish-Haskell");
+        c.gridy = 3;
+        stylishPath = createExecutableOption(settings, "Stylish-Haskell", c);
+
+        c.gridy = 4;
+        stylishVersion = createDisplayVersion(settings, "Stylish-Haskell", c);
+
+        c.gridy = 5;
+        c.fill = GridBagConstraints.NONE;
+        createButton(settings, "Auto find", createApplyPathAction(stylishPath, "stylish-haskell"), c);
+
         if (!oldStylishPath.isEmpty()) {
             stylishPath.setText(oldStylishPath);
         }
 
         updateVersionInfoFields();
         return settings;
+    }
+
+    private static ActionListener createApplyPathAction(final TextAccessor textField, final String executable) {
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String guessedPath = ExecUtil.locateExecutableByGuessing(executable);
+                if (guessedPath != null) {
+                    textField.setText(guessedPath);
+                } else {
+                    Messages.showErrorDialog("Could not find '" + executable + "'.", "HaskForce");
+                }
+            }
+        };
     }
 
     /**
