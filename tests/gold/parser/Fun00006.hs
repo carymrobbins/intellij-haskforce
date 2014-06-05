@@ -16,5 +16,6 @@ rev xs = go [] xs
 (f . g) x = f (g x)
 
 infixr 5 ++
+infix 7 :+
 infixl 9 +++
 infix 3 .

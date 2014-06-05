@@ -28,7 +28,7 @@ public class OpTopTypeDeserializer implements JsonDeserializer<OpTopType> {
             varOp.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             varOp.name = jsonDeserializationContext.deserialize(stuff.get(1), NameTopType.class);
             return varOp;
-        } else if ((stuff = objType.getAsJsonArray("ConOp")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("ConOp")) != null) {
             ConOp conOp = new ConOp();
             conOp.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             conOp.name = jsonDeserializationContext.deserialize(stuff.get(1), NameTopType.class);
