@@ -30,8 +30,8 @@ public class CabalJspInterface {
 
     private Process runCommand(String command, String arg) throws IOException {
         ProcessWrapper p = new ProcessWrapper(myCabalFile.getParentFile().getCanonicalPath());
-        return arg == null ? p.getProcess(myCabalPath, command)
-                           : p.getProcess(myCabalPath, command, arg);
+        return arg == null || arg.isEmpty() ? p.getProcess(myCabalPath, command)
+                                            : p.getProcess(myCabalPath, command, arg);
     }
 
     public Process configure() throws IOException {
