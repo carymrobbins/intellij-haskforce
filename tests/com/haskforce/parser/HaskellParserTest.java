@@ -29,6 +29,7 @@ public class HaskellParserTest extends HaskellParserTestBase {
         super("parser", "hs", new HaskellParserDefinition());
     }
 
+    public void testArrow00001()        { doTest(true, true); }
     public void testFun00001()          { doTest(true, true); }
     public void testFun00002()          { doTest(true, true); }
     public void testFun00003()          { doTest(true, true); }

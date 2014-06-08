@@ -43,7 +43,7 @@ public class StmtTopTypeDeserializer implements JsonDeserializer<StmtTopType> {
             letStmt.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             letStmt.binds = jsonDeserializationContext.deserialize(stuff.get(1), BindsTopType.class);
             return letStmt;
-        } else if ((stuff = objType.getAsJsonArray("RecStmt")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("RecStmt")) != null) {
             RecStmt recStmt = new RecStmt();
             recStmt.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             recStmt.stmts = jsonDeserializationContext.deserialize(stuff.get(1), StmtTopType[].class);

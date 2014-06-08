@@ -259,31 +259,31 @@ public class ExpTopTypeDeserializer implements JsonDeserializer<ExpTopType> {
             genPragma.s = jsonDeserializationContext.deserialize(stuff.get(1), String.class);
             throw new JsonParseException("GenPragma currently  not handled: " + objType.toString());
             // return genPragma;
-        } else if ((stuff = objType.getAsJsonArray("Proc")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("Proc")) != null) {
             Proc proc = new Proc();
             proc.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             proc.pat = jsonDeserializationContext.deserialize(stuff.get(1), PatTopType.class);
             proc.exp = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             return proc;
-        } else if ((stuff = objType.getAsJsonArray("LeftArrApp")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("LeftArrApp")) != null) {
             LeftArrApp leftArrApp = new LeftArrApp();
             leftArrApp.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             leftArrApp.e1 = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             leftArrApp.e2 = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             return leftArrApp;
-        } else if ((stuff = objType.getAsJsonArray("RightArrApp")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("RightArrApp")) != null) {
             RightArrApp rightArrApp = new RightArrApp();
             rightArrApp.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             rightArrApp.e1 = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             rightArrApp.e2 = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             return rightArrApp;
-        } else if ((stuff = objType.getAsJsonArray("LeftArrHighApp")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("LeftArrHighApp")) != null) {
             LeftArrHighApp leftArrHighApp = new LeftArrHighApp();
             leftArrHighApp.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             leftArrHighApp.e1 = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             leftArrHighApp.e2 = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             return leftArrHighApp;
-        } else if ((stuff = objType.getAsJsonArray("RightArrHighApp")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("RightArrHighApp")) != null) {
             RightArrHighApp rightArrHighApp = new RightArrHighApp();
             rightArrHighApp.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             rightArrHighApp.e1 = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
