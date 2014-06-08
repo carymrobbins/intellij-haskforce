@@ -52,8 +52,11 @@ public class HaskellParserDefinition implements ParserDefinition {
 
     @NotNull
     public PsiParser createParser(final Project project) {
+        // Don't do System.getProperty("PARSER").equals("2"), or java.lang.NullPointerException!
+        if ("2".equals(System.getProperty("PARSER"))) {
+            return new HaskellParser2(project);
+        }
         return new HaskellParser();
-        // return new HaskellParser2(project);
     }
 
     @Override
