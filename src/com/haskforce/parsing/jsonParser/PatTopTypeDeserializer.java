@@ -138,7 +138,7 @@ public class PatTopTypeDeserializer implements JsonDeserializer<PatTopType> {
             pxrPats.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             pxrPats.rPats = jsonDeserializationContext.deserialize(stuff.get(1), RPatTopType[].class);
             return pxrPats;
-        } else if ((stuff = objType.getAsJsonArray("PQuasiQuote")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PQuasiQuote")) != null) {
             PQuasiQuote pQuasiQuote = new PQuasiQuote();
             pQuasiQuote.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             pQuasiQuote.s1 = jsonDeserializationContext.deserialize(stuff.get(1), String.class);

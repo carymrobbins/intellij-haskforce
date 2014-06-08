@@ -185,22 +185,22 @@ public class ExpTopTypeDeserializer implements JsonDeserializer<ExpTopType> {
             expTypeSig.exp= jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             expTypeSig.type = jsonDeserializationContext.deserialize(stuff.get(2), TypeTopType.class);
             return expTypeSig;
-        } else if ((stuff = objType.getAsJsonArray("VarQuote")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("VarQuote")) != null) {
             VarQuote varQuote = new VarQuote();
             varQuote.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             varQuote.qName = jsonDeserializationContext.deserialize(stuff.get(1), QNameTopType.class);
             return varQuote;
-        } else if ((stuff = objType.getAsJsonArray("TypQuote")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("TypQuote")) != null) {
             TypQuote typQuote = new TypQuote();
             typQuote.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             typQuote.qName = jsonDeserializationContext.deserialize(stuff.get(1), QNameTopType.class);
             return typQuote;
-        } else if ((stuff = objType.getAsJsonArray("BracketExp")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("BracketExp")) != null) {
             BracketExp bracketExp = new BracketExp();
             bracketExp.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             bracketExp.bracket = jsonDeserializationContext.deserialize(stuff.get(1), BracketTopType.class);
             return bracketExp;
-        } else if ((stuff = objType.getAsJsonArray("SpliceExp")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("SpliceExp")) != null) {
             SpliceExp spliceExp = new SpliceExp();
             spliceExp.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             spliceExp.splice = jsonDeserializationContext.deserialize(stuff.get(1), SpliceTopType.class);
