@@ -22,6 +22,7 @@ package com.haskforce.jps;
 
 import com.haskforce.jps.model.HaskellBuildOptions;
 import com.haskforce.jps.model.JpsHaskellBuildOptionsExtension;
+import com.haskforce.jps.model.JpsHaskellModuleType;
 import org.jetbrains.jps.incremental.BuilderCategory;
 import org.jetbrains.jps.incremental.ModuleLevelBuilder;
 import com.intellij.openapi.diagnostic.Logger;
@@ -69,10 +70,17 @@ public class CabalBuilder extends ModuleLevelBuilder {
                           final OutputConsumer outputConsumer) throws ProjectBuildException {
         try {
             for (JpsModule module : chunk.getModules()) {
+                // Builder gets called for pure java projects as well. Silently
+                // skip those since processMessage() of error will halt the
+                // entire compilation. Funny..
+                if (!module.getModuleType().equals(JpsHaskellModuleType.INSTANCE)) {
+                    continue;
+                }
+
                 File cabalFile = getCabalFile(module);
                 if (cabalFile == null) {
-                    //context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.ERROR,
-                    //        "Can't find cabal file in " + getContentRootPath(module)));
+                    context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.ERROR,
+                            "Can not find cabal file in " + getContentRootPath(module)));
                     continue;
                 }
                 HaskellBuildOptions buildOptions = JpsHaskellBuildOptionsExtension.getOrCreateExtension(module.getProject()).getOptions();
