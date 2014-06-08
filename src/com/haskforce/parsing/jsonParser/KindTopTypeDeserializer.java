@@ -23,7 +23,7 @@ public class KindTopTypeDeserializer implements JsonDeserializer<KindTopType> {
             KindStar kindStar = new KindStar();
             kindStar.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             return kindStar;
-        } else if ((stuff = objType.getAsJsonArray("KindBang")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("KindBang")) != null) {
             KindBang kindBang = new KindBang();
             kindBang.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             return kindBang;
@@ -38,23 +38,23 @@ public class KindTopTypeDeserializer implements JsonDeserializer<KindTopType> {
             kindParen.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             kindParen.kind = jsonDeserializationContext.deserialize(stuff.get(1), KindTopType.class);
             return kindParen;
-        } else if ((stuff = objType.getAsJsonArray("KindVar")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("KindVar")) != null) {
             KindVar kindVar = new KindVar();
             kindVar.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             kindVar.qName = jsonDeserializationContext.deserialize(stuff.get(1), QNameTopType.class);
             return kindVar;
-        } else if ((stuff = objType.getAsJsonArray("KindApp")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("KindApp")) != null) {
             KindApp kindApp = new KindApp();
             kindApp.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             kindApp.k1 = jsonDeserializationContext.deserialize(stuff.get(1), KindTopType.class);
             kindApp.k2 = jsonDeserializationContext.deserialize(stuff.get(2), KindTopType.class);
             return kindApp;
-        } else if ((stuff = objType.getAsJsonArray("KindTuple")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("KindTuple")) != null) {
             KindTuple kindTuple = new KindTuple();
             kindTuple.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             kindTuple.kinds = jsonDeserializationContext.deserialize(stuff.get(1), KindTopType[].class);
             return kindTuple;
-        } else if ((stuff = objType.getAsJsonArray("KindList")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("KindList")) != null) {
             KindList kindList = new KindList();
             kindList.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             kindList.kinds = jsonDeserializationContext.deserialize(stuff.get(1), KindTopType[].class);
