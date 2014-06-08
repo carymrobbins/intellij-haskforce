@@ -32,11 +32,11 @@ public class SpecialConTopTypeDeserializer implements JsonDeserializer<SpecialCo
             UnitCon unitCon = new UnitCon();
             unitCon.srcInfoSpan = jsonDeserializationContext.deserialize(objType.get("UnitCon"), SrcInfoSpan.class);
             return unitCon;
-        } else if (objType.has("ListCon")) { // TODO: Test.
+        } else if (objType.has("ListCon")) {
             ListCon listCon = new ListCon();
             listCon.srcInfoSpan = jsonDeserializationContext.deserialize(objType.get("ListCon"), SrcInfoSpan.class);
             return listCon;
-        } else if (objType.has("FunCon")) { // TODO: Test.
+        } else if (objType.has("FunCon")) {
             FunCon funCon = new FunCon();
             funCon.srcInfoSpan = jsonDeserializationContext.deserialize(objType.get("FunCon"), SrcInfoSpan.class);
             return funCon;

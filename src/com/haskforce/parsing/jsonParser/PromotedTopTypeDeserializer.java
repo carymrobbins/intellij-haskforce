@@ -20,13 +20,13 @@ public class PromotedTopTypeDeserializer implements JsonDeserializer<PromotedTop
                                      JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject objType = jsonElement.getAsJsonObject();
         JsonArray stuff;
-        if ((stuff = objType.getAsJsonArray("PromotedInteger")) != null) { // TODO: Test.
+        if ((stuff = objType.getAsJsonArray("PromotedInteger")) != null) {
             PromotedInteger promotedInteger = new PromotedInteger();
             promotedInteger.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             promotedInteger.value = jsonDeserializationContext.deserialize(stuff.get(1), Integer.class);
             promotedInteger.representation = jsonDeserializationContext.deserialize(stuff.get(2), String.class);
             return promotedInteger;
-        } else if ((stuff = objType.getAsJsonArray("PromotedString")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PromotedString")) != null) {
             PromotedString promotedString = new PromotedString();
             promotedString.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             promotedString.value = jsonDeserializationContext.deserialize(stuff.get(1), String.class);
@@ -51,7 +51,7 @@ public class PromotedTopTypeDeserializer implements JsonDeserializer<PromotedTop
             promotedTuple.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             promotedTuple.promoteds = jsonDeserializationContext.deserialize(stuff.get(1), PromotedTopType[].class);
             return promotedTuple;
-        } else if ((stuff = objType.getAsJsonArray("PromotedUnit")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("PromotedUnit")) != null) {
             PromotedUnit promotedUnit = new PromotedUnit();
             promotedUnit.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             return promotedUnit;

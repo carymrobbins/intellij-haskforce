@@ -24,7 +24,7 @@ public class ExpTopTypeDeserializer implements JsonDeserializer<ExpTopType> {
             rhs.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             rhs.qName = jsonDeserializationContext.deserialize(stuff.get(1), QNameTopType.class);
             return rhs;
-        } else if ((stuff = objType.getAsJsonArray("IPVar")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("IPVar")) != null) {
             IPVar ipVar = new IPVar();
             ipVar.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             ipVar.ipName = jsonDeserializationContext.deserialize(stuff.get(1), IPNameTopType.class);
@@ -76,7 +76,7 @@ public class ExpTopTypeDeserializer implements JsonDeserializer<ExpTopType> {
             anIf.t = jsonDeserializationContext.deserialize(stuff.get(2), ExpTopType.class);
             anIf.f = jsonDeserializationContext.deserialize(stuff.get(3), ExpTopType.class);
             return anIf;
-        } else if ((stuff = objType.getAsJsonArray("MultiIf")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("MultiIf")) != null) {
             MultiIf multiIf = new MultiIf();
             multiIf.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             multiIf.alts = jsonDeserializationContext.deserialize(stuff.get(1), IfAlt[].class);
@@ -92,7 +92,7 @@ public class ExpTopTypeDeserializer implements JsonDeserializer<ExpTopType> {
             aDo.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             aDo.stmts = jsonDeserializationContext.deserialize(stuff.get(1), StmtTopType[].class);
             return aDo;
-        } else if ((stuff = objType.getAsJsonArray("MDo")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("MDo")) != null) {
             MDo mDo = new MDo();
             mDo.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             mDo.stmts = jsonDeserializationContext.deserialize(stuff.get(1), StmtTopType[].class);
@@ -289,7 +289,7 @@ public class ExpTopTypeDeserializer implements JsonDeserializer<ExpTopType> {
             rightArrHighApp.e1 = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             rightArrHighApp.e2 = jsonDeserializationContext.deserialize(stuff.get(2), ExpTopType.class);
             return rightArrHighApp;
-        } else if ((stuff = objType.getAsJsonArray("LCase")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("LCase")) != null) {
             LCase lCase = new LCase();
             lCase.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             lCase.alts = jsonDeserializationContext.deserialize(stuff.get(1), Alt[].class);
