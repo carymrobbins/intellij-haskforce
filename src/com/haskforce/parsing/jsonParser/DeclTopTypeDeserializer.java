@@ -64,7 +64,7 @@ public class DeclTopTypeDeserializer implements JsonDeserializer<DeclTopType> {
             typeInsDecl.t1 = jsonDeserializationContext.deserialize(stuff.get(1), TypeTopType.class);
             typeInsDecl.t2 = jsonDeserializationContext.deserialize(stuff.get(2), TypeTopType.class);
             return typeInsDecl;
-        } else if ((stuff = objType.getAsJsonArray("DataInsDecl")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("DataInsDecl")) != null) {
             DataInsDecl dataInsDecl = new DataInsDecl();
             dataInsDecl.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             dataInsDecl.dataOrNew = jsonDeserializationContext.deserialize(stuff.get(1), DataOrNewTopType.class);
@@ -72,7 +72,7 @@ public class DeclTopTypeDeserializer implements JsonDeserializer<DeclTopType> {
             dataInsDecl.qualConDecls = jsonDeserializationContext.deserialize(stuff.get(3), QualConDecl[].class);
             dataInsDecl.derivingMaybe = jsonDeserializationContext.deserialize(stuff.get(4), Deriving.class);
             return dataInsDecl;
-        } else if ((stuff = objType.getAsJsonArray("GDataInsDecl")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("GDataInsDecl")) != null) {
             GDataInsDecl gDataInsDecl = new GDataInsDecl();
             gDataInsDecl.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             gDataInsDecl.dataOrNew = jsonDeserializationContext.deserialize(stuff.get(1), DataOrNewTopType.class);

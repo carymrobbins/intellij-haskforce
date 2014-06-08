@@ -24,28 +24,28 @@ public class QualStmtTopTypeDeserializer implements JsonDeserializer<QualStmtTop
             qualStmt.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             qualStmt.stmt = jsonDeserializationContext.deserialize(stuff.get(1), StmtTopType.class);
             return qualStmt;
-        } else if ((stuff = objType.getAsJsonArray("ThenTrans")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("ThenTrans")) != null) {
             ThenTrans thenTrans = new ThenTrans();
             thenTrans.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             thenTrans.exp = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             return thenTrans;
-        } else if ((stuff = objType.getAsJsonArray("ThenBy")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("ThenBy")) != null) {
             ThenBy thenBy = new ThenBy();
             thenBy.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             thenBy.e1 = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             thenBy.e2 = jsonDeserializationContext.deserialize(stuff.get(2), ExpTopType.class);
             return thenBy;
-        } else if ((stuff = objType.getAsJsonArray("GroupBy")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("GroupBy")) != null) {
             GroupBy groupBy = new GroupBy();
             groupBy.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             groupBy.exp = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             return groupBy;
-        } else if ((stuff = objType.getAsJsonArray("GroupUsing")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("GroupUsing")) != null) {
             GroupUsing groupUsing = new GroupUsing();
             groupUsing.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             groupUsing.exp = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
             return groupUsing;
-        } else if ((stuff = objType.getAsJsonArray("GroupByUsing")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("GroupByUsing")) != null) {
             GroupByUsing groupByUsing = new GroupByUsing();
             groupByUsing.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             groupByUsing.e1 = jsonDeserializationContext.deserialize(stuff.get(1), ExpTopType.class);
