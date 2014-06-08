@@ -22,9 +22,14 @@ import java.util.regex.Pattern;
  * Parser responsible for parsing the JSON output from parser-helper.
  */
 public class JsonParser {
+    private static final String REQUIRED_PARSER_HELPER_VERSION = "0.1.0.1";
     private static final String NOTIFICATION_TITLE = "Parser-helper notification";
     private static final Pattern cppPattern = Pattern.compile("^\\s*#[a-z](.*)$", Pattern.MULTILINE);
     private static final Logger LOG = Logger.getInstance(JsonParser.class);
+    // Keep track of whether we have shown balloons already. Without check the
+    // plugin will send a new balloon every second.
+    private static boolean haveGivenVersionWarning;
+    private static boolean haveGivenPathWarning;
     private final Project myProject;
 
     public JsonParser(@NotNull final Project project) {
@@ -41,13 +46,29 @@ public class JsonParser {
         String parserHelperPath = prop == null ? ExecUtil.locateExecutableByGuessing("parser-helper") : prop.getValue("parserHelperPath", "");
 
         if (parserHelperPath == null || parserHelperPath.isEmpty()) {
-            Notifications.Bus.notify(
-                    new Notification("Parser-helper", NOTIFICATION_TITLE,
-                            "Parser-helper executable path is empty"+
-                                    "<br/><a href='configureHaskellTools'>Configure</a>",
-                            NotificationType.WARNING, new HaskellToolsNotificationListener(myProject)), myProject);
+            if (!haveGivenPathWarning) {
+                Notifications.Bus.notify(
+                        new Notification("Parser-helper", NOTIFICATION_TITLE,
+                                "Parser-helper executable path is empty" +
+                                        "<br/><a href='configureHaskellTools'>Configure</a>",
+                                NotificationType.WARNING, new HaskellToolsNotificationListener(myProject)), myProject);
+                haveGivenPathWarning = true;
+            }
             tp.error = "Parser-helper unavailable.";
             return tp;
+        }
+
+        String parserHelperVersion = ExecUtil.exec(parserHelperPath + " --numeric-version");
+        if (!haveGivenVersionWarning &&
+                !REQUIRED_PARSER_HELPER_VERSION.equals(parserHelperVersion)) {
+            Notifications.Bus.notify(new Notification("Parser-helper", NOTIFICATION_TITLE,
+                    "Parser-helper version mismatch. Expected " +
+                            REQUIRED_PARSER_HELPER_VERSION + " but found " +
+                            parserHelperVersion +
+                            ". Proceeding in fail safe mode. Install the expected " +
+                            "version of parser-helper for full functionality.",
+                    NotificationType.WARNING), myProject);
+            haveGivenVersionWarning = true;
         }
 
         String json = getJson(input, parserHelperPath);
