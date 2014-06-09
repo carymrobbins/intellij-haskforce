@@ -170,7 +170,7 @@ public class HaskellParser2 implements PsiParser {
         if (patTopType instanceof PVar) {
             parsePVar(builder, (PVar) patTopType, comments);
         } else {
-            throw new RuntimeException("parsePatTop");
+            throw new RuntimeException("parsePatTop" + patTopType.toString());
         }
     }
 
