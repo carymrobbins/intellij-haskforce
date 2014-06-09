@@ -2,6 +2,7 @@ package com.haskforce;
 
 import com.haskforce.highlighting.HaskellSyntaxHighlightingLexer;
 import com.haskforce.parsing.HaskellParser2;
+import com.haskforce.parsing.HaskellTypes2;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.ParserDefinition;
@@ -73,6 +74,9 @@ public class HaskellParserDefinition implements ParserDefinition {
 
     @NotNull
     public PsiElement createElement(ASTNode node) {
+        if (System.getProperty("PARSER", "").equals("2")) {
+            return HaskellTypes2.Factory.createElement(node);
+        }
         return HaskellTypes.Factory.createElement(node);
     }
 }
