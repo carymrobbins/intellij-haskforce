@@ -10,7 +10,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 
-import static com.haskforce.psi.HaskellTypes.*;
+import static com.haskforce.parsing.HaskellTypes2.*;
 
 /**
  * New Parser using parser-helper.
