@@ -1,7 +1,7 @@
 package com.haskforce.parsing;
 
 import com.haskforce.psi.HaskellElementType;
-import com.haskforce.psi.HaskellTokenType;
+import com.haskforce.psi.HaskellTypes;
 import com.haskforce.psi.impl.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.PsiElement;
@@ -22,7 +22,8 @@ public interface HaskellTypes2 {
     IElementType EXPORTS = new HaskellElementType("EXPORTS");
     IElementType IMPDECL = new HaskellElementType("IMPDECL");
     IElementType IMPORTT = new HaskellElementType("IMPORTT");
-    IElementType MODULE_PREFIX = new HaskellElementType("MODULE_PREFIX");
+    IElementType MODULE = new HaskellElementType("MODULE");
+    IElementType NAME = new HaskellElementType("NAME");
     IElementType NCOMMENT = new HaskellElementType("NCOMMENT");
     IElementType PPRAGMA = new HaskellElementType("PPRAGMA");
     IElementType PSTRINGTOKEN = new HaskellElementType("PSTRINGTOKEN");
@@ -46,92 +47,6 @@ public interface HaskellTypes2 {
     IElementType VARS = new HaskellElementType("VARS");
     IElementType VARSYM = new HaskellElementType("VARSYM");
     IElementType WHITECHAR = new HaskellElementType("WHITECHAR");
-
-    IElementType AMPERSAND = new HaskellTokenType("&");
-    IElementType AMPERSAT = new HaskellTokenType("@");
-    IElementType AS = new HaskellTokenType("as");
-    IElementType ASTERISK = new HaskellTokenType("*");
-    IElementType BACKSLASH = new HaskellTokenType("\\");
-    IElementType BACKTICK = new HaskellTokenType("`");
-    IElementType BADSTRINGTOKEN = new HaskellTokenType("badstringtoken");
-    IElementType CARET = new HaskellTokenType("^");
-    IElementType CASE = new HaskellTokenType("case");
-    IElementType CHARTOKEN = new HaskellTokenType("chartoken");
-    IElementType CLASSTOKEN = new HaskellTokenType("class");
-    IElementType CLOSECOM = new HaskellTokenType("-}");
-    IElementType CLOSEPRAGMA = new HaskellTokenType("#-}");
-    IElementType COLON = new HaskellTokenType(":");
-    IElementType COMMA = new HaskellTokenType(",");
-    IElementType COMMENT = new HaskellTokenType("comment");
-    IElementType COMMENTTEXT = new HaskellTokenType("commenttext");
-    IElementType CONID = new HaskellTokenType("conid");
-    IElementType CPPELSE = new HaskellTokenType("#else");
-    IElementType CPPENDIF = new HaskellTokenType("#endif");
-    IElementType CPPIF = new HaskellTokenType("CPPIF");
-    IElementType DASHES = new HaskellTokenType("dashes");
-    IElementType DATA = new HaskellTokenType("data");
-    IElementType DEFAULT = new HaskellTokenType("default");
-    IElementType DERIVING = new HaskellTokenType("deriving");
-    IElementType DO = new HaskellTokenType("do");
-    IElementType DOLLAR = new HaskellTokenType("$");
-    IElementType DOUBLEARROW = new HaskellTokenType("=>");
-    IElementType DOUBLECOLON = new HaskellTokenType("::");
-    IElementType DOUBLEPERIOD = new HaskellTokenType("..");
-    IElementType DOUBLEQUOTE = new HaskellTokenType("\"");
-    IElementType ELSE = new HaskellTokenType("else");
-    IElementType EOL = new HaskellTokenType("EOL");
-    IElementType EQUALS = new HaskellTokenType("=");
-    IElementType EXLAMATION = new HaskellTokenType("!");
-    IElementType EXPORTTOKEN = new HaskellTokenType("export");
-    IElementType FLOATTOKEN = new HaskellTokenType("floattoken");
-    IElementType FOREIGN = new HaskellTokenType("foreign");
-    IElementType GREATERTHAN = new HaskellTokenType(">");
-    IElementType HADDOCK = new HaskellTokenType("haddock");
-    IElementType HASH = new HaskellTokenType("#");
-    IElementType HIDING = new HaskellTokenType("hiding");
-    IElementType IF = new HaskellTokenType("if");
-    IElementType IMPORT = new HaskellTokenType("import");
-    IElementType IN = new HaskellTokenType("in");
-    IElementType INFIX = new HaskellTokenType("infix");
-    IElementType INFIXL = new HaskellTokenType("infixl");
-    IElementType INFIXR = new HaskellTokenType("infixr");
-    IElementType INSTANCE = new HaskellTokenType("instance");
-    IElementType INTEGERTOKEN = new HaskellTokenType("integertoken");
-    IElementType LBRACE = new HaskellTokenType("{");
-    IElementType LBRACKET = new HaskellTokenType("[");
-    IElementType LEFTARROW = new HaskellTokenType("<-");
-    IElementType LESSTHAN = new HaskellTokenType("<");
-    IElementType LET = new HaskellTokenType("let");
-    IElementType LINE_WS = new HaskellTokenType("LINE_WS");
-    IElementType LPAREN = new HaskellTokenType("(");
-    IElementType MINUS = new HaskellTokenType("-");
-    IElementType MODULE = new HaskellTokenType("module");
-    IElementType NEWTYPE = new HaskellTokenType("newtype");
-    IElementType NULLCHARACTER = new HaskellTokenType("\\&");
-    IElementType OF = new HaskellTokenType("of");
-    IElementType OPENCOM = new HaskellTokenType("{-");
-    IElementType OPENPRAGMA = new HaskellTokenType("{-#");
-    IElementType PERCENT = new HaskellTokenType("%");
-    IElementType PERIOD = new HaskellTokenType(".");
-    IElementType PIPE = new HaskellTokenType("|");
-    IElementType PLUS = new HaskellTokenType("+");
-    IElementType PRAGMA = new HaskellTokenType("PRAGMA");
-    IElementType QUALIFIED = new HaskellTokenType("qualified");
-    IElementType QUESTION = new HaskellTokenType("?");
-    IElementType RBRACE = new HaskellTokenType("}");
-    IElementType RBRACKET = new HaskellTokenType("]");
-    IElementType RIGHTARROW = new HaskellTokenType("->");
-    IElementType RPAREN = new HaskellTokenType(")");
-    IElementType SEMICOLON = new HaskellTokenType(";");
-    IElementType SINGLEQUOTE = new HaskellTokenType("'");
-    IElementType SLASH = new HaskellTokenType("/");
-    IElementType STRINGTOKEN = new HaskellTokenType("STRINGTOKEN");
-    IElementType THEN = new HaskellTokenType("then");
-    IElementType THQUOTE = new HaskellTokenType("''");
-    IElementType TILDE = new HaskellTokenType("~");
-    IElementType TYPE = new HaskellTokenType("type");
-    IElementType VARIDREGEXP = new HaskellTokenType("varidRegexp");
-    IElementType WHERE = new HaskellTokenType("where");
 
     class Factory {
         /**
@@ -169,7 +84,7 @@ public interface HaskellTypes2 {
             else if (type == IMPORTT) {
                 return new HaskellImporttImpl(node);
             }
-            else if (type == MODULE_PREFIX) {
+            else if (type == HaskellTypes.MODULE) {
                 return new HaskellModulePrefixImpl(node);
             }
             else if (type == NCOMMENT) {

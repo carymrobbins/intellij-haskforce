@@ -11,6 +11,24 @@ import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 
 import static com.haskforce.parsing.HaskellTypes2.*;
+// These can be imported as * when the old parser is removed.
+import static com.haskforce.psi.HaskellTypes.OPENPRAGMA;
+import static com.haskforce.psi.HaskellTypes.CLOSEPRAGMA;
+import static com.haskforce.psi.HaskellTypes.OPENCOM;
+import static com.haskforce.psi.HaskellTypes.CLOSECOM;
+import static com.haskforce.psi.HaskellTypes.CPP;
+import static com.haskforce.psi.HaskellTypes.CPPIF;
+import static com.haskforce.psi.HaskellTypes.CPPELSE;
+import static com.haskforce.psi.HaskellTypes.CPPENDIF;
+import static com.haskforce.psi.HaskellTypes.COMMENT;
+import static com.haskforce.psi.HaskellTypes.COMMENTTEXT;
+import static com.haskforce.psi.HaskellTypes.DOUBLEQUOTE;
+import static com.haskforce.psi.HaskellTypes.STRINGTOKEN;
+import static com.haskforce.psi.HaskellTypes.BADSTRINGTOKEN;
+import static com.haskforce.psi.HaskellTypes.MODULE;
+import static com.haskforce.psi.HaskellTypes.WHERE;
+import static com.haskforce.psi.HaskellTypes.PRAGMA;
+import static com.haskforce.psi.HaskellTypes.EQUALS;
 
 /**
  * New Parser using parser-helper.
@@ -35,12 +53,10 @@ public class HaskellParser2 implements PsiParser {
         }
 
         IElementType e = builder.getTokenType();
-        while (!builder.eof() && (e == COMMENT || e == OPENPRAGMA
+        while (!builder.eof() && (e == COMMENT
                 || e == CPP || e == OPENCOM)) {
             if (e == COMMENT || e == OPENCOM) {
                 e = parseComment(e, builder, tp.comments);
-            } else if (e == OPENPRAGMA) {
-                e = parsePragma(e, builder);
             } else if (e == CPPIF || e == CPPELSE || e == CPPENDIF) {
                 // Ignore CPP-tokens, they are not fed to parser-helper anyways.
                 builder.advanceLexer();
@@ -62,7 +78,7 @@ public class HaskellParser2 implements PsiParser {
     }
 
     private static void parseModule(PsiBuilder builder, Module module, Comment[] comments) {
-        // TODO: parseModulePragmas(builder, module.modulePragmas, comments);
+        parseModulePragmas(builder, module.modulePragmas, comments);
         parseModuleHead(builder, module.moduleHeadMaybe, comments);
         // TODO: parseImportDecls(builder, module.importDecls, comments);
         parseBody(builder, module.decls, comments);
@@ -82,9 +98,8 @@ public class HaskellParser2 implements PsiParser {
 
     private static void parseModuleName(PsiBuilder builder, ModuleName name,  Comment[] comments) {
         builder.getTokenType(); // Need to getTokenType to advance lexer over whitespace.
-        // FIXME: NAME is currently not in scope, needs to be added to HaskellTypes
-        //builder.remapCurrentToken(NAME);
-        //consumeToken(builder, NAME);
+        builder.remapCurrentToken(NAME);
+        consumeToken(builder, NAME);
     }
 
     private static void parseBody(PsiBuilder builder, DeclTopType[] decls, Comment[] comments) {
@@ -168,14 +183,39 @@ public class HaskellParser2 implements PsiParser {
         return e;
     }
 
-    private static IElementType parsePragma(IElementType e, PsiBuilder builder) {
-        IElementType start = builder.getTokenType();
-        PsiBuilder.Marker marker = builder.mark();
-        consumeToken(builder, OPENPRAGMA);
-        consumeToken(builder, PRAGMA);
-        consumeToken(builder, CLOSEPRAGMA);
-        marker.done(start);
-        return builder.getTokenType();
+    /**
+     * Parses a group of module pragmas.
+     */
+    private static void parseModulePragmas(PsiBuilder builder, ModulePragmaTopType[] modulePragmas,  Comment[] comments) {
+        int i = 0;
+        while(modulePragmas != null && i < modulePragmas.length) {
+            parseModulePragma(builder, modulePragmas[i], comments);
+            i++;
+        }
+    }
+
+    /**
+     * Parses a module pragma.
+     */
+    private static void parseModulePragma(PsiBuilder builder, ModulePragmaTopType modulePragmaTopType,  Comment[] comments) {
+        int i = 0;
+        if (modulePragmaTopType instanceof LanguagePragma) {
+            LanguagePragma langPragma = (LanguagePragma) modulePragmaTopType;
+            IElementType e = builder.getTokenType();
+            PsiBuilder.Marker pragmaMark = builder.mark();
+            consumeToken(builder, OPENPRAGMA);
+            consumeToken(builder, PRAGMA);
+            while (langPragma.names != null && i < langPragma.names.length) {
+                parseName(builder, langPragma.names[i], comments);
+                i++;
+            }
+            consumeToken(builder, CLOSEPRAGMA);
+            pragmaMark.done(e);
+        } else if (modulePragmaTopType instanceof OptionsPragma) {
+            throw new RuntimeException("parseModulePragma" + modulePragmaTopType.toString());
+        } else if (modulePragmaTopType instanceof AnnModulePragma) {
+            throw new RuntimeException("parseModulePragma" + modulePragmaTopType.toString());
+        }
     }
 
     /**
@@ -216,9 +256,8 @@ public class HaskellParser2 implements PsiParser {
      */
     private static void parseName(PsiBuilder builder, NameTopType nameTopType,  Comment[] comments) {
         if (nameTopType instanceof Ident) {
-            // FIXME: NAME is currently not in scope, needs to be added to HaskellTypes
-            //builder.remapCurrentToken(NAME);
-            //consumeToken(builder, NAME);
+            builder.remapCurrentToken(NAME);
+            consumeToken(builder, NAME);
         } else if (nameTopType instanceof Symbol) {
             builder.remapCurrentToken(SYMBOL);
             consumeToken(builder, SYMBOL);
