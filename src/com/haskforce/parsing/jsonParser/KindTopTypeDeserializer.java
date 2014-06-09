@@ -19,9 +19,10 @@ public class KindTopTypeDeserializer implements JsonDeserializer<KindTopType> {
                                      JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject objType = jsonElement.getAsJsonObject();
         JsonArray stuff;
-        if ((stuff = objType.getAsJsonArray("KindStar")) != null) {
+        JsonObject stuff2;
+        if ((stuff2 = objType.getAsJsonObject("KindStar")) != null) {
             KindStar kindStar = new KindStar();
-            kindStar.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
+            kindStar.srcInfoSpan = jsonDeserializationContext.deserialize(stuff2.get("srcInfoSpan"), SrcInfoSpan.class);
             return kindStar;
         } else if ((stuff = objType.getAsJsonArray("KindBang")) != null) {
             KindBang kindBang = new KindBang();
