@@ -93,7 +93,7 @@ public interface HaskellTypes2 {
             else if (type == PPRAGMA) {
                 return new HaskellPpragmaImpl(node);
             }
-            else if (type == PSTRINGTOKEN) {
+            else if (type == PSTRINGTOKEN || type == HaskellTypes.DOUBLEQUOTE) {
                 return new HaskellPstringtokenImpl(node);
             }
             else if (type == QCONID) {
@@ -144,7 +144,7 @@ public interface HaskellTypes2 {
             else if (type == TYVAR) {
                 return new HaskellTyvarImpl(node);
             }
-            else if (type == VARID) {
+            else if (type == VARID || type == HaskellTypes.VARIDREGEXP) {
                 return new HaskellVaridImpl(node);
             }
             else if (type == VARS) {
