@@ -17,9 +17,9 @@ public class BoxedTopTypeDeserializer implements JsonDeserializer<BoxedTopType> 
     @Override
     public BoxedTopType deserialize(JsonElement jsonElement, Type type,
                                      JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-        if (jsonElement.getAsString().equals("Boxed")) {
+        if (jsonElement.getAsJsonObject().get("Boxed") != null) {
             return new Boxed();
-        } else if (jsonElement.getAsString().equals("Unboxed")) {
+        } else if (jsonElement.getAsJsonObject().get("Unboxed") != null) {
             return new Unboxed();
         }
         throw new JsonParseException("Unexpected JSON object type: " + jsonElement.toString());
