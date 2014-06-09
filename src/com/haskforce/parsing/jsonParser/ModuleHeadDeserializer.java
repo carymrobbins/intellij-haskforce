@@ -27,8 +27,8 @@ public class ModuleHeadDeserializer implements JsonDeserializer<ModuleHead> {
             ModuleHead moduleHead = new ModuleHead();
             moduleHead.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             moduleHead.moduleName = jsonDeserializationContext.deserialize(stuff.get(1), ModuleName.class);
-            moduleHead.warningTextMaybe = jsonDeserializationContext.deserialize(stuff.get(2), WarningTextTopType[].class);
-            moduleHead.exportSpecListMaybe = jsonDeserializationContext.deserialize(stuff.get(3), ExportSpecList[].class);
+            moduleHead.warningTextMaybe = jsonDeserializationContext.deserialize(stuff.get(2), WarningTextTopType.class);
+            moduleHead.exportSpecListMaybe = jsonDeserializationContext.deserialize(stuff.get(3), ExportSpecList.class);
             return moduleHead;
         }
         throw new JsonParseException("Unexpected object type: " + objType.toString());

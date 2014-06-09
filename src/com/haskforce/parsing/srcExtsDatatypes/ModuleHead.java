@@ -6,7 +6,7 @@ package com.haskforce.parsing.srcExtsDatatypes;
 public class ModuleHead {
     public SrcInfoSpan srcInfoSpan;
     public ModuleName moduleName;
-    public WarnText warningTextMaybe;
+    public WarningTextTopType warningTextMaybe;
     public ExportSpecList exportSpecListMaybe;
 
     @Override
