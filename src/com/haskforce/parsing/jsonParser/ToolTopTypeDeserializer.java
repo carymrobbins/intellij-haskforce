@@ -23,15 +23,15 @@ public class ToolTopTypeDeserializer implements JsonDeserializer<ToolTopType> {
     public ToolTopType deserialize(JsonElement jsonElement, Type type,
                                      JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonArray stuff;
-        if (jsonElement.getAsString().equals("GHC")) {
+        if (jsonElement.getAsJsonObject().get("GHC") != null) {
             return new GHC();
-        } else if (jsonElement.getAsString().equals("HUGS")) { // TODO: Test.
+        } else if (jsonElement.getAsJsonObject().get("HUGS") != null) { // TODO: Test.
             return new HUGS();
-        } else if (jsonElement.getAsString().equals("NHC98")) { // TODO: Test.
+        } else if (jsonElement.getAsJsonObject().get("NHC98") != null) { // TODO: Test.
             return new NHC98();
-        } else if (jsonElement.getAsString().equals("YHC")) { // TODO: Test.
+        } else if (jsonElement.getAsJsonObject().get("YHC") != null) { // TODO: Test.
             return new YHC();
-        } else if (jsonElement.getAsString().equals("HADDOCK")) { // TODO: Test.
+        } else if (jsonElement.getAsJsonObject().get("HADDOCK") != null) { // TODO: Test.
             return new HADDOCK();
         } else if ((stuff = jsonElement.getAsJsonObject().getAsJsonArray("UnknownTool")) != null) { // TODO: Test.
             UnknownTool tool = new UnknownTool();
