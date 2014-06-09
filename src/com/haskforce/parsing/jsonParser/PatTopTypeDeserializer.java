@@ -57,7 +57,7 @@ public class PatTopTypeDeserializer implements JsonDeserializer<PatTopType> {
         } else if ((stuff = objType.getAsJsonArray("PTuple")) != null) {
             PTuple pTuple = new PTuple();
             pTuple.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
-            pTuple.boxed = jsonDeserializationContext.deserialize(stuff.get(1), Boxed.class);
+            pTuple.boxed = stuff.get(1).equals("Boxed") ? new Boxed() : new Unboxed();
             pTuple.pats = jsonDeserializationContext.deserialize(stuff.get(2), PatTopType[].class);
             return pTuple;
         } else if ((stuff = objType.getAsJsonArray("PList")) != null) {

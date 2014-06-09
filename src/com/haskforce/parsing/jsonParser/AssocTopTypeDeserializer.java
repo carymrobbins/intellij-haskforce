@@ -1,6 +1,5 @@
 package com.haskforce.parsing.jsonParser;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -22,18 +21,18 @@ public class AssocTopTypeDeserializer implements JsonDeserializer<AssocTopType> 
     public AssocTopType deserialize(JsonElement jsonElement, Type type,
                                      JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject objType = jsonElement.getAsJsonObject();
-        JsonArray stuff;
-        if ((stuff = objType.getAsJsonArray("AssocNone")) != null) {
+        JsonObject stuff;
+        if ((stuff = objType.getAsJsonObject("AssocNone")) != null) {
             AssocNone assocNone = new AssocNone();
-            assocNone.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
+            assocNone.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get("srcInfoSpan"), SrcInfoSpan.class);
             return assocNone;
-        } else if ((stuff = objType.getAsJsonArray("AssocLeft")) != null) {
+        } else if ((stuff = objType.getAsJsonObject("AssocLeft")) != null) {
             AssocLeft assocLeft = new AssocLeft();
-            assocLeft.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
+            assocLeft.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get("srcInfoSpan"), SrcInfoSpan.class);
             return assocLeft;
-        } else if ((stuff = objType.getAsJsonArray("AssocRight")) != null) {
+        } else if ((stuff = objType.getAsJsonObject("AssocRight")) != null) {
             AssocRight assocRight = new AssocRight();
-            assocRight.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
+            assocRight.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get("srcInfoSpan"), SrcInfoSpan.class);
             return assocRight;
         }
         throw new JsonParseException("Unexpected JSON object type: " + objType.toString());

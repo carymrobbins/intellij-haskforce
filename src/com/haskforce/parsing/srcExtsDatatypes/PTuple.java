@@ -7,7 +7,7 @@ import java.util.Arrays;
  */
 public class PTuple extends PatTopType {
     public SrcInfoSpan srcInfoSpan;
-    public Boxed boxed;
+    public BoxedTopType boxed;
     public PatTopType[] pats;
 
     @Override

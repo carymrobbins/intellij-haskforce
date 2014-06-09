@@ -7,15 +7,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.haskforce.parsing.srcExtsDatatypes.BoxedTopType;
-import com.haskforce.parsing.srcExtsDatatypes.Cons;
-import com.haskforce.parsing.srcExtsDatatypes.FunCon;
-import com.haskforce.parsing.srcExtsDatatypes.ListCon;
-import com.haskforce.parsing.srcExtsDatatypes.SpecialConTopType;
-import com.haskforce.parsing.srcExtsDatatypes.SrcInfoSpan;
-import com.haskforce.parsing.srcExtsDatatypes.TupleCon;
-import com.haskforce.parsing.srcExtsDatatypes.UnboxedSingleCon;
-import com.haskforce.parsing.srcExtsDatatypes.UnitCon;
+import com.haskforce.parsing.srcExtsDatatypes.*;
 
 import java.lang.reflect.Type;
 
@@ -44,7 +36,7 @@ public class SpecialConTopTypeDeserializer implements JsonDeserializer<SpecialCo
             TupleCon tupleCon = new TupleCon();
             Gson g = new Gson(); // TODO: Remove with 1.7.
             tupleCon.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
-            tupleCon.boxed = jsonDeserializationContext.deserialize(stuff.get(1), BoxedTopType.class);
+            tupleCon.boxed = stuff.get(1).equals("Boxed") ? new Boxed() : new Unboxed();
             tupleCon.i = g.fromJson(stuff.get(1), int.class);
             return tupleCon;
         } else if (objType.has("Cons")) {

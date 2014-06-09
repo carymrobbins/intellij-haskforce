@@ -100,13 +100,13 @@ public class ExpTopTypeDeserializer implements JsonDeserializer<ExpTopType> {
         } else if ((stuff = objType.getAsJsonArray("Tuple")) != null) {
             Tuple tuple = new Tuple();
             tuple.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
-            tuple.boxed = jsonDeserializationContext.deserialize(stuff.get(1), BoxedTopType.class);
+            tuple.boxed = stuff.get(1).equals("Boxed") ? new Boxed() : new Unboxed();
             tuple.exps = jsonDeserializationContext.deserialize(stuff.get(2), ExpTopType[].class);
             return tuple;
         } else if ((stuff = objType.getAsJsonArray("TupleSection")) != null) {
             TupleSection tupleSection = new TupleSection();
             tupleSection.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
-            tupleSection.boxed = jsonDeserializationContext.deserialize(stuff.get(1), BoxedTopType.class);
+            tupleSection.boxed = stuff.get(1).equals("Boxed") ? new Boxed() : new Unboxed();
             tupleSection.expMaybes = jsonDeserializationContext.deserialize(stuff.get(2), ExpTopType[].class);
             return tupleSection;
         } else if ((stuff = objType.getAsJsonArray("List")) != null) {

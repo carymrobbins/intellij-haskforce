@@ -129,7 +129,6 @@ public class JsonParser {
         gsonBuilder.registerTypeAdapter(CallConvTopType.class, new CallConvTopTypeDeserializer());
         gsonBuilder.registerTypeAdapter(DataOrNewTopType.class, new DataOrNewTopTypeDeserializer());
         gsonBuilder.registerTypeAdapter(BangTypeTopType.class, new BangTypeTopTypeDeserializer());
-        gsonBuilder.registerTypeAdapter(BoxedTopType.class, new BoxedTopTypeDeserializer());
         gsonBuilder.registerTypeAdapter(IPNameTopType.class, new IPNameTopTypeDeserializer());
         gsonBuilder.registerTypeAdapter(FieldUpdateTopType.class, new FieldUpdateTopTypeDeserializer());
         gsonBuilder.registerTypeAdapter(QualStmtTopType.class, new QualStmtTopTypeDeserializer());

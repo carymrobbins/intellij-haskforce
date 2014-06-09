@@ -34,7 +34,7 @@ public class TypeTopTypeDeserializer implements JsonDeserializer<TypeTopType> {
         } else if ((stuff = objType.getAsJsonArray("TyTuple")) != null) {
             TyTuple tyTuple = new TyTuple();
             tyTuple.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
-            tyTuple.boxed = jsonDeserializationContext.deserialize(stuff.get(1), Boxed.class);
+            tyTuple.boxed = stuff.get(1).equals("Boxed") ? new Boxed() : new Unboxed();
             tyTuple.types = jsonDeserializationContext.deserialize(stuff.get(2), TypeTopType[].class);
             return tyTuple;
         } else if ((stuff = objType.getAsJsonArray("TyList")) != null) {
