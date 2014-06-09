@@ -84,6 +84,7 @@ public class CabalBuilder extends ModuleLevelBuilder {
                     continue;
                 }
                 HaskellBuildOptions buildOptions = JpsHaskellBuildOptionsExtension.getOrCreateExtension(module.getProject()).getOptions();
+                //noinspection ObjectAllocationInLoop
                 CabalJspInterface cabal = new CabalJspInterface(buildOptions.myCabalPath,
                                                 buildOptions.myCabalFlags, cabalFile);
 
@@ -161,11 +162,13 @@ public class CabalBuilder extends ModuleLevelBuilder {
             if (line.startsWith(warningPrefix)) {
                 // Cabal warnings.
                 String text = line.substring(warningPrefix.length()) + System.getProperty("line.separator") + processOut.next();
+                //noinspection ObjectAllocationInLoop
                 context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.WARNING, text));
             } else if (line.startsWith(cabalPrefix)) {
                 // Unknown cabal messages. Exit code will tell if they were
                 // errors. Just forward to user.
                 String text = line.substring(cabalPrefix.length()) + System.getProperty("line.separator") + processOut.next();
+                //noinspection ObjectAllocationInLoop
                 context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.WARNING, text));
             } else if (matcher.find()) {
                 // GHC Messages
@@ -195,6 +198,7 @@ public class CabalBuilder extends ModuleLevelBuilder {
                        BuildMessage.Kind.WARNING : BuildMessage.Kind.ERROR;
 
                 final String trimmedMessage = msg.toString().trim();
+                //noinspection ObjectAllocationInLoop
                 context.processMessage(new CompilerMessage(
                         "ghc",
                         kind,
