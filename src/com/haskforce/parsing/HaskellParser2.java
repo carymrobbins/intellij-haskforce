@@ -202,6 +202,8 @@ public class HaskellParser2 implements PsiParser {
             parsePatBind(builder, (PatBind) decl, comments);
         } else if (decl instanceof FunBind) {
             parseFunBind(builder, (FunBind) decl, comments);
+        } else if (decl instanceof AnnPragma) {
+            parseAnnPragma(builder, (AnnPragma) decl, comments);
         } else {
             throw new RuntimeException("Unexpected decl type: " + decl.toString());
         }
@@ -297,9 +299,21 @@ public class HaskellParser2 implements PsiParser {
             consumeToken(builder, CLOSEPRAGMA);
             pragmaMark.done(e);
         } else if (modulePragmaTopType instanceof OptionsPragma) {
-            throw new RuntimeException("parseModulePragma" + modulePragmaTopType.toString());
+            // FIXME: Use optionsPragma information.
+            OptionsPragma optionsPragma = (OptionsPragma) modulePragmaTopType;
+            IElementType e = builder.getTokenType();
+            PsiBuilder.Marker pragmaMark = builder.mark();
+            chewPragma(builder);
+            consumeToken(builder, CLOSEPRAGMA);
+            pragmaMark.done(e);
         } else if (modulePragmaTopType instanceof AnnModulePragma) {
-            throw new RuntimeException("parseModulePragma" + modulePragmaTopType.toString());
+            // FIXME: Use annModulePragma information.
+            AnnModulePragma annModulePragma = (AnnModulePragma) modulePragmaTopType;
+            IElementType e = builder.getTokenType();
+            PsiBuilder.Marker pragmaMark = builder.mark();
+            chewPragma(builder);
+            consumeToken(builder, CLOSEPRAGMA);
+            pragmaMark.done(e);
         }
     }
 
@@ -391,6 +405,25 @@ public class HaskellParser2 implements PsiParser {
         }
     }
 
+    /**
+     * Parses an annotation pragma.
+     */
+    public static void parseAnnPragma(PsiBuilder builder,  AnnPragma annPragma, Comment[] comments) { // TODO: Improve granularity.
+        IElementType e = builder.getTokenType();
+        chewPragma(builder);
+        consumeToken(builder, CLOSEPRAGMA);
+    }
+
+    /**
+     * Eats a complete pragma and leaves the builder at CLOSEPRAGMA token.
+     */
+    public static void chewPragma(PsiBuilder builder) {
+        IElementType e = builder.getTokenType();
+        while (e != CLOSEPRAGMA) {
+            builder.advanceLexer();
+            e = builder.getTokenType();
+        }
+    }
 
     public static boolean consumeToken(PsiBuilder builder_, IElementType token) {
         if (nextTokenIsInner(builder_, token)) {
