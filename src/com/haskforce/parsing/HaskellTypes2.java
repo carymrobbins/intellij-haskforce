@@ -63,7 +63,7 @@ public interface HaskellTypes2 {
             else if (type == CNAMES) {
                 return new HaskellCnamesImpl(node);
             }
-            else if (type == CON) {
+            else if (type == CON || type == HaskellTypes.CONID) {
                 return new HaskellConImpl(node);
             }
             else if (type == CONSYM) {
@@ -81,7 +81,7 @@ public interface HaskellTypes2 {
             else if (type == IMPDECL) {
                 return new HaskellImpdeclImpl(node);
             }
-            else if (type == IMPORTT) {
+            else if (type == IMPORTT || type == HaskellTypes.IMPORT) {
                 return new HaskellImporttImpl(node);
             }
             else if (type == HaskellTypes.MODULE) {

@@ -29,6 +29,13 @@ import static com.haskforce.psi.HaskellTypes.MODULE;
 import static com.haskforce.psi.HaskellTypes.WHERE;
 import static com.haskforce.psi.HaskellTypes.PRAGMA;
 import static com.haskforce.psi.HaskellTypes.EQUALS;
+import static com.haskforce.psi.HaskellTypes.IMPORT;
+import static com.haskforce.psi.HaskellTypes.QUALIFIED;
+import static com.haskforce.psi.HaskellTypes.HIDING;
+import static com.haskforce.psi.HaskellTypes.PERIOD;
+import static com.haskforce.psi.HaskellTypes.RPAREN;
+import static com.haskforce.psi.HaskellTypes.LPAREN;
+import static com.haskforce.psi.HaskellTypes.AS;
 
 /**
  * New Parser using parser-helper.
@@ -49,7 +56,7 @@ public class HaskellParser2 implements PsiParser {
         PsiBuilder.Marker rootMarker = builder.mark();
         TopPair tp = myJsonParser.parse(builder.getOriginalText());
         if (tp.error != null && !tp.error.isEmpty()) {
-            return chewEverything(rootMarker, root, builder);
+            // TODO: Parse failed. Possibly warn. Could be annoying.
         }
 
         IElementType e = builder.getTokenType();
@@ -77,20 +84,26 @@ public class HaskellParser2 implements PsiParser {
         return result;
     }
 
+    /**
+     * Parses a complete module.
+     */
     private static void parseModule(PsiBuilder builder, Module module, Comment[] comments) {
-        parseModulePragmas(builder, module.modulePragmas, comments);
-        parseModuleHead(builder, module.moduleHeadMaybe, comments);
-        // TODO: parseImportDecls(builder, module.importDecls, comments);
-        parseBody(builder, module.decls, comments);
+        parseModulePragmas(builder, module == null ? null : module.modulePragmas, comments);
+        parseModuleHead(builder, module == null ? null : module.moduleHeadMaybe, comments);
+        parseImportDecls(builder, module == null ? null : module.importDecls, comments);
+        parseBody(builder, module == null ? null : module.decls, comments);
     }
 
+    /**
+     * Parses "module NAME [exportSpecList] where".
+     */
     private static void parseModuleHead(PsiBuilder builder, ModuleHead head, Comment[] comments) {
-        if (head == null) return;
-
         IElementType e = builder.getTokenType();
+        if (e != MODULE) return;
+
         PsiBuilder.Marker moduleMark = builder.mark();
         consumeToken(builder, MODULE);
-        parseModuleName(builder, head.moduleName, comments);
+        parseModuleName(builder, head == null ? null : head.moduleName, comments);
         consumeToken(builder, WHERE);
         // TODO: exportSpecList
         moduleMark.done(e);
@@ -98,8 +111,80 @@ public class HaskellParser2 implements PsiParser {
 
     private static void parseModuleName(PsiBuilder builder, ModuleName name,  Comment[] comments) {
         builder.getTokenType(); // Need to getTokenType to advance lexer over whitespace.
-        builder.remapCurrentToken(NAME);
-        consumeToken(builder, NAME);
+        int startPos = builder.getCurrentOffset();
+        IElementType e = builder.getTokenType();
+        // Data.Maybe is a legal module name.
+        while ((name != null &&
+               (builder.getCurrentOffset() - startPos) <  name.name.length()) ||
+                name == null && e != WHERE) {
+            builder.remapCurrentToken(NAME);
+            consumeToken(builder, NAME);
+            e = builder.getTokenType();
+            if (e == PERIOD) builder.advanceLexer();
+        }
+    }
+
+    /**
+     * Parses a list of import statements.
+     */
+    private static void parseImportDecls(PsiBuilder builder, ImportDecl[] importDecls, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+
+        int i = 0;
+        while (importDecls != null && i < importDecls.length) {
+            if (e == CPPIF || e == CPPELSE || e == CPPENDIF) {
+                builder.advanceLexer();
+                e = builder.getTokenType();
+                continue;
+            }
+            if (e != IMPORT) return;
+
+            parseImportDecl(builder, importDecls[i], comments);
+            i++;
+            e = builder.getTokenType();
+        }
+    }
+
+    /**
+     * Parses an import statement.
+     */
+    private static void parseImportDecl(PsiBuilder builder, ImportDecl importDecl, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        PsiBuilder.Marker importMark = builder.mark();
+        consumeToken(builder, IMPORT);
+        IElementType e2 = builder.getTokenType();
+        if (e2 == QUALIFIED || (importDecl != null && importDecl.importQualified)) {
+            consumeToken(builder, QUALIFIED);
+        }
+        parseModuleName(builder, importDecl == null ? null : importDecl.importModule, comments);
+        e2 = builder.getTokenType();
+        if (e2 == AS || false) { // TODO: Update.
+            consumeToken(builder, AS);
+            e2 = builder.getTokenType();
+            parseModuleName(builder, importDecl == null ? null : importDecl.importAs, comments);
+            e2 = builder.getTokenType();
+        }
+        if (e2 == HIDING || false) { // (importDecl != null && importDecl.importSpecs)) { TODO: FIXME
+            consumeToken(builder, HIDING);
+            e2 = builder.getTokenType();
+        }
+        int nest = 0;
+        if (e2 == LPAREN) {
+            consumeToken(builder, LPAREN);
+            nest++;
+        }
+        while (nest > 0) {
+            builder.advanceLexer();
+            e2 = builder.getTokenType();
+            if (e2 == LPAREN) {
+                nest++;
+            }
+            if (e2 == RPAREN) {
+                nest--;
+            }
+        }
+        if (e2 == RPAREN) consumeToken(builder, RPAREN);
+        importMark.done(e);
     }
 
     private static void parseBody(PsiBuilder builder, DeclTopType[] decls, Comment[] comments) {
