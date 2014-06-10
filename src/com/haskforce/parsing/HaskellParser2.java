@@ -220,6 +220,8 @@ public class HaskellParser2 implements PsiParser {
             parseFunBind(builder, (FunBind) decl, comments);
         } else if (decl instanceof DataDecl) {
             parseDataDecl(builder, (DataDecl) decl, comments);
+        }  else if (decl instanceof TypeDecl) {
+            parseTypeDecl(builder, (TypeDecl) decl, comments);
         } else if (decl instanceof TypeSig) {
             parseTypeSig(builder, (TypeSig) decl, comments);
         } else if (decl instanceof AnnPragma) {
@@ -253,14 +255,10 @@ public class HaskellParser2 implements PsiParser {
      */
     private static void parseDataDecl(PsiBuilder builder, DataDecl dataDecl, Comment[] comments) {
         IElementType e = builder.getTokenType();
-        consumeToken(builder, e == TYPE ? TYPE : DATA);
-        // TODO: parseDeclHead(builder, dataDecl.declHead, comments);
+        consumeToken(builder, DATA);
+        parseDeclHead(builder, dataDecl.declHead, comments);
         e = builder.getTokenType();
-        while (e != EQUALS) {
-            builder.advanceLexer();
-            e = builder.getTokenType();
-        }
-        consumeToken(builder, EQUALS);
+        if (e == EQUALS) consumeToken(builder, EQUALS);
         int i = 0;
         e = builder.getTokenType();
         while (dataDecl.qualConDecls != null && i < dataDecl.qualConDecls.length) {
@@ -271,6 +269,62 @@ public class HaskellParser2 implements PsiParser {
                 e = builder.getTokenType();
             }
         }
+    }
+
+    /**
+     * Parses the left side of '=' in a data/type declaration.
+     */
+    private static void parseDeclHead(PsiBuilder builder, DeclHeadTopType declHead, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        if (declHead instanceof DHead) {
+            parseName(builder, ((DHead) declHead).name, comments);
+            e = builder.getTokenType();
+            parseTyVarBinds(builder, ((DHead) declHead).tyVars, comments);
+        } else if (declHead instanceof DHInfix) {
+            throw new RuntimeException("DHInfix:" + declHead.toString());
+        } else if (declHead instanceof DHParen) {
+            throw new RuntimeException("DHParen:" + declHead.toString());
+        }
+    }
+
+    /**
+     * Parses the type variables in a data declaration.
+     */
+    private static void parseTyVarBinds(PsiBuilder builder, TyVarBindTopType[] tyVarBindTopType, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        int i = 0;
+        while (tyVarBindTopType != null && i < tyVarBindTopType.length) {
+            parseTyVarBind(builder, tyVarBindTopType[i], comments);
+            i++;
+        }
+        e = builder.getTokenType();
+    }
+    /**
+     * Parses the type variables in a data declaration.
+     */
+    private static void parseTyVarBind(PsiBuilder builder, TyVarBindTopType tyVarBindTopType, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+
+        if (tyVarBindTopType instanceof KindedVar) {
+            parseName(builder, ((KindedVar) tyVarBindTopType).name, comments);
+            throw new RuntimeException("TODO: Implement parseKindVar()");
+        } else if (tyVarBindTopType instanceof UnkindedVar) {
+            parseName(builder, ((UnkindedVar) tyVarBindTopType).name, comments);
+        }
+        e = builder.getTokenType();
+    }
+
+    /**
+     * Parses a type declaration.
+     */
+    private static void parseTypeDecl(PsiBuilder builder, TypeDecl typeDecl, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        consumeToken(builder, TYPE);
+        parseDeclHead(builder, typeDecl.declHead, comments);
+        e = builder.getTokenType();
+        if (e == EQUALS) consumeToken(builder, EQUALS);
+        parseTypeTopType(builder, typeDecl.type, comments);
+        e = builder.getTokenType();
     }
 
     /**
@@ -302,7 +356,11 @@ public class HaskellParser2 implements PsiParser {
             IElementType e = builder.getTokenType();
             parseBangTypes(builder, conDecl == null ? null : ((ConDecl) conDecl).bangTypes, comments);
         } else if (conDecl instanceof InfixConDecl) {
-            throw new RuntimeException("Unknown infixcondecl:" + conDecl.toString());
+            IElementType e = builder.getTokenType();
+            parseBangType(builder, ((InfixConDecl) conDecl).b1, comments);
+            e = builder.getTokenType();
+            parseName(builder, ((InfixConDecl) conDecl).name, comments);
+            parseBangType(builder, ((InfixConDecl) conDecl).b2, comments);
         } else if (conDecl instanceof RecDecl) {
             throw new RuntimeException("Unknown recdecl:" + conDecl.toString());
         }
@@ -485,6 +543,7 @@ public class HaskellParser2 implements PsiParser {
             builder.remapCurrentToken(NAME);
             consumeToken(builder, NAME);
         } else if (nameTopType instanceof Symbol) {
+            IElementType e = builder.getTokenType();
             builder.remapCurrentToken(SYMBOL);
             consumeToken(builder, SYMBOL);
         }
@@ -569,6 +628,20 @@ public class HaskellParser2 implements PsiParser {
     }
 
     /**
+     * Parses a list of types.
+     */
+    private static void parseTypeTopTypes(PsiBuilder builder, TypeTopType[] typeTopTypes, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        int i = 0;
+        while (typeTopTypes != null && i < typeTopTypes.length) {
+            parseTypeTopType(builder, typeTopTypes[i], comments);
+            i++;
+            e = builder.getTokenType();
+            if (e == COMMA) consumeToken(builder, COMMA);
+        }
+    }
+
+    /**
      * Parses a type.
      */
     private static void parseTypeTopType(PsiBuilder builder, TypeTopType expTopType, Comment[] comments) {
@@ -581,9 +654,44 @@ public class HaskellParser2 implements PsiParser {
             parseTypeTopType(builder, ((TyFun) expTopType).t2, comments);
         } else if (expTopType instanceof TyCon) {
             parseQName(builder, ((TyCon) expTopType).qName, comments);
+        } else if (expTopType instanceof TyVar) {
+            parseName(builder, ((TyVar) expTopType).name, comments);
+            e = builder.getTokenType();
+        } else if (expTopType instanceof TyApp) {
+            parseTypeTopType(builder, ((TyApp) expTopType).t1, comments);
+            e = builder.getTokenType();
+            parseTypeTopType(builder, ((TyApp) expTopType).t2, comments);
+            e = builder.getTokenType();
+        } else if (expTopType instanceof TyTuple) {
+            builder.advanceLexer(); // '('
+            e = builder.getTokenType();
+            boolean unboxed = parseBoxed(builder, ((TyTuple) expTopType).boxed, comments);
+            e = builder.getTokenType();
+            parseTypeTopTypes(builder, ((TyTuple) expTopType).types, comments);
+            e = builder.getTokenType();
+            if (unboxed) {
+                builder.advanceLexer();
+                e = builder.getTokenType();
+            }
+            builder.advanceLexer(); // ')'
+            e = builder.getTokenType();
         } else {
             throw new RuntimeException("parseTypeTopType: " + expTopType.toString());
         }
+    }
+
+    /**
+     * Parses an annotation pragma.
+     */
+    public static boolean parseBoxed(PsiBuilder builder,  BoxedTopType boxedTopType, Comment[] comments) { // TODO: Improve granularity.
+        IElementType e = builder.getTokenType();
+        if (boxedTopType instanceof Boxed) {
+            return false;
+        } else if (boxedTopType instanceof Unboxed) {
+            builder.advanceLexer(); // '#'
+            return true;
+        }
+        throw new RuntimeException("Unexpected boxing: " + boxedTopType.toString());
     }
 
     /**
