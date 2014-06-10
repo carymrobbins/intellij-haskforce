@@ -5,13 +5,15 @@ package com.haskforce.parsing.srcExtsDatatypes;
  */
 public class PrimFloat extends LiteralTopType {
     public SrcInfoSpan srcInfoSpan;
-    public float value;
+    public float denominator;
+    public float numerator;
     public String representation;
 
     @Override
     public String toString() {
         return "PrimFloat{" +
-                "value=" + value +
+                "denominator=" + denominator +
+                ", numerator=" + numerator +
                 ", representation='" + representation + '\'' +
                 '}';
     }

@@ -5,13 +5,15 @@ package com.haskforce.parsing.srcExtsDatatypes;
  */
 public class FracLit extends LiteralTopType {
     public SrcInfoSpan srcInfoSpan;
-    public float value;
+    public float denominator;
+    public float numerator;
     public String representation;
 
     @Override
     public String toString() {
-        return "Frac{" +
-                "value=" + value +
+        return "FracLit{" +
+                "denominator=" + denominator +
+                ", numerator=" + numerator +
                 ", representation='" + representation + '\'' +
                 '}';
     }

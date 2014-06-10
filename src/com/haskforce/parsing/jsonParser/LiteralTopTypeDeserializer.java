@@ -43,7 +43,9 @@ public class LiteralTopTypeDeserializer implements JsonDeserializer<LiteralTopTy
             FracLit fracLit = new FracLit();
             Gson g = new Gson();  // TODO: Remove with 1.7.
             fracLit.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
-            fracLit.value = g.fromJson(stuff.get(1), float.class);
+            JsonObject stuff2 = stuff.get(1).getAsJsonObject();
+            fracLit.denominator = g.fromJson(stuff2.get("denominator"), float.class);
+            fracLit.numerator = g.fromJson(stuff2.get("numerator"), float.class);
             fracLit.representation = jsonDeserializationContext.deserialize(stuff.get(2), String.class);
             return fracLit;
         } else if ((stuff = objType.getAsJsonArray("PrimInt")) != null) {
@@ -62,14 +64,18 @@ public class LiteralTopTypeDeserializer implements JsonDeserializer<LiteralTopTy
             PrimFloat primFloat = new PrimFloat();
             Gson g = new Gson();  // TODO: Remove with 1.7.
             primFloat.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
-            primFloat.value = g.fromJson(stuff.get(1), float.class);
+            JsonObject stuff2 = stuff.get(1).getAsJsonObject();
+            primFloat.denominator = g.fromJson(stuff2.get("denominator"), float.class);
+            primFloat.numerator = g.fromJson(stuff2.get("numerator"), float.class);
             primFloat.representation = jsonDeserializationContext.deserialize(stuff.get(2), String.class);
             return primFloat;
         } else if ((stuff = objType.getAsJsonArray("PrimDouble")) != null) {
             PrimDouble primDouble = new PrimDouble();
             Gson g = new Gson();  // TODO: Remove with 1.7.
             primDouble.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
-            primDouble.value = g.fromJson(stuff.get(1), double.class);
+            JsonObject stuff2 = stuff.get(1).getAsJsonObject();
+            primDouble.denominator = g.fromJson(stuff2.get("denominator"), float.class);
+            primDouble.numerator = g.fromJson(stuff2.get("numerator"), float.class);
             primDouble.representation = jsonDeserializationContext.deserialize(stuff.get(2), String.class);
             return primDouble;
         } else if ((stuff = objType.getAsJsonArray("PrimChar")) != null) {

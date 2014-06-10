@@ -5,13 +5,15 @@ package com.haskforce.parsing.srcExtsDatatypes;
  */
 public class PrimDouble extends LiteralTopType {
     public SrcInfoSpan srcInfoSpan;
-    public double value;
+    public double denominator;
+    public double numerator;
     public String representation;
 
     @Override
     public String toString() {
         return "PrimDouble{" +
-                "value=" + value +
+                "denominator=" + denominator +
+                ", numerator=" + numerator +
                 ", representation='" + representation + '\'' +
                 '}';
     }
