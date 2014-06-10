@@ -20,6 +20,7 @@ public class PromotedTopTypeDeserializer implements JsonDeserializer<PromotedTop
                                      JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject objType = jsonElement.getAsJsonObject();
         JsonArray stuff;
+        JsonObject stuff2;
         if ((stuff = objType.getAsJsonArray("PromotedInteger")) != null) {
             PromotedInteger promotedInteger = new PromotedInteger();
             promotedInteger.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
@@ -51,9 +52,9 @@ public class PromotedTopTypeDeserializer implements JsonDeserializer<PromotedTop
             promotedTuple.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             promotedTuple.promoteds = jsonDeserializationContext.deserialize(stuff.get(1), PromotedTopType[].class);
             return promotedTuple;
-        } else if ((stuff = objType.getAsJsonArray("PromotedUnit")) != null) {
+        } else if ((stuff2 = objType.getAsJsonObject("PromotedUnit")) != null) {
             PromotedUnit promotedUnit = new PromotedUnit();
-            promotedUnit.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
+            promotedUnit.srcInfoSpan = jsonDeserializationContext.deserialize(stuff2.get("srcInfoSpan"), SrcInfoSpan.class);
             return promotedUnit;
         }
         throw new JsonParseException("Unexpected JSON object type: " + objType.toString());
