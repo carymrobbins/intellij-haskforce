@@ -155,8 +155,9 @@ public interface HaskellTypes2 {
             }
             else if (type == WHITECHAR) {
                 return new HaskellWhitecharImpl(node);
+            } else {
+                return new HaskellCompositeElementType(node);
             }
-            throw new AssertionError("HaskellTypes2: Unknown element type: " + type);
         }
     }
 }

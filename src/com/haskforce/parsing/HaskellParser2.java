@@ -36,6 +36,9 @@ import static com.haskforce.psi.HaskellTypes.PERIOD;
 import static com.haskforce.psi.HaskellTypes.RPAREN;
 import static com.haskforce.psi.HaskellTypes.LPAREN;
 import static com.haskforce.psi.HaskellTypes.AS;
+import static com.haskforce.psi.HaskellTypes.TYPE;
+import static com.haskforce.psi.HaskellTypes.DATA;
+import static com.haskforce.psi.HaskellTypes.IN;
 
 /**
  * New Parser using parser-helper.
@@ -95,7 +98,7 @@ public class HaskellParser2 implements PsiParser {
     }
 
     /**
-     * Parses "module NAME [exportSpecList] where".
+     * Parses "module NAME [modulepragmas] [exportSpecList] where".
      */
     private static void parseModuleHead(PsiBuilder builder, ModuleHead head, Comment[] comments) {
         IElementType e = builder.getTokenType();
@@ -104,8 +107,18 @@ public class HaskellParser2 implements PsiParser {
         PsiBuilder.Marker moduleMark = builder.mark();
         consumeToken(builder, MODULE);
         parseModuleName(builder, head == null ? null : head.moduleName, comments);
+        // TODO: parseExportSpecList(builder, head.exportSpecList, comments);
+        IElementType e2 = builder.getTokenType();
+        while (e2 != WHERE) {
+            if (e2 == OPENPRAGMA) {
+                chewPragma(builder);
+                consumeToken(builder, CLOSEPRAGMA);
+            } else {
+                builder.advanceLexer();
+            }
+            e2 = builder.getTokenType();
+        }
         consumeToken(builder, WHERE);
-        // TODO: exportSpecList
         moduleMark.done(e);
     }
 
@@ -202,6 +215,8 @@ public class HaskellParser2 implements PsiParser {
             parsePatBind(builder, (PatBind) decl, comments);
         } else if (decl instanceof FunBind) {
             parseFunBind(builder, (FunBind) decl, comments);
+        } else if (decl instanceof DataDecl) {
+            parseDataDecl(builder, (DataDecl) decl, comments);
         } else if (decl instanceof AnnPragma) {
             parseAnnPragma(builder, (AnnPragma) decl, comments);
         } else {
@@ -226,7 +241,85 @@ public class HaskellParser2 implements PsiParser {
             parseMatchTop(builder, funBind.match[i], comments);
             i++;
         }
-        System.out.println("Unexpected FunBind type " + funBind.toString());
+    }
+
+    /**
+     * Parses a data declaration.
+     */
+    private static void parseDataDecl(PsiBuilder builder, DataDecl dataDecl, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        consumeToken(builder, e == TYPE ? TYPE : DATA);
+        // TODO: parseDeclHead(builder, dataDecl.declHead, comments);
+        e = builder.getTokenType();
+        while (e != EQUALS) {
+            builder.advanceLexer();
+            e = builder.getTokenType();
+        }
+        consumeToken(builder, EQUALS);
+        int i = 0;
+        while (dataDecl.qualConDecls != null && i < dataDecl.qualConDecls.length) {
+            parseQualConDecl(builder, dataDecl.qualConDecls[i], comments);
+            i++;
+        }
+    }
+
+    /**
+     * Parses a qualified constructor declaration.
+     */
+    private static void parseQualConDecl(PsiBuilder builder, QualConDecl qualConDecl, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        builder.advanceLexer();
+        e = builder.getTokenType();
+        parseConDecl(builder, qualConDecl == null ? null :qualConDecl.conDecl, comments);
+    }
+
+    /**
+     * Parses a list of bang types.
+     */
+    private static void parseConDecl(PsiBuilder builder,  ConDeclTopType conDecl, Comment[] comments) {
+        if (conDecl instanceof ConDecl) {
+            parseName(builder, ((ConDecl) conDecl).name, comments);
+            parseBangTypes(builder, conDecl == null ? null : ((ConDecl) conDecl).bangTypes, comments);
+        } else if (conDecl instanceof InfixConDecl) {
+            throw new RuntimeException("Unknown infixcondecl:" + conDecl.toString());
+        } else if (conDecl instanceof RecDecl) {
+            throw new RuntimeException("Unknown recdecl:" + conDecl.toString());
+        }
+    }
+
+    /**
+     * Parses a list of bang types.
+     */
+    private static void parseBangTypes(PsiBuilder builder,  BangTypeTopType[] bangTypes, Comment[] comments) {
+        int i = 0;
+        while (bangTypes != null && i < bangTypes.length) {
+            parseBangType(builder, bangTypes[i], comments);
+            i++;
+        }
+    }
+
+    /**
+     * Parses one bang type.
+     */
+    private static void parseBangType(PsiBuilder builder,  BangTypeTopType bangType, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        // TODO: Refine bangType.
+        if (bangType instanceof UnBangedTy) {
+            builder.advanceLexer();
+        } else if (bangType instanceof BangedTy) {
+            builder.advanceLexer();
+            builder.getTokenType();
+            builder.advanceLexer();
+        } else if (bangType instanceof UnpackedTy) {
+            while (e != CLOSEPRAGMA) {
+                builder.advanceLexer();
+                e = builder.getTokenType();
+            }
+            consumeToken(builder, CLOSEPRAGMA);
+            builder.advanceLexer(); // '!'
+            e = builder.getTokenType();
+            builder.advanceLexer();
+        }
     }
 
     private static void parseMatchTop(PsiBuilder builder, MatchTopType matchTopType, Comment[] comments) {
@@ -237,7 +330,6 @@ public class HaskellParser2 implements PsiParser {
             //TODO: parseInfixMatch(builder, (InfixMatch) matchTopType, comments);
             throw new RuntimeException("infixmatch");
         }
-        System.out.println("Unexpected matchTopType type " + matchTopType.toString());
     }
 
     private static void parseMatch(PsiBuilder builder, Match match, Comment[] comments) {
@@ -249,7 +341,6 @@ public class HaskellParser2 implements PsiParser {
             i++;
         }
         parseRhs(builder, match.rhs, comments);
-        System.out.println("Unexpected Match type " + match.toString());
     }
 
     private static void parsePatTop(PsiBuilder builder, PatTopType patTopType, Comment[] comments) {
@@ -293,7 +384,8 @@ public class HaskellParser2 implements PsiParser {
             consumeToken(builder, OPENPRAGMA);
             consumeToken(builder, PRAGMA);
             while (langPragma.names != null && i < langPragma.names.length) {
-                parseName(builder, langPragma.names[i], comments);
+                // TODO: Improve precision of pragma lexing.
+                // parseName(builder, langPragma.names[i], comments);
                 i++;
             }
             consumeToken(builder, CLOSEPRAGMA);
@@ -400,6 +492,25 @@ public class HaskellParser2 implements PsiParser {
             parseQName(builder, ((Var) expTopType).qName, comments);
         } else if (expTopType instanceof Lit) {
             parseLiteralTop(builder, ((Lit) expTopType).literal, comments);
+        } else if (expTopType instanceof Paren) {
+            builder.advanceLexer();
+            parseExpTopType(builder, ((Paren) expTopType).exp, comments);
+            builder.advanceLexer();
+        } else if (expTopType instanceof Let) {
+            builder.advanceLexer();
+            IElementType e = builder.getTokenType();
+            // TODO: parseBinds(builder, ((Let) expTopType).binds, comments);
+            while (e != IN) {
+                builder.advanceLexer();
+                e = builder.getTokenType();
+            }
+            consumeToken(builder, IN);
+            parseExpTopType(builder, ((Let) expTopType).exp, comments);
+        } else if (expTopType instanceof CorePragma) {
+            builder.getTokenType();
+            chewPragma(builder);
+            consumeToken(builder, CLOSEPRAGMA);
+            parseExpTopType(builder, ((CorePragma) expTopType).exp, comments);
         } else {
             throw new RuntimeException("parseExpTopType: " + expTopType.toString());
         }
