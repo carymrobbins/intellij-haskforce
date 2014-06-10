@@ -102,6 +102,12 @@ public class HaskellBodyImpl extends ASTWrapperPsiElement implements HaskellBody
 
   @Override
   @NotNull
+  public List<HaskellSymbol> getSymbolList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellSymbol.class);
+  }
+
+  @Override
+  @NotNull
   public List<HaskellWhitechar> getWhitecharList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellWhitechar.class);
   }

@@ -131,6 +131,7 @@
     OF='of'
     THEN='then'
     EXPORTTOKEN='export'
+    CONSYMTOK="Consym"
   ]
 }
 
@@ -169,7 +170,7 @@ private topdecl ::= ( whitespace | lexeme )
 
 private lexeme ::= cpp | literal | reservedop | reservedid | ppragma
                  | qconid | qinfixvarid | qvarid | qinfixconid | qvarsym
-                 | qconsym | special
+                 | qconsym | special | symbol | "'" | "''"
 private literal ::= floattoken | integertoken | chartoken | pstringtoken
 private whitespace ::= whitestuff +
 private space ::= LINE_WS
@@ -193,7 +194,7 @@ private reservedVar ::= '_'
 private reservedid  ::= reservedExpr | reservedDecl | reservedMeta | reservedVar
 
 varsym ::= !(reservedop | dashes ) ( !':' symbol+ )
-consym ::= !reservedop ( ':' symbol* )
+consym ::= CONSYMTOK
 
 reservedop ::= '..' | '::' | '=' | '\' | '|' | '<-' | '->' | '@' | '~' | '=>'
 

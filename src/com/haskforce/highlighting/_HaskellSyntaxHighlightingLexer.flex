@@ -56,6 +56,7 @@ COMMENT=(--([^\^\r\n][^\r\n]*\n|[\r\n]))+
 DASHES=--(-)?
 HADDOCK=--\^[^\r\n]*
 CPPIF=#if ([^\r\n]*)
+ASCSYMBOL=[\!\#\$\%\&\*\+\.\/\<\=\>\?\@\\\^\|\-\~\:]
 
 STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
 
@@ -145,6 +146,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   "-"                 { return MINUS; }
   "~"                 { return TILDE; }
   "::"                { return DOUBLECOLON; }
+  (":"{ASCSYMBOL}+)   { return CONSYMTOK; }
   ":"                 { return COLON; }
 
   {VARIDREGEXP}       { return VARIDREGEXP; }

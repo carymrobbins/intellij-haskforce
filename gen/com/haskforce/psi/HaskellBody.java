@@ -47,6 +47,9 @@ public interface HaskellBody extends PsiElement {
   List<HaskellSpecial> getSpecialList();
 
   @NotNull
+  List<HaskellSymbol> getSymbolList();
+
+  @NotNull
   List<HaskellWhitechar> getWhitecharList();
 
 }

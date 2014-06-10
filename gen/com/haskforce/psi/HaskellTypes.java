@@ -61,6 +61,7 @@ public interface HaskellTypes {
   IElementType COMMENT = new HaskellTokenType("comment");
   IElementType COMMENTTEXT = new HaskellTokenType("commenttext");
   IElementType CONID = new HaskellTokenType("conid");
+  IElementType CONSYMTOK = new HaskellTokenType("Consym");
   IElementType CPPELSE = new HaskellTokenType("#else");
   IElementType CPPENDIF = new HaskellTokenType("#endif");
   IElementType CPPIF = new HaskellTokenType("CPPIF");
