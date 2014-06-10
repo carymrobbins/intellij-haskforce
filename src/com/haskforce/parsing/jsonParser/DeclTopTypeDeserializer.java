@@ -106,7 +106,7 @@ public class DeclTopTypeDeserializer implements JsonDeserializer<DeclTopType> {
             InfixDecl infixDecl = new InfixDecl();
             infixDecl.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             infixDecl.assoc = jsonDeserializationContext.deserialize(stuff.get(1), AssocTopType.class);
-            infixDecl.intMaybe = jsonDeserializationContext.deserialize(stuff.get(2), InstHeadTopType.class);
+            infixDecl.intMaybe = jsonDeserializationContext.deserialize(stuff.get(2), Integer.class);
             infixDecl.ops = jsonDeserializationContext.deserialize(stuff.get(3), OpTopType[].class);
             return infixDecl;
         } else if ((stuff = objType.getAsJsonArray("DefaultDecl")) != null) {
