@@ -155,6 +155,8 @@ public class JsonParser {
         gsonBuilder.registerTypeAdapter(ModulePragmaTopType.class, new ModulePragmaTopTypeDeserializer());
         gsonBuilder.registerTypeAdapter(ToolTopType.class, new ToolTopTypeDeserializer());
         gsonBuilder.registerTypeAdapter(StmtTopType.class, new StmtTopTypeDeserializer());
+        gsonBuilder.registerTypeAdapter(AsstTopType.class, new AsstTopTypeDeserializer());
+        gsonBuilder.registerTypeAdapter(ContextTopType.class, new ContextTopTypeDeserializer());
 
         // Special case parsing for non-sum types.
         gsonBuilder.registerTypeAdapter(TopPair.class, new TopPairDeserializer());
