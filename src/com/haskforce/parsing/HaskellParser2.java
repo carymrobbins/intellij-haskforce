@@ -192,8 +192,7 @@ public class HaskellParser2 implements PsiParser {
             e2 = builder.getTokenType();
             if (e2 == LPAREN) {
                 nest++;
-            }
-            if (e2 == RPAREN) {
+            } else if (e2 == RPAREN) {
                 nest--;
             }
         }
@@ -222,8 +221,16 @@ public class HaskellParser2 implements PsiParser {
             parseTypeDecl(builder, (TypeDecl) decl, comments);
         } else if (decl instanceof TypeSig) {
             parseTypeSig(builder, (TypeSig) decl, comments);
+        } else if (decl instanceof InlineSig) {
+            parseGenericPragma(builder, (InlineSig) decl, comments);
+        } else if (decl instanceof InlineConlikeSig) {
+            parseGenericPragma(builder, (InlineConlikeSig) decl, comments);
+        } else if (decl instanceof DeprPragmaDecl) {
+            parseGenericPragma(builder, (DeprPragmaDecl) decl, comments);
+        } else if (decl instanceof WarnPragmaDecl) {
+            parseGenericPragma(builder, (WarnPragmaDecl) decl, comments);
         } else if (decl instanceof AnnPragma) {
-            parseAnnPragma(builder, (AnnPragma) decl, comments);
+            parseGenericPragma(builder, (AnnPragma) decl, comments);
         } else {
             throw new RuntimeException("Unexpected decl type: " + decl.toString());
         }
@@ -741,9 +748,9 @@ public class HaskellParser2 implements PsiParser {
     }
 
     /**
-     * Parses an annotation pragma.
+     * Parses a generic pragma.
      */
-    public static void parseAnnPragma(PsiBuilder builder,  AnnPragma annPragma, Comment[] comments) { // TODO: Improve granularity.
+    public static void parseGenericPragma(PsiBuilder builder, DeclTopType annPragma, Comment[] comments) { // TODO: Improve granularity.
         IElementType e = builder.getTokenType();
         chewPragma(builder);
         consumeToken(builder, CLOSEPRAGMA);
