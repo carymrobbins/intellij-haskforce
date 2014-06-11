@@ -16,7 +16,6 @@ import static com.haskforce.psi.HaskellTypes.OPENPRAGMA;
 import static com.haskforce.psi.HaskellTypes.CLOSEPRAGMA;
 import static com.haskforce.psi.HaskellTypes.OPENCOM;
 import static com.haskforce.psi.HaskellTypes.CLOSECOM;
-import static com.haskforce.psi.HaskellTypes.CPP;
 import static com.haskforce.psi.HaskellTypes.CPPIF;
 import static com.haskforce.psi.HaskellTypes.CPPELSE;
 import static com.haskforce.psi.HaskellTypes.CPPENDIF;
@@ -68,14 +67,16 @@ public class HaskellParser2 implements PsiParser {
         }
 
         IElementType e = builder.getTokenType();
-        while (!builder.eof() && (e == COMMENT
-                || e == CPP || e == OPENCOM)) {
+        while (!builder.eof() && (isInterruption(e) && e != OPENPRAGMA)) {
             if (e == COMMENT || e == OPENCOM) {
-                e = parseComment(e, builder, tp.comments);
+                parseComment(e, builder, tp.comments);
+                e = builder.getTokenType();
             } else if (e == CPPIF || e == CPPELSE || e == CPPENDIF) {
                 // Ignore CPP-tokens, they are not fed to parser-helper anyways.
                 builder.advanceLexer();
                 e = builder.getTokenType();
+            } else {
+                throw new RuntimeException("Unexpected failure on:" + e.toString());
             }
         }
         parseModule(builder, (Module) tp.moduleType, tp.comments);
@@ -116,8 +117,7 @@ public class HaskellParser2 implements PsiParser {
         IElementType e2 = builder.getTokenType();
         while (e2 != WHERE) {
             if (e2 == OPENPRAGMA) {
-                chewPragma(builder);
-                consumeToken(builder, CLOSEPRAGMA);
+                parseGenericPragma(builder, null, comments);
             } else {
                 builder.advanceLexer();
             }
@@ -149,9 +149,18 @@ public class HaskellParser2 implements PsiParser {
         IElementType e = builder.getTokenType();
 
         int i = 0;
-        while (importDecls != null && i < importDecls.length) {
+        while (isInterruption(e) ||
+                importDecls != null && i < importDecls.length) {
             if (e == CPPIF || e == CPPELSE || e == CPPENDIF) {
                 builder.advanceLexer();
+                e = builder.getTokenType();
+                continue;
+            } else if (e == OPENCOM) {
+                parseComment(e, builder, comments);
+                e = builder.getTokenType();
+                continue;
+            } else if (e == OPENPRAGMA) {
+                parseGenericPragma(builder, null, comments);
                 e = builder.getTokenType();
                 continue;
             }
@@ -161,6 +170,15 @@ public class HaskellParser2 implements PsiParser {
             i++;
             e = builder.getTokenType();
         }
+    }
+
+    /**
+     * Returns true for elements that can occur anywhere in the tree,
+     * for example comments or pragmas.
+     */
+    private static boolean isInterruption(IElementType e) {
+        return (e == CPPIF || e == CPPELSE || e == CPPENDIF || e == OPENCOM ||
+                e == OPENPRAGMA);
     }
 
     /**
@@ -201,40 +219,66 @@ public class HaskellParser2 implements PsiParser {
     }
 
     private static void parseBody(PsiBuilder builder, DeclTopType[] decls, Comment[] comments) {
+        IElementType e = builder.getTokenType();
         int i = 0;
-        while (decls != null && i < decls.length) {
+        while (isInterruption(e) ||
+                decls != null && i < decls.length) {
+            if (e == CPPIF || e == CPPELSE || e == CPPENDIF) {
+                builder.advanceLexer();
+                e = builder.getTokenType();
+                continue;
+            } else if (e == OPENCOM) {
+                parseComment(e, builder, comments);
+                e = builder.getTokenType();
+                continue;
+            } else if (e == OPENPRAGMA) {
+                parseGenericPragma(builder, null, comments);
+                e = builder.getTokenType();
+                continue;
+            }
+
             parseDecl(builder, decls[i], comments);
+            e = builder.getTokenType();
             i++;
         }
     }
 
     private static void parseDecl(PsiBuilder builder, DeclTopType decl, Comment[] comments) {
         IElementType e = builder.getTokenType();
-        PsiBuilder.Marker declMark = builder.mark();
+        // Pragmas are handled by the outer loop in parseBody, so they are no-ops.
         if (decl instanceof PatBind) {
+            PsiBuilder.Marker declMark = builder.mark();
             parsePatBind(builder, (PatBind) decl, comments);
+            declMark.done(e);
         } else if (decl instanceof FunBind) {
+            PsiBuilder.Marker declMark = builder.mark();
             parseFunBind(builder, (FunBind) decl, comments);
+            declMark.done(e);
         } else if (decl instanceof DataDecl) {
+            PsiBuilder.Marker declMark = builder.mark();
             parseDataDecl(builder, (DataDecl) decl, comments);
+            declMark.done(e);
         }  else if (decl instanceof TypeDecl) {
+            PsiBuilder.Marker declMark = builder.mark();
             parseTypeDecl(builder, (TypeDecl) decl, comments);
+            declMark.done(e);
         } else if (decl instanceof TypeSig) {
+            PsiBuilder.Marker declMark = builder.mark();
             parseTypeSig(builder, (TypeSig) decl, comments);
+            declMark.done(e);
         } else if (decl instanceof InlineSig) {
-            parseGenericPragma(builder, (InlineSig) decl, comments);
+            // parseGenericPragma(builder, (InlineSig) decl, comments);
         } else if (decl instanceof InlineConlikeSig) {
-            parseGenericPragma(builder, (InlineConlikeSig) decl, comments);
+            // parseGenericPragma(builder, (InlineConlikeSig) decl, comments);
         } else if (decl instanceof DeprPragmaDecl) {
-            parseGenericPragma(builder, (DeprPragmaDecl) decl, comments);
+            //  parseGenericPragma(builder, (DeprPragmaDecl) decl, comments);
         } else if (decl instanceof WarnPragmaDecl) {
-            parseGenericPragma(builder, (WarnPragmaDecl) decl, comments);
+            // parseGenericPragma(builder, (WarnPragmaDecl) decl, comments);
         } else if (decl instanceof AnnPragma) {
-            parseGenericPragma(builder, (AnnPragma) decl, comments);
+            // parseGenericPragma(builder, (AnnPragma) decl, comments);
         } else {
             throw new RuntimeException("Unexpected decl type: " + decl.toString());
         }
-        declMark.done(e);
     }
 
     private static void parsePatBind(PsiBuilder builder, PatBind patBind, Comment[] comments) {
@@ -395,11 +439,7 @@ public class HaskellParser2 implements PsiParser {
             builder.getTokenType();
             builder.advanceLexer();
         } else if (bangType instanceof UnpackedTy) {
-            while (e != CLOSEPRAGMA) {
-                builder.advanceLexer();
-                e = builder.getTokenType();
-            }
-            consumeToken(builder, CLOSEPRAGMA);
+            parseGenericPragma(builder, null, comments);
             builder.advanceLexer(); // '!'
             e = builder.getTokenType();
             builder.advanceLexer();
@@ -436,13 +476,15 @@ public class HaskellParser2 implements PsiParser {
         }
     }
 
-    private static IElementType parseComment(IElementType e, PsiBuilder builder, Comment[] comments) {
+    private static void parseComment(IElementType start, PsiBuilder builder, Comment[] comments) {
+        PsiBuilder.Marker startCom = builder.mark();
+        IElementType e = builder.getTokenType();
         while (e == COMMENT || e == COMMENTTEXT ||
                 e == OPENCOM || e == CLOSECOM) {
             builder.advanceLexer();
             e = builder.getTokenType();
         }
-        return e;
+        startCom.done(start);
     }
 
     /**
@@ -630,7 +672,7 @@ public class HaskellParser2 implements PsiParser {
      * Parses an expression.
      */
     private static void parseExpTopType(PsiBuilder builder, ExpTopType expTopType, Comment[] comments) {
-        builder.getTokenType();
+        IElementType e1 = builder.getTokenType();
         if (expTopType instanceof App) {
             parseExpTopType(builder, ((App) expTopType).e1, comments);
             parseExpTopType(builder, ((App) expTopType).e2, comments);
@@ -664,9 +706,7 @@ public class HaskellParser2 implements PsiParser {
             consumeToken(builder, IN);
             parseExpTopType(builder, ((Let) expTopType).exp, comments);
         } else if (expTopType instanceof CorePragma) {
-            builder.getTokenType();
-            chewPragma(builder);
-            consumeToken(builder, CLOSEPRAGMA);
+            parseGenericPragma(builder, null, comments);
             parseExpTopType(builder, ((CorePragma) expTopType).exp, comments);
         } else {
             throw new RuntimeException("parseExpTopType: " + expTopType.toString());
@@ -751,9 +791,11 @@ public class HaskellParser2 implements PsiParser {
      * Parses a generic pragma.
      */
     public static void parseGenericPragma(PsiBuilder builder, DeclTopType annPragma, Comment[] comments) { // TODO: Improve granularity.
+        PsiBuilder.Marker pragmaMark = builder.mark();
         IElementType e = builder.getTokenType();
         chewPragma(builder);
         consumeToken(builder, CLOSEPRAGMA);
+        pragmaMark.done(e);
     }
 
     /**

@@ -87,10 +87,10 @@ public interface HaskellTypes2 {
             else if (type == HaskellTypes.MODULE) {
                 return new HaskellModulePrefixImpl(node);
             }
-            else if (type == NCOMMENT) {
+            else if (type == NCOMMENT || type == HaskellTypes.OPENCOM) {
                 return new HaskellNcommentImpl(node);
             }
-            else if (type == PPRAGMA) {
+            else if (type == PPRAGMA || type == HaskellTypes.OPENPRAGMA) {
                 return new HaskellPpragmaImpl(node);
             }
             else if (type == PSTRINGTOKEN || type == HaskellTypes.DOUBLEQUOTE) {
