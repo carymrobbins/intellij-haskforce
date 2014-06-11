@@ -34,6 +34,8 @@ import static com.haskforce.psi.HaskellTypes.HIDING;
 import static com.haskforce.psi.HaskellTypes.PERIOD;
 import static com.haskforce.psi.HaskellTypes.RPAREN;
 import static com.haskforce.psi.HaskellTypes.LPAREN;
+import static com.haskforce.psi.HaskellTypes.RBRACKET;
+import static com.haskforce.psi.HaskellTypes.LBRACKET;
 import static com.haskforce.psi.HaskellTypes.AS;
 import static com.haskforce.psi.HaskellTypes.TYPE;
 import static com.haskforce.psi.HaskellTypes.DATA;
@@ -871,11 +873,11 @@ public class HaskellParser2 implements PsiParser {
             consumeToken(builder, RPAREN);
             e = builder.getTokenType();
         } else if (typeTopType instanceof TyList) {
-            consumeToken(builder, LPAREN);
+            consumeToken(builder, LBRACKET);
             e = builder.getTokenType();
             parseTypeTopType(builder, ((TyList) typeTopType).t, comments);
             e = builder.getTokenType();
-            consumeToken(builder, RPAREN);
+            consumeToken(builder, RBRACKET);
             e = builder.getTokenType();
         } else if (typeTopType instanceof TyApp) {
             parseTypeTopType(builder, ((TyApp) typeTopType).t1, comments);
@@ -887,6 +889,21 @@ public class HaskellParser2 implements PsiParser {
             e = builder.getTokenType();
         } else if (typeTopType instanceof TyCon) {
             parseQName(builder, ((TyCon) typeTopType).qName, comments);
+        } else if (typeTopType instanceof TyParen) {
+            consumeToken(builder, LPAREN);
+            e = builder.getTokenType();
+            parseTypeTopType(builder, ((TyParen) typeTopType).type, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, RPAREN);
+            e = builder.getTokenType();
+        } else if (typeTopType instanceof TyInfix) {
+            e = builder.getTokenType();
+            parseTypeTopType(builder, ((TyInfix) typeTopType).t1, comments);
+            e = builder.getTokenType();
+            parseQName(builder, ((TyInfix) typeTopType).qName, comments);
+            e = builder.getTokenType();
+            parseTypeTopType(builder, ((TyInfix) typeTopType).t2, comments);
+            e = builder.getTokenType();
         } else {
             throw new RuntimeException("parseTypeTopType: " + typeTopType.toString());
         }
