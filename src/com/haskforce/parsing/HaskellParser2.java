@@ -45,6 +45,7 @@ import static com.haskforce.psi.HaskellTypes.MINUS;
 import static com.haskforce.psi.HaskellTypes.DO;
 import static com.haskforce.psi.HaskellTypes.BACKSLASH;
 import static com.haskforce.psi.HaskellTypes.HASH;
+import static com.haskforce.psi.HaskellTypes.FOREIGN;
 
 /**
  * New Parser using parser-helper.
@@ -220,6 +221,30 @@ public class HaskellParser2 implements PsiParser {
         importMark.done(e);
     }
 
+    /**
+     * Parses a foreign import statement.
+     */
+    private static void parseForeignImportDecl(PsiBuilder builder, ForImp importDecl, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        consumeToken(builder, FOREIGN);
+        consumeToken(builder, IMPORT);
+        IElementType e2 = builder.getTokenType();
+        builder.advanceLexer(); // TODO: Parse 'ccall' etc.
+        e2 = builder.getTokenType();
+        if (e2 != DOUBLEQUOTE) { // TODO: Parse safety.
+            builder.advanceLexer();
+            e2 = builder.getTokenType();
+        }
+        if (e2 == DOUBLEQUOTE || false) {
+            parseStringLiteral(builder);
+        }
+        e2 = builder.getTokenType();
+        parseName(builder, importDecl.name, comments);
+        e2 = builder.getTokenType();
+        consumeToken(builder, DOUBLECOLON);
+        parseTypeTopType(builder, importDecl.type, comments);
+    }
+
     private static void parseBody(PsiBuilder builder, DeclTopType[] decls, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
@@ -267,6 +292,10 @@ public class HaskellParser2 implements PsiParser {
         } else if (decl instanceof TypeSig) {
             PsiBuilder.Marker declMark = builder.mark();
             parseTypeSig(builder, (TypeSig) decl, comments);
+            declMark.done(e);
+        }  else if (decl instanceof ForImp) {
+            PsiBuilder.Marker declMark = builder.mark();
+            parseForeignImportDecl(builder, (ForImp) decl, comments);
             declMark.done(e);
         } else if (decl instanceof InlineSig) {
             // parseGenericPragma(builder, (InlineSig) decl, comments);
@@ -618,26 +647,34 @@ public class HaskellParser2 implements PsiParser {
     private static void parseLiteralTop(PsiBuilder builder, LiteralTopType literalTopType,  Comment[] comments) {
         IElementType e = builder.getTokenType();
         if (literalTopType instanceof StringLit) {
-            PsiBuilder.Marker marker = builder.mark();
-            consumeToken(builder, DOUBLEQUOTE);
-            IElementType e2 = builder.getTokenType();
-            while (e2 != DOUBLEQUOTE) {
-                if (e2 == BADSTRINGTOKEN) {
-                    builder.error("Bad stringtoken");
-                    builder.advanceLexer();
-                } else {
-                    consumeToken(builder, STRINGTOKEN);
-                }
-                e2 = builder.getTokenType();
-            }
-            consumeToken(builder, DOUBLEQUOTE);
-            marker.done(e);
+            parseStringLiteral(builder);
         } else if (literalTopType instanceof IntLit) {
             builder.advanceLexer();
             e = builder.getTokenType();
         } else {
             throw new RuntimeException("LiteralTop: " + literalTopType.toString());
         }
+    }
+
+    /**
+     * Parse a string literal.
+     */
+    private static void parseStringLiteral(PsiBuilder builder) {
+        IElementType e = builder.getTokenType();
+        PsiBuilder.Marker marker = builder.mark();
+        consumeToken(builder, DOUBLEQUOTE);
+        IElementType e2 = builder.getTokenType();
+        while (e2 != DOUBLEQUOTE) {
+            if (e2 == BADSTRINGTOKEN) {
+                builder.error("Bad stringtoken");
+                builder.advanceLexer();
+            } else {
+                consumeToken(builder, STRINGTOKEN);
+            }
+            e2 = builder.getTokenType();
+        }
+        consumeToken(builder, DOUBLEQUOTE);
+        marker.done(e);
     }
 
     /**
