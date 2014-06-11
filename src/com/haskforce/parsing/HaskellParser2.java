@@ -55,6 +55,7 @@ import static com.haskforce.psi.HaskellTypes.INSTANCE;
 import static com.haskforce.psi.HaskellTypes.LBRACE;
 import static com.haskforce.psi.HaskellTypes.RBRACE;
 import static com.haskforce.psi.HaskellTypes.EXLAMATION; // FIXME: Rename.
+import static com.haskforce.psi.HaskellTypes.PIPE;
 
 /**
  * New Parser using parser-helper.
@@ -322,6 +323,10 @@ public class HaskellParser2 implements PsiParser {
         } else if (decl instanceof DataInsDecl) {
             PsiBuilder.Marker declMark = builder.mark();
             parseDataInstanceDecl(builder, (DataInsDecl) decl, comments);
+            declMark.done(e);
+        } else if (decl instanceof SpliceDecl) {
+            PsiBuilder.Marker declMark = builder.mark();
+            parseExpTopType(builder, ((SpliceDecl) decl).exp, comments);
             declMark.done(e);
         } else if (decl instanceof TypeSig) {
             PsiBuilder.Marker declMark = builder.mark();
@@ -981,6 +986,20 @@ public class HaskellParser2 implements PsiParser {
             }
             consumeToken(builder, IN);
             parseExpTopType(builder, ((Let) expTopType).exp, comments);
+        } else if (expTopType instanceof QuasiQuote) {
+            IElementType e = builder.getTokenType();
+            consumeToken(builder, LBRACKET);
+            builder.advanceLexer();
+            e = builder.getTokenType();
+            consumeToken(builder, PIPE);
+            e = builder.getTokenType();
+            while (e != PIPE) {
+                builder.advanceLexer();
+                e = builder.getTokenType();
+            }
+            consumeToken(builder, PIPE);
+            consumeToken(builder, RBRACKET);
+            e = builder.getTokenType();
         } else if (expTopType instanceof CorePragma) {
             parseGenericPragma(builder, null, comments);
             parseExpTopType(builder, ((CorePragma) expTopType).exp, comments);
@@ -991,7 +1010,7 @@ public class HaskellParser2 implements PsiParser {
             parsePatTopType(builder, ((Proc) expTopType).pat, comments);
             consumeToken(builder, RIGHTARROW);
             parseExpTopType(builder, ((Proc) expTopType).exp, comments);
-        }else {
+        } else {
             throw new RuntimeException("parseExpTopType: " + expTopType.toString());
         }
     }
