@@ -36,8 +36,9 @@ public class SpecialConTopTypeDeserializer implements JsonDeserializer<SpecialCo
             TupleCon tupleCon = new TupleCon();
             Gson g = new Gson(); // TODO: Remove with 1.7.
             tupleCon.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
-            tupleCon.boxed = stuff.get(1).equals("Boxed") ? new Boxed() : new Unboxed();
-            tupleCon.i = g.fromJson(stuff.get(1), int.class);
+            String parsed = jsonDeserializationContext.deserialize(stuff.get(1), String.class);
+            tupleCon.boxed = parsed.equals("Boxed") ? new Boxed() : new Unboxed();
+            tupleCon.i = g.fromJson(stuff.get(2), int.class);
             return tupleCon;
         } else if (objType.has("Cons")) {
             Cons cons = new Cons();
