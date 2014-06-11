@@ -43,6 +43,8 @@ import static com.haskforce.psi.HaskellTypes.COMMA;
 import static com.haskforce.psi.HaskellTypes.RIGHTARROW;
 import static com.haskforce.psi.HaskellTypes.MINUS;
 import static com.haskforce.psi.HaskellTypes.DO;
+import static com.haskforce.psi.HaskellTypes.BACKSLASH;
+import static com.haskforce.psi.HaskellTypes.HASH;
 
 /**
  * New Parser using parser-helper.
@@ -283,7 +285,7 @@ public class HaskellParser2 implements PsiParser {
 
     private static void parsePatBind(PsiBuilder builder, PatBind patBind, Comment[] comments) {
         IElementType e = builder.getTokenType();
-        parsePatTop(builder, patBind.pat, comments);
+        parsePatTopType(builder, patBind.pat, comments);
         if (patBind.type != null) throw new RuntimeException("Unexpected type in patbind");
         // TODO: parseType(builder, patBind.type, comments);
         parseRhs(builder, patBind.rhs, comments);
@@ -461,18 +463,32 @@ public class HaskellParser2 implements PsiParser {
         parseName(builder, match.name, comments);
         int i = 0;
         while (match.pats != null && i < match.pats.length) {
-            parsePatTop(builder, match.pats[i], comments);
+            parsePatTopType(builder, match.pats[i], comments);
             i++;
         }
         parseRhs(builder, match.rhs, comments);
     }
 
-    private static void parsePatTop(PsiBuilder builder, PatTopType patTopType, Comment[] comments) {
+    /**
+     * Parses several patterns.
+     */
+    private static void parsePatTopTypes(PsiBuilder builder, PatTopType[] pats,  Comment[] comments) {
+        int i = 0;
+        while(pats != null && i < pats.length) {
+            parsePatTopType(builder, pats[i], comments);
+            i++;
+        }
+    }
+
+    /**
+     * Parses one pattern.
+     */
+    private static void parsePatTopType(PsiBuilder builder, PatTopType patTopType, Comment[] comments) {
         IElementType e = builder.getTokenType();
         if (patTopType instanceof PVar) {
             parsePVar(builder, (PVar) patTopType, comments);
         } else {
-            throw new RuntimeException("parsePatTop" + patTopType.toString());
+            throw new RuntimeException("parsePatTopType" + patTopType.toString());
         }
     }
 
@@ -642,7 +658,7 @@ public class HaskellParser2 implements PsiParser {
     private static void parseStmtTopType(PsiBuilder builder, StmtTopType stmtTopType, Comment[] comments) {
         IElementType e = builder.getTokenType();
         if (stmtTopType instanceof Generator) {
-            parsePatTop(builder, ((Generator) stmtTopType).pat, comments);
+            parsePatTopType(builder, ((Generator) stmtTopType).pat, comments);
             parseExpTopType(builder, ((Generator) stmtTopType).exp, comments);
         } else if (stmtTopType instanceof Qualifier) {
             parseExpTopType(builder, ((Qualifier) stmtTopType).exp, comments);
@@ -665,6 +681,8 @@ public class HaskellParser2 implements PsiParser {
         while (expTopType != null && i < expTopType.length) {
             parseExpTopType(builder, expTopType[i], comments);
             i++;
+            e = builder.getTokenType();
+            if (e == COMMA) consumeToken(builder, COMMA);
         }
     }
 
@@ -691,10 +709,34 @@ public class HaskellParser2 implements PsiParser {
         } else if (expTopType instanceof Do) {
             consumeToken(builder, DO);
             parseStmtTopTypes(builder, ((Do) expTopType).stmts, comments);
+        } else if (expTopType instanceof Lambda) {
+            consumeToken(builder, BACKSLASH);
+            IElementType e = builder.getTokenType();
+            parsePatTopTypes(builder, ((Lambda) expTopType).pats, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, RIGHTARROW);
+            parseExpTopType(builder, ((Lambda) expTopType).exp, comments);
+            e = builder.getTokenType();
+        }  else if (expTopType instanceof Tuple) {
+            consumeToken(builder, LPAREN);
+            IElementType e = builder.getTokenType();
+            boolean unboxed = parseBoxed(builder, ((Tuple) expTopType).boxed, comments);
+            e = builder.getTokenType();
+            parseExpTopTypes(builder, ((Tuple) expTopType).exps, comments);
+            e = builder.getTokenType();
+            if (unboxed) {
+                consumeToken(builder, HASH);
+                e = builder.getTokenType();
+            }
+            consumeToken(builder, RPAREN);
+            e1 = builder.getTokenType();
         } else if (expTopType instanceof Paren) {
-            builder.advanceLexer();
+            consumeToken(builder, LPAREN);
+            e1 = builder.getTokenType();
             parseExpTopType(builder, ((Paren) expTopType).exp, comments);
-            builder.advanceLexer();
+            e1 = builder.getTokenType();
+            consumeToken(builder, RPAREN);
+            e1 = builder.getTokenType();
         } else if (expTopType instanceof Let) {
             builder.advanceLexer();
             IElementType e = builder.getTokenType();
@@ -739,24 +781,24 @@ public class HaskellParser2 implements PsiParser {
             consumeToken(builder, RIGHTARROW);
             parseTypeTopType(builder, ((TyFun) typeTopType).t2, comments);
         } else if (typeTopType instanceof TyTuple) {
-            builder.advanceLexer(); // '('
+            consumeToken(builder, LPAREN);
             e = builder.getTokenType();
             boolean unboxed = parseBoxed(builder, ((TyTuple) typeTopType).boxed, comments);
             e = builder.getTokenType();
             parseTypeTopTypes(builder, ((TyTuple) typeTopType).types, comments);
             e = builder.getTokenType();
             if (unboxed) {
-                builder.advanceLexer();
+                consumeToken(builder, HASH);
                 e = builder.getTokenType();
             }
-            builder.advanceLexer(); // ')'
+            consumeToken(builder, RPAREN);
             e = builder.getTokenType();
         } else if (typeTopType instanceof TyList) {
-            builder.advanceLexer(); // '['
+            consumeToken(builder, LPAREN);
             e = builder.getTokenType();
             parseTypeTopType(builder, ((TyList) typeTopType).t, comments);
             e = builder.getTokenType();
-            builder.advanceLexer(); // ']'
+            consumeToken(builder, RPAREN);
             e = builder.getTokenType();
         } else if (typeTopType instanceof TyApp) {
             parseTypeTopType(builder, ((TyApp) typeTopType).t1, comments);
