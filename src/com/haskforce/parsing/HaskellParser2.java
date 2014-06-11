@@ -50,6 +50,7 @@ import static com.haskforce.psi.HaskellTypes.HASH;
 import static com.haskforce.psi.HaskellTypes.FOREIGN;
 import static com.haskforce.psi.HaskellTypes.EXPORTTOKEN;
 import static com.haskforce.psi.HaskellTypes.DOUBLEARROW;
+import static com.haskforce.psi.HaskellTypes.BACKTICK;
 
 /**
  * New Parser using parser-helper.
@@ -560,6 +561,10 @@ public class HaskellParser2 implements PsiParser {
             parsePatTopType(builder, ((PParen) patTopType).pat, comments);
             consumeToken(builder, RPAREN);
             e = builder.getTokenType();
+        } else if (patTopType instanceof PRec) {
+            parseQName(builder, ((PRec) patTopType).qName, comments);
+            e = builder.getTokenType();
+            throw new RuntimeException("TODO: parsePatFields");
         } else {
             throw new RuntimeException("parsePatTopType" + patTopType.toString());
         }
@@ -639,6 +644,26 @@ public class HaskellParser2 implements PsiParser {
         } else if (rhsTopType instanceof GuardedRhss) {
             throw new RuntimeException("GuardedRhss" + rhsTopType.toString());
         }
+    }
+
+    /**
+     * Parses a qualified name.
+     */
+    private static void parseQOp(PsiBuilder builder, QOpTopType qOpTopType,  Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        boolean backticked = false;
+        if (e == BACKTICK) {
+            backticked = true;
+            consumeToken(builder, BACKTICK);
+            e = builder.getTokenType();
+        }
+        if (qOpTopType instanceof QVarOp) {
+            parseQName(builder, ((QVarOp) qOpTopType).qName, comments);
+        } else if (qOpTopType instanceof QConOp) {
+            parseQName(builder, ((QConOp) qOpTopType).qName, comments);
+        }
+        if (backticked) consumeToken(builder, BACKTICK);
+        e = builder.getTokenType();
     }
 
     /**
@@ -813,6 +838,8 @@ public class HaskellParser2 implements PsiParser {
             parseExpTopType(builder, ((App) expTopType).e2, comments);
         } else if (expTopType instanceof Var) {
             parseQName(builder, ((Var) expTopType).qName, comments);
+        } else if (expTopType instanceof Con) {
+            parseQName(builder, ((Con) expTopType).qName, comments);
         } else if (expTopType instanceof Lit) {
             parseLiteralTop(builder, ((Lit) expTopType).literal, comments);
         } else if (expTopType instanceof InfixApp) {
@@ -858,6 +885,14 @@ public class HaskellParser2 implements PsiParser {
             consumeToken(builder, LPAREN);
             e1 = builder.getTokenType();
             parseExpTopType(builder, ((Paren) expTopType).exp, comments);
+            e1 = builder.getTokenType();
+            consumeToken(builder, RPAREN);
+            e1 = builder.getTokenType();
+        } else if (expTopType instanceof RightSection) {
+            e1 = builder.getTokenType();
+            consumeToken(builder, LPAREN);
+            parseQOp(builder, ((RightSection) expTopType).qop, comments);
+            parseExpTopType(builder, ((RightSection) expTopType).exp, comments);
             e1 = builder.getTokenType();
             consumeToken(builder, RPAREN);
             e1 = builder.getTokenType();
