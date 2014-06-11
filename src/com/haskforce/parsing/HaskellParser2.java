@@ -554,6 +554,12 @@ public class HaskellParser2 implements PsiParser {
         } else if (patTopType instanceof PLit) {
             parseLiteralTop(builder, ((PLit) patTopType).lit, comments);
             e = builder.getTokenType();
+        } else if (patTopType instanceof PParen) {
+            consumeToken(builder, LPAREN);
+            e = builder.getTokenType();
+            parsePatTopType(builder, ((PParen) patTopType).pat, comments);
+            consumeToken(builder, RPAREN);
+            e = builder.getTokenType();
         } else {
             throw new RuntimeException("parsePatTopType" + patTopType.toString());
         }
@@ -646,8 +652,44 @@ public class HaskellParser2 implements PsiParser {
         } else if (qNameTopType instanceof UnQual) {
             parseName(builder, ((UnQual) qNameTopType).name, comments);
         } else if (qNameTopType instanceof Special) {
-            // TODO: parseSpecialCon(builder, ((Special) qNameTopType).specialCon, comments);
-            throw new RuntimeException("QName-special" + qNameTopType.toString());
+            parseSpecialConTopType(builder, ((Special) qNameTopType).specialCon, comments);
+        }
+    }
+
+    /**
+     * Parses a special constructor.
+     */
+    private static void parseSpecialConTopType(PsiBuilder builder, SpecialConTopType specialConTopType,  Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        if (specialConTopType instanceof UnitCon) {
+            consumeToken(builder, LPAREN);
+            e = builder.getTokenType();
+            consumeToken(builder, RPAREN);
+            e = builder.getTokenType();
+        } else if (specialConTopType instanceof ListCon) {
+            consumeToken(builder, LBRACKET);
+            e = builder.getTokenType();
+            consumeToken(builder, RBRACKET);
+            e = builder.getTokenType();
+        } else if (specialConTopType instanceof FunCon) {
+            consumeToken(builder, LPAREN);
+            e = builder.getTokenType();
+            consumeToken(builder, RIGHTARROW);
+            e = builder.getTokenType();
+            consumeToken(builder, RPAREN);
+            e = builder.getTokenType();
+        } else if (specialConTopType instanceof TupleCon) {
+            throw new RuntimeException("TODO: implement TupleCon");
+        } else if (specialConTopType instanceof Cons) {
+            throw new RuntimeException("TODO: implement Cons");
+        } else if (specialConTopType instanceof UnboxedSingleCon) {
+            consumeToken(builder, LPAREN);
+            e = builder.getTokenType();
+            consumeToken(builder, HASH);
+            e = builder.getTokenType();
+            consumeToken(builder, HASH);
+            e = builder.getTokenType();
+            consumeToken(builder, RPAREN);
         }
     }
 
