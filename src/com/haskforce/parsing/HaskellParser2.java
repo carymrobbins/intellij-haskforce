@@ -46,6 +46,7 @@ import static com.haskforce.psi.HaskellTypes.DO;
 import static com.haskforce.psi.HaskellTypes.BACKSLASH;
 import static com.haskforce.psi.HaskellTypes.HASH;
 import static com.haskforce.psi.HaskellTypes.FOREIGN;
+import static com.haskforce.psi.HaskellTypes.EXPORTTOKEN;
 
 /**
  * New Parser using parser-helper.
@@ -245,6 +246,27 @@ public class HaskellParser2 implements PsiParser {
         parseTypeTopType(builder, importDecl.type, comments);
     }
 
+    /**
+     * Parses a foreign export statement.
+     */
+    private static void parseForeignExportDecl(PsiBuilder builder, ForExp forExp, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        consumeToken(builder, FOREIGN);
+        e = builder.getTokenType();
+        consumeToken(builder, EXPORTTOKEN);
+        IElementType e2 = builder.getTokenType();
+        builder.advanceLexer(); // TODO: Parse 'ccall' etc.
+        e2 = builder.getTokenType();
+        if (e2 == DOUBLEQUOTE || false) {
+            parseStringLiteral(builder);
+        }
+        e2 = builder.getTokenType();
+        parseName(builder, forExp.name, comments);
+        e2 = builder.getTokenType();
+        consumeToken(builder, DOUBLECOLON);
+        parseTypeTopType(builder, forExp.type, comments);
+    }
+
     private static void parseBody(PsiBuilder builder, DeclTopType[] decls, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
@@ -293,9 +315,13 @@ public class HaskellParser2 implements PsiParser {
             PsiBuilder.Marker declMark = builder.mark();
             parseTypeSig(builder, (TypeSig) decl, comments);
             declMark.done(e);
-        }  else if (decl instanceof ForImp) {
+        } else if (decl instanceof ForImp) {
             PsiBuilder.Marker declMark = builder.mark();
             parseForeignImportDecl(builder, (ForImp) decl, comments);
+            declMark.done(e);
+        } else if (decl instanceof ForExp) {
+            PsiBuilder.Marker declMark = builder.mark();
+            parseForeignExportDecl(builder, (ForExp) decl, comments);
             declMark.done(e);
         } else if (decl instanceof InlineSig) {
             // parseGenericPragma(builder, (InlineSig) decl, comments);
@@ -424,7 +450,7 @@ public class HaskellParser2 implements PsiParser {
      */
     private static void parseQualConDecl(PsiBuilder builder, QualConDecl qualConDecl, Comment[] comments) {
         IElementType e = builder.getTokenType();
-        parseConDecl(builder, qualConDecl == null ? null :qualConDecl.conDecl, comments);
+        parseConDecl(builder, qualConDecl == null ? null : qualConDecl.conDecl, comments);
     }
 
     /**
