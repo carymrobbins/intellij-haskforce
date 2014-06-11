@@ -47,6 +47,7 @@ import static com.haskforce.psi.HaskellTypes.BACKSLASH;
 import static com.haskforce.psi.HaskellTypes.HASH;
 import static com.haskforce.psi.HaskellTypes.FOREIGN;
 import static com.haskforce.psi.HaskellTypes.EXPORTTOKEN;
+import static com.haskforce.psi.HaskellTypes.DOUBLEARROW;
 
 /**
  * New Parser using parser-helper.
@@ -837,8 +838,21 @@ public class HaskellParser2 implements PsiParser {
      */
     private static void parseTypeTopType(PsiBuilder builder, TypeTopType typeTopType, Comment[] comments) {
         IElementType e = builder.getTokenType();
-        if (typeTopType instanceof TyForall) {
-            throw new RuntimeException("Tyforall" + typeTopType.toString());
+        if (typeTopType instanceof TyForall) { // FIXME: No forall lexeme.
+            TyForall t = (TyForall) typeTopType;
+            e = builder.getTokenType();
+            if (t.tyVarBinds != null) { // Implicit foralls for typeclasses.
+                builder.advanceLexer();
+                e = builder.getTokenType();
+                parseTyVarBinds(builder, t.tyVarBinds, comments);
+                e = builder.getTokenType();
+                consumeToken(builder, PERIOD);
+            }
+            parseContextTopType(builder, t.context, comments);
+            e = builder.getTokenType();
+            if (e == DOUBLEARROW) consumeToken(builder, DOUBLEARROW);
+            parseTypeTopType(builder, t.type, comments);
+            e = builder.getTokenType();
         } else if (typeTopType instanceof TyFun) {
             parseTypeTopType(builder, ((TyFun) typeTopType).t1, comments);
             consumeToken(builder, RIGHTARROW);
@@ -875,6 +889,58 @@ public class HaskellParser2 implements PsiParser {
             parseQName(builder, ((TyCon) typeTopType).qName, comments);
         } else {
             throw new RuntimeException("parseTypeTopType: " + typeTopType.toString());
+        }
+    }
+
+    /**
+     * Parses contexts.
+     */
+    private static void parseContextTopType(PsiBuilder builder, ContextTopType context, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        if (context instanceof CxSingle) {
+            parseAsstTopType(builder, ((CxSingle) context).asst, comments);
+        } else if (context instanceof CxTuple) {
+            throw new RuntimeException("TODO: Implement CxTuple");
+        } else if (context instanceof CxParen) {
+            consumeToken(builder, LPAREN);
+            parseContextTopType(builder, ((CxParen) context).context, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, RPAREN);
+            e = builder.getTokenType();
+        } else if (context instanceof CxEmpty) {
+            throw new RuntimeException("TODO: Implement CxEmpty");
+        }
+    }
+
+    /**
+     * Parses contexts.
+     */
+    private static void parseAsstTopType(PsiBuilder builder, AsstTopType asst, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        if (asst instanceof ClassA) {
+            parseQName(builder, ((ClassA) asst).qName, comments);
+            e = builder.getTokenType();
+            parseTypeTopTypes(builder, ((ClassA) asst).types, comments);
+            e = builder.getTokenType();
+        } else if (asst instanceof InfixA) {
+            throw new RuntimeException("TODO: Parse InfixA");
+        } else if (asst instanceof IParam) {
+            throw new RuntimeException("TODO: Parse IParam");
+            /* Preliminary untested implementation:
+            parseContextTopType(builder, ((IParam) asst).ipName, comments);
+            e = builder.getTokenType();
+            parseTypeTopType(builder, ((IParam) asst).type, comments);
+            e = builder.getTokenType();
+            */
+        } else if (asst instanceof EqualP) {
+            throw new RuntimeException("TODO: Parse EqualP");
+            /* Preliminary untested implementation:
+            parseTypeTopType(builder, ((EqualP) asst).t1, comments);
+            consumeToken(builder, TILDETOKENHERE);
+            e = builder.getTokenType();
+            parseTypeTopType(builder,((EqualP) asst).t2, comments);
+            e = builder.getTokenType();
+            */
         }
     }
 
