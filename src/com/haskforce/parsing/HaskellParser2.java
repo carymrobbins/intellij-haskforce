@@ -51,6 +51,10 @@ import static com.haskforce.psi.HaskellTypes.FOREIGN;
 import static com.haskforce.psi.HaskellTypes.EXPORTTOKEN;
 import static com.haskforce.psi.HaskellTypes.DOUBLEARROW;
 import static com.haskforce.psi.HaskellTypes.BACKTICK;
+import static com.haskforce.psi.HaskellTypes.INSTANCE;
+import static com.haskforce.psi.HaskellTypes.LBRACE;
+import static com.haskforce.psi.HaskellTypes.RBRACE;
+import static com.haskforce.psi.HaskellTypes.EXLAMATION; // FIXME: Rename.
 
 /**
  * New Parser using parser-helper.
@@ -311,9 +315,13 @@ public class HaskellParser2 implements PsiParser {
             PsiBuilder.Marker declMark = builder.mark();
             parseDataDecl(builder, (DataDecl) decl, comments);
             declMark.done(e);
-        }  else if (decl instanceof TypeDecl) {
+        } else if (decl instanceof TypeDecl) {
             PsiBuilder.Marker declMark = builder.mark();
             parseTypeDecl(builder, (TypeDecl) decl, comments);
+            declMark.done(e);
+        } else if (decl instanceof DataInsDecl) {
+            PsiBuilder.Marker declMark = builder.mark();
+            parseDataInstanceDecl(builder, (DataInsDecl) decl, comments);
             declMark.done(e);
         } else if (decl instanceof TypeSig) {
             PsiBuilder.Marker declMark = builder.mark();
@@ -388,6 +396,32 @@ public class HaskellParser2 implements PsiParser {
     }
 
     /**
+     * Parses a data instance declaration.
+     */
+    private static void parseDataInstanceDecl(PsiBuilder builder, DataInsDecl dataDecl, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        consumeToken(builder, DATA);
+        e = builder.getTokenType();
+        consumeToken(builder, INSTANCE);
+        e = builder.getTokenType();
+        parseTypeTopType(builder, dataDecl.type, comments);
+        e = builder.getTokenType();
+        if (e == EQUALS) consumeToken(builder, EQUALS);
+        int i = 0;
+        e = builder.getTokenType();
+        while (dataDecl.qualConDecls != null && i < dataDecl.qualConDecls.length) {
+            parseQualConDecl(builder, dataDecl.qualConDecls[i], comments);
+            i++;
+            if (i < dataDecl.qualConDecls.length) {
+                builder.advanceLexer();
+                e = builder.getTokenType();
+            }
+        }
+        e = builder.getTokenType();
+        if (dataDecl.derivingMaybe != null) throw new RuntimeException("TODO: deriving unimplemeted");
+    }
+
+    /**
      * Parses the left side of '=' in a data/type declaration.
      */
     private static void parseDeclHead(PsiBuilder builder, DeclHeadTopType declHead, Comment[] comments) {
@@ -415,6 +449,7 @@ public class HaskellParser2 implements PsiParser {
         }
         e = builder.getTokenType();
     }
+
     /**
      * Parses the type variables in a data declaration.
      */
@@ -478,8 +513,47 @@ public class HaskellParser2 implements PsiParser {
             parseName(builder, ((InfixConDecl) conDecl).name, comments);
             parseBangType(builder, ((InfixConDecl) conDecl).b2, comments);
         } else if (conDecl instanceof RecDecl) {
-            throw new RuntimeException("Unknown recdecl:" + conDecl.toString());
+            parseName(builder, ((RecDecl) conDecl).name, comments);
+            boolean layouted = false;
+            IElementType e = builder.getTokenType();
+            if (e == LBRACE) {
+                consumeToken(builder, LBRACE);
+                e = builder.getTokenType();
+                layouted = true;
+            }
+            parseFieldDecls(builder, ((RecDecl) conDecl).fields, comments);
+            e = builder.getTokenType();
+            if (layouted) {
+                consumeToken(builder, RBRACE);
+                e = builder.getTokenType();
+            }
         }
+    }
+
+    /**
+     * Parses the field declarations in a GADT-style declaration.
+     */
+    private static void parseFieldDecls(PsiBuilder builder, FieldDecl[] fieldDecls, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        int i = 0;
+        while (fieldDecls != null && i < fieldDecls.length) {
+            parseFieldDecl(builder, fieldDecls[i], comments);
+            i++;
+        }
+        e = builder.getTokenType();
+    }
+
+    /**
+     * Parses a field declaration.
+     */
+    private static void parseFieldDecl(PsiBuilder builder,  FieldDecl fieldDecl, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        parseNames(builder, fieldDecl.names, comments);
+        e = builder.getTokenType();
+        consumeToken(builder, DOUBLECOLON);
+        e = builder.getTokenType();
+        parseBangType(builder, fieldDecl.bang, comments);
+        e = builder.getTokenType();
     }
 
     /**
@@ -500,16 +574,17 @@ public class HaskellParser2 implements PsiParser {
         IElementType e = builder.getTokenType();
         // TODO: Refine bangType.
         if (bangType instanceof UnBangedTy) {
-            builder.advanceLexer();
+            parseTypeTopType(builder, ((UnBangedTy) bangType).type, comments);
         } else if (bangType instanceof BangedTy) {
-            builder.advanceLexer();
-            builder.getTokenType();
-            builder.advanceLexer();
+            consumeToken(builder, EXLAMATION);
+            parseTypeTopType(builder, ((BangedTy) bangType).type, comments);
+            e = builder.getTokenType();
         } else if (bangType instanceof UnpackedTy) {
             parseGenericPragma(builder, null, comments);
-            builder.advanceLexer(); // '!'
+            consumeToken(builder, EXLAMATION);
             e = builder.getTokenType();
-            builder.advanceLexer();
+            parseTypeTopType(builder, ((UnpackedTy) bangType).type, comments);
+            e = builder.getTokenType();
         }
     }
 
@@ -909,7 +984,14 @@ public class HaskellParser2 implements PsiParser {
         } else if (expTopType instanceof CorePragma) {
             parseGenericPragma(builder, null, comments);
             parseExpTopType(builder, ((CorePragma) expTopType).exp, comments);
-        } else {
+        }  else if (expTopType instanceof Proc) {
+            e1 = builder.getTokenType();
+            builder.advanceLexer(); // TODO: consumeToken(builder, PROCTOKEN);
+            e1 = builder.getTokenType();
+            parsePatTopType(builder, ((Proc) expTopType).pat, comments);
+            consumeToken(builder, RIGHTARROW);
+            parseExpTopType(builder, ((Proc) expTopType).exp, comments);
+        }else {
             throw new RuntimeException("parseExpTopType: " + expTopType.toString());
         }
     }
