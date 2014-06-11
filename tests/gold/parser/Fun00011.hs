@@ -11,7 +11,9 @@ f :: [] -> ()
 f = undefined
 
 g :: a (->) b
-g = foo >>= \case { Just x -> x; Nothing -> 12}
+g = foo >>= \case
+              Just x -> x
+              Nothing -> 12
 
 h = if | True -> 12
        | False -> 9
