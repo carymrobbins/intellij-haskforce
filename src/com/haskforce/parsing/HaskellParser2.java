@@ -330,6 +330,12 @@ public class HaskellParser2 implements PsiParser {
             // parseGenericPragma(builder, (InlineSig) decl, comments);
         } else if (decl instanceof InlineConlikeSig) {
             // parseGenericPragma(builder, (InlineConlikeSig) decl, comments);
+        } else if (decl instanceof SpecSig) {
+            // parseGenericPragma(builder, (SpecSig) decl, comments);
+        } else if (decl instanceof SpecInlineSig) {
+            // parseGenericPragma(builder, (SpecSig) decl, comments);
+        } else if (decl instanceof RulePragmaDecl) {
+            // parseGenericPragma(builder, (SpecSig) decl, comments);
         } else if (decl instanceof DeprPragmaDecl) {
             //  parseGenericPragma(builder, (DeprPragmaDecl) decl, comments);
         } else if (decl instanceof WarnPragmaDecl) {
@@ -545,6 +551,9 @@ public class HaskellParser2 implements PsiParser {
         IElementType e = builder.getTokenType();
         if (patTopType instanceof PVar) {
             parsePVar(builder, (PVar) patTopType, comments);
+        } else if (patTopType instanceof PLit) {
+            parseLiteralTop(builder, ((PLit) patTopType).lit, comments);
+            e = builder.getTokenType();
         } else {
             throw new RuntimeException("parsePatTopType" + patTopType.toString());
         }
@@ -764,6 +773,13 @@ public class HaskellParser2 implements PsiParser {
             parseQName(builder, ((Var) expTopType).qName, comments);
         } else if (expTopType instanceof Lit) {
             parseLiteralTop(builder, ((Lit) expTopType).literal, comments);
+        } else if (expTopType instanceof InfixApp) {
+            parseExpTopType(builder, ((InfixApp) expTopType).e1, comments);
+            IElementType e = builder.getTokenType();
+            builder.advanceLexer();
+            e = builder.getTokenType();
+            parseExpTopType(builder, ((InfixApp) expTopType).e2, comments);
+            e = builder.getTokenType();
         } else if (expTopType instanceof List) {
             builder.advanceLexer();
             parseExpTopTypes(builder, ((List) expTopType).exps, comments);
