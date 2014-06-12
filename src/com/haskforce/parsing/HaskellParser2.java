@@ -1224,13 +1224,53 @@ public class HaskellParser2 implements PsiParser {
         } else if (expTopType instanceof CorePragma) {
             parseGenericPragma(builder, null, comments);
             parseExpTopType(builder, ((CorePragma) expTopType).exp, comments);
-        }  else if (expTopType instanceof Proc) {
+        } else if (expTopType instanceof Proc) {
             e1 = builder.getTokenType();
             builder.advanceLexer(); // TODO: consumeToken(builder, PROCTOKEN);
             e1 = builder.getTokenType();
             parsePatTopType(builder, ((Proc) expTopType).pat, comments);
             consumeToken(builder, RIGHTARROW);
             parseExpTopType(builder, ((Proc) expTopType).exp, comments);
+        } else if (expTopType instanceof LeftArrApp) {
+            e1 = builder.getTokenType();
+            parseExpTopType(builder, ((LeftArrApp) expTopType).e1, comments);
+            builder.advanceLexer(); // TODO: consumeToken(builder, LeftArrApp);
+            e1 = builder.getTokenType();
+            builder.advanceLexer();
+            e1 = builder.getTokenType();
+            parseExpTopType(builder, ((LeftArrApp) expTopType).e2, comments);
+            e1 = builder.getTokenType();
+        } else if (expTopType instanceof RightArrApp) {
+            e1 = builder.getTokenType();
+            parseExpTopType(builder, ((RightArrApp) expTopType).e1, comments);
+            builder.advanceLexer(); // TODO: consumeToken(builder, RightArrApp);
+            e1 = builder.getTokenType();
+            builder.advanceLexer();
+            e1 = builder.getTokenType();
+            parseExpTopType(builder, ((RightArrApp) expTopType).e2, comments);
+            e1 = builder.getTokenType();
+        } else if (expTopType instanceof LeftArrHighApp) {
+            e1 = builder.getTokenType();
+            parseExpTopType(builder, ((LeftArrHighApp) expTopType).e1, comments);
+            builder.advanceLexer(); // TODO: consumeToken(builder, LeftArrHighApp);
+            e1 = builder.getTokenType();
+            builder.advanceLexer();
+            e1 = builder.getTokenType();
+            builder.advanceLexer();
+            e1 = builder.getTokenType();
+            parseExpTopType(builder, ((LeftArrHighApp) expTopType).e2, comments);
+            e1 = builder.getTokenType();
+        } else if (expTopType instanceof RightArrHighApp) {
+            e1 = builder.getTokenType();
+            parseExpTopType(builder, ((RightArrHighApp) expTopType).e1, comments);
+            builder.advanceLexer(); // TODO: consumeToken(builder, RightArrHighApp);
+            e1 = builder.getTokenType();
+            builder.advanceLexer();
+            e1 = builder.getTokenType();
+            builder.advanceLexer();
+            e1 = builder.getTokenType();
+            parseExpTopType(builder, ((RightArrHighApp) expTopType).e2, comments);
+            e1 = builder.getTokenType();
         } else {
             throw new RuntimeException("parseExpTopType: " + expTopType.toString());
         }
