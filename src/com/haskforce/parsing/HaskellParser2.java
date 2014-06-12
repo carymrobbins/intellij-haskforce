@@ -1204,6 +1204,24 @@ public class HaskellParser2 implements PsiParser {
             e1 = builder.getTokenType();
             consumeToken(builder, RPAREN);
             e1 = builder.getTokenType();
+        } else if (expTopType instanceof RecConstr) {
+            e1 = builder.getTokenType();
+            parseQName(builder, ((RecConstr) expTopType).qName, comments);
+            e1 = builder.getTokenType();
+            consumeToken(builder, LBRACE);
+            parseFieldUpdateTopTypes(builder, ((RecConstr) expTopType).fieldUpdates, comments);
+            e1 = builder.getTokenType();
+            consumeToken(builder, RBRACE);
+            e1 = builder.getTokenType();
+        } else if (expTopType instanceof RecUpdate) {
+            e1 = builder.getTokenType();
+            parseExpTopType(builder, ((RecUpdate) expTopType).exp, comments);
+            e1 = builder.getTokenType();
+            consumeToken(builder, LBRACE);
+            parseFieldUpdateTopTypes(builder, ((RecUpdate) expTopType).fieldUpdates, comments);
+            e1 = builder.getTokenType();
+            consumeToken(builder, RBRACE);
+            e1 = builder.getTokenType();
         } else if (expTopType instanceof EnumFrom) {
             consumeToken(builder, LBRACKET);
             e1 = builder.getTokenType();
@@ -1354,6 +1372,39 @@ public class HaskellParser2 implements PsiParser {
             e1 = builder.getTokenType();
         } else {
             throw new RuntimeException("parseExpTopType: " + expTopType.toString());
+        }
+    }
+
+    /**
+     * Parses a list of field updates.
+     */
+    private static void parseFieldUpdateTopTypes(PsiBuilder builder, FieldUpdateTopType[] fieldUpdateTopTypes, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        int i = 0;
+        while (fieldUpdateTopTypes != null && i < fieldUpdateTopTypes.length) {
+            parseFieldUpdateTopType(builder, fieldUpdateTopTypes[i], comments);
+            i++;
+            e = builder.getTokenType();
+            if (e == COMMA) consumeToken(builder, COMMA);
+        }
+    }
+
+    /**
+     * Parses a field update.
+     */
+    private static void parseFieldUpdateTopType(PsiBuilder builder, FieldUpdateTopType fieldUpdate, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        if (fieldUpdate instanceof FieldUpdate) {
+            parseQName(builder, ((FieldUpdate) fieldUpdate).qName, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, EQUALS);
+            e = builder.getTokenType();
+            parseExpTopType(builder, ((FieldUpdate) fieldUpdate).exp, comments);
+            e = builder.getTokenType();
+        } else if (fieldUpdate instanceof FieldPun) {
+            throw new RuntimeException("TODO: FieldPun not implemented");
+        } else if (fieldUpdate instanceof FieldWildcard) {
+            throw new RuntimeException("TODO: FieldWildcard not implemented");
         }
     }
 
