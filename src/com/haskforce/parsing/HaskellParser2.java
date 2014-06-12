@@ -69,6 +69,7 @@ import static com.haskforce.psi.HaskellTypes.DEFAULT;
 import static com.haskforce.psi.HaskellTypes.AMPERSAT;
 import static com.haskforce.psi.HaskellTypes.PLUS;
 import static com.haskforce.psi.HaskellTypes.TILDE;
+import static com.haskforce.psi.HaskellTypes.THEN;
 
 /**
  * New Parser using parser-helper.
@@ -1864,15 +1865,49 @@ public class HaskellParser2 implements PsiParser {
         if (qualStmtTopType instanceof QualStmt) {
             parseStmtTopType(builder, ((QualStmt) qualStmtTopType).stmt, comments);
         } else if (qualStmtTopType instanceof ThenTrans) {
-            throw new RuntimeException("TODO: Implement ThenTrans");
+            consumeToken(builder, THEN);
+            e = builder.getTokenType();
+            parseExpTopType(builder, ((ThenTrans) qualStmtTopType).exp, comments);
+            e = builder.getTokenType();
         } else if (qualStmtTopType instanceof ThenBy) {
-            throw new RuntimeException("TODO: Implement ThenBy");
+            consumeToken(builder, THEN);
+            e = builder.getTokenType();
+            parseExpTopType(builder, ((ThenBy) qualStmtTopType).e1, comments);
+            e = builder.getTokenType();
+            builder.advanceLexer(); // TODO: Add Token.BY
+            e = builder.getTokenType();
+            parseExpTopType(builder, ((ThenBy) qualStmtTopType).e2, comments);
+            e = builder.getTokenType();
         } else if (qualStmtTopType instanceof GroupBy) {
-            throw new RuntimeException("TODO: Implement GroupBy");
+            consumeToken(builder, THEN);
+            e = builder.getTokenType();
+            builder.advanceLexer(); // TODO: Add Token.GROUP
+            e = builder.getTokenType();
+            builder.advanceLexer(); // TODO: Add Token.USING
+            e = builder.getTokenType();
+            parseExpTopType(builder, ((GroupBy) qualStmtTopType).exp, comments);
+            e = builder.getTokenType();
         } else if (qualStmtTopType instanceof GroupUsing) {
-            throw new RuntimeException("TODO: Implement GroupUsing");
+            consumeToken(builder, THEN);
+            e = builder.getTokenType();
+            builder.advanceLexer(); // TODO: Add Token.GROUP
+            e = builder.getTokenType();
+            builder.advanceLexer(); // TODO: Add Token.USING
+            e = builder.getTokenType();
+            parseExpTopType(builder, ((GroupUsing) qualStmtTopType).exp, comments);
+            e = builder.getTokenType();
         } else if (qualStmtTopType instanceof GroupByUsing) {
-            throw new RuntimeException("TODO: Implement GroupByUsing");
+            consumeToken(builder, THEN);
+            e = builder.getTokenType();
+            builder.advanceLexer(); // TODO: Add Token.GROUP
+            e = builder.getTokenType();
+            builder.advanceLexer(); // TODO: Add Token.BY
+            e = builder.getTokenType();
+            parseExpTopType(builder, ((GroupByUsing) qualStmtTopType).e1, comments);
+            e = builder.getTokenType();
+            builder.advanceLexer(); // TODO: Add Token.USING.
+            parseExpTopType(builder, ((GroupByUsing) qualStmtTopType).e2, comments);
+            e = builder.getTokenType();
         }
     }
 
