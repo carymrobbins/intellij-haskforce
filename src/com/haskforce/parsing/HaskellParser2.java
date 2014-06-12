@@ -66,6 +66,7 @@ import static com.haskforce.psi.HaskellTypes.VARIDREGEXP;
 import static com.haskforce.psi.HaskellTypes.ASTERISK;
 import static com.haskforce.psi.HaskellTypes.SINGLEQUOTE;
 import static com.haskforce.psi.HaskellTypes.DEFAULT;
+import static com.haskforce.psi.HaskellTypes.AMPERSAT;
 
 /**
  * New Parser using parser-helper.
@@ -452,9 +453,10 @@ public class HaskellParser2 implements PsiParser {
     private static void parseInstDecl(PsiBuilder builder, InstDecl instDecl, Comment[] comments) {
         IElementType e = builder.getTokenType();
         consumeToken(builder, INSTANCE);
+        e = builder.getTokenType();
         parseContextTopType(builder, instDecl.contextMaybe, comments);
         e = builder.getTokenType();
-        consumeToken(builder, DOUBLEARROW);
+        if (instDecl.contextMaybe != null) consumeToken(builder, DOUBLEARROW);
         parseInstHead(builder, instDecl.instHead, comments);
         e = builder.getTokenType();
         consumeToken(builder, WHERE);
@@ -967,8 +969,20 @@ public class HaskellParser2 implements PsiParser {
             e = builder.getTokenType();
             consumeToken(builder, RBRACE);
             e = builder.getTokenType();
+        } else if (patTopType instanceof PAsPat) {
+            parseName(builder, ((PAsPat) patTopType).name, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, AMPERSAT);
+            parsePatTopType(builder, ((PAsPat) patTopType).pat, comments);
+            e = builder.getTokenType();
         } else if (patTopType instanceof PWildCard) {
             builder.advanceLexer(); // TODO: Token.UNDERSCORE?
+            e = builder.getTokenType();
+        } else if (patTopType instanceof PatTypeSig) {
+            parsePatTopType(builder, ((PatTypeSig) patTopType).pat, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, DOUBLECOLON);
+            parseTypeTopType(builder, ((PatTypeSig) patTopType).type, comments);
             e = builder.getTokenType();
         } else if (patTopType instanceof PViewPat) {
             parseExpTopType(builder, ((PViewPat) patTopType).exp, comments);
