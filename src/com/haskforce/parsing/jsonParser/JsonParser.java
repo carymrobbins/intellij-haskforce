@@ -178,6 +178,7 @@ public class JsonParser {
         gsonBuilder.registerTypeAdapter(QualConDecl.class, new QualConDeclDeserializer());
         gsonBuilder.registerTypeAdapter(IPBind.class, new IPBindDeserializer());
         gsonBuilder.registerTypeAdapter(FieldDecl.class, new FieldDeclDeserializer());
+        gsonBuilder.registerTypeAdapter(GuardedRhs.class, new GuardedRhsDeserializer());
 
         return gsonBuilder.setPrettyPrinting().create();
     }
