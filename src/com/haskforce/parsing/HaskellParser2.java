@@ -738,6 +738,12 @@ public class HaskellParser2 implements PsiParser {
         } else if (patTopType instanceof PLit) {
             parseLiteralTop(builder, ((PLit) patTopType).lit, comments);
             e = builder.getTokenType();
+        } else if (patTopType instanceof PApp) {
+            e = builder.getTokenType();
+            parseQName(builder, ((PApp) patTopType).qName, comments);
+            e = builder.getTokenType();
+            parsePatTopTypes(builder, ((PApp) patTopType).pats, comments);
+            e = builder.getTokenType();
         } else if (patTopType instanceof PInfixApp) {
             e = builder.getTokenType();
             parsePatTopType(builder, ((PInfixApp) patTopType).p1, comments);
@@ -1243,6 +1249,35 @@ public class HaskellParser2 implements PsiParser {
             e1 = builder.getTokenType();
             consumeToken(builder, RBRACKET);
             e1 = builder.getTokenType();
+        } else if (expTopType instanceof ListComp) {
+            consumeToken(builder, LBRACKET);
+            e1 = builder.getTokenType();
+            parseExpTopType(builder, ((ListComp) expTopType).exp, comments);
+            e1 = builder.getTokenType();
+            consumeToken(builder, PIPE);
+            e1 = builder.getTokenType();
+            parseQualStmtTopTypes(builder, ((ListComp) expTopType).qualStmts, comments);
+            e1 = builder.getTokenType();
+            consumeToken(builder, RBRACKET);
+            e1 = builder.getTokenType();
+        } else if (expTopType instanceof ParComp) {
+            ParComp p = (ParComp) expTopType;
+            consumeToken(builder, LBRACKET);
+            e1 = builder.getTokenType();
+            parseExpTopType(builder, ((ParComp) expTopType).exp, comments);
+            e1 = builder.getTokenType();
+            consumeToken(builder, PIPE);
+            e1 = builder.getTokenType();
+            int i = 0;
+            while (p.qualStmts != null && i < p.qualStmts.length) {
+                parseQualStmtTopTypes(builder, p.qualStmts[i], comments);
+                i++;
+                e1 = builder.getTokenType();
+                if (e1 == PIPE) consumeToken(builder, PIPE);
+                e1 = builder.getTokenType();
+            }
+            consumeToken(builder, RBRACKET);
+            e1 = builder.getTokenType();
         } else if (expTopType instanceof Let) {
             builder.advanceLexer();
             IElementType e = builder.getTokenType();
@@ -1411,6 +1446,40 @@ public class HaskellParser2 implements PsiParser {
     }
 
     /**
+     * Parses a list of qualified statements.
+     */
+    private static void parseQualStmtTopTypes(PsiBuilder builder, QualStmtTopType[] qualStmtTopTypes, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        int i = 0;
+        while (qualStmtTopTypes != null && i < qualStmtTopTypes.length) {
+            parseQualStmtTopType(builder, qualStmtTopTypes[i], comments);
+            i++;
+            e = builder.getTokenType();
+            if (e == COMMA) consumeToken(builder, COMMA);
+        }
+    }
+
+    /**
+     * Parses one qualified statement.
+     */
+    private static void parseQualStmtTopType(PsiBuilder builder, QualStmtTopType qualStmtTopType, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        if (qualStmtTopType instanceof QualStmt) {
+            parseStmtTopType(builder, ((QualStmt) qualStmtTopType).stmt, comments);
+        } else if (qualStmtTopType instanceof ThenTrans) {
+            throw new RuntimeException("TODO: Implement ThenTrans");
+        } else if (qualStmtTopType instanceof ThenBy) {
+            throw new RuntimeException("TODO: Implement ThenBy");
+        } else if (qualStmtTopType instanceof GroupBy) {
+            throw new RuntimeException("TODO: Implement GroupBy");
+        } else if (qualStmtTopType instanceof GroupUsing) {
+            throw new RuntimeException("TODO: Implement GroupUsing");
+        } else if (qualStmtTopType instanceof GroupByUsing) {
+            throw new RuntimeException("TODO: Implement GroupByUsing");
+        }
+    }
+
+    /**
      * Parses contexts.
      */
     private static void parseContextTopType(PsiBuilder builder, ContextTopType context, Comment[] comments) {
@@ -1431,7 +1500,7 @@ public class HaskellParser2 implements PsiParser {
     }
 
     /**
-     * Parses contexts.
+     * Parses Assts.
      */
     private static void parseAsstTopType(PsiBuilder builder, AsstTopType asst, Comment[] comments) {
         IElementType e = builder.getTokenType();
