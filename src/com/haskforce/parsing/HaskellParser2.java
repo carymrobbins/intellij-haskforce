@@ -351,6 +351,10 @@ public class HaskellParser2 implements PsiParser {
             PsiBuilder.Marker declMark = builder.mark();
             parseDataInstanceDecl(builder, (DataInsDecl) decl, comments);
             declMark.done(e);
+        } else if (decl instanceof GDataInsDecl) {
+            PsiBuilder.Marker declMark = builder.mark();
+            parseGDataInstanceDecl(builder, (GDataInsDecl) decl, comments);
+            declMark.done(e);
         } else if (decl instanceof InstDecl) {
             PsiBuilder.Marker declMark = builder.mark();
             parseInstDecl(builder, (InstDecl) decl, comments);
@@ -538,6 +542,47 @@ public class HaskellParser2 implements PsiParser {
         }
         e = builder.getTokenType();
         if (dataDecl.derivingMaybe != null) throw new RuntimeException("TODO: deriving unimplemeted");
+    }
+
+    /**
+     * Parses a gadt-style data instance declaration.
+     */
+    private static void parseGDataInstanceDecl(PsiBuilder builder, GDataInsDecl gDataInsDecl, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        consumeToken(builder, DATA);
+        e = builder.getTokenType();
+        consumeToken(builder, INSTANCE);
+        e = builder.getTokenType();
+        parseTypeTopType(builder, gDataInsDecl.type, comments);
+        e = builder.getTokenType();
+        parseKindTopType(builder, gDataInsDecl.kindMaybe, comments);
+        e = builder.getTokenType();
+        if (e == WHERE) consumeToken(builder, WHERE);
+        int i = 0;
+        e = builder.getTokenType();
+        while (gDataInsDecl.gadtDecls != null && i < gDataInsDecl.gadtDecls.length) {
+            parseGadtDecl(builder, gDataInsDecl.gadtDecls[i], comments);
+            i++;
+            if (i < gDataInsDecl.gadtDecls.length) {
+                builder.advanceLexer();
+                e = builder.getTokenType();
+            }
+        }
+        e = builder.getTokenType();
+        if (gDataInsDecl.derivingMaybe != null) throw new RuntimeException("TODO: deriving unimplemeted");
+    }
+
+    /**
+     * Parse a single gadt-style declaration.
+     */
+    private static void parseGadtDecl(PsiBuilder builder, GadtDecl gadtDecl, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        parseName(builder, gadtDecl.name, comments);
+        e = builder.getTokenType();
+        consumeToken(builder, DOUBLECOLON);
+        e = builder.getTokenType();
+        parseTypeTopType(builder, gadtDecl.type, comments);
+        e = builder.getTokenType();
     }
 
     /**
