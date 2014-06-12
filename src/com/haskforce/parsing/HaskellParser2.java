@@ -393,6 +393,10 @@ public class HaskellParser2 implements PsiParser {
             //  parseGenericPragma(builder, (DeprPragmaDecl) decl, comments);
         } else if (decl instanceof WarnPragmaDecl) {
             // parseGenericPragma(builder, (WarnPragmaDecl) decl, comments);
+        } else if (decl instanceof InstSig) {
+            PsiBuilder.Marker declMark = builder.mark();
+            parseInstSig(builder, (InstSig) decl, comments);
+            declMark.done(e);
         } else if (decl instanceof AnnPragma) {
             // parseGenericPragma(builder, (AnnPragma) decl, comments);
         } else {
@@ -422,6 +426,20 @@ public class HaskellParser2 implements PsiParser {
             parseMatchTop(builder, funBind.match[i], comments);
             i++;
         }
+    }
+
+    /**
+     * Parses an instance specialization.
+     */
+    private static void parseInstSig(PsiBuilder builder, InstSig instSig, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        parseGenericPragma(builder, null, null);
+        e = builder.getTokenType();
+        // TODO: Improve precision of specialize instance pragma parsing.
+        // parseContextTopType(builder, instSig.contextMaybe, comments);
+        // e = builder.getTokenType();
+        // parseInstHead(builder, instSig.instHead, comments);
+        // e = builder.getTokenType();
     }
 
     /**
@@ -458,11 +476,8 @@ public class HaskellParser2 implements PsiParser {
     private static void parseInstDeclTopType(PsiBuilder builder, InstDeclTopType decl, Comment[] comments) {
         IElementType e = builder.getTokenType();
         if (decl instanceof InsDecl) {
-            throw new RuntimeException("InsDecl not implemented: " + decl.toString());
-            /* Preliminary implementation:
             parseDecl(builder, ((InsDecl) decl).decl, comments);
             e = builder.getTokenType();
-            */
         } else if (decl instanceof InsType) {
             throw new RuntimeException("InsType not implemented: " + decl.toString());
             /* Preliminary implementation:
