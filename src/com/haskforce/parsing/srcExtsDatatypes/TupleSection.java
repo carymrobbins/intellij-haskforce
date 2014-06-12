@@ -12,7 +12,7 @@ public class TupleSection extends ExpTopType {
 
     @Override
     public String toString() {
-        return "Tuple{" +
+        return "TupleSection{" +
                 "boxed=" + boxed +
                 ", exps=" + Arrays.toString(expMaybes) +
                 '}';
