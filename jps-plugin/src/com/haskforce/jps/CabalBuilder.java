@@ -88,6 +88,13 @@ public class CabalBuilder extends ModuleLevelBuilder {
                 CabalJspInterface cabal = new CabalJspInterface(buildOptions.myCabalPath,
                                                 buildOptions.myCabalFlags, cabalFile);
 
+                //noinspection ObjectAllocationInLoop
+                if (buildOptions.myUseCabalSandbox && !new File(cabalFile.getParent(), "cabal.sandbox.config").isFile()) {
+                    if (runSandboxInit(context, module, cabal)) return ExitCode.ABORT;
+                }
+                if (buildOptions.myInstallCabalDependencies) {
+                    if (runInstallDependencies(context, module, cabal)) return ExitCode.ABORT;
+                }
                 if (runConfigure(context, module, cabal)) return ExitCode.ABORT;
                 if (runBuild(context, module, cabal)) return ExitCode.ABORT;
             }
@@ -139,9 +146,51 @@ public class CabalBuilder extends ModuleLevelBuilder {
     }
 
     /**
+     * Runs cabal install --only-dependencies
+     */
+    private static boolean runInstallDependencies(CompileContext context, JpsModule module, CabalJspInterface cabal) throws IOException, InterruptedException {
+        context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.INFO, "Install dependencies"));
+
+        Process installDependenciesProcess = cabal.installDependencies();
+
+        processOut(context, installDependenciesProcess, module, true);
+
+        if (installDependenciesProcess.waitFor() != 0) {
+            context.processMessage(new CompilerMessage(
+                    "cabal",
+                    BuildMessage.Kind.ERROR,
+                    "install dependencies failed."));
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Runs cabal sandbox init
+     */
+    private static boolean runSandboxInit(CompileContext context, JpsModule module, CabalJspInterface cabal) throws IOException, InterruptedException {
+        context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.INFO, "Create sandbox"));
+
+        Process sandboxProcess = cabal.sandboxInit();
+
+        if (sandboxProcess.waitFor() != 0) {
+            context.processMessage(new CompilerMessage(
+                    "cabal",
+                    BuildMessage.Kind.ERROR,
+                    "sandbox init failed."));
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Parses output from cabal and signals errors/warnings to the IDE.
      */
     private static void processOut(CompileContext context, Process process, JpsModule module) {
+        processOut(context, process, module, false);
+    }
+
+    private static void processOut(CompileContext context, Process process, JpsModule module, boolean logAll) {
         final String warningPrefix = "Warning: ";
         final String cabalPrefix = "cabal: ";
         boolean oneBehind = false;
@@ -206,6 +255,9 @@ public class CabalBuilder extends ModuleLevelBuilder {
                         sourcePath,
                         -1L, -1L, -1L,
                         lineNum, colNum));
+            } else if (logAll) {
+                //noinspection ObjectAllocationInLoop
+                context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.INFO, processOut.next()));
             }
         }
     }

@@ -16,6 +16,7 @@ public class HaskellBuildOptions {
     public static final String DEFAULT_GHC_PATH = "ghc";
     public static final String DEFAULT_CABAL_PATH = "cabal";
     public static final String DEFAULT_CABAL_FLAGS = "";
+    public static final boolean DEFAULT_INSTALL_CABAL_DEPENDENCIES = false;
 
     public HaskellBuildOptions() {
     }
@@ -27,6 +28,7 @@ public class HaskellBuildOptions {
         myGhcPath = options.myGhcPath;
         myCabalPath = options.myCabalPath;
         myCabalFlags = options.myCabalFlags;
+        myInstallCabalDependencies = options.myInstallCabalDependencies;
     }
 
     @Tag("useCabal")
@@ -51,6 +53,9 @@ public class HaskellBuildOptions {
     @AbstractCollection(surroundWithTag = false, elementTag = "cabalFile")
     public List<String> myCabalFiles = ContainerUtil.newArrayList();
 
+    @Tag("installDependencies")
+    public boolean myInstallCabalDependencies = DEFAULT_INSTALL_CABAL_DEPENDENCIES;
+
     @Override
     public String toString() {
         return "HaskellBuildOptions{" +
@@ -61,6 +66,7 @@ public class HaskellBuildOptions {
                 ", myCabalPath=" + myCabalPath +
                 ", myCabalFlags=" + myCabalFlags +
                 ", myCabalFiles=" + myCabalFiles +
+                ", myInstallCabalDependencies=" + myInstallCabalDependencies +
                 '}';
     }
 }

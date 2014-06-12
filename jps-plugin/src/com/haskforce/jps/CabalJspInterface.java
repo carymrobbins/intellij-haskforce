@@ -34,6 +34,14 @@ public class CabalJspInterface {
                                             : p.getProcess(myCabalPath, command, arg);
     }
 
+    public Process sandboxInit() throws IOException {
+        return runCommand("sandbox", "init");
+    }
+
+    public Process installDependencies() throws IOException {
+        return runCommand("install", "--only-dependencies");
+    }
+
     public Process configure() throws IOException {
         return runCommand("configure", myCabalFlags);
     }

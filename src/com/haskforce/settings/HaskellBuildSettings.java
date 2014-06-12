@@ -52,6 +52,14 @@ public class HaskellBuildSettings implements PersistentStateComponent<HaskellBui
         myBuildOptions.myUseCabalSandbox = useSandbox;
     }
 
+    public boolean isInstallCabalDependenciesEnabled() {
+        return myBuildOptions.myInstallCabalDependencies;
+    }
+
+    public void setInstallCabalDependencies(boolean install) {
+        myBuildOptions.myInstallCabalDependencies = install;
+    }
+
 
     public boolean isProfilingEnabled() {
         return myBuildOptions.myProfilingBuild;

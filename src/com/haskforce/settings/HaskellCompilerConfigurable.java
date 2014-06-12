@@ -41,6 +41,7 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
     private JCheckBox profilingBuild;
     private JCheckBox cabalBuild;
     private JCheckBox cabalSandbox;
+    private JCheckBox installCabalDependencies;
 
     // Data container for settings.
     private final HaskellBuildSettings mySettings;
@@ -119,8 +120,10 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         profilingBuild = createCheckBoxOption(settings, "Build with profiling information");
         cabalBuild = createCheckBoxOption(settings, "Build with Cabal");
         cabalSandbox = createCheckBoxOption(settings, "Build in Sandbox");
+        installCabalDependencies = createCheckBoxOption(settings, "Install Cabal Dependencies");
         cabalBuild.setSelected(mySettings.isCabalEnabled());
         cabalSandbox.setSelected(mySettings.isCabalSandboxEnabled());
+        installCabalDependencies.setSelected(mySettings.isInstallCabalDependenciesEnabled());
         updateVersionInfoFields();
 
         return settings;
@@ -135,7 +138,8 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
                 cabalFlags.getText().equals(mySettings.getCabalFlags()) &&
                 profilingBuild.isSelected() == mySettings.isProfilingEnabled() &&
                 cabalBuild.isSelected() == mySettings.isCabalEnabled() &&
-                cabalSandbox.isSelected() == mySettings.isCabalSandboxEnabled());
+                cabalSandbox.isSelected() == mySettings.isCabalSandboxEnabled() &&
+                installCabalDependencies.isSelected() == mySettings.isInstallCabalDependenciesEnabled());
     }
 
     /**
@@ -178,6 +182,7 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         mySettings.setProfilingBuild(profilingBuild.isSelected());
         mySettings.setUseCabal(cabalBuild.isSelected());
         mySettings.setUseCabalSandbox(cabalSandbox.isSelected());
+        mySettings.setInstallCabalDependencies(installCabalDependencies.isSelected());
         bestGhcPath = ghcPath.getText();
         mySettings.setGhcPath(bestGhcPath);
         bestCabalPath = cabalPath.getText();
