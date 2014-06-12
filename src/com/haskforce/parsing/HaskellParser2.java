@@ -43,6 +43,7 @@ import static com.haskforce.psi.HaskellTypes.IN;
 import static com.haskforce.psi.HaskellTypes.DOUBLECOLON;
 import static com.haskforce.psi.HaskellTypes.COMMA;
 import static com.haskforce.psi.HaskellTypes.RIGHTARROW;
+import static com.haskforce.psi.HaskellTypes.LEFTARROW;
 import static com.haskforce.psi.HaskellTypes.MINUS;
 import static com.haskforce.psi.HaskellTypes.DO;
 import static com.haskforce.psi.HaskellTypes.BACKSLASH;
@@ -57,6 +58,7 @@ import static com.haskforce.psi.HaskellTypes.RBRACE;
 import static com.haskforce.psi.HaskellTypes.EXLAMATION; // FIXME: Rename.
 import static com.haskforce.psi.HaskellTypes.PIPE;
 import static com.haskforce.psi.HaskellTypes.CHARTOKEN;
+import static com.haskforce.psi.HaskellTypes.LET;
 
 /**
  * New Parser using parser-helper.
@@ -974,19 +976,23 @@ public class HaskellParser2 implements PsiParser {
      */
     private static void parseStmtTopType(PsiBuilder builder, StmtTopType stmtTopType, Comment[] comments) {
         IElementType e = builder.getTokenType();
+        PsiBuilder.Marker stmtMark = builder.mark();
         if (stmtTopType instanceof Generator) {
             parsePatTopType(builder, ((Generator) stmtTopType).pat, comments);
+            consumeToken(builder, LEFTARROW);
             parseExpTopType(builder, ((Generator) stmtTopType).exp, comments);
         } else if (stmtTopType instanceof Qualifier) {
             parseExpTopType(builder, ((Qualifier) stmtTopType).exp, comments);
         } else if (stmtTopType instanceof LetStmt) {
-            throw new RuntimeException("TODO: Implement parseBinds()");
+            consumeToken(builder, LET);
+            parseBindsTopType(builder, ((LetStmt) stmtTopType).binds, comments);
         } else if (stmtTopType instanceof RecStmt) {
             builder.advanceLexer();
-            e = builder.getTokenType();
+            IElementType e1 = builder.getTokenType();
             parseStmtTopTypes(builder, ((RecStmt) stmtTopType).stmts, comments);
-            e = builder.getTokenType();
+            e1 = builder.getTokenType();
         }
+        stmtMark.done(e);
     }
 
     /**
@@ -1033,8 +1039,11 @@ public class HaskellParser2 implements PsiParser {
             consumeToken(builder, MINUS);
             parseExpTopType(builder, ((NegApp) expTopType).e1, comments);
         } else if (expTopType instanceof Do) {
+            IElementType e = builder.getTokenType();
+            PsiBuilder.Marker doMark = builder.mark();
             consumeToken(builder, DO);
             parseStmtTopTypes(builder, ((Do) expTopType).stmts, comments);
+            doMark.done(e);
         } else if (expTopType instanceof Lambda) {
             consumeToken(builder, BACKSLASH);
             IElementType e = builder.getTokenType();
@@ -1043,12 +1052,32 @@ public class HaskellParser2 implements PsiParser {
             consumeToken(builder, RIGHTARROW);
             parseExpTopType(builder, ((Lambda) expTopType).exp, comments);
             e = builder.getTokenType();
-        }  else if (expTopType instanceof Tuple) {
+        } else if (expTopType instanceof Tuple) {
             consumeToken(builder, LPAREN);
             IElementType e = builder.getTokenType();
             boolean unboxed = parseBoxed(builder, ((Tuple) expTopType).boxed, comments);
             e = builder.getTokenType();
             parseExpTopTypes(builder, ((Tuple) expTopType).exps, comments);
+            e = builder.getTokenType();
+            if (unboxed) {
+                consumeToken(builder, HASH);
+                e = builder.getTokenType();
+            }
+            consumeToken(builder, RPAREN);
+            e1 = builder.getTokenType();
+        } else if (expTopType instanceof TupleSection) {
+            TupleSection ts = (TupleSection) expTopType;
+            consumeToken(builder, LPAREN);
+            IElementType e = builder.getTokenType();
+            boolean unboxed = parseBoxed(builder, ((TupleSection) expTopType).boxed, comments);
+            e = builder.getTokenType();
+            int i = 0;
+            while (ts.expMaybes != null &&  i < ts.expMaybes.length) {
+                if (ts.expMaybes[i] != null) parseExpTopType(builder, ts.expMaybes[i], comments);
+                i++;
+                e = builder.getTokenType();
+                if (e == COMMA) consumeToken(builder, COMMA);
+            }
             e = builder.getTokenType();
             if (unboxed) {
                 consumeToken(builder, HASH);
@@ -1258,7 +1287,7 @@ public class HaskellParser2 implements PsiParser {
         if (boxedTopType instanceof Boxed) {
             return false;
         } else if (boxedTopType instanceof Unboxed) {
-            builder.advanceLexer(); // '#'
+            consumeToken(builder, HASH);
             return true;
         }
         throw new RuntimeException("Unexpected boxing: " + boxedTopType.toString());
