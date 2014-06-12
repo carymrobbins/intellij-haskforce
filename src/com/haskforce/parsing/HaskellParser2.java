@@ -67,6 +67,8 @@ import static com.haskforce.psi.HaskellTypes.ASTERISK;
 import static com.haskforce.psi.HaskellTypes.SINGLEQUOTE;
 import static com.haskforce.psi.HaskellTypes.DEFAULT;
 import static com.haskforce.psi.HaskellTypes.AMPERSAT;
+import static com.haskforce.psi.HaskellTypes.PLUS;
+import static com.haskforce.psi.HaskellTypes.TILDE;
 
 /**
  * New Parser using parser-helper.
@@ -923,6 +925,20 @@ public class HaskellParser2 implements PsiParser {
         } else if (patTopType instanceof PLit) {
             parseLiteralTop(builder, ((PLit) patTopType).lit, comments);
             e = builder.getTokenType();
+        } else if (patTopType instanceof PNeg) {
+            e = builder.getTokenType();
+            consumeToken(builder, MINUS);
+            e = builder.getTokenType();
+            parsePatTopType(builder, ((PNeg) patTopType).pat, comments);
+            e = builder.getTokenType();
+        } else if (patTopType instanceof PNPlusK) {
+            e = builder.getTokenType();
+            parseName(builder, ((PNPlusK) patTopType).name, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, PLUS);
+            e = builder.getTokenType();
+            consumeToken(builder, INTEGERTOKEN);
+            e = builder.getTokenType();
         } else if (patTopType instanceof PApp) {
             e = builder.getTokenType();
             parseQName(builder, ((PApp) patTopType).qName, comments);
@@ -978,6 +994,11 @@ public class HaskellParser2 implements PsiParser {
         } else if (patTopType instanceof PWildCard) {
             builder.advanceLexer(); // TODO: Token.UNDERSCORE?
             e = builder.getTokenType();
+        } else if (patTopType instanceof PIrrPat) {
+            consumeToken(builder, TILDE);
+            e = builder.getTokenType();
+            parsePatTopType(builder, ((PIrrPat) patTopType).pat, comments);
+            e = builder.getTokenType();
         } else if (patTopType instanceof PatTypeSig) {
             parsePatTopType(builder, ((PatTypeSig) patTopType).pat, comments);
             e = builder.getTokenType();
@@ -989,6 +1010,11 @@ public class HaskellParser2 implements PsiParser {
             e = builder.getTokenType();
             consumeToken(builder, RIGHTARROW);
             parsePatTopType(builder, ((PViewPat) patTopType).pat, comments);
+            e = builder.getTokenType();
+        } else if (patTopType instanceof PBangPat) {
+            consumeToken(builder, EXLAMATION);
+            e = builder.getTokenType();
+            parsePatTopType(builder, ((PBangPat) patTopType).pat, comments);
             e = builder.getTokenType();
         } else {
             throw new RuntimeException("parsePatTopType" + patTopType.toString());
@@ -1735,6 +1761,18 @@ public class HaskellParser2 implements PsiParser {
             parseQName(builder, ((TyInfix) typeTopType).qName, comments);
             e = builder.getTokenType();
             parseTypeTopType(builder, ((TyInfix) typeTopType).t2, comments);
+            e = builder.getTokenType();
+        } else if (typeTopType instanceof TyKind) {
+            e = builder.getTokenType();
+            consumeToken(builder, LPAREN);
+            e = builder.getTokenType();
+            parseTypeTopType(builder, ((TyKind) typeTopType).type, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, DOUBLECOLON);
+            e = builder.getTokenType();
+            parseKindTopType(builder, ((TyKind) typeTopType).kind, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, RPAREN);
             e = builder.getTokenType();
         } else {
             throw new RuntimeException("parseTypeTopType: " + typeTopType.toString());
