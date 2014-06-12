@@ -41,6 +41,7 @@ import static com.haskforce.psi.HaskellTypes.TYPE;
 import static com.haskforce.psi.HaskellTypes.DATA;
 import static com.haskforce.psi.HaskellTypes.IN;
 import static com.haskforce.psi.HaskellTypes.DOUBLECOLON;
+import static com.haskforce.psi.HaskellTypes.COLON;
 import static com.haskforce.psi.HaskellTypes.COMMA;
 import static com.haskforce.psi.HaskellTypes.RIGHTARROW;
 import static com.haskforce.psi.HaskellTypes.LEFTARROW;
@@ -59,6 +60,7 @@ import static com.haskforce.psi.HaskellTypes.EXLAMATION; // FIXME: Rename.
 import static com.haskforce.psi.HaskellTypes.PIPE;
 import static com.haskforce.psi.HaskellTypes.CHARTOKEN;
 import static com.haskforce.psi.HaskellTypes.LET;
+import static com.haskforce.psi.HaskellTypes.INTEGERTOKEN;
 
 /**
  * New Parser using parser-helper.
@@ -344,6 +346,10 @@ public class HaskellParser2 implements PsiParser {
             PsiBuilder.Marker declMark = builder.mark();
             parseDataInstanceDecl(builder, (DataInsDecl) decl, comments);
             declMark.done(e);
+        } else if (decl instanceof InfixDecl) {
+            PsiBuilder.Marker declMark = builder.mark();
+            parseInfixDecl(builder, (InfixDecl) decl, comments);
+            declMark.done(e);
         } else if (decl instanceof SpliceDecl) {
             PsiBuilder.Marker declMark = builder.mark();
             parseExpTopType(builder, ((SpliceDecl) decl).exp, comments);
@@ -618,17 +624,69 @@ public class HaskellParser2 implements PsiParser {
         if (matchTopType instanceof Match) {
             parseMatch(builder, (Match) matchTopType, comments);
         } else if (matchTopType instanceof InfixMatch) {
-            //TODO: parseInfixMatch(builder, (InfixMatch) matchTopType, comments);
-            throw new RuntimeException("infixmatch");
+            parseInfixMatch(builder, (InfixMatch) matchTopType, comments);
         }
     }
 
+    /**
+     * Parses  a single match.
+     */
     private static void parseMatch(PsiBuilder builder, Match match, Comment[] comments) {
         IElementType e = builder.getTokenType();
         parseName(builder, match.name, comments);
         int i = 0;
         while (match.pats != null && i < match.pats.length) {
             parsePatTopType(builder, match.pats[i], comments);
+            i++;
+        }
+        parseRhsTopType(builder, match.rhs, comments);
+        e = builder.getTokenType();
+        if (e == WHERE) {
+            consumeToken(builder, WHERE);
+            parseBindsTopType(builder, match.bindsMaybe, comments);
+            e = builder.getTokenType();
+        }
+    }
+
+    /**
+     * Parses  a single infix declaration.
+     */
+    private static void parseInfixDecl(PsiBuilder builder, InfixDecl decl, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        builder.advanceLexer(); // TOOD: Parse infix/infixl/infixr
+        e = builder.getTokenType();
+        if (e == INTEGERTOKEN) consumeToken(builder, INTEGERTOKEN);
+        e = builder.getTokenType();
+        int i = 0;
+        while (decl.ops != null && i < decl.ops.length) {
+            parseOp(builder, decl.ops[i], comments);
+            i++;
+            e = builder.getTokenType();
+            if (e == COMMA) {
+                consumeToken(builder, COMMA);
+                e = builder.getTokenType();
+            }
+        }
+    }
+
+    /**
+     * Parses  a single infix match.
+     */
+    private static void parseInfixMatch(PsiBuilder builder, InfixMatch match, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        boolean startParen = e == LPAREN  && !(match.pat instanceof PParen);
+        if (startParen) consumeToken(builder, LPAREN);
+        e = builder.getTokenType();
+        parsePatTopType(builder, match.pat, comments);
+        e = builder.getTokenType();
+        parseName(builder, match.name, comments);
+        int i = 0;
+        while (match.pats != null && i < match.pats.length) {
+            parsePatTopType(builder, match.pats[i], comments);
+            if (startParen && i == 0) {
+                consumeToken(builder, RPAREN);
+                e = builder.getTokenType();
+            }
             i++;
         }
         parseRhsTopType(builder, match.rhs, comments);
@@ -678,6 +736,14 @@ public class HaskellParser2 implements PsiParser {
             parsePVar(builder, (PVar) patTopType, comments);
         } else if (patTopType instanceof PLit) {
             parseLiteralTop(builder, ((PLit) patTopType).lit, comments);
+            e = builder.getTokenType();
+        } else if (patTopType instanceof PInfixApp) {
+            e = builder.getTokenType();
+            parsePatTopType(builder, ((PInfixApp) patTopType).p1, comments);
+            e = builder.getTokenType();
+            parseQName(builder, ((PInfixApp) patTopType).qName, comments);
+            e = builder.getTokenType();
+            parsePatTopType(builder, ((PInfixApp) patTopType).p1, comments);
             e = builder.getTokenType();
         } else if (patTopType instanceof PTuple) {
             consumeToken(builder, LPAREN);
@@ -775,8 +841,7 @@ public class HaskellParser2 implements PsiParser {
      * Parses a pattern variable.
      */
     private static void parsePVar(PsiBuilder builder, PVar pVar,  Comment[] comments) {
-        builder.remapCurrentToken(VARID); // FIXME: Should be PVARID
-        consumeToken(builder, VARID);
+        parseName(builder, pVar.name, comments);
     }
 
     /**
@@ -821,13 +886,31 @@ public class HaskellParser2 implements PsiParser {
     }
 
     /**
-     * Parses a qualified name.
+     * Parses an unqualified op.
+     */
+    private static void parseOp(PsiBuilder builder, OpTopType opTopType,  Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        boolean backticked = e == BACKTICK;
+        if (backticked) {
+            consumeToken(builder, BACKTICK);
+            e = builder.getTokenType();
+        }
+        if (opTopType instanceof VarOp) {
+            parseName(builder, ((VarOp) opTopType).name, comments);
+        } else if (opTopType instanceof ConOp) {
+            parseName(builder, ((ConOp) opTopType).name, comments);
+        }
+        if (backticked) consumeToken(builder, BACKTICK);
+        e = builder.getTokenType();
+    }
+
+    /**
+     * Parses a qualified op.
      */
     private static void parseQOp(PsiBuilder builder, QOpTopType qOpTopType,  Comment[] comments) {
         IElementType e = builder.getTokenType();
-        boolean backticked = false;
-        if (e == BACKTICK) {
-            backticked = true;
+        boolean backticked = e == BACKTICK;
+        if (backticked) {
             consumeToken(builder, BACKTICK);
             e = builder.getTokenType();
         }
@@ -880,7 +963,8 @@ public class HaskellParser2 implements PsiParser {
         } else if (specialConTopType instanceof TupleCon) {
             throw new RuntimeException("TODO: implement TupleCon");
         } else if (specialConTopType instanceof Cons) {
-            throw new RuntimeException("TODO: implement Cons");
+            consumeToken(builder, COLON);
+            e = builder.getTokenType();
         } else if (specialConTopType instanceof UnboxedSingleCon) {
             consumeToken(builder, LPAREN);
             e = builder.getTokenType();
@@ -915,8 +999,21 @@ public class HaskellParser2 implements PsiParser {
             consumeToken(builder, NAME);
         } else if (nameTopType instanceof Symbol) {
             IElementType e = builder.getTokenType();
-            builder.remapCurrentToken(SYMBOL);
-            consumeToken(builder, SYMBOL);
+            boolean startParen = e == LPAREN;
+            if (startParen) consumeToken(builder, LPAREN);
+            e = builder.getTokenType();
+            int startPos = builder.getCurrentOffset();
+            while ((builder.getCurrentOffset() - startPos) <
+                    ((Symbol) nameTopType).symbol.length()) {
+                builder.remapCurrentToken(SYMBOL);
+                consumeToken(builder, SYMBOL);
+                e = builder.getTokenType();
+            }
+            e = builder.getTokenType();
+            if (startParen) {
+                consumeToken(builder, RPAREN);
+                e = builder.getTokenType();
+            }
         }
     }
 
@@ -1026,7 +1123,7 @@ public class HaskellParser2 implements PsiParser {
         } else if (expTopType instanceof InfixApp) {
             parseExpTopType(builder, ((InfixApp) expTopType).e1, comments);
             IElementType e = builder.getTokenType();
-            builder.advanceLexer();
+            parseQOp(builder, ((InfixApp) expTopType).qop, comments);
             e = builder.getTokenType();
             parseExpTopType(builder, ((InfixApp) expTopType).e2, comments);
             e = builder.getTokenType();
@@ -1323,11 +1420,11 @@ public class HaskellParser2 implements PsiParser {
         return false;
     }
 
-    public static boolean nextTokenIsInner(PsiBuilder builder_, IElementType token) {
+    public static boolean nextTokenIsInner(PsiBuilder builder_, IElementType expectedToken) {
         IElementType tokenType = builder_.getTokenType();
-        if (token != tokenType) {
-            System.out.println("Unexpected token: " + tokenType + " vs " + token);
+        if (expectedToken != tokenType) {
+            System.out.println("Found token: " + tokenType + " vs expected: " + expectedToken);
         }
-        return token == tokenType;
+        return expectedToken == tokenType;
     }
 }
