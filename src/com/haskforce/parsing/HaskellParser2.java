@@ -32,6 +32,7 @@ import static com.haskforce.psi.HaskellTypes.IMPORT;
 import static com.haskforce.psi.HaskellTypes.QUALIFIED;
 import static com.haskforce.psi.HaskellTypes.HIDING;
 import static com.haskforce.psi.HaskellTypes.PERIOD;
+import static com.haskforce.psi.HaskellTypes.DOUBLEPERIOD;
 import static com.haskforce.psi.HaskellTypes.RPAREN;
 import static com.haskforce.psi.HaskellTypes.LPAREN;
 import static com.haskforce.psi.HaskellTypes.RBRACKET;
@@ -1196,6 +1197,51 @@ public class HaskellParser2 implements PsiParser {
             parseExpTopType(builder, ((RightSection) expTopType).exp, comments);
             e1 = builder.getTokenType();
             consumeToken(builder, RPAREN);
+            e1 = builder.getTokenType();
+        } else if (expTopType instanceof EnumFrom) {
+            consumeToken(builder, LBRACKET);
+            e1 = builder.getTokenType();
+            parseExpTopType(builder, ((EnumFrom) expTopType).exp, comments);
+            e1 = builder.getTokenType();
+            consumeToken(builder, DOUBLEPERIOD);
+            e1 = builder.getTokenType();
+            consumeToken(builder, RBRACKET);
+            e1 = builder.getTokenType();
+        } else if (expTopType instanceof EnumFromTo) {
+            consumeToken(builder, LBRACKET);
+            e1 = builder.getTokenType();
+            parseExpTopType(builder, ((EnumFromTo) expTopType).from, comments);
+            e1 = builder.getTokenType();
+            consumeToken(builder, DOUBLEPERIOD);
+            e1 = builder.getTokenType();
+            parseExpTopType(builder, ((EnumFromTo) expTopType).to, comments);
+            consumeToken(builder, RBRACKET);
+            e1 = builder.getTokenType();
+        } else if (expTopType instanceof EnumFromThen) {
+            consumeToken(builder, LBRACKET);
+            e1 = builder.getTokenType();
+            parseExpTopType(builder, ((EnumFromThen) expTopType).from, comments);
+            e1 = builder.getTokenType();
+            consumeToken(builder, COMMA);
+            e1 = builder.getTokenType();
+            parseExpTopType(builder, ((EnumFromThen) expTopType).step, comments);
+            consumeToken(builder, DOUBLEPERIOD);
+            e1 = builder.getTokenType();
+            consumeToken(builder, RBRACKET);
+            e1 = builder.getTokenType();
+        } else if (expTopType instanceof EnumFromThenTo) {
+            consumeToken(builder, LBRACKET);
+            e1 = builder.getTokenType();
+            parseExpTopType(builder, ((EnumFromThenTo) expTopType).from, comments);
+            e1 = builder.getTokenType();
+            consumeToken(builder, COMMA);
+            e1 = builder.getTokenType();
+            parseExpTopType(builder, ((EnumFromThenTo) expTopType).step, comments);
+            consumeToken(builder, DOUBLEPERIOD);
+            e1 = builder.getTokenType();
+            parseExpTopType(builder, ((EnumFromThenTo) expTopType).to, comments);
+            e1 = builder.getTokenType();
+            consumeToken(builder, RBRACKET);
             e1 = builder.getTokenType();
         } else if (expTopType instanceof Let) {
             builder.advanceLexer();
