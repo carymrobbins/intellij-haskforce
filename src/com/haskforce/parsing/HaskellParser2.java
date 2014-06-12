@@ -65,6 +65,7 @@ import static com.haskforce.psi.HaskellTypes.INTEGERTOKEN;
 import static com.haskforce.psi.HaskellTypes.VARIDREGEXP;
 import static com.haskforce.psi.HaskellTypes.ASTERISK;
 import static com.haskforce.psi.HaskellTypes.SINGLEQUOTE;
+import static com.haskforce.psi.HaskellTypes.DEFAULT;
 
 /**
  * New Parser using parser-helper.
@@ -350,9 +351,17 @@ public class HaskellParser2 implements PsiParser {
             PsiBuilder.Marker declMark = builder.mark();
             parseDataInstanceDecl(builder, (DataInsDecl) decl, comments);
             declMark.done(e);
+        } else if (decl instanceof InstDecl) {
+            PsiBuilder.Marker declMark = builder.mark();
+            parseInstDecl(builder, (InstDecl) decl, comments);
+            declMark.done(e);
         } else if (decl instanceof InfixDecl) {
             PsiBuilder.Marker declMark = builder.mark();
             parseInfixDecl(builder, (InfixDecl) decl, comments);
+            declMark.done(e);
+        } else if (decl instanceof DefaultDecl) {
+            PsiBuilder.Marker declMark = builder.mark();
+            parseDefaultDecl(builder, (DefaultDecl) decl, comments);
             declMark.done(e);
         } else if (decl instanceof SpliceDecl) {
             PsiBuilder.Marker declMark = builder.mark();
@@ -391,6 +400,9 @@ public class HaskellParser2 implements PsiParser {
         }
     }
 
+    /**
+     * Parse a pattern binding.
+     */
     private static void parsePatBind(PsiBuilder builder, PatBind patBind, Comment[] comments) {
         IElementType e = builder.getTokenType();
         parsePatTopType(builder, patBind.pat, comments);
@@ -400,12 +412,69 @@ public class HaskellParser2 implements PsiParser {
         if (patBind.binds != null) throw new RuntimeException("Unexpected binds in patbind");
     }
 
+    /**
+     * Parse a function binding.
+     */
     private static void parseFunBind(PsiBuilder builder, FunBind funBind, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
         while (funBind.match != null && i < funBind.match.length) {
             parseMatchTop(builder, funBind.match[i], comments);
             i++;
+        }
+    }
+
+    /**
+     * Parse a instance declaration.
+     */
+    private static void parseInstDecl(PsiBuilder builder, InstDecl instDecl, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        consumeToken(builder, INSTANCE);
+        parseContextTopType(builder, instDecl.contextMaybe, comments);
+        e = builder.getTokenType();
+        consumeToken(builder, DOUBLEARROW);
+        parseInstHead(builder, instDecl.instHead, comments);
+        e = builder.getTokenType();
+        consumeToken(builder, WHERE);
+        parseInstDeclTopTypes(builder, instDecl.instDecls, comments);
+        e = builder.getTokenType();
+    }
+
+    /**
+     * Parse a list of instance declarations.
+     */
+    private static void parseInstDeclTopTypes(PsiBuilder builder, InstDeclTopType[] instDecls, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        int i = 0;
+        while (instDecls != null && i < instDecls.length) {
+            parseInstDeclTopType(builder, instDecls[i], comments);
+            i++;
+        }
+    }
+
+    /**
+     * Parses a single instance declaration.
+     */
+    private static void parseInstDeclTopType(PsiBuilder builder, InstDeclTopType decl, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        if (decl instanceof InsDecl) {
+            throw new RuntimeException("InsDecl not implemented: " + decl.toString());
+            /* Preliminary implementation:
+            parseDecl(builder, ((InsDecl) decl).decl, comments);
+            e = builder.getTokenType();
+            */
+        } else if (decl instanceof InsType) {
+            throw new RuntimeException("InsType not implemented: " + decl.toString());
+            /* Preliminary implementation:
+            parseTypeTopType(builder, ((InsType) decl).t1, comments);
+            e = builder.getTokenType();
+            parseTypeTopType(builder, ((InsType) decl).t2, comments);
+            e = builder.getTokenType();
+            */
+        } else if (decl instanceof InsData) {
+            throw new RuntimeException("InsData not implemented:" + decl.toString());
+        } else if (decl instanceof InsGData) {
+            throw new RuntimeException("InsGData not implemented:" + decl.toString());
         }
     }
 
@@ -474,6 +543,32 @@ public class HaskellParser2 implements PsiParser {
             e = builder.getTokenType();
         } else if (declHead instanceof DHParen) {
             throw new RuntimeException("DHParen:" + declHead.toString());
+        }
+    }
+
+    /**
+     * Parses the left side of '=>' in an instance declaration.
+     */
+    private static void parseInstHead(PsiBuilder builder, InstHeadTopType instHead, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        if (instHead instanceof IHead) {
+            parseQName(builder, ((IHead) instHead).qName, comments);
+            e = builder.getTokenType();
+            parseTypeTopTypes(builder, ((IHead) instHead).types, comments);
+            e = builder.getTokenType();
+        } else if (instHead instanceof IHInfix) {
+            parseTypeTopType(builder, ((IHInfix) instHead).t1, comments);
+            e = builder.getTokenType();
+            parseQName(builder, ((IHInfix) instHead).qName, comments);
+            e = builder.getTokenType();
+            parseTypeTopType(builder, ((IHInfix) instHead).t2, comments);
+            e = builder.getTokenType();
+        } else if (instHead instanceof IHParen) {
+            consumeToken(builder, LPAREN);
+            e = builder.getTokenType();
+            parseInstHead(builder, ((IHParen) instHead).instHead, comments);
+            consumeToken(builder, RPAREN);
+            e = builder.getTokenType();
         }
     }
 
@@ -682,6 +777,20 @@ public class HaskellParser2 implements PsiParser {
                 e = builder.getTokenType();
             }
         }
+    }
+
+    /**
+     * Parses  a single default declaration.
+     */
+    private static void parseDefaultDecl(PsiBuilder builder, DefaultDecl decl, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        consumeToken(builder, DEFAULT);
+        e = builder.getTokenType();
+        consumeToken(builder, LPAREN);
+        e = builder.getTokenType();
+        parseTypeTopTypes(builder, decl.types, comments);
+        e = builder.getTokenType();
+        consumeToken(builder, RPAREN);
     }
 
     /**
@@ -1663,7 +1772,12 @@ public class HaskellParser2 implements PsiParser {
         if (context instanceof CxSingle) {
             parseAsstTopType(builder, ((CxSingle) context).asst, comments);
         } else if (context instanceof CxTuple) {
-            throw new RuntimeException("TODO: Implement CxTuple");
+            consumeToken(builder, LPAREN);
+            e = builder.getTokenType();
+            parseAsstTopTypes(builder, ((CxTuple) context).assts, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, RPAREN);
+            e = builder.getTokenType();
         } else if (context instanceof CxParen) {
             consumeToken(builder, LPAREN);
             parseContextTopType(builder, ((CxParen) context).context, comments);
@@ -1672,6 +1786,23 @@ public class HaskellParser2 implements PsiParser {
             e = builder.getTokenType();
         } else if (context instanceof CxEmpty) {
             throw new RuntimeException("TODO: Implement CxEmpty");
+        }
+    }
+
+    /**
+     * Parses a list of Assts.
+     */
+    private static void parseAsstTopTypes(PsiBuilder builder, AsstTopType[] assts, Comment[] comments) {
+        int i = 0;
+        IElementType e = builder.getTokenType();
+        while (assts != null && i < assts.length) {
+            parseAsstTopType(builder, assts[i], comments);
+            i++;
+            e = builder.getTokenType();
+            if (e == COMMA) {
+                consumeToken(builder, COMMA);
+                e = builder.getTokenType();
+            }
         }
     }
 
