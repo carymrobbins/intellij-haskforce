@@ -780,6 +780,15 @@ public class HaskellParser2 implements PsiParser {
             parseQName(builder, ((PRec) patTopType).qName, comments);
             e = builder.getTokenType();
             throw new RuntimeException("TODO: parsePatFields");
+        } else if (patTopType instanceof PWildCard) {
+            builder.advanceLexer(); // TODO: Token.UNDERSCORE?
+            e = builder.getTokenType();
+        } else if (patTopType instanceof PViewPat) {
+            parseExpTopType(builder, ((PViewPat) patTopType).exp, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, RIGHTARROW);
+            parsePatTopType(builder, ((PViewPat) patTopType).pat, comments);
+            e = builder.getTokenType();
         } else {
             throw new RuntimeException("parsePatTopType" + patTopType.toString());
         }
@@ -1561,7 +1570,12 @@ public class HaskellParser2 implements PsiParser {
             parseTypeTopTypes(builder, ((ClassA) asst).types, comments);
             e = builder.getTokenType();
         } else if (asst instanceof InfixA) {
-            throw new RuntimeException("TODO: Parse InfixA");
+            parseTypeTopType(builder, ((InfixA) asst).t1, comments);
+            e = builder.getTokenType();
+            parseQName(builder, ((InfixA) asst).qName, comments);
+            e = builder.getTokenType();
+            parseTypeTopType(builder, ((InfixA) asst).t2, comments);
+            e = builder.getTokenType();
         } else if (asst instanceof IParam) {
             throw new RuntimeException("TODO: Parse IParam");
             /* Preliminary untested implementation:
