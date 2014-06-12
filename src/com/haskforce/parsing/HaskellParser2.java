@@ -62,6 +62,7 @@ import static com.haskforce.psi.HaskellTypes.PIPE;
 import static com.haskforce.psi.HaskellTypes.CHARTOKEN;
 import static com.haskforce.psi.HaskellTypes.LET;
 import static com.haskforce.psi.HaskellTypes.INTEGERTOKEN;
+import static com.haskforce.psi.HaskellTypes.VARIDREGEXP;
 
 /**
  * New Parser using parser-helper.
@@ -779,7 +780,11 @@ public class HaskellParser2 implements PsiParser {
         } else if (patTopType instanceof PRec) {
             parseQName(builder, ((PRec) patTopType).qName, comments);
             e = builder.getTokenType();
-            throw new RuntimeException("TODO: parsePatFields");
+            consumeToken(builder, LBRACE);
+            parsePatFieldTopTypes(builder, ((PRec) patTopType).patFields, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, RBRACE);
+            e = builder.getTokenType();
         } else if (patTopType instanceof PWildCard) {
             builder.advanceLexer(); // TODO: Token.UNDERSCORE?
             e = builder.getTokenType();
@@ -1381,6 +1386,41 @@ public class HaskellParser2 implements PsiParser {
             e1 = builder.getTokenType();
         } else {
             throw new RuntimeException("parseExpTopType: " + expTopType.toString());
+        }
+    }
+
+    /**
+     * Parses a list of field patterns.
+     */
+    private static void parsePatFieldTopTypes(PsiBuilder builder, PatFieldTopType[] fields, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        int i = 0;
+        while (fields != null && i < fields.length) {
+            parsePatFieldTopType(builder, fields[i], comments);
+            i++;
+            e = builder.getTokenType();
+            if (e == COMMA) consumeToken(builder, COMMA);
+        }
+    }
+
+    /**
+     * Parses a field pattern.
+     */
+    private static void parsePatFieldTopType(PsiBuilder builder, PatFieldTopType field, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        if (field instanceof PFieldPat) {
+            parseQName(builder, ((PFieldPat) field).qName, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, EQUALS);
+            e = builder.getTokenType();
+            parsePatTopType(builder, ((PFieldPat) field).pat, comments);
+            e = builder.getTokenType();
+        } else if (field instanceof PFieldPun) {
+            consumeToken(builder, VARIDREGEXP);
+            e = builder.getTokenType();
+        } else if (field instanceof PFieldWildcard) {
+            builder.advanceLexer(); // TODO: Token.UNDERSCORE?
+            e = builder.getTokenType();
         }
     }
 
