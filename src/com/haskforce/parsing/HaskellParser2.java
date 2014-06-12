@@ -466,7 +466,12 @@ public class HaskellParser2 implements PsiParser {
             e = builder.getTokenType();
             parseTyVarBinds(builder, ((DHead) declHead).tyVars, comments);
         } else if (declHead instanceof DHInfix) {
-            throw new RuntimeException("DHInfix:" + declHead.toString());
+            parseTyVarBind(builder, ((DHInfix) declHead).tb1, comments);
+            e = builder.getTokenType();
+            parseName(builder, ((DHInfix) declHead).name, comments);
+            e = builder.getTokenType();
+            parseTyVarBind(builder, ((DHInfix) declHead).tb2, comments);
+            e = builder.getTokenType();
         } else if (declHead instanceof DHParen) {
             throw new RuntimeException("DHParen:" + declHead.toString());
         }
