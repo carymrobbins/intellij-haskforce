@@ -63,6 +63,8 @@ import static com.haskforce.psi.HaskellTypes.CHARTOKEN;
 import static com.haskforce.psi.HaskellTypes.LET;
 import static com.haskforce.psi.HaskellTypes.INTEGERTOKEN;
 import static com.haskforce.psi.HaskellTypes.VARIDREGEXP;
+import static com.haskforce.psi.HaskellTypes.ASTERISK;
+import static com.haskforce.psi.HaskellTypes.SINGLEQUOTE;
 
 /**
  * New Parser using parser-helper.
@@ -490,8 +492,14 @@ public class HaskellParser2 implements PsiParser {
         IElementType e = builder.getTokenType();
 
         if (tyVarBindTopType instanceof KindedVar) {
+            consumeToken(builder, LPAREN);
+            e = builder.getTokenType();
             parseName(builder, ((KindedVar) tyVarBindTopType).name, comments);
-            throw new RuntimeException("TODO: Implement parseKindVar()");
+            e = builder.getTokenType();
+            consumeToken(builder, DOUBLECOLON);
+            e = builder.getTokenType();
+            parseKindTopType(builder, ((KindedVar) tyVarBindTopType).kind, comments);
+            consumeToken(builder, RPAREN);
         } else if (tyVarBindTopType instanceof UnkindedVar) {
             parseName(builder, ((UnkindedVar) tyVarBindTopType).name, comments);
         }
@@ -1542,6 +1550,69 @@ public class HaskellParser2 implements PsiParser {
             e = builder.getTokenType();
         } else {
             throw new RuntimeException("parseTypeTopType: " + typeTopType.toString());
+        }
+    }
+
+    /**
+     * Parses a list of kinds.
+     */
+    private static void parseKindTopTypes(PsiBuilder builder, KindTopType[] kinds, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        int i = 0;
+        while (kinds != null && i < kinds.length) {
+            parseKindTopType(builder, kinds[i], comments);
+            i++;
+            e = builder.getTokenType();
+            if (e == COMMA) consumeToken(builder, COMMA);
+        }
+    }
+
+    /**
+     * Parses a kind.
+     */
+    private static void parseKindTopType(PsiBuilder builder, KindTopType kind, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        if (kind instanceof KindStar) {
+            consumeToken(builder, ASTERISK);
+            e = builder.getTokenType();
+        } else if (kind instanceof KindBang) {
+            consumeToken(builder, EXLAMATION);
+            e = builder.getTokenType();
+        } else if (kind instanceof KindFn) {
+            parseKindTopType(builder, ((KindFn) kind).k1, comments);
+            consumeToken(builder, RIGHTARROW);
+            parseKindTopType(builder, ((KindFn) kind).k2, comments);
+        } else if (kind instanceof KindParen) {
+            consumeToken(builder, LPAREN);
+            e = builder.getTokenType();
+            parseKindTopType(builder, ((KindParen) kind).kind, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, RPAREN);
+            e = builder.getTokenType();
+        } else if (kind instanceof KindVar) {
+            parseQName(builder, ((KindVar) kind).qName, comments);
+            e = builder.getTokenType();
+        }  else if (kind instanceof KindApp) {
+            parseKindTopType(builder, ((KindApp) kind).k1, comments);
+            e = builder.getTokenType();
+            parseKindTopType(builder, ((KindApp) kind).k2, comments);
+            e = builder.getTokenType();
+        } else if (kind instanceof KindTuple) {
+            consumeToken(builder, SINGLEQUOTE);
+            e = builder.getTokenType();
+            consumeToken(builder, LPAREN);
+            e = builder.getTokenType();
+            parseKindTopTypes(builder, ((KindTuple) kind).kinds, comments);
+            consumeToken(builder, RPAREN);
+            e = builder.getTokenType();
+        } else if (kind instanceof KindList) {
+            consumeToken(builder, SINGLEQUOTE);
+            e = builder.getTokenType();
+            consumeToken(builder, LBRACKET);
+            e = builder.getTokenType();
+            parseKindTopTypes(builder, ((KindList) kind).kinds, comments);
+            consumeToken(builder, RBRACKET);
+            e = builder.getTokenType();
         }
     }
 
