@@ -301,6 +301,23 @@ public class HaskellParser2 implements PsiParser {
         }
     }
 
+    /**
+     * Parse a list of declarations.
+     */
+    private static void parseDecls(PsiBuilder builder, DeclTopType[] decl, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        int i = 0;
+        while (decl != null && i < decl.length) {
+            parseDecl(builder, decl[i], comments);
+            i++;
+            e = builder.getTokenType();
+        }
+    }
+
+
+    /**
+     * Parse a single declaration.
+     */
     private static void parseDecl(PsiBuilder builder, DeclTopType decl, Comment[] comments) {
         IElementType e = builder.getTokenType();
         // Pragmas are handled by the outer loop in parseBody, so they are no-ops.
@@ -612,6 +629,24 @@ public class HaskellParser2 implements PsiParser {
             i++;
         }
         parseRhs(builder, match.rhs, comments);
+        e = builder.getTokenType();
+        if (e == WHERE) {
+            consumeToken(builder, WHERE);
+            parseBindsTopType(builder, match.bindsMaybe, comments);
+            e = builder.getTokenType();
+        }
+    }
+
+    /**
+     * Parses one binding.
+     */
+    private static void parseBindsTopType(PsiBuilder builder, BindsTopType bindsTopType, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        if (bindsTopType instanceof BDecls) {
+            parseDecls(builder, ((BDecls) bindsTopType).decls, comments);
+        } else if (bindsTopType instanceof IPBinds) {
+            throw new RuntimeException("TODO: Implement IPBinds:" + bindsTopType.toString());
+        }
     }
 
     /**
@@ -634,6 +669,12 @@ public class HaskellParser2 implements PsiParser {
             parsePVar(builder, (PVar) patTopType, comments);
         } else if (patTopType instanceof PLit) {
             parseLiteralTop(builder, ((PLit) patTopType).lit, comments);
+            e = builder.getTokenType();
+        } else if (patTopType instanceof PList) {
+            consumeToken(builder, LBRACKET);
+            parsePatTopTypes(builder, ((PList) patTopType).pats, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, RBRACKET);
             e = builder.getTokenType();
         } else if (patTopType instanceof PParen) {
             consumeToken(builder, LPAREN);
