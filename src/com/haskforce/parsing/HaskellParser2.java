@@ -356,6 +356,10 @@ public class HaskellParser2 implements PsiParser {
             PsiBuilder.Marker declMark = builder.mark();
             parseDataDecl(builder, (DataDecl) decl, comments);
             declMark.done(e);
+        } else if (decl instanceof GDataDecl) {
+            PsiBuilder.Marker declMark = builder.mark();
+            parseGDataDecl(builder, (GDataDecl) decl, comments);
+            declMark.done(e);
         } else if (decl instanceof TypeDecl) {
             PsiBuilder.Marker declMark = builder.mark();
             parseTypeDecl(builder, (TypeDecl) decl, comments);
@@ -544,6 +548,33 @@ public class HaskellParser2 implements PsiParser {
             parseQualConDecl(builder, dataDecl.qualConDecls[i], comments);
             i++;
             if (i < dataDecl.qualConDecls.length) {
+                builder.advanceLexer();
+                e = builder.getTokenType();
+            }
+        }
+    }
+
+    /**
+     * Parses a gadt-style data declaration.
+     */
+    private static void parseGDataDecl(PsiBuilder builder, GDataDecl gDataDecl, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        consumeToken(builder, DATA);
+        parseDeclHead(builder, gDataDecl.declHead, comments);
+        e = builder.getTokenType();
+        if (e == DOUBLECOLON) {
+            consumeToken(builder, DOUBLECOLON);
+            e = builder.getTokenType();
+            parseKindTopType(builder, gDataDecl.kindMaybe, comments);
+            e = builder.getTokenType();
+        }
+        if (e == WHERE) consumeToken(builder, WHERE);
+        int i = 0;
+        e = builder.getTokenType();
+        while (gDataDecl.gadtDecls != null && i < gDataDecl.gadtDecls.length) {
+            parseGadtDecl(builder, gDataDecl.gadtDecls[i], comments);
+            i++;
+            if (i < gDataDecl.gadtDecls.length) {
                 builder.advanceLexer();
                 e = builder.getTokenType();
             }
@@ -2081,7 +2112,8 @@ public class HaskellParser2 implements PsiParser {
             parseKindTopType(builder, ((KindApp) kind).k2, comments);
             e = builder.getTokenType();
         } else if (kind instanceof KindTuple) {
-            consumeToken(builder, SINGLEQUOTE);
+            e = builder.getTokenType();
+            if (e == SINGLEQUOTE) consumeToken(builder, SINGLEQUOTE);
             e = builder.getTokenType();
             consumeToken(builder, LPAREN);
             e = builder.getTokenType();
@@ -2089,7 +2121,8 @@ public class HaskellParser2 implements PsiParser {
             consumeToken(builder, RPAREN);
             e = builder.getTokenType();
         } else if (kind instanceof KindList) {
-            consumeToken(builder, SINGLEQUOTE);
+            e = builder.getTokenType();
+            if (e == SINGLEQUOTE) consumeToken(builder, SINGLEQUOTE);
             e = builder.getTokenType();
             consumeToken(builder, LBRACKET);
             e = builder.getTokenType();
