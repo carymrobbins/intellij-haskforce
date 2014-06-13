@@ -25,6 +25,7 @@ public class ContextTopTypeDeserializer implements JsonDeserializer<ContextTopTy
                                      JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         JsonObject objType = jsonElement.getAsJsonObject();
         JsonArray stuff;
+        JsonObject stuff2;
         if ((stuff = objType.getAsJsonArray("CxSingle")) != null) {
             CxSingle cxSingle = new CxSingle();
             cxSingle.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
@@ -40,9 +41,9 @@ public class ContextTopTypeDeserializer implements JsonDeserializer<ContextTopTy
             cxParen.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             cxParen.context = jsonDeserializationContext.deserialize(stuff.get(1), ContextTopType.class);
             return cxParen;
-        } else if ((stuff = objType.getAsJsonArray("CxEmpty")) != null) {
+        } else if ((stuff2 = objType.getAsJsonObject("CxEmpty")) != null) {
             CxEmpty cxEmpty = new CxEmpty();
-            cxEmpty.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
+            cxEmpty.srcInfoSpan = jsonDeserializationContext.deserialize(stuff2.get("srcInfoSpan"), SrcInfoSpan.class);
             return cxEmpty;
         }
         throw new JsonParseException("Unexpected JSON object type: " + objType.toString());
