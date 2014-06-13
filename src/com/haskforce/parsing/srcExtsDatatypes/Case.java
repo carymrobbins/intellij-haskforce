@@ -9,7 +9,7 @@ public class Case extends ExpTopType {
     public SrcInfoSpan srcInfoSpan;
     public ExpTopType scrutinee;
     public Alt[] alts;
-public Do ggg;
+
     @Override
     public String toString() {
         return "Case{" +
