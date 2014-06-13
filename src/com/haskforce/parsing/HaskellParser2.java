@@ -2387,7 +2387,10 @@ public class HaskellParser2 implements PsiParser {
             consumeToken(builder, RPAREN);
             e = builder.getTokenType();
         } else if (context instanceof CxEmpty) {
-            throw new RuntimeException("TODO: Implement CxEmpty");
+            consumeToken(builder, LPAREN);
+            e = builder.getTokenType();
+            consumeToken(builder, RPAREN);
+            e = builder.getTokenType();
         }
     }
 
@@ -2433,14 +2436,11 @@ public class HaskellParser2 implements PsiParser {
             parseTypeTopType(builder, ((IParam) asst).type, comments);
             e = builder.getTokenType();
         } else if (asst instanceof EqualP) {
-            throw new RuntimeException("TODO: Parse EqualP");
-            /* Preliminary untested implementation:
             parseTypeTopType(builder, ((EqualP) asst).t1, comments);
-            consumeToken(builder, TILDETOKENHERE);
+            consumeToken(builder, TILDE);
             e = builder.getTokenType();
             parseTypeTopType(builder,((EqualP) asst).t2, comments);
             e = builder.getTokenType();
-            */
         }
     }
 
