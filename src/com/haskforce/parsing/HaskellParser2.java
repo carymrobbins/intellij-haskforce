@@ -74,6 +74,7 @@ import static com.haskforce.psi.HaskellTypes.CASE;
 import static com.haskforce.psi.HaskellTypes.OF;
 import static com.haskforce.psi.HaskellTypes.SEMICOLON;
 import static com.haskforce.psi.HaskellTypes.DERIVING;
+import static com.haskforce.psi.HaskellTypes.FLOATTOKEN;
 
 /**
  * New Parser using parser-helper.
@@ -629,7 +630,12 @@ public class HaskellParser2 implements PsiParser {
             parseTyVarBind(builder, ((DHInfix) declHead).tb2, comments);
             e = builder.getTokenType();
         } else if (declHead instanceof DHParen) {
-            throw new RuntimeException("DHParen:" + declHead.toString());
+            consumeToken(builder, LPAREN);
+            e = builder.getTokenType();
+            parseDeclHead(builder, ((DHParen) declHead).declHead, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, RPAREN);
+            e = builder.getTokenType();
         }
     }
 
@@ -1227,7 +1233,23 @@ public class HaskellParser2 implements PsiParser {
             consumeToken(builder, RPAREN);
             e = builder.getTokenType();
         } else if (specialConTopType instanceof TupleCon) {
-            throw new RuntimeException("TODO: implement TupleCon");
+            consumeToken(builder, LPAREN);
+            e = builder.getTokenType();
+            boolean unboxed = parseBoxed(builder, ((TupleCon) specialConTopType).boxed, comments);
+            e = builder.getTokenType();
+            int i = 1;
+            while (i < ((TupleCon) specialConTopType).i) {
+                consumeToken(builder, COMMA);
+                e = builder.getTokenType();
+                i++;
+            }
+            e = builder.getTokenType();
+            if (unboxed) {
+                consumeToken(builder, HASH);
+                e = builder.getTokenType();
+            }
+            consumeToken(builder, RPAREN);
+            e = builder.getTokenType();
         } else if (specialConTopType instanceof Cons) {
             consumeToken(builder, COLON);
             e = builder.getTokenType();
@@ -1294,7 +1316,10 @@ public class HaskellParser2 implements PsiParser {
         } else if (literalTopType instanceof StringLit) {
             parseStringLiteral(builder);
         } else if (literalTopType instanceof IntLit) {
-            builder.advanceLexer();
+            consumeToken(builder, INTEGERTOKEN);
+            e = builder.getTokenType();
+        } else if (literalTopType instanceof FracLit) {
+            consumeToken(builder, FLOATTOKEN);
             e = builder.getTokenType();
         } else {
             throw new RuntimeException("LiteralTop: " + literalTopType.toString());
@@ -1782,7 +1807,11 @@ public class HaskellParser2 implements PsiParser {
      */
     private static void parseGuardedAlt(PsiBuilder builder, GuardedAlt alt, Comment[] comments) {
         IElementType e = builder.getTokenType();
+        consumeToken(builder, PIPE);
+        e = builder.getTokenType();
         parseStmtTopTypes(builder, alt.stmts, comments);
+        e = builder.getTokenType();
+        consumeToken(builder, RIGHTARROW);
         e = builder.getTokenType();
         parseExpTopType(builder, alt.exp, comments);
         e = builder.getTokenType();
