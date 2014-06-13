@@ -31,14 +31,14 @@ public class InstHeadTopTypeDeserializer implements JsonDeserializer<InstHeadTop
             iHead.qName = jsonDeserializationContext.deserialize(stuff.get(1), QNameTopType.class);
             iHead.types = jsonDeserializationContext.deserialize(stuff.get(2), TypeTopType[].class);
             return iHead;
-        } else if ((stuff = objType.getAsJsonArray("IHInfix")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("IHInfix")) != null) {
             IHInfix ihInfix = new IHInfix();
             ihInfix.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             ihInfix.t1 = jsonDeserializationContext.deserialize(stuff.get(1), TypeTopType.class);
             ihInfix.qName = jsonDeserializationContext.deserialize(stuff.get(2), QNameTopType.class);
             ihInfix.t2 = jsonDeserializationContext.deserialize(stuff.get(3), TypeTopType.class);
             return ihInfix;
-        } else if ((stuff = objType.getAsJsonArray("IHParen")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("IHParen")) != null) {
             IHParen ihParen = new IHParen();
             ihParen.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             ihParen.instHead = jsonDeserializationContext.deserialize(stuff.get(1), InstHeadTopType.class);

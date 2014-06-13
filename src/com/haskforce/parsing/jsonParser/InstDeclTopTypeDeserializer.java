@@ -24,13 +24,13 @@ public class InstDeclTopTypeDeserializer implements JsonDeserializer<InstDeclTop
             insDecl.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             insDecl.decl = jsonDeserializationContext.deserialize(stuff.get(1), DeclTopType.class);
             return insDecl;
-        } else if ((stuff = objType.getAsJsonArray("InsType")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("InsType")) != null) {
             InsType insType = new InsType();
             insType.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             insType.t1 = jsonDeserializationContext.deserialize(stuff.get(1), TypeTopType.class);
             insType.t2 = jsonDeserializationContext.deserialize(stuff.get(2), TypeTopType.class);
             return insType;
-        } else if ((stuff = objType.getAsJsonArray("InsData")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("InsData")) != null) {
             InsData insData = new InsData();
             insData.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             insData.dataOrNew = jsonDeserializationContext.deserialize(stuff.get(1), DataOrNewTopType.class);

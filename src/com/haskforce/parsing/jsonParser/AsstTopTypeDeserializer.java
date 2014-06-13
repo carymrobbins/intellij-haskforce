@@ -46,7 +46,7 @@ public class AsstTopTypeDeserializer implements JsonDeserializer<AsstTopType> {
             iParam.ipName = jsonDeserializationContext.deserialize(stuff.get(1), IPNameTopType.class);
             iParam.type = jsonDeserializationContext.deserialize(stuff.get(2), TypeTopType.class);
             return iParam;
-        } else if ((stuff = objType.getAsJsonArray("EqualP")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("EqualP")) != null) {
             EqualP equalP = new EqualP();
             equalP.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             equalP.t1 = jsonDeserializationContext.deserialize(stuff.get(1), TypeTopType.class);

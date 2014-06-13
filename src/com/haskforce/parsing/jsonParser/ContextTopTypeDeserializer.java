@@ -40,7 +40,7 @@ public class ContextTopTypeDeserializer implements JsonDeserializer<ContextTopTy
             cxParen.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             cxParen.context = jsonDeserializationContext.deserialize(stuff.get(1), ContextTopType.class);
             return cxParen;
-        } else if ((stuff = objType.getAsJsonArray("CxEmpty")) != null) { // TODO: Test.
+        } else if ((stuff = objType.getAsJsonArray("CxEmpty")) != null) {
             CxEmpty cxEmpty = new CxEmpty();
             cxEmpty.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             return cxEmpty;
