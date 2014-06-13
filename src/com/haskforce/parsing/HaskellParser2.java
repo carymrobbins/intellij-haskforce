@@ -1483,6 +1483,12 @@ public class HaskellParser2 implements PsiParser {
             consumeToken(builder, DO);
             parseStmtTopTypes(builder, ((Do) expTopType).stmts, comments);
             doMark.done(e);
+        } else if (expTopType instanceof MDo) {
+            IElementType e = builder.getTokenType();
+            PsiBuilder.Marker doMark = builder.mark();
+            builder.advanceLexer(); // TODO: Token.MDO
+            parseStmtTopTypes(builder, ((MDo) expTopType).stmts, comments);
+            doMark.done(e);
         } else if (expTopType instanceof Lambda) {
             consumeToken(builder, BACKSLASH);
             IElementType e = builder.getTokenType();
@@ -1671,6 +1677,11 @@ public class HaskellParser2 implements PsiParser {
             e = builder.getTokenType();
             parseExpTopType(builder, ((If) expTopType).f, comments);
             e = builder.getTokenType();
+        } else if (expTopType instanceof MultiIf) {
+            consumeToken(builder, IF);
+            IElementType e = builder.getTokenType();
+            parseIfAlts(builder, ((MultiIf) expTopType).alts, comments);
+            e = builder.getTokenType();
         } else if (expTopType instanceof QuasiQuote) {
             IElementType e = builder.getTokenType();
             consumeToken(builder, LBRACKET);
@@ -1738,6 +1749,14 @@ public class HaskellParser2 implements PsiParser {
             e1 = builder.getTokenType();
             parseExpTopType(builder, ((RightArrHighApp) expTopType).e2, comments);
             e1 = builder.getTokenType();
+        } else if (expTopType instanceof LCase) {
+            IElementType e = builder.getTokenType();
+            consumeToken(builder, BACKSLASH);
+            e = builder.getTokenType();
+            consumeToken(builder, CASE);
+            e = builder.getTokenType();
+            parseAlts(builder, ((LCase) expTopType).alts, comments);
+            e = builder.getTokenType();
         } else {
             throw new RuntimeException("parseExpTopType: " + expTopType.toString());
         }
@@ -1835,6 +1854,33 @@ public class HaskellParser2 implements PsiParser {
         parseGuardedAltsTopType(builder, alt.guardedAlts, comments);
         e = builder.getTokenType();
         parseBindsTopType(builder, alt.bindsMaybe, comments);
+        e = builder.getTokenType();
+    }
+
+    /**
+     * Parses a list of IfAlts.
+     */
+    private static void parseIfAlts(PsiBuilder builder, IfAlt[] alts, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        int i = 0;
+        while (alts != null && i < alts.length) {
+            parseIfAlt(builder, alts[i], comments);
+            i++;
+            e = builder.getTokenType();
+            if (e == PIPE) consumeToken(builder, PIPE);
+        }
+    }
+
+    /**
+     * Parses a single IfAlt
+     */
+    private static void parseIfAlt(PsiBuilder builder, IfAlt alt, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        parseExpTopType(builder, alt.e1, comments);
+        e = builder.getTokenType();
+        consumeToken(builder, RIGHTARROW);
+        e = builder.getTokenType();
+        parseExpTopType(builder, alt.e2, comments);
         e = builder.getTokenType();
     }
 
