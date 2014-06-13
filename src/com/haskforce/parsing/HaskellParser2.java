@@ -75,6 +75,8 @@ import static com.haskforce.psi.HaskellTypes.OF;
 import static com.haskforce.psi.HaskellTypes.SEMICOLON;
 import static com.haskforce.psi.HaskellTypes.DERIVING;
 import static com.haskforce.psi.HaskellTypes.FLOATTOKEN;
+import static com.haskforce.psi.HaskellTypes.IF;
+import static com.haskforce.psi.HaskellTypes.ELSE;
 
 /**
  * New Parser using parser-helper.
@@ -1529,6 +1531,16 @@ public class HaskellParser2 implements PsiParser {
             e1 = builder.getTokenType();
             consumeToken(builder, RPAREN);
             e1 = builder.getTokenType();
+        } else if (expTopType instanceof LeftSection) {
+            e1 = builder.getTokenType();
+            consumeToken(builder, LPAREN);
+            e1 = builder.getTokenType();
+            parseExpTopType(builder, ((LeftSection) expTopType).exp, comments);
+            e1 = builder.getTokenType();
+            parseQOp(builder, ((LeftSection) expTopType).qop, comments);
+            e1 = builder.getTokenType();
+            consumeToken(builder, RPAREN);
+            e1 = builder.getTokenType();
         } else if (expTopType instanceof RightSection) {
             e1 = builder.getTokenType();
             consumeToken(builder, LPAREN);
@@ -1645,6 +1657,19 @@ public class HaskellParser2 implements PsiParser {
             consumeToken(builder, IN);
             e = builder.getTokenType();
             parseExpTopType(builder, ((Let) expTopType).exp, comments);
+            e = builder.getTokenType();
+        } else if (expTopType instanceof If) {
+            consumeToken(builder, IF);
+            IElementType e = builder.getTokenType();
+            parseExpTopType(builder, ((If) expTopType).cond, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, THEN);
+            e = builder.getTokenType();
+            parseExpTopType(builder, ((If) expTopType).t, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, ELSE);
+            e = builder.getTokenType();
+            parseExpTopType(builder, ((If) expTopType).f, comments);
             e = builder.getTokenType();
         } else if (expTopType instanceof QuasiQuote) {
             IElementType e = builder.getTokenType();
