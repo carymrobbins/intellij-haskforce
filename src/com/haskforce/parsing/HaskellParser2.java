@@ -80,6 +80,8 @@ import static com.haskforce.psi.HaskellTypes.ELSE;
 import static com.haskforce.psi.HaskellTypes.QUESTION;
 import static com.haskforce.psi.HaskellTypes.PERCENT;
 import static com.haskforce.psi.HaskellTypes.CLASSTOKEN;
+import static com.haskforce.psi.HaskellTypes.DOLLAR;
+import static com.haskforce.psi.HaskellTypes.THQUOTE;
 
 /**
  * New Parser using parser-helper.
@@ -1130,6 +1132,20 @@ public class HaskellParser2 implements PsiParser {
             consumeToken(builder, RIGHTARROW);
             parsePatTopType(builder, ((PViewPat) patTopType).pat, comments);
             e = builder.getTokenType();
+        } else if (patTopType instanceof PQuasiQuote) {
+            e = builder.getTokenType();
+            consumeToken(builder, LBRACKET);
+            builder.advanceLexer();
+            e = builder.getTokenType();
+            consumeToken(builder, PIPE);
+            e = builder.getTokenType();
+            while (e != PIPE) {
+                builder.advanceLexer();
+                e = builder.getTokenType();
+            }
+            consumeToken(builder, PIPE);
+            consumeToken(builder, RBRACKET);
+            e = builder.getTokenType();
         } else if (patTopType instanceof PBangPat) {
             consumeToken(builder, EXLAMATION);
             e = builder.getTokenType();
@@ -1771,6 +1787,47 @@ public class HaskellParser2 implements PsiParser {
             consumeToken(builder, IF);
             IElementType e = builder.getTokenType();
             parseIfAlts(builder, ((MultiIf) expTopType).alts, comments);
+            e = builder.getTokenType();
+        } else if (expTopType instanceof VarQuote) {
+            IElementType e = builder.getTokenType();
+            consumeToken(builder, SINGLEQUOTE);
+            e = builder.getTokenType();
+            parseQName(builder, ((VarQuote) expTopType).qName, comments);
+            e = builder.getTokenType();
+        } else if (expTopType instanceof TypQuote) {
+            IElementType e = builder.getTokenType();
+            consumeToken(builder, THQUOTE);
+            e = builder.getTokenType();
+            parseQName(builder, ((TypQuote) expTopType).qName, comments);
+            e = builder.getTokenType();
+        } else if (expTopType instanceof BracketExp) {
+            IElementType e = builder.getTokenType();
+            consumeToken(builder, LBRACKET);
+            e = builder.getTokenType();
+            if (e != PIPE) {
+                builder.advanceLexer(); // 'd', 't', etc
+                e = builder.getTokenType();
+            }
+            consumeToken(builder, PIPE);
+            e = builder.getTokenType();
+            while (e != PIPE) {
+                builder.advanceLexer();
+                e = builder.getTokenType();
+            }
+            consumeToken(builder, PIPE);
+            consumeToken(builder, RBRACKET);
+            e = builder.getTokenType();
+        } else if (expTopType instanceof SpliceExp) {
+            IElementType e = builder.getTokenType();
+            consumeToken(builder, DOLLAR);
+            boolean parenSplice = ((SpliceExp) expTopType).splice instanceof ParenSplice;
+            if (parenSplice) {
+                consumeToken(builder, LPAREN);
+                parseExpTopType(builder, ((ParenSplice) ((SpliceExp) expTopType).splice).exp, comments);
+                consumeToken(builder, RPAREN);
+            } else {
+                consumeToken(builder, VARIDREGEXP);
+            }
             e = builder.getTokenType();
         } else if (expTopType instanceof QuasiQuote) {
             IElementType e = builder.getTokenType();
