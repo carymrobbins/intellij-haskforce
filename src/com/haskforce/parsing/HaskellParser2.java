@@ -1282,11 +1282,16 @@ public class HaskellParser2 implements PsiParser {
      * Parses a name.
      */
     private static void parseName(PsiBuilder builder, NameTopType nameTopType,  Comment[] comments) {
+        IElementType e = builder.getTokenType();
         if (nameTopType instanceof Ident) {
-            builder.remapCurrentToken(NAME);
-            consumeToken(builder, NAME);
+            int startPos = builder.getCurrentOffset();
+            while ((builder.getCurrentOffset() - startPos) <
+                    ((Ident) nameTopType).name.length()) {
+                builder.remapCurrentToken(NAME);
+                consumeToken(builder, NAME);
+                e = builder.getTokenType();
+            }
         } else if (nameTopType instanceof Symbol) {
-            IElementType e = builder.getTokenType();
             boolean startParen = e == LPAREN;
             if (startParen) consumeToken(builder, LPAREN);
             e = builder.getTokenType();
@@ -1320,6 +1325,40 @@ public class HaskellParser2 implements PsiParser {
             e = builder.getTokenType();
         } else if (literalTopType instanceof FracLit) {
             consumeToken(builder, FLOATTOKEN);
+            e = builder.getTokenType();
+        } else if (literalTopType instanceof PrimInt) {
+            consumeToken(builder, INTEGERTOKEN);
+            e = builder.getTokenType();
+            consumeToken(builder, HASH);
+            e = builder.getTokenType();
+        } else if (literalTopType instanceof PrimWord) {
+            consumeToken(builder, INTEGERTOKEN);
+            e = builder.getTokenType();
+            consumeToken(builder, HASH);
+            e = builder.getTokenType();
+            consumeToken(builder, HASH);
+            e = builder.getTokenType();
+        } else if (literalTopType instanceof PrimFloat) {
+            consumeToken(builder, FLOATTOKEN);
+            e = builder.getTokenType();
+            consumeToken(builder, HASH);
+            e = builder.getTokenType();
+        } else if (literalTopType instanceof PrimDouble) {
+            consumeToken(builder, FLOATTOKEN);
+            e = builder.getTokenType();
+            consumeToken(builder, HASH);
+            e = builder.getTokenType();
+            consumeToken(builder, HASH);
+            e = builder.getTokenType();
+        } else if (literalTopType instanceof PrimChar) {
+            consumeToken(builder, CHARTOKEN);
+            e = builder.getTokenType();
+            consumeToken(builder, HASH);
+            e = builder.getTokenType();
+        } else if (literalTopType instanceof PrimString) {
+            parseStringLiteral(builder);
+            e = builder.getTokenType();
+            consumeToken(builder, HASH);
             e = builder.getTokenType();
         } else {
             throw new RuntimeException("LiteralTop: " + literalTopType.toString());
@@ -1601,13 +1640,12 @@ public class HaskellParser2 implements PsiParser {
         } else if (expTopType instanceof Let) {
             builder.advanceLexer();
             IElementType e = builder.getTokenType();
-            // TODO: parseBinds(builder, ((Let) expTopType).binds, comments);
-            while (e != IN) {
-                builder.advanceLexer();
-                e = builder.getTokenType();
-            }
+            parseBindsTopType(builder, ((Let) expTopType).binds, comments);
+            e = builder.getTokenType();
             consumeToken(builder, IN);
+            e = builder.getTokenType();
             parseExpTopType(builder, ((Let) expTopType).exp, comments);
+            e = builder.getTokenType();
         } else if (expTopType instanceof QuasiQuote) {
             IElementType e = builder.getTokenType();
             consumeToken(builder, LBRACKET);
@@ -1625,6 +1663,9 @@ public class HaskellParser2 implements PsiParser {
         } else if (expTopType instanceof CorePragma) {
             parseGenericPragma(builder, null, comments);
             parseExpTopType(builder, ((CorePragma) expTopType).exp, comments);
+        } else if (expTopType instanceof SCCPragma) {
+            parseGenericPragma(builder, null, comments);
+            parseExpTopType(builder, ((SCCPragma) expTopType).exp, comments);
         } else if (expTopType instanceof Proc) {
             e1 = builder.getTokenType();
             builder.advanceLexer(); // TODO: consumeToken(builder, PROCTOKEN);
