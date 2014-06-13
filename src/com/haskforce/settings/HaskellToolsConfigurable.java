@@ -1,8 +1,8 @@
 package com.haskforce.settings;
 
-
 import com.haskforce.utils.ExecUtil;
 import com.intellij.ide.util.PropertiesComponent;
+import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
@@ -14,17 +14,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import static com.haskforce.utils.GuiUtil.createButton;
-import static com.haskforce.utils.GuiUtil.createDisplayVersion;
-import static com.haskforce.utils.GuiUtil.createExecutableOption;
-
-/**
- * The "Haskell Tools" option in Preferences->Project Settings.
- */
 public class HaskellToolsConfigurable implements SearchableConfigurable {
     public static final String HASKELL_TOOLS_ID = "Haskell Tools";
 
@@ -35,10 +27,12 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     private String oldStylishPath;
 
     // Swing components.
-    private JPanel settings;
+    private JPanel mainPanel;
     private TextFieldWithBrowseButton parserHelperPath;
     private JLabel parserHelperVersion;
+    private JButton parserHelperAutoFind;
     private TextFieldWithBrowseButton stylishPath;
+    private JButton stylishAutoFind;
     private JLabel stylishVersion;
 
     public HaskellToolsConfigurable(@NotNull Project inProject) {
@@ -71,55 +65,26 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
         return null;
     }
 
-    /**
-     * Creates the GUI panel and sets the text fields to the old values.
-     */
     @Nullable
     @Override
     public JComponent createComponent() {
-        settings = new JPanel(new GridBagLayout());
-        GridBagConstraints c = new GridBagConstraints();
-        c.anchor = GridBagConstraints.NORTHWEST;
-        c.fill = GridBagConstraints.HORIZONTAL;
-        c.gridheight = 1;
-        c.gridwidth = 1;
-        c.weightx = 1;
-        c.gridx = 0;
-
-        // Parser-helper configuration.
-        c.gridy = 0;
-        parserHelperPath = createExecutableOption(settings, "Parser-Helper", c);
-
-        c.gridy = 1;
-        parserHelperVersion = createDisplayVersion(settings, "Parser-Helper", c);
-
-        c.gridy = 2;
-        c.fill = GridBagConstraints.NONE;
-        createButton(settings, "Auto find", createApplyPathAction(parserHelperPath, "parser-helper"), c);
-
         if (!oldParserHelperPath.isEmpty()) {
             parserHelperPath.setText(oldParserHelperPath);
         }
-
-        c.fill = GridBagConstraints.HORIZONTAL;
-
-        // Stylish configuration.
-        c.gridy = 3;
-        stylishPath = createExecutableOption(settings, "Stylish-Haskell", c);
-
-        c.gridy = 4;
-        stylishVersion = createDisplayVersion(settings, "Stylish-Haskell", c);
-
-        c.gridy = 5;
-        c.fill = GridBagConstraints.NONE;
-        createButton(settings, "Auto find", createApplyPathAction(stylishPath, "stylish-haskell"), c);
-
         if (!oldStylishPath.isEmpty()) {
             stylishPath.setText(oldStylishPath);
         }
-
+        addFolderListener(parserHelperPath, "parser-helper");
+        addFolderListener(stylishPath, "stylish-haskell");
+        parserHelperAutoFind.addActionListener(createApplyPathAction(parserHelperPath, "parser-helper"));
+        stylishAutoFind.addActionListener(createApplyPathAction(stylishPath, "stylish-haskell"));
         updateVersionInfoFields();
-        return settings;
+        return mainPanel;
+    }
+
+    private static void addFolderListener(final TextFieldWithBrowseButton textField, final String executable) {
+        textField.addBrowseFolderListener("Select " + executable + " path", "", null,
+                                          FileChooserDescriptorFactory.createSingleLocalFileDescriptor());
     }
 
     private static ActionListener createApplyPathAction(final TextAccessor textField, final String executable) {
@@ -142,7 +107,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     @Override
     public boolean isModified() {
         return !(parserHelperPath.getText().equals(oldParserHelperPath) &&
-                    stylishPath.getText().equals(oldStylishPath));
+                stylishPath.getText().equals(oldStylishPath));
     }
 
     /**
