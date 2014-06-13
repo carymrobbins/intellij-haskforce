@@ -87,7 +87,7 @@ public class DeclTopTypeDeserializer implements JsonDeserializer<DeclTopType> {
             classDecl.contextMaybe = jsonDeserializationContext.deserialize(stuff.get(1), ContextTopType.class);
             classDecl.declHead = jsonDeserializationContext.deserialize(stuff.get(2), DeclHeadTopType.class);
             classDecl.funDeps = jsonDeserializationContext.deserialize(stuff.get(3), FunDep[].class);
-            classDecl.classDecls = jsonDeserializationContext.deserialize(stuff.get(4), ClassDecl[].class);
+            classDecl.classDecls = jsonDeserializationContext.deserialize(stuff.get(4), ClassDeclTopType[].class);
             return classDecl;
         } else if ((stuff = objType.getAsJsonArray("InstDecl")) != null) {
             InstDecl instDecl = new InstDecl();

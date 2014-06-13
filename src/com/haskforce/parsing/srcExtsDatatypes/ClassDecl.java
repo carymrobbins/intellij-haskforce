@@ -10,7 +10,7 @@ public class ClassDecl extends DeclTopType {
     public ContextTopType contextMaybe;
     public DeclHeadTopType declHead;
     public FunDep[] funDeps;
-    public ClassDecl[] classDecls;
+    public ClassDeclTopType[] classDecls;
 
     @Override
     public String toString() {
