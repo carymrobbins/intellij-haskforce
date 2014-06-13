@@ -77,6 +77,8 @@ import static com.haskforce.psi.HaskellTypes.DERIVING;
 import static com.haskforce.psi.HaskellTypes.FLOATTOKEN;
 import static com.haskforce.psi.HaskellTypes.IF;
 import static com.haskforce.psi.HaskellTypes.ELSE;
+import static com.haskforce.psi.HaskellTypes.QUESTION;
+import static com.haskforce.psi.HaskellTypes.PERCENT;
 
 /**
  * New Parser using parser-helper.
@@ -1448,6 +1450,8 @@ public class HaskellParser2 implements PsiParser {
             parseExpTopType(builder, ((App) expTopType).e2, comments);
         } else if (expTopType instanceof Var) {
             parseQName(builder, ((Var) expTopType).qName, comments);
+        } else if (expTopType instanceof IPVar) {
+            parseIPNameTopType(builder, ((IPVar) expTopType).ipName , comments);
         } else if (expTopType instanceof Con) {
             parseQName(builder, ((Con) expTopType).qName, comments);
         } else if (expTopType instanceof Lit) {
@@ -2220,13 +2224,12 @@ public class HaskellParser2 implements PsiParser {
             parseTypeTopType(builder, ((InfixA) asst).t2, comments);
             e = builder.getTokenType();
         } else if (asst instanceof IParam) {
-            throw new RuntimeException("TODO: Parse IParam");
-            /* Preliminary untested implementation:
-            parseContextTopType(builder, ((IParam) asst).ipName, comments);
+            parseIPNameTopType(builder, ((IParam) asst).ipName, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, DOUBLECOLON);
             e = builder.getTokenType();
             parseTypeTopType(builder, ((IParam) asst).type, comments);
             e = builder.getTokenType();
-            */
         } else if (asst instanceof EqualP) {
             throw new RuntimeException("TODO: Parse EqualP");
             /* Preliminary untested implementation:
@@ -2236,6 +2239,24 @@ public class HaskellParser2 implements PsiParser {
             parseTypeTopType(builder,((EqualP) asst).t2, comments);
             e = builder.getTokenType();
             */
+        }
+    }
+
+    /**
+     * Parses Implicit parameter names.
+     */
+    private static void parseIPNameTopType(PsiBuilder builder,  IPNameTopType ipNameTopType, Comment[] comments) { // TODO: Improve granularity.
+        IElementType e = builder.getTokenType();
+        if (ipNameTopType instanceof IPDup) {
+            consumeToken(builder, QUESTION);
+            e = builder.getTokenType();
+            builder.advanceLexer();
+            e = builder.getTokenType();
+        } else if (ipNameTopType instanceof IPLin) {
+            consumeToken(builder, PERCENT);
+            e = builder.getTokenType();
+            builder.advanceLexer();
+            e = builder.getTokenType();
         }
     }
 
