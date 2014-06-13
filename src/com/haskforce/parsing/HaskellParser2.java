@@ -70,6 +70,10 @@ import static com.haskforce.psi.HaskellTypes.AMPERSAT;
 import static com.haskforce.psi.HaskellTypes.PLUS;
 import static com.haskforce.psi.HaskellTypes.TILDE;
 import static com.haskforce.psi.HaskellTypes.THEN;
+import static com.haskforce.psi.HaskellTypes.CASE;
+import static com.haskforce.psi.HaskellTypes.OF;
+import static com.haskforce.psi.HaskellTypes.SEMICOLON;
+import static com.haskforce.psi.HaskellTypes.DERIVING;
 
 /**
  * New Parser using parser-helper.
@@ -363,6 +367,10 @@ public class HaskellParser2 implements PsiParser {
             PsiBuilder.Marker declMark = builder.mark();
             parseInstDecl(builder, (InstDecl) decl, comments);
             declMark.done(e);
+        } else if (decl instanceof DerivDecl) {
+            PsiBuilder.Marker declMark = builder.mark();
+            parseDerivDecl(builder, (DerivDecl) decl, comments);
+            declMark.done(e);
         } else if (decl instanceof InfixDecl) {
             PsiBuilder.Marker declMark = builder.mark();
             parseInfixDecl(builder, (InfixDecl) decl, comments);
@@ -434,6 +442,20 @@ public class HaskellParser2 implements PsiParser {
             parseMatchTop(builder, funBind.match[i], comments);
             i++;
         }
+    }
+
+    /**
+     * Parse a derive declaration.
+     */
+    private static void parseDerivDecl(PsiBuilder builder, DerivDecl derivDecl, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        consumeToken(builder, DERIVING);
+        e = builder.getTokenType();
+        consumeToken(builder, INSTANCE);
+        parseContextTopType(builder, derivDecl.contextMaybe, comments);
+        e = builder.getTokenType();
+        parseInstHead(builder, derivDecl.instHead, comments);
+        e = builder.getTokenType();
     }
 
     /**
@@ -1379,6 +1401,16 @@ public class HaskellParser2 implements PsiParser {
         } else if (expTopType instanceof NegApp) {
             consumeToken(builder, MINUS);
             parseExpTopType(builder, ((NegApp) expTopType).e1, comments);
+        } else if (expTopType instanceof Case) {
+            IElementType e = builder.getTokenType();
+            consumeToken(builder, CASE);
+            e = builder.getTokenType();
+            parseExpTopType(builder, ((Case) expTopType).scrutinee, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, OF);
+            e = builder.getTokenType();
+            parseAlts(builder, ((Case) expTopType).alts, comments);
+            e = builder.getTokenType();
         } else if (expTopType instanceof Do) {
             IElementType e = builder.getTokenType();
             PsiBuilder.Marker doMark = builder.mark();
@@ -1533,6 +1565,14 @@ public class HaskellParser2 implements PsiParser {
             }
             consumeToken(builder, RBRACKET);
             e1 = builder.getTokenType();
+        } else if (expTopType instanceof ExpTypeSig) {
+            IElementType e = builder.getTokenType();
+            parseExpTopType(builder, ((ExpTypeSig) expTopType).exp, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, DOUBLECOLON);
+            e = builder.getTokenType();
+            parseTypeTopType(builder, ((ExpTypeSig) expTopType).type, comments);
+            e = builder.getTokenType();
         } else if (expTopType instanceof Let) {
             builder.advanceLexer();
             IElementType e = builder.getTokenType();
@@ -1678,6 +1718,74 @@ public class HaskellParser2 implements PsiParser {
         } else if (fieldUpdate instanceof FieldWildcard) {
             throw new RuntimeException("TODO: FieldWildcard not implemented");
         }
+    }
+
+    /**
+     * Parses a list of alts.
+     */
+    private static void parseAlts(PsiBuilder builder, Alt[] alts, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        int i = 0;
+        while (alts != null && i < alts.length) {
+            parseAlt(builder, alts[i], comments);
+            i++;
+            e = builder.getTokenType();
+            if (e == SEMICOLON) consumeToken(builder, SEMICOLON);
+        }
+    }
+
+    /**
+     * Parses a single alt.
+     */
+    private static void parseAlt(PsiBuilder builder, Alt alt, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        parsePatTopType(builder, alt.pat, comments);
+        e = builder.getTokenType();
+        parseGuardedAltsTopType(builder, alt.guardedAlts, comments);
+        e = builder.getTokenType();
+        parseBindsTopType(builder, alt.bindsMaybe, comments);
+        e = builder.getTokenType();
+    }
+
+    /**
+     * Parses a single guarded alt.
+     */
+    private static void parseGuardedAltsTopType(PsiBuilder builder, GuardedAltsTopType alt, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        if (alt instanceof UnGuardedAlt) {
+            consumeToken(builder, RIGHTARROW);
+            e = builder.getTokenType();
+            parseExpTopType(builder, ((UnGuardedAlt) alt).exp, comments);
+            e = builder.getTokenType();
+        } else if (alt instanceof GuardedAlts) {
+            parseGuardedAlts(builder, ((GuardedAlts) alt).alts, comments);
+            e = builder.getTokenType();
+        }
+    }
+
+    /**
+     * Parses a list of guarded alts.
+     */
+    private static void parseGuardedAlts(PsiBuilder builder, GuardedAlt[] alts, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        int i = 0;
+        while (alts != null && i < alts.length) {
+            parseGuardedAlt(builder, alts[i], comments);
+            i++;
+            e = builder.getTokenType();
+            if (e == SEMICOLON) consumeToken(builder, SEMICOLON);
+        }
+    }
+
+    /**
+     * Parses a single guarded alt.
+     */
+    private static void parseGuardedAlt(PsiBuilder builder, GuardedAlt alt, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        parseStmtTopTypes(builder, alt.stmts, comments);
+        e = builder.getTokenType();
+        parseExpTopType(builder, alt.exp, comments);
+        e = builder.getTokenType();
     }
 
     /**
