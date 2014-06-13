@@ -6,20 +6,13 @@ import com.haskforce.utils.ExecUtil;
 import com.intellij.compiler.options.CompilerConfigurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.ui.TextFieldWithHistory;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
-
-import static com.haskforce.utils.GuiUtil.createCheckBoxOption;
-import static com.haskforce.utils.GuiUtil.createDisplayVersion;
-import static com.haskforce.utils.GuiUtil.createExecutableOption;
-import static com.haskforce.utils.GuiUtil.createTextfield;
 
 /**
  * The "Haskell Compiler" section in Preferences->Compiler.
@@ -28,14 +21,14 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
     public static final String HASKELL_COMPILER_ID = "Haskell compiler";
 
     // Swing components.
-    private JPanel settings;
+    private JPanel mainPanel;
     // GHC Binary components.
-    private TextFieldWithBrowseButton ghcPath;
+    private com.intellij.openapi.ui.TextFieldWithBrowseButton ghcPath;
     private JLabel ghcVersion;
-    // Cabal binary components
-    private TextFieldWithBrowseButton cabalPath;
+    // Cabal binary components.
+    private com.intellij.openapi.ui.TextFieldWithBrowseButton cabalPath;
     private JLabel cabalVersion;
-    // Cabal configure flags.
+    // Cabal configure flags
     private TextFieldWithHistory cabalFlags;
     // Build configuration components.
     private JCheckBox profilingBuild;
@@ -62,7 +55,7 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
     @NotNull
     @Override
     public String getId() {
-        return HASKELL_COMPILER_ID ;
+        return HASKELL_COMPILER_ID;
     }
 
     @Nullable
@@ -93,40 +86,24 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         String sdkPath = HaskellSdkType.getHaskellSdkPath(myProject);
         File sdkGhcPath = sdkPath == null ? null : HaskellSdkType.getExecutable(sdkPath);
         String foundCabalPath = ExecUtil.locateExecutable(HaskellBuildOptions.DEFAULT_CABAL_PATH);
-        settings = new JPanel(new GridBagLayout());
 
-        // GHC path configuration.
-        ghcPath = createExecutableOption(settings, "GHC");
-        ghcVersion = createDisplayVersion(settings, "GHC");
-        if (sdkGhcPath != null &&
-                bestGhcPath.equals(HaskellBuildOptions.DEFAULT_GHC_PATH)) {
+        if (sdkGhcPath != null && bestGhcPath.equals(HaskellBuildOptions.DEFAULT_GHC_PATH)) {
             bestGhcPath = sdkGhcPath.getAbsolutePath();
         }
         ghcPath.setText(bestGhcPath);
 
-        // Cabal path configuration.
-        cabalPath = createExecutableOption(settings, "Cabal");
-        cabalVersion = createDisplayVersion(settings, "Cabal");
         if (foundCabalPath != null && !foundCabalPath.isEmpty() &&
                 bestCabalPath.equals(HaskellBuildOptions.DEFAULT_CABAL_PATH)) {
             bestCabalPath = foundCabalPath;
         }
         cabalPath.setText(bestCabalPath);
 
-        // Cabal flags configuration.
-        cabalFlags = createTextfield(settings, "Cabal configure flags");
-
-        // Build configuration.
-        profilingBuild = createCheckBoxOption(settings, "Build with profiling information");
-        cabalBuild = createCheckBoxOption(settings, "Build with Cabal");
-        cabalSandbox = createCheckBoxOption(settings, "Build in Sandbox");
-        installCabalDependencies = createCheckBoxOption(settings, "Install Cabal Dependencies");
         cabalBuild.setSelected(mySettings.isCabalEnabled());
         cabalSandbox.setSelected(mySettings.isCabalSandboxEnabled());
         installCabalDependencies.setSelected(mySettings.isInstallCabalDependenciesEnabled());
         updateVersionInfoFields();
 
-        return settings;
+        return mainPanel;
     }
 
     /**
@@ -149,7 +126,7 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         return (ghcPath.getText().equals(mySettings.getGhcPath()) ||
                 ghcPath.getText().equals(bestGhcPath)) &&
                 (cabalPath.getText().equals(mySettings.getCabalPath()) ||
-                cabalPath.getText().equals(bestCabalPath));
+                        cabalPath.getText().equals(bestCabalPath));
     }
 
     /**
