@@ -79,6 +79,7 @@ import static com.haskforce.psi.HaskellTypes.IF;
 import static com.haskforce.psi.HaskellTypes.ELSE;
 import static com.haskforce.psi.HaskellTypes.QUESTION;
 import static com.haskforce.psi.HaskellTypes.PERCENT;
+import static com.haskforce.psi.HaskellTypes.CLASSTOKEN;
 
 /**
  * New Parser using parser-helper.
@@ -372,6 +373,10 @@ public class HaskellParser2 implements PsiParser {
             PsiBuilder.Marker declMark = builder.mark();
             parseGDataInstanceDecl(builder, (GDataInsDecl) decl, comments);
             declMark.done(e);
+        } else if (decl instanceof ClassDecl) {
+            PsiBuilder.Marker declMark = builder.mark();
+            parseClassDecl(builder, (ClassDecl) decl, comments);
+            declMark.done(e);
         } else if (decl instanceof InstDecl) {
             PsiBuilder.Marker declMark = builder.mark();
             parseInstDecl(builder, (InstDecl) decl, comments);
@@ -479,6 +484,56 @@ public class HaskellParser2 implements PsiParser {
         // e = builder.getTokenType();
         // parseInstHead(builder, instSig.instHead, comments);
         // e = builder.getTokenType();
+    }
+
+    /**
+     * Parse a list of class declarations.
+     */
+    private static void parseClassDeclTopTypes(PsiBuilder builder, ClassDeclTopType[] classDecls, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        int i = 0;
+        while (classDecls != null && i < classDecls.length) {
+            parseClassDeclTopType(builder, classDecls[i], comments);
+            i++;
+        }
+    }
+
+    /**
+     * Parse a class declaration.
+     */
+    private static void parseClassDeclTopType(PsiBuilder builder, ClassDeclTopType classDecl, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        if (classDecl instanceof ClsDecl) {
+            parseDecl(builder, ((ClsDecl) classDecl).decl, comments);
+            e = builder.getTokenType();
+        } else if (classDecl instanceof ClsDataFam) {
+            throw new RuntimeException("TODO: ClsDataFam");
+        } else if (classDecl instanceof ClsTyFam) {
+            throw new RuntimeException("TODO: ClsTyFam");
+        } else if (classDecl instanceof ClsTyDef) {
+            throw new RuntimeException("TODO: ClsTyDef");
+        }
+    }
+
+    /**
+     * Parse a class declaration.
+     */
+    private static void parseClassDecl(PsiBuilder builder, ClassDecl classDecl, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        consumeToken(builder, CLASSTOKEN);
+        e = builder.getTokenType();
+        parseContextTopType(builder, classDecl.contextMaybe, comments);
+        e = builder.getTokenType();
+        if (classDecl.contextMaybe != null) consumeToken(builder, DOUBLEARROW);
+        parseDeclHead(builder, classDecl.declHead, comments);
+        e = builder.getTokenType();
+        if (classDecl.funDeps != null && classDecl.funDeps.length > 0) throw new RuntimeException("Fundeps unimplemented:" + classDecl.funDeps);
+        if (e == WHERE) {
+            consumeToken(builder, WHERE);
+            e = builder.getTokenType();
+        }
+        parseClassDeclTopTypes(builder, classDecl.classDecls, comments);
+        e = builder.getTokenType();
     }
 
     /**
@@ -2133,6 +2188,19 @@ public class HaskellParser2 implements PsiParser {
     }
 
     /**
+     * Parses a list of promoted types.
+     */
+    private static void parsePromotedTopTypes(PsiBuilder builder,PromotedTopType[] promotedTopTypes, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        int i = 0;
+        while (promotedTopTypes != null && i < promotedTopTypes.length) {
+            parsePromotedTopType(builder, promotedTopTypes[i], comments);
+            i++;
+            e = builder.getTokenType();
+            if (e == COMMA) consumeToken(builder, COMMA);
+        }
+    }
+    /**
      * Parses one promoted type.
      */
     private static void parsePromotedTopType(PsiBuilder builder, PromotedTopType promotedTopType, Comment[] comments) {
@@ -2144,11 +2212,25 @@ public class HaskellParser2 implements PsiParser {
             parseStringLiteral(builder);
             e = builder.getTokenType();
         } else if (promotedTopType instanceof PromotedCon) {
-            throw new RuntimeException("TODO: Promoted con.");
+            parseQName(builder, ((PromotedCon) promotedTopType).qName, comments);
+            e = builder.getTokenType();
         } else if (promotedTopType instanceof PromotedList) {
-            throw new RuntimeException("TODO: Promoted list.");
+            if (((PromotedList) promotedTopType).leadingQuote) consumeToken(builder, SINGLEQUOTE);
+            e = builder.getTokenType();
+            consumeToken(builder, LBRACKET);
+            parsePromotedTopTypes(builder, ((PromotedList) promotedTopType).promoteds, comments);
+            consumeToken(builder, RBRACKET);
+            e = builder.getTokenType();
         } else if (promotedTopType instanceof PromotedTuple) {
-            throw new RuntimeException("TODO: Promoted tuple.");
+            e = builder.getTokenType();
+            if (e == SINGLEQUOTE) {
+                consumeToken(builder, SINGLEQUOTE);
+                e = builder.getTokenType();
+            }
+            consumeToken(builder, LPAREN);
+            parsePromotedTopTypes(builder, ((PromotedTuple) promotedTopType).promoteds, comments);
+            consumeToken(builder, RPAREN);
+            e = builder.getTokenType();
         } else if (promotedTopType instanceof PromotedUnit) {
             consumeToken(builder, SINGLEQUOTE);
             e = builder.getTokenType();
