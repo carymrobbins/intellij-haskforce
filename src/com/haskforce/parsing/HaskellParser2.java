@@ -1451,7 +1451,7 @@ public class HaskellParser2 implements PsiParser {
         } else if (expTopType instanceof Var) {
             parseQName(builder, ((Var) expTopType).qName, comments);
         } else if (expTopType instanceof IPVar) {
-            parseIPNameTopType(builder, ((IPVar) expTopType).ipName , comments);
+            parseIPNameTopType(builder, ((IPVar) expTopType).ipName, comments);
         } else if (expTopType instanceof Con) {
             parseQName(builder, ((Con) expTopType).qName, comments);
         } else if (expTopType instanceof Lit) {
@@ -2028,6 +2028,9 @@ public class HaskellParser2 implements PsiParser {
             e = builder.getTokenType();
             consumeToken(builder, RPAREN);
             e = builder.getTokenType();
+        } else if (typeTopType instanceof TyPromoted) {
+            parsePromotedTopType(builder, ((TyPromoted) typeTopType).promoted, comments);
+            e = builder.getTokenType();
         } else {
             throw new RuntimeException("parseTypeTopType: " + typeTopType.toString());
         }
@@ -2092,6 +2095,33 @@ public class HaskellParser2 implements PsiParser {
             e = builder.getTokenType();
             parseKindTopTypes(builder, ((KindList) kind).kinds, comments);
             consumeToken(builder, RBRACKET);
+            e = builder.getTokenType();
+        }
+    }
+
+    /**
+     * Parses one promoted type.
+     */
+    private static void parsePromotedTopType(PsiBuilder builder, PromotedTopType promotedTopType, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        if (promotedTopType instanceof PromotedInteger) {
+            consumeToken(builder, INTEGERTOKEN);
+            e = builder.getTokenType();
+        } else if (promotedTopType instanceof PromotedString) {
+            parseStringLiteral(builder);
+            e = builder.getTokenType();
+        } else if (promotedTopType instanceof PromotedCon) {
+            throw new RuntimeException("TODO: Promoted con.");
+        } else if (promotedTopType instanceof PromotedList) {
+            throw new RuntimeException("TODO: Promoted list.");
+        } else if (promotedTopType instanceof PromotedTuple) {
+            throw new RuntimeException("TODO: Promoted tuple.");
+        } else if (promotedTopType instanceof PromotedUnit) {
+            consumeToken(builder, SINGLEQUOTE);
+            e = builder.getTokenType();
+            consumeToken(builder, LPAREN);
+            e = builder.getTokenType();
+            consumeToken(builder, RPAREN);
             e = builder.getTokenType();
         }
     }
