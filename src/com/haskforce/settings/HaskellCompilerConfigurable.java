@@ -208,5 +208,6 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         profilingBuild.setSelected(mySettings.isProfilingEnabled());
         cabalBuild.setSelected(mySettings.isCabalEnabled());
         cabalSandbox.setSelected(mySettings.isCabalSandboxEnabled());
+        installCabalDependencies.setSelected(mySettings.isInstallCabalDependenciesEnabled());
     }
 }
