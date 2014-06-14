@@ -42,6 +42,17 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
         project = inProject;
         oldParserHelperPath = PropertiesComponent.getInstance(project).getValue("parserHelperPath", "");
         oldStylishPath = PropertiesComponent.getInstance(project).getValue("stylishPath", "");
+        if (!oldParserHelperPath.isEmpty()) {
+            parserHelperPath.setText(oldParserHelperPath);
+        }
+        if (!oldStylishPath.isEmpty()) {
+            stylishPath.setText(oldStylishPath);
+        }
+        addFolderListener(parserHelperPath, "parser-helper");
+        addFolderListener(stylishPath, "stylish-haskell");
+        parserHelperAutoFind.addActionListener(createApplyPathAction(parserHelperPath, "parser-helper"));
+        stylishAutoFind.addActionListener(createApplyPathAction(stylishPath, "stylish-haskell"));
+        updateVersionInfoFields();
     }
 
     @NotNull
@@ -71,17 +82,6 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     @Nullable
     @Override
     public JComponent createComponent() {
-        if (!oldParserHelperPath.isEmpty()) {
-            parserHelperPath.setText(oldParserHelperPath);
-        }
-        if (!oldStylishPath.isEmpty()) {
-            stylishPath.setText(oldStylishPath);
-        }
-        addFolderListener(parserHelperPath, "parser-helper");
-        addFolderListener(stylishPath, "stylish-haskell");
-        parserHelperAutoFind.addActionListener(createApplyPathAction(parserHelperPath, "parser-helper"));
-        stylishAutoFind.addActionListener(createApplyPathAction(stylishPath, "stylish-haskell"));
-        updateVersionInfoFields();
         return mainPanel;
     }
 

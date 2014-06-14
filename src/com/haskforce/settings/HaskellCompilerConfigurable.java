@@ -50,6 +50,25 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         mySettings = HaskellBuildSettings.getInstance(myProject);
         bestGhcPath = mySettings.getGhcPath();
         bestCabalPath = mySettings.getCabalPath();
+        String sdkPath = HaskellSdkType.getHaskellSdkPath(myProject);
+        File sdkGhcPath = sdkPath == null ? null : HaskellSdkType.getExecutable(sdkPath);
+        String foundCabalPath = ExecUtil.locateExecutable(HaskellBuildOptions.DEFAULT_CABAL_PATH);
+
+        if (sdkGhcPath != null && bestGhcPath.equals(HaskellBuildOptions.DEFAULT_GHC_PATH)) {
+            bestGhcPath = sdkGhcPath.getAbsolutePath();
+        }
+        ghcPath.setText(bestGhcPath);
+
+        if (foundCabalPath != null && !foundCabalPath.isEmpty() &&
+                bestCabalPath.equals(HaskellBuildOptions.DEFAULT_CABAL_PATH)) {
+            bestCabalPath = foundCabalPath;
+        }
+        cabalPath.setText(bestCabalPath);
+
+        cabalBuild.setSelected(mySettings.isCabalEnabled());
+        cabalSandbox.setSelected(mySettings.isCabalSandboxEnabled());
+        installCabalDependencies.setSelected(mySettings.isInstallCabalDependenciesEnabled());
+        updateVersionInfoFields();
     }
 
     @NotNull
@@ -83,26 +102,6 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
     @Nullable
     @Override
     public JComponent createComponent() {
-        String sdkPath = HaskellSdkType.getHaskellSdkPath(myProject);
-        File sdkGhcPath = sdkPath == null ? null : HaskellSdkType.getExecutable(sdkPath);
-        String foundCabalPath = ExecUtil.locateExecutable(HaskellBuildOptions.DEFAULT_CABAL_PATH);
-
-        if (sdkGhcPath != null && bestGhcPath.equals(HaskellBuildOptions.DEFAULT_GHC_PATH)) {
-            bestGhcPath = sdkGhcPath.getAbsolutePath();
-        }
-        ghcPath.setText(bestGhcPath);
-
-        if (foundCabalPath != null && !foundCabalPath.isEmpty() &&
-                bestCabalPath.equals(HaskellBuildOptions.DEFAULT_CABAL_PATH)) {
-            bestCabalPath = foundCabalPath;
-        }
-        cabalPath.setText(bestCabalPath);
-
-        cabalBuild.setSelected(mySettings.isCabalEnabled());
-        cabalSandbox.setSelected(mySettings.isCabalSandboxEnabled());
-        installCabalDependencies.setSelected(mySettings.isInstallCabalDependenciesEnabled());
-        updateVersionInfoFields();
-
         return mainPanel;
     }
 
