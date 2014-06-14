@@ -1,6 +1,7 @@
 package com.haskforce.settings;
 
 import com.haskforce.utils.ExecUtil;
+import com.haskforce.utils.GuiUtil;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.ConfigurationException;
@@ -48,10 +49,10 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
         if (!oldStylishPath.isEmpty()) {
             stylishPath.setText(oldStylishPath);
         }
-        addFolderListener(parserHelperPath, "parser-helper");
-        addFolderListener(stylishPath, "stylish-haskell");
-        parserHelperAutoFind.addActionListener(createApplyPathAction(parserHelperPath, "parser-helper"));
-        stylishAutoFind.addActionListener(createApplyPathAction(stylishPath, "stylish-haskell"));
+        GuiUtil.addFolderListener(parserHelperPath, "parser-helper");
+        GuiUtil.addFolderListener(stylishPath, "stylish-haskell");
+        GuiUtil.addApplyPathAction(parserHelperAutoFind, parserHelperPath, "parser-helper");
+        GuiUtil.addApplyPathAction(stylishAutoFind, stylishPath, "stylish-haskell");
         updateVersionInfoFields();
     }
 
@@ -84,26 +85,6 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     public JComponent createComponent() {
         return mainPanel;
     }
-
-    private static void addFolderListener(final TextFieldWithBrowseButton textField, final String executable) {
-        textField.addBrowseFolderListener("Select " + executable + " path", "", null,
-                                          FileChooserDescriptorFactory.createSingleLocalFileDescriptor());
-    }
-
-    private static ActionListener createApplyPathAction(final TextAccessor textField, final String executable) {
-        return new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                String guessedPath = ExecUtil.locateExecutableByGuessing(executable);
-                if (guessedPath != null) {
-                    textField.setText(guessedPath);
-                } else {
-                    Messages.showErrorDialog("Could not find '" + executable + "'.", "HaskForce");
-                }
-            }
-        };
-    }
-
     /**
      * Enables the apply button if anything changed.
      */

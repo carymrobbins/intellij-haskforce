@@ -2,11 +2,14 @@ package com.haskforce.utils;
 
 import com.intellij.openapi.externalSystem.util.ExternalSystemUiUtil;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.intellij.ui.TextAccessor;
 import com.intellij.ui.TextFieldWithHistory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 /**
@@ -106,21 +109,27 @@ public class GuiUtil {
         return createCheckBoxOption(settings, text, ExternalSystemUiUtil.getFillLineConstraints(0));
     }
 
-    /**
-     * Create a button and add to the configuration window.
-     *
-     * @param settings Panel to add button to.
-     * @param text Button text.
-     * @return The button.
-     */
-    public static JButton createButton(JPanel settings, String text, ActionListener action, Object constraints) {
-        JButton button = new JButton(text);
-        button.addActionListener(action);
-        settings.add(button, constraints);
-        return button;
+    public static void addFolderListener(final TextFieldWithBrowseButton textField, final String executable) {
+        textField.addBrowseFolderListener("Select " + executable + " path", "", null,
+                FileChooserDescriptorFactory.createSingleLocalFileDescriptor());
     }
 
-    public static JButton createButton(JPanel settings, String text, ActionListener action) {
-        return createButton(settings, text, action, ExternalSystemUiUtil.getFillLineConstraints(0));
+    public static ActionListener createApplyPathAction(final TextAccessor textField, final String executable) {
+        return new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String guessedPath = ExecUtil.locateExecutableByGuessing(executable);
+                if (guessedPath != null) {
+                    textField.setText(guessedPath);
+                } else {
+                    Messages.showErrorDialog("Could not find '" + executable + "'.", "HaskForce");
+                }
+            }
+        };
     }
+
+    public static void addApplyPathAction(final AbstractButton button, final TextAccessor textField, final String executable) {
+        button.addActionListener(createApplyPathAction(textField, executable));
+    }
+
 }

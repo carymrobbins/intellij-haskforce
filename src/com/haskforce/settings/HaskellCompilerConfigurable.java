@@ -3,9 +3,11 @@ package com.haskforce.settings;
 import com.haskforce.HaskellSdkType;
 import com.haskforce.jps.model.HaskellBuildOptions;
 import com.haskforce.utils.ExecUtil;
+import com.haskforce.utils.GuiUtil;
 import com.intellij.compiler.options.CompilerConfigurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.ui.TextFieldWithHistory;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
@@ -23,10 +25,10 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
     // Swing components.
     private JPanel mainPanel;
     // GHC Binary components.
-    private com.intellij.openapi.ui.TextFieldWithBrowseButton ghcPath;
+    private TextFieldWithBrowseButton ghcPath;
     private JLabel ghcVersion;
     // Cabal binary components.
-    private com.intellij.openapi.ui.TextFieldWithBrowseButton cabalPath;
+    private TextFieldWithBrowseButton cabalPath;
     private JLabel cabalVersion;
     // Cabal configure flags
     private TextFieldWithHistory cabalFlags;
@@ -64,6 +66,9 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
             bestCabalPath = foundCabalPath;
         }
         cabalPath.setText(bestCabalPath);
+
+        GuiUtil.addFolderListener(ghcPath, "ghc");
+        GuiUtil.addFolderListener(cabalPath, "cabal");
 
         cabalBuild.setSelected(mySettings.isCabalEnabled());
         cabalSandbox.setSelected(mySettings.isCabalSandboxEnabled());
