@@ -14,6 +14,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.util.ExceptionUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.util.regex.Pattern;
@@ -29,6 +30,7 @@ public class JsonParser {
     // Keep track of whether we have shown balloons already. Without check the
     // plugin will send a new balloon every second.
     private static boolean haveGivenVersionWarning;
+    private static boolean haveGivenExecFailWarning;
     private static boolean haveGivenPathWarning;
     private final Project myProject;
 
@@ -40,6 +42,7 @@ public class JsonParser {
      * Parses the input by putting it in a file and calling parser-helper on
      * that file.
      */
+    @NotNull
     public TopPair parse(@NotNull CharSequence input) {
         TopPair tp = new TopPair();
         PropertiesComponent prop = PropertiesComponent.getInstance(myProject);
@@ -59,6 +62,19 @@ public class JsonParser {
         }
 
         String parserHelperVersion = ExecUtil.exec(parserHelperPath + " --numeric-version");
+
+        if (parserHelperVersion == null) {
+            if (!haveGivenExecFailWarning) {
+                Notifications.Bus.notify(
+                        new Notification("Parser-helper", NOTIFICATION_TITLE,
+                                "Could not execute parser-helper.",
+                                NotificationType.WARNING), myProject);
+                haveGivenExecFailWarning = true;
+            }
+            tp.error = "Failed to execute parser-helper.";
+            return tp;
+        }
+
         if (!haveGivenVersionWarning &&
                 !REQUIRED_PARSER_HELPER_VERSION.equals(parserHelperVersion)) {
             Notifications.Bus.notify(new Notification("Parser-helper", NOTIFICATION_TITLE,
@@ -77,13 +93,23 @@ public class JsonParser {
             return tp;
         }
 
+        if (json.trim().isEmpty()) {
+            tp.error ="No JSON received from parser-helper.";
+            return tp;
+        }
+
         Gson gson = createJSonDeserializer();
-        return gson.fromJson(json, TopPair.class);
+        TopPair tp2 = gson.fromJson(json, TopPair.class);
+        if (tp2 != null) return tp2;
+
+        tp.error = "Failed to deserialize JSON";
+        return tp;
     }
 
     /**
      * Executes parser-helper and returns the result.
      */
+    @Nullable
     public String getJson(@NotNull CharSequence input, @NotNull String parserHelperPath) {
         final String bwPath = ".dist-buildwrapper";
         try {
@@ -107,8 +133,9 @@ public class JsonParser {
 
     /**
      * Create a finished JSON deserializer with all the necessary type adapters
-     * already registered.
+     * registered.
      */
+    @NotNull
     private static Gson createJSonDeserializer() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.registerTypeAdapter(ModuleTopType.class, new ModuleTopTypeDeserializer());
