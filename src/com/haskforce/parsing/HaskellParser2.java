@@ -254,7 +254,7 @@ public class HaskellParser2 implements PsiParser {
             }
         }
         if (e2 == RPAREN) consumeToken(builder, RPAREN);
-        importMark.done(e);
+        importMark.done(IMPDECL);
     }
 
     /**
@@ -321,7 +321,7 @@ public class HaskellParser2 implements PsiParser {
                 continue;
             }
 
-            parseDecl(builder, decls[i], comments);
+            parseDecl(builder, decls == null ? null : decls[i], comments);
             e = builder.getTokenType();
             i++;
         }
@@ -431,7 +431,7 @@ public class HaskellParser2 implements PsiParser {
             declMark.done(e);
         } else if (decl instanceof AnnPragma) {
             // parseGenericPragma(builder, (AnnPragma) decl, comments);
-        } else {
+        } else if (decl != null) {
             throw new RuntimeException("Unexpected decl type: " + decl.toString());
         }
     }
@@ -1203,7 +1203,7 @@ public class HaskellParser2 implements PsiParser {
             builder.advanceLexer();
             e = builder.getTokenType();
         }
-        startCom.done(start);
+        startCom.done(NCOMMENT);
     }
 
     /**
@@ -1234,7 +1234,7 @@ public class HaskellParser2 implements PsiParser {
                 i++;
             }
             consumeToken(builder, CLOSEPRAGMA);
-            pragmaMark.done(e);
+            pragmaMark.done(PPRAGMA);
         } else if (modulePragmaTopType instanceof OptionsPragma) {
             // FIXME: Use optionsPragma information.
             OptionsPragma optionsPragma = (OptionsPragma) modulePragmaTopType;
@@ -1242,7 +1242,7 @@ public class HaskellParser2 implements PsiParser {
             PsiBuilder.Marker pragmaMark = builder.mark();
             chewPragma(builder);
             consumeToken(builder, CLOSEPRAGMA);
-            pragmaMark.done(e);
+            pragmaMark.done(PPRAGMA);
         } else if (modulePragmaTopType instanceof AnnModulePragma) {
             // FIXME: Use annModulePragma information.
             AnnModulePragma annModulePragma = (AnnModulePragma) modulePragmaTopType;
@@ -1250,7 +1250,7 @@ public class HaskellParser2 implements PsiParser {
             PsiBuilder.Marker pragmaMark = builder.mark();
             chewPragma(builder);
             consumeToken(builder, CLOSEPRAGMA);
-            pragmaMark.done(e);
+            pragmaMark.done(PPRAGMA);
         }
     }
 
@@ -1526,7 +1526,7 @@ public class HaskellParser2 implements PsiParser {
             e2 = builder.getTokenType();
         }
         consumeToken(builder, DOUBLEQUOTE);
-        marker.done(e);
+        marker.done(PSTRINGTOKEN);
     }
 
     /**
@@ -2519,7 +2519,7 @@ public class HaskellParser2 implements PsiParser {
         IElementType e = builder.getTokenType();
         chewPragma(builder);
         consumeToken(builder, CLOSEPRAGMA);
-        pragmaMark.done(e);
+        pragmaMark.done(PPRAGMA);
     }
 
     /**
