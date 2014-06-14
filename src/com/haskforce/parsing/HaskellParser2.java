@@ -509,7 +509,15 @@ public class HaskellParser2 implements PsiParser {
             parseDecl(builder, ((ClsDecl) classDecl).decl, comments);
             e = builder.getTokenType();
         } else if (classDecl instanceof ClsDataFam) {
-            throw new RuntimeException("TODO: ClsDataFam");
+            consumeToken(builder, DATA);
+            e = builder.getTokenType();
+            parseContextTopType(builder, ((ClsDataFam) classDecl).contextMaybe, comments);
+            e = builder.getTokenType();
+            parseDeclHead(builder, ((ClsDataFam) classDecl).declHead, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, DOUBLECOLON);
+            parseKindTopType(builder, ((ClsDataFam) classDecl).kindMaybe, comments);
+            e = builder.getTokenType();
         } else if (classDecl instanceof ClsTyFam) {
             throw new RuntimeException("TODO: ClsTyFam");
         } else if (classDecl instanceof ClsTyDef) {
@@ -576,15 +584,24 @@ public class HaskellParser2 implements PsiParser {
             parseDecl(builder, ((InsDecl) decl).decl, comments);
             e = builder.getTokenType();
         } else if (decl instanceof InsType) {
-            throw new RuntimeException("InsType not implemented: " + decl.toString());
-            /* Preliminary implementation:
+            consumeToken(builder, TYPE);
+            e = builder.getTokenType();
             parseTypeTopType(builder, ((InsType) decl).t1, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, EQUALS);
             e = builder.getTokenType();
             parseTypeTopType(builder, ((InsType) decl).t2, comments);
             e = builder.getTokenType();
-            */
         } else if (decl instanceof InsData) {
-            throw new RuntimeException("InsData not implemented:" + decl.toString());
+            consumeToken(builder, DATA);
+            e = builder.getTokenType();
+            parseTypeTopType(builder, ((InsData) decl).type, comments);
+            e = builder.getTokenType();
+            consumeToken(builder, EQUALS);
+            e = builder.getTokenType();
+            parseQualConDecls(builder, ((InsData) decl).qualConDecls, comments);
+            e = builder.getTokenType();
+            if (((InsData) decl).derivingMaybe != null) throw new RuntimeException("Deriving unparsed" + decl.toString());
         } else if (decl instanceof InsGData) {
             throw new RuntimeException("InsGData not implemented:" + decl.toString());
         }
@@ -814,6 +831,18 @@ public class HaskellParser2 implements PsiParser {
         consumeToken(builder, DOUBLECOLON);
         e = builder.getTokenType();
         parseTypeTopType(builder, dataDecl.type, comments);
+    }
+
+    /**
+     * Parse a list of qualified constructor declarations.
+     */
+    private static void parseQualConDecls(PsiBuilder builder, QualConDecl[] qualConDecls, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        int i = 0;
+        while (qualConDecls != null && i < qualConDecls.length) {
+            parseQualConDecl(builder, qualConDecls[i], comments);
+            i++;
+        }
     }
 
     /**
