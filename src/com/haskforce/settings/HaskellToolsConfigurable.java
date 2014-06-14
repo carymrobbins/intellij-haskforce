@@ -17,6 +17,9 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * The "Haskell Tools" option in Preferences->Project Settings.
+ */
 public class HaskellToolsConfigurable implements SearchableConfigurable {
     public static final String HASKELL_TOOLS_ID = "Haskell Tools";
 
