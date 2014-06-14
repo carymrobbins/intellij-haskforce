@@ -1089,12 +1089,6 @@ public class HaskellParser2 implements PsiParser {
             e = builder.getTokenType();
             consumeToken(builder, INTEGERTOKEN);
             e = builder.getTokenType();
-        } else if (patTopType instanceof PApp) {
-            e = builder.getTokenType();
-            parseQName(builder, ((PApp) patTopType).qName, comments);
-            e = builder.getTokenType();
-            parsePatTopTypes(builder, ((PApp) patTopType).pats, comments);
-            e = builder.getTokenType();
         } else if (patTopType instanceof PInfixApp) {
             e = builder.getTokenType();
             parsePatTopType(builder, ((PInfixApp) patTopType).p1, comments);
@@ -1102,6 +1096,12 @@ public class HaskellParser2 implements PsiParser {
             parseQName(builder, ((PInfixApp) patTopType).qName, comments);
             e = builder.getTokenType();
             parsePatTopType(builder, ((PInfixApp) patTopType).p1, comments);
+            e = builder.getTokenType();
+        } else if (patTopType instanceof PApp) {
+            e = builder.getTokenType();
+            parseQName(builder, ((PApp) patTopType).qName, comments);
+            e = builder.getTokenType();
+            parsePatTopTypes(builder, ((PApp) patTopType).pats, comments);
             e = builder.getTokenType();
         } else if (patTopType instanceof PTuple) {
             consumeToken(builder, LPAREN);
@@ -1161,6 +1161,18 @@ public class HaskellParser2 implements PsiParser {
             consumeToken(builder, RIGHTARROW);
             parsePatTopType(builder, ((PViewPat) patTopType).pat, comments);
             e = builder.getTokenType();
+        } else if (patTopType instanceof PRPat) {
+            // TODO: Implement once there are tests.
+        } else if (patTopType instanceof PXTag) {
+            // TODO: Implement once there are tests.
+        } else if (patTopType instanceof PXETag) {
+            // TODO: Implement once there are tests.
+        } else if (patTopType instanceof PXPcdata) {
+            // TODO: Implement once there are tests.
+        } else if (patTopType instanceof PXPatTag) {
+            // TODO: Implement once there are tests.
+        } else if (patTopType instanceof PXRPats) {
+            // TODO: Implement once there are tests.
         } else if (patTopType instanceof PQuasiQuote) {
             e = builder.getTokenType();
             consumeToken(builder, LBRACKET);
@@ -1180,8 +1192,6 @@ public class HaskellParser2 implements PsiParser {
             e = builder.getTokenType();
             parsePatTopType(builder, ((PBangPat) patTopType).pat, comments);
             e = builder.getTokenType();
-        } else {
-            throw new RuntimeException("parsePatTopType" + patTopType.toString());
         }
     }
 
@@ -1495,8 +1505,6 @@ public class HaskellParser2 implements PsiParser {
             e = builder.getTokenType();
             consumeToken(builder, HASH);
             e = builder.getTokenType();
-        } else {
-            throw new RuntimeException("LiteralTop: " + literalTopType.toString());
         }
     }
 
@@ -2203,8 +2211,6 @@ public class HaskellParser2 implements PsiParser {
         } else if (typeTopType instanceof TyPromoted) {
             parsePromotedTopType(builder, ((TyPromoted) typeTopType).promoted, comments);
             e = builder.getTokenType();
-        } else {
-            throw new RuntimeException("parseTypeTopType: " + typeTopType.toString());
         }
     }
 
@@ -2502,7 +2508,7 @@ public class HaskellParser2 implements PsiParser {
             consumeToken(builder, HASH);
             return true;
         }
-        throw new RuntimeException("Unexpected boxing: " + boxedTopType.toString());
+        return false; // Never reached.
     }
 
     /**
