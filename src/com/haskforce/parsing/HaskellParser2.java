@@ -2499,7 +2499,7 @@ public class HaskellParser2 implements PsiParser {
     /**
      * Parses box annotations.
      */
-    public static boolean parseBoxed(PsiBuilder builder,  BoxedTopType boxedTopType, Comment[] comments) { // TODO: Improve granularity.
+    private static boolean parseBoxed(PsiBuilder builder,  BoxedTopType boxedTopType, Comment[] comments) { // TODO: Improve granularity.
         IElementType e = builder.getTokenType();
         if (boxedTopType instanceof Boxed) {
             return false;
@@ -2513,7 +2513,7 @@ public class HaskellParser2 implements PsiParser {
     /**
      * Parses a generic pragma.
      */
-    public static void parseGenericPragma(PsiBuilder builder, DeclTopType annPragma, Comment[] comments) { // TODO: Improve granularity.
+    private static void parseGenericPragma(PsiBuilder builder, DeclTopType annPragma, Comment[] comments) { // TODO: Improve granularity.
         PsiBuilder.Marker pragmaMark = builder.mark();
         IElementType e = builder.getTokenType();
         chewPragma(builder);
@@ -2524,7 +2524,7 @@ public class HaskellParser2 implements PsiParser {
     /**
      * Eats a complete pragma and leaves the builder at CLOSEPRAGMA token.
      */
-    public static void chewPragma(PsiBuilder builder) {
+    private static void chewPragma(PsiBuilder builder) {
         IElementType e = builder.getTokenType();
         while (e != CLOSEPRAGMA) {
             builder.advanceLexer();
@@ -2532,7 +2532,7 @@ public class HaskellParser2 implements PsiParser {
         }
     }
 
-    public static boolean consumeToken(PsiBuilder builder_, IElementType token) {
+    private static boolean consumeToken(PsiBuilder builder_, IElementType token) {
         if (nextTokenIsInner(builder_, token)) {
             builder_.advanceLexer();
             return true;
@@ -2540,7 +2540,7 @@ public class HaskellParser2 implements PsiParser {
         return false;
     }
 
-    public static boolean nextTokenIsInner(PsiBuilder builder_, IElementType expectedToken) {
+    private static boolean nextTokenIsInner(PsiBuilder builder_, IElementType expectedToken) {
         IElementType tokenType = builder_.getTokenType();
         if (expectedToken != tokenType) {
             builder_.error("Got " + tokenType + " but expected " + expectedToken);
