@@ -1121,7 +1121,7 @@ public class HaskellParser2 implements PsiParser {
             e = builder.getTokenType();
             parseQName(builder, ((PInfixApp) patTopType).qName, comments);
             e = builder.getTokenType();
-            parsePatTopType(builder, ((PInfixApp) patTopType).p1, comments);
+            parsePatTopType(builder, ((PInfixApp) patTopType).p2, comments);
             e = builder.getTokenType();
         } else if (patTopType instanceof PApp) {
             e = builder.getTokenType();
