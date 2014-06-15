@@ -82,6 +82,7 @@ import static com.haskforce.psi.HaskellTypes.PERCENT;
 import static com.haskforce.psi.HaskellTypes.CLASSTOKEN;
 import static com.haskforce.psi.HaskellTypes.DOLLAR;
 import static com.haskforce.psi.HaskellTypes.THQUOTE;
+import static com.haskforce.psi.HaskellTypes.CONID;
 
 /**
  * New Parser using parser-helper.
@@ -167,17 +168,15 @@ public class HaskellParser2 implements PsiParser {
     }
 
     private static void parseModuleName(PsiBuilder builder, ModuleName name,  Comment[] comments) {
-        builder.getTokenType(); // Need to getTokenType to advance lexer over whitespace.
+        IElementType e = builder.getTokenType(); // Need to getTokenType to advance lexer over whitespace.
         int startPos = builder.getCurrentOffset();
-        IElementType e = builder.getTokenType();
         // Data.Maybe is a legal module name.
         while ((name != null &&
                (builder.getCurrentOffset() - startPos) <  name.name.length()) ||
-                name == null && e != WHERE) {
-            builder.remapCurrentToken(NAME);
-            consumeToken(builder, NAME);
+                name == null && (e != WHERE && e != LPAREN)) {
+            consumeToken(builder, CONID);
             e = builder.getTokenType();
-            if (e == PERIOD) builder.advanceLexer();
+            if (e == PERIOD) consumeToken(builder, PERIOD);
         }
     }
 
@@ -2544,6 +2543,7 @@ public class HaskellParser2 implements PsiParser {
     public static boolean nextTokenIsInner(PsiBuilder builder_, IElementType expectedToken) {
         IElementType tokenType = builder_.getTokenType();
         if (expectedToken != tokenType) {
+            builder_.error("Got " + tokenType + " but expected " + expectedToken);
             System.out.println("Found token: " + tokenType + " vs expected: " + expectedToken);
         }
         return expectedToken == tokenType;
