@@ -81,19 +81,19 @@ public interface HaskellTypes2 {
             else if (type == IMPDECL) {
                 return new HaskellImpdeclImpl(node);
             }
-            else if (type == IMPORTT || type == HaskellTypes.IMPORT) {
+            else if (type == IMPORTT) {
                 return new HaskellImporttImpl(node);
             }
             else if (type == HaskellTypes.MODULE) {
                 return new HaskellModulePrefixImpl(node);
             }
-            else if (type == NCOMMENT || type == HaskellTypes.OPENCOM) {
+            else if (type == NCOMMENT) {
                 return new HaskellNcommentImpl(node);
             }
-            else if (type == PPRAGMA || type == HaskellTypes.OPENPRAGMA) {
+            else if (type == PPRAGMA) {
                 return new HaskellPpragmaImpl(node);
             }
-            else if (type == PSTRINGTOKEN || type == HaskellTypes.DOUBLEQUOTE) {
+            else if (type == PSTRINGTOKEN) {
                 return new HaskellPstringtokenImpl(node);
             }
             else if (type == QCONID) {
