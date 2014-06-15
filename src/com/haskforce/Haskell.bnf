@@ -81,6 +81,7 @@
     backslash='\'
     caret='^'
     minus='-'
+    underscore='_'
     tilde='~'
     colon=':'
     doubleperiod='..'

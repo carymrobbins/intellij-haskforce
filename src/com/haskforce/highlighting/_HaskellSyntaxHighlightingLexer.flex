@@ -32,6 +32,12 @@ import static com.haskforce.psi.HaskellTypes.*;
   }
 %}
 
+/*
+ * Missing lexemes: forall, by, haddock things.
+ *
+ * Comments: one line too many in dashes-comments.
+ */
+
 %public
 %class _HaskellSyntaxHighlightingLexer
 %implements FlexLexer
@@ -45,7 +51,7 @@ EOL=\r|\n|\r\n
 LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 
-VARIDREGEXP=[a-z_][a-zA-Z_0-9']*
+VARIDREGEXP=([a-z_][a-zA-Z_0-9']+)|[a-z]
 CONID=[A-Z][a-zA-Z_0-9']*
 CHARTOKEN='(\\.|[^'])'
 INTEGERTOKEN=(0(o|O)[0-7]+|0(x|X)[0-9a-fA-F]+|[0-9]+)
@@ -145,6 +151,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   "^"                 { return CARET; }
   "-"                 { return MINUS; }
   "~"                 { return TILDE; }
+  "_"                 { return UNDERSCORE; }
   "::"                { return DOUBLECOLON; }
   (":"{ASCSYMBOL}+)   { return CONSYMTOK; }
   ":"                 { return COLON; }

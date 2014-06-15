@@ -287,7 +287,7 @@ Haskell File
     HaskellQvaridImpl(QVARID)
       HaskellVaridImpl(VARID)
         PsiElement(HaskellTokenType.varidRegexp)('viewLiteral')
-    PsiElement(HaskellTokenType.varidRegexp)('_')
+    PsiElement(HaskellTokenType._)('_')
     HaskellReservedopImpl(RESERVEDOP)
       PsiElement(HaskellTokenType.=)('=')
     HaskellQconidImpl(QCONID)

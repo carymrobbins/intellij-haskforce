@@ -1116,7 +1116,7 @@ public class HaskellParser implements PsiParser {
   /* ********************************************************** */
   // '_'
   static boolean reservedVar(PsiBuilder builder_, int level_) {
-    return consumeToken(builder_, "_");
+    return consumeToken(builder_, UNDERSCORE);
   }
 
   /* ********************************************************** */

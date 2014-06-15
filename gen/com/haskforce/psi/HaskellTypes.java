@@ -127,6 +127,7 @@ public interface HaskellTypes {
   IElementType THQUOTE = new HaskellTokenType("''");
   IElementType TILDE = new HaskellTokenType("~");
   IElementType TYPE = new HaskellTokenType("type");
+  IElementType UNDERSCORE = new HaskellTokenType("_");
   IElementType VARIDREGEXP = new HaskellTokenType("varidRegexp");
   IElementType WHERE = new HaskellTokenType("where");
 
