@@ -106,20 +106,33 @@ public class HaskellParser2 implements PsiParser {
             // TODO: Parse failed. Possibly warn. Could be annoying.
         }
 
-        IElementType e = builder.getTokenType();
-        while (!builder.eof() && (isInterruption(e) && e != OPENPRAGMA)) {
-            if (e == COMMENT || e == OPENCOM) {
-                parseComment(e, builder, tp.comments);
-                e = builder.getTokenType();
-            } else if (e == CPPIF || e == CPPELSE || e == CPPENDIF) {
-                // Ignore CPP-tokens, they are not fed to parser-helper anyways.
-                builder.advanceLexer();
-                e = builder.getTokenType();
-            } else {
-                throw new RuntimeException("Unexpected failure on:" + e.toString());
+        try {
+            IElementType e = builder.getTokenType();
+            while (!builder.eof() && (isInterruption(e) && e != OPENPRAGMA)) {
+                if (e == COMMENT || e == OPENCOM) {
+                    parseComment(e, builder, tp.comments);
+                    e = builder.getTokenType();
+                } else if (e == CPPIF || e == CPPELSE || e == CPPENDIF) {
+                    // Ignore CPP-tokens, they are not fed to parser-helper anyways.
+                    builder.advanceLexer();
+                    e = builder.getTokenType();
+                } else {
+                    throw new ParserErrorException("Unexpected failure on: " +
+                            (e == null ? "" : e.toString()));
+                }
             }
+            parseModule(builder, (Module) tp.moduleType, tp.comments);
+        } catch (ParserErrorException e1) {
+            rootMarker.rollbackTo();
+            PsiBuilder.Marker newRoot = builder.mark();
+            final PsiBuilder.Marker errorMark = builder.mark();
+            while (!builder.eof()) {
+                builder.advanceLexer();
+            }
+            errorMark.error(e1.getMessage());
+            newRoot.done(root);
+            return builder.getTreeBuilt();
         }
-        parseModule(builder, (Module) tp.moduleType, tp.comments);
         return chewEverything(rootMarker, root, builder);
     }
 
@@ -431,7 +444,7 @@ public class HaskellParser2 implements PsiParser {
         } else if (decl instanceof AnnPragma) {
             // parseGenericPragma(builder, (AnnPragma) decl, comments);
         } else if (decl != null) {
-            throw new RuntimeException("Unexpected decl type: " + decl.toString());
+            throw new ParserErrorException("Unexpected decl type: " + decl.toString());
         }
     }
 
@@ -441,10 +454,10 @@ public class HaskellParser2 implements PsiParser {
     private static void parsePatBind(PsiBuilder builder, PatBind patBind, Comment[] comments) {
         IElementType e = builder.getTokenType();
         parsePatTopType(builder, patBind.pat, comments);
-        if (patBind.type != null) throw new RuntimeException("Unexpected type in patbind");
+        if (patBind.type != null) throw new ParserErrorException("Unexpected type in patbind");
         // TODO: parseType(builder, patBind.type, comments);
         parseRhsTopType(builder, patBind.rhs, comments);
-        if (patBind.binds != null) throw new RuntimeException("Unexpected binds in patbind");
+        if (patBind.binds != null) throw new ParserErrorException("Unexpected binds in patbind");
     }
 
     /**
@@ -518,9 +531,9 @@ public class HaskellParser2 implements PsiParser {
             parseKindTopType(builder, ((ClsDataFam) classDecl).kindMaybe, comments);
             e = builder.getTokenType();
         } else if (classDecl instanceof ClsTyFam) {
-            throw new RuntimeException("TODO: ClsTyFam");
+            throw new ParserErrorException("TODO: ClsTyFam");
         } else if (classDecl instanceof ClsTyDef) {
-            throw new RuntimeException("TODO: ClsTyDef");
+            throw new ParserErrorException("TODO: ClsTyDef");
         }
     }
 
@@ -536,7 +549,7 @@ public class HaskellParser2 implements PsiParser {
         if (classDecl.contextMaybe != null) consumeToken(builder, DOUBLEARROW);
         parseDeclHead(builder, classDecl.declHead, comments);
         e = builder.getTokenType();
-        if (classDecl.funDeps != null && classDecl.funDeps.length > 0) throw new RuntimeException("Fundeps unimplemented:" + classDecl.funDeps);
+        if (classDecl.funDeps != null && classDecl.funDeps.length > 0) throw new ParserErrorException("Fundeps unimplemented:" + classDecl.funDeps);
         if (e == WHERE) {
             consumeToken(builder, WHERE);
             e = builder.getTokenType();
@@ -600,9 +613,9 @@ public class HaskellParser2 implements PsiParser {
             e = builder.getTokenType();
             parseQualConDecls(builder, ((InsData) decl).qualConDecls, comments);
             e = builder.getTokenType();
-            if (((InsData) decl).derivingMaybe != null) throw new RuntimeException("Deriving unparsed" + decl.toString());
+            if (((InsData) decl).derivingMaybe != null) throw new ParserErrorException("Deriving unparsed" + decl.toString());
         } else if (decl instanceof InsGData) {
-            throw new RuntimeException("InsGData not implemented:" + decl.toString());
+            throw new ParserErrorException("InsGData not implemented:" + decl.toString());
         }
     }
 
@@ -625,6 +638,7 @@ public class HaskellParser2 implements PsiParser {
                 e = builder.getTokenType();
             }
         }
+        parseDeriving(builder, dataDecl.deriving, comments);
     }
 
     /**
@@ -677,7 +691,7 @@ public class HaskellParser2 implements PsiParser {
             }
         }
         e = builder.getTokenType();
-        if (dataDecl.derivingMaybe != null) throw new RuntimeException("TODO: deriving unimplemeted");
+        if (dataDecl.derivingMaybe != null) throw new ParserErrorException("TODO: deriving unimplemeted");
     }
 
     /**
@@ -705,7 +719,7 @@ public class HaskellParser2 implements PsiParser {
             }
         }
         e = builder.getTokenType();
-        if (gDataInsDecl.derivingMaybe != null) throw new RuntimeException("TODO: deriving unimplemeted");
+        if (gDataInsDecl.derivingMaybe != null) throw new ParserErrorException("TODO: deriving unimplemeted");
     }
 
     /**
@@ -744,6 +758,18 @@ public class HaskellParser2 implements PsiParser {
             e = builder.getTokenType();
             consumeToken(builder, RPAREN);
             e = builder.getTokenType();
+        }
+    }
+
+    /**
+     * Parse a list of qualified constructor declarations.
+     */
+    private static void parseInstHeads(PsiBuilder builder, InstHeadTopType[] instHeads, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        int i = 0;
+        while (instHeads != null && i < instHeads.length) {
+            parseInstHead(builder, instHeads[i], comments);
+            i++;
         }
     }
 
@@ -1017,6 +1043,7 @@ public class HaskellParser2 implements PsiParser {
         parsePatTopType(builder, match.pat, comments);
         e = builder.getTokenType();
         parseName(builder, match.name, comments);
+        e = builder.getTokenType();
         int i = 0;
         while (match.pats != null && i < match.pats.length) {
             parsePatTopType(builder, match.pats[i], comments);
@@ -1043,7 +1070,7 @@ public class HaskellParser2 implements PsiParser {
         if (bindsTopType instanceof BDecls) {
             parseDecls(builder, ((BDecls) bindsTopType).decls, comments);
         } else if (bindsTopType instanceof IPBinds) {
-            throw new RuntimeException("TODO: Implement IPBinds:" + bindsTopType.toString());
+            throw new ParserErrorException("TODO: Implement IPBinds:" + bindsTopType.toString());
         }
     }
 
@@ -1428,11 +1455,19 @@ public class HaskellParser2 implements PsiParser {
     private static void parseName(PsiBuilder builder, NameTopType nameTopType,  Comment[] comments) {
         IElementType e = builder.getTokenType();
         if (nameTopType instanceof Ident) {
+            boolean startTick = e == BACKTICK;
+            if (startTick) consumeToken(builder, BACKTICK);
+            e = builder.getTokenType();
             int startPos = builder.getCurrentOffset();
             while ((builder.getCurrentOffset() - startPos) <
                     ((Ident) nameTopType).name.length()) {
                 builder.remapCurrentToken(NAME);
                 consumeToken(builder, NAME);
+                e = builder.getTokenType();
+            }
+            e = builder.getTokenType();
+            if (startTick) {
+                consumeToken(builder, BACKTICK);
                 e = builder.getTokenType();
             }
         } else if (nameTopType instanceof Symbol) {
@@ -1941,7 +1976,7 @@ public class HaskellParser2 implements PsiParser {
             parseAlts(builder, ((LCase) expTopType).alts, comments);
             e = builder.getTokenType();
         } else {
-            throw new RuntimeException("parseExpTopType: " + expTopType.toString());
+            throw new ParserErrorException("parseExpTopType: " + expTopType.toString());
         }
     }
 
@@ -2007,9 +2042,9 @@ public class HaskellParser2 implements PsiParser {
             parseExpTopType(builder, ((FieldUpdate) fieldUpdate).exp, comments);
             e = builder.getTokenType();
         } else if (fieldUpdate instanceof FieldPun) {
-            throw new RuntimeException("TODO: FieldPun not implemented");
+            throw new ParserErrorException("TODO: FieldPun not implemented");
         } else if (fieldUpdate instanceof FieldWildcard) {
-            throw new RuntimeException("TODO: FieldWildcard not implemented");
+            throw new ParserErrorException("TODO: FieldWildcard not implemented");
         }
     }
 
@@ -2511,6 +2546,16 @@ public class HaskellParser2 implements PsiParser {
     }
 
     /**
+     * Parses box annotations.
+     */
+    private static void parseDeriving(PsiBuilder builder,  Deriving deriving, Comment[] comments) { // TODO: Improve granularity.
+        IElementType e = builder.getTokenType();
+        if (e != DERIVING) return;
+        consumeToken(builder, DERIVING);
+        parseInstHeads(builder, deriving == null ? null : deriving.instHeads, comments);
+    }
+
+    /**
      * Parses a generic pragma.
      */
     private static void parseGenericPragma(PsiBuilder builder, DeclTopType annPragma, Comment[] comments) { // TODO: Improve granularity.
@@ -2547,5 +2592,19 @@ public class HaskellParser2 implements PsiParser {
             System.out.println("Found token: " + tokenType + " vs expected: " + expectedToken);
         }
         return expectedToken == tokenType;
+    }
+
+    /**
+     * Critical parser errors.
+     */
+    public static class ParserErrorException extends RuntimeException {
+        public ParserErrorException(String message) {
+            super(message);
+        }
+
+        @Override
+        public Throwable fillInStackTrace() {
+            return this;
+        }
     }
 }
