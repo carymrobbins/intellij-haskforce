@@ -1084,7 +1084,7 @@ public class HaskellParser2 implements PsiParser {
             parsePatTopType(builder, pats[i], comments);
             i++;
             e = builder.getTokenType();
-            if (e == COMMA) {
+            if (e == COMMA && i < pats.length) {
                 consumeToken(builder, COMMA);
                 e = builder.getTokenType();
             }
@@ -2552,7 +2552,14 @@ public class HaskellParser2 implements PsiParser {
         IElementType e = builder.getTokenType();
         if (e != DERIVING) return;
         consumeToken(builder, DERIVING);
+        e = builder.getTokenType();
+        boolean startParen = e == LPAREN;
+        if (startParen) consumeToken(builder, LPAREN);
         parseInstHeads(builder, deriving == null ? null : deriving.instHeads, comments);
+        if (startParen) {
+            consumeToken(builder, RPAREN);
+            e = builder.getTokenType();
+        }
     }
 
     /**
