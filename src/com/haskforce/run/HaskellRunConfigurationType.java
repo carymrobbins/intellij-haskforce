@@ -1,14 +1,13 @@
 package com.haskforce.run;
 
 import com.haskforce.HaskellIcons;
-import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.ConfigurationTypeBase;
 import com.intellij.openapi.extensions.Extensions;
 import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
-
+/**
+ * The "Haskel" option under Run->Edit Configurations->[+]
+ */
 public class HaskellRunConfigurationType extends ConfigurationTypeBase {
     public static final String HASKELL_RUN_CONFIG_ID = "Haskell Run Configuration";
 

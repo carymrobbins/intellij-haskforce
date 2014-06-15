@@ -11,6 +11,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 
+/**
+ * Manages the data and execution of run configurations - Run->Edit Configurations->[+]->Haskell
+ */
 public class HaskellRunConfiguration extends ModuleBasedConfiguration<RunConfigurationModule> {
     public String programArguments;
 
