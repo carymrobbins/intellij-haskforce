@@ -11,7 +11,7 @@ IDEA_TAR=ideaIC-${IDEA_VERSION}.tar.gz
 echo "Installing ghc $GHC_VER, cabal-install $CABAL_VER, happy $HAPPY_VER"
 sudo add-apt-repository -y ppa:hvr/ghc
 sudo apt-get update
-sudo apt-get install cabal-install-$CABAL_VER ghc-$GHC_VER happy-$HAPPY_VER
+sudo apt-get install -y --force-yes cabal-install-$CABAL_VER ghc-$GHC_VER happy-$HAPPY_VER
 
 export PATH=/opt/happy/$HAPPY_VER/bin:/opt/ghc/$GHC_VER/bin:/opt/cabal/$CABAL_VER/bin:$PATH
 
