@@ -6,6 +6,9 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 
+/**
+ * The run configuration form in Run->Edit Configurations->Haskell
+ */
 public class HaskellRunConfigurationEditorForm extends SettingsEditor<HaskellRunConfiguration> {
     private JPanel mainPanel;
     private com.intellij.ui.RawCommandLineEditor programArguments;
