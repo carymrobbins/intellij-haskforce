@@ -17,6 +17,6 @@ public class HaskellRunConfigurationFactory extends ConfigurationFactory {
 
     @Override
     public RunConfiguration createTemplateConfiguration(@NotNull Project project) {
-        return new HaskellRunConfiguration("Haskell Application", project, HaskellRunConfigurationType.getInstance());
+        return new HaskellRunConfiguration(project, this, "Haskell Application");
     }
 }

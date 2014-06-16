@@ -14,22 +14,22 @@ import java.util.Collection;
 /**
  * Manages the data and execution of run configurations - Run->Edit Configurations->[+]->Haskell
  */
-public class HaskellRunConfiguration extends ModuleBasedConfiguration<RunConfigurationModule> {
+public class HaskellRunConfiguration extends RunConfigurationBase {
     public String programArguments;
 
-    public HaskellRunConfiguration(@NotNull String name, @NotNull Project project, HaskellRunConfigurationType configurationType) {
-        super(name, new RunConfigurationModule(project), configurationType.getConfigurationFactories()[0]);
-    }
-
-    @Override
-    public Collection<Module> getValidModules() {
-        return null;
+    protected HaskellRunConfiguration(@NotNull Project project, @NotNull ConfigurationFactory factory, @NotNull String name) {
+        super(project, factory, name);
     }
 
     @NotNull
     @Override
     public HaskellRunConfigurationEditorForm getConfigurationEditor() {
         return new HaskellRunConfigurationEditorForm();
+    }
+
+    @Override
+    public void checkConfiguration() throws RuntimeConfigurationException {
+       // TODO
     }
 
     @Nullable
