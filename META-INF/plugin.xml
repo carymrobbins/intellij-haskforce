@@ -53,6 +53,7 @@
       <lang.parserDefinition language="Haskell" implementationClass="com.haskforce.HaskellParserDefinition"/>
       <annotator language="Haskell" implementationClass="com.haskforce.HaskellAnnotator" />
       <configurationType implementation="com.haskforce.run.HaskellRunConfigurationType"/>
+      <programRunner implementation="com.haskforce.run.HaskellRunner"/>
 
       <!-- Editing utils -->
       <lang.braceMatcher language="Haskell" implementationClass="com.haskforce.features.HaskellBraceMatcher"/>

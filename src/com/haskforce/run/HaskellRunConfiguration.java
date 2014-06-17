@@ -1,6 +1,7 @@
 package com.haskforce.run;
 
 import com.intellij.execution.ExecutionException;
+import com.intellij.execution.ExecutionTarget;
 import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.*;
 import com.intellij.execution.runners.ExecutionEnvironment;
@@ -35,7 +36,6 @@ public class HaskellRunConfiguration extends RunConfigurationBase {
     @Nullable
     @Override
     public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment executionEnvironment) throws ExecutionException {
-        // TODO: return new HaskellCommandLineState(...)
-        return null;
+        return new HaskellCommandLineState(executionEnvironment);
     }
 }
