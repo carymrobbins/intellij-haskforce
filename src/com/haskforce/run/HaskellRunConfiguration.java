@@ -36,6 +36,6 @@ public class HaskellRunConfiguration extends RunConfigurationBase {
     @Nullable
     @Override
     public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment executionEnvironment) throws ExecutionException {
-        return new HaskellCommandLineState(executionEnvironment);
+        return new HaskellCommandLineState(executionEnvironment, this);
     }
 }
