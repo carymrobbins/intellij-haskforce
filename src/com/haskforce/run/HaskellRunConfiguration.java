@@ -19,6 +19,11 @@ import java.util.Collection;
 
 /**
  * Manages the data and execution of run configurations - Run->Edit Configurations->[+]->Haskell
+ *
+ * Each configuration variable must be read and written from the readExternal and writeExternal
+ * methods, respectively.  Otherwise, user configuration is not persisted across IntelliJ restarts.
+ * As demonstrated, use a unique string key for each configuration variable and implement its read
+ * and write.
  */
 public class HaskellRunConfiguration extends RunConfigurationBase {
 
