@@ -8,11 +8,11 @@ import com.intellij.execution.process.OSProcessHandler;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import org.jetbrains.annotations.NotNull;
 
-public class HaskellCommandLineState extends CommandLineState {
+public class HaskellApplicationCommandLineState extends CommandLineState {
 
-    private final HaskellRunConfiguration myConfig;
+    private final HaskellApplicationRunConfiguration myConfig;
 
-    protected HaskellCommandLineState(ExecutionEnvironment environment, HaskellRunConfiguration runConfiguration) {
+    protected HaskellApplicationCommandLineState(ExecutionEnvironment environment, HaskellApplicationRunConfiguration runConfiguration) {
         super(environment);
         myConfig = runConfiguration;
     }

@@ -14,6 +14,6 @@ public class HaskellRunner extends DefaultProgramRunner {
     }
 
     public boolean canRun(@NotNull final String executorId, @NotNull final RunProfile profile) {
-        return executorId.equals(DefaultRunExecutor.EXECUTOR_ID) && profile instanceof HaskellRunConfiguration;
+        return executorId.equals(DefaultRunExecutor.EXECUTOR_ID) && profile instanceof HaskellApplicationRunConfiguration;
     }
 }

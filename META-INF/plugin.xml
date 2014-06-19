@@ -52,7 +52,7 @@
       <lang.syntaxHighlighterFactory key="Haskell" implementationClass="com.haskforce.highlighting.HaskellSyntaxHighlighterFactory"/>
       <lang.parserDefinition language="Haskell" implementationClass="com.haskforce.HaskellParserDefinition"/>
       <annotator language="Haskell" implementationClass="com.haskforce.HaskellAnnotator" />
-      <configurationType implementation="com.haskforce.run.HaskellRunConfigurationType"/>
+      <configurationType implementation="com.haskforce.run.HaskellConfigurationType"/>
       <programRunner implementation="com.haskforce.run.HaskellRunner"/>
 
       <!-- Editing utils -->

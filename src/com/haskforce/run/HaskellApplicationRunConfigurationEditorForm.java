@@ -9,17 +9,17 @@ import javax.swing.*;
 /**
  * The run configuration form in Run->Edit Configurations->Haskell
  */
-public class HaskellRunConfigurationEditorForm extends SettingsEditor<HaskellRunConfiguration> {
+public class HaskellApplicationRunConfigurationEditorForm extends SettingsEditor<HaskellApplicationRunConfiguration> {
     private JPanel mainPanel;
     private com.intellij.ui.RawCommandLineEditor programArguments;
 
     @Override
-    protected void resetEditorFrom(HaskellRunConfiguration haskellRunconfiguration) {
-        programArguments.setText(haskellRunconfiguration.programArguments);
+    protected void resetEditorFrom(HaskellApplicationRunConfiguration haskellRunConfiguration) {
+        programArguments.setText(haskellRunConfiguration.programArguments);
     }
 
     @Override
-    protected void applyEditorTo(HaskellRunConfiguration haskellRunConfiguration) throws ConfigurationException {
+    protected void applyEditorTo(HaskellApplicationRunConfiguration haskellRunConfiguration) throws ConfigurationException {
         haskellRunConfiguration.programArguments = programArguments.getText();
     }
 

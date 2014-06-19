@@ -13,8 +13,6 @@ import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collection;
-
 /**
  * Manages the data and execution of run configurations - Run->Edit Configurations->[+]->Haskell
  *
@@ -23,7 +21,7 @@ import java.util.Collection;
  * As demonstrated, use a unique string key for each configuration variable and implement its read
  * and write.
  */
-public class HaskellRunConfiguration extends RunConfigurationBase {
+public class HaskellApplicationRunConfiguration extends RunConfigurationBase {
 
     // Element keys for readExternal and writeExternal to save configuration.
     public static final String PROGRAM_ARGUMENTS = "PROGRAM_ARGUMENTS";
@@ -31,14 +29,14 @@ public class HaskellRunConfiguration extends RunConfigurationBase {
     // Local configuration variables.
     public String programArguments;
 
-    protected HaskellRunConfiguration(@NotNull Project project, @NotNull ConfigurationFactory factory, @NotNull String name) {
+    protected HaskellApplicationRunConfiguration(@NotNull Project project, @NotNull ConfigurationFactory factory, @NotNull String name) {
         super(project, factory, name);
     }
 
     @NotNull
     @Override
-    public HaskellRunConfigurationEditorForm getConfigurationEditor() {
-        return new HaskellRunConfigurationEditorForm();
+    public HaskellApplicationRunConfigurationEditorForm getConfigurationEditor() {
+        return new HaskellApplicationRunConfigurationEditorForm();
     }
 
     @Override
@@ -49,7 +47,7 @@ public class HaskellRunConfiguration extends RunConfigurationBase {
     @Nullable
     @Override
     public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment executionEnvironment) throws ExecutionException {
-        return new HaskellCommandLineState(executionEnvironment, this);
+        return new HaskellApplicationCommandLineState(executionEnvironment, this);
     }
 
     @Override
