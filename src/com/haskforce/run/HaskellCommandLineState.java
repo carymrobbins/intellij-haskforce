@@ -4,14 +4,9 @@ import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.CommandLineState;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
-import com.intellij.execution.configurations.RunProfile;
 import com.intellij.execution.process.OSProcessHandler;
-import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.runners.ExecutionEnvironment;
-import com.sun.tools.javac.util.List;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
 
 public class HaskellCommandLineState extends CommandLineState {
 
