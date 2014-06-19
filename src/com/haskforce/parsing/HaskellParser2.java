@@ -549,7 +549,14 @@ public class HaskellParser2 implements PsiParser {
         if (classDecl.contextMaybe != null) consumeToken(builder, DOUBLEARROW);
         parseDeclHead(builder, classDecl.declHead, comments);
         e = builder.getTokenType();
-        if (classDecl.funDeps != null && classDecl.funDeps.length > 0) throw new ParserErrorException("Fundeps unimplemented:" + classDecl.funDeps);
+        if (e == PIPE) { // TODO: Detailed Fundeps parsing.
+            consumeToken(builder, PIPE);
+            e = builder.getTokenType();
+            while (e != WHERE) {
+                builder.advanceLexer();
+                e = builder.getTokenType();
+            }
+        }
         if (e == WHERE) {
             consumeToken(builder, WHERE);
             e = builder.getTokenType();
