@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
  * As demonstrated, use a unique string key for each configuration variable and implement its read
  * and write.
  */
-public class HaskellApplicationRunConfiguration extends RunConfigurationBase {
+public class HaskellApplicationRunConfiguration extends HaskellRunConfigurationBase {
 
     // Element keys for readExternal and writeExternal to save configuration.
     public static final String PROGRAM_ARGUMENTS = "PROGRAM_ARGUMENTS";
