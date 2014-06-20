@@ -133,6 +133,7 @@
     THEN='then'
     EXPORTTOKEN='export'
     CONSYMTOK="Consym"
+    FORALLTOKEN='forall'
   ]
 }
 
@@ -188,7 +189,7 @@ varid ::= !reservedid varidRegexp {
     }
 private reservedExpr ::= 'case' | 'do' | 'else' | 'if' | 'in' | 'let' | 'of' | 'then'
 private reservedDecl ::= 'class' | 'data' | 'default' | 'deriving' | 'foreign' | 'instance'
-                       | 'newtype' | 'type' | 'where'
+                       | 'newtype' | 'type' | 'where' | 'forall'
 private reservedMeta ::= 'as' | 'export' | 'foreign' | 'import' | 'infix'
                        | 'infixl' | 'infixr'
 private reservedVar ::= '_'

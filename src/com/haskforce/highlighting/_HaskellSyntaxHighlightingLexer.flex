@@ -33,7 +33,7 @@ import static com.haskforce.psi.HaskellTypes.*;
 %}
 
 /*
- * Missing lexemes: forall, by, haddock things.
+ * Missing lexemes: by, haddock things.
  *
  * Comments: one line too many in dashes-comments.
  */
@@ -101,6 +101,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   "let"               { return LET; }
   "of"                { return OF; }
   "then"              { return THEN; }
+  "forall"            { return FORALLTOKEN; }
 
   "<-"                { return LEFTARROW; }
   "->"                { return RIGHTARROW; }

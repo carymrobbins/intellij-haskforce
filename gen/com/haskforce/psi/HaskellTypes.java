@@ -81,6 +81,7 @@ public interface HaskellTypes {
   IElementType EXLAMATION = new HaskellTokenType("!");
   IElementType EXPORTTOKEN = new HaskellTokenType("export");
   IElementType FLOATTOKEN = new HaskellTokenType("floattoken");
+  IElementType FORALLTOKEN = new HaskellTokenType("forall");
   IElementType FOREIGN = new HaskellTokenType("foreign");
   IElementType GREATERTHAN = new HaskellTokenType(">");
   IElementType HADDOCK = new HaskellTokenType("haddock");

@@ -1059,7 +1059,7 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // 'class' | 'data' | 'default' | 'deriving' | 'foreign' | 'instance'
-  //                        | 'newtype' | 'type' | 'where'
+  //                        | 'newtype' | 'type' | 'where' | 'forall'
   static boolean reservedDecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "reservedDecl")) return false;
     boolean result_ = false;
@@ -1073,6 +1073,7 @@ public class HaskellParser implements PsiParser {
     if (!result_) result_ = consumeToken(builder_, NEWTYPE);
     if (!result_) result_ = consumeToken(builder_, TYPE);
     if (!result_) result_ = consumeToken(builder_, WHERE);
+    if (!result_) result_ = consumeToken(builder_, FORALLTOKEN);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
