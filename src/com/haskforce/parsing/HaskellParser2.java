@@ -717,8 +717,8 @@ public class HaskellParser2 implements PsiParser {
             parseGadtDecl(builder, gDataDecl.gadtDecls[i], comments);
             i++;
             if (i < gDataDecl.gadtDecls.length) {
-                builder.advanceLexer();
                 e = builder.getTokenType();
+                if (e == COMMA) consumeToken(builder, COMMA);
             }
         }
     }
