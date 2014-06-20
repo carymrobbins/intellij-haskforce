@@ -367,6 +367,10 @@ public class HaskellParser2 implements PsiParser {
             PsiBuilder.Marker declMark = builder.mark();
             parseFunBind(builder, (FunBind) decl, comments);
             declMark.done(e);
+        } else if (decl instanceof TypeFamDecl) {
+            PsiBuilder.Marker declMark = builder.mark();
+            parseTypeFamDecl(builder, (TypeFamDecl) decl, comments);
+            declMark.done(e);
         } else if (decl instanceof DataDecl) {
             PsiBuilder.Marker declMark = builder.mark();
             parseDataDecl(builder, (DataDecl) decl, comments);
@@ -635,6 +639,25 @@ public class HaskellParser2 implements PsiParser {
             if (((InsData) decl).derivingMaybe != null) throw new ParserErrorException("Deriving unparsed" + decl.toString());
         } else if (decl instanceof InsGData) {
             throw new ParserErrorException("InsGData not implemented:" + decl.toString());
+        }
+    }
+
+    /**
+     * Parses a type family declaration.
+     */
+    private static void parseTypeFamDecl(PsiBuilder builder, TypeFamDecl typeFamDecl, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        consumeToken(builder, TYPE);
+        e = builder.getTokenType();
+        builder.advanceLexer(); // TODO: family token.
+        e = builder.getTokenType();
+        parseDeclHead(builder, typeFamDecl.declHead, comments);
+        e = builder.getTokenType();
+        if (e == DOUBLECOLON) {
+            consumeToken(builder, DOUBLECOLON);
+            e = builder.getTokenType();
+            parseKindTopType(builder, typeFamDecl.kindMaybe, comments);
+            e = builder.getTokenType();
         }
     }
 
