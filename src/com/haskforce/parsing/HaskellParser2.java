@@ -383,6 +383,10 @@ public class HaskellParser2 implements PsiParser {
             PsiBuilder.Marker declMark = builder.mark();
             parseDataFamDecl(builder, (DataFamDecl) decl, comments);
             declMark.done(e);
+        } else if (decl instanceof TypeInsDecl) {
+            PsiBuilder.Marker declMark = builder.mark();
+            parseTypeInsDecl(builder, (TypeInsDecl) decl, comments);
+            declMark.done(e);
         } else if (decl instanceof TypeDecl) {
             PsiBuilder.Marker declMark = builder.mark();
             parseTypeDecl(builder, (TypeDecl) decl, comments);
@@ -659,6 +663,22 @@ public class HaskellParser2 implements PsiParser {
             parseKindTopType(builder, typeFamDecl.kindMaybe, comments);
             e = builder.getTokenType();
         }
+    }
+
+    /**
+     * Parses a type instance declaration.
+     */
+    private static void parseTypeInsDecl(PsiBuilder builder, TypeInsDecl typeInsDecl, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        consumeToken(builder, TYPE);
+        e = builder.getTokenType();
+        consumeToken(builder, INSTANCE);
+        e = builder.getTokenType();
+        parseTypeTopType(builder, typeInsDecl.t1, comments);
+        e = builder.getTokenType();
+        consumeToken(builder, EQUALS);
+        e = builder.getTokenType();
+        parseTypeTopType(builder, typeInsDecl.t2, comments);
     }
 
     /**
