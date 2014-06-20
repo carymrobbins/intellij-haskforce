@@ -83,6 +83,7 @@ import static com.haskforce.psi.HaskellTypes.CLASSTOKEN;
 import static com.haskforce.psi.HaskellTypes.DOLLAR;
 import static com.haskforce.psi.HaskellTypes.THQUOTE;
 import static com.haskforce.psi.HaskellTypes.CONID;
+import static com.haskforce.psi.HaskellTypes.FORALLTOKEN;
 
 /**
  * New Parser using parser-helper.
@@ -690,16 +691,8 @@ public class HaskellParser2 implements PsiParser {
         parseDeclHead(builder, dataDecl.declHead, comments);
         e = builder.getTokenType();
         if (e == EQUALS) consumeToken(builder, EQUALS);
-        int i = 0;
         e = builder.getTokenType();
-        while (dataDecl.qualConDecls != null && i < dataDecl.qualConDecls.length) {
-            parseQualConDecl(builder, dataDecl.qualConDecls[i], comments);
-            i++;
-            if (i < dataDecl.qualConDecls.length) {
-                builder.advanceLexer();
-                e = builder.getTokenType();
-            }
-        }
+        parseQualConDecls(builder, dataDecl.qualConDecls, comments);
         parseDeriving(builder, dataDecl.deriving, comments);
     }
 
@@ -888,10 +881,14 @@ public class HaskellParser2 implements PsiParser {
     private static void parseTyVarBinds(PsiBuilder builder, TyVarBindTopType[] tyVarBindTopType, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
+        boolean foralled = e == FORALLTOKEN;
+        if (foralled) consumeToken(builder, FORALLTOKEN);
         while (tyVarBindTopType != null && i < tyVarBindTopType.length) {
             parseTyVarBind(builder, tyVarBindTopType[i], comments);
             i++;
         }
+        e = builder.getTokenType();
+        if (foralled) consumeToken(builder, PERIOD);
         e = builder.getTokenType();
     }
 
@@ -958,6 +955,10 @@ public class HaskellParser2 implements PsiParser {
      */
     private static void parseQualConDecl(PsiBuilder builder, QualConDecl qualConDecl, Comment[] comments) {
         IElementType e = builder.getTokenType();
+        parseTyVarBinds(builder, qualConDecl.tyVarBinds, comments);
+        e = builder.getTokenType();
+        if (qualConDecl.contextMaybe != null) throw new ParserErrorException("QualCondeclContext != null");
+        e = builder.getTokenType();
         parseConDecl(builder, qualConDecl == null ? null : qualConDecl.conDecl, comments);
     }
 
@@ -965,6 +966,7 @@ public class HaskellParser2 implements PsiParser {
      * Parses a constructor declaration.
      */
     private static void parseConDecl(PsiBuilder builder,  ConDeclTopType conDecl, Comment[] comments) {
+        IElementType e1 = builder.getTokenType();
         if (conDecl instanceof ConDecl) {
             parseName(builder, ((ConDecl) conDecl).name, comments);
             IElementType e = builder.getTokenType();
@@ -1002,6 +1004,10 @@ public class HaskellParser2 implements PsiParser {
         while (fieldDecls != null && i < fieldDecls.length) {
             parseFieldDecl(builder, fieldDecls[i], comments);
             i++;
+            e = builder.getTokenType();
+            if (i < fieldDecls.length) {
+                consumeToken(builder, COMMA);
+            }
         }
         e = builder.getTokenType();
     }
@@ -2249,7 +2255,7 @@ public class HaskellParser2 implements PsiParser {
      */
     private static void parseTypeTopType(PsiBuilder builder, TypeTopType typeTopType, Comment[] comments) {
         IElementType e = builder.getTokenType();
-        if (typeTopType instanceof TyForall) { // FIXME: No forall lexeme.
+        if (typeTopType instanceof TyForall) {
             TyForall t = (TyForall) typeTopType;
             e = builder.getTokenType();
             if (t.tyVarBinds != null) { // Implicit foralls for typeclasses.
@@ -2257,7 +2263,6 @@ public class HaskellParser2 implements PsiParser {
                 e = builder.getTokenType();
                 parseTyVarBinds(builder, t.tyVarBinds, comments);
                 e = builder.getTokenType();
-                consumeToken(builder, PERIOD);
             }
             parseContextTopType(builder, t.context, comments);
             e = builder.getTokenType();
