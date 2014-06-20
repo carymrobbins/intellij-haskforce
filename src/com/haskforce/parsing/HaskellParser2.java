@@ -535,7 +535,15 @@ public class HaskellParser2 implements PsiParser {
             parseKindTopType(builder, ((ClsDataFam) classDecl).kindMaybe, comments);
             e = builder.getTokenType();
         } else if (classDecl instanceof ClsTyFam) {
-            throw new ParserErrorException("TODO: ClsTyFam");
+            consumeToken(builder, TYPE);
+            parseDeclHead(builder, ((ClsTyFam) classDecl).declHead, comments);
+            e = builder.getTokenType();
+            if (e == DOUBLECOLON) {
+                consumeToken(builder, DOUBLECOLON);
+                e = builder.getTokenType();
+                parseKindTopType(builder, ((ClsTyFam) classDecl).kindMaybe, comments);
+                e = builder.getTokenType();
+            }
         } else if (classDecl instanceof ClsTyDef) {
             throw new ParserErrorException("TODO: ClsTyDef");
         }
