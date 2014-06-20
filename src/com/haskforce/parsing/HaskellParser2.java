@@ -375,6 +375,10 @@ public class HaskellParser2 implements PsiParser {
             PsiBuilder.Marker declMark = builder.mark();
             parseGDataDecl(builder, (GDataDecl) decl, comments);
             declMark.done(e);
+        } else if (decl instanceof DataFamDecl) {
+            PsiBuilder.Marker declMark = builder.mark();
+            parseDataFamDecl(builder, (DataFamDecl) decl, comments);
+            declMark.done(e);
         } else if (decl instanceof TypeDecl) {
             PsiBuilder.Marker declMark = builder.mark();
             parseTypeDecl(builder, (TypeDecl) decl, comments);
@@ -672,6 +676,27 @@ public class HaskellParser2 implements PsiParser {
                 builder.advanceLexer();
                 e = builder.getTokenType();
             }
+        }
+    }
+
+    /**
+     * Parses a data family declaration.
+     */
+    private static void parseDataFamDecl(PsiBuilder builder, DataFamDecl dataFamDecl, Comment[] comments) {
+        IElementType e = builder.getTokenType();
+        consumeToken(builder, DATA);
+        e = builder.getTokenType();
+        builder.advanceLexer(); // TODO: Keyword: family.
+        e = builder.getTokenType();
+        parseContextTopType(builder, dataFamDecl.contextMaybe, comments);
+        e = builder.getTokenType();
+        parseDeclHead(builder, dataFamDecl.declHead, comments);
+        e = builder.getTokenType();
+        if (e == DOUBLECOLON) {
+            consumeToken(builder, DOUBLECOLON);
+            e = builder.getTokenType();
+            parseKindTopType(builder, dataFamDecl.kindMaybe, comments);
+            e = builder.getTokenType();
         }
     }
 
