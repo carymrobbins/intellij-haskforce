@@ -7,6 +7,7 @@ import com.intellij.execution.configurations.RunProfileState;
 import com.intellij.execution.configurations.RuntimeConfigurationException;
 import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.openapi.components.PathMacroManager;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.InvalidDataException;
 import com.intellij.openapi.util.JDOMExternalizerUtil;
@@ -14,6 +15,8 @@ import com.intellij.openapi.util.WriteExternalException;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Collection;
 
 /**
  * Manages the data and execution of run configurations - Run->Edit Configurations->[+]->Haskell
@@ -31,8 +34,8 @@ public class HaskellTestRunConfiguration extends HaskellRunConfigurationBase {
     // Local configuration variables.
     public String programArguments;
 
-    protected HaskellTestRunConfiguration(@NotNull Project project, @NotNull ConfigurationFactory factory, @NotNull String name) {
-        super(project, factory, name);
+    protected HaskellTestRunConfiguration(@NotNull Project project, @NotNull ConfigurationFactory factory) {
+        super(project, factory);
     }
 
     @NotNull
@@ -51,6 +54,12 @@ public class HaskellTestRunConfiguration extends HaskellRunConfigurationBase {
     public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment executionEnvironment) throws ExecutionException {
         // TODO: How do we integrate with the test output UI?
         return new HaskellTestCommandLineState(executionEnvironment, this);
+    }
+
+    @Override
+    public Collection<Module> getValidModules() {
+        // TODO: Use main modules at first, but later - how do we differentiate main modules from test modules?
+        return null;
     }
 
     @Override

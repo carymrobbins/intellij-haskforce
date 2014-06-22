@@ -17,6 +17,6 @@ public class HaskellTestConfigurationFactory extends ConfigurationFactory {
 
     @Override
     public RunConfiguration createTemplateConfiguration(@NotNull Project project) {
-        return new HaskellTestRunConfiguration(project, this, "Haskell Test");
+        return new HaskellTestRunConfiguration(project, this);
     }
 }
