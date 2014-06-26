@@ -28,10 +28,14 @@ public class CabalJspInterface {
         myCabalFlags = cabalFlags;
     }
 
-    private Process runCommand(String command, String arg) throws IOException {
+    private Process runCommand(String command, String... args) throws IOException {
+        final int numPrefixArgs = 2;
+        String[] fullCommand = new String[args.length + numPrefixArgs];
+        fullCommand[0] = myCabalPath;
+        fullCommand[1] = command;
+        System.arraycopy(args, 0, fullCommand, numPrefixArgs, args.length);
         ProcessWrapper p = new ProcessWrapper(myCabalFile.getParentFile().getCanonicalPath());
-        return arg == null || arg.isEmpty() ? p.getProcess(myCabalPath, command)
-                                            : p.getProcess(myCabalPath, command, arg);
+        return p.getProcess(fullCommand);
     }
 
     public Process sandboxInit() throws IOException {
@@ -47,10 +51,10 @@ public class CabalJspInterface {
     }
 
     public Process build() throws IOException {
-        return runCommand("build", null);
+        return runCommand("build");
     }
 
     public Process clean() throws IOException {
-        return runCommand("clean", null);
+        return runCommand("clean");
     }
 }
