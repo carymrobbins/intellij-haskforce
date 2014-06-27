@@ -23,6 +23,7 @@ package com.haskforce.jps;
 import com.haskforce.jps.model.HaskellBuildOptions;
 import com.haskforce.jps.model.JpsHaskellBuildOptionsExtension;
 import com.haskforce.jps.model.JpsHaskellModuleType;
+import com.intellij.execution.ExecutionException;
 import org.jetbrains.jps.incremental.BuilderCategory;
 import org.jetbrains.jps.incremental.ModuleLevelBuilder;
 import com.intellij.openapi.diagnostic.Logger;
@@ -100,19 +101,25 @@ public class CabalBuilder extends ModuleLevelBuilder {
             }
             return ExitCode.OK;
         } catch (IOException e) {
-            e.printStackTrace();
-            context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.ERROR, e.getMessage()));
+            processCabalError(context, e);
         } catch (InterruptedException e) {
-            e.printStackTrace();
-            context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.ERROR, e.getMessage()));
+            processCabalError(context, e);
+        } catch (ExecutionException e) {
+            processCabalError(context, e);
         }
         return ExitCode.ABORT;
+    }
+
+    private static void processCabalError(final CompileContext context, final Exception e) {
+        e.printStackTrace();
+        context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.ERROR, e.getMessage()));
     }
 
     /**
      * Runs cabal build.
      */
-    private static boolean runBuild(CompileContext context, JpsModule module, CabalJspInterface cabal) throws IOException, InterruptedException {
+    private static boolean runBuild(CompileContext context, JpsModule module, CabalJspInterface cabal)
+            throws IOException, InterruptedException, ExecutionException {
         context.processMessage(new ProgressMessage("cabal build"));
         context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.INFO, "Start build"));
         Process buildProcess = cabal.build();
@@ -128,7 +135,8 @@ public class CabalBuilder extends ModuleLevelBuilder {
     /**
      * Runs cabal configure.
      */
-    private static boolean runConfigure(CompileContext context, JpsModule module, CabalJspInterface cabal) throws IOException, InterruptedException {
+    private static boolean runConfigure(CompileContext context, JpsModule module, CabalJspInterface cabal)
+            throws IOException, InterruptedException, ExecutionException {
         context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.INFO, "Start configure"));
 
         Process configureProcess = cabal.configure();
@@ -148,7 +156,8 @@ public class CabalBuilder extends ModuleLevelBuilder {
     /**
      * Runs cabal install --only-dependencies
      */
-    private static boolean runInstallDependencies(CompileContext context, JpsModule module, CabalJspInterface cabal) throws IOException, InterruptedException {
+    private static boolean runInstallDependencies(CompileContext context, JpsModule module, CabalJspInterface cabal)
+            throws IOException, InterruptedException, ExecutionException {
         context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.INFO, "Install dependencies"));
 
         Process installDependenciesProcess = cabal.installDependencies();
@@ -168,7 +177,8 @@ public class CabalBuilder extends ModuleLevelBuilder {
     /**
      * Runs cabal sandbox init
      */
-    private static boolean runSandboxInit(CompileContext context, JpsModule module, CabalJspInterface cabal) throws IOException, InterruptedException {
+    private static boolean runSandboxInit(CompileContext context, JpsModule module, CabalJspInterface cabal)
+            throws IOException, InterruptedException, ExecutionException {
         context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.INFO, "Create sandbox"));
 
         Process sandboxProcess = cabal.sandboxInit();

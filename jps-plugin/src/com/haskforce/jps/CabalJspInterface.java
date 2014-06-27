@@ -5,6 +5,9 @@ package com.haskforce.jps;
  * 2014.
  */
 
+import com.intellij.execution.ExecutionException;
+import com.intellij.execution.configurations.GeneralCommandLine;
+import com.intellij.execution.configurations.ParametersList;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
@@ -28,33 +31,33 @@ public class CabalJspInterface {
         myCabalFlags = cabalFlags;
     }
 
-    private Process runCommand(String command, String... args) throws IOException {
-        final int numPrefixArgs = 2;
-        String[] fullCommand = new String[args.length + numPrefixArgs];
-        fullCommand[0] = myCabalPath;
-        fullCommand[1] = command;
-        System.arraycopy(args, 0, fullCommand, numPrefixArgs, args.length);
-        ProcessWrapper p = new ProcessWrapper(myCabalFile.getParentFile().getCanonicalPath());
-        return p.getProcess(fullCommand);
+    private Process runCommand(String command, String... args) throws IOException, ExecutionException {
+        GeneralCommandLine commandLine = new GeneralCommandLine();
+        commandLine.setWorkDirectory(myCabalFile.getParentFile().getCanonicalPath());
+        commandLine.setExePath(myCabalPath);
+        ParametersList parametersList = commandLine.getParametersList();
+        parametersList.add(command);
+        parametersList.addAll(args);
+        return commandLine.createProcess();
     }
 
-    public Process sandboxInit() throws IOException {
+    public Process sandboxInit() throws IOException, ExecutionException {
         return runCommand("sandbox", "init");
     }
 
-    public Process installDependencies() throws IOException {
+    public Process installDependencies() throws IOException, ExecutionException {
         return runCommand("install", "--only-dependencies");
     }
 
-    public Process configure() throws IOException {
+    public Process configure() throws IOException, ExecutionException {
         return runCommand("configure", myCabalFlags);
     }
 
-    public Process build() throws IOException {
+    public Process build() throws IOException, ExecutionException {
         return runCommand("build");
     }
 
-    public Process clean() throws IOException {
+    public Process clean() throws IOException, ExecutionException {
         return runCommand("clean");
     }
 }
