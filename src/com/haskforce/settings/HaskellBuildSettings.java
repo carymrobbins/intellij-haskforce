@@ -56,10 +56,17 @@ public class HaskellBuildSettings implements PersistentStateComponent<HaskellBui
         return myBuildOptions.myInstallCabalDependencies;
     }
 
+    public boolean isEnableTestsEnabled() {
+        return myBuildOptions.myEnableTests;
+    }
+
     public void setInstallCabalDependencies(boolean install) {
         myBuildOptions.myInstallCabalDependencies = install;
     }
 
+    public void setEnableTests(boolean enable) {
+        myBuildOptions.myEnableTests = enable;
+    }
 
     public boolean isProfilingEnabled() {
         return myBuildOptions.myProfilingBuild;

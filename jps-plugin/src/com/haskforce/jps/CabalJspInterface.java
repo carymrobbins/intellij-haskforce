@@ -20,25 +20,36 @@ public class CabalJspInterface {
     @NotNull
     private File myCabalFile;
     @NotNull
-    private String myCabalPath;
-    @NotNull
     private String myCabalFlags;
+    @NotNull
+    private Boolean myEnableTests;
+    @NotNull
+    private String myCabalPath;
 
     CabalJspInterface(@NotNull String cabalPath, @NotNull String cabalFlags,
-                      @NotNull File cabalFile) {
+                      @NotNull Boolean enableTests, @NotNull File cabalFile) {
         myCabalPath = cabalPath;
-        myCabalFile = cabalFile;
         myCabalFlags = cabalFlags;
+        myEnableTests = enableTests;
+        myCabalFile = cabalFile;
     }
 
     private Process runCommand(String command, String... args) throws IOException, ExecutionException {
+        return getCommandLine(command, args).createProcess();
+    }
+
+    private GeneralCommandLine getCommandLine(String command, String... args) throws IOException, ExecutionException {
         GeneralCommandLine commandLine = new GeneralCommandLine();
         commandLine.setWorkDirectory(myCabalFile.getParentFile().getCanonicalPath());
         commandLine.setExePath(myCabalPath);
         ParametersList parametersList = commandLine.getParametersList();
         parametersList.add(command);
+        if (myEnableTests && (command.equals("install") || command.equals("configure"))) {
+            parametersList.add("--enable-tests");
+        }
         parametersList.addAll(args);
-        return commandLine.createProcess();
+        commandLine.setRedirectErrorStream(true);
+        return commandLine;
     }
 
     public Process sandboxInit() throws IOException, ExecutionException {
@@ -50,7 +61,10 @@ public class CabalJspInterface {
     }
 
     public Process configure() throws IOException, ExecutionException {
-        return runCommand("configure", myCabalFlags);
+        GeneralCommandLine commandLine = getCommandLine("configure");
+        ParametersList parametersList = commandLine.getParametersList();
+        parametersList.addParametersString(myCabalFlags);
+        return commandLine.createProcess();
     }
 
     public Process build() throws IOException, ExecutionException {

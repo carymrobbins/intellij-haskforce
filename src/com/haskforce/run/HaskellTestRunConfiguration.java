@@ -1,5 +1,7 @@
 package com.haskforce.run;
 
+import com.haskforce.settings.HaskellBuildSettings;
+import com.haskforce.settings.HaskellCompilerConfigurable;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.ConfigurationFactory;
@@ -53,6 +55,9 @@ public class HaskellTestRunConfiguration extends HaskellRunConfigurationBase {
     @Override
     public RunProfileState getState(@NotNull Executor executor, @NotNull ExecutionEnvironment executionEnvironment) throws ExecutionException {
         // TODO: How do we integrate with the test output UI?
+
+        // Running the tests should automatically enable tests in the build settings.
+        HaskellBuildSettings.getInstance(getProject()).setEnableTests(true);
         return new HaskellTestCommandLineState(executionEnvironment, this);
     }
 

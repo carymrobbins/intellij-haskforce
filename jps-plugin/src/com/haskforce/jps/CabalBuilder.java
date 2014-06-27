@@ -86,8 +86,8 @@ public class CabalBuilder extends ModuleLevelBuilder {
                 }
                 HaskellBuildOptions buildOptions = JpsHaskellBuildOptionsExtension.getOrCreateExtension(module.getProject()).getOptions();
                 //noinspection ObjectAllocationInLoop
-                CabalJspInterface cabal = new CabalJspInterface(buildOptions.myCabalPath,
-                                                buildOptions.myCabalFlags, cabalFile);
+                CabalJspInterface cabal = new CabalJspInterface(
+                        buildOptions.myCabalPath, buildOptions.myCabalFlags, buildOptions.myEnableTests, cabalFile);
 
                 //noinspection ObjectAllocationInLoop
                 if (buildOptions.myUseCabalSandbox && !new File(cabalFile.getParent(), "cabal.sandbox.config").isFile()) {

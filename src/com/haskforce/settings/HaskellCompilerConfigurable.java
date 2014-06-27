@@ -37,6 +37,7 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
     private JCheckBox cabalBuild;
     private JCheckBox cabalSandbox;
     private JCheckBox installCabalDependencies;
+    private JCheckBox enableTests;
 
     // Data container for settings.
     private final HaskellBuildSettings mySettings;
@@ -73,6 +74,7 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         cabalBuild.setSelected(mySettings.isCabalEnabled());
         cabalSandbox.setSelected(mySettings.isCabalSandboxEnabled());
         installCabalDependencies.setSelected(mySettings.isInstallCabalDependenciesEnabled());
+        enableTests.setSelected(mySettings.isEnableTestsEnabled());
         updateVersionInfoFields();
     }
 
@@ -120,7 +122,8 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
                 profilingBuild.isSelected() == mySettings.isProfilingEnabled() &&
                 cabalBuild.isSelected() == mySettings.isCabalEnabled() &&
                 cabalSandbox.isSelected() == mySettings.isCabalSandboxEnabled() &&
-                installCabalDependencies.isSelected() == mySettings.isInstallCabalDependenciesEnabled());
+                installCabalDependencies.isSelected() == mySettings.isInstallCabalDependenciesEnabled() &&
+                enableTests.isSelected() == mySettings.isEnableTestsEnabled());
     }
 
     /**
@@ -164,6 +167,7 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         mySettings.setUseCabal(cabalBuild.isSelected());
         mySettings.setUseCabalSandbox(cabalSandbox.isSelected());
         mySettings.setInstallCabalDependencies(installCabalDependencies.isSelected());
+        mySettings.setEnableTests(enableTests.isSelected());
         bestGhcPath = ghcPath.getText();
         mySettings.setGhcPath(bestGhcPath);
         bestCabalPath = cabalPath.getText();
@@ -190,5 +194,6 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         cabalBuild.setSelected(mySettings.isCabalEnabled());
         cabalSandbox.setSelected(mySettings.isCabalSandboxEnabled());
         installCabalDependencies.setSelected(mySettings.isInstallCabalDependenciesEnabled());
+        enableTests.setSelected(mySettings.isEnableTestsEnabled());
     }
 }

@@ -17,6 +17,7 @@ public class HaskellBuildOptions {
     public static final String DEFAULT_CABAL_PATH = "cabal";
     public static final String DEFAULT_CABAL_FLAGS = "";
     public static final boolean DEFAULT_INSTALL_CABAL_DEPENDENCIES = false;
+    public static final boolean DEFAULT_ENABLE_TESTS = false;
 
     public HaskellBuildOptions() {
     }
@@ -56,6 +57,9 @@ public class HaskellBuildOptions {
     @Tag("installDependencies")
     public boolean myInstallCabalDependencies = DEFAULT_INSTALL_CABAL_DEPENDENCIES;
 
+    @Tag("enableTests")
+    public boolean myEnableTests = DEFAULT_ENABLE_TESTS;
+
     @Override
     public String toString() {
         return "HaskellBuildOptions{" +
@@ -67,6 +71,7 @@ public class HaskellBuildOptions {
                 ", myCabalFlags=" + myCabalFlags +
                 ", myCabalFiles=" + myCabalFiles +
                 ", myInstallCabalDependencies=" + myInstallCabalDependencies +
+                ", myEnableTests=" + myEnableTests +
                 '}';
     }
 }
