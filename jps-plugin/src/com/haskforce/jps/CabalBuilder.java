@@ -180,17 +180,16 @@ public class CabalBuilder extends ModuleLevelBuilder {
 
     private static boolean installDependenciesRequired(CabalJspInterface cabal) throws IOException, ExecutionException {
         Process dryRun = cabal.installDependencies(true);
-        boolean installRequired = true;
         Iterator<String> dryRunOut = collectOutput(dryRun);
         String line;
-        while (installRequired && dryRunOut.hasNext()) {
+        while (dryRunOut.hasNext()) {
             line = dryRunOut.next();
             // TODO: Is there a more elegant way to do this?
             if (line.contains("already installed")) {
-                installRequired = false;
+                return false;
             }
         }
-        return installRequired;
+        return true;
     }
 
     /**
