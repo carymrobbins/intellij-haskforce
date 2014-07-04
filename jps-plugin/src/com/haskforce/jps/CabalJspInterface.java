@@ -39,8 +39,13 @@ public class CabalJspInterface {
         commandLine.setExePath(myBuildOptions.myCabalPath);
         ParametersList parametersList = commandLine.getParametersList();
         parametersList.add(command);
-        if (myBuildOptions.myEnableTests && (command.equals("install") || command.equals("configure"))) {
-            parametersList.add("--enable-tests");
+        if (command.equals("install") || command.equals("configure")) {
+            if (myBuildOptions.myEnableTests) {
+                parametersList.add("--enable-tests");
+            }
+            if (!myBuildOptions.myProfilingBuild) {
+                parametersList.add("--disable-library-profiling");
+            }
         }
         parametersList.addAll(args);
         commandLine.setRedirectErrorStream(true);
