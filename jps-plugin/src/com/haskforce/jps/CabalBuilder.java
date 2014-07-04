@@ -89,8 +89,8 @@ public class CabalBuilder extends ModuleLevelBuilder {
                 CabalJspInterface cabal = new CabalJspInterface(cabalFile, buildOptions);
 
                 //noinspection ObjectAllocationInLoop
-                if (buildOptions.myUseCabalSandbox && !new File(cabalFile.getParent(), "cabal.sandbox.config").isFile()) {
-                    if (runSandboxInit(context, module, cabal)) return ExitCode.ABORT;
+                if (buildOptions.myUseCabalSandbox) {
+                    if (runSandboxInit(context, module, cabal, cabalFile)) return ExitCode.ABORT;
                 }
                 if (buildOptions.myInstallCabalDependencies) {
                     if (runInstallDependencies(context, module, cabal)) return ExitCode.ABORT;
@@ -157,6 +157,11 @@ public class CabalBuilder extends ModuleLevelBuilder {
      */
     private static boolean runInstallDependencies(CompileContext context, JpsModule module, CabalJspInterface cabal)
             throws IOException, InterruptedException, ExecutionException {
+
+        if (!installDependenciesRequired(cabal)) {
+            return false;
+        }
+
         context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.INFO, "Install dependencies"));
 
         Process installDependenciesProcess = cabal.installDependencies();
@@ -173,11 +178,32 @@ public class CabalBuilder extends ModuleLevelBuilder {
         return false;
     }
 
+    private static boolean installDependenciesRequired(CabalJspInterface cabal) throws IOException, ExecutionException {
+        Process dryRun = cabal.installDependencies(true);
+        boolean installRequired = true;
+        Iterator<String> dryRunOut = collectOutput(dryRun);
+        String line;
+        while (installRequired && dryRunOut.hasNext()) {
+            line = dryRunOut.next();
+            // TODO: Is there a more elegant way to do this?
+            if (line.contains("already installed")) {
+                installRequired = false;
+            }
+        }
+        return installRequired;
+    }
+
     /**
      * Runs cabal sandbox init
      */
-    private static boolean runSandboxInit(CompileContext context, JpsModule module, CabalJspInterface cabal)
+    private static boolean runSandboxInit(CompileContext context, JpsModule module, CabalJspInterface cabal, File cabalFile)
             throws IOException, InterruptedException, ExecutionException {
+
+        // If sandbox already exists, no need to run init - just bail out.
+        if (new File(cabalFile.getParent(), "cabal.sandbox.config").isFile()) {
+            return false;
+        }
+
         context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.INFO, "Create sandbox"));
 
         Process sandboxProcess = cabal.sandboxInit();
