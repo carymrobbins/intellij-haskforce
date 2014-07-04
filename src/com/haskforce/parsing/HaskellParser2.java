@@ -2683,9 +2683,18 @@ public class HaskellParser2 implements PsiParser {
     private static boolean nextTokenIsInner(PsiBuilder builder_, IElementType expectedToken) {
         IElementType tokenType = builder_.getTokenType();
         if (expectedToken != tokenType) {
-            PsiBuilder.Marker mark = builder_.mark();
-            builder_.advanceLexer();
-            mark.error("Got " + tokenType + " but expected " + expectedToken);
+            IElementType nextToken = builder_.lookAhead(1);
+            if (nextToken == expectedToken) {
+                PsiBuilder.Marker mark = builder_.mark();
+                builder_.advanceLexer();
+                mark.error("Got " + tokenType + " but expected " + expectedToken);
+                builder_.advanceLexer();
+            } else {
+                builder_.error("Missing token: " + expectedToken);
+                PsiBuilder.Marker mark = builder_.mark();
+                builder_.advanceLexer();
+                mark.error("Got " + tokenType + " but expected " + expectedToken);
+            }
         }
         return expectedToken == tokenType;
     }
