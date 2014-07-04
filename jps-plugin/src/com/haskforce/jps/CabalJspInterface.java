@@ -5,6 +5,7 @@ package com.haskforce.jps;
  * 2014.
  */
 
+import com.haskforce.jps.model.HaskellBuildOptions;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
@@ -19,19 +20,13 @@ import java.io.IOException;
 public class CabalJspInterface {
     @NotNull
     private File myCabalFile;
-    @NotNull
-    private String myCabalFlags;
-    @NotNull
-    private Boolean myEnableTests;
-    @NotNull
-    private String myCabalPath;
 
-    CabalJspInterface(@NotNull String cabalPath, @NotNull String cabalFlags,
-                      @NotNull Boolean enableTests, @NotNull File cabalFile) {
-        myCabalPath = cabalPath;
-        myCabalFlags = cabalFlags;
-        myEnableTests = enableTests;
+    @NotNull
+    private HaskellBuildOptions myBuildOptions;
+
+    CabalJspInterface(@NotNull File cabalFile, @NotNull HaskellBuildOptions buildOptions) {
         myCabalFile = cabalFile;
+        myBuildOptions = buildOptions;
     }
 
     private Process runCommand(String command, String... args) throws IOException, ExecutionException {
@@ -41,10 +36,10 @@ public class CabalJspInterface {
     private GeneralCommandLine getCommandLine(String command, String... args) throws IOException, ExecutionException {
         GeneralCommandLine commandLine = new GeneralCommandLine();
         commandLine.setWorkDirectory(myCabalFile.getParentFile().getCanonicalPath());
-        commandLine.setExePath(myCabalPath);
+        commandLine.setExePath(myBuildOptions.myCabalPath);
         ParametersList parametersList = commandLine.getParametersList();
         parametersList.add(command);
-        if (myEnableTests && (command.equals("install") || command.equals("configure"))) {
+        if (myBuildOptions.myEnableTests && (command.equals("install") || command.equals("configure"))) {
             parametersList.add("--enable-tests");
         }
         parametersList.addAll(args);
@@ -63,7 +58,7 @@ public class CabalJspInterface {
     public Process configure() throws IOException, ExecutionException {
         GeneralCommandLine commandLine = getCommandLine("configure");
         ParametersList parametersList = commandLine.getParametersList();
-        parametersList.addParametersString(myCabalFlags);
+        parametersList.addParametersString(myBuildOptions.myCabalFlags);
         return commandLine.createProcess();
     }
 
