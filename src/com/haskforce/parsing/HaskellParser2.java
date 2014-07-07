@@ -2666,7 +2666,7 @@ public class HaskellParser2 implements PsiParser {
      */
     private static void chewPragma(PsiBuilder builder) {
         IElementType e = builder.getTokenType();
-        while (e != CLOSEPRAGMA) {
+        while (e != CLOSEPRAGMA && !builder.eof()) {
             builder.advanceLexer();
             e = builder.getTokenType();
         }
