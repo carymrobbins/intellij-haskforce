@@ -1,6 +1,6 @@
 HaskellTokenType.module ('module')
 WHITE_SPACE (' ')
-HaskellTokenType.conid ('String00004')
+HaskellTokenType.conidRegexp ('String00004')
 WHITE_SPACE (' ')
 HaskellTokenType.where ('where')
 WHITE_SPACE ('\n\n\n')

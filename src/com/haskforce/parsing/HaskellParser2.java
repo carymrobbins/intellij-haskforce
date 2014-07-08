@@ -82,7 +82,7 @@ import static com.haskforce.psi.HaskellTypes.PERCENT;
 import static com.haskforce.psi.HaskellTypes.CLASSTOKEN;
 import static com.haskforce.psi.HaskellTypes.DOLLAR;
 import static com.haskforce.psi.HaskellTypes.THQUOTE;
-import static com.haskforce.psi.HaskellTypes.CONID;
+import static com.haskforce.psi.HaskellTypes.CONIDREGEXP;
 import static com.haskforce.psi.HaskellTypes.FORALLTOKEN;
 
 /**
@@ -188,7 +188,7 @@ public class HaskellParser2 implements PsiParser {
         while (!builder.eof() && (name != null &&
                (builder.getCurrentOffset() - startPos) <  name.name.length() ||
                 name == null && (e != WHERE && e != LPAREN))) {
-            consumeToken(builder, CONID);
+            consumeToken(builder, CONIDREGEXP);
             e = builder.getTokenType();
             if (e == PERIOD) consumeToken(builder, PERIOD);
         }

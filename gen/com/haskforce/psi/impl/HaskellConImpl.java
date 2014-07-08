@@ -30,8 +30,8 @@ public class HaskellConImpl extends ASTWrapperPsiElement implements HaskellCon {
 
   @Override
   @Nullable
-  public PsiElement getConid() {
-    return findChildByType(CONID);
+  public PsiElement getConidRegexp() {
+    return findChildByType(CONIDREGEXP);
   }
 
   @Override

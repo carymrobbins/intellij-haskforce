@@ -24,8 +24,8 @@ public class HaskellTyconImpl extends ASTWrapperPsiElement implements HaskellTyc
 
   @Override
   @NotNull
-  public PsiElement getConid() {
-    return findNotNullChildByType(CONID);
+  public PsiElement getConidRegexp() {
+    return findNotNullChildByType(CONIDREGEXP);
   }
 
 }

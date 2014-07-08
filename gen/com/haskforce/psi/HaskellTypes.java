@@ -60,7 +60,7 @@ public interface HaskellTypes {
   IElementType COMMA = new HaskellTokenType(",");
   IElementType COMMENT = new HaskellTokenType("comment");
   IElementType COMMENTTEXT = new HaskellTokenType("commenttext");
-  IElementType CONID = new HaskellTokenType("conid");
+  IElementType CONIDREGEXP = new HaskellTokenType("conidRegexp");
   IElementType CONSYMTOK = new HaskellTokenType("Consym");
   IElementType CPPELSE = new HaskellTokenType("#else");
   IElementType CPPENDIF = new HaskellTokenType("#endif");

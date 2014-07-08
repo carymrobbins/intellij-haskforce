@@ -116,7 +116,7 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
     @NotNull
     @Override
     public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
-        if (tokenType.equals(HaskellTypes.CONID)) {
+        if (tokenType.equals(HaskellTypes.CONIDREGEXP)) {
             return CONID_KEYS;
         } else if (tokenType.equals(HaskellTypes.COMMENT)) {
             return COMMENT_KEYS;

@@ -11,7 +11,7 @@ public interface HaskellCon extends PsiElement {
   HaskellConsym getConsym();
 
   @Nullable
-  PsiElement getConid();
+  PsiElement getConidRegexp();
 
   @Nullable
   PsiElement getLparen();

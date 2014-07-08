@@ -1,7 +1,7 @@
 Haskell File
   PsiElement(HaskellTokenType.module)('module')
   HaskellQconidImpl(QCONID)
-    PsiElement(HaskellTokenType.conid)('String00004')
+    PsiElement(HaskellTokenType.conidRegexp)('String00004')
   PsiElement(HaskellTokenType.where)('where')
   HaskellBodyImpl(BODY)
     HaskellQvaridImpl(QVARID)

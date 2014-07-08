@@ -158,7 +158,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   ":"                 { return COLON; }
 
   {VARIDREGEXP}       { return VARIDREGEXP; }
-  {CONID}             { return CONID; }
+  {CONID}             { return CONIDREGEXP; }
   {CHARTOKEN}         { return CHARTOKEN; }
   {INTEGERTOKEN}      { return INTEGERTOKEN; }
   {FLOATTOKEN}        { return FLOATTOKEN; }

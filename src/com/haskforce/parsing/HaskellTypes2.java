@@ -63,7 +63,7 @@ public interface HaskellTypes2 {
             else if (type == CNAMES) {
                 return new HaskellCnamesImpl(node);
             }
-            else if (type == CON || type == HaskellTypes.CONID) {
+            else if (type == CON || type == HaskellTypes.CONIDREGEXP) {
                 return new HaskellConImpl(node);
             }
             else if (type == CONSYM) {

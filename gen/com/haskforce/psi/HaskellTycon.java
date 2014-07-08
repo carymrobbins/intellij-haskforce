@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface HaskellTycon extends PsiElement {
 
   @NotNull
-  PsiElement getConid();
+  PsiElement getConidRegexp();
 
 }

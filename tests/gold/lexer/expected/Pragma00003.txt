@@ -1,6 +1,6 @@
 HaskellTokenType.module ('module')
 WHITE_SPACE (' ')
-HaskellTokenType.conid ('Pragma00003')
+HaskellTokenType.conidRegexp ('Pragma00003')
 WHITE_SPACE (' ')
 HaskellTokenType.{-# ('{-#')
 HaskellTokenType.PRAGMA (' DEPRECATED "Use Wobble instead" ')

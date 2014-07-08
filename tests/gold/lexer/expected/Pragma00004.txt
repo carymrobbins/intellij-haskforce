@@ -1,6 +1,6 @@
 HaskellTokenType.module ('module')
 WHITE_SPACE (' ')
-HaskellTokenType.conid ('Pragma00004')
+HaskellTokenType.conidRegexp ('Pragma00004')
 WHITE_SPACE ('  ')
 HaskellTokenType.{-# ('{-#')
 HaskellTokenType.PRAGMA (' WARNING "This is an unstable interface." ')

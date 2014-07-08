@@ -30,8 +30,8 @@ public class HaskellQconidImpl extends ASTWrapperPsiElement implements HaskellQc
 
   @Override
   @NotNull
-  public PsiElement getConid() {
-    return findNotNullChildByType(CONID);
+  public PsiElement getConidRegexp() {
+    return findNotNullChildByType(CONIDREGEXP);
   }
 
 }

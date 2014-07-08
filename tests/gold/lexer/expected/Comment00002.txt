@@ -1,6 +1,6 @@
 HaskellTokenType.module ('module')
 WHITE_SPACE (' ')
-HaskellTokenType.conid ('Comment00002')
+HaskellTokenType.conidRegexp ('Comment00002')
 WHITE_SPACE (' ')
 HaskellTokenType.where ('where')
 WHITE_SPACE ('\n\n')

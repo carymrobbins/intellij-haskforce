@@ -92,7 +92,7 @@
     nullCharacter='\&'
     classtoken='class'
     varidRegexp="regexp:[a-z_][a-zA-Z_0-9']*"
-    conid="regexp:[A-Z][a-zA-Z_0-9']*"
+    conidRegexp="regexp:[A-Z][a-zA-Z_0-9']*"
     chartoken="regexp:'(\\.|[^'])'"
     integertoken="regexp:(0(o|O)[0-7]+|0(x|X)[0-9a-fA-F]+|[0-9]+)"
     floattoken="regexp:([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))"
@@ -201,16 +201,16 @@ consym ::= CONSYMTOK
 reservedop ::= '..' | '::' | '=' | '\' | '|' | '<-' | '->' | '@' | '~' | '=>'
 
 tyvar ::= varid
-tycon ::= conid
-tycls ::= conid
-modulePrefix ::= (conid '.')+
+tycon ::= conidRegexp
+tycls ::= conidRegexp
+modulePrefix ::= (conidRegexp '.')+
 
 qvarid ::= [modulePrefix] varid {
        methods=[getName setName]
    }
 qinfixvarid ::= '`' [modulePrefix] varid '`'
-qconid ::= [modulePrefix] conid
-qinfixconid ::= '`' [modulePrefix] conid '`'
+qconid ::= [modulePrefix] conidRegexp
+qinfixconid ::= '`' [modulePrefix] conidRegexp '`'
 qtycon ::= [modulePrefix] tycon
 qtycls ::= [modulePrefix] tycls
 qvarsym ::= [modulePrefix] varsym
@@ -219,7 +219,7 @@ qconsym ::= [modulePrefix] consym
 private var ::= varid | '(' varsym ')'
 qvars ::= <<commaSeparate qvar>>
 qvar ::= qvarid | '(' qvarsym ')'
-con ::= conid | '(' consym ')'
+con ::= conidRegexp | '(' consym ')'
 
 pstringtoken ::= '"' STRINGTOKEN* '"'
 

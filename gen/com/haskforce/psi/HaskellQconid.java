@@ -11,6 +11,6 @@ public interface HaskellQconid extends PsiElement {
   HaskellModulePrefix getModulePrefix();
 
   @NotNull
-  PsiElement getConid();
+  PsiElement getConidRegexp();
 
 }

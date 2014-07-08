@@ -2,7 +2,7 @@ Haskell File
   HaskellBodyImpl(BODY)
     <empty list>
   PsiElement(HaskellTokenType.module)('module')
-  PsiElement(HaskellTokenType.conid)('Pragma00003')
+  PsiElement(HaskellTokenType.conidRegexp)('Pragma00003')
   PsiElement(HaskellTokenType.{-#)('{-#')
   PsiErrorElement:' DEPRECATED "Use Wobble instead" ' unexpected
     PsiElement(HaskellTokenType.PRAGMA)(' DEPRECATED "Use Wobble instead" ')

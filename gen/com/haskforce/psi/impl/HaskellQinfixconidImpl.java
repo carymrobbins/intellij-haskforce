@@ -30,8 +30,8 @@ public class HaskellQinfixconidImpl extends ASTWrapperPsiElement implements Hask
 
   @Override
   @NotNull
-  public PsiElement getConid() {
-    return findNotNullChildByType(CONID);
+  public PsiElement getConidRegexp() {
+    return findNotNullChildByType(CONIDREGEXP);
   }
 
 }

@@ -1,7 +1,7 @@
 Haskell File
   PsiElement(HaskellTokenType.module)('module')
   HaskellQconidImpl(QCONID)
-    PsiElement(HaskellTokenType.conid)('Comment00002')
+    PsiElement(HaskellTokenType.conidRegexp)('Comment00002')
   PsiElement(HaskellTokenType.where)('where')
   HaskellBodyImpl(BODY)
     HaskellNcommentImpl(NCOMMENT)

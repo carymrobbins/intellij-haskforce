@@ -2,7 +2,7 @@ Haskell File
   HaskellBodyImpl(BODY)
     <empty list>
   PsiElement(HaskellTokenType.module)('module')
-  PsiElement(HaskellTokenType.conid)('Pragma00004')
+  PsiElement(HaskellTokenType.conidRegexp)('Pragma00004')
   PsiElement(HaskellTokenType.{-#)('{-#')
   PsiErrorElement:' WARNING "This is an unstable interface." ' unexpected
     PsiElement(HaskellTokenType.PRAGMA)(' WARNING "This is an unstable interface." ')
