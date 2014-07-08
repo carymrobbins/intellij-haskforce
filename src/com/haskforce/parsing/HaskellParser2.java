@@ -1322,7 +1322,7 @@ public class HaskellParser2 implements PsiParser {
             builder.advanceLexer();
             e = builder.getTokenType();
         }
-        startCom.done(NCOMMENT);
+        startCom.done(COMMENTTEXT);
     }
 
     /**

@@ -24,7 +24,6 @@ public interface HaskellTypes2 {
     IElementType IMPORTT = new HaskellElementType("IMPORTT");
     IElementType MODULE = new HaskellElementType("MODULE");
     IElementType NAME = new HaskellElementType("NAME");
-    IElementType NCOMMENT = new HaskellElementType("NCOMMENT");
     IElementType PPRAGMA = new HaskellElementType("PPRAGMA");
     IElementType PSTRINGTOKEN = new HaskellElementType("PSTRINGTOKEN");
     IElementType QCONID = new HaskellElementType("QCONID");
@@ -86,9 +85,6 @@ public interface HaskellTypes2 {
             }
             else if (type == HaskellTypes.MODULE) {
                 return new HaskellModulePrefixImpl(node);
-            }
-            else if (type == NCOMMENT) {
-                return new HaskellNcommentImpl(node);
             }
             else if (type == PPRAGMA) {
                 return new HaskellPpragmaImpl(node);

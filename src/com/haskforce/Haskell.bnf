@@ -177,10 +177,9 @@ private literal ::= floattoken | integertoken | chartoken | pstringtoken
 private whitespace ::= whitestuff +
 private space ::= LINE_WS
 private newline ::= EOL
-private whitestuff ::= whitechar | comment | ncomment | haddock
+private whitestuff ::= whitechar | comment | haddock
 whitechar ::= space | newline | '\t'
 ppragma ::= openpragma PRAGMA+ closepragma
-ncomment ::= opencom commenttext* (ncomment commenttext*)* closecom
 special ::= '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}' | thquote | backtick
 symbol ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '=' | '>' | '?' | '@'
          | '\' | '^' | '|' | '-' | '~' | ':'

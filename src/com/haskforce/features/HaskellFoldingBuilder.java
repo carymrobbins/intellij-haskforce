@@ -1,6 +1,7 @@
 package com.haskforce.features;
 
 import com.haskforce.HaskellParserDefinition;
+import com.haskforce.parsing.HaskellTypes2;
 import com.haskforce.psi.HaskellFile;
 import com.haskforce.psi.HaskellTypes;
 import com.intellij.lang.ASTNode;
@@ -41,6 +42,8 @@ public class HaskellFoldingBuilder extends FoldingBuilderEx implements DumbAware
             });
         }
 
+        // TODO: See JavaFoldingBuilder.java for example of collecting
+        // consecitive comments.
         return result.toArray(new FoldingDescriptor[result.size()]);
     }
 
@@ -51,7 +54,7 @@ public class HaskellFoldingBuilder extends FoldingBuilderEx implements DumbAware
     @Override
     public String getPlaceholderText(@NotNull ASTNode node) {
         IElementType type = node.getElementType();
-        if (type == HaskellTypes.NCOMMENT) return "{- -}";
+        if (type == HaskellTypes.COMMENTTEXT) return "{- -}";
         if (type == HaskellTypes.COMMENT) return "--";
         return "..";
     }

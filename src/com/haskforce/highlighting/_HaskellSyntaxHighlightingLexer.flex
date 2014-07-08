@@ -127,7 +127,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   "{-"                {
                         commentLevel = 1;
                         yybegin(INCOMMENT);
-                        return OPENCOM;
+                        return COMMENTTEXT;
                       }
   "-}"                { return CLOSECOM; }
   "{"                 { return LBRACE; }
@@ -176,12 +176,12 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         if (commentLevel == 0) {
                             yybegin(YYINITIAL);
                         }
-                        return CLOSECOM;
+                        return COMMENTTEXT;
                       }
 
     "{-"              {
                         commentLevel++;
-                        return OPENCOM;
+                        return COMMENTTEXT;
                       }
 
     [^-{}]+           { return COMMENTTEXT; }

@@ -53,9 +53,6 @@ public class HaskellParser implements PsiParser {
     else if (root_ == MODULE_PREFIX) {
       result_ = modulePrefix(builder_, 0);
     }
-    else if (root_ == NCOMMENT) {
-      result_ = ncomment(builder_, 0);
-    }
     else if (root_ == PPRAGMA) {
       result_ = ppragma(builder_, 0);
     }
@@ -735,68 +732,6 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // opencom commenttext* (ncomment commenttext*)* closecom
-  public static boolean ncomment(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "ncomment")) return false;
-    if (!nextTokenIs(builder_, OPENCOM)) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, OPENCOM);
-    result_ = result_ && ncomment_1(builder_, level_ + 1);
-    result_ = result_ && ncomment_2(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, CLOSECOM);
-    exit_section_(builder_, marker_, NCOMMENT, result_);
-    return result_;
-  }
-
-  // commenttext*
-  private static boolean ncomment_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "ncomment_1")) return false;
-    int pos_ = current_position_(builder_);
-    while (true) {
-      if (!consumeToken(builder_, COMMENTTEXT)) break;
-      if (!empty_element_parsed_guard_(builder_, "ncomment_1", pos_)) break;
-      pos_ = current_position_(builder_);
-    }
-    return true;
-  }
-
-  // (ncomment commenttext*)*
-  private static boolean ncomment_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "ncomment_2")) return false;
-    int pos_ = current_position_(builder_);
-    while (true) {
-      if (!ncomment_2_0(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "ncomment_2", pos_)) break;
-      pos_ = current_position_(builder_);
-    }
-    return true;
-  }
-
-  // ncomment commenttext*
-  private static boolean ncomment_2_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "ncomment_2_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = ncomment(builder_, level_ + 1);
-    result_ = result_ && ncomment_2_0_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // commenttext*
-  private static boolean ncomment_2_0_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "ncomment_2_0_1")) return false;
-    int pos_ = current_position_(builder_);
-    while (true) {
-      if (!consumeToken(builder_, COMMENTTEXT)) break;
-      if (!empty_element_parsed_guard_(builder_, "ncomment_2_0_1", pos_)) break;
-      pos_ = current_position_(builder_);
-    }
-    return true;
-  }
-
-  /* ********************************************************** */
   // EOL
   static boolean newline(PsiBuilder builder_, int level_) {
     return consumeToken(builder_, EOL);
@@ -1459,14 +1394,13 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // whitechar | comment | ncomment | haddock
+  // whitechar | comment | haddock
   static boolean whitestuff(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "whitestuff")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = whitechar(builder_, level_ + 1);
     if (!result_) result_ = consumeToken(builder_, COMMENT);
-    if (!result_) result_ = ncomment(builder_, level_ + 1);
     if (!result_) result_ = consumeToken(builder_, HADDOCK);
     exit_section_(builder_, marker_, null, result_);
     return result_;

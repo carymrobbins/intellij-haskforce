@@ -19,7 +19,6 @@ public interface HaskellTypes {
   IElementType IMPDECL = new HaskellElementType("IMPDECL");
   IElementType IMPORTT = new HaskellElementType("IMPORTT");
   IElementType MODULE_PREFIX = new HaskellElementType("MODULE_PREFIX");
-  IElementType NCOMMENT = new HaskellElementType("NCOMMENT");
   IElementType PPRAGMA = new HaskellElementType("PPRAGMA");
   IElementType PSTRINGTOKEN = new HaskellElementType("PSTRINGTOKEN");
   IElementType QCONID = new HaskellElementType("QCONID");
@@ -167,9 +166,6 @@ public interface HaskellTypes {
       }
       else if (type == MODULE_PREFIX) {
         return new HaskellModulePrefixImpl(node);
-      }
-      else if (type == NCOMMENT) {
-        return new HaskellNcommentImpl(node);
       }
       else if (type == PPRAGMA) {
         return new HaskellPpragmaImpl(node);

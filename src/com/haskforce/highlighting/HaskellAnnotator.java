@@ -15,12 +15,6 @@ public class HaskellAnnotator implements Annotator {
     public void annotate(@NotNull final PsiElement element, @NotNull final AnnotationHolder holder) {
         element.accept(new HaskellVisitor() {
             @Override
-            public void visitNcomment(@NotNull HaskellNcomment o) {
-                super.visitNcomment(o);
-                setHighlighting(o, holder, HaskellSyntaxHighlighter.NCOMMENT);
-            }
-
-            @Override
             public void visitPpragma(@NotNull HaskellPpragma o) {
                 super.visitPpragma(o);
                 setHighlighting(o, holder, HaskellSyntaxHighlighter.PRAGMA);

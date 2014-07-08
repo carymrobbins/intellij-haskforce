@@ -36,12 +36,6 @@ public class HaskellBodyImpl extends ASTWrapperPsiElement implements HaskellBody
 
   @Override
   @NotNull
-  public List<HaskellNcomment> getNcommentList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellNcomment.class);
-  }
-
-  @Override
-  @NotNull
   public List<HaskellPpragma> getPpragmaList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPpragma.class);
   }

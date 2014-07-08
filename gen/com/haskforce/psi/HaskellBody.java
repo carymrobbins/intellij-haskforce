@@ -14,9 +14,6 @@ public interface HaskellBody extends PsiElement {
   List<HaskellImpdecl> getImpdeclList();
 
   @NotNull
-  List<HaskellNcomment> getNcommentList();
-
-  @NotNull
   List<HaskellPpragma> getPpragmaList();
 
   @NotNull

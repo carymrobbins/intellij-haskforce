@@ -77,4 +77,5 @@ public class HaskellParserTest extends HaskellParserTestBase {
     public void testTempHask00001()     { doTest(true, true); }
     public void testTempHask00002()     { doTest(true, false); }
     public void testQuote00001()        { doTest(true, true); }
+    // public void testParseMonad()        { doTest(true, true); }
 }

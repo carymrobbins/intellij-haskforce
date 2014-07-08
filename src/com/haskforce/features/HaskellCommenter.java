@@ -32,7 +32,7 @@ public class HaskellCommenter implements CodeDocumentationAwareCommenterEx {
     @Nullable
     @Override
     public IElementType getBlockCommentTokenType() {
-        return HaskellTypes.NCOMMENT;
+        return HaskellTypes.COMMENTTEXT;
     }
 
     @Nullable
