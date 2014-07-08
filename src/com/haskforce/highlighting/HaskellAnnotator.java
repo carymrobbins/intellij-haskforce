@@ -1,4 +1,4 @@
-package com.haskforce;
+package com.haskforce.highlighting;
 
 import com.haskforce.highlighting.HaskellSyntaxHighlighter;
 import com.haskforce.psi.*;

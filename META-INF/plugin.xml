@@ -51,7 +51,7 @@
       <fileTypeFactory implementation="com.haskforce.HaskellFileTypeFactory"/>
       <lang.syntaxHighlighterFactory key="Haskell" implementationClass="com.haskforce.highlighting.HaskellSyntaxHighlighterFactory"/>
       <lang.parserDefinition language="Haskell" implementationClass="com.haskforce.HaskellParserDefinition"/>
-      <annotator language="Haskell" implementationClass="com.haskforce.HaskellAnnotator" />
+      <annotator language="Haskell" implementationClass="com.haskforce.highlighting.HaskellAnnotator" />
       <configurationType implementation="com.haskforce.run.HaskellApplicationConfigurationType"/>
       <configurationType implementation="com.haskforce.run.HaskellTestConfigurationType"/>
       <programRunner implementation="com.haskforce.run.HaskellRunner"/>
