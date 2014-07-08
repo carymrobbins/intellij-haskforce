@@ -169,7 +169,7 @@ public class HaskellParser2 implements PsiParser {
         parseModuleName(builder, head == null ? null : head.moduleName, comments);
         // TODO: parseExportSpecList(builder, head.exportSpecList, comments);
         IElementType e2 = builder.getTokenType();
-        while (e2 != WHERE) {
+        while (!builder.eof() && e2 != WHERE) {
             if (e2 == OPENPRAGMA) {
                 parseGenericPragma(builder, null, comments);
             } else {
@@ -185,9 +185,9 @@ public class HaskellParser2 implements PsiParser {
         IElementType e = builder.getTokenType(); // Need to getTokenType to advance lexer over whitespace.
         int startPos = builder.getCurrentOffset();
         // Data.Maybe is a legal module name.
-        while ((name != null &&
-               (builder.getCurrentOffset() - startPos) <  name.name.length()) ||
-                name == null && (e != WHERE && e != LPAREN)) {
+        while (!builder.eof() && (name != null &&
+               (builder.getCurrentOffset() - startPos) <  name.name.length() ||
+                name == null && (e != WHERE && e != LPAREN))) {
             consumeToken(builder, CONID);
             e = builder.getTokenType();
             if (e == PERIOD) consumeToken(builder, PERIOD);
@@ -201,8 +201,8 @@ public class HaskellParser2 implements PsiParser {
         IElementType e = builder.getTokenType();
 
         int i = 0;
-        while (isInterruption(e) ||
-                importDecls != null && i < importDecls.length) {
+        while (!builder.eof() && (isInterruption(e) ||
+                importDecls != null && i < importDecls.length)) {
             if (e == CPPIF || e == CPPELSE || e == CPPENDIF) {
                 builder.advanceLexer();
                 e = builder.getTokenType();
@@ -257,7 +257,7 @@ public class HaskellParser2 implements PsiParser {
             e2 = builder.getTokenType();
         }
         int nest = e2 == LPAREN ? 1 : 0;
-        while (nest > 0) {
+        while (!builder.eof() && nest > 0) {
             builder.advanceLexer();
             e2 = builder.getTokenType();
             if (e2 == LPAREN) {
@@ -318,8 +318,8 @@ public class HaskellParser2 implements PsiParser {
     private static void parseBody(PsiBuilder builder, DeclTopType[] decls, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
-        while (isInterruption(e) ||
-                decls != null && i < decls.length) {
+        while (!builder.eof() && (isInterruption(e) ||
+                decls != null && i < decls.length)) {
             if (e == CPPIF || e == CPPELSE || e == CPPENDIF) {
                 builder.advanceLexer();
                 e = builder.getTokenType();
@@ -346,7 +346,7 @@ public class HaskellParser2 implements PsiParser {
     private static void parseDecls(PsiBuilder builder, DeclTopType[] decl, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
-        while (decl != null && i < decl.length) {
+        while (!builder.eof() && decl != null && i < decl.length) {
             parseDecl(builder, decl[i], comments);
             i++;
             e = builder.getTokenType();
@@ -479,7 +479,7 @@ public class HaskellParser2 implements PsiParser {
     private static void parseFunBind(PsiBuilder builder, FunBind funBind, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
-        while (funBind.match != null && i < funBind.match.length) {
+        while (!builder.eof() && funBind.match != null && i < funBind.match.length) {
             parseMatchTop(builder, funBind.match[i], comments);
             i++;
         }
@@ -519,7 +519,7 @@ public class HaskellParser2 implements PsiParser {
     private static void parseClassDeclTopTypes(PsiBuilder builder, ClassDeclTopType[] classDecls, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
-        while (classDecls != null && i < classDecls.length) {
+        while (!builder.eof() && classDecls != null && i < classDecls.length) {
             parseClassDeclTopType(builder, classDecls[i], comments);
             i++;
         }
@@ -609,7 +609,7 @@ public class HaskellParser2 implements PsiParser {
     private static void parseInstDeclTopTypes(PsiBuilder builder, InstDeclTopType[] instDecls, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
-        while (instDecls != null && i < instDecls.length) {
+        while (!builder.eof() && instDecls != null && i < instDecls.length) {
             parseInstDeclTopType(builder, instDecls[i], comments);
             i++;
         }
@@ -713,7 +713,8 @@ public class HaskellParser2 implements PsiParser {
         if (e == WHERE) consumeToken(builder, WHERE);
         int i = 0;
         e = builder.getTokenType();
-        while (gDataDecl.gadtDecls != null && i < gDataDecl.gadtDecls.length) {
+        while (!builder.eof() && gDataDecl.gadtDecls != null &&
+                i < gDataDecl.gadtDecls.length) {
             parseGadtDecl(builder, gDataDecl.gadtDecls[i], comments);
             i++;
             if (i < gDataDecl.gadtDecls.length) {
@@ -758,7 +759,8 @@ public class HaskellParser2 implements PsiParser {
         if (e == EQUALS) consumeToken(builder, EQUALS);
         int i = 0;
         e = builder.getTokenType();
-        while (dataDecl.qualConDecls != null && i < dataDecl.qualConDecls.length) {
+        while (!builder.eof() && dataDecl.qualConDecls != null &&
+                i < dataDecl.qualConDecls.length) {
             parseQualConDecl(builder, dataDecl.qualConDecls[i], comments);
             i++;
             if (i < dataDecl.qualConDecls.length) {
@@ -786,7 +788,8 @@ public class HaskellParser2 implements PsiParser {
         if (e == WHERE) consumeToken(builder, WHERE);
         int i = 0;
         e = builder.getTokenType();
-        while (gDataInsDecl.gadtDecls != null && i < gDataInsDecl.gadtDecls.length) {
+        while (!builder.eof() && gDataInsDecl.gadtDecls != null &&
+                i < gDataInsDecl.gadtDecls.length) {
             parseGadtDecl(builder, gDataInsDecl.gadtDecls[i], comments);
             i++;
             if (i < gDataInsDecl.gadtDecls.length) {
@@ -843,7 +846,7 @@ public class HaskellParser2 implements PsiParser {
     private static void parseInstHeads(PsiBuilder builder, InstHeadTopType[] instHeads, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
-        while (instHeads != null && i < instHeads.length) {
+        while (!builder.eof() && instHeads != null && i < instHeads.length) {
             parseInstHead(builder, instHeads[i], comments);
             i++;
         }
@@ -883,7 +886,8 @@ public class HaskellParser2 implements PsiParser {
         int i = 0;
         boolean foralled = e == FORALLTOKEN;
         if (foralled) consumeToken(builder, FORALLTOKEN);
-        while (tyVarBindTopType != null && i < tyVarBindTopType.length) {
+        while (!builder.eof() && tyVarBindTopType != null &&
+                i < tyVarBindTopType.length) {
             parseTyVarBind(builder, tyVarBindTopType[i], comments);
             i++;
         }
@@ -944,7 +948,7 @@ public class HaskellParser2 implements PsiParser {
     private static void parseQualConDecls(PsiBuilder builder, QualConDecl[] qualConDecls, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
-        while (qualConDecls != null && i < qualConDecls.length) {
+        while (!builder.eof() && qualConDecls != null && i < qualConDecls.length) {
             parseQualConDecl(builder, qualConDecls[i], comments);
             i++;
         }
@@ -1001,7 +1005,7 @@ public class HaskellParser2 implements PsiParser {
     private static void parseFieldDecls(PsiBuilder builder, FieldDecl[] fieldDecls, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
-        while (fieldDecls != null && i < fieldDecls.length) {
+        while (!builder.eof() && fieldDecls != null && i < fieldDecls.length) {
             parseFieldDecl(builder, fieldDecls[i], comments);
             i++;
             e = builder.getTokenType();
@@ -1030,7 +1034,7 @@ public class HaskellParser2 implements PsiParser {
      */
     private static void parseBangTypes(PsiBuilder builder,  BangTypeTopType[] bangTypes, Comment[] comments) {
         int i = 0;
-        while (bangTypes != null && i < bangTypes.length) {
+        while (!builder.eof() && bangTypes != null && i < bangTypes.length) {
             parseBangType(builder, bangTypes[i], comments);
             i++;
         }
@@ -1073,7 +1077,7 @@ public class HaskellParser2 implements PsiParser {
         IElementType e = builder.getTokenType();
         parseName(builder, match.name, comments);
         int i = 0;
-        while (match.pats != null && i < match.pats.length) {
+        while (!builder.eof() && match.pats != null && i < match.pats.length) {
             parsePatTopType(builder, match.pats[i], comments);
             i++;
         }
@@ -1096,7 +1100,7 @@ public class HaskellParser2 implements PsiParser {
         if (e == INTEGERTOKEN) consumeToken(builder, INTEGERTOKEN);
         e = builder.getTokenType();
         int i = 0;
-        while (decl.ops != null && i < decl.ops.length) {
+        while (!builder.eof() && decl.ops != null && i < decl.ops.length) {
             parseOp(builder, decl.ops[i], comments);
             i++;
             e = builder.getTokenType();
@@ -1134,7 +1138,7 @@ public class HaskellParser2 implements PsiParser {
         parseName(builder, match.name, comments);
         e = builder.getTokenType();
         int i = 0;
-        while (match.pats != null && i < match.pats.length) {
+        while (!builder.eof() && match.pats != null && i < match.pats.length) {
             parsePatTopType(builder, match.pats[i], comments);
             if (startParen && i == 0) {
                 consumeToken(builder, RPAREN);
@@ -1169,7 +1173,7 @@ public class HaskellParser2 implements PsiParser {
     private static void parsePatTopTypes(PsiBuilder builder, PatTopType[] pats,  Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
-        while(pats != null && i < pats.length) {
+        while (!builder.eof() && pats != null && i < pats.length) {
             parsePatTopType(builder, pats[i], comments);
             i++;
             e = builder.getTokenType();
@@ -1326,7 +1330,7 @@ public class HaskellParser2 implements PsiParser {
      */
     private static void parseModulePragmas(PsiBuilder builder, ModulePragmaTopType[] modulePragmas,  Comment[] comments) {
         int i = 0;
-        while(modulePragmas != null && i < modulePragmas.length) {
+        while (!builder.eof() && modulePragmas != null && i < modulePragmas.length) {
             parseModulePragma(builder, modulePragmas[i], comments);
             i++;
         }
@@ -1382,7 +1386,7 @@ public class HaskellParser2 implements PsiParser {
     private static void parseGuardedRhss(PsiBuilder builder, GuardedRhs[] rhss, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
-        while(rhss != null && i < rhss.length) {
+        while (!builder.eof() && rhss != null && i < rhss.length) {
             parseGuardedRhs(builder, rhss[i], comments);
             i++;
             e = builder.getTokenType();
@@ -1498,7 +1502,7 @@ public class HaskellParser2 implements PsiParser {
             boolean unboxed = parseBoxed(builder, ((TupleCon) specialConTopType).boxed, comments);
             e = builder.getTokenType();
             int i = 1;
-            while (i < ((TupleCon) specialConTopType).i) {
+            while (!builder.eof() &&  i < ((TupleCon) specialConTopType).i) {
                 consumeToken(builder, COMMA);
                 e = builder.getTokenType();
                 i++;
@@ -1530,7 +1534,7 @@ public class HaskellParser2 implements PsiParser {
     private static void parseNames(PsiBuilder builder,  NameTopType[] names, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
-        while (names != null && i < names.length) {
+        while (!builder.eof() && names != null && i < names.length) {
             parseName(builder, names[i], comments);
             i++;
             e = builder.getTokenType();
@@ -1548,7 +1552,7 @@ public class HaskellParser2 implements PsiParser {
             if (startTick) consumeToken(builder, BACKTICK);
             e = builder.getTokenType();
             int startPos = builder.getCurrentOffset();
-            while ((builder.getCurrentOffset() - startPos) <
+            while (!builder.eof() && (builder.getCurrentOffset() - startPos) <
                     ((Ident) nameTopType).name.length()) {
                 builder.remapCurrentToken(NAME);
                 consumeToken(builder, NAME);
@@ -1564,7 +1568,7 @@ public class HaskellParser2 implements PsiParser {
             if (startParen) consumeToken(builder, LPAREN);
             e = builder.getTokenType();
             int startPos = builder.getCurrentOffset();
-            while ((builder.getCurrentOffset() - startPos) <
+            while (!builder.eof() && (builder.getCurrentOffset() - startPos) <
                     ((Symbol) nameTopType).symbol.length()) {
                 builder.remapCurrentToken(SYMBOL);
                 consumeToken(builder, SYMBOL);
@@ -1639,7 +1643,7 @@ public class HaskellParser2 implements PsiParser {
         PsiBuilder.Marker marker = builder.mark();
         consumeToken(builder, DOUBLEQUOTE);
         IElementType e2 = builder.getTokenType();
-        while (e2 != DOUBLEQUOTE) {
+        while (!builder.eof() && e2 != DOUBLEQUOTE) {
             if (e2 == BADSTRINGTOKEN) {
                 builder.error("Bad stringtoken");
                 builder.advanceLexer();
@@ -1658,7 +1662,7 @@ public class HaskellParser2 implements PsiParser {
     private static void parseStmtTopTypes(PsiBuilder builder, StmtTopType[] stmtTopTypes, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
-        while (stmtTopTypes != null && i < stmtTopTypes.length) {
+        while (!builder.eof() && stmtTopTypes != null && i < stmtTopTypes.length) {
             parseStmtTopType(builder, stmtTopTypes[i], comments);
             i++;
         }
@@ -1694,7 +1698,7 @@ public class HaskellParser2 implements PsiParser {
     private static void parseExpTopTypes(PsiBuilder builder, ExpTopType[] expTopType, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
-        while (expTopType != null && i < expTopType.length) {
+        while (!builder.eof() && expTopType != null && i < expTopType.length) {
             parseExpTopType(builder, expTopType[i], comments);
             i++;
             e = builder.getTokenType();
@@ -1783,7 +1787,7 @@ public class HaskellParser2 implements PsiParser {
             boolean unboxed = parseBoxed(builder, ((TupleSection) expTopType).boxed, comments);
             e = builder.getTokenType();
             int i = 0;
-            while (ts.expMaybes != null &&  i < ts.expMaybes.length) {
+            while (!builder.eof() && ts.expMaybes != null &&  i < ts.expMaybes.length) {
                 if (ts.expMaybes[i] != null) parseExpTopType(builder, ts.expMaybes[i], comments);
                 i++;
                 e = builder.getTokenType();
@@ -1904,7 +1908,7 @@ public class HaskellParser2 implements PsiParser {
             consumeToken(builder, PIPE);
             e1 = builder.getTokenType();
             int i = 0;
-            while (p.qualStmts != null && i < p.qualStmts.length) {
+            while (!builder.eof() && p.qualStmts != null && i < p.qualStmts.length) {
                 parseQualStmtTopTypes(builder, p.qualStmts[i], comments);
                 i++;
                 e1 = builder.getTokenType();
@@ -1970,7 +1974,7 @@ public class HaskellParser2 implements PsiParser {
             }
             consumeToken(builder, PIPE);
             e = builder.getTokenType();
-            while (e != PIPE) {
+            while (!builder.eof() && e != PIPE) {
                 builder.advanceLexer();
                 e = builder.getTokenType();
             }
@@ -1996,7 +2000,7 @@ public class HaskellParser2 implements PsiParser {
             e = builder.getTokenType();
             consumeToken(builder, PIPE);
             e = builder.getTokenType();
-            while (e != PIPE) {
+            while (!builder.eof() && e != PIPE) {
                 builder.advanceLexer();
                 e = builder.getTokenType();
             }
@@ -2075,7 +2079,7 @@ public class HaskellParser2 implements PsiParser {
     private static void parsePatFieldTopTypes(PsiBuilder builder, PatFieldTopType[] fields, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
-        while (fields != null && i < fields.length) {
+        while (!builder.eof() && fields != null && i < fields.length) {
             parsePatFieldTopType(builder, fields[i], comments);
             i++;
             e = builder.getTokenType();
@@ -2110,7 +2114,8 @@ public class HaskellParser2 implements PsiParser {
     private static void parseFieldUpdateTopTypes(PsiBuilder builder, FieldUpdateTopType[] fieldUpdateTopTypes, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
-        while (fieldUpdateTopTypes != null && i < fieldUpdateTopTypes.length) {
+        while (!builder.eof() && fieldUpdateTopTypes != null &&
+                i < fieldUpdateTopTypes.length) {
             parseFieldUpdateTopType(builder, fieldUpdateTopTypes[i], comments);
             i++;
             e = builder.getTokenType();
@@ -2143,7 +2148,7 @@ public class HaskellParser2 implements PsiParser {
     private static void parseAlts(PsiBuilder builder, Alt[] alts, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
-        while (alts != null && i < alts.length) {
+        while (!builder.eof() && alts != null && i < alts.length) {
             parseAlt(builder, alts[i], comments);
             i++;
             e = builder.getTokenType();
@@ -2170,7 +2175,7 @@ public class HaskellParser2 implements PsiParser {
     private static void parseIfAlts(PsiBuilder builder, IfAlt[] alts, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
-        while (alts != null && i < alts.length) {
+        while (!builder.eof() && alts != null && i < alts.length) {
             parseIfAlt(builder, alts[i], comments);
             i++;
             e = builder.getTokenType();
@@ -2213,7 +2218,7 @@ public class HaskellParser2 implements PsiParser {
     private static void parseGuardedAlts(PsiBuilder builder, GuardedAlt[] alts, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
-        while (alts != null && i < alts.length) {
+        while (!builder.eof() && alts != null && i < alts.length) {
             parseGuardedAlt(builder, alts[i], comments);
             i++;
             e = builder.getTokenType();
@@ -2242,7 +2247,7 @@ public class HaskellParser2 implements PsiParser {
     private static void parseTypeTopTypes(PsiBuilder builder, TypeTopType[] typeTopTypes, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
-        while (typeTopTypes != null && i < typeTopTypes.length) {
+        while (!builder.eof() && typeTopTypes != null && i < typeTopTypes.length) {
             parseTypeTopType(builder, typeTopTypes[i], comments);
             i++;
             e = builder.getTokenType();
@@ -2342,7 +2347,7 @@ public class HaskellParser2 implements PsiParser {
     private static void parseKindTopTypes(PsiBuilder builder, KindTopType[] kinds, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
-        while (kinds != null && i < kinds.length) {
+        while (!builder.eof() && kinds != null && i < kinds.length) {
             parseKindTopType(builder, kinds[i], comments);
             i++;
             e = builder.getTokenType();
@@ -2407,7 +2412,8 @@ public class HaskellParser2 implements PsiParser {
     private static void parsePromotedTopTypes(PsiBuilder builder,PromotedTopType[] promotedTopTypes, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
-        while (promotedTopTypes != null && i < promotedTopTypes.length) {
+        while (!builder.eof() && promotedTopTypes != null &&
+                i < promotedTopTypes.length) {
             parsePromotedTopType(builder, promotedTopTypes[i], comments);
             i++;
             e = builder.getTokenType();
@@ -2461,7 +2467,8 @@ public class HaskellParser2 implements PsiParser {
     private static void parseQualStmtTopTypes(PsiBuilder builder, QualStmtTopType[] qualStmtTopTypes, Comment[] comments) {
         IElementType e = builder.getTokenType();
         int i = 0;
-        while (qualStmtTopTypes != null && i < qualStmtTopTypes.length) {
+        while (!builder.eof() && qualStmtTopTypes != null &&
+                i < qualStmtTopTypes.length) {
             parseQualStmtTopType(builder, qualStmtTopTypes[i], comments);
             i++;
             e = builder.getTokenType();
@@ -2557,7 +2564,7 @@ public class HaskellParser2 implements PsiParser {
     private static void parseAsstTopTypes(PsiBuilder builder, AsstTopType[] assts, Comment[] comments) {
         int i = 0;
         IElementType e = builder.getTokenType();
-        while (assts != null && i < assts.length) {
+        while (!builder.eof() && assts != null && i < assts.length) {
             parseAsstTopType(builder, assts[i], comments);
             i++;
             e = builder.getTokenType();
@@ -2682,7 +2689,22 @@ public class HaskellParser2 implements PsiParser {
 
     private static boolean nextTokenIsInner(PsiBuilder builder_, IElementType expectedToken) {
         IElementType tokenType = builder_.getTokenType();
-        if (expectedToken != tokenType) {
+        // Chew comemnts, pragmas, etc anywhere.
+        while (!builder_.eof() && isInterruption(tokenType) &&
+                expectedToken != tokenType) {
+            if (tokenType == COMMENT || tokenType == OPENCOM) {
+                parseComment(tokenType, builder_, null);
+                tokenType = builder_.getTokenType();
+            } else if (tokenType == OPENPRAGMA) {
+                parseGenericPragma(builder_, null, null);
+                tokenType = builder_.getTokenType();
+            } else if (tokenType == CPPIF || tokenType == CPPELSE || tokenType == CPPENDIF) {
+                // Ignore CPP-tokens, they are not fed to parser-helper anyways.
+                builder_.advanceLexer();
+                tokenType = builder_.getTokenType();
+            }
+        }
+        if (!builder_.eof() && expectedToken != tokenType) {
             IElementType nextToken = builder_.lookAhead(1);
             if (nextToken == expectedToken) {
                 PsiBuilder.Marker mark = builder_.mark();
