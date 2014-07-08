@@ -14,13 +14,9 @@ import static com.haskforce.parsing.HaskellTypes2.*;
 // These can be imported as * when the old parser is removed.
 import static com.haskforce.psi.HaskellTypes.OPENPRAGMA;
 import static com.haskforce.psi.HaskellTypes.CLOSEPRAGMA;
-import static com.haskforce.psi.HaskellTypes.OPENCOM;
-import static com.haskforce.psi.HaskellTypes.CLOSECOM;
 import static com.haskforce.psi.HaskellTypes.CPPIF;
 import static com.haskforce.psi.HaskellTypes.CPPELSE;
 import static com.haskforce.psi.HaskellTypes.CPPENDIF;
-import static com.haskforce.psi.HaskellTypes.COMMENT;
-import static com.haskforce.psi.HaskellTypes.COMMENTTEXT;
 import static com.haskforce.psi.HaskellTypes.DOUBLEQUOTE;
 import static com.haskforce.psi.HaskellTypes.STRINGTOKEN;
 import static com.haskforce.psi.HaskellTypes.BADSTRINGTOKEN;
@@ -110,10 +106,7 @@ public class HaskellParser2 implements PsiParser {
         try {
             IElementType e = builder.getTokenType();
             while (!builder.eof() && (isInterruption(e) && e != OPENPRAGMA)) {
-                if (e == COMMENT || e == OPENCOM) {
-                    parseComment(e, builder, tp.comments);
-                    e = builder.getTokenType();
-                } else if (e == CPPIF || e == CPPELSE || e == CPPENDIF) {
+                if (e == CPPIF || e == CPPELSE || e == CPPENDIF) {
                     // Ignore CPP-tokens, they are not fed to parser-helper anyways.
                     builder.advanceLexer();
                     e = builder.getTokenType();
@@ -207,10 +200,6 @@ public class HaskellParser2 implements PsiParser {
                 builder.advanceLexer();
                 e = builder.getTokenType();
                 continue;
-            } else if (e == OPENCOM) {
-                parseComment(e, builder, comments);
-                e = builder.getTokenType();
-                continue;
             } else if (e == OPENPRAGMA) {
                 parseGenericPragma(builder, null, comments);
                 e = builder.getTokenType();
@@ -229,8 +218,7 @@ public class HaskellParser2 implements PsiParser {
      * for example comments or pragmas.
      */
     private static boolean isInterruption(IElementType e) {
-        return (e == CPPIF || e == CPPELSE || e == CPPENDIF || e == OPENCOM ||
-                e == OPENPRAGMA);
+        return (e == CPPIF || e == CPPELSE || e == CPPENDIF || e == OPENPRAGMA);
     }
 
     /**
@@ -322,10 +310,6 @@ public class HaskellParser2 implements PsiParser {
                 decls != null && i < decls.length)) {
             if (e == CPPIF || e == CPPELSE || e == CPPENDIF) {
                 builder.advanceLexer();
-                e = builder.getTokenType();
-                continue;
-            } else if (e == OPENCOM) {
-                parseComment(e, builder, comments);
                 e = builder.getTokenType();
                 continue;
             } else if (e == OPENPRAGMA) {
@@ -1312,17 +1296,6 @@ public class HaskellParser2 implements PsiParser {
             parsePatTopType(builder, ((PBangPat) patTopType).pat, comments);
             e = builder.getTokenType();
         }
-    }
-
-    private static void parseComment(IElementType start, PsiBuilder builder, Comment[] comments) {
-        PsiBuilder.Marker startCom = builder.mark();
-        IElementType e = builder.getTokenType();
-        while (e == COMMENT || e == COMMENTTEXT ||
-                e == OPENCOM || e == CLOSECOM) {
-            builder.advanceLexer();
-            e = builder.getTokenType();
-        }
-        startCom.done(COMMENTTEXT);
     }
 
     /**
@@ -2692,10 +2665,7 @@ public class HaskellParser2 implements PsiParser {
         // Chew comemnts, pragmas, etc anywhere.
         while (!builder_.eof() && isInterruption(tokenType) &&
                 expectedToken != tokenType) {
-            if (tokenType == COMMENT || tokenType == OPENCOM) {
-                parseComment(tokenType, builder_, null);
-                tokenType = builder_.getTokenType();
-            } else if (tokenType == OPENPRAGMA) {
+            if (tokenType == OPENPRAGMA) {
                 parseGenericPragma(builder_, null, null);
                 tokenType = builder_.getTokenType();
             } else if (tokenType == CPPIF || tokenType == CPPELSE || tokenType == CPPENDIF) {
