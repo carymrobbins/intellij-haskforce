@@ -6,8 +6,10 @@ import com.intellij.lang.BracePair;
 import com.intellij.lang.PairedBraceMatcher;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 
 /**
  * Utility class that relates opening and closing "braces".
@@ -21,6 +23,8 @@ public class HaskellBraceMatcher implements PairedBraceMatcher {
             new BracePair(HaskellTypes.OPENPRAGMA, HaskellTypes.CLOSEPRAGMA, true),
     };
 
+    private static final TokenSet alwaysMatch = TokenSet.create(HaskellTypes.LBRACE, HaskellTypes.OPENCOM, HaskellTypes.OPENPRAGMA);
+
     @Override
     public BracePair[] getPairs() {
         return PAIRS;
@@ -28,7 +32,8 @@ public class HaskellBraceMatcher implements PairedBraceMatcher {
 
     @Override
     public boolean isPairedBracesAllowedBeforeType(@NotNull IElementType lbraceType, @Nullable IElementType contextType) {
-        return HaskellParserDefinition.WHITE_SPACES.contains(contextType)
+        return alwaysMatch.contains(lbraceType)
+                || HaskellParserDefinition.WHITE_SPACES.contains(contextType)
                 || HaskellParserDefinition.COMMENTS.contains(contextType)
                 || HaskellTypes.RPAREN == contextType
                 || null == contextType;
