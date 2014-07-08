@@ -41,18 +41,27 @@ public class HaskellCommenter implements CodeDocumentationAwareCommenterEx {
         return HaskellTypes.HADDOCK;
     }
 
+    /**
+     * The Haddock prefix ("-- |").
+     */
     @Nullable
     @Override
     public String getDocumentationCommentPrefix() {
-        return null;
+        return "-- |";
     }
 
+    /**
+     * The prefix for multiline Haddock comments ("--").
+     */
     @Nullable
     @Override
     public String getDocumentationCommentLinePrefix() {
-        return "-- ^";
+        return "--";
     }
 
+    /**
+     * The suffix for Haddock (null).
+     */
     @Nullable
     @Override
     public String getDocumentationCommentSuffix() {
@@ -64,18 +73,27 @@ public class HaskellCommenter implements CodeDocumentationAwareCommenterEx {
         return false;
     }
 
+    /**
+     * The prefix for line comments ("--").
+     */
     @Nullable
     @Override
     public String getLineCommentPrefix() {
         return "--";
     }
 
+    /**
+     * The prefix for block comments ("{-").
+     */
     @Nullable
     @Override
     public String getBlockCommentPrefix() {
         return "{-";
     }
 
+    /**
+     * The suffix for block comments ("-}").
+     */
     @Nullable
     @Override
     public String getBlockCommentSuffix() {
