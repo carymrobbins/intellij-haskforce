@@ -1,7 +1,6 @@
 package com.haskforce.features;
 
 import com.haskforce.HaskellParserDefinition;
-import com.haskforce.parsing.HaskellTypes2;
 import com.haskforce.psi.HaskellFile;
 import com.haskforce.psi.HaskellTypes;
 import com.intellij.lang.ASTNode;
@@ -9,6 +8,7 @@ import com.intellij.lang.folding.FoldingBuilderEx;
 import com.intellij.lang.folding.FoldingDescriptor;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.DumbAware;
+import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.search.PsiElementProcessor;
 import com.intellij.psi.tree.IElementType;
@@ -35,7 +35,12 @@ public class HaskellFoldingBuilder extends FoldingBuilderEx implements DumbAware
                 @Override
                 public boolean execute(@NotNull PsiElement element) {
                     if (HaskellParserDefinition.COMMENTS.contains(element.getNode().getElementType())) {
-                        result.add(new FoldingDescriptor(element, element.getTextRange()));
+                        TextRange range = element.getTextRange();
+                        // Only fold if we actually save space to prevent
+                        // assertions from kicking in. Means {- -} will not fold.
+                        if (range.getLength() > getPlaceholderText(element).length()) {
+                            result.add(new FoldingDescriptor(element, range));
+                        }
                     }
                     return true;
                 }
@@ -57,6 +62,14 @@ public class HaskellFoldingBuilder extends FoldingBuilderEx implements DumbAware
         if (type == HaskellTypes.COMMENTTEXT) return "{- -}";
         if (type == HaskellTypes.COMMENT) return "--";
         return "..";
+    }
+
+    /**
+     * Provides the text displayed on folded elements.
+     */
+    @Nullable
+    public String getPlaceholderText(@NotNull PsiElement element) {
+        return getPlaceholderText(element.getNode());
     }
 
     @Override
