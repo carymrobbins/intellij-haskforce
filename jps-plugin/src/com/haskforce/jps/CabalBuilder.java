@@ -231,7 +231,8 @@ public class CabalBuilder extends ModuleLevelBuilder {
         String line = "";
         Iterator<String> processOut = collectOutput(process);
         StringBuilder msg = new StringBuilder(1000);
-        Pattern compiledPattern = Pattern.compile("(.*):(\\d+):(\\d+):(.*)?");
+        Pattern compiledPattern = Pattern.compile("^([^:]+):(\\d+):(\\d+:)?(.*$)?",
+                                                Pattern.MULTILINE);
 
         while (processOut.hasNext() || oneBehind) {
             if (oneBehind) {
@@ -257,7 +258,10 @@ public class CabalBuilder extends ModuleLevelBuilder {
                 // GHC Messages
                 String file = matcher.group(1);
                 long lineNum = Long.parseLong(matcher.group(2));
-                long colNum = Long.parseLong(matcher.group(3));
+                // We might not have a column, but if we do it ends with a colon.
+                // Make sure to filter that colon out.
+                long colNum = matcher.group(3) == null ? 0 :
+                        Long.parseLong(matcher.group(3).substring(0, matcher.group(3).length() - 1));
                 msg.setLength(0);
                 msg.append(matcher.group(4));
                 while (processOut.hasNext()) {
@@ -311,7 +315,7 @@ src/Feldspar/Core/UntypedRepresentation.hs:483:5: Warning:
 [74 of 92] Compiling Feldspar.Core.UntypedRepresentation ( src/Feldspar/Core/UntypedRepresentation.hs, dist/build/Feldspar/Core/UntypedRepresentation.p_o )
 <same warning again>
 
-Example error:
+Example errors:
 
 src/Main.hs:14:3:
     Could not deduce (ToJSON (ModulePragma l0))
@@ -336,6 +340,11 @@ src/Main.hs:14:3:
             .... }'
 
 src/Main.hs..
+
+Happy error:
+
+Preprocessing library haskell-src-exts-1.15.0.1...
+src/Language/Haskell/Exts/InternalParser.ly:962: Parse error
      */
 
     private static Iterator<String> collectOutput(Process process) {
