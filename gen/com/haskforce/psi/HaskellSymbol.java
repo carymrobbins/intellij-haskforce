@@ -32,7 +32,7 @@ public interface HaskellSymbol extends PsiElement {
   PsiElement getEquals();
 
   @Nullable
-  PsiElement getExlamation();
+  PsiElement getExclamation();
 
   @Nullable
   PsiElement getGreaterthan();

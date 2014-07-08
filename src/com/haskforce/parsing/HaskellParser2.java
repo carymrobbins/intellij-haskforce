@@ -57,7 +57,7 @@ import static com.haskforce.psi.HaskellTypes.BACKTICK;
 import static com.haskforce.psi.HaskellTypes.INSTANCE;
 import static com.haskforce.psi.HaskellTypes.LBRACE;
 import static com.haskforce.psi.HaskellTypes.RBRACE;
-import static com.haskforce.psi.HaskellTypes.EXLAMATION; // FIXME: Rename.
+import static com.haskforce.psi.HaskellTypes.EXCLAMATION;
 import static com.haskforce.psi.HaskellTypes.PIPE;
 import static com.haskforce.psi.HaskellTypes.CHARTOKEN;
 import static com.haskforce.psi.HaskellTypes.LET;
@@ -1049,12 +1049,12 @@ public class HaskellParser2 implements PsiParser {
         if (bangType instanceof UnBangedTy) {
             parseTypeTopType(builder, ((UnBangedTy) bangType).type, comments);
         } else if (bangType instanceof BangedTy) {
-            consumeToken(builder, EXLAMATION);
+            consumeToken(builder, EXCLAMATION);
             parseTypeTopType(builder, ((BangedTy) bangType).type, comments);
             e = builder.getTokenType();
         } else if (bangType instanceof UnpackedTy) {
             parseGenericPragma(builder, null, comments);
-            consumeToken(builder, EXLAMATION);
+            consumeToken(builder, EXCLAMATION);
             e = builder.getTokenType();
             parseTypeTopType(builder, ((UnpackedTy) bangType).type, comments);
             e = builder.getTokenType();
@@ -1307,7 +1307,7 @@ public class HaskellParser2 implements PsiParser {
             consumeToken(builder, RBRACKET);
             e = builder.getTokenType();
         } else if (patTopType instanceof PBangPat) {
-            consumeToken(builder, EXLAMATION);
+            consumeToken(builder, EXCLAMATION);
             e = builder.getTokenType();
             parsePatTopType(builder, ((PBangPat) patTopType).pat, comments);
             e = builder.getTokenType();
@@ -2364,7 +2364,7 @@ public class HaskellParser2 implements PsiParser {
             consumeToken(builder, ASTERISK);
             e = builder.getTokenType();
         } else if (kind instanceof KindBang) {
-            consumeToken(builder, EXLAMATION);
+            consumeToken(builder, EXCLAMATION);
             e = builder.getTokenType();
         } else if (kind instanceof KindFn) {
             parseKindTopType(builder, ((KindFn) kind).k1, comments);

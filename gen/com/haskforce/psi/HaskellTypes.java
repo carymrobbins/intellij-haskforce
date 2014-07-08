@@ -77,7 +77,7 @@ public interface HaskellTypes {
   IElementType ELSE = new HaskellTokenType("else");
   IElementType EOL = new HaskellTokenType("EOL");
   IElementType EQUALS = new HaskellTokenType("=");
-  IElementType EXLAMATION = new HaskellTokenType("!");
+  IElementType EXCLAMATION = new HaskellTokenType("!");
   IElementType EXPORTTOKEN = new HaskellTokenType("export");
   IElementType FLOATTOKEN = new HaskellTokenType("floattoken");
   IElementType FORALLTOKEN = new HaskellTokenType("forall");

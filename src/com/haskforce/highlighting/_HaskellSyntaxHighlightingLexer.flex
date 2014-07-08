@@ -133,7 +133,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   "{"                 { return LBRACE; }
   "}"                 { return RBRACE; }
   "'"                 { return SINGLEQUOTE; }
-  "!"                 { return EXLAMATION; }
+  "!"                 { return EXCLAMATION; }
   "#"                 { return HASH; }
   "$"                 { return DOLLAR; }
   "%"                 { return PERCENT; }

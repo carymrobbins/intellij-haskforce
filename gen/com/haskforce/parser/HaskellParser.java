@@ -1161,7 +1161,7 @@ public class HaskellParser implements PsiParser {
     if (!recursion_guard_(builder_, level_, "symbol")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<symbol>");
-    result_ = consumeToken(builder_, EXLAMATION);
+    result_ = consumeToken(builder_, EXCLAMATION);
     if (!result_) result_ = consumeToken(builder_, HASH);
     if (!result_) result_ = consumeToken(builder_, DOLLAR);
     if (!result_) result_ = consumeToken(builder_, PERCENT);

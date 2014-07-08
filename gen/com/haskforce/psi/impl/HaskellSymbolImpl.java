@@ -72,8 +72,8 @@ public class HaskellSymbolImpl extends ASTWrapperPsiElement implements HaskellSy
 
   @Override
   @Nullable
-  public PsiElement getExlamation() {
-    return findChildByType(EXLAMATION);
+  public PsiElement getExclamation() {
+    return findChildByType(EXCLAMATION);
   }
 
   @Override
