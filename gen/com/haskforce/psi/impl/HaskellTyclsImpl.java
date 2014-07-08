@@ -24,8 +24,18 @@ public class HaskellTyclsImpl extends ASTWrapperPsiElement implements HaskellTyc
 
   @Override
   @NotNull
-  public PsiElement getConidRegexp() {
-    return findNotNullChildByType(CONIDREGEXP);
+  public HaskellConid getConid() {
+    return findNotNullChildByClass(HaskellConid.class);
+  }
+
+  @NotNull
+  public String getName() {
+    return HaskellPsiImplUtil.getName(this);
+  }
+
+  @NotNull
+  public PsiElement setName(String newName) {
+    return HaskellPsiImplUtil.setName(this, newName);
   }
 
 }

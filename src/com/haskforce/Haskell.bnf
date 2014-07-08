@@ -44,7 +44,7 @@
 
   psiImplUtilClass="com.haskforce.psi.impl.HaskellPsiImplUtil"
 
-  implements("varid|qvarid")="com.intellij.psi.PsiNamedElement"
+  implements("varid|qvarid|conid|tycls|tycon")="com.intellij.psi.PsiNamedElement"
 
   tokens=[
     lparen='('
@@ -186,6 +186,10 @@ symbol ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '=' | '>'
 varid ::= !reservedid varidRegexp {
         methods=[getName setName]
     }
+conid ::= conidRegexp {
+        methods=[getName setName]
+    }
+
 private reservedExpr ::= 'case' | 'do' | 'else' | 'if' | 'in' | 'let' | 'of' | 'then'
 private reservedDecl ::= 'class' | 'data' | 'default' | 'deriving' | 'foreign' | 'instance'
                        | 'newtype' | 'type' | 'where' | 'forall'
@@ -200,8 +204,12 @@ consym ::= CONSYMTOK
 reservedop ::= '..' | '::' | '=' | '\' | '|' | '<-' | '->' | '@' | '~' | '=>'
 
 tyvar ::= varid
-tycon ::= conidRegexp
-tycls ::= conidRegexp
+tycon ::= conid {
+        methods=[getName setName]
+   }
+tycls ::= conid {
+        methods=[getName setName]
+   }
 modulePrefix ::= (conidRegexp '.')+
 
 qvarid ::= [modulePrefix] varid {

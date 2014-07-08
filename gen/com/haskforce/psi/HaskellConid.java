@@ -6,10 +6,10 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 
-public interface HaskellTycls extends PsiNamedElement {
+public interface HaskellConid extends PsiNamedElement {
 
   @NotNull
-  HaskellConid getConid();
+  PsiElement getConidRegexp();
 
   @NotNull
   String getName();

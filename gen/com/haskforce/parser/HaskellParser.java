@@ -32,6 +32,9 @@ public class HaskellParser implements PsiParser {
     else if (root_ == CON) {
       result_ = con(builder_, 0);
     }
+    else if (root_ == CONID) {
+      result_ = conid(builder_, 0);
+    }
     else if (root_ == CONSYM) {
       result_ = consym(builder_, 0);
     }
@@ -317,6 +320,18 @@ public class HaskellParser implements PsiParser {
     result_ = result_ && consym(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, RPAREN);
     exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // conidRegexp
+  public static boolean conid(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "conid")) return false;
+    if (!nextTokenIs(builder_, CONIDREGEXP)) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, CONIDREGEXP);
+    exit_section_(builder_, marker_, CONID, result_);
     return result_;
   }
 
@@ -1198,25 +1213,25 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // conidRegexp
+  // conid
   public static boolean tycls(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "tycls")) return false;
     if (!nextTokenIs(builder_, CONIDREGEXP)) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, CONIDREGEXP);
+    result_ = conid(builder_, level_ + 1);
     exit_section_(builder_, marker_, TYCLS, result_);
     return result_;
   }
 
   /* ********************************************************** */
-  // conidRegexp
+  // conid
   public static boolean tycon(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "tycon")) return false;
     if (!nextTokenIs(builder_, CONIDREGEXP)) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, CONIDREGEXP);
+    result_ = conid(builder_, level_ + 1);
     exit_section_(builder_, marker_, TYCON, result_);
     return result_;
   }

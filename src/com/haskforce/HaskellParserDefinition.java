@@ -23,6 +23,7 @@ import com.haskforce.psi.HaskellFile;
 import com.haskforce.psi.HaskellTypes;
 
 public class HaskellParserDefinition implements ParserDefinition {
+    private static final boolean pjbuild = false;
     public static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
     public static final TokenSet COMMENTS = TokenSet.create(HaskellTypes.COMMENT,
             HaskellTypes.COMMENTTEXT);
@@ -61,7 +62,7 @@ public class HaskellParserDefinition implements ParserDefinition {
 
     @NotNull
     public PsiParser createParser(final Project project) {
-        if (System.getProperty("PARSER", "").equals("2")) {
+        if (pjbuild || System.getProperty("PARSER", "").equals("2")) {
             return new HaskellParser2(project);
         }
         return new HaskellParser();
@@ -82,7 +83,7 @@ public class HaskellParserDefinition implements ParserDefinition {
 
     @NotNull
     public PsiElement createElement(ASTNode node) {
-        if (System.getProperty("PARSER", "").equals("2")) {
+        if (pjbuild || System.getProperty("PARSER", "").equals("2")) {
             return HaskellTypes2.Factory.createElement(node);
         }
         return HaskellTypes.Factory.createElement(node);

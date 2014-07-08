@@ -11,33 +11,31 @@ import static com.haskforce.psi.HaskellTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellQvarsImpl extends ASTWrapperPsiElement implements HaskellQvars {
+public class HaskellConidImpl extends ASTWrapperPsiElement implements HaskellConid {
 
-  public HaskellQvarsImpl(ASTNode node) {
+  public HaskellConidImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitQvars(this);
+    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitConid(this);
     else super.accept(visitor);
   }
 
   @Override
-  @Nullable
-  public HaskellQvar getQvar() {
-    return findChildByClass(HaskellQvar.class);
-  }
-
-  @Override
   @NotNull
-  public PsiElement getLparen() {
-    return findNotNullChildByType(LPAREN);
+  public PsiElement getConidRegexp() {
+    return findNotNullChildByType(CONIDREGEXP);
   }
 
-  @Override
-  @Nullable
-  public PsiElement getRparen() {
-    return findChildByType(RPAREN);
+  @NotNull
+  public String getName() {
+    return HaskellPsiImplUtil.getName(this);
+  }
+
+  @NotNull
+  public PsiElement setName(String newName) {
+    return HaskellPsiImplUtil.setName(this, newName);
   }
 
 }

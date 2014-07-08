@@ -12,6 +12,7 @@ public interface HaskellTypes {
   IElementType CNAME = new HaskellElementType("CNAME");
   IElementType CNAMES = new HaskellElementType("CNAMES");
   IElementType CON = new HaskellElementType("CON");
+  IElementType CONID = new HaskellElementType("CONID");
   IElementType CONSYM = new HaskellElementType("CONSYM");
   IElementType CPP = new HaskellElementType("CPP");
   IElementType EXPORT = new HaskellElementType("EXPORT");
@@ -145,6 +146,9 @@ public interface HaskellTypes {
       }
       else if (type == CON) {
         return new HaskellConImpl(node);
+      }
+      else if (type == CONID) {
+        return new HaskellConidImpl(node);
       }
       else if (type == CONSYM) {
         return new HaskellConsymImpl(node);
