@@ -36,11 +36,19 @@ public class HaskellParserDefinition implements ParserDefinition {
         return new HaskellSyntaxHighlightingLexer();
     }
 
+    /**
+     * These tokens are filtered out by the PsiBuilder before they reach the
+     * parser.
+     */
     @NotNull
     public TokenSet getWhitespaceTokens() {
         return WHITE_SPACES;
     }
 
+    /**
+     * These tokens are filtered out by the PsiBuilder before they reach the
+     * parser. They are also searched for TODO items.
+     */
     @NotNull
     public TokenSet getCommentTokens() {
         return COMMENTS;
