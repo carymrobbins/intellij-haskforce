@@ -10,6 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
+import com.intellij.psi.PsiReference;
 
 public class HaskellConidImpl extends ASTWrapperPsiElement implements HaskellConid {
 
@@ -31,6 +32,11 @@ public class HaskellConidImpl extends ASTWrapperPsiElement implements HaskellCon
   @NotNull
   public String getName() {
     return HaskellPsiImplUtil.getName(this);
+  }
+
+  @NotNull
+  public PsiReference getReference() {
+    return HaskellPsiImplUtil.getReference(this);
   }
 
   @NotNull

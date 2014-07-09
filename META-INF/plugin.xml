@@ -68,6 +68,7 @@
 
       <!-- References/navigation -->
       <codeInsight.lineMarkerProvider language="Haskell" implementationClass="com.haskforce.codeInsight.HaskellLineMarkerProvider"/>
+      <psi.referenceContributor implementation="com.haskforce.psi.references.HaskellReferenceContributor"/>
 
       <!-- Project settings -->
 

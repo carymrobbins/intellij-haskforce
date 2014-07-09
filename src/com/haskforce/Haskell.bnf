@@ -184,10 +184,10 @@ special ::= '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}' | thquote | backtick
 symbol ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '=' | '>' | '?' | '@'
          | '\' | '^' | '|' | '-' | '~' | ':'
 varid ::= !reservedid varidRegexp {
-        methods=[getName setName]
+        methods=[getName getReference setName]
     }
 conid ::= conidRegexp {
-        methods=[getName setName]
+        methods=[getName getReference setName]
     }
 
 private reservedExpr ::= 'case' | 'do' | 'else' | 'if' | 'in' | 'let' | 'of' | 'then'
