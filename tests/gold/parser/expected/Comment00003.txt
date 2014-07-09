@@ -3,7 +3,7 @@ Haskell File
   HaskellQconidImpl(QCONID)
     PsiElement(HaskellTokenType.conidRegexp)('Comment00003')
   PsiElement(HaskellTokenType.where)('where')
-  PsiComment(HaskellTokenType.commenttext)('{-')
+  PsiComment(HaskellTokenType.{-)('{-')
   PsiComment(HaskellTokenType.commenttext)('\n\nNice header\n')
   PsiComment(HaskellTokenType.commenttext)('-')
   PsiComment(HaskellTokenType.commenttext)('-')
@@ -17,6 +17,6 @@ Haskell File
   PsiComment(HaskellTokenType.commenttext)('-')
   PsiComment(HaskellTokenType.commenttext)('-')
   PsiComment(HaskellTokenType.commenttext)('\n\nWe should parse this as a comment.\n\n')
-  PsiComment(HaskellTokenType.commenttext)('-}')
+  PsiComment(HaskellTokenType.-})('-}')
   HaskellBodyImpl(BODY)
     <empty list>

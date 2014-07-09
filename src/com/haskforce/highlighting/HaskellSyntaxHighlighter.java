@@ -132,7 +132,9 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
             return STRING_KEYS;
         } else if (tokenType.equals(HaskellTypes.SPECIAL)) {
             return SPECIAL_KEYS;
-        } else if (tokenType.equals(HaskellTypes.COMMENTTEXT)) {
+        } else if (tokenType.equals(HaskellTypes.COMMENTTEXT) ||
+                tokenType.equals(HaskellTypes.OPENCOM) ||
+                tokenType.equals(HaskellTypes.CLOSECOM)) {
             return NCOMMENT_KEYS;
         } else if (tokenType.equals(HaskellTypes.PRAGMA) ||
                    tokenType.equals(HaskellTypes.OPENPRAGMA) ||

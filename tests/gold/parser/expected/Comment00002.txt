@@ -3,8 +3,8 @@ Haskell File
   HaskellQconidImpl(QCONID)
     PsiElement(HaskellTokenType.conidRegexp)('Comment00002')
   PsiElement(HaskellTokenType.where)('where')
-  PsiComment(HaskellTokenType.commenttext)('{-')
+  PsiComment(HaskellTokenType.{-)('{-')
   PsiComment(HaskellTokenType.commenttext)(' NOTES:\n\nThe trick of doing a copy at the end, i.e. `tellProg [copyProg loc\ne]`, when compiling WithArray is important.\n')
-  PsiComment(HaskellTokenType.commenttext)('-}')
+  PsiComment(HaskellTokenType.-})('-}')
   HaskellBodyImpl(BODY)
     <empty list>

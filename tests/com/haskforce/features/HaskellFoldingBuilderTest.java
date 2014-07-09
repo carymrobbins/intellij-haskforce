@@ -14,7 +14,10 @@ public class HaskellFoldingBuilderTest extends HaskellLightPlatformCodeInsightFi
     }
 
     // The tests.
-    public void testFold00001() throws Throwable { doTest("{- -}"); }
+
+    // Fold00001 should really result in "  ". OPENCOM and CLOSECOM remains in
+    // the text, but the rest gets collapsed to "  ".
+    public void testFold00001() throws Throwable { doTest("  "); }
     public void testFold00002() throws Throwable { doTest("--"); }
 
     /**

@@ -127,9 +127,8 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   "{-"                {
                         commentLevel = 1;
                         yybegin(INCOMMENT);
-                        return COMMENTTEXT;
+                        return OPENCOM;
                       }
-  "-}"                { return CLOSECOM; }
   "{"                 { return LBRACE; }
   "}"                 { return RBRACE; }
   "'"                 { return SINGLEQUOTE; }
@@ -175,6 +174,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         commentLevel--;
                         if (commentLevel == 0) {
                             yybegin(YYINITIAL);
+                            return CLOSECOM;
                         }
                         return COMMENTTEXT;
                       }

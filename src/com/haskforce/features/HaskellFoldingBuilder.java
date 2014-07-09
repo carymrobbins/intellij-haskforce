@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 /**
- * Collapses constructs into something small, such as "{- —}".
+ * Collapses constructs into something small, such as "{- -}".
  */
 public class HaskellFoldingBuilder extends FoldingBuilderEx implements DumbAware {
     @NotNull
@@ -36,9 +36,11 @@ public class HaskellFoldingBuilder extends FoldingBuilderEx implements DumbAware
                 public boolean execute(@NotNull PsiElement element) {
                     if (HaskellParserDefinition.COMMENTS.contains(element.getNode().getElementType())) {
                         TextRange range = element.getTextRange();
+                        String placeholderText = getPlaceholderText(element);
                         // Only fold if we actually save space to prevent
                         // assertions from kicking in. Means {- -} will not fold.
-                        if (range.getLength() > getPlaceholderText(element).length()) {
+                        if (placeholderText != null && range.getLength() > 1 &&
+                                range.getLength() > placeholderText.length()) {
                             result.add(new FoldingDescriptor(element, range));
                         }
                     }
@@ -59,7 +61,10 @@ public class HaskellFoldingBuilder extends FoldingBuilderEx implements DumbAware
     @Override
     public String getPlaceholderText(@NotNull ASTNode node) {
         IElementType type = node.getElementType();
-        if (type == HaskellTypes.COMMENTTEXT) return "{- -}";
+        if (HaskellTypes.OPENCOM.equals(type)) return "{-";
+        // Need two character placeholder for hoovering to work.
+        if (HaskellTypes.COMMENTTEXT.equals(type)) return "  ";
+        if (HaskellTypes.CLOSECOM.equals(type)) return "-}";
         if (type == HaskellTypes.COMMENT) return "--";
         return "..";
     }
