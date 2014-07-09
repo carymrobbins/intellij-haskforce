@@ -13,6 +13,8 @@ import org.jetbrains.annotations.Nullable;
  */
 public class HaskellCommenter implements CodeDocumentationAwareCommenterEx {
 
+    public static final String HADDOCKPREFIX = "-- |";
+
     @Override
     public boolean isDocumentationCommentText(PsiElement psiElement) {
         if (psiElement == null) {
@@ -47,7 +49,7 @@ public class HaskellCommenter implements CodeDocumentationAwareCommenterEx {
     @Nullable
     @Override
     public String getDocumentationCommentPrefix() {
-        return "-- |";
+        return HADDOCKPREFIX;
     }
 
     /**
@@ -68,9 +70,12 @@ public class HaskellCommenter implements CodeDocumentationAwareCommenterEx {
         return null;
     }
 
+    /**
+     * Checks whether the comment starts with the haddock prefix.
+     */
     @Override
     public boolean isDocumentationComment(PsiComment psiComment) {
-        return false;
+        return psiComment.getText().startsWith(HADDOCKPREFIX);
     }
 
     /**
