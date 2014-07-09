@@ -5,6 +5,7 @@ import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.CapturingProcessHandler;
 import com.intellij.execution.process.ProcessOutput;
+import com.intellij.execution.ui.layout.impl.RunnerLayout;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
@@ -13,7 +14,10 @@ import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -135,5 +139,36 @@ public class ExecUtil {
             if (new File(cmd).canExecute()) return cmd;
         }
         return null;
+    }
+
+    /**
+     * Executes commandLine, optionally piping input to stdin, and return stdout.
+     */
+    @Nullable
+    public static String readCommandLine(@NotNull GeneralCommandLine commandLine, @Nullable String input) {
+        String output = null;
+        try {
+            Process process = commandLine.createProcess();
+            if (input != null) {
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+                writer.write(input);
+                writer.flush();
+                writer.close();
+            }
+            process.waitFor();
+            output = new CapturingProcessHandler(process).runProcess().getStdout();
+        } catch (ExecutionException e) {
+            LOG.debug(e);
+        } catch (InterruptedException e) {
+            LOG.debug(e);
+        } catch (IOException e) {
+            LOG.debug(e);
+        }
+        return output;
+    }
+
+    @Nullable
+    public static String readCommandLine(@NotNull GeneralCommandLine commandLine) {
+        return readCommandLine(commandLine, null);
     }
 }

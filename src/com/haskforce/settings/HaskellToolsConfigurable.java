@@ -29,6 +29,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     // Old values to detect user updates.
     private String oldParserHelperPath;
     private String oldStylishPath;
+    private String oldHlintPath;
 
     // Swing components.
     private JPanel mainPanel;
@@ -38,21 +39,30 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     private TextFieldWithBrowseButton stylishPath;
     private JButton stylishAutoFind;
     private JLabel stylishVersion;
+    private TextFieldWithBrowseButton hlintPath;
+    private JButton hlintAutoFind;
+    private JLabel hlintVersion;
 
     public HaskellToolsConfigurable(@NotNull Project inProject) {
         project = inProject;
         oldParserHelperPath = PropertiesComponent.getInstance(project).getValue("parserHelperPath", "");
         oldStylishPath = PropertiesComponent.getInstance(project).getValue("stylishPath", "");
+        oldHlintPath = PropertiesComponent.getInstance(project).getValue("hlintPath", "");
         if (!oldParserHelperPath.isEmpty()) {
             parserHelperPath.setText(oldParserHelperPath);
         }
         if (!oldStylishPath.isEmpty()) {
             stylishPath.setText(oldStylishPath);
         }
+        if (!oldHlintPath.isEmpty()) {
+            hlintPath.setText(oldHlintPath);
+        }
         GuiUtil.addFolderListener(parserHelperPath, "parser-helper");
         GuiUtil.addFolderListener(stylishPath, "stylish-haskell");
+        GuiUtil.addFolderListener(hlintPath, "hlint");
         GuiUtil.addApplyPathAction(parserHelperAutoFind, parserHelperPath, "parser-helper");
         GuiUtil.addApplyPathAction(stylishAutoFind, stylishPath, "stylish-haskell");
+        GuiUtil.addApplyPathAction(hlintAutoFind, hlintPath, "hlint");
         updateVersionInfoFields();
     }
 
@@ -91,7 +101,8 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     @Override
     public boolean isModified() {
         return !(parserHelperPath.getText().equals(oldParserHelperPath) &&
-                stylishPath.getText().equals(oldStylishPath));
+                stylishPath.getText().equals(oldStylishPath) &&
+                hlintPath.getText().equals(oldHlintPath));
     }
 
     /**
@@ -120,8 +131,8 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
      * Heuristically finds the version number. Current implementation is the
      * identity function since cabal plays nice.
      */
-    private static String getVersion(String cmd, String versionflag) {
-        return ExecUtil.exec(cmd + ' ' + versionflag);
+    private static String getVersion(String cmd, String versionFlag) {
+        return ExecUtil.exec(cmd + ' ' + versionFlag);
     }
 
     /**
@@ -137,6 +148,11 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
         if (!stylishPath.getText().isEmpty()) {
             stylishVersion.setText(getVersion(stylishPath.getText(), "--version"));
         }
+
+        // Hlint.
+        if (!hlintPath.getText().isEmpty()) {
+            hlintVersion.setText(getVersion(hlintPath.getText(), "--version"));
+        }
     }
 
     /**
@@ -145,8 +161,10 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     private void saveState() {
         PropertiesComponent.getInstance(project).setValue("parserHelperPath", parserHelperPath.getText());
         PropertiesComponent.getInstance(project).setValue("stylishPath", stylishPath.getText());
+        PropertiesComponent.getInstance(project).setValue("hlintPath", hlintPath.getText());
         oldParserHelperPath = parserHelperPath.getText();
         oldStylishPath = stylishPath.getText();
+        oldHlintPath = hlintPath.getText();
     }
 
     /**
@@ -155,5 +173,6 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     private void restoreState() {
         parserHelperPath.setText(oldParserHelperPath);
         stylishPath.setText(oldStylishPath);
+        hlintPath.setText(oldHlintPath);
     }
 }
