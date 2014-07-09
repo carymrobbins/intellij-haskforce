@@ -66,6 +66,9 @@
       <elementDescriptionProvider implementation="com.haskforce.features.HaskellDescriptionProvider"/>
       <completion.contributor language="Haskell" implementationClass="com.haskforce.codeInsight.HaskellCompletionContributor"/>
 
+      <!-- References/navigation -->
+      <codeInsight.lineMarkerProvider language="Haskell" implementationClass="com.haskforce.codeInsight.HaskellLineMarkerProvider"/>
+
       <!-- Project settings -->
 
       <!-- Tab under compiler in IntelliJ -> Preferences -->

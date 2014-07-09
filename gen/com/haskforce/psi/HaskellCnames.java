@@ -7,8 +7,8 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellCnames extends PsiElement {
 
-  @Nullable
-  HaskellCname getCname();
+  @NotNull
+  List<HaskellCname> getCnameList();
 
   @NotNull
   PsiElement getLparen();

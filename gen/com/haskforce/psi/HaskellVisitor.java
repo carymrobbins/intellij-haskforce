@@ -93,7 +93,7 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitQvarid(@NotNull HaskellQvarid o) {
-    visitPsiNamedElement(o);
+    visitPsiElement(o);
   }
 
   public void visitQvars(@NotNull HaskellQvars o) {
@@ -117,11 +117,11 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitTycls(@NotNull HaskellTycls o) {
-    visitPsiNamedElement(o);
+    visitPsiElement(o);
   }
 
   public void visitTycon(@NotNull HaskellTycon o) {
-    visitPsiNamedElement(o);
+    visitPsiElement(o);
   }
 
   public void visitTyvar(@NotNull HaskellTyvar o) {

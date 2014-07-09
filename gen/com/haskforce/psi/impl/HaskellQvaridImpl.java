@@ -34,14 +34,4 @@ public class HaskellQvaridImpl extends ASTWrapperPsiElement implements HaskellQv
     return findNotNullChildByClass(HaskellVarid.class);
   }
 
-  @NotNull
-  public String getName() {
-    return HaskellPsiImplUtil.getName(this);
-  }
-
-  @NotNull
-  public PsiElement setName(String newName) {
-    return HaskellPsiImplUtil.setName(this, newName);
-  }
-
 }

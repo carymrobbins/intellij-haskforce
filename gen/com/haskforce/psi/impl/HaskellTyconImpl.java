@@ -28,14 +28,4 @@ public class HaskellTyconImpl extends ASTWrapperPsiElement implements HaskellTyc
     return findNotNullChildByClass(HaskellConid.class);
   }
 
-  @NotNull
-  public String getName() {
-    return HaskellPsiImplUtil.getName(this);
-  }
-
-  @NotNull
-  public PsiElement setName(String newName) {
-    return HaskellPsiImplUtil.setName(this, newName);
-  }
-
 }

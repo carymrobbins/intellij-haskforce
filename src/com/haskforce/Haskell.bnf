@@ -44,7 +44,7 @@
 
   psiImplUtilClass="com.haskforce.psi.impl.HaskellPsiImplUtil"
 
-  implements("varid|qvarid|conid|tycls|tycon")="com.intellij.psi.PsiNamedElement"
+  implements("varid|conid")="com.intellij.psi.PsiNamedElement"
 
   tokens=[
     lparen='('
@@ -204,17 +204,11 @@ consym ::= CONSYMTOK
 reservedop ::= '..' | '::' | '=' | '\' | '|' | '<-' | '->' | '@' | '~' | '=>'
 
 tyvar ::= varid
-tycon ::= conid {
-        methods=[getName setName]
-   }
-tycls ::= conid {
-        methods=[getName setName]
-   }
+tycon ::= conid
+tycls ::= conid
 modulePrefix ::= (conidRegexp '.')+
 
-qvarid ::= [modulePrefix] varid {
-       methods=[getName setName]
-   }
+qvarid ::= [modulePrefix] varid
 qinfixvarid ::= '`' [modulePrefix] varid '`'
 qconid ::= [modulePrefix] conidRegexp
 qinfixconid ::= '`' [modulePrefix] conidRegexp '`'
