@@ -47,10 +47,14 @@ public class HaskellReference extends PsiReferenceBase<PsiElement> implements Ps
         return resolveResults.length == 1 ? resolveResults[0].getElement() : null;
     }
 
+    /**
+     * Controls what names that get added to the autocompletion popup available
+     * on ctrl-space.
+     */
     @NotNull
     @Override
     public Object[] getVariants() {
-        /*
+        /* FIXME: Overwrites the local history with bad data.
         Project project = myElement.getProject();
         List<PsiNamedElement> namedNodes = HaskellUtil.findNamedNodes(project);
         List<LookupElement> variants = new ArrayList<LookupElement>();
