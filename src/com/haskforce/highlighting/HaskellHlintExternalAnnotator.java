@@ -50,7 +50,7 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
 
     private static Problem parseProblem(String input) {
         List<String> split = StringUtil.split(input, ":");
-        if (split.size() < 3) {
+        if (split.size() < 5) {
             return null;
         }
         int line = StringUtil.parseInt(split.get(1), 0);
@@ -61,13 +61,16 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
         if (column == 0) {
             return null;
         }
+        String warning = StringUtil.split(split.get(4), "\n").get(0);
         split = StringUtil.split(input, "\n");
         split = ContainerUtil.subList(split, 2);
         split = StringUtil.split(StringUtil.join(split, "\n"), "Why not:");
         if (split.size() != 2) {
             return null;
         }
-        return new Problem(line, column, split.get(0).trim(), split.get(1).trim());
+        final String found = split.get(0).trim();
+        final String whyNot = split.get(1).trim();
+        return new Problem(line, column, warning, found, whyNot);
     }
 
     @Nullable
@@ -150,7 +153,7 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
                 }
             }
             TextRange problemRange = TextRange.create(offset, offset + width);
-            String message = "Why not: " + problem.myWhyNot;
+            String message = problem.myWarning + ", why not: " + problem.myWhyNot;
             holder.createWarningAnnotation(problemRange, message);
             // TODO: Add an inspection to fix.
         }
@@ -172,12 +175,14 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
     public static class Problem {
         private final int myLine;
         private final int myColumn;
+        private final String myWarning;
         private final String myFound;
         private final String myWhyNot;
 
-        public Problem(int line, int column, String found, String whyNot) {
+        public Problem(int line, int column, String warning, String found, String whyNot) {
             myLine = line;
             myColumn = column;
+            myWarning = warning;
             myFound = found;
             myWhyNot = whyNot;
         }
