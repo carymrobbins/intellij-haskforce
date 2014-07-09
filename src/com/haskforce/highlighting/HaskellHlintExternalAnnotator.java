@@ -23,11 +23,8 @@ package com.haskforce.highlighting;
 
 import com.haskforce.HaskellFileType;
 import com.haskforce.utils.ExecUtil;
-import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.execution.process.CapturingProcessHandler;
 import com.intellij.ide.util.PropertiesComponent;
-import com.intellij.lang.annotation.Annotation;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.ExternalAnnotator;
 import com.intellij.openapi.diagnostic.Logger;
@@ -43,14 +40,13 @@ import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlintExternalAnnotator.State, HaskellHlintExternalAnnotator.State> {
     private static final Logger LOG = Logger.getInstance(HaskellHlintExternalAnnotator.class);
+    private static final Pattern WHITESPACE_REGEX = Pattern.compile("\\s+");
 
     private static Problem parseProblem(String input) {
         List<String> split = StringUtil.split(input, ":");
@@ -58,7 +54,20 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
             return null;
         }
         int line = StringUtil.parseInt(split.get(1), 0);
-        return new Problem(line, split.get(split.size() - 1).trim());
+        if (line == 0) {
+            return null;
+        }
+        int column = StringUtil.parseInt(split.get(2), 0);
+        if (column == 0) {
+            return null;
+        }
+        split = StringUtil.split(input, "\n");
+        split = ContainerUtil.subList(split, 2);
+        split = StringUtil.split(StringUtil.join(split, "\n"), "Why not:");
+        if (split.size() != 2) {
+            return null;
+        }
+        return new Problem(line, column, split.get(0).trim(), split.get(1).trim());
     }
 
     @Nullable
@@ -86,7 +95,6 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
         }
 
         String workingDir = file.getProject().getBasePath();
-        // TODO: Add this to the external tools and pull from there.
         String hlintPath = PropertiesComponent.getInstance(module.getProject()).getValue("hlintPath");
         if (hlintPath == null) {
             hlintPath = ExecUtil.locateExecutableByGuessing("hlint");
@@ -124,16 +132,25 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
         }
         String text = file.getText();
         for (Problem problem : annotationResult.problems) {
-            int offset = StringUtil.lineColToOffset(text, problem.myLine - 1, 0);
+            int offset = StringUtil.lineColToOffset(text, problem.myLine - 1, problem.myColumn - 1);
             if (offset == -1) {
                 continue;
             }
+            // Since we don't have an ending line/column we can count non-whitespace to determine the highlight width.
             int width = 0;
-            while (offset + width < text.length() && !StringUtil.isLineBreak(text.charAt(offset + width))) {
+            int nonWhiteSpaceToFind = WHITESPACE_REGEX.matcher(problem.myFound).replaceAll("").length();
+            int nonWhiteSpaceFound = 0;
+            while (offset + width < text.length()) {
+                if (!StringUtil.isWhiteSpace(text.charAt(offset + width))) {
+                    ++nonWhiteSpaceFound;
+                }
                 ++width;
+                if (nonWhiteSpaceFound >= nonWhiteSpaceToFind) {
+                    break;
+                }
             }
             TextRange problemRange = TextRange.create(offset, offset + width);
-            String message = "Why not: " + problem.myDescription;
+            String message = "Why not: " + problem.myWhyNot;
             holder.createWarningAnnotation(problemRange, message);
             // TODO: Add an inspection to fix.
         }
@@ -154,17 +171,15 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
 
     public static class Problem {
         private final int myLine;
-        private final String myDescription;
+        private final int myColumn;
+        private final String myFound;
+        private final String myWhyNot;
 
-        public Problem(int line, String description) {
+        public Problem(int line, int column, String found, String whyNot) {
             myLine = line;
-            myDescription = description;
-        }
-
-        @Override
-        public String toString() {
-            return "Problem{myLine=" + myLine +
-                         ", myDescription='" + myDescription + "'}";
+            myColumn = column;
+            myFound = found;
+            myWhyNot = whyNot;
         }
     }
 }
