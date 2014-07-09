@@ -63,6 +63,7 @@
       <typedHandler implementation="com.haskforce.features.HaskellTypedHandler" id="HaskellFile"/>
       <lang.foldingBuilder language="Haskell" implementationClass="com.haskforce.features.HaskellFoldingBuilder"/>
       <elementDescriptionProvider implementation="com.haskforce.features.HaskellDescriptionProvider"/>
+      <completion.contributor language="Haskell" implementationClass="com.haskforce.codeInsight.HaskellCompletionContributor"/>
 
       <!-- Project settings -->
 
