@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
  * Parser responsible for parsing the JSON output from parser-helper.
  */
 public class JsonParser {
-    private static final String REQUIRED_PARSER_HELPER_VERSION = "0.1.0.1";
+    private static final String REQUIRED_PARSER_HELPER_VERSION = "0.2.0.0";
     private static final String NOTIFICATION_TITLE = "Parser-helper notification";
     private static final Pattern cppPattern = Pattern.compile("^\\s*#[a-z](.*)$", Pattern.MULTILINE);
     private static final Logger LOG = Logger.getInstance(JsonParser.class);

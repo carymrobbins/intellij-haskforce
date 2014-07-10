@@ -84,7 +84,8 @@ public class HaskellCommenter implements CodeDocumentationAwareCommenterEx {
     @Nullable
     @Override
     public String getLineCommentPrefix() {
-        return "--";
+        // We need to use a space suffix to avoid things like --$ causing parse errors.
+        return "-- ";
     }
 
     /**
