@@ -29,8 +29,8 @@ public class ExpTopTypeDeserializer implements JsonDeserializer<ExpTopType> {
             ipVar.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             ipVar.ipName = jsonDeserializationContext.deserialize(stuff.get(1), IPNameTopType.class);
             return ipVar;
-        } else if ((stuff = objType.getAsJsonArray("Con")) != null) {
-            Con con = new Con();
+        } else if ((stuff = objType.getAsJsonArray("Con_")) != null) {
+            Con_ con = new Con_();
             con.srcInfoSpan = jsonDeserializationContext.deserialize(stuff.get(0), SrcInfoSpan.class);
             con.qName = jsonDeserializationContext.deserialize(stuff.get(1), QNameTopType.class);
             return con;
