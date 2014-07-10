@@ -11,7 +11,7 @@ import com.haskforce.parsing.srcExtsDatatypes.*;
 import java.lang.reflect.Type;
 
 /**
- * Deserializes Con_/Var-Names.
+ * Deserializes Con/Var-Names.
  */
 public class CNameTopTypeDeserializer implements JsonDeserializer<CNameTopType> {
     @Override
