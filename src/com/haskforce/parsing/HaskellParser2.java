@@ -1691,8 +1691,8 @@ public class HaskellParser2 implements PsiParser {
             parseQName(builder, ((Var) expTopType).qName, comments);
         } else if (expTopType instanceof IPVar) {
             parseIPNameTopType(builder, ((IPVar) expTopType).ipName, comments);
-        } else if (expTopType instanceof Con) {
-            parseQName(builder, ((Con) expTopType).qName, comments);
+        } else if (expTopType instanceof Con_) {
+            parseQName(builder, ((Con_) expTopType).qName, comments);
         } else if (expTopType instanceof Lit) {
             parseLiteralTop(builder, ((Lit) expTopType).literal, comments);
         } else if (expTopType instanceof InfixApp) {
