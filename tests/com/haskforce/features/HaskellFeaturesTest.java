@@ -17,7 +17,7 @@ public class HaskellFeaturesTest extends LightPlatformCodeInsightFixtureTestCase
         myFixture.configureByText(HaskellFileType.INSTANCE, "<caret>f acc [] = reverse acc");
         CommentByLineCommentAction commentAction = new CommentByLineCommentAction();
         commentAction.actionPerformedImpl(getProject(), myFixture.getEditor());
-        myFixture.checkResult("--f acc [] = reverse acc");
+        myFixture.checkResult("-- f acc [] = reverse acc");
         commentAction.actionPerformedImpl(getProject(), myFixture.getEditor());
         myFixture.checkResult("f acc [] = reverse acc");
     }
