@@ -168,11 +168,15 @@ cname ::= var | con
 
 vars ::= <<sequence var>>
 
-private topdecl ::= ( whitespace | lexeme )
+private topdecl ::= ( whitespace | gendecl | lexeme )
 
 private lexeme ::= cpp | literal | reservedop | reservedid | ppragma
                  | qconid | qinfixvarid | qvarid | qinfixconid | qvarsym
                  | qconsym | special | symbol | "'" | "''"
+
+// Type signatures. Useful for go to definition.
+gendecl ::= vars '::'
+
 private literal ::= floattoken | integertoken | chartoken | pstringtoken
 private whitespace ::= whitestuff +
 private space ::= LINE_WS

@@ -30,6 +30,12 @@ public class HaskellBodyImpl extends ASTWrapperPsiElement implements HaskellBody
 
   @Override
   @NotNull
+  public List<HaskellGendecl> getGendeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellGendecl.class);
+  }
+
+  @Override
+  @NotNull
   public List<HaskellImpdecl> getImpdeclList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellImpdecl.class);
   }

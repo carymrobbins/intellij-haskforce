@@ -11,6 +11,9 @@ public interface HaskellBody extends PsiElement {
   List<HaskellCpp> getCppList();
 
   @NotNull
+  List<HaskellGendecl> getGendeclList();
+
+  @NotNull
   List<HaskellImpdecl> getImpdeclList();
 
   @NotNull

@@ -11,33 +11,27 @@ import static com.haskforce.psi.HaskellTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellExportsImpl extends ASTWrapperPsiElement implements HaskellExports {
+public class HaskellGendeclImpl extends ASTWrapperPsiElement implements HaskellGendecl {
 
-  public HaskellExportsImpl(ASTNode node) {
+  public HaskellGendeclImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitExports(this);
+    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitGendecl(this);
     else super.accept(visitor);
   }
 
   @Override
-  @Nullable
-  public HaskellExport getExport() {
-    return findChildByClass(HaskellExport.class);
+  @NotNull
+  public HaskellVars getVars() {
+    return findNotNullChildByClass(HaskellVars.class);
   }
 
   @Override
   @NotNull
-  public PsiElement getLparen() {
-    return findNotNullChildByType(LPAREN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getRparen() {
-    return findChildByType(RPAREN);
+  public PsiElement getDoublecolon() {
+    return findNotNullChildByType(DOUBLECOLON);
   }
 
 }

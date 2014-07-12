@@ -5,15 +5,12 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellExports extends PsiElement {
-
-  @Nullable
-  HaskellExport getExport();
+public interface HaskellGendecl extends PsiElement {
 
   @NotNull
-  PsiElement getLparen();
+  HaskellVars getVars();
 
-  @Nullable
-  PsiElement getRparen();
+  @NotNull
+  PsiElement getDoublecolon();
 
 }

@@ -44,6 +44,10 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitGendecl(@NotNull HaskellGendecl o) {
+    visitPsiElement(o);
+  }
+
   public void visitImpdecl(@NotNull HaskellImpdecl o) {
     visitPsiElement(o);
   }

@@ -47,6 +47,9 @@ public class HaskellParser implements PsiParser {
     else if (root_ == EXPORTS) {
       result_ = exports(builder_, 0);
     }
+    else if (root_ == GENDECL) {
+      result_ = gendecl(builder_, 0);
+    }
     else if (root_ == IMPDECL) {
       result_ = impdecl(builder_, 0);
     }
@@ -457,6 +460,19 @@ public class HaskellParser implements PsiParser {
     Marker marker_ = enter_section_(builder_);
     result_ = commaSeparate2(builder_, level_ + 1, export_parser_);
     exit_section_(builder_, marker_, EXPORTS, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
+  // vars '::'
+  public static boolean gendecl(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "gendecl")) return false;
+    if (!nextTokenIs(builder_, "<gendecl>", LPAREN, VARIDREGEXP)) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<gendecl>");
+    result_ = vars(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, DOUBLECOLON);
+    exit_section_(builder_, level_, marker_, GENDECL, result_, false, null);
     return result_;
   }
 
@@ -1201,12 +1217,13 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // whitespace | lexeme
+  // whitespace | gendecl | lexeme
   static boolean topdecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "topdecl")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = whitespace(builder_, level_ + 1);
+    if (!result_) result_ = gendecl(builder_, level_ + 1);
     if (!result_) result_ = lexeme(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;

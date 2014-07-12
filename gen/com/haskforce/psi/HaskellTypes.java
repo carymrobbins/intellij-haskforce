@@ -17,6 +17,7 @@ public interface HaskellTypes {
   IElementType CPP = new HaskellElementType("CPP");
   IElementType EXPORT = new HaskellElementType("EXPORT");
   IElementType EXPORTS = new HaskellElementType("EXPORTS");
+  IElementType GENDECL = new HaskellElementType("GENDECL");
   IElementType IMPDECL = new HaskellElementType("IMPDECL");
   IElementType IMPORTT = new HaskellElementType("IMPORTT");
   IElementType MODULE_PREFIX = new HaskellElementType("MODULE_PREFIX");
@@ -161,6 +162,9 @@ public interface HaskellTypes {
       }
       else if (type == EXPORTS) {
         return new HaskellExportsImpl(node);
+      }
+      else if (type == GENDECL) {
+        return new HaskellGendeclImpl(node);
       }
       else if (type == IMPDECL) {
         return new HaskellImpdeclImpl(node);
