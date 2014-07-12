@@ -28,16 +28,8 @@ public class HaskellLineMarkerProvider extends RelatedItemLineMarkerProvider {
             String value = namedElement.getName();
             if (value != null) {
                 Project project = element.getProject();
-                final List<PsiNamedElement> namedNodes = ContainerUtil.newArrayList();
-                final List<PsiNamedElement> namedNodes2 =
-                        HaskellUtil.findNamedNode(project, value);
-                // Find the nodes that are definitions.
-                for (PsiNamedElement e : namedNodes2) {
-                    if (e.getParent().getNode().getElementType().equals(HaskellTypes.VARS) &&
-                            !namedNodes.contains(e)) {
-                        namedNodes.add(e);
-                    }
-                }
+                final List<PsiNamedElement> namedNodes =
+                        HaskellUtil.findDefinitionNode(project, value);
 
                 if (namedNodes.size() > 0) {
                     NavigationGutterIconBuilder<PsiElement> builder =
