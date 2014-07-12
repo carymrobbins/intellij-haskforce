@@ -1,5 +1,6 @@
 package com.haskforce.psi.references;
 
+import com.haskforce.HaskellLanguage;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiReference;
@@ -16,6 +17,10 @@ public class HaskellReferenceProvider extends PsiReferenceProvider {
     @Override
     public PsiReference[] getReferencesByElement(@NotNull PsiElement element,
                                                  @NotNull ProcessingContext context) {
+        if (!element.getLanguage().is(HaskellLanguage.INSTANCE)) {
+            return PsiReference.EMPTY_ARRAY;
+        }
+
         if (element instanceof PsiNamedElement) {
             PsiNamedElement se = (PsiNamedElement) element;
             return new PsiReference[]{new HaskellReference(se, se.getTextRange())};
