@@ -44,7 +44,7 @@
 
   psiImplUtilClass="com.haskforce.psi.impl.HaskellPsiImplUtil"
 
-  implements("varid|conid")="com.intellij.psi.PsiNamedElement"
+  implements("varid|conid")="com.haskforce.psi.HaskellNamedElement"
 
   tokens=[
     lparen='('

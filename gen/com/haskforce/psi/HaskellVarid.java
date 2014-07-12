@@ -4,11 +4,10 @@ package com.haskforce.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
 
-public interface HaskellVarid extends PsiNamedElement {
+public interface HaskellVarid extends HaskellNamedElement {
 
   @NotNull
   PsiElement getVaridRegexp();

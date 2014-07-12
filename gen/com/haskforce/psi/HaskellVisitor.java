@@ -4,7 +4,6 @@ package com.haskforce.psi;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiNamedElement;
 
 public class HaskellVisitor extends PsiElementVisitor {
 
@@ -25,7 +24,7 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitConid(@NotNull HaskellConid o) {
-    visitPsiNamedElement(o);
+    visitNamedElement(o);
   }
 
   public void visitConsym(@NotNull HaskellConsym o) {
@@ -133,7 +132,7 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitVarid(@NotNull HaskellVarid o) {
-    visitPsiNamedElement(o);
+    visitNamedElement(o);
   }
 
   public void visitVars(@NotNull HaskellVars o) {
@@ -148,8 +147,8 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitPsiNamedElement(@NotNull PsiNamedElement o) {
-    visitElement(o);
+  public void visitNamedElement(@NotNull HaskellNamedElement o) {
+    visitPsiElement(o);
   }
 
   public void visitPsiElement(@NotNull PsiElement o) {

@@ -10,8 +10,8 @@ public interface HaskellImpdecl extends PsiElement {
   @Nullable
   HaskellCpp getCpp();
 
-  @Nullable
-  HaskellImportt getImportt();
+  @NotNull
+  List<HaskellImportt> getImporttList();
 
   @NotNull
   List<HaskellQconid> getQconidList();
