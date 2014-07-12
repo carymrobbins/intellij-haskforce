@@ -12,6 +12,8 @@ import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.util.indexing.FileBasedIndex;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -21,44 +23,61 @@ import java.util.List;
  */
 public class HaskellUtil {
     /**
-     * Finds name across all project Haskell files.
+     * Finds name definition across all Haskell files in the project. All
+     * definitions are found when name is null.
      */
-    public static List<PsiNamedElement> findDefinitionNode(Project project, String name) {
-        List<PsiNamedElement> result = null;
+    @NotNull
+    public static List<PsiNamedElement>
+    findDefinitionNode(@NotNull Project proj, @Nullable String name) {
+        List<PsiNamedElement> result = ContainerUtil.newArrayList();
         Collection<VirtualFile> virtualFiles =
                 FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME,
-                        HaskellFileType.INSTANCE, GlobalSearchScope.allScope(project));
-        for (VirtualFile virtualFile : virtualFiles) {
-            HaskellFile haskellFile = (HaskellFile) PsiManager.getInstance(project).findFile(virtualFile);
-            if (haskellFile != null) {
-                Collection<PsiNamedElement> namedElements =
-                        PsiTreeUtil.findChildrenOfAnyType(haskellFile, PsiNamedElement.class);
-                for (PsiNamedElement property : namedElements) {
-                    if (name.equals(property.getName()) && definitionNode(property)) {
-                        if (result == null) {
-                            result = ContainerUtil.newArrayList();
-                        }
-                        result.add(property);
-                    }
-                }
-            }
-        }
-        return result != null ? result : ContainerUtil.<PsiNamedElement>emptyList();
-    }
-
-    public static List<PsiNamedElement> findNamedNodes(Project project) {
-        List<PsiNamedElement> result = ContainerUtil.newArrayList();
-        Collection<VirtualFile> virtualFiles = FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME, HaskellFileType.INSTANCE,
-                GlobalSearchScope.allScope(project));
-        for (VirtualFile virtualFile : virtualFiles) {
-            HaskellFile simpleFile = (HaskellFile) PsiManager.getInstance(project).findFile(virtualFile);
-            if (simpleFile != null) {
-                Collection<PsiNamedElement> namedElements =
-                        PsiTreeUtil.findChildrenOfAnyType(simpleFile, PsiNamedElement.class);
-                result.addAll(namedElements);
-            }
+                        HaskellFileType.INSTANCE, GlobalSearchScope.allScope(proj));
+        for (VirtualFile vf : virtualFiles) {
+            HaskellFile f = (HaskellFile) PsiManager.getInstance(proj).findFile(vf);
+            findDefinitionNode(f, name, result);
         }
         return result;
+    }
+
+    /**
+     * Finds a name definition inside a Haskell file. All definitions are found when name
+     * is null.
+     */
+    public static void
+    findDefinitionNode(@Nullable HaskellFile file, @Nullable String name,
+                       @NotNull List<PsiNamedElement> result) {
+        if (file == null) return;
+
+        Collection<PsiNamedElement> namedElements =
+                PsiTreeUtil.findChildrenOfAnyType(file, PsiNamedElement.class);
+        for (PsiNamedElement namedElement : namedElements) {
+            if ((name == null || name.equals(namedElement.getName())) &&
+                    definitionNode(namedElement)) {
+                result.add(namedElement);
+            }
+        }
+    }
+
+    /**
+     * Finds a name definition inside a Haskell file. All definitions are found when name
+     * is null.
+     */
+    @NotNull
+    public static List<PsiNamedElement>
+    findDefinitionNodes(@Nullable HaskellFile haskellFile, @Nullable String name) {
+        List<PsiNamedElement> ret = ContainerUtil.newArrayList();
+        findDefinitionNode(haskellFile, name, ret);
+        return ret;
+    }
+
+    /**
+     * Finds name definition across all Haskell files in the project. All
+     * definitions are found when name is null.
+     */
+    @NotNull
+    public static List<PsiNamedElement> findDefinitionNodes(@NotNull Project project) {
+        return findDefinitionNode(project, null);
     }
 
     /**
@@ -66,7 +85,7 @@ public class HaskellUtil {
      *
      * Precondition: Element is in a Haskell file.
      */
-    public static boolean definitionNode(PsiNamedElement e) {
+    public static boolean definitionNode(@NotNull PsiNamedElement e) {
         // Type signatures "pattern".
         if (e.getParent().getNode().getElementType().equals(HaskellTypes.VARS)) {
             return true;

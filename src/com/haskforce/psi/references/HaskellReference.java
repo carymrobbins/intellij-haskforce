@@ -58,7 +58,7 @@ public class HaskellReference extends PsiReferenceBase<PsiElement> implements Ps
     @Override
     public Object[] getVariants() {
         Project project = myElement.getProject();
-        List<PsiNamedElement> namedNodes = HaskellUtil.findNamedNodes(project);
+        List<PsiNamedElement> namedNodes = HaskellUtil.findDefinitionNodes(project);
         List<LookupElement> variants = new ArrayList<LookupElement>(20);
         for (final PsiNamedElement namedElement : namedNodes) {
             if (namedElement.getName() != null && !namedElement.getName().isEmpty()) {

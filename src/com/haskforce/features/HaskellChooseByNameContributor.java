@@ -17,7 +17,7 @@ public class HaskellChooseByNameContributor implements ChooseByNameContributor {
     @NotNull
     @Override
     public String[] getNames(Project project, boolean includeNonProjectItems) {
-        List<PsiNamedElement> definitions = HaskellUtil.findNamedNodes(project);
+        List<PsiNamedElement> definitions = HaskellUtil.findDefinitionNodes(project);
         List<String> names = ContainerUtil.newArrayListWithCapacity(definitions.size());
         for (PsiNamedElement def : definitions) {
             if (def.getName() != null && !def.getName().isEmpty()) {
