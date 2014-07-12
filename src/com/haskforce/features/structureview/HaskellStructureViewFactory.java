@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- *
+ * Produces structure view builders.
  */
 public class HaskellStructureViewFactory implements PsiStructureViewFactory {
     @Nullable

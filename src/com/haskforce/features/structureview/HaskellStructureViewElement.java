@@ -1,6 +1,5 @@
 package com.haskforce.features.structureview;
 
-import com.haskforce.HaskellFileType;
 import com.haskforce.psi.HaskellFile;
 import com.haskforce.utils.HaskellUtil;
 import com.intellij.ide.structureView.StructureViewTreeElement;
@@ -10,15 +9,13 @@ import com.intellij.navigation.ItemPresentation;
 import com.intellij.navigation.NavigationItem;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 /**
- *
+ * Node in the structure view.
  */
 public class HaskellStructureViewElement implements StructureViewTreeElement, SortableTreeElement {
     private PsiElement element;

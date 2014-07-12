@@ -9,7 +9,7 @@ import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 
 /**
- *
+ * The model in structure view. Controls hierarchy.
  */
 public class HaskellStructureViewModel extends StructureViewModelBase implements
         StructureViewModel.ElementInfoProvider {
