@@ -233,6 +233,7 @@ public class CabalBuilder extends ModuleLevelBuilder {
         StringBuilder msg = new StringBuilder(1000);
         Pattern compiledPattern = Pattern.compile("^([^:]+):(\\d+):(\\d+:)?(.*$)?",
                                                 Pattern.MULTILINE);
+        Pattern progressPattern = Pattern.compile("^\\[(\\d+) of (\\d+)\\]");
 
         while (processOut.hasNext() || oneBehind) {
             if (oneBehind) {
@@ -243,6 +244,7 @@ public class CabalBuilder extends ModuleLevelBuilder {
 
             // See comment after this method for example warning message.
             Matcher matcher = compiledPattern.matcher(line);
+            Matcher progressMatcher = progressPattern.matcher(line);
             if (line.startsWith(warningPrefix)) {
                 // Cabal warnings.
                 String text = line.substring(warningPrefix.length()) + System.getProperty("line.separator") + processOut.next();
@@ -296,6 +298,13 @@ public class CabalBuilder extends ModuleLevelBuilder {
             } else if (logAll) {
                 //noinspection ObjectAllocationInLoop
                 context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.INFO, processOut.next()));
+            } else if (progressMatcher.find()) {
+                // Update progress tracker. Seems pretty coarse-grained.
+                int fileNum = Integer.parseInt(progressMatcher.group(1));
+                int totalFiles = Integer.parseInt(progressMatcher.group(2));
+                if (totalFiles != 0) {
+                    context.setDone((float) fileNum / totalFiles);
+                }
             }
             if (context.getCancelStatus().isCanceled()) {
                 LOG.info("Build cancelled, terminating..");
