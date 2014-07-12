@@ -10,6 +10,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
+import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
 
 public class HaskellVaridImpl extends ASTWrapperPsiElement implements HaskellVarid {
@@ -42,6 +43,11 @@ public class HaskellVaridImpl extends ASTWrapperPsiElement implements HaskellVar
   @NotNull
   public PsiElement setName(String newName) {
     return HaskellPsiImplUtil.setName(this, newName);
+  }
+
+  @NotNull
+  public ItemPresentation getPresentation() {
+    return HaskellPsiImplUtil.getPresentation(this);
   }
 
 }

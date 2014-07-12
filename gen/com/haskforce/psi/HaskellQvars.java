@@ -7,8 +7,8 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellQvars extends PsiElement {
 
-  @Nullable
-  HaskellQvar getQvar();
+  @NotNull
+  List<HaskellQvar> getQvarList();
 
   @NotNull
   PsiElement getLparen();
