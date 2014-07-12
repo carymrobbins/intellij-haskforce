@@ -297,6 +297,11 @@ public class CabalBuilder extends ModuleLevelBuilder {
                 //noinspection ObjectAllocationInLoop
                 context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.INFO, processOut.next()));
             }
+            if (context.getCancelStatus().isCanceled()) {
+                LOG.info("Build cancelled, terminating..");
+                process.destroy();
+                break;
+            }
         }
     }
     /*
