@@ -20,7 +20,7 @@ public class HaskellModuleConfigurationEditor extends DefaultModuleEditorsProvid
         }
         return new ModuleConfigurationEditor[]{
                 new JavaContentEntriesEditor(module.getName(), state),
-                new CabalFilesEditor(state),
+                // new CabalFilesEditor(state),
                 new ClasspathEditor(state),
         };
     }
