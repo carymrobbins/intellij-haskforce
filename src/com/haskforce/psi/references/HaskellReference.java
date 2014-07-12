@@ -1,6 +1,9 @@
 package com.haskforce.psi.references;
 
+import com.haskforce.HaskellIcons;
 import com.haskforce.utils.HaskellUtil;
+import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -54,10 +57,9 @@ public class HaskellReference extends PsiReferenceBase<PsiElement> implements Ps
     @NotNull
     @Override
     public Object[] getVariants() {
-        /* FIXME: Overwrites the local history with bad data.
         Project project = myElement.getProject();
         List<PsiNamedElement> namedNodes = HaskellUtil.findNamedNodes(project);
-        List<LookupElement> variants = new ArrayList<LookupElement>();
+        List<LookupElement> variants = new ArrayList<LookupElement>(20);
         for (final PsiNamedElement namedElement : namedNodes) {
             if (namedElement.getName() != null && !namedElement.getName().isEmpty()) {
                 variants.add(LookupElementBuilder.create(namedElement).
@@ -66,8 +68,7 @@ public class HaskellReference extends PsiReferenceBase<PsiElement> implements Ps
                 );
             }
         }
-        return variants.toArray();*/
-        return EMPTY_ARRAY;
+        return variants.toArray();
     }
 
     @Override
