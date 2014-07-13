@@ -72,6 +72,9 @@
       <lang.findUsagesProvider language="Haskell" implementationClass="com.haskforce.codeInsight.HaskellFindUsagesProvider"/>
       <gotoSymbolContributor implementation="com.haskforce.features.HaskellChooseByNameContributor"/>
 
+      <!-- Refactoring -->
+      <lang.refactoringSupport language="Haskell" implementationClass="com.haskforce.refactoring.HaskellRefactoringSupportProvider"/>
+
       <!-- Structure view on the left pane -->
       <lang.psiStructureViewFactory language="Haskell" implementationClass="com.haskforce.features.structureview.HaskellStructureViewFactory"/>
 

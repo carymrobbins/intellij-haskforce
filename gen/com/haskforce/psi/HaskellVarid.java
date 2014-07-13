@@ -15,6 +15,9 @@ public interface HaskellVarid extends HaskellNamedElement {
   @NotNull
   String getName();
 
+  @Nullable
+  PsiElement getNameIdentifier();
+
   @NotNull
   PsiReference getReference();
 

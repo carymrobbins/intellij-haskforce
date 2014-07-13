@@ -1,6 +1,9 @@
 package com.haskforce.psi.references;
 
 import com.haskforce.HaskellIcons;
+import com.haskforce.psi.HaskellConid;
+import com.haskforce.psi.HaskellVarid;
+import com.haskforce.psi.impl.HaskellPsiImplUtil;
 import com.haskforce.utils.HaskellUtil;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -12,6 +15,7 @@ import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.PsiPolyVariantReference;
 import com.intellij.psi.PsiReferenceBase;
 import com.intellij.psi.ResolveResult;
+import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,6 +33,9 @@ public class HaskellReference extends PsiReferenceBase<PsiElement> implements Ps
         name = element.getName();
     }
 
+    /**
+     * Resolves references to a set of results.
+     */
     @NotNull
     @Override
     public ResolveResult[] multiResolve(boolean incompleteCode) {
@@ -43,6 +50,9 @@ public class HaskellReference extends PsiReferenceBase<PsiElement> implements Ps
         return results.toArray(new ResolveResult[results.size()]);
     }
 
+    /**
+     * Resolves references to a single result, or fails.
+     */
     @Nullable
     @Override
     public PsiElement resolve() {
@@ -74,5 +84,18 @@ public class HaskellReference extends PsiReferenceBase<PsiElement> implements Ps
     @Override
     public TextRange getRangeInElement() {
         return new TextRange(0, this.getElement().getNode().getTextLength());
+    }
+
+    /**
+     * Called when renaming refactoring tries to rename the Psi tree.
+     */
+    @Override
+    public PsiElement handleElementRename(final String newName)  throws IncorrectOperationException {
+        if (myElement instanceof HaskellVarid) {
+            return HaskellPsiImplUtil.setName((HaskellVarid) myElement, newName);
+        } else if (myElement instanceof HaskellConid) {
+            return HaskellPsiImplUtil.setName((HaskellConid) myElement, newName);
+        }
+        return super.handleElementRename(newName);
     }
 }

@@ -4,6 +4,7 @@ import com.haskforce.HaskellIcons;
 import com.haskforce.psi.references.HaskellReference;
 import com.haskforce.psi.HaskellConid;
 import com.haskforce.psi.HaskellVarid;
+import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
@@ -26,6 +27,18 @@ public class HaskellPsiImplUtil {
     @NotNull
     public static String getName(@NotNull HaskellConid o) {
         return o.getConidRegexp().getText();
+    }
+
+    @Nullable
+    public static PsiElement getNameIdentifier(@NotNull HaskellVarid o) {
+        ASTNode keyNode = o.getNode();
+        return keyNode != null ? keyNode.getPsi() : null;
+    }
+
+    @Nullable
+    public static PsiElement getNameIdentifier(@NotNull HaskellConid o) {
+        ASTNode keyNode = o.getNode();
+        return keyNode != null ? keyNode.getPsi() : null;
     }
 
     @NotNull
