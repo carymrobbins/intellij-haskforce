@@ -11,14 +11,17 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Performs creation of element types.
  */
 public class HaskellElementFactory {
-    @NotNull
+    @Nullable
     public static HaskellVarid createVaridFromText(@NotNull Project project, @NotNull String text) {
-        return ((HaskellVarid) (createExpressionFromText(project, text + " = 2")).getFirstChild());
+        PsiElement e = createExpressionFromText(project, text + " = 2").getFirstChild();
+        if (e instanceof HaskellVarid) return (HaskellVarid) e;
+        return null;
     }
 
     @NotNull
@@ -26,9 +29,11 @@ public class HaskellElementFactory {
         return ((HaskellQvarid) (createExpressionFromText(project, text + " = 2")).getFirstChild());
     }
 
-    @NotNull
+    @Nullable
     public static HaskellConid createConidFromText(@NotNull Project project, @NotNull String text) {
-        return ((HaskellConid) (createExpressionFromText(project, text + " = 2")).getFirstChild());
+        PsiElement e = createExpressionFromText(project, text + " = 2").getFirstChild();
+        if (e instanceof HaskellConid) return (HaskellConid) e;
+        return null;
     }
 
     @NotNull

@@ -72,6 +72,9 @@
       <lang.findUsagesProvider language="Haskell" implementationClass="com.haskforce.codeInsight.HaskellFindUsagesProvider"/>
       <gotoSymbolContributor implementation="com.haskforce.features.HaskellChooseByNameContributor"/>
 
+      <!-- Language utilities -->
+      <lang.namesValidator language="Haskell" implementationClass="com.haskforce.language.HaskellNamesValidator"/>
+
       <!-- Refactoring -->
       <lang.refactoringSupport language="Haskell" implementationClass="com.haskforce.refactoring.HaskellRefactoringSupportProvider"/>
 

@@ -91,10 +91,15 @@ public class HaskellReference extends PsiReferenceBase<PsiElement> implements Ps
      */
     @Override
     public PsiElement handleElementRename(final String newName)  throws IncorrectOperationException {
+        PsiElement element;
         if (myElement instanceof HaskellVarid) {
-            return HaskellPsiImplUtil.setName((HaskellVarid) myElement, newName);
+            element = HaskellPsiImplUtil.setName((HaskellVarid) myElement, newName);
+            if (element != null) return element;
+            throw new IncorrectOperationException("Cannot rename " + name + " to " + newName);
         } else if (myElement instanceof HaskellConid) {
-            return HaskellPsiImplUtil.setName((HaskellConid) myElement, newName);
+            element = HaskellPsiImplUtil.setName((HaskellConid) myElement, newName);
+            if (element != null) return element;
+            throw new IncorrectOperationException("Cannot rename " + name + " to " + newName);
         }
         return super.handleElementRename(newName);
     }

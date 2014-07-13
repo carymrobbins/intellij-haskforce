@@ -41,15 +41,19 @@ public class HaskellPsiImplUtil {
         return keyNode != null ? keyNode.getPsi() : null;
     }
 
-    @NotNull
+    @Nullable
     public static PsiElement setName(@NotNull HaskellVarid o, @NotNull String newName) {
-        o.replace(HaskellElementFactory.createVaridFromText(o.getProject(), newName));
+        PsiElement e = HaskellElementFactory.createVaridFromText(o.getProject(), newName);
+        if (e == null) return null;
+        o.replace(e);
         return o;
     }
 
-    @NotNull
+    @Nullable
     public static PsiElement setName(@NotNull HaskellConid o, @NotNull String newName) {
-        o.replace(HaskellElementFactory.createConidFromText(o.getProject(), newName));
+        PsiElement e = HaskellElementFactory.createConidFromText(o.getProject(), newName);
+        if (e == null) return null;
+        o.replace(e);
         return o;
     }
 
