@@ -73,10 +73,14 @@ public class HaskellPsiImplUtil {
                 return o.getName();
             }
 
+            /**
+             * Shows the filename for each Varid in the StructureView panel.
+             * Return null since the StructureView is per file.
+             */
             @Nullable
             @Override
             public String getLocationString() {
-                return o.getContainingFile().getName();
+                return null;
             }
 
             @Nullable
@@ -96,10 +100,14 @@ public class HaskellPsiImplUtil {
                 return o.getName();
             }
 
+            /**
+             * Shows the filename for each Conid in the StructureView panel.
+             * Return null since the StructureView is per file.
+             */
             @Nullable
             @Override
             public String getLocationString() {
-                return o.getContainingFile().getName();
+                return null;
             }
 
             @Nullable
