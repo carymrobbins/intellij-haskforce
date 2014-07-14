@@ -20,6 +20,7 @@ public interface HaskellTypes {
   IElementType GENDECL = new HaskellElementType("GENDECL");
   IElementType IMPDECL = new HaskellElementType("IMPDECL");
   IElementType IMPORTT = new HaskellElementType("IMPORTT");
+  IElementType MODULEDECL = new HaskellElementType("MODULEDECL");
   IElementType MODULE_PREFIX = new HaskellElementType("MODULE_PREFIX");
   IElementType PPRAGMA = new HaskellElementType("PPRAGMA");
   IElementType PSTRINGTOKEN = new HaskellElementType("PSTRINGTOKEN");
@@ -171,6 +172,9 @@ public interface HaskellTypes {
       }
       else if (type == IMPORTT) {
         return new HaskellImporttImpl(node);
+      }
+      else if (type == MODULEDECL) {
+        return new HaskellModuledeclImpl(node);
       }
       else if (type == MODULE_PREFIX) {
         return new HaskellModulePrefixImpl(node);

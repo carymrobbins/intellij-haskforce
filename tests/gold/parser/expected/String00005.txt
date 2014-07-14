@@ -1,8 +1,9 @@
 Haskell File
-  PsiElement(HaskellTokenType.module)('module')
-  HaskellQconidImpl(QCONID)
-    PsiElement(HaskellTokenType.conidRegexp)('String00005')
-  PsiElement(HaskellTokenType.where)('where')
+  HaskellModuledeclImpl(MODULEDECL)
+    PsiElement(HaskellTokenType.module)('module')
+    HaskellQconidImpl(QCONID)
+      PsiElement(HaskellTokenType.conidRegexp)('String00005')
+    PsiElement(HaskellTokenType.where)('where')
   HaskellBodyImpl(BODY)
     PsiElement(HaskellTokenType.instance)('instance')
     HaskellSpecialImpl(SPECIAL)

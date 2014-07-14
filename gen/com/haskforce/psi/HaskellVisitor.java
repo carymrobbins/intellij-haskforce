@@ -59,6 +59,10 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitModuledecl(@NotNull HaskellModuledecl o) {
+    visitPsiElement(o);
+  }
+
   public void visitPpragma(@NotNull HaskellPpragma o) {
     visitPsiElement(o);
   }

@@ -140,8 +140,10 @@
 // Haskell 2010 Report - http://www.haskell.org/onlinereport/haskell2010/haskellch2.html#x7-140002
 
 module ::= (whitespace | ppragma | cpp) module
-         | "module" qconid [exports] "where" body
+         | moduledecl body
          | body
+
+moduledecl ::= "module" qconid [exports] "where"
 
 body ::= impdecl* topdecl*
 

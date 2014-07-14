@@ -59,6 +59,9 @@ public class HaskellParser implements PsiParser {
     else if (root_ == MODULE_PREFIX) {
       result_ = modulePrefix(builder_, 0);
     }
+    else if (root_ == MODULEDECL) {
+      result_ = moduledecl(builder_, 0);
+    }
     else if (root_ == PPRAGMA) {
       result_ = ppragma(builder_, 0);
     }
@@ -676,7 +679,7 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // (whitespace | ppragma | cpp) module
-  //          | "module" qconid [exports] "where" body
+  //          | moduledecl body
   //          | body
   static boolean module(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "module")) return false;
@@ -712,25 +715,15 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // "module" qconid [exports] "where" body
+  // moduledecl body
   private static boolean module_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "module_1")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, MODULETOKEN);
-    result_ = result_ && qconid(builder_, level_ + 1);
-    result_ = result_ && module_1_2(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, WHERE);
+    result_ = moduledecl(builder_, level_ + 1);
     result_ = result_ && body(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
-  }
-
-  // [exports]
-  private static boolean module_1_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "module_1_2")) return false;
-    exports(builder_, level_ + 1);
-    return true;
   }
 
   /* ********************************************************** */
@@ -760,6 +753,28 @@ public class HaskellParser implements PsiParser {
     result_ = result_ && consumeToken(builder_, PERIOD);
     exit_section_(builder_, marker_, null, result_);
     return result_;
+  }
+
+  /* ********************************************************** */
+  // "module" qconid [exports] "where"
+  public static boolean moduledecl(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "moduledecl")) return false;
+    if (!nextTokenIs(builder_, MODULETOKEN)) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, MODULETOKEN);
+    result_ = result_ && qconid(builder_, level_ + 1);
+    result_ = result_ && moduledecl_2(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, WHERE);
+    exit_section_(builder_, marker_, MODULEDECL, result_);
+    return result_;
+  }
+
+  // [exports]
+  private static boolean moduledecl_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "moduledecl_2")) return false;
+    exports(builder_, level_ + 1);
+    return true;
   }
 
   /* ********************************************************** */
