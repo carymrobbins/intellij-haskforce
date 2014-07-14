@@ -109,7 +109,7 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
 
         final String workingDir = file.getProject().getBasePath();
         final String hlintPath = PropertiesComponent.getInstance(module.getProject()).getValue("hlintPath");
-        return hlintPath == null ? null : new State(hlintPath, file.getText(), workingDir);
+        return hlintPath == null || hlintPath.isEmpty() ? null : new State(hlintPath, file.getText(), workingDir);
     }
 
     @Nullable
