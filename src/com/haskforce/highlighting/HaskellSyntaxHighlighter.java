@@ -9,8 +9,6 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.util.containers.HashSet;
 import org.jetbrains.annotations.NotNull;
 
-import java.awt.*;
-import java.io.Reader;
 import java.util.*;
 
 import com.haskforce.psi.HaskellTypes;
@@ -104,7 +102,7 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final HashSet<IElementType> reservedIds = new HashSet<IElementType>(
             Arrays.asList(new IElementType[]{AS, CASE, CLASSTOKEN, DATA, DEFAULT
                     , DERIVING, DO, ELSE, FOREIGN, HIDING, IF, IMPORT, IN, INFIX
-                    , INFIXL, INFIXR, INSTANCE, LET, HaskellTypes.MODULE
+                    , INFIXL, INFIXR, INSTANCE, LET, HaskellTypes.MODULETOKEN
                     , NEWTYPE, OF, QUALIFIED, THEN, TYPE, WHERE}));
 
     @NotNull

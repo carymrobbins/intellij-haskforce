@@ -109,7 +109,7 @@
     DERIVING='deriving'
     FOREIGN='foreign'
     INSTANCE='instance'
-    MODULE='module'
+    MODULETOKEN='module'
     NEWTYPE='newtype'
     TYPE='type'
     WHERE='where'

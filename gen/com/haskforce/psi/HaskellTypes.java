@@ -104,7 +104,7 @@ public interface HaskellTypes {
   IElementType LINE_WS = new HaskellTokenType("LINE_WS");
   IElementType LPAREN = new HaskellTokenType("(");
   IElementType MINUS = new HaskellTokenType("-");
-  IElementType MODULE = new HaskellTokenType("module");
+  IElementType MODULETOKEN = new HaskellTokenType("module");
   IElementType NEWTYPE = new HaskellTokenType("newtype");
   IElementType NULLCHARACTER = new HaskellTokenType("\\&");
   IElementType OF = new HaskellTokenType("of");

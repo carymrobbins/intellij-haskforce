@@ -445,7 +445,7 @@ public class HaskellParser implements PsiParser {
     if (!recursion_guard_(builder_, level_, "export_4")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, MODULE);
+    result_ = consumeToken(builder_, MODULETOKEN);
     result_ = result_ && qconid(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
@@ -717,7 +717,7 @@ public class HaskellParser implements PsiParser {
     if (!recursion_guard_(builder_, level_, "module_1")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, MODULE);
+    result_ = consumeToken(builder_, MODULETOKEN);
     result_ = result_ && qconid(builder_, level_ + 1);
     result_ = result_ && module_1_2(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, WHERE);

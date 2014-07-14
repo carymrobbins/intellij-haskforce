@@ -45,7 +45,7 @@ public class HaskellVaridImpl extends ASTWrapperPsiElement implements HaskellVar
     return HaskellPsiImplUtil.getReference(this);
   }
 
-  @NotNull
+  @Nullable
   public PsiElement setName(String newName) {
     return HaskellPsiImplUtil.setName(this, newName);
   }

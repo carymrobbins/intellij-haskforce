@@ -45,7 +45,7 @@ public class HaskellConidImpl extends ASTWrapperPsiElement implements HaskellCon
     return HaskellPsiImplUtil.getReference(this);
   }
 
-  @NotNull
+  @Nullable
   public PsiElement setName(String newName) {
     return HaskellPsiImplUtil.setName(this, newName);
   }

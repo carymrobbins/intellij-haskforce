@@ -20,7 +20,7 @@ import static com.haskforce.psi.HaskellTypes.CPPENDIF;
 import static com.haskforce.psi.HaskellTypes.DOUBLEQUOTE;
 import static com.haskforce.psi.HaskellTypes.STRINGTOKEN;
 import static com.haskforce.psi.HaskellTypes.BADSTRINGTOKEN;
-import static com.haskforce.psi.HaskellTypes.MODULE;
+import static com.haskforce.psi.HaskellTypes.MODULETOKEN;
 import static com.haskforce.psi.HaskellTypes.WHERE;
 import static com.haskforce.psi.HaskellTypes.PRAGMA;
 import static com.haskforce.psi.HaskellTypes.EQUALS;
@@ -155,7 +155,7 @@ public class HaskellParser2 implements PsiParser {
      */
     private static void parseModuleHead(PsiBuilder builder, ModuleHead head, Comment[] comments) {
         IElementType e = builder.getTokenType();
-        if (e != MODULE) return;
+        if (e != MODULETOKEN) return;
 
         PsiBuilder.Marker moduleMark = builder.mark();
         consumeToken(builder, MODULE);
