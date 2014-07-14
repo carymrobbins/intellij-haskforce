@@ -126,7 +126,8 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
             return FLOAT_KEYS;
         } else if (tokenType.equals(HaskellTypes.CHARTOKEN)) {
             return CHAR_KEYS;
-        } else if (tokenType.equals(HaskellTypes.STRINGTOKEN)) {
+        } else if (tokenType.equals(HaskellTypes.STRINGTOKEN) ||
+                tokenType.equals(HaskellTypes.DOUBLEQUOTE)) {
             return STRING_KEYS;
         } else if (tokenType.equals(HaskellTypes.SPECIAL)) {
             return SPECIAL_KEYS;
