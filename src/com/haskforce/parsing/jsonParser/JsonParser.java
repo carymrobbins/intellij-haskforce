@@ -33,9 +33,11 @@ public class JsonParser {
     private static boolean haveGivenExecFailWarning;
     private static boolean haveGivenPathWarning;
     private final Project myProject;
+    private final Gson myGson;
 
     public JsonParser(@NotNull final Project project) {
         myProject = project;
+        myGson = createJSonDeserializer();
     }
 
     /**
@@ -98,8 +100,7 @@ public class JsonParser {
             return tp;
         }
 
-        Gson gson = createJSonDeserializer();
-        TopPair tp2 = gson.fromJson(json, TopPair.class);
+        TopPair tp2 = myGson.fromJson(json, TopPair.class);
         if (tp2 != null) return tp2;
 
         tp.error = "Failed to deserialize JSON";
