@@ -132,6 +132,8 @@ public interface HaskellTypes {
   IElementType TYPE = new HaskellTokenType("type");
   IElementType UNDERSCORE = new HaskellTokenType("_");
   IElementType VARIDREGEXP = new HaskellTokenType("varidRegexp");
+  IElementType VARSYMTOK = new HaskellTokenType("Varsym");
+  IElementType VARSYMTOKPLUS = new HaskellTokenType("VarsymPlus");
   IElementType WHERE = new HaskellTokenType("where");
 
   class Factory {

@@ -22,10 +22,4 @@ public class HaskellVarsymImpl extends ASTWrapperPsiElement implements HaskellVa
     else super.accept(visitor);
   }
 
-  @Override
-  @NotNull
-  public List<HaskellSymbol> getSymbolList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellSymbol.class);
-  }
-
 }

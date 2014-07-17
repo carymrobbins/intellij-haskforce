@@ -29,7 +29,7 @@
 
 {
   parserClass="com.haskforce.parser.HaskellParser"
-  parserUtilClass="com.intellij.lang.parser.GeneratedParserUtilBase"
+  parserUtilClass="com.haskforce.psi.HaskellParserUtilBase"
 
   extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 
@@ -133,6 +133,8 @@
     THEN='then'
     EXPORTTOKEN='export'
     CONSYMTOK="Consym"
+    VARSYMTOKPLUS="VarsymPlus"
+    VARSYMTOK="Varsym"
     FORALLTOKEN='forall'
   ]
 }
@@ -204,7 +206,7 @@ private reservedMeta ::= 'as' | 'export' | 'foreign' | 'import' | 'infix'
 private reservedVar ::= '_'
 private reservedid  ::= reservedExpr | reservedDecl | reservedMeta | reservedVar
 
-varsym ::= !(reservedop | dashes ) ( !':' symbol+ )
+varsym ::= VARSYMTOK
 consym ::= CONSYMTOK
 
 reservedop ::= '..' | '::' | '=' | '\' | '|' | '<-' | '->' | '@' | '~' | '=>'

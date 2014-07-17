@@ -151,8 +151,9 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   "~"                 { return TILDE; }
   "_"                 { return UNDERSCORE; }
   "::"                { return DOUBLECOLON; }
-  (":"{ASCSYMBOL}+)   { return CONSYMTOK; }
   ":"                 { return COLON; }
+  (":"{ASCSYMBOL}+)   { return CONSYMTOK; }
+  ({ASCSYMBOL}+)      { return VARSYMTOKPLUS; }
 
   {VARIDREGEXP}       { return VARIDREGEXP; }
   {CONID}             { return CONIDREGEXP; }
@@ -160,7 +161,6 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   {INTEGERTOKEN}      { return INTEGERTOKEN; }
   {FLOATTOKEN}        { return FLOATTOKEN; }
   {COMMENT}           { return COMMENT; }
-  {DASHES}            { return DASHES; }
   {HADDOCK}           { return HADDOCK; }
   {CPPIF}             { return CPPIF; }
 

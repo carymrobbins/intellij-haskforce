@@ -5,7 +5,7 @@ import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiBuilder.Marker;
 import com.intellij.openapi.diagnostic.Logger;
 import static com.haskforce.psi.HaskellTypes.*;
-import static com.intellij.lang.parser.GeneratedParserUtilBase.*;
+import static com.haskforce.psi.HaskellParserUtilBase.*;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.tree.TokenSet;
@@ -1023,6 +1023,7 @@ public class HaskellParser implements PsiParser {
   // [modulePrefix] varsym
   public static boolean qvarsym(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qvarsym")) return false;
+    if (!nextTokenIs(builder_, "<qvarsym>", VARSYMTOK, CONIDREGEXP)) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<qvarsym>");
     result_ = qvarsym_0(builder_, level_ + 1);
@@ -1341,72 +1342,14 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // !(reservedop | dashes ) ( !':' symbol+ )
+  // VARSYMTOK
   public static boolean varsym(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varsym")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<varsym>");
-    result_ = varsym_0(builder_, level_ + 1);
-    result_ = result_ && varsym_1(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, VARSYM, result_, false, null);
-    return result_;
-  }
-
-  // !(reservedop | dashes )
-  private static boolean varsym_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "varsym_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NOT_, null);
-    result_ = !varsym_0_0(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, null, result_, false, null);
-    return result_;
-  }
-
-  // reservedop | dashes
-  private static boolean varsym_0_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "varsym_0_0")) return false;
+    if (!nextTokenIs(builder_, VARSYMTOK)) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = reservedop(builder_, level_ + 1);
-    if (!result_) result_ = consumeToken(builder_, DASHES);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // !':' symbol+
-  private static boolean varsym_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "varsym_1")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = varsym_1_0(builder_, level_ + 1);
-    result_ = result_ && varsym_1_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // !':'
-  private static boolean varsym_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "varsym_1_0")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_, level_, _NOT_, null);
-    result_ = !consumeToken(builder_, COLON);
-    exit_section_(builder_, level_, marker_, null, result_, false, null);
-    return result_;
-  }
-
-  // symbol+
-  private static boolean varsym_1_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "varsym_1_1")) return false;
-    boolean result_ = false;
-    Marker marker_ = enter_section_(builder_);
-    result_ = symbol(builder_, level_ + 1);
-    int pos_ = current_position_(builder_);
-    while (result_) {
-      if (!symbol(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "varsym_1_1", pos_)) break;
-      pos_ = current_position_(builder_);
-    }
-    exit_section_(builder_, marker_, null, result_);
+    result_ = consumeToken(builder_, VARSYMTOK);
+    exit_section_(builder_, marker_, VARSYM, result_);
     return result_;
   }
 

@@ -3,6 +3,8 @@ package com.haskforce;
 import com.haskforce.highlighting.HaskellSyntaxHighlightingLexer;
 import com.haskforce.parsing.HaskellParser2;
 import com.haskforce.parsing.HaskellTypes2;
+import com.haskforce.psi.HaskellParserWrapper;
+import com.haskforce.psi.HaskellTypes;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.ParserDefinition;
@@ -15,13 +17,13 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
+import com.haskforce.psi.HaskellFile;
 import org.jetbrains.annotations.NotNull;
 
-
-import com.haskforce.parser.HaskellParser;
-import com.haskforce.psi.HaskellFile;
-import com.haskforce.psi.HaskellTypes;
-
+/**
+ * Main entry point from plugin for parsing. Returns parser, lexer and other
+ * things useful for parsing.
+ */
 public class HaskellParserDefinition implements ParserDefinition {
     private static final boolean pjbuild = false;
     public static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
@@ -65,7 +67,7 @@ public class HaskellParserDefinition implements ParserDefinition {
         if (pjbuild || System.getProperty("PARSER", "").equals("2")) {
             return new HaskellParser2(project);
         }
-        return new HaskellParser();
+        return new HaskellParserWrapper();
     }
 
     @Override
@@ -81,6 +83,9 @@ public class HaskellParserDefinition implements ParserDefinition {
         return SpaceRequirements.MAY;
     }
 
+    /**
+     * Gets called when PsiBuilder.Marker.done(node) is called by the parser.
+     */
     @NotNull
     public PsiElement createElement(ASTNode node) {
         if (pjbuild || System.getProperty("PARSER", "").equals("2")) {
