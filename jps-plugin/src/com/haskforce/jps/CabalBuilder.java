@@ -283,8 +283,18 @@ public class CabalBuilder extends ModuleLevelBuilder {
 
                 // RootPath necessary for reasonable error messages by Intellij.
                 String sourcePath = getContentRootPath(module) + File.separator + file.replace('\\', File.separatorChar);
-                BuildMessage.Kind kind = matcher.group(4).trim().startsWith("Warning") ?
-                       BuildMessage.Kind.WARNING : BuildMessage.Kind.ERROR;
+                // GHC emits warning messages that look like:
+                // File.hs:line:column: Warning..
+                // Messages that do not start with "Warning" are errors. Other
+                // tools (happy for example) do not emit columns and messages
+                // not starting with "Warning" can still be warnings. Assume
+                // tools without column information warn.
+                //
+                // If our assumption is wrong that will be corrected by the
+                // return value from cabal build. If we assume the opposite we
+                // will halt working builds with a (faulty) error.
+                BuildMessage.Kind kind = matcher.group(4).trim().startsWith("Warning") ||
+                        matcher.group(3) == null ? BuildMessage.Kind.WARNING : BuildMessage.Kind.ERROR;
 
                 final String trimmedMessage = msg.toString().trim();
                 //noinspection ObjectAllocationInLoop
@@ -359,6 +369,15 @@ Happy error:
 
 Preprocessing library haskell-src-exts-1.15.0.1...
 src/Language/Haskell/Exts/InternalParser.ly:962: Parse error
+
+Nothing to do error:
+
+Peters-MacBook-Air-472:haskell-src-exts pj$ cabal build -j5
+Building haskell-src-exts-1.15.0.1...
+Preprocessing library haskell-src-exts-1.15.0.1...
+In-place registering haskell-src-exts-1.15.0.1...
+Preprocessing test suite 'test' for haskell-src-exts-1.15.0.1...
+Peters-MacBook-Air-472:haskell-src-exts pj$
      */
 
     private static Iterator<String> collectOutput(Process process) {
