@@ -1,10 +1,13 @@
 Haskell File
-  HaskellBodyImpl(BODY)
+  HaskellModuledeclImpl(MODULEDECL)
+    PsiElement(HaskellTokenType.module)('module')
+    HaskellQconidImpl(QCONID)
+      PsiElement(HaskellTokenType.conidRegexp)('Pragma00003')
+  PsiErrorElement:HaskellTokenType.(, HaskellTokenType.. or HaskellTokenType.where expected, got '{-#'
     <empty list>
-  PsiElement(HaskellTokenType.module)('module')
-  PsiElement(HaskellTokenType.conidRegexp)('Pragma00003')
-  PsiElement(HaskellTokenType.{-#)('{-#')
-  PsiErrorElement:' DEPRECATED "Use Wobble instead" ' unexpected
-    PsiElement(HaskellTokenType.PRAGMA)(' DEPRECATED "Use Wobble instead" ')
-  PsiElement(HaskellTokenType.#-})('#-}')
-  PsiElement(HaskellTokenType.where)('where')
+  HaskellBodyImpl(BODY)
+    HaskellPpragmaImpl(PPRAGMA)
+      PsiElement(HaskellTokenType.{-#)('{-#')
+      PsiElement(HaskellTokenType.PRAGMA)(' DEPRECATED "Use Wobble instead" ')
+      PsiElement(HaskellTokenType.#-})('#-}')
+    PsiElement(HaskellTokenType.where)('where')

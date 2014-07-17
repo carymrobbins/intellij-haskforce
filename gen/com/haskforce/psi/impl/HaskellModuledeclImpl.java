@@ -29,9 +29,9 @@ public class HaskellModuledeclImpl extends ASTWrapperPsiElement implements Haske
   }
 
   @Override
-  @NotNull
+  @Nullable
   public HaskellQconid getQconid() {
-    return findNotNullChildByClass(HaskellQconid.class);
+    return findChildByClass(HaskellQconid.class);
   }
 
 }

@@ -1,10 +1,13 @@
 Haskell File
-  HaskellBodyImpl(BODY)
+  HaskellModuledeclImpl(MODULEDECL)
+    PsiElement(HaskellTokenType.module)('module')
+    HaskellQconidImpl(QCONID)
+      PsiElement(HaskellTokenType.conidRegexp)('Pragma00004')
+  PsiErrorElement:HaskellTokenType.(, HaskellTokenType.. or HaskellTokenType.where expected, got '{-#'
     <empty list>
-  PsiElement(HaskellTokenType.module)('module')
-  PsiElement(HaskellTokenType.conidRegexp)('Pragma00004')
-  PsiElement(HaskellTokenType.{-#)('{-#')
-  PsiErrorElement:' WARNING "This is an unstable interface." ' unexpected
-    PsiElement(HaskellTokenType.PRAGMA)(' WARNING "This is an unstable interface." ')
-  PsiElement(HaskellTokenType.#-})('#-}')
-  PsiElement(HaskellTokenType.where)('where')
+  HaskellBodyImpl(BODY)
+    HaskellPpragmaImpl(PPRAGMA)
+      PsiElement(HaskellTokenType.{-#)('{-#')
+      PsiElement(HaskellTokenType.PRAGMA)(' WARNING "This is an unstable interface." ')
+      PsiElement(HaskellTokenType.#-})('#-}')
+    PsiElement(HaskellTokenType.where)('where')

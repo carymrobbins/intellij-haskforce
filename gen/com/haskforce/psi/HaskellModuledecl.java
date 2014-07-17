@@ -10,7 +10,7 @@ public interface HaskellModuledecl extends PsiElement {
   @Nullable
   HaskellExports getExports();
 
-  @NotNull
+  @Nullable
   HaskellQconid getQconid();
 
 }

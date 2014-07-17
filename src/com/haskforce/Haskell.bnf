@@ -145,7 +145,7 @@ module ::= (whitespace | ppragma | cpp) module
          | moduledecl body
          | body
 
-moduledecl ::= "module" qconid [exports] "where"
+moduledecl ::= "module" qconid [exports] "where" {pin(".*")=1}
 
 body ::= impdecl* topdecl*
 
@@ -154,13 +154,13 @@ export ::= cpp
         | qvar
         | qtycon ["(..)" | cnames]
         | qtycls ["(..)" | qvars]
-        | "module" qconid
+        | "module" qconid {pin(".*")=1}
 
 impdecl ::= cpp
-          | "import" ["qualified"] qconid ["as" qconid] [impspec]
+          | "import" ["qualified"] qconid ["as" qconid] [impspec] {pin(".*")=1}
 
 private impspec ::= <<commaSeparate2 importt>>
-                  | "hiding" <<commaSeparate2 importt>>
+                  | "hiding" <<commaSeparate2 importt>> {pin(".*")=1}
 
 // Workaround for https://github.com/JetBrains/Grammar-Kit/issues/32.
 importt ::= var
@@ -179,7 +179,7 @@ private lexeme ::= cpp | literal | reservedop | reservedid | ppragma
                  | qconsym | special | symbol | "'" | "''"
 
 // Type signatures. Useful for go to definition.
-gendecl ::= vars '::'
+gendecl ::= vars '::' {pin(".*")=2}
 
 private literal ::= floattoken | integertoken | chartoken | pstringtoken
 private whitespace ::= whitestuff +
@@ -187,7 +187,7 @@ private space ::= LINE_WS
 private newline ::= EOL
 private whitestuff ::= whitechar | comment | haddock
 whitechar ::= space | newline | '\t'
-ppragma ::= openpragma PRAGMA+ closepragma
+ppragma ::= openpragma PRAGMA+ closepragma {pin(".*")=1}
 special ::= '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}' | thquote | backtick
 symbol ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '=' | '>' | '?' | '@'
          | '\' | '^' | '|' | '-' | '~' | ':'
