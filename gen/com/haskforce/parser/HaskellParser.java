@@ -768,7 +768,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // "module" qconid [exports] "where"
+  // "module" qconid [ppragma] [exports] "where"
   public static boolean moduledecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "moduledecl")) return false;
     if (!nextTokenIs(builder_, MODULETOKEN)) return false;
@@ -779,14 +779,22 @@ public class HaskellParser implements PsiParser {
     pinned_ = result_; // pin = 1
     result_ = result_ && report_error_(builder_, qconid(builder_, level_ + 1));
     result_ = pinned_ && report_error_(builder_, moduledecl_2(builder_, level_ + 1)) && result_;
+    result_ = pinned_ && report_error_(builder_, moduledecl_3(builder_, level_ + 1)) && result_;
     result_ = pinned_ && consumeToken(builder_, WHERE) && result_;
     exit_section_(builder_, level_, marker_, MODULEDECL, result_, pinned_, null);
     return result_ || pinned_;
   }
 
-  // [exports]
+  // [ppragma]
   private static boolean moduledecl_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "moduledecl_2")) return false;
+    ppragma(builder_, level_ + 1);
+    return true;
+  }
+
+  // [exports]
+  private static boolean moduledecl_3(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "moduledecl_3")) return false;
     exports(builder_, level_ + 1);
     return true;
   }

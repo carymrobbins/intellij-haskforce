@@ -3,11 +3,10 @@ Haskell File
     PsiElement(HaskellTokenType.module)('module')
     HaskellQconidImpl(QCONID)
       PsiElement(HaskellTokenType.conidRegexp)('Pragma00003')
-  PsiErrorElement:HaskellTokenType.(, HaskellTokenType.. or HaskellTokenType.where expected, got '{-#'
-    <empty list>
-  HaskellBodyImpl(BODY)
     HaskellPpragmaImpl(PPRAGMA)
       PsiElement(HaskellTokenType.{-#)('{-#')
       PsiElement(HaskellTokenType.PRAGMA)(' DEPRECATED "Use Wobble instead" ')
       PsiElement(HaskellTokenType.#-})('#-}')
     PsiElement(HaskellTokenType.where)('where')
+  HaskellBodyImpl(BODY)
+    <empty list>

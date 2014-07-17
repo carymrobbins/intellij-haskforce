@@ -11,6 +11,9 @@ public interface HaskellModuledecl extends PsiElement {
   HaskellExports getExports();
 
   @Nullable
+  HaskellPpragma getPpragma();
+
+  @Nullable
   HaskellQconid getQconid();
 
 }

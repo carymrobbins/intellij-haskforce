@@ -145,7 +145,7 @@ module ::= (whitespace | ppragma | cpp) module
          | moduledecl body
          | body
 
-moduledecl ::= "module" qconid [exports] "where" {pin(".*")=1}
+moduledecl ::= "module" qconid [ppragma] [exports] "where" {pin(".*")=1}
 
 body ::= impdecl* topdecl*
 
