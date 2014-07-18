@@ -151,7 +151,11 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
             int nonWhiteSpaceToFind = WHITESPACE_REGEX.matcher(problem.myFound).replaceAll("").length();
             int nonWhiteSpaceFound = 0;
             while (offset + width < text.length()) {
-                if (!StringUtil.isWhiteSpace(text.charAt(offset + width))) {
+                final char c = text.charAt(offset + width);
+                if (StringUtil.isLineBreak(c)) {
+                    break;
+                }
+                if (!StringUtil.isWhiteSpace(c)) {
                     ++nonWhiteSpaceFound;
                 }
                 ++width;
@@ -167,7 +171,7 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
     }
 
     public static class State {
-        public final List<Problem> problems = new ArrayList<Problem>();
+        public final List<Problem> problems = new ArrayList<Problem>(0);
         private final String myHlintPath;
         private final String myFileText;
         private final String myWorkingDir;
