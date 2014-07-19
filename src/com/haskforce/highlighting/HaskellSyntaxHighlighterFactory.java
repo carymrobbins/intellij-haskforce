@@ -6,6 +6,10 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Returns the lexer used for syntax highlighting. The parsing lexer is
+ * different and returned by {@link com.haskforce.HaskellParserDefinition}.
+ */
 public class HaskellSyntaxHighlighterFactory extends SyntaxHighlighterFactory {
     @NotNull
     @Override
