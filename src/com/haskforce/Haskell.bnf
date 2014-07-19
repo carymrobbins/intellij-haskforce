@@ -136,6 +136,9 @@
     VARSYMTOKPLUS="VarsymPlus"
     VARSYMTOK="Varsym"
     FORALLTOKEN='forall'
+    WHITESPACESEMITOK="Synthetic semicolon"
+    WHITESPACELBRACETOK="Synthetic leftbrace"
+    WHITESPACERBRACETOK="Synthetic rightbrace"
   ]
 }
 

@@ -135,6 +135,9 @@ public interface HaskellTypes {
   IElementType VARSYMTOK = new HaskellTokenType("Varsym");
   IElementType VARSYMTOKPLUS = new HaskellTokenType("VarsymPlus");
   IElementType WHERE = new HaskellTokenType("where");
+  IElementType WHITESPACELBRACETOK = new HaskellTokenType("Synthetic leftbrace");
+  IElementType WHITESPACERBRACETOK = new HaskellTokenType("Synthetic rightbrace");
+  IElementType WHITESPACESEMITOK = new HaskellTokenType("Synthetic semicolon");
 
   class Factory {
     public static PsiElement createElement(ASTNode node) {
