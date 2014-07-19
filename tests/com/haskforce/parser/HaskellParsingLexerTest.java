@@ -4,8 +4,6 @@ import com.haskforce.highlighting.HaskellLexerTestBase;
 import com.haskforce.parsing.HaskellParsingLexer;
 import com.intellij.lexer.Lexer;
 
-import java.io.File;
-
 /**
  * Parsing lexer test driver. Add new parsing lexer testcases here.
  */
@@ -18,6 +16,14 @@ public class HaskellParsingLexerTest extends HaskellLexerTestBase {
     protected Lexer createLexer() {
         return new HaskellParsingLexer();
     }
+
+    /* Layout test from Chapter 2 in Haskell 2010 report.
+     * We get the braces/parentheses at the end of "pop" wrong.
+     * http://ogi.altocumulus.org/~hallgren/hsutils/ explains
+     * why we can not lex the same way as the standard mandates. Section 10.3,
+     * note 6 in Haskell 2010 give more details about parser-lexer interaction.
+     */
+    public void testAStack00001()      { doTest(true, true); }
 
     /* Borrow the test inputs from ParserTest. */
     public void testArrow00001()        { doTest(true, true); }
