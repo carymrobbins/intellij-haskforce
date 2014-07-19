@@ -9,6 +9,10 @@
   <property name="jflex.target.base" value="src/com/haskforce/highlighting/_HaskellSyntaxHighlightingLexer"/>
   <property name="jflex.input.file" value="${jflex.target.base}.flex"/>
   <property name="jflex.output.file" value="${jflex.target.base}.java"/>
+  <property name="jflex2.target.base" value="src/com/haskforce/parsing/_HaskellParsingLexer"/>
+  <property name="jflex2.input.file" value="${jflex2.target.base}.flex"/>
+  <property name="jflex2.output.file" value="${jflex2.target.base}.java"/>
+
   <!-- Set jdk.home if not specified in build.properties. -->
   <condition property="jdk.home" value="${java.home}/..">
     <not>
@@ -430,13 +434,29 @@
   </target>
 
   <target name="generate.sources"
-          depends="check.jflex, generate.jflex"/>
+          depends="check.jflex, check2.jflex, generate.jflex, generate.jflex2"/>
 
   <target name="check.jflex">
     <condition property="jflex.notRequired">
       <and>
         <available file="${jflex.output.file}"/>
         <uptodate srcfile="${jflex.input.file}" targetfile="${jflex.output.file}"/>
+      </and>
+    </condition>
+
+    <condition property="jflex2.notRequired">
+        <and>
+            <available file="${jflex2.output.file}"/>
+            <uptodate srcfile="${jflex2.input.file}" targetfile="${jflex2.output.file}"/>
+        </and>
+    </condition>
+  </target>
+
+  <target name="check2.jflex">
+    <condition property="jflex2.notRequired">
+      <and>
+        <available file="${jflex2.output.file}"/>
+        <uptodate srcfile="${jflex2.input.file}" targetfile="${jflex2.output.file}"/>
       </and>
     </condition>
   </target>
@@ -448,6 +468,16 @@
       <arg value="--charat"/>
       <arg value="--nobak"/>
       <arg value="${jflex.input.file}"/>
+    </java>
+  </target>
+
+  <target name="generate.jflex2" unless="jflex2.notRequired">
+    <java jar="${jflex.jar}" fork="true">
+      <arg value="--skel"/>
+      <arg value="${jflex.skeleton}"/>
+      <arg value="--charat"/>
+      <arg value="--nobak"/>
+      <arg value="${jflex2.input.file}"/>
     </java>
   </target>
 
