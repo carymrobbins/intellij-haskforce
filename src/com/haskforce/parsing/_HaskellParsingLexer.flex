@@ -3,6 +3,7 @@ import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import static com.haskforce.psi.HaskellTypes.*;
 import com.intellij.util.containers.ContainerUtil;
+import com.intellij.openapi.util.Pair;
 import com.intellij.util.containers.Stack;
 
 /**
@@ -30,13 +31,15 @@ import com.intellij.util.containers.Stack;
 %{
   private int commentLevel;
   private int indent;
-  private Stack<Integer> indentationStack;
+  private boolean retry;
+  private Stack<Pair<Integer,Integer>> indentationStack;
   // %line/%%column does not declare these.
   private int yyline;
   private int yycolumn;
 
   public _HaskellParsingLexer() {
     this((java.io.Reader)null);
+    retry = false;
     indentationStack = ContainerUtil.newStack();
   }
 %}
@@ -84,6 +87,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
 <YYINITIAL> {
     {EOL}+          {
                         indent = 0;
+                        yybegin(FINDINGINDENTATIONCONTEXT);
                         return com.intellij.psi.TokenType.WHITE_SPACE;
                     }
     [\ \f]          {
@@ -156,7 +160,19 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   "#else"             { return CPPELSE; }
   "#endif"            { return CPPENDIF; }
   "if"                { return IF; }
-  "in"                { return IN; }
+  "in"                {
+                            if (retry) {
+                                retry = false;
+                            } else if (!indentationStack.isEmpty() &&
+                                        yyline ==
+                                           indentationStack.peek().getFirst()) {
+                                indentationStack.pop();
+                                yypushback(2);
+                                retry = true;
+                                return WHITESPACERBRACETOK;
+                            }
+                            return IN;
+                        }
   "let"                 {
                             yybegin(FINDINGINDENTATIONCONTEXT);
                             indent = yycolumn;
@@ -288,11 +304,11 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         return com.intellij.psi.TokenType.WHITE_SPACE;
                     }
     [^]             {
-                        if (!indentationStack.isEmpty() && indent == indentationStack.peek()) {
+                        if (!indentationStack.isEmpty() && indent == indentationStack.peek().getSecond()) {
                             yybegin(REALLYYINITIAL);
                             yypushback(1);
                             return WHITESPACESEMITOK;
-                        } else if (!indentationStack.isEmpty() && indent < indentationStack.peek()) {
+                        } else if (!indentationStack.isEmpty() && indent < indentationStack.peek().getSecond()) {
                             indentationStack.pop();
                             yypushback(1);
                             return WHITESPACERBRACETOK;
@@ -322,7 +338,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         return LBRACE;
                     }
     [^]             {
-                        indentationStack.push(yycolumn);
+                        indentationStack.push(Pair.create(yyline, yycolumn));
                         yypushback(1);
                         yybegin(REALLYYINITIAL);
                         return WHITESPACELBRACETOK;
