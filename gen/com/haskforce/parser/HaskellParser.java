@@ -622,22 +622,23 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // <<commaSeparate2 importt>>
+  // "()"
+  //                   | <<commaSeparate2 importt>>
   //                   | "hiding" <<commaSeparate2 importt>>
   static boolean impspec(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "impspec")) return false;
-    if (!nextTokenIs(builder_, "", LPAREN, HIDING)) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = commaSeparate2(builder_, level_ + 1, importt_parser_);
-    if (!result_) result_ = impspec_1(builder_, level_ + 1);
+    result_ = consumeToken(builder_, "()");
+    if (!result_) result_ = commaSeparate2(builder_, level_ + 1, importt_parser_);
+    if (!result_) result_ = impspec_2(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   // "hiding" <<commaSeparate2 importt>>
-  private static boolean impspec_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "impspec_1")) return false;
+  private static boolean impspec_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "impspec_2")) return false;
     boolean result_ = false;
     boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
