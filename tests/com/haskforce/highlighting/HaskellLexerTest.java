@@ -5,7 +5,7 @@ package com.haskforce.highlighting;
  */
 public class HaskellLexerTest extends HaskellLexerTestBase {
     public HaskellLexerTest() {
-        super();
+        super("lexer");
     }
 
     /* Borrow the test inputs from ParserTest. */

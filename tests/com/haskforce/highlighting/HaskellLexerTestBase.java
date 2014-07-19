@@ -1,9 +1,6 @@
 package com.haskforce.highlighting;
 
-import com.intellij.core.CoreApplicationEnvironment;
-import com.intellij.lang.LanguageExtensionPoint;
 import com.intellij.lexer.Lexer;
-import com.intellij.openapi.extensions.Extensions;
 import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
@@ -20,9 +17,11 @@ import java.io.IOException;
 
 public abstract class HaskellLexerTestBase extends LexerTestCase {
     private final String srcPath = getDirPath() + File.separator + "parser";
-    private final String expectPath = getDirPath() + File.separator + "lexer";
-    public HaskellLexerTestBase() {
+    private final String myExpectPath;
+
+    public HaskellLexerTestBase(String expectPath) {
         super();
+        myExpectPath = getDirPath() + File.separator + expectPath;
     }
 
     public void doTest(boolean checkResult, boolean shouldPass) {
@@ -35,7 +34,7 @@ public abstract class HaskellLexerTestBase extends LexerTestCase {
         }
         String result = printTokens(text, 0);
         try {
-            doCheckResult(expectPath + File.separator + "expected",
+            doCheckResult(myExpectPath + File.separator + "expected",
                     getTestName(false) + ".txt", result);
         } catch (IOException e) {
             fail("Unexpected IO Exception: " + e.getMessage());
