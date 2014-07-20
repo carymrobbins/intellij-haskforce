@@ -84,10 +84,16 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         }
                         return null;
                     }
+
+<YYINITIAL,REALLYYINITIAL,ININDENTATION,FINDINGINDENTATIONCONTEXT> {
+    {COMMENT}       { indent = 0; return COMMENT; }
+    {HADDOCK}       { indent = 0; return HADDOCK; }
+    {CPPIF}         { indent = 0; return CPPIF; }
+}
+
 <YYINITIAL> {
     {EOL}+          {
                         indent = 0;
-                        yybegin(FINDINGINDENTATIONCONTEXT);
                         return com.intellij.psi.TokenType.WHITE_SPACE;
                     }
     [\ \f]          {
@@ -247,9 +253,6 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   {CHARTOKEN}         { return CHARTOKEN; }
   {INTEGERTOKEN}      { return INTEGERTOKEN; }
   {FLOATTOKEN}        { return FLOATTOKEN; }
-  {COMMENT}           { indent = 0; return COMMENT; }
-  {HADDOCK}           { indent = 0; return HADDOCK; }
-  {CPPIF}             { indent = 0; return CPPIF; }
   [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
 
