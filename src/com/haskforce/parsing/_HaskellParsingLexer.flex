@@ -308,6 +308,12 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         indent = 0;
                         return com.intellij.psi.TokenType.WHITE_SPACE;
                     }
+   "--"[^\r\n]*     {   // DO NOT REMOVE.
+                        // Workaround for {COMMENT} not affecting this rule.
+                        // See Comment00004.hs for test case.
+                        indent = 0;
+                        return COMMENT;
+                    }
     [^]             {
                         if (!indentationStack.isEmpty() && indent == indentationStack.peek().getSecond()) {
                             yybegin(REALLYYINITIAL);
