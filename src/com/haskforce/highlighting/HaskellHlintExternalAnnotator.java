@@ -95,7 +95,7 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
         }
         final String found = split.get(0).trim();
         final String whyNot = split.get(1).trim();
-        return new Problem("", "", found, warning, "", new String[]{}, "", new int[]{line, column, 0, 0}, whyNot);
+        return new Problem("", "", found, warning, "", new String[]{}, "", line, column, 0, 0, whyNot);
     }
 
     @Nullable
@@ -162,11 +162,11 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
         }
         String text = file.getText();
         for (Problem problem : annotationResult.problems) {
-            final int offsetStart = StringUtil.lineColToOffset(text, problem.getStartLine() - 1, problem.getStartCol() - 1);
+            final int offsetStart = StringUtil.lineColToOffset(text, problem.startLine - 1, problem.startColumn - 1);
             if (offsetStart == -1) {
                 continue;
             }
-            final int offsetEnd = useJson ? StringUtil.lineColToOffset(text, problem.getEndLine() - 1, problem.getEndCol() - 1)
+            final int offsetEnd = useJson ? StringUtil.lineColToOffset(text, problem.endLine - 1, problem.endColumn - 1)
                                           : getOffsetEndFallback(offsetStart, problem, text);
             if (offsetEnd == -1) {
                 continue;
@@ -243,10 +243,12 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
         public String module;
         public String[] note;
         public String severity;
-        public int[] span;
-        public String to;
+        public int startLine;
+        public int startColumn;
+        public int endLine;
 
-        public Problem(String decl, String file, String from, String hint, String module, String[] note, String severity, int[] span, String to) {
+        public Problem(String decl, String file, String from, String hint, String module, String[] note,
+                       String severity, int startLine, int startColumn, int endLine, int endColumn, String to) {
             this.decl = decl;
             this.file = file;
             this.from = from;
@@ -254,25 +256,15 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
             this.module = module;
             this.note = note;
             this.severity = severity;
-            this.span = span;
+            this.startLine = startLine;
+            this.startColumn = startColumn;
+            this.endLine = endLine;
+            this.endColumn = endColumn;
             this.to = to;
         }
 
-        public int getStartLine() {
-            return span[0];
-        }
-
-        public int getStartCol() {
-            return span[1];
-        }
-
-        public int getEndLine() {
-            return span[2];
-        }
-
-        public int getEndCol() {
-            return span[3];
-        }
+        public int endColumn;
+        public String to;
     }
 
     // TODO: VersionTriple may be useful in a util module or there may be an better existing implementation.
