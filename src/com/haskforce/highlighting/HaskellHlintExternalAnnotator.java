@@ -61,8 +61,19 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
     private static final Pattern WHITESPACE_REGEX = Pattern.compile("\\s+");
     private static final Pattern HLINT_VERSION_REGEX = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)");
     private static final VersionTriple HLINT_MIN_VERSION_WITH_JSON_SUPPORT = new VersionTriple(1, 9, 1);
+    public boolean useJson = false;
 
-    private static Problem parseProblem(String input) {
+    /**
+     * Parse problems from the hlint --json output.
+     */
+    private static Problem[] parseProblemsJson(String input) {
+        return new GsonBuilder().create().fromJson(input, Problem[].class);
+    }
+
+    /**
+     * Parse a single problem from the old hlint output if json is not supported.
+     */
+    private static Problem parseProblemFallback(String input) {
         List<String> split = StringUtil.split(input, ":");
         if (split.size() < 5) {
             return null;
@@ -85,10 +96,6 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
         final String found = split.get(0).trim();
         final String whyNot = split.get(1).trim();
         return new Problem("", "", found, warning, "", new String[]{}, "", new int[]{line, column, 0, 0}, whyNot);
-    }
-
-    private static Problem[] parseProblemsJson(String input) {
-        return new GsonBuilder().create().fromJson(input, Problem[].class);
     }
 
     @Nullable
@@ -126,13 +133,10 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
         if (state == null) {
             return null;
         }
-        final boolean useJson = HLINT_MIN_VERSION_WITH_JSON_SUPPORT.lte(state.myHlintVersion);
-        // TODO: Refactor command line into a helper method in ExecUtil.
-        GeneralCommandLine commandLine = new GeneralCommandLine();
+        useJson = HLINT_MIN_VERSION_WITH_JSON_SUPPORT.lte(state.myHlintVersion);
+        // Use "-" to read file from stdin.
+        GeneralCommandLine commandLine = new GeneralCommandLine(state.myHlintPath, "-");
         commandLine.setWorkDirectory(state.myWorkingDir);
-        commandLine.setExePath(state.myHlintPath);
-        // Read from stdin.
-        commandLine.addParameter("-");
         if (useJson) {
             commandLine.addParameter("--json");
         }
@@ -145,47 +149,37 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
         } else {
             final List<String> lints = StringUtil.split(stdout, "\n\n");
             for (String lint : lints) {
-                ContainerUtil.addIfNotNull(state.problems, parseProblem(lint));
+                ContainerUtil.addIfNotNull(state.problems, parseProblemFallback(lint));
             }
         }
         return state;
     }
 
-    // TODO: VersionTriple may be useful in a util module or there may be an better existing implementation.
-    public static class VersionTriple {
-        private final int x;
-        private final int y;
-        private final int z;
-
-        VersionTriple(final int x_, final int y_, final int z_) {
-            x = x_;
-            y = y_;
-            z = z_;
+    @Override
+    public void apply(@NotNull PsiFile file, State annotationResult, @NotNull AnnotationHolder holder) {
+        if (annotationResult == null || !file.isValid()) {
+            return;
         }
-
-        public boolean eq(VersionTriple v) {
-            return v != null && x == v.x && y == v.y && z == v.z;
-        }
-
-        public boolean gt(VersionTriple v) {
-            return v != null && (x > v.x || x == v.x && (y > v.y || y == v.y && z > v.z));
-        }
-
-        public boolean lt(VersionTriple v) {
-            return v != null && (x < v.x || x == v.x && (y < v.y || y == v.y && z < v.z));
-        }
-
-        public boolean gte(VersionTriple v) {
-            return eq(v) || gt(v);
-        }
-
-        public boolean lte(VersionTriple v) {
-            return eq(v) || lt(v);
+        String text = file.getText();
+        for (Problem problem : annotationResult.problems) {
+            final int offsetStart = StringUtil.lineColToOffset(text, problem.getStartLine() - 1, problem.getStartCol() - 1);
+            if (offsetStart == -1) {
+                continue;
+            }
+            final int offsetEnd = useJson ? StringUtil.lineColToOffset(text, problem.getEndLine() - 1, problem.getEndCol() - 1)
+                                          : getOffsetEndFallback(offsetStart, problem, text);
+            if (offsetEnd == -1) {
+                continue;
+            }
+            TextRange problemRange = TextRange.create(offsetStart, offsetEnd);
+            String message = problem.hint + (problem.to == null ? "" : ", why not: " + problem.to);
+            holder.createWarningAnnotation(problemRange, message);
+            // TODO: Add an inspection to fix/ignore.
         }
     }
 
     @Nullable
-    public static VersionTriple getVersion(String hlintPath) {
+    private static VersionTriple getVersion(String hlintPath) {
         GeneralCommandLine commandLine = new GeneralCommandLine();
         commandLine.setExePath(hlintPath);
         commandLine.addParameter("--version");
@@ -197,50 +191,33 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
         if (!m.find()) {
             return null;
         }
-        return new VersionTriple(Integer.parseInt(m.group(1)),
-                                 Integer.parseInt(m.group(2)),
-                                 Integer.parseInt(m.group(3)));
+        return new VersionTriple(
+                Integer.parseInt(m.group(1)),
+                Integer.parseInt(m.group(2)),
+                Integer.parseInt(m.group(3)));
     }
 
-    @Override
-    public void apply(@NotNull PsiFile file, State annotationResult, @NotNull AnnotationHolder holder) {
-        if (annotationResult == null || !file.isValid()) {
-            return;
-        }
-        String text = file.getText();
-        for (Problem problem : annotationResult.problems) {
-            final int offsetStart = StringUtil.lineColToOffset(text, problem.getStartLine() - 1, problem.getStartCol() - 1);
-            final int offsetEnd;
-            if (offsetStart == -1) {
-                continue;
+    /**
+     * Fallback to a crude guess if the json output is not available from hlint.
+     */
+    private static int getOffsetEndFallback(int offsetStart, Problem problem, String text) {
+        int width = 0;
+        int nonWhiteSpaceToFind = WHITESPACE_REGEX.matcher(problem.from).replaceAll("").length();
+        int nonWhiteSpaceFound = 0;
+        while (offsetStart + width < text.length()) {
+            final char c = text.charAt(offsetStart + width);
+            if (StringUtil.isLineBreak(c)) {
+                break;
             }
-            if (problem.getEndLine() > 0 && problem.getEndCol() > 0) {
-                offsetEnd = StringUtil.lineColToOffset(text, problem.getEndLine() - 1, problem.getEndCol() - 1);
-            } else {
-                // Since we don't have an ending line/column we can count non-whitespace to determine the highlight width.
-                int width = 0;
-                int nonWhiteSpaceToFind = WHITESPACE_REGEX.matcher(problem.from).replaceAll("").length();
-                int nonWhiteSpaceFound = 0;
-                while (offsetStart + width < text.length()) {
-                    final char c = text.charAt(offsetStart + width);
-                    if (StringUtil.isLineBreak(c)) {
-                        break;
-                    }
-                    if (!StringUtil.isWhiteSpace(c)) {
-                        ++nonWhiteSpaceFound;
-                    }
-                    ++width;
-                    if (nonWhiteSpaceFound >= nonWhiteSpaceToFind) {
-                        break;
-                    }
-                }
-                offsetEnd = offsetStart + width;
+            if (!StringUtil.isWhiteSpace(c)) {
+                ++nonWhiteSpaceFound;
             }
-            TextRange problemRange = TextRange.create(offsetStart, offsetEnd);
-            String message = problem.hint + (problem.to == null ? "" : ", why not: " + problem.to);
-            holder.createWarningAnnotation(problemRange, message);
-            // TODO: Add an inspection to fix/ignore.
+            ++width;
+            if (nonWhiteSpaceFound >= nonWhiteSpaceToFind) {
+                break;
+            }
         }
+        return offsetStart + width;
     }
 
     public static class State {
@@ -295,6 +272,39 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
 
         public int getEndCol() {
             return span[3];
+        }
+    }
+
+    // TODO: VersionTriple may be useful in a util module or there may be an better existing implementation.
+    public static class VersionTriple {
+        private final int x;
+        private final int y;
+        private final int z;
+
+        VersionTriple(final int x_, final int y_, final int z_) {
+            x = x_;
+            y = y_;
+            z = z_;
+        }
+
+        public boolean eq(VersionTriple v) {
+            return v != null && x == v.x && y == v.y && z == v.z;
+        }
+
+        public boolean gt(VersionTriple v) {
+            return v != null && (x > v.x || x == v.x && (y > v.y || y == v.y && z > v.z));
+        }
+
+        public boolean lt(VersionTriple v) {
+            return v != null && (x < v.x || x == v.x && (y < v.y || y == v.y && z < v.z));
+        }
+
+        public boolean gte(VersionTriple v) {
+            return eq(v) || gt(v);
+        }
+
+        public boolean lte(VersionTriple v) {
+            return eq(v) || lt(v);
         }
     }
 }
