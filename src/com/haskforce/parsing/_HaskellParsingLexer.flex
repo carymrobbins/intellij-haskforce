@@ -107,8 +107,10 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         yypushback(6);
                     }
     [^]             {
+                        indentationStack.push(Pair.create(yyline, yycolumn));
                         yybegin(REALLYYINITIAL);
                         yypushback(1);
+                        return WHITESPACELBRACETOK;
                     }
 
 }
