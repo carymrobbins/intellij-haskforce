@@ -21,6 +21,7 @@
 
 package com.haskforce.highlighting;
 
+import com.google.gson.GsonBuilder;
 import com.haskforce.HaskellFileType;
 import com.haskforce.utils.ExecUtil;
 import com.intellij.execution.configurations.GeneralCommandLine;
@@ -42,6 +43,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -57,6 +59,8 @@ import java.util.regex.Pattern;
 public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlintExternalAnnotator.State, HaskellHlintExternalAnnotator.State> {
     private static final Logger LOG = Logger.getInstance(HaskellHlintExternalAnnotator.class);
     private static final Pattern WHITESPACE_REGEX = Pattern.compile("\\s+");
+    private static final Pattern HLINT_VERSION_REGEX = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)");
+    private static final VersionTriple HLINT_MIN_VERSION_WITH_JSON_SUPPORT = new VersionTriple(1, 9, 1);
 
     private static Problem parseProblem(String input) {
         List<String> split = StringUtil.split(input, ":");
@@ -80,7 +84,11 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
         }
         final String found = split.get(0).trim();
         final String whyNot = split.get(1).trim();
-        return new Problem(line, column, warning, found, whyNot);
+        return new Problem("", "", found, warning, "", new String[]{}, "", new int[]{line, column, 0, 0}, whyNot);
+    }
+
+    private static Problem[] parseProblemsJson(String input) {
+        return new GsonBuilder().create().fromJson(input, Problem[].class);
     }
 
     @Nullable
@@ -109,7 +117,7 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
 
         final String workingDir = file.getProject().getBasePath();
         final String hlintPath = PropertiesComponent.getInstance(module.getProject()).getValue("hlintPath");
-        return hlintPath == null || hlintPath.isEmpty() ? null : new State(hlintPath, file.getText(), workingDir);
+        return hlintPath == null || hlintPath.isEmpty() ? null : new State(hlintPath, getVersion(hlintPath), file.getText(), workingDir);
     }
 
     @Nullable
@@ -118,21 +126,80 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
         if (state == null) {
             return null;
         }
+        final boolean useJson = HLINT_MIN_VERSION_WITH_JSON_SUPPORT.lte(state.myHlintVersion);
         // TODO: Refactor command line into a helper method in ExecUtil.
         GeneralCommandLine commandLine = new GeneralCommandLine();
         commandLine.setWorkDirectory(state.myWorkingDir);
         commandLine.setExePath(state.myHlintPath);
         // Read from stdin.
         commandLine.addParameter("-");
-        String stdout = ExecUtil.readCommandLine(commandLine, state.myFileText);
+        if (useJson) {
+            commandLine.addParameter("--json");
+        }
+        final String stdout = ExecUtil.readCommandLine(commandLine, state.myFileText);
         if (stdout == null || stdout.isEmpty()) {
             return null;
         }
-        final List<String> lints = StringUtil.split(stdout, "\n\n");
-        for (String lint : lints) {
-            ContainerUtil.addIfNotNull(state.problems, parseProblem(lint));
+        if (useJson) {
+            ContainerUtil.addAll(state.problems, parseProblemsJson(stdout));
+        } else {
+            final List<String> lints = StringUtil.split(stdout, "\n\n");
+            for (String lint : lints) {
+                ContainerUtil.addIfNotNull(state.problems, parseProblem(lint));
+            }
         }
         return state;
+    }
+
+    // TODO: VersionTriple may be useful in a util module or there may be an better existing implementation.
+    public static class VersionTriple {
+        private final int x;
+        private final int y;
+        private final int z;
+
+        VersionTriple(final int x_, final int y_, final int z_) {
+            x = x_;
+            y = y_;
+            z = z_;
+        }
+
+        public boolean eq(VersionTriple v) {
+            return v != null && x == v.x && y == v.y && z == v.z;
+        }
+
+        public boolean gt(VersionTriple v) {
+            return v != null && (x > v.x || x == v.x && (y > v.y || y == v.y && z > v.z));
+        }
+
+        public boolean lt(VersionTriple v) {
+            return v != null && (x < v.x || x == v.x && (y < v.y || y == v.y && z < v.z));
+        }
+
+        public boolean gte(VersionTriple v) {
+            return eq(v) || gt(v);
+        }
+
+        public boolean lte(VersionTriple v) {
+            return eq(v) || lt(v);
+        }
+    }
+
+    @Nullable
+    public static VersionTriple getVersion(String hlintPath) {
+        GeneralCommandLine commandLine = new GeneralCommandLine();
+        commandLine.setExePath(hlintPath);
+        commandLine.addParameter("--version");
+        final String version = ExecUtil.readCommandLine(commandLine);
+        if (version == null) {
+            return null;
+        }
+        Matcher m = HLINT_VERSION_REGEX.matcher(version);
+        if (!m.find()) {
+            return null;
+        }
+        return new VersionTriple(Integer.parseInt(m.group(1)),
+                                 Integer.parseInt(m.group(2)),
+                                 Integer.parseInt(m.group(3)));
     }
 
     @Override
@@ -142,60 +209,92 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
         }
         String text = file.getText();
         for (Problem problem : annotationResult.problems) {
-            int offset = StringUtil.lineColToOffset(text, problem.myLine - 1, problem.myColumn - 1);
-            if (offset == -1) {
+            final int offsetStart = StringUtil.lineColToOffset(text, problem.getStartLine() - 1, problem.getStartCol() - 1);
+            final int offsetEnd;
+            if (offsetStart == -1) {
                 continue;
             }
-            // Since we don't have an ending line/column we can count non-whitespace to determine the highlight width.
-            int width = 0;
-            int nonWhiteSpaceToFind = WHITESPACE_REGEX.matcher(problem.myFound).replaceAll("").length();
-            int nonWhiteSpaceFound = 0;
-            while (offset + width < text.length()) {
-                final char c = text.charAt(offset + width);
-                if (StringUtil.isLineBreak(c)) {
-                    break;
+            if (problem.getEndLine() > 0 && problem.getEndCol() > 0) {
+                offsetEnd = StringUtil.lineColToOffset(text, problem.getEndLine() - 1, problem.getEndCol() - 1);
+            } else {
+                // Since we don't have an ending line/column we can count non-whitespace to determine the highlight width.
+                int width = 0;
+                int nonWhiteSpaceToFind = WHITESPACE_REGEX.matcher(problem.from).replaceAll("").length();
+                int nonWhiteSpaceFound = 0;
+                while (offsetStart + width < text.length()) {
+                    final char c = text.charAt(offsetStart + width);
+                    if (StringUtil.isLineBreak(c)) {
+                        break;
+                    }
+                    if (!StringUtil.isWhiteSpace(c)) {
+                        ++nonWhiteSpaceFound;
+                    }
+                    ++width;
+                    if (nonWhiteSpaceFound >= nonWhiteSpaceToFind) {
+                        break;
+                    }
                 }
-                if (!StringUtil.isWhiteSpace(c)) {
-                    ++nonWhiteSpaceFound;
-                }
-                ++width;
-                if (nonWhiteSpaceFound >= nonWhiteSpaceToFind) {
-                    break;
-                }
+                offsetEnd = offsetStart + width;
             }
-            TextRange problemRange = TextRange.create(offset, offset + width);
-            String message = problem.myWarning + ", why not: " + problem.myWhyNot;
+            TextRange problemRange = TextRange.create(offsetStart, offsetEnd);
+            String message = problem.hint + (problem.to == null ? "" : ", why not: " + problem.to);
             holder.createWarningAnnotation(problemRange, message);
-            // TODO: Add an inspection to fix.
+            // TODO: Add an inspection to fix/ignore.
         }
     }
 
     public static class State {
         public final List<Problem> problems = new ArrayList<Problem>(0);
         private final String myHlintPath;
+        private final VersionTriple myHlintVersion;
         private final String myFileText;
         private final String myWorkingDir;
 
-        public State(String hlintPath, String fileText, String workingDir) {
+        public State(String hlintPath, VersionTriple hlintVersion, String fileText, String workingDir) {
             myHlintPath = hlintPath;
+            myHlintVersion = hlintVersion;
             myFileText = fileText;
             myWorkingDir = workingDir;
         }
     }
 
     public static class Problem {
-        private final int myLine;
-        private final int myColumn;
-        private final String myWarning;
-        private final String myFound;
-        private final String myWhyNot;
+        public String decl;
+        public String file;
+        public String from;
+        public String hint;
+        public String module;
+        public String[] note;
+        public String severity;
+        public int[] span;
+        public String to;
 
-        public Problem(int line, int column, String warning, String found, String whyNot) {
-            myLine = line;
-            myColumn = column;
-            myWarning = warning;
-            myFound = found;
-            myWhyNot = whyNot;
+        public Problem(String decl, String file, String from, String hint, String module, String[] note, String severity, int[] span, String to) {
+            this.decl = decl;
+            this.file = file;
+            this.from = from;
+            this.hint = hint;
+            this.module = module;
+            this.note = note;
+            this.severity = severity;
+            this.span = span;
+            this.to = to;
+        }
+
+        public int getStartLine() {
+            return span[0];
+        }
+
+        public int getStartCol() {
+            return span[1];
+        }
+
+        public int getEndLine() {
+            return span[2];
+        }
+
+        public int getEndCol() {
+            return span[3];
         }
     }
 }
