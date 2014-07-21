@@ -3,7 +3,9 @@
 The IntelliJ plugin for Haskell.
 --------
 
-***This plugin is in its early stages and is not ready for use.***
+You can install the plugin using the build method below.  Check out the
+[Quick Start Guide](https://github.com/carymrobbins/intellij-haskforce/wiki/Quick-Start-Guide)
+for more info!
 
 Building the plugin
 --------
@@ -12,7 +14,7 @@ Building the plugin
 
 1. If you haven't already, download and install IntelliJ IDEA and Java JDK.
 
-1. Check out the Community Edition source files.
+1. (Optional) Check out the Community Edition source files.
 
     ````$ git clone git@github.com:JetBrains/intellij-community.git idea````
 1. Install and enable additional plugins.
@@ -25,7 +27,7 @@ Building the plugin
 1. Configure SDK and source files.
   * Create a new **IntelliJ Platform Project** from existing sources (pointed to your cloned HaskForce directory).
   * Go to File > Project Structure.  Add SDKs for JDK and IDEA Plugins.  For the IDEA Plugins, add sources
-    from cloned IntelliJ to the Sourcepath.
+    from the cloned idea to the Sourcepath, if applicable.
 1. Set the project SDK to the IDEA SDK.
 1. From the menu go to **Run > Edit Configurations**
 1. Click on the `+` sign and choose **Plugin**, click **OK**, then run your new configuration.
