@@ -100,6 +100,7 @@ public interface HaskellTypes {
   IElementType INTEGERTOKEN = new HaskellTokenType("integertoken");
   IElementType LBRACE = new HaskellTokenType("{");
   IElementType LBRACKET = new HaskellTokenType("[");
+  IElementType LCASETOK = new HaskellTokenType("\\case");
   IElementType LEFTARROW = new HaskellTokenType("<-");
   IElementType LESSTHAN = new HaskellTokenType("<");
   IElementType LET = new HaskellTokenType("let");

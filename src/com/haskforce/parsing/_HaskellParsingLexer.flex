@@ -160,6 +160,11 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   "infixr"            { return INFIXR; }
   "qualified"         { return QUALIFIED; }
   "hiding"            { return HIDING; }
+  "\\case"            {
+                          yybegin(FINDINGINDENTATIONCONTEXT);
+                          indent = yycolumn;
+                          return LCASETOK;
+                      }
   "case"              { return CASE; }
   "do"                  {
                             yybegin(FINDINGINDENTATIONCONTEXT);
