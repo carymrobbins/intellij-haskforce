@@ -48,6 +48,7 @@ public class HaskellParsingLexerTest extends HaskellLexerTestBase {
     public void testImport00002()       { doTest(true, true); }
     public void testImport00003()       { doTest(true, true); }
     public void testImport00004()       { doTest(true, true); }
+    public void testImport00005()       { doTest(true, true); }
     public void testKind00001()         { doTest(true, true); }
     public void testKind00002()         { doTest(true, true); }
     public void testKind00003()         { doTest(true, true); }
