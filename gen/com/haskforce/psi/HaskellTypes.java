@@ -75,6 +75,7 @@ public interface HaskellTypes {
   IElementType DOLLAR = new HaskellTokenType("$");
   IElementType DOUBLEARROW = new HaskellTokenType("=>");
   IElementType DOUBLECOLON = new HaskellTokenType("::");
+  IElementType DOUBLEHASH = new HaskellTokenType("##");
   IElementType DOUBLEPERIOD = new HaskellTokenType("..");
   IElementType DOUBLEQUOTE = new HaskellTokenType("\"");
   IElementType ELSE = new HaskellTokenType("else");

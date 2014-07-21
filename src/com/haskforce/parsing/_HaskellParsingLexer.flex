@@ -226,6 +226,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   "}"                 { return RBRACE; }
   "'"                 { return SINGLEQUOTE; }
   "!"                 { return EXCLAMATION; }
+  "##"                { return DOUBLEHASH; }
   "#"                 { return HASH; }
   "$"                 { return DOLLAR; }
   "%"                 { return PERCENT; }
