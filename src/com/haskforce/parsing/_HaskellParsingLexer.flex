@@ -198,6 +198,8 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   "->"                { return RIGHTARROW; }
   "=>"                { return DOUBLEARROW; }
   "\\&"               { return NULLCHARACTER; }
+  "(#"                { return LUNBOXPAREN; }
+  "#)"                { return RUNBOXPAREN; }
   "("                 { return LPAREN; }
   ")"                 { return RPAREN; }
   "|"                 { return PIPE; }
