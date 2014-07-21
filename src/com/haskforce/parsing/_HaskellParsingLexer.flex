@@ -32,6 +32,7 @@ import com.intellij.util.containers.Stack;
   private int commentLevel;
   private int indent;
   private boolean retry;
+  private boolean emptyblock;
   private Stack<Pair<Integer,Integer>> indentationStack;
   // %line/%%column does not declare these.
   private int yyline;
@@ -40,6 +41,7 @@ import com.intellij.util.containers.Stack;
   public _HaskellParsingLexer() {
     this((java.io.Reader)null);
     retry = false;
+    emptyblock = false;
     indentationStack = ContainerUtil.newStack();
   }
 %}
@@ -362,9 +364,19 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         return WHITESPACELBRACETOK;
                     }
     [^]             {
-                        indentationStack.push(Pair.create(yyline, yycolumn));
                         yypushback(1);
-                        yybegin(REALLYYINITIAL);
-                        return WHITESPACELBRACETOK;
+                        if (emptyblock) {
+                            emptyblock = false;
+                            yybegin(REALLYYINITIAL);
+                            return WHITESPACERBRACETOK;
+                        } else if (indentationStack.size() > 1 &&
+                                yycolumn == indentationStack.peek().getSecond()) {
+                            emptyblock = true;
+                            return WHITESPACELBRACETOK;
+                        } else {
+                            indentationStack.push(Pair.create(yyline, yycolumn));
+                            yybegin(REALLYYINITIAL);
+                            return WHITESPACELBRACETOK;
+                        }
                     }
 }
