@@ -89,6 +89,8 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
     {COMMENT}       { indent = 0; return COMMENT; }
     {HADDOCK}       { indent = 0; return HADDOCK; }
     {CPPIF}         { indent = 0; return CPPIF; }
+    "#else"         { indent = 0; return CPPELSE; }
+    "#endif"        { indent = 0; return CPPENDIF; }
 }
 
 <YYINITIAL> {
@@ -165,8 +167,6 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                             return DO;
                         }
   "else"              { return ELSE; }
-  "#else"             { return CPPELSE; }
-  "#endif"            { return CPPENDIF; }
   "if"                { return IF; }
   "in"                {
                             if (retry) {
