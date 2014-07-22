@@ -250,7 +250,9 @@ private atdecl ::= "type" (typee [kindsig] | ctype '=' ctype)
 private idecls ::= ppragma+ idecls
                  | open [idecls1] close {pin(".*")=1}
 
-private idecls1 ::= idecl [semi idecls1]
+private idecls1 ::= idecl0 [semi idecls1]
+
+private idecl0 ::= idecl ppragma*
 
 idecl ::= ppragma+ idecl
         | itdecl

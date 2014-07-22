@@ -24,8 +24,8 @@ public class HaskellOpsImpl extends ASTWrapperPsiElement implements HaskellOps {
 
   @Override
   @NotNull
-  public HaskellOp getOp() {
-    return findNotNullChildByClass(HaskellOp.class);
+  public List<HaskellOp> getOpList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellOp.class);
   }
 
 }

@@ -3333,6 +3333,30 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
+  // idecl ppragma*
+  static boolean idecl0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "idecl0")) return false;
+    boolean result_ = false;
+    Marker marker_ = enter_section_(builder_);
+    result_ = idecl(builder_, level_ + 1);
+    result_ = result_ && idecl0_1(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // ppragma*
+  private static boolean idecl0_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "idecl0_1")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!ppragma(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "idecl0_1", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
+  }
+
+  /* ********************************************************** */
   // ppragma+ idecls
   //                  | open [idecls1] close
   static boolean idecls(PsiBuilder builder_, int level_) {
@@ -3396,12 +3420,12 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // idecl [semi idecls1]
+  // idecl0 [semi idecls1]
   static boolean idecls1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "idecls1")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = idecl(builder_, level_ + 1);
+    result_ = idecl0(builder_, level_ + 1);
     result_ = result_ && idecls1_1(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
