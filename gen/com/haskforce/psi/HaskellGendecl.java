@@ -7,10 +7,22 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellGendecl extends PsiElement {
 
-  @NotNull
+  @Nullable
+  HaskellCtype getCtype();
+
+  @Nullable
+  HaskellFixity getFixity();
+
+  @Nullable
+  HaskellOps getOps();
+
+  @Nullable
   HaskellVars getVars();
 
-  @NotNull
+  @Nullable
   PsiElement getDoublecolon();
+
+  @Nullable
+  PsiElement getIntegertoken();
 
 }

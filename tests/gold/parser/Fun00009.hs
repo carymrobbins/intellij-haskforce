@@ -22,8 +22,8 @@ f1 = let x :: Float#
          z = 1#
          a :: Word#
          a = 9##
-         b = Char#
+         b :: Char#
          b = 'B'#
-         c = String#
+         c :: String#
          c = "Hello, world!"#
      in 19

@@ -10,8 +10,11 @@ public interface HaskellExport extends PsiElement {
   @Nullable
   HaskellCnames getCnames();
 
+  @NotNull
+  List<HaskellCpp> getCppList();
+
   @Nullable
-  HaskellCpp getCpp();
+  HaskellExport getExport();
 
   @Nullable
   HaskellQconid getQconid();

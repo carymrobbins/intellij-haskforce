@@ -1,7 +1,7 @@
 package com.haskforce;
 
-import com.haskforce.highlighting.HaskellSyntaxHighlightingLexer;
 import com.haskforce.parsing.HaskellParser2;
+import com.haskforce.parsing.HaskellParsingLexer;
 import com.haskforce.parsing.HaskellTypes2;
 import com.haskforce.psi.HaskellParserWrapper;
 import com.haskforce.psi.HaskellTypes;
@@ -36,7 +36,7 @@ public class HaskellParserDefinition implements ParserDefinition {
     @NotNull
     @Override
     public Lexer createLexer(Project project) {
-        return new HaskellSyntaxHighlightingLexer();
+        return new HaskellParsingLexer();
     }
 
     /**

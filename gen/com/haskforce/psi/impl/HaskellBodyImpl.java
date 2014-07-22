@@ -23,21 +23,69 @@ public class HaskellBodyImpl extends ASTWrapperPsiElement implements HaskellBody
   }
 
   @Override
+  @Nullable
+  public HaskellClassdecl getClassdecl() {
+    return findChildByClass(HaskellClassdecl.class);
+  }
+
+  @Override
   @NotNull
   public List<HaskellCpp> getCppList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellCpp.class);
   }
 
   @Override
-  @NotNull
-  public List<HaskellGendecl> getGendeclList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellGendecl.class);
+  @Nullable
+  public HaskellDatadecl getDatadecl() {
+    return findChildByClass(HaskellDatadecl.class);
   }
 
   @Override
-  @NotNull
-  public List<HaskellImpdecl> getImpdeclList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellImpdecl.class);
+  @Nullable
+  public HaskellDefaultdecl getDefaultdecl() {
+    return findChildByClass(HaskellDefaultdecl.class);
+  }
+
+  @Override
+  @Nullable
+  public HaskellDerivingdecl getDerivingdecl() {
+    return findChildByClass(HaskellDerivingdecl.class);
+  }
+
+  @Override
+  @Nullable
+  public HaskellForeigndecl getForeigndecl() {
+    return findChildByClass(HaskellForeigndecl.class);
+  }
+
+  @Override
+  @Nullable
+  public HaskellFunorpatdecl getFunorpatdecl() {
+    return findChildByClass(HaskellFunorpatdecl.class);
+  }
+
+  @Override
+  @Nullable
+  public HaskellGendecl getGendecl() {
+    return findChildByClass(HaskellGendecl.class);
+  }
+
+  @Override
+  @Nullable
+  public HaskellImpdecl getImpdecl() {
+    return findChildByClass(HaskellImpdecl.class);
+  }
+
+  @Override
+  @Nullable
+  public HaskellInstancedecl getInstancedecl() {
+    return findChildByClass(HaskellInstancedecl.class);
+  }
+
+  @Override
+  @Nullable
+  public HaskellNewtypedecl getNewtypedecl() {
+    return findChildByClass(HaskellNewtypedecl.class);
   }
 
   @Override
@@ -47,69 +95,21 @@ public class HaskellBodyImpl extends ASTWrapperPsiElement implements HaskellBody
   }
 
   @Override
-  @NotNull
-  public List<HaskellPstringtoken> getPstringtokenList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPstringtoken.class);
+  @Nullable
+  public HaskellTypedecl getTypedecl() {
+    return findChildByClass(HaskellTypedecl.class);
   }
 
   @Override
-  @NotNull
-  public List<HaskellQconid> getQconidList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQconid.class);
+  @Nullable
+  public PsiElement getLbrace() {
+    return findChildByType(LBRACE);
   }
 
   @Override
-  @NotNull
-  public List<HaskellQconsym> getQconsymList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQconsym.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellQinfixconid> getQinfixconidList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQinfixconid.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellQinfixvarid> getQinfixvaridList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQinfixvarid.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellQvarid> getQvaridList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQvarid.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellQvarsym> getQvarsymList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQvarsym.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellReservedop> getReservedopList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellReservedop.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellSpecial> getSpecialList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellSpecial.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellSymbol> getSymbolList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellSymbol.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellWhitechar> getWhitecharList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellWhitechar.class);
+  @Nullable
+  public PsiElement getRbrace() {
+    return findChildByType(RBRACE);
   }
 
 }

@@ -9,7 +9,7 @@ import com.intellij.psi.PsiReference;
 
 public interface HaskellVarid extends HaskellNamedElement {
 
-  @NotNull
+  @Nullable
   PsiElement getVaridRegexp();
 
   @NotNull

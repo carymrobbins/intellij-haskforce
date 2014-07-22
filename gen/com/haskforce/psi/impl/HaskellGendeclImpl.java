@@ -23,15 +23,39 @@ public class HaskellGendeclImpl extends ASTWrapperPsiElement implements HaskellG
   }
 
   @Override
-  @NotNull
-  public HaskellVars getVars() {
-    return findNotNullChildByClass(HaskellVars.class);
+  @Nullable
+  public HaskellCtype getCtype() {
+    return findChildByClass(HaskellCtype.class);
   }
 
   @Override
-  @NotNull
+  @Nullable
+  public HaskellFixity getFixity() {
+    return findChildByClass(HaskellFixity.class);
+  }
+
+  @Override
+  @Nullable
+  public HaskellOps getOps() {
+    return findChildByClass(HaskellOps.class);
+  }
+
+  @Override
+  @Nullable
+  public HaskellVars getVars() {
+    return findChildByClass(HaskellVars.class);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getDoublecolon() {
-    return findNotNullChildByType(DOUBLECOLON);
+    return findChildByType(DOUBLECOLON);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getIntegertoken() {
+    return findChildByType(INTEGERTOKEN);
   }
 
 }

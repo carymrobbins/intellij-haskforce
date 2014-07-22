@@ -51,8 +51,7 @@ public class HaskellParserTest extends HaskellParserTestBase {
     public void testImport00001()       { doTest(true, true); }
     public void testImport00002()       { doTest(true, true); }
     public void testImport00003()       { doTest(true, true); }
-    // TODO: Enable when we have a GHC-API parser.
-    // public void testImport00004()       { doTest(true, true); }
+    public void testImport00004()       { doTest(true, true); }
     public void testImport00005()       { doTest(true, true); }
     public void testKind00001()         { doTest(true, true); }
     // FIXME: Disabled for now. Fails JSON comparison. Line looks truncated.
@@ -76,7 +75,10 @@ public class HaskellParserTest extends HaskellParserTestBase {
     public void testString00004()       { doTest(true, false); }
     public void testString00005()       { doTest(true, true); }
     public void testTempHask00001()     { doTest(true, true); }
-    public void testTempHask00002()     { doTest(true, false); }
+    // TOOD: Enable when TemplateHaskell is supported.
+    // public void testTempHask00002()     { doTest(true, false); }
     public void testQuote00001()        { doTest(true, true); }
     // public void testParseMonad()        { doTest(true, true); }
+    // TODO: Change to doTest(true, true) after bugfixes.
+    public void testInternalLexer()     { doTest(true, false); }
 }

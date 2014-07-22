@@ -25,9 +25,9 @@ public class HaskellVaridImpl extends ASTWrapperPsiElement implements HaskellVar
   }
 
   @Override
-  @NotNull
+  @Nullable
   public PsiElement getVaridRegexp() {
-    return findNotNullChildByType(VARIDREGEXP);
+    return findChildByType(VARIDREGEXP);
   }
 
   @NotNull

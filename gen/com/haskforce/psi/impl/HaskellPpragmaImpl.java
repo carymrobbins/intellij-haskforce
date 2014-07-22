@@ -23,9 +23,9 @@ public class HaskellPpragmaImpl extends ASTWrapperPsiElement implements HaskellP
   }
 
   @Override
-  @Nullable
+  @NotNull
   public PsiElement getClosepragma() {
-    return findChildByType(CLOSEPRAGMA);
+    return findNotNullChildByType(CLOSEPRAGMA);
   }
 
   @Override

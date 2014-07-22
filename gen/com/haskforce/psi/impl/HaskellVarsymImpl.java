@@ -22,4 +22,100 @@ public class HaskellVarsymImpl extends ASTWrapperPsiElement implements HaskellVa
     else super.accept(visitor);
   }
 
+  @Override
+  @Nullable
+  public PsiElement getAmpersand() {
+    return findChildByType(AMPERSAND);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getAmpersat() {
+    return findChildByType(AMPERSAT);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getAsterisk() {
+    return findChildByType(ASTERISK);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getBackslash() {
+    return findChildByType(BACKSLASH);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getCaret() {
+    return findChildByType(CARET);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getColon() {
+    return findChildByType(COLON);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getDollar() {
+    return findChildByType(DOLLAR);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getGreaterthan() {
+    return findChildByType(GREATERTHAN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getLessthan() {
+    return findChildByType(LESSTHAN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getMinus() {
+    return findChildByType(MINUS);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getPercent() {
+    return findChildByType(PERCENT);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getPeriod() {
+    return findChildByType(PERIOD);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getPlus() {
+    return findChildByType(PLUS);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getQuestion() {
+    return findChildByType(QUESTION);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getSlash() {
+    return findChildByType(SLASH);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getTilde() {
+    return findChildByType(TILDE);
+  }
+
 }

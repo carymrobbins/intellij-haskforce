@@ -15,8 +15,10 @@ g = foo >>= \case
               Just x -> x
               Nothing -> 12
 
+{- FIXME: Add support for MultiWayIf.
 h = if | True -> 12
        | False -> 9
+-}
 
 i = mdo 7
 

@@ -7,49 +7,49 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellBody extends PsiElement {
 
+  @Nullable
+  HaskellClassdecl getClassdecl();
+
   @NotNull
   List<HaskellCpp> getCppList();
 
-  @NotNull
-  List<HaskellGendecl> getGendeclList();
+  @Nullable
+  HaskellDatadecl getDatadecl();
 
-  @NotNull
-  List<HaskellImpdecl> getImpdeclList();
+  @Nullable
+  HaskellDefaultdecl getDefaultdecl();
+
+  @Nullable
+  HaskellDerivingdecl getDerivingdecl();
+
+  @Nullable
+  HaskellForeigndecl getForeigndecl();
+
+  @Nullable
+  HaskellFunorpatdecl getFunorpatdecl();
+
+  @Nullable
+  HaskellGendecl getGendecl();
+
+  @Nullable
+  HaskellImpdecl getImpdecl();
+
+  @Nullable
+  HaskellInstancedecl getInstancedecl();
+
+  @Nullable
+  HaskellNewtypedecl getNewtypedecl();
 
   @NotNull
   List<HaskellPpragma> getPpragmaList();
 
-  @NotNull
-  List<HaskellPstringtoken> getPstringtokenList();
+  @Nullable
+  HaskellTypedecl getTypedecl();
 
-  @NotNull
-  List<HaskellQconid> getQconidList();
+  @Nullable
+  PsiElement getLbrace();
 
-  @NotNull
-  List<HaskellQconsym> getQconsymList();
-
-  @NotNull
-  List<HaskellQinfixconid> getQinfixconidList();
-
-  @NotNull
-  List<HaskellQinfixvarid> getQinfixvaridList();
-
-  @NotNull
-  List<HaskellQvarid> getQvaridList();
-
-  @NotNull
-  List<HaskellQvarsym> getQvarsymList();
-
-  @NotNull
-  List<HaskellReservedop> getReservedopList();
-
-  @NotNull
-  List<HaskellSpecial> getSpecialList();
-
-  @NotNull
-  List<HaskellSymbol> getSymbolList();
-
-  @NotNull
-  List<HaskellWhitechar> getWhitecharList();
+  @Nullable
+  PsiElement getRbrace();
 
 }

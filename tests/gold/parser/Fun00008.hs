@@ -8,7 +8,7 @@ main2 = do
             h <- ask
             let m = f h
             13
-            (,,3)
+--            (,,3) FIXME: Add support for tuple sections.
             return m
 
 g x = xs ++ ys ++ zs ++ zs'

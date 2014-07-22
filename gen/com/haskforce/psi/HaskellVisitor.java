@@ -7,7 +7,31 @@ import com.intellij.psi.PsiElement;
 
 public class HaskellVisitor extends PsiElementVisitor {
 
+  public void visitAkind(@NotNull HaskellAkind o) {
+    visitPsiElement(o);
+  }
+
+  public void visitAlts(@NotNull HaskellAlts o) {
+    visitPsiElement(o);
+  }
+
+  public void visitAtype(@NotNull HaskellAtype o) {
+    visitPsiElement(o);
+  }
+
+  public void visitBkind(@NotNull HaskellBkind o) {
+    visitPsiElement(o);
+  }
+
   public void visitBody(@NotNull HaskellBody o) {
+    visitPsiElement(o);
+  }
+
+  public void visitCdecl(@NotNull HaskellCdecl o) {
+    visitPsiElement(o);
+  }
+
+  public void visitClassdecl(@NotNull HaskellClassdecl o) {
     visitPsiElement(o);
   }
 
@@ -27,11 +51,43 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitNamedElement(o);
   }
 
+  public void visitConop(@NotNull HaskellConop o) {
+    visitPsiElement(o);
+  }
+
+  public void visitConstr(@NotNull HaskellConstr o) {
+    visitPsiElement(o);
+  }
+
   public void visitConsym(@NotNull HaskellConsym o) {
     visitPsiElement(o);
   }
 
+  public void visitContext(@NotNull HaskellContext o) {
+    visitPsiElement(o);
+  }
+
   public void visitCpp(@NotNull HaskellCpp o) {
+    visitPsiElement(o);
+  }
+
+  public void visitCtype(@NotNull HaskellCtype o) {
+    visitPsiElement(o);
+  }
+
+  public void visitDatadecl(@NotNull HaskellDatadecl o) {
+    visitPsiElement(o);
+  }
+
+  public void visitDefaultdecl(@NotNull HaskellDefaultdecl o) {
+    visitPsiElement(o);
+  }
+
+  public void visitDerivingdecl(@NotNull HaskellDerivingdecl o) {
+    visitPsiElement(o);
+  }
+
+  public void visitExp(@NotNull HaskellExp o) {
     visitPsiElement(o);
   }
 
@@ -43,7 +99,35 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitFixity(@NotNull HaskellFixity o) {
+    visitPsiElement(o);
+  }
+
+  public void visitForeigndecl(@NotNull HaskellForeigndecl o) {
+    visitPsiElement(o);
+  }
+
+  public void visitFtype(@NotNull HaskellFtype o) {
+    visitPsiElement(o);
+  }
+
+  public void visitFunorpatdecl(@NotNull HaskellFunorpatdecl o) {
+    visitPsiElement(o);
+  }
+
+  public void visitGconsym(@NotNull HaskellGconsym o) {
+    visitPsiElement(o);
+  }
+
   public void visitGendecl(@NotNull HaskellGendecl o) {
+    visitPsiElement(o);
+  }
+
+  public void visitGuard(@NotNull HaskellGuard o) {
+    visitPsiElement(o);
+  }
+
+  public void visitIdecl(@NotNull HaskellIdecl o) {
     visitPsiElement(o);
   }
 
@@ -55,11 +139,43 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitInstancedecl(@NotNull HaskellInstancedecl o) {
+    visitPsiElement(o);
+  }
+
+  public void visitKind(@NotNull HaskellKind o) {
+    visitPsiElement(o);
+  }
+
   public void visitModulePrefix(@NotNull HaskellModulePrefix o) {
     visitPsiElement(o);
   }
 
   public void visitModuledecl(@NotNull HaskellModuledecl o) {
+    visitPsiElement(o);
+  }
+
+  public void visitNewconstr(@NotNull HaskellNewconstr o) {
+    visitPsiElement(o);
+  }
+
+  public void visitNewtypedecl(@NotNull HaskellNewtypedecl o) {
+    visitPsiElement(o);
+  }
+
+  public void visitOp(@NotNull HaskellOp o) {
+    visitPsiElement(o);
+  }
+
+  public void visitOps(@NotNull HaskellOps o) {
+    visitPsiElement(o);
+  }
+
+  public void visitOqtycon(@NotNull HaskellOqtycon o) {
+    visitPsiElement(o);
+  }
+
+  public void visitPat(@NotNull HaskellPat o) {
     visitPsiElement(o);
   }
 
@@ -71,7 +187,15 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitQcon(@NotNull HaskellQcon o) {
+    visitPsiElement(o);
+  }
+
   public void visitQconid(@NotNull HaskellQconid o) {
+    visitPsiElement(o);
+  }
+
+  public void visitQconop(@NotNull HaskellQconop o) {
     visitPsiElement(o);
   }
 
@@ -87,6 +211,10 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitQop(@NotNull HaskellQop o) {
+    visitPsiElement(o);
+  }
+
   public void visitQtycls(@NotNull HaskellQtycls o) {
     visitPsiElement(o);
   }
@@ -95,11 +223,23 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitQtyconop(@NotNull HaskellQtyconop o) {
+    visitPsiElement(o);
+  }
+
+  public void visitQtyconsym(@NotNull HaskellQtyconsym o) {
+    visitPsiElement(o);
+  }
+
   public void visitQvar(@NotNull HaskellQvar o) {
     visitPsiElement(o);
   }
 
   public void visitQvarid(@NotNull HaskellQvarid o) {
+    visitPsiElement(o);
+  }
+
+  public void visitQvarop(@NotNull HaskellQvarop o) {
     visitPsiElement(o);
   }
 
@@ -115,11 +255,23 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitRhs(@NotNull HaskellRhs o) {
+    visitPsiElement(o);
+  }
+
   public void visitSpecial(@NotNull HaskellSpecial o) {
     visitPsiElement(o);
   }
 
+  public void visitStmts(@NotNull HaskellStmts o) {
+    visitPsiElement(o);
+  }
+
   public void visitSymbol(@NotNull HaskellSymbol o) {
+    visitPsiElement(o);
+  }
+
+  public void visitTvBndr(@NotNull HaskellTvBndr o) {
     visitPsiElement(o);
   }
 
@@ -131,12 +283,28 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitTyconsym(@NotNull HaskellTyconsym o) {
+    visitPsiElement(o);
+  }
+
+  public void visitTypedecl(@NotNull HaskellTypedecl o) {
+    visitPsiElement(o);
+  }
+
+  public void visitTypee(@NotNull HaskellTypee o) {
+    visitPsiElement(o);
+  }
+
   public void visitTyvar(@NotNull HaskellTyvar o) {
     visitPsiElement(o);
   }
 
   public void visitVarid(@NotNull HaskellVarid o) {
     visitNamedElement(o);
+  }
+
+  public void visitVarop(@NotNull HaskellVarop o) {
+    visitPsiElement(o);
   }
 
   public void visitVars(@NotNull HaskellVars o) {
