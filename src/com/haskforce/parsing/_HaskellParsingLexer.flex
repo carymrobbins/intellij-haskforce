@@ -32,7 +32,7 @@ import com.intellij.util.containers.Stack;
   private int commentLevel;
   private int indent;
   private boolean retry;
-  private boolean emptyblock;
+  private int emptyblockPhase;
   private Stack<Pair<Integer,Integer>> indentationStack;
   private Stack<Integer> stateStack;
   // %line/%%column does not declare these.
@@ -43,7 +43,7 @@ import com.intellij.util.containers.Stack;
     this((java.io.Reader)null);
     commentLevel = 0;
     retry = false;
-    emptyblock = false;
+    emptyblockPhase = 0;
     indentationStack = ContainerUtil.newStack();
     stateStack = ContainerUtil.newStack();
   }
@@ -401,13 +401,16 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                     }
     [^]             {
                         yypushback(1);
-                        if (emptyblock) {
-                            emptyblock = false;
-                            yybegin(REALLYYINITIAL);
+                        if (emptyblockPhase == 1) {
+                            emptyblockPhase = 2;
                             return WHITESPACERBRACETOK;
+                        } else if (emptyblockPhase == 2) {
+                            emptyblockPhase = 0;
+                            yybegin(REALLYYINITIAL);
+                            return WHITESPACESEMITOK;
                         } else if (!indentationStack.isEmpty() &&
-                                yycolumn == indentationStack.peek().getSecond()) {
-                            emptyblock = true;
+                                indent == indentationStack.peek().getSecond()) {
+                            emptyblockPhase = 1;
                             return WHITESPACELBRACETOK;
                         } else {
                             indentationStack.push(Pair.create(yyline, yycolumn));
