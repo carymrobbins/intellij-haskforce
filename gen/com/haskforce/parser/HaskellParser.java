@@ -3884,7 +3884,7 @@ public class HaskellParser implements PsiParser {
     if (!recursion_guard_(builder_, level_, "lexp_6")) return false;
     boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, "mdo");
+    result_ = consumeToken(builder_, MDOTOK);
     result_ = result_ && open(builder_, level_ + 1);
     result_ = result_ && lexp_6_2(builder_, level_ + 1);
     result_ = result_ && close(builder_, level_ + 1);
@@ -5694,7 +5694,7 @@ public class HaskellParser implements PsiParser {
   // ["rec"]
   private static boolean stmt_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "stmt_2_0")) return false;
-    consumeToken(builder_, "rec");
+    consumeToken(builder_, RECTOK);
     return true;
   }
 

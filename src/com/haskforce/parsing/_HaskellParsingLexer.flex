@@ -181,11 +181,17 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                           return LCASETOK;
                       }
   "case"              { return CASE; }
+  "mdo"                 {
+                            yybegin(FINDINGINDENTATIONCONTEXT);
+                            indent = yycolumn;
+                            return MDOTOK;
+                        }
   "do"                  {
                             yybegin(FINDINGINDENTATIONCONTEXT);
                             indent = yycolumn;
                             return DO;
                         }
+  "rec"                 { return RECTOK; }
   "else"              { return ELSE; }
   "if"                { return IF; }
   "in"                {
@@ -225,6 +231,8 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   "|"                 { return PIPE; }
   ","                 { return COMMA; }
   ";"                 { return SEMICOLON; }
+  "[|"                { return LTHOPEN; }
+  "|]"                { return RTHCLOSE; }
   "["                 { return LBRACKET; }
   "]"                 { return RBRACKET; }
   "''"                { return THQUOTE; }

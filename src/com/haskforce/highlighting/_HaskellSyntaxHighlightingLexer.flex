@@ -89,7 +89,9 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   "qualified"         { return QUALIFIED; }
   "hiding"            { return HIDING; }
   "case"              { return CASE; }
+  "mdo"               { return MDOTOK; }
   "do"                { return DO; }
+  "rec"               { return RECTOK; }
   "else"              { return ELSE; }
   "#else"             { return CPPELSE; }
   "#endif"            { return CPPENDIF; }
@@ -104,11 +106,15 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   "->"                { return RIGHTARROW; }
   "=>"                { return DOUBLEARROW; }
   "\\&"               { return NULLCHARACTER; }
+  "(#"                { return LUNBOXPAREN; }
+  "#)"                { return RUNBOXPAREN; }
   "("                 { return LPAREN; }
   ")"                 { return RPAREN; }
   "|"                 { return PIPE; }
   ","                 { return COMMA; }
   ";"                 { return SEMICOLON; }
+  "[|"                { return LTHOPEN; }
+  "|]"                { return RTHCLOSE; }
   "["                 { return LBRACKET; }
   "]"                 { return RBRACKET; }
   "''"                { return THQUOTE; }
@@ -130,6 +136,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   "}"                 { return RBRACE; }
   "'"                 { return SINGLEQUOTE; }
   "!"                 { return EXCLAMATION; }
+  "##"                { return DOUBLEHASH; }
   "#"                 { return HASH; }
   "$"                 { return DOLLAR; }
   "%"                 { return PERCENT; }

@@ -25,7 +25,7 @@ Haskell File
           HaskellExpImpl(EXP)
             PsiElement(HaskellTokenType.do)('do')
             HaskellStmtsImpl(STMTS)
-              PsiElement(HaskellTokenType.varidRegexp)('rec')
+              PsiElement(HaskellTokenType.rec)('rec')
               PsiElement(HaskellTokenType.let)('let')
               HaskellFunorpatdeclImpl(FUNORPATDECL)
                 HaskellPatImpl(PAT)

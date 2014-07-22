@@ -148,7 +148,9 @@ public interface HaskellTypes {
   IElementType LET = new HaskellTokenType("let");
   IElementType LINE_WS = new HaskellTokenType("LINE_WS");
   IElementType LPAREN = new HaskellTokenType("(");
+  IElementType LTHOPEN = new HaskellTokenType("[|");
   IElementType LUNBOXPAREN = new HaskellTokenType("(#");
+  IElementType MDOTOK = new HaskellTokenType("mdo");
   IElementType MINUS = new HaskellTokenType("-");
   IElementType MODULETOKEN = new HaskellTokenType("module");
   IElementType NEWTYPE = new HaskellTokenType("newtype");
@@ -165,8 +167,10 @@ public interface HaskellTypes {
   IElementType QUESTION = new HaskellTokenType("?");
   IElementType RBRACE = new HaskellTokenType("}");
   IElementType RBRACKET = new HaskellTokenType("]");
+  IElementType RECTOK = new HaskellTokenType("rec");
   IElementType RIGHTARROW = new HaskellTokenType("->");
   IElementType RPAREN = new HaskellTokenType(")");
+  IElementType RTHCLOSE = new HaskellTokenType("|]");
   IElementType RUNBOXPAREN = new HaskellTokenType("#)");
   IElementType SEMICOLON = new HaskellTokenType(";");
   IElementType SINGLEQUOTE = new HaskellTokenType("'");
