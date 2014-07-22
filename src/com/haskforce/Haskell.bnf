@@ -298,8 +298,7 @@ private ntgtycon ::=  '(#' commas '#)'
 
 private commas ::= ',' (',')*
 
-context ::= btype '~' btype
-          | btype
+context ::= btype ['~' btype]
 
 private simpletype ::= tycon tyvar*
 
@@ -327,11 +326,10 @@ private fielddecl ::= vars "::" (typee | '!' atype) {pin=2}
 private deriving ::= "deriving" (dclass|<<commaSeparate dclass>>) {pin=1}
 private dclass ::= qtycls
 
-private fdecl ::= importdecl
-                | exportdecl
+private fdecl ::= (importdecl | exportdecl) var "::" ftype
 
-private importdecl ::= "import" callconv [safety] impent var "::" ftype {pin=1}
-private exportdecl ::= "export" callconv [expent] var "::" ftype {pin=1}
+private importdecl ::= "import" callconv [safety] impent {pin=1}
+private exportdecl ::= "export" callconv [expent] {pin=1}
 
 private callconv ::= "ccall" | "stdcall" | "cplusplus"
                    | "jvm" | "dotnet" // FIXME: Add system specific call conv.
@@ -344,13 +342,8 @@ private expent ::= pstringtoken // FIXME: '\"' [cid] '\"'
 
 // private cid ::= "regexp:[a-zA-Z][a-zA-Z_0-9]*"
 
-ftype ::= ftypefst
-        | frtype
-
-private ftypefst ::= fatype "->" ftype
-
-private frtype ::= fatype
-                | "()"
+ftype ::= fatype ["->" ftype]
+        | "()"
 
 private fatype ::= qtycon atype*
 

@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface HaskellOps extends PsiElement {
 
   @NotNull
-  List<HaskellOp> getOpList();
+  HaskellOp getOp();
 
 }
