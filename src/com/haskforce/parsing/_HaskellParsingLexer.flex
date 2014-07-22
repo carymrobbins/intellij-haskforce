@@ -392,7 +392,6 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
     "{"             {
                         yybegin(REALLYYINITIAL);
                         yypushback(1);
-                        return LBRACE;
                     }
     <<EOF>>         {   // Deal with "module Modid where \n\n\n".
                         indentationStack.push(Pair.create(yyline, yycolumn));
