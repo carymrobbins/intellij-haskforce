@@ -90,7 +90,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         return null;
                     }
 
-<YYINITIAL,REALLYYINITIAL,ININDENTATION,FINDINGINDENTATIONCONTEXT> {
+<YYINITIAL,ININDENTATION,FINDINGINDENTATIONCONTEXT> {
     {COMMENT}       { indent = 0; return COMMENT; }
     {HADDOCK}       { indent = 0; return HADDOCK; }
     {CPPIF}         { indent = 0; return CPPIF; }
@@ -152,7 +152,11 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         indent = indent + (indent + 8) % 8;
                         return com.intellij.psi.TokenType.WHITE_SPACE;
                     }
-
+    {COMMENT}       { indent = 0; yybegin(ININDENTATION); return COMMENT; }
+    {HADDOCK}       { indent = 0; yybegin(ININDENTATION); return HADDOCK; }
+    {CPPIF}         { indent = 0; yybegin(ININDENTATION); return CPPIF; }
+    "#else"         { indent = 0; yybegin(ININDENTATION); return CPPELSE; }
+    "#endif"        { indent = 0; yybegin(ININDENTATION); return CPPENDIF; }
   "class"             { return CLASSTOKEN; }
   "data"              { return DATA; }
   "default"           { return DEFAULT; }
