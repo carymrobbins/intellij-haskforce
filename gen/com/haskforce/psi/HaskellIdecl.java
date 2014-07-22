@@ -19,6 +19,9 @@ public interface HaskellIdecl extends PsiElement {
   @NotNull
   List<HaskellCtype> getCtypeList();
 
+  @NotNull
+  List<HaskellExp> getExpList();
+
   @Nullable
   HaskellIdecl getIdecl();
 

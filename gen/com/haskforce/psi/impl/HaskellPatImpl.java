@@ -30,6 +30,12 @@ public class HaskellPatImpl extends ASTWrapperPsiElement implements HaskellPat {
 
   @Override
   @NotNull
+  public List<HaskellExp> getExpList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellExp.class);
+  }
+
+  @Override
+  @NotNull
   public List<HaskellPat> getPatList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPat.class);
   }

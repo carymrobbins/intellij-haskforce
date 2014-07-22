@@ -222,6 +222,7 @@ private topdecl1 ::= typedecl
                   | foreigndecl
                   | derivingdecl
                   | decl
+                  | infixexp // TH-extension.
 
 typedecl ::= "type" typee '=' typee {pin=1}
 // Both data declaration and gadt declaration. The syntactic difference between
@@ -386,16 +387,19 @@ private lexp ::= "\\case" altslist
 private fexp ::= aexp [fexp]
 
 private aexp ::= recordlikelhs '{' (fbind ',')* fbind '}'
-               | [singlequote] qvar
+               | [singlequote | '$'] qvar
                | thquote qcon
                | gcon
                | literal
-/*               | "[|" exp "|]"  // FIXME: Add lexer support.
-               | "[||" exp "||]"
-               | "[t|" ctype "|]"
-               | "[p|" infixexp "|]"
-               | "[d|" open topdecls close "|]" */
+               // TODO: Remove semi when lexer supports TH.
+               | ('[|' | '[' exp '|' [semi]) exp [semi]'|]'
+//               | "[||" exp '||]'
+               | '[' "t" '|' ctype '|]'
+               | '[' "p" '|' infixexp '|]'
+               | '[' "d" '|' open topdecls close '|]'
                | '(#' '#)'
+               // TODO: Add $( when lexer supports TH.
+               | '$' '(' exp ')'
                | listlike
                | parenlike
 
@@ -463,7 +467,8 @@ private apat ::= literal
                | var ('+' integertoken | ['@' apat])
                | qcon '{' [(fpat ',')* fpat] '}'
                | '(' pat ("->" pat | [',' (pat ',')* pat]) ')'
-               | '[' pat (',' pat)* ']'
+               // Second option is quasiquotes. See TemplateHaskell00002.hs.
+               | '[' (pat (',' pat)* ']' |  exp '|' [semi] exp [semi]'|]')
                | gcon
 
 private fpat ::= qvar ['=' pat]

@@ -11,13 +11,37 @@ public interface HaskellGuard extends PsiElement {
   HaskellAlts getAlts();
 
   @Nullable
-  HaskellExp getExp();
+  HaskellClassdecl getClassdecl();
+
+  @Nullable
+  HaskellCtype getCtype();
+
+  @Nullable
+  HaskellDatadecl getDatadecl();
+
+  @Nullable
+  HaskellDefaultdecl getDefaultdecl();
+
+  @Nullable
+  HaskellDerivingdecl getDerivingdecl();
+
+  @NotNull
+  List<HaskellExp> getExpList();
+
+  @Nullable
+  HaskellForeigndecl getForeigndecl();
 
   @Nullable
   HaskellFunorpatdecl getFunorpatdecl();
 
   @Nullable
   HaskellGendecl getGendecl();
+
+  @Nullable
+  HaskellInstancedecl getInstancedecl();
+
+  @Nullable
+  HaskellNewtypedecl getNewtypedecl();
 
   @NotNull
   List<HaskellPat> getPatList();
@@ -40,6 +64,9 @@ public interface HaskellGuard extends PsiElement {
   @Nullable
   HaskellStmts getStmts();
 
+  @Nullable
+  HaskellTypedecl getTypedecl();
+
   @NotNull
   List<HaskellVarid> getVaridList();
 
@@ -50,10 +77,16 @@ public interface HaskellGuard extends PsiElement {
   PsiElement getBackslash();
 
   @Nullable
+  PsiElement getDollar();
+
+  @Nullable
   PsiElement getDoubleperiod();
 
   @Nullable
   PsiElement getLbrace();
+
+  @Nullable
+  PsiElement getLthopen();
 
   @Nullable
   PsiElement getLunboxparen();
@@ -63,9 +96,6 @@ public interface HaskellGuard extends PsiElement {
 
   @Nullable
   PsiElement getRunboxparen();
-
-  @Nullable
-  PsiElement getSemicolon();
 
   @Nullable
   PsiElement getSinglequote();

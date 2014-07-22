@@ -71,8 +71,7 @@ public class HaskellParserTest extends HaskellParserTestBase {
     public void testString00004()       { doTest(true, false); }
     public void testString00005()       { doTest(true, true); }
     public void testTempHask00001()     { doTest(true, true); }
-    // TOOD: Enable when TemplateHaskell is supported.
-    // public void testTempHask00002()     { doTest(true, false); }
+    public void testTempHask00002()     { doTest(true, true); }
     public void testQuote00001()        { doTest(true, true); }
     // public void testParseMonad()        { doTest(true, true); }
     // TODO: Change to doTest(true, true) after bugfixes.

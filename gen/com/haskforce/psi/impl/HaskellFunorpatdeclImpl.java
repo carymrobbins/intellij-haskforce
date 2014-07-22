@@ -24,6 +24,12 @@ public class HaskellFunorpatdeclImpl extends ASTWrapperPsiElement implements Has
 
   @Override
   @NotNull
+  public List<HaskellExp> getExpList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellExp.class);
+  }
+
+  @Override
+  @NotNull
   public List<HaskellPat> getPatList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPat.class);
   }

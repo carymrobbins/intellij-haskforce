@@ -10,6 +10,9 @@ public interface HaskellCdecl extends PsiElement {
   @NotNull
   List<HaskellCtype> getCtypeList();
 
+  @NotNull
+  List<HaskellExp> getExpList();
+
   @Nullable
   HaskellGendecl getGendecl();
 

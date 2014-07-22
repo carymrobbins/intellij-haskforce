@@ -11,16 +11,40 @@ public interface HaskellExp extends PsiElement {
   HaskellAlts getAlts();
 
   @Nullable
+  HaskellClassdecl getClassdecl();
+
+  @Nullable
   HaskellContext getContext();
 
   @Nullable
-  HaskellExp getExp();
+  HaskellCtype getCtype();
+
+  @Nullable
+  HaskellDatadecl getDatadecl();
+
+  @Nullable
+  HaskellDefaultdecl getDefaultdecl();
+
+  @Nullable
+  HaskellDerivingdecl getDerivingdecl();
+
+  @NotNull
+  List<HaskellExp> getExpList();
+
+  @Nullable
+  HaskellForeigndecl getForeigndecl();
 
   @Nullable
   HaskellFunorpatdecl getFunorpatdecl();
 
   @Nullable
   HaskellGendecl getGendecl();
+
+  @Nullable
+  HaskellInstancedecl getInstancedecl();
+
+  @Nullable
+  HaskellNewtypedecl getNewtypedecl();
 
   @NotNull
   List<HaskellPat> getPatList();
@@ -44,6 +68,9 @@ public interface HaskellExp extends PsiElement {
   HaskellStmts getStmts();
 
   @Nullable
+  HaskellTypedecl getTypedecl();
+
+  @Nullable
   HaskellTypee getTypee();
 
   @NotNull
@@ -54,6 +81,9 @@ public interface HaskellExp extends PsiElement {
 
   @Nullable
   PsiElement getBackslash();
+
+  @Nullable
+  PsiElement getDollar();
 
   @Nullable
   PsiElement getDoublearrow();
@@ -68,6 +98,9 @@ public interface HaskellExp extends PsiElement {
   PsiElement getLbrace();
 
   @Nullable
+  PsiElement getLthopen();
+
+  @Nullable
   PsiElement getLunboxparen();
 
   @Nullable
@@ -75,9 +108,6 @@ public interface HaskellExp extends PsiElement {
 
   @Nullable
   PsiElement getRunboxparen();
-
-  @Nullable
-  PsiElement getSemicolon();
 
   @Nullable
   PsiElement getSinglequote();

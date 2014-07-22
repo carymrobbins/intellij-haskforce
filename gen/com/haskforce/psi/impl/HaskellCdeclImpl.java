@@ -29,6 +29,12 @@ public class HaskellCdeclImpl extends ASTWrapperPsiElement implements HaskellCde
   }
 
   @Override
+  @NotNull
+  public List<HaskellExp> getExpList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellExp.class);
+  }
+
+  @Override
   @Nullable
   public HaskellGendecl getGendecl() {
     return findChildByClass(HaskellGendecl.class);

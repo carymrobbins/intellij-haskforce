@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface HaskellFunorpatdecl extends PsiElement {
 
   @NotNull
+  List<HaskellExp> getExpList();
+
+  @NotNull
   List<HaskellPat> getPatList();
 
   @NotNull

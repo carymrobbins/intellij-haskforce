@@ -11,6 +11,9 @@ public interface HaskellPat extends PsiElement {
   HaskellCtype getCtype();
 
   @NotNull
+  List<HaskellExp> getExpList();
+
+  @NotNull
   List<HaskellPat> getPatList();
 
   @NotNull

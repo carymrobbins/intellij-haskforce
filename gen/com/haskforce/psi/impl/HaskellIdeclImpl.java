@@ -47,6 +47,12 @@ public class HaskellIdeclImpl extends ASTWrapperPsiElement implements HaskellIde
   }
 
   @Override
+  @NotNull
+  public List<HaskellExp> getExpList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellExp.class);
+  }
+
+  @Override
   @Nullable
   public HaskellIdecl getIdecl() {
     return findChildByClass(HaskellIdecl.class);
