@@ -40,8 +40,7 @@ public class HaskellParserTest extends HaskellParserTestBase {
     public void testFun00008()          { doTest(true, true); }
     public void testFun00009()          { doTest(true, true); }
     public void testFun00010()          { doTest(true, true); }
-    // TODO: Change to doTest(true, true) when we have the new parser.
-    public void testFun00011()          { doTest(true, false); }
+    public void testFun00011()          { doTest(true, true); }
     public void testFun00012()          { doTest(true, true); }
     public void testFFI00001()          { doTest(true, true); }
     public void testFFI00002()          { doTest(true, true); }
@@ -56,8 +55,7 @@ public class HaskellParserTest extends HaskellParserTestBase {
     public void testKind00001()         { doTest(true, true); }
     // FIXME: Disabled for now. Fails JSON comparison. Line looks truncated.
     // public void testKind00002()         { doTest(true, true); }
-    // TODO: Change to doTest(true, true) when we have the new parser.
-    public void testKind00003()         { doTest(true, false); }
+    public void testKind00003()         { doTest(true, true); }
     public void testKind00004()         { doTest(true, true); }
     public void testComment00001()      { doTest(true, true); }
     public void testComment00002()      { doTest(true, true); }
@@ -65,10 +63,8 @@ public class HaskellParserTest extends HaskellParserTestBase {
     public void testLambda00001()       { doTest(true, true); }
     public void testPragma00001()       { doTest(true, true); }
     public void testPragma00002()       { doTest(true, true); }
-    // TODO: Change to doTest(true, true) when we have the new parser.
-    public void testPragma00003()       { doTest(true, false); }
-    // TODO: Change to doTest(true, true) when we have the new parser.
-    public void testPragma00004()       { doTest(true, false); }
+    public void testPragma00003()       { doTest(true, true); }
+    public void testPragma00004()       { doTest(true, true); }
     public void testString00001()       { doTest(true, true); }
     public void testString00002()       { doTest(true, true); }
     public void testString00003()       { doTest(true, true); }
