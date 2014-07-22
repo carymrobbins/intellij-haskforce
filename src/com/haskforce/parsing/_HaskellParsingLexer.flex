@@ -405,7 +405,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                             emptyblock = false;
                             yybegin(REALLYYINITIAL);
                             return WHITESPACERBRACETOK;
-                        } else if (indentationStack.size() > 1 &&
+                        } else if (!indentationStack.isEmpty() &&
                                 yycolumn == indentationStack.peek().getSecond()) {
                             emptyblock = true;
                             return WHITESPACELBRACETOK;
