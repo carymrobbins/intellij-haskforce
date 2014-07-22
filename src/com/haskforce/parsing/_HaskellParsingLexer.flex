@@ -34,15 +34,18 @@ import com.intellij.util.containers.Stack;
   private boolean retry;
   private boolean emptyblock;
   private Stack<Pair<Integer,Integer>> indentationStack;
+  private Stack<Integer> stateStack;
   // %line/%%column does not declare these.
   private int yyline;
   private int yycolumn;
 
   public _HaskellParsingLexer() {
     this((java.io.Reader)null);
+    commentLevel = 0;
     retry = false;
     emptyblock = false;
     indentationStack = ContainerUtil.newStack();
+    stateStack = ContainerUtil.newStack();
   }
 %}
 
@@ -107,6 +110,16 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
     [\t]            {
                         indent = indent + (indent + 8) % 8;
                         return com.intellij.psi.TokenType.WHITE_SPACE;
+                    }
+    "{-#"           {
+                        stateStack.push(YYINITIAL);
+                        yybegin(INPRAGMA);
+                        return OPENPRAGMA;
+                    }
+    "{-"            {
+                        stateStack.push(YYINITIAL);
+                        yybegin(INCOMMENT);
+                        return OPENCOM;
                     }
     ("{"[^\-])      {
                         yybegin(REALLYYINITIAL);
@@ -221,11 +234,13 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         return DOUBLEQUOTE;
                       }
   "{-#"               {
+                        stateStack.push(REALLYYINITIAL);
                         yybegin(INPRAGMA);
                         return OPENPRAGMA;
                       }
   "{-"                {
-                        commentLevel = 1;
+                        commentLevel++;
+                        stateStack.push(REALLYYINITIAL);
                         yybegin(INCOMMENT);
                         return OPENCOM;
                       }
@@ -270,7 +285,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
     "-}"              {
                         commentLevel--;
                         if (commentLevel == 0) {
-                            yybegin(REALLYYINITIAL);
+                            yybegin(stateStack.pop());
                             return CLOSECOM;
                         }
                         return COMMENTTEXT;
@@ -298,7 +313,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
 
 <INPRAGMA> {
     "#-}"           {
-                        yybegin(REALLYYINITIAL);
+                        yybegin(stateStack.pop());
                         return CLOSEPRAGMA;
                     }
     [^-}#]+         { return PRAGMA; }
@@ -317,6 +332,17 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
     [\n]            {
                         indent = 0;
                         return com.intellij.psi.TokenType.WHITE_SPACE;
+                    }
+    "{-#"           {
+                        stateStack.push(ININDENTATION);
+                        yybegin(INPRAGMA);
+                        return OPENPRAGMA;
+                    }
+    "{-"            {
+                        commentLevel++;
+                        stateStack.push(ININDENTATION);
+                        yybegin(INCOMMENT);
+                        return OPENCOM;
                     }
    "--"[^\r\n]*     {   // DO NOT REMOVE.
                         // Workaround for {COMMENT} not affecting this rule.
@@ -352,8 +378,18 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         indent = 0;
                         return com.intellij.psi.TokenType.WHITE_SPACE;
                     }
-    ("{"[^\-])     {
-
+    "{-#"           {
+                        stateStack.push(FINDINGINDENTATIONCONTEXT);
+                        yybegin(INPRAGMA);
+                        return OPENPRAGMA;
+                    }
+    "{-"            {
+                        commentLevel++;
+                        stateStack.push(FINDINGINDENTATIONCONTEXT);
+                        yybegin(INCOMMENT);
+                        return OPENCOM;
+                    }
+    "{"             {
                         yybegin(REALLYYINITIAL);
                         yypushback(1);
                         return LBRACE;
