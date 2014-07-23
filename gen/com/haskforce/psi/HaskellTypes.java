@@ -15,8 +15,6 @@ public interface HaskellTypes {
   IElementType BODY = new HaskellElementType("BODY");
   IElementType CDECL = new HaskellElementType("CDECL");
   IElementType CLASSDECL = new HaskellElementType("CLASSDECL");
-  IElementType CNAME = new HaskellElementType("CNAME");
-  IElementType CNAMES = new HaskellElementType("CNAMES");
   IElementType CON = new HaskellElementType("CON");
   IElementType CONID = new HaskellElementType("CONID");
   IElementType CONOP = new HaskellElementType("CONOP");
@@ -33,7 +31,6 @@ public interface HaskellTypes {
   IElementType EXPORTS = new HaskellElementType("EXPORTS");
   IElementType FIXITY = new HaskellElementType("FIXITY");
   IElementType FOREIGNDECL = new HaskellElementType("FOREIGNDECL");
-  IElementType FTYPE = new HaskellElementType("FTYPE");
   IElementType FUNORPATDECL = new HaskellElementType("FUNORPATDECL");
   IElementType GCONSYM = new HaskellElementType("GCONSYM");
   IElementType GENDECL = new HaskellElementType("GENDECL");
@@ -48,7 +45,6 @@ public interface HaskellTypes {
   IElementType NEWCONSTR = new HaskellElementType("NEWCONSTR");
   IElementType NEWTYPEDECL = new HaskellElementType("NEWTYPEDECL");
   IElementType OP = new HaskellElementType("OP");
-  IElementType OPS = new HaskellElementType("OPS");
   IElementType OQTYCON = new HaskellElementType("OQTYCON");
   IElementType PAT = new HaskellElementType("PAT");
   IElementType PPRAGMA = new HaskellElementType("PPRAGMA");
@@ -57,8 +53,6 @@ public interface HaskellTypes {
   IElementType QCONID = new HaskellElementType("QCONID");
   IElementType QCONOP = new HaskellElementType("QCONOP");
   IElementType QCONSYM = new HaskellElementType("QCONSYM");
-  IElementType QINFIXCONID = new HaskellElementType("QINFIXCONID");
-  IElementType QINFIXVARID = new HaskellElementType("QINFIXVARID");
   IElementType QOP = new HaskellElementType("QOP");
   IElementType QTYCLS = new HaskellElementType("QTYCLS");
   IElementType QTYCON = new HaskellElementType("QTYCON");
@@ -73,7 +67,6 @@ public interface HaskellTypes {
   IElementType RHS = new HaskellElementType("RHS");
   IElementType SPECIAL = new HaskellElementType("SPECIAL");
   IElementType STMTS = new HaskellElementType("STMTS");
-  IElementType SYMBOL = new HaskellElementType("SYMBOL");
   IElementType TV_BNDR = new HaskellElementType("TV_BNDR");
   IElementType TYCLS = new HaskellElementType("TYCLS");
   IElementType TYCON = new HaskellElementType("TYCON");
@@ -85,7 +78,6 @@ public interface HaskellTypes {
   IElementType VAROP = new HaskellElementType("VAROP");
   IElementType VARS = new HaskellElementType("VARS");
   IElementType VARSYM = new HaskellElementType("VARSYM");
-  IElementType WHITECHAR = new HaskellElementType("WHITECHAR");
 
   IElementType AMPERSAND = new HaskellTokenType("&");
   IElementType AMPERSAT = new HaskellTokenType("@");
@@ -214,12 +206,6 @@ public interface HaskellTypes {
       else if (type == CLASSDECL) {
         return new HaskellClassdeclImpl(node);
       }
-      else if (type == CNAME) {
-        return new HaskellCnameImpl(node);
-      }
-      else if (type == CNAMES) {
-        return new HaskellCnamesImpl(node);
-      }
       else if (type == CON) {
         return new HaskellConImpl(node);
       }
@@ -268,9 +254,6 @@ public interface HaskellTypes {
       else if (type == FOREIGNDECL) {
         return new HaskellForeigndeclImpl(node);
       }
-      else if (type == FTYPE) {
-        return new HaskellFtypeImpl(node);
-      }
       else if (type == FUNORPATDECL) {
         return new HaskellFunorpatdeclImpl(node);
       }
@@ -313,9 +296,6 @@ public interface HaskellTypes {
       else if (type == OP) {
         return new HaskellOpImpl(node);
       }
-      else if (type == OPS) {
-        return new HaskellOpsImpl(node);
-      }
       else if (type == OQTYCON) {
         return new HaskellOqtyconImpl(node);
       }
@@ -339,12 +319,6 @@ public interface HaskellTypes {
       }
       else if (type == QCONSYM) {
         return new HaskellQconsymImpl(node);
-      }
-      else if (type == QINFIXCONID) {
-        return new HaskellQinfixconidImpl(node);
-      }
-      else if (type == QINFIXVARID) {
-        return new HaskellQinfixvaridImpl(node);
       }
       else if (type == QOP) {
         return new HaskellQopImpl(node);
@@ -388,9 +362,6 @@ public interface HaskellTypes {
       else if (type == STMTS) {
         return new HaskellStmtsImpl(node);
       }
-      else if (type == SYMBOL) {
-        return new HaskellSymbolImpl(node);
-      }
       else if (type == TV_BNDR) {
         return new HaskellTvBndrImpl(node);
       }
@@ -423,9 +394,6 @@ public interface HaskellTypes {
       }
       else if (type == VARSYM) {
         return new HaskellVarsymImpl(node);
-      }
-      else if (type == WHITECHAR) {
-        return new HaskellWhitecharImpl(node);
       }
       throw new AssertionError("Unknown element type: " + type);
     }

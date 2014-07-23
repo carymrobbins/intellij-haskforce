@@ -35,14 +35,6 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitCname(@NotNull HaskellCname o) {
-    visitPsiElement(o);
-  }
-
-  public void visitCnames(@NotNull HaskellCnames o) {
-    visitPsiElement(o);
-  }
-
   public void visitCon(@NotNull HaskellCon o) {
     visitPsiElement(o);
   }
@@ -107,10 +99,6 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitFtype(@NotNull HaskellFtype o) {
-    visitPsiElement(o);
-  }
-
   public void visitFunorpatdecl(@NotNull HaskellFunorpatdecl o) {
     visitPsiElement(o);
   }
@@ -167,10 +155,6 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitOps(@NotNull HaskellOps o) {
-    visitPsiElement(o);
-  }
-
   public void visitOqtycon(@NotNull HaskellOqtycon o) {
     visitPsiElement(o);
   }
@@ -200,14 +184,6 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitQconsym(@NotNull HaskellQconsym o) {
-    visitPsiElement(o);
-  }
-
-  public void visitQinfixconid(@NotNull HaskellQinfixconid o) {
-    visitPsiElement(o);
-  }
-
-  public void visitQinfixvarid(@NotNull HaskellQinfixvarid o) {
     visitPsiElement(o);
   }
 
@@ -267,10 +243,6 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitSymbol(@NotNull HaskellSymbol o) {
-    visitPsiElement(o);
-  }
-
   public void visitTvBndr(@NotNull HaskellTvBndr o) {
     visitPsiElement(o);
   }
@@ -312,10 +284,6 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitVarsym(@NotNull HaskellVarsym o) {
-    visitPsiElement(o);
-  }
-
-  public void visitWhitechar(@NotNull HaskellWhitechar o) {
     visitPsiElement(o);
   }
 

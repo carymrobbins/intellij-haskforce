@@ -41,12 +41,6 @@ public class HaskellParser implements PsiParser {
     else if (root_ == CLASSDECL) {
       result_ = classdecl(builder_, 0);
     }
-    else if (root_ == CNAME) {
-      result_ = cname(builder_, 0);
-    }
-    else if (root_ == CNAMES) {
-      result_ = cnames(builder_, 0);
-    }
     else if (root_ == CON) {
       result_ = con(builder_, 0);
     }
@@ -95,9 +89,6 @@ public class HaskellParser implements PsiParser {
     else if (root_ == FOREIGNDECL) {
       result_ = foreigndecl(builder_, 0);
     }
-    else if (root_ == FTYPE) {
-      result_ = ftype(builder_, 0);
-    }
     else if (root_ == FUNORPATDECL) {
       result_ = funorpatdecl(builder_, 0);
     }
@@ -140,9 +131,6 @@ public class HaskellParser implements PsiParser {
     else if (root_ == OP) {
       result_ = op(builder_, 0);
     }
-    else if (root_ == OPS) {
-      result_ = ops(builder_, 0);
-    }
     else if (root_ == OQTYCON) {
       result_ = oqtycon(builder_, 0);
     }
@@ -166,12 +154,6 @@ public class HaskellParser implements PsiParser {
     }
     else if (root_ == QCONSYM) {
       result_ = qconsym(builder_, 0);
-    }
-    else if (root_ == QINFIXCONID) {
-      result_ = qinfixconid(builder_, 0);
-    }
-    else if (root_ == QINFIXVARID) {
-      result_ = qinfixvarid(builder_, 0);
     }
     else if (root_ == QOP) {
       result_ = qop(builder_, 0);
@@ -215,9 +197,6 @@ public class HaskellParser implements PsiParser {
     else if (root_ == STMTS) {
       result_ = stmts(builder_, 0);
     }
-    else if (root_ == SYMBOL) {
-      result_ = symbol(builder_, 0);
-    }
     else if (root_ == TV_BNDR) {
       result_ = tv_bndr(builder_, 0);
     }
@@ -250,9 +229,6 @@ public class HaskellParser implements PsiParser {
     }
     else if (root_ == VARSYM) {
       result_ = varsym(builder_, 0);
-    }
-    else if (root_ == WHITECHAR) {
-      result_ = whitechar(builder_, 0);
     }
     else {
       result_ = parse_root_(root_, builder_, 0);
@@ -1524,25 +1500,20 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // var | con
-  public static boolean cname(PsiBuilder builder_, int level_) {
+  static boolean cname(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "cname")) return false;
     boolean result_;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<cname>");
+    Marker marker_ = enter_section_(builder_);
     result_ = var(builder_, level_ + 1);
     if (!result_) result_ = con(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, CNAME, result_, false, null);
+    exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   /* ********************************************************** */
   // <<sequence cname>>
-  public static boolean cnames(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "cnames")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<cnames>");
-    result_ = sequence(builder_, level_ + 1, cname_parser_);
-    exit_section_(builder_, level_, marker_, CNAMES, result_, false, null);
-    return result_;
+  static boolean cnames(PsiBuilder builder_, int level_) {
+    return sequence(builder_, level_ + 1, cname_parser_);
   }
 
   /* ********************************************************** */
@@ -2749,14 +2720,14 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // fatype ["->" ftype]
-  //         | "()"
-  public static boolean ftype(PsiBuilder builder_, int level_) {
+  //                 | "()"
+  static boolean ftype(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "ftype")) return false;
     boolean result_;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<ftype>");
+    Marker marker_ = enter_section_(builder_);
     result_ = ftype_0(builder_, level_ + 1);
     if (!result_) result_ = consumeToken(builder_, "()");
-    exit_section_(builder_, level_, marker_, FTYPE, result_, false, null);
+    exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
@@ -3074,7 +3045,7 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // gendeclfst
-  //           | fixity [integertoken] ops
+  //           | fixity [integertoken] (<<sequence op>>)
   public static boolean gendecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "gendecl")) return false;
     boolean result_;
@@ -3085,7 +3056,7 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // fixity [integertoken] ops
+  // fixity [integertoken] (<<sequence op>>)
   private static boolean gendecl_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "gendecl_1")) return false;
     boolean result_;
@@ -3094,7 +3065,7 @@ public class HaskellParser implements PsiParser {
     result_ = fixity(builder_, level_ + 1);
     pinned_ = result_; // pin = 1
     result_ = result_ && report_error_(builder_, gendecl_1_1(builder_, level_ + 1));
-    result_ = pinned_ && ops(builder_, level_ + 1) && result_;
+    result_ = pinned_ && gendecl_1_2(builder_, level_ + 1) && result_;
     exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
     return result_ || pinned_;
   }
@@ -3104,6 +3075,11 @@ public class HaskellParser implements PsiParser {
     if (!recursion_guard_(builder_, level_, "gendecl_1_1")) return false;
     consumeToken(builder_, INTEGERTOKEN);
     return true;
+  }
+
+  // <<sequence op>>
+  private static boolean gendecl_1_2(PsiBuilder builder_, int level_) {
+    return sequence(builder_, level_ + 1, op_parser_);
   }
 
   /* ********************************************************** */
@@ -4628,17 +4604,6 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // <<sequence op>>
-  public static boolean ops(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "ops")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<ops>");
-    result_ = sequence(builder_, level_ + 1, op_parser_);
-    exit_section_(builder_, level_, marker_, OPS, result_, false, null);
-    return result_;
-  }
-
-  /* ********************************************************** */
   // '(' '~' ')'         // An "ordinary" qualified tycon;
   //           | '(' qtyconsym ')'  // These can appear in export lists
   //           | qtycon
@@ -5080,50 +5045,6 @@ public class HaskellParser implements PsiParser {
   // [modulePrefix]
   private static boolean qconsym_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qconsym_0")) return false;
-    modulePrefix(builder_, level_ + 1);
-    return true;
-  }
-
-  /* ********************************************************** */
-  // '`' [modulePrefix] conidRegexp '`'
-  public static boolean qinfixconid(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "qinfixconid")) return false;
-    if (!nextTokenIs(builder_, BACKTICK)) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, BACKTICK);
-    result_ = result_ && qinfixconid_1(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, CONIDREGEXP);
-    result_ = result_ && consumeToken(builder_, BACKTICK);
-    exit_section_(builder_, marker_, QINFIXCONID, result_);
-    return result_;
-  }
-
-  // [modulePrefix]
-  private static boolean qinfixconid_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "qinfixconid_1")) return false;
-    modulePrefix(builder_, level_ + 1);
-    return true;
-  }
-
-  /* ********************************************************** */
-  // '`' [modulePrefix] varid '`'
-  public static boolean qinfixvarid(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "qinfixvarid")) return false;
-    if (!nextTokenIs(builder_, BACKTICK)) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, BACKTICK);
-    result_ = result_ && qinfixvarid_1(builder_, level_ + 1);
-    result_ = result_ && varid(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, BACKTICK);
-    exit_section_(builder_, marker_, QINFIXVARID, result_);
-    return result_;
-  }
-
-  // [modulePrefix]
-  private static boolean qinfixvarid_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "qinfixvarid_1")) return false;
     modulePrefix(builder_, level_ + 1);
     return true;
   }
@@ -5810,17 +5731,17 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // symbol1 | '=' | '|' | '!' | '#' |
-  public static boolean symbol(PsiBuilder builder_, int level_) {
+  static boolean symbol(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "symbol")) return false;
     boolean result_;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<symbol>");
+    Marker marker_ = enter_section_(builder_);
     result_ = symbol1(builder_, level_ + 1);
     if (!result_) result_ = consumeToken(builder_, EQUALS);
     if (!result_) result_ = consumeToken(builder_, PIPE);
     if (!result_) result_ = consumeToken(builder_, EXCLAMATION);
     if (!result_) result_ = consumeToken(builder_, HASH);
     if (!result_) result_ = consumeToken(builder_, SYMBOL_5_0);
-    exit_section_(builder_, level_, marker_, SYMBOL, result_, false, null);
+    exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
@@ -6330,14 +6251,14 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // space | newline | '\t'
-  public static boolean whitechar(PsiBuilder builder_, int level_) {
+  static boolean whitechar(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "whitechar")) return false;
     boolean result_;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<whitechar>");
+    Marker marker_ = enter_section_(builder_);
     result_ = space(builder_, level_ + 1);
     if (!result_) result_ = newline(builder_, level_ + 1);
     if (!result_) result_ = consumeToken(builder_, "\\t");
-    exit_section_(builder_, level_, marker_, WHITECHAR, result_, false, null);
+    exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 

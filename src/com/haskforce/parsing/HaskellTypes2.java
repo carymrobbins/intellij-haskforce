@@ -56,12 +56,6 @@ public interface HaskellTypes2 {
             if (type == BODY) {
                 return new HaskellBodyImpl(node);
             }
-            else if (type == CNAME) {
-                return new HaskellCnameImpl(node);
-            }
-            else if (type == CNAMES) {
-                return new HaskellCnamesImpl(node);
-            }
             else if (type == CON || type == HaskellTypes.CONIDREGEXP) {
                 return new HaskellConImpl(node);
             }
@@ -98,12 +92,6 @@ public interface HaskellTypes2 {
             else if (type == QCONSYM) {
                 return new HaskellQconsymImpl(node);
             }
-            else if (type == QINFIXCONID) {
-                return new HaskellQinfixconidImpl(node);
-            }
-            else if (type == QINFIXVARID) {
-                return new HaskellQinfixvaridImpl(node);
-            }
             else if (type == QTYCLS) {
                 return new HaskellQtyclsImpl(node);
             }
@@ -128,9 +116,6 @@ public interface HaskellTypes2 {
             else if (type == SPECIAL) {
                 return new HaskellSpecialImpl(node);
             }
-            else if (type == SYMBOL) {
-                return new HaskellSymbolImpl(node);
-            }
             else if (type == TYCLS) {
                 return new HaskellTyclsImpl(node);
             }
@@ -148,9 +133,6 @@ public interface HaskellTypes2 {
             }
             else if (type == VARSYM) {
                 return new HaskellVarsymImpl(node);
-            }
-            else if (type == WHITECHAR) {
-                return new HaskellWhitecharImpl(node);
             } else {
                 return new HaskellCompositeElementType(node);
             }

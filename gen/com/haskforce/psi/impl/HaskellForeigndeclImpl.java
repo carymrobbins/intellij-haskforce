@@ -23,15 +23,21 @@ public class HaskellForeigndeclImpl extends ASTWrapperPsiElement implements Hask
   }
 
   @Override
-  @Nullable
-  public HaskellFtype getFtype() {
-    return findChildByClass(HaskellFtype.class);
+  @NotNull
+  public List<HaskellAtype> getAtypeList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellAtype.class);
   }
 
   @Override
   @Nullable
   public HaskellPstringtoken getPstringtoken() {
     return findChildByClass(HaskellPstringtoken.class);
+  }
+
+  @Override
+  @Nullable
+  public HaskellQtycon getQtycon() {
+    return findChildByClass(HaskellQtycon.class);
   }
 
   @Override
@@ -56,6 +62,12 @@ public class HaskellForeigndeclImpl extends ASTWrapperPsiElement implements Hask
   @Nullable
   public PsiElement getLparen() {
     return findChildByType(LPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRightarrow() {
+    return findChildByType(RIGHTARROW);
   }
 
   @Override

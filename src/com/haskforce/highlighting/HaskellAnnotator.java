@@ -33,12 +33,6 @@ public class HaskellAnnotator implements Annotator {
             }
 
             @Override
-            public void visitQinfixvarid(@NotNull HaskellQinfixvarid o) {
-                super.visitQinfixvarid(o);
-                setHighlighting(o, holder, HaskellSyntaxHighlighter.INFIXVARID);
-            }
-
-            @Override
             public void visitQvarsym(@NotNull HaskellQvarsym o) {
                 super.visitQvarsym(o);
                 setHighlighting(o, holder, HaskellSyntaxHighlighter.VARSYM);

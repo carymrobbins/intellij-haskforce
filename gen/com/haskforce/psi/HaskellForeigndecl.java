@@ -7,11 +7,14 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellForeigndecl extends PsiElement {
 
-  @Nullable
-  HaskellFtype getFtype();
+  @NotNull
+  List<HaskellAtype> getAtypeList();
 
   @Nullable
   HaskellPstringtoken getPstringtoken();
+
+  @Nullable
+  HaskellQtycon getQtycon();
 
   @Nullable
   HaskellVarid getVarid();
@@ -24,6 +27,9 @@ public interface HaskellForeigndecl extends PsiElement {
 
   @Nullable
   PsiElement getLparen();
+
+  @Nullable
+  PsiElement getRightarrow();
 
   @Nullable
   PsiElement getRparen();

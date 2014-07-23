@@ -7,8 +7,8 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellExport extends PsiElement {
 
-  @Nullable
-  HaskellCnames getCnames();
+  @NotNull
+  List<HaskellCon> getConList();
 
   @Nullable
   HaskellQconid getQconid();
@@ -22,13 +22,13 @@ public interface HaskellExport extends PsiElement {
   @Nullable
   HaskellQvars getQvars();
 
+  @NotNull
+  List<HaskellVarid> getVaridList();
+
+  @NotNull
+  List<HaskellVarsym> getVarsymList();
+
   @Nullable
   PsiElement getDoubleperiod();
-
-  @Nullable
-  PsiElement getLparen();
-
-  @Nullable
-  PsiElement getRparen();
 
 }

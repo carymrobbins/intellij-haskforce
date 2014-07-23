@@ -203,8 +203,8 @@ importt ::= var
           // Really (tycon|tycls), but they are both ::= conid.
           | tycon ['(' (".." | cnames | vars) ')']
 
-cnames ::= <<sequence cname>>
-cname ::= var | con
+private cnames ::= <<sequence cname>>
+private cname ::= var | con
 
 vars ::= <<sequence var>>
 
@@ -259,12 +259,11 @@ private itdecl ::= "type" ctype '=' ctype
                  | ("data" | "newtype") ctype ([kindsig] gadtconstrs | ['=' constrs]) [deriving]
 
 gendecl ::= gendeclfst
-          | fixity [integertoken] ops {pin(".*")=1}
+          | fixity [integertoken] (<<sequence op>>) {pin(".*")=1}
 
 // Type signatures. Useful for go to definition.
 private gendeclfst ::= vars '::' ctype  {pin(".*")=2}
 
-ops ::= <<sequence op>>
 fixity ::= "infix" | "infixr" | "infixl" {pin(".*")=1}
 
 // Type already taken so we get collisions in generated code.
@@ -344,8 +343,8 @@ private expent ::= pstringtoken // FIXME: '\"' [cid] '\"'
 
 // private cid ::= "regexp:[a-zA-Z][a-zA-Z_0-9]*"
 
-ftype ::= fatype ["->" ftype]
-        | "()"
+private ftype ::= fatype ["->" ftype]
+                | "()"
 
 private fatype ::= qtycon atype*
 
@@ -508,10 +507,10 @@ private literal ::= (floattoken | integertoken) ['#'|'##']
 private space ::= LINE_WS
 private newline ::= EOL
 private whitestuff ::= whitechar | comment | haddock
-whitechar ::= space | newline | '\t'
+private whitechar ::= space | newline | '\t'
 ppragma ::= openpragma PRAGMA+ closepragma {pin(".*")=3}
 special ::= '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}' | thquote | backtick
-symbol ::= symbol1 | '=' | '|' | '!' | '#' |
+private symbol ::= symbol1 | '=' | '|' | '!' | '#' |
 private symbol1 ::= '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '>' | '?' | '@'
          | '\' | '^' | '-' | '~' | ':'
 varid ::= !reservedid (varidRegexp | "as") {
@@ -540,9 +539,7 @@ tycls ::= conid
 modulePrefix ::= (conidRegexp '.')+
 
 qvarid ::= [modulePrefix] varid
-qinfixvarid ::= '`' [modulePrefix] varid '`'
 qconid ::= [modulePrefix] conidRegexp
-qinfixconid ::= '`' [modulePrefix] conidRegexp '`'
 qtycon ::= [modulePrefix] tycon
 qtycls ::= [modulePrefix] tycls
 qvarsym ::= [modulePrefix] varsym

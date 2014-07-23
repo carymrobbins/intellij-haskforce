@@ -7,28 +7,22 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellImportt extends PsiElement {
 
-  @Nullable
-  HaskellCnames getCnames();
+  @NotNull
+  List<HaskellCon> getConList();
 
   @Nullable
   HaskellTycon getTycon();
 
-  @Nullable
-  HaskellVarid getVarid();
+  @NotNull
+  List<HaskellVarid> getVaridList();
 
   @Nullable
   HaskellVars getVars();
 
-  @Nullable
-  HaskellVarsym getVarsym();
+  @NotNull
+  List<HaskellVarsym> getVarsymList();
 
   @Nullable
   PsiElement getDoubleperiod();
-
-  @Nullable
-  PsiElement getLparen();
-
-  @Nullable
-  PsiElement getRparen();
 
 }
