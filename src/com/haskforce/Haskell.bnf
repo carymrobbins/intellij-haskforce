@@ -184,7 +184,7 @@ exports ::= <<commaSeparate2 export>>
 export ::= cpp+ export
         | qvar
         // Really (qtycon|qtycls) but they are both ::= qconid.
-        | qtycon ["(..)" | (cnames | qvars)]
+        | qtycon ["(..)" | '(' (cnames | qvars) ')']
         | "module" qconid {pin(".*")=1}
 
 body ::= (cpp | ppragma)* open [bodyaux] close {pin=2}
@@ -204,9 +204,9 @@ private impspec ::= ["hiding"] '(' [<<sequence importt>>] ')' {pin(".*")=2}
 // Workaround for https://github.com/JetBrains/Grammar-Kit/issues/32.
 importt ::= var
           // Really (tycon|tycls), but they are both ::= conid.
-          | tycon ['(' ".." ')' | (cnames | vars)]
+          | tycon ['(' ".." ')' | '(' (cnames | vars) ')']
 
-cnames ::= <<commaSeparate cname>>
+cnames ::= <<sequence cname>>
 cname ::= var | con
 
 vars ::= <<sequence var>>
@@ -553,7 +553,7 @@ qvarsym ::= [modulePrefix] varsym
 qconsym ::= [modulePrefix] consym
 
 private var ::= varid | '(' varsym ')'
-qvars ::= <<commaSeparate qvar>>
+qvars ::= <<sequence qvar>>
 qvar ::= qvarid | '(' qvarsym ')'
 con ::= conidRegexp | '(' consym ')'
 qcon ::= qconid | '(' gconsym ')'

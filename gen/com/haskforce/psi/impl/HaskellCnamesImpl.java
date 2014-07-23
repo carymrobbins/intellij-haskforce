@@ -23,21 +23,9 @@ public class HaskellCnamesImpl extends ASTWrapperPsiElement implements HaskellCn
   }
 
   @Override
-  @Nullable
-  public HaskellCname getCname() {
-    return findChildByClass(HaskellCname.class);
-  }
-
-  @Override
   @NotNull
-  public PsiElement getLparen() {
-    return findNotNullChildByType(LPAREN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getRparen() {
-    return findChildByType(RPAREN);
+  public List<HaskellCname> getCnameList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellCname.class);
   }
 
 }

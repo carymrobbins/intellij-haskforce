@@ -28,4 +28,10 @@ public interface HaskellExport extends PsiElement {
   @Nullable
   HaskellQvars getQvars();
 
+  @Nullable
+  PsiElement getLparen();
+
+  @Nullable
+  PsiElement getRparen();
+
 }

@@ -64,4 +64,16 @@ public class HaskellExportImpl extends ASTWrapperPsiElement implements HaskellEx
     return findChildByClass(HaskellQvars.class);
   }
 
+  @Override
+  @Nullable
+  public PsiElement getLparen() {
+    return findChildByType(LPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRparen() {
+    return findChildByType(RPAREN);
+  }
+
 }
