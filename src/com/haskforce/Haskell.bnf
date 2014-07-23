@@ -390,9 +390,7 @@ private aexp ::= recordlikelhs '{' (fbind ',')* fbind '}'
                // TODO: Remove semi when lexer supports TH.
                | ('[|' | '[' exp '|' [semi]) exp [semi]'|]'
 //               | "[||" exp '||]'
-               | '[' "t" '|' ctype '|]'
-               | '[' "p" '|' infixexp '|]'
-               | '[' "d" '|' open topdecls close '|]'
+               | '[' ("t" '|' ctype | "p" '|' infixexp |  "d" '|' open topdecls close ) '|]'
                | '(#' '#)'
                // TODO: Add $( when lexer supports TH.
                | '$' '(' exp ')'
