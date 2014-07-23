@@ -17,41 +17,64 @@ import org.jetbrains.annotations.Nullable;
  * Performs creation of element types.
  */
 public class HaskellElementFactory {
+    /**
+     * Takes a name and returns a Psi node of that name, or null.
+     */
     @Nullable
-    public static HaskellVarid createVaridFromText(@NotNull Project project, @NotNull String text) {
-        PsiElement e = createExpressionFromText(project, text + " = 2").getFirstChild();
+    public static HaskellVarid createVaridFromText(@NotNull Project project, @NotNull String name) {
+        PsiElement e = createExpressionFromText(project, name + "uniq = " + name).getFirstChild();
         if (e instanceof HaskellVarid) return (HaskellVarid) e;
         return null;
     }
 
+    /**
+     * Takes a name and returns a Psi node of that name, or null.
+     */
     @NotNull
-    public static HaskellQvarid createQvaridFromText(@NotNull Project project, @NotNull String text) {
-        return ((HaskellQvarid) (createExpressionFromText(project, text + " = 2")).getFirstChild());
+    public static HaskellQvarid createQvaridFromText(@NotNull Project project, @NotNull String name) {
+        return ((HaskellQvarid) (createExpressionFromText(project, name + "uniq = " + name)).getFirstChild());
     }
 
+    /**
+     * Takes a name and returns a Psi node of that name, or null.
+     */
     @Nullable
-    public static HaskellConid createConidFromText(@NotNull Project project, @NotNull String text) {
-        PsiElement e = createExpressionFromText(project, text + " = 2").getFirstChild();
+    public static HaskellConid createConidFromText(@NotNull Project project, @NotNull String name) {
+        PsiElement e = createExpressionFromText(project, name + "uniq = " + name).getFirstChild();
         if (e instanceof HaskellConid) return (HaskellConid) e;
         return null;
     }
 
+    /**
+     * Takes a name and returns a Psi node of that name, or null.
+     */
     @NotNull
-    public static HaskellTycon createTyconFromText(@NotNull Project project, @NotNull String text) {
-        return ((HaskellTycon) (createExpressionFromText(project, text + " = 2")).getFirstChild());
+    public static HaskellTycon createTyconFromText(@NotNull Project project, @NotNull String name) {
+        return ((HaskellTycon) (createExpressionFromText(project, name + "uniq = " + name)).getFirstChild());
     }
 
+    /**
+     * Takes a name and returns a Psi node of that name, or null.
+     */
     @NotNull
-    public static HaskellTycls createTyclsFromText(@NotNull Project project, @NotNull String text) {
-        return ((HaskellTycls) (createExpressionFromText(project, text + " = 2")).getFirstChild());
+    public static HaskellTycls createTyclsFromText(@NotNull Project project, @NotNull String name) {
+        return ((HaskellTycls) (createExpressionFromText(project, name + "uniq = " + name)).getFirstChild());
     }
 
+    /**
+     * Takes an expression in text and returns a Psi tree of that program.
+     */
     @NotNull
-    public static PsiElement createExpressionFromText(@NotNull Project project, @NotNull String text) {
-        HaskellFile fileFromText = createFileFromText(project, text);
-        return fileFromText.getFirstChild().getFirstChild();
+    public static PsiElement createExpressionFromText(@NotNull Project project, @NotNull String name) {
+        HaskellFile fileFromText = createFileFromText(project, name);
+        PsiElement rhs = fileFromText.getFirstChild().getFirstChild().getLastChild();
+        PsiElement nodeOfInterest = rhs.getLastChild().getLastChild().getLastChild();
+        return nodeOfInterest;
     }
 
+    /**
+     * Create a file containing text.
+     */
     @NotNull
     private static HaskellFile createFileFromText(@NotNull Project project, @NotNull String text) {
         return (HaskellFile) PsiFileFactory.getInstance(project).createFileFromText("A.hs", HaskellLanguage.INSTANCE, text);
