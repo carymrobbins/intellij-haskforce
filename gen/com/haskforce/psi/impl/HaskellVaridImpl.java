@@ -30,7 +30,7 @@ public class HaskellVaridImpl extends ASTWrapperPsiElement implements HaskellVar
     return findChildByType(VARIDREGEXP);
   }
 
-  @NotNull
+  @Nullable
   public String getName() {
     return HaskellPsiImplUtil.getName(this);
   }

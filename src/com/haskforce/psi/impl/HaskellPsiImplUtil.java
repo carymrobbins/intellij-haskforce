@@ -19,9 +19,10 @@ import javax.swing.*;
  */
 public class HaskellPsiImplUtil {
 
-    @NotNull
+    @Nullable
     public static String getName(@NotNull HaskellVarid o) {
-        return o.getVaridRegexp().getText();
+        PsiElement n = o.getVaridRegexp();
+        return n == null ? null : n.getText();
     }
 
     @NotNull
@@ -59,7 +60,8 @@ public class HaskellPsiImplUtil {
 
     @NotNull
     public static PsiReference getReference(@NotNull HaskellVarid o) {
-        return new HaskellReference(o, TextRange.from(0, getName(o).length()));
+        String s = getName(o);
+        return new HaskellReference(o, TextRange.from(0, s == null ? 0 : s.length()));
     }
 
     @NotNull

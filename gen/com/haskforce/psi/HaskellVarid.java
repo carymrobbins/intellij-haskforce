@@ -12,7 +12,7 @@ public interface HaskellVarid extends HaskellNamedElement {
   @Nullable
   PsiElement getVaridRegexp();
 
-  @NotNull
+  @Nullable
   String getName();
 
   @Nullable
