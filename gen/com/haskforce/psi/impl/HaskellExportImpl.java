@@ -66,6 +66,12 @@ public class HaskellExportImpl extends ASTWrapperPsiElement implements HaskellEx
 
   @Override
   @Nullable
+  public PsiElement getDoubleperiod() {
+    return findChildByType(DOUBLEPERIOD);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getLparen() {
     return findChildByType(LPAREN);
   }

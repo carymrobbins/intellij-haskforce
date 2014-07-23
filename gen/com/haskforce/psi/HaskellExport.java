@@ -29,6 +29,9 @@ public interface HaskellExport extends PsiElement {
   HaskellQvars getQvars();
 
   @Nullable
+  PsiElement getDoubleperiod();
+
+  @Nullable
   PsiElement getLparen();
 
   @Nullable
