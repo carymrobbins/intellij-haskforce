@@ -1681,36 +1681,19 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // ',' (',')*
+  // ','+
   static boolean commas(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "commas")) return false;
     if (!nextTokenIs(builder_, COMMA)) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, COMMA);
-    result_ = result_ && commas_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // (',')*
-  private static boolean commas_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "commas_1")) return false;
     int pos_ = current_position_(builder_);
-    while (true) {
-      if (!commas_1_0(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "commas_1", pos_)) break;
+    while (result_) {
+      if (!consumeToken(builder_, COMMA)) break;
+      if (!empty_element_parsed_guard_(builder_, "commas", pos_)) break;
       pos_ = current_position_(builder_);
     }
-    return true;
-  }
-
-  // (',')
-  private static boolean commas_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "commas_1_0")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, COMMA);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -2986,7 +2969,7 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // '[' ']'
-  //               | '(' [',' (',')*] ')'
+  //               | '(' [commas] ')'
   //               | qcon
   static boolean gcon(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "gcon")) return false;
@@ -3010,7 +2993,7 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // '(' [',' (',')*] ')'
+  // '(' [commas] ')'
   private static boolean gcon_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "gcon_1")) return false;
     boolean result_;
@@ -3022,44 +3005,11 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // [',' (',')*]
+  // [commas]
   private static boolean gcon_1_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "gcon_1_1")) return false;
-    gcon_1_1_0(builder_, level_ + 1);
+    commas(builder_, level_ + 1);
     return true;
-  }
-
-  // ',' (',')*
-  private static boolean gcon_1_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "gcon_1_1_0")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, COMMA);
-    result_ = result_ && gcon_1_1_0_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // (',')*
-  private static boolean gcon_1_1_0_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "gcon_1_1_0_1")) return false;
-    int pos_ = current_position_(builder_);
-    while (true) {
-      if (!gcon_1_1_0_1_0(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "gcon_1_1_0_1", pos_)) break;
-      pos_ = current_position_(builder_);
-    }
-    return true;
-  }
-
-  // (',')
-  private static boolean gcon_1_1_0_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "gcon_1_1_0_1_0")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, COMMA);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
   }
 
   /* ********************************************************** */

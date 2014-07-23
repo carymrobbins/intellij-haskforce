@@ -300,7 +300,7 @@ private ntgtycon ::=  '(#' commas '#)'
 //                   | '(' '~#' ')'
                    | oqtycon
 
-private commas ::= ',' (',')*
+private commas ::= ','+
 
 context ::= btype ['~' btype]
 
@@ -474,7 +474,7 @@ private fpat ::= qvar ['=' pat]
                | ".."  {pin(".*")=1}
 
 private gcon ::= '[' ']'
-              | '(' [',' (',')*] ')'
+              | '(' [commas] ')'
               | qcon
 
 private decls ::= open [decls1] close {pin=1}
