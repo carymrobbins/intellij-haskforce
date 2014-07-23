@@ -20,9 +20,6 @@ public interface HaskellExport extends PsiElement {
   HaskellQconid getQconid();
 
   @Nullable
-  HaskellQtycls getQtycls();
-
-  @Nullable
   HaskellQtycon getQtycon();
 
   @Nullable

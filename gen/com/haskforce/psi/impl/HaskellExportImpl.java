@@ -48,12 +48,6 @@ public class HaskellExportImpl extends ASTWrapperPsiElement implements HaskellEx
 
   @Override
   @Nullable
-  public HaskellQtycls getQtycls() {
-    return findChildByClass(HaskellQtycls.class);
-  }
-
-  @Override
-  @Nullable
   public HaskellQtycon getQtycon() {
     return findChildByClass(HaskellQtycon.class);
   }

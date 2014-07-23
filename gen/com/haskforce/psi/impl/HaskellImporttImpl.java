@@ -30,12 +30,6 @@ public class HaskellImporttImpl extends ASTWrapperPsiElement implements HaskellI
 
   @Override
   @Nullable
-  public HaskellTycls getTycls() {
-    return findChildByClass(HaskellTycls.class);
-  }
-
-  @Override
-  @Nullable
   public HaskellTycon getTycon() {
     return findChildByClass(HaskellTycon.class);
   }
@@ -56,6 +50,12 @@ public class HaskellImporttImpl extends ASTWrapperPsiElement implements HaskellI
   @Nullable
   public HaskellVarsym getVarsym() {
     return findChildByClass(HaskellVarsym.class);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getDoubleperiod() {
+    return findChildByType(DOUBLEPERIOD);
   }
 
   @Override

@@ -11,9 +11,6 @@ public interface HaskellImportt extends PsiElement {
   HaskellCnames getCnames();
 
   @Nullable
-  HaskellTycls getTycls();
-
-  @Nullable
   HaskellTycon getTycon();
 
   @Nullable
@@ -24,6 +21,9 @@ public interface HaskellImportt extends PsiElement {
 
   @Nullable
   HaskellVarsym getVarsym();
+
+  @Nullable
+  PsiElement getDoubleperiod();
 
   @Nullable
   PsiElement getLparen();

@@ -183,8 +183,8 @@ private moduleline ::= "module" qconid [ppragma] [exports] "where" {pin=1}
 exports ::= <<commaSeparate2 export>>
 export ::= cpp+ export
         | qvar
-        | qtycon ["(..)" | cnames]
-        | qtycls ["(..)" | qvars]
+        // Really (qtycon|qtycls) but they are both ::= qconid.
+        | qtycon ["(..)" | (cnames | qvars)]
         | "module" qconid {pin(".*")=1}
 
 body ::= (cpp | ppragma)* open [bodyaux] close {pin=2}
@@ -203,8 +203,8 @@ private impspec ::= ["hiding"] '(' [<<sequence importt>>] ')' {pin(".*")=2}
 
 // Workaround for https://github.com/JetBrains/Grammar-Kit/issues/32.
 importt ::= var
-          | tycon ["(..)" | cnames]
-          | tycls ["(..)" | vars]
+          // Really (tycon|tycls), but they are both ::= conid.
+          | tycon ['(' ".." ')' | (cnames | vars)]
 
 cnames ::= <<commaSeparate cname>>
 cname ::= var | con
