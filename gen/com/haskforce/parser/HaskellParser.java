@@ -4489,21 +4489,9 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // moduleline
+  // "module" qconid [ppragma] [exports] "where"
   public static boolean moduledecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "moduledecl")) return false;
-    if (!nextTokenIs(builder_, MODULETOKEN)) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = moduleline(builder_, level_ + 1);
-    exit_section_(builder_, marker_, MODULEDECL, result_);
-    return result_;
-  }
-
-  /* ********************************************************** */
-  // "module" qconid [ppragma] [exports] "where"
-  static boolean moduleline(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "moduleline")) return false;
     if (!nextTokenIs(builder_, MODULETOKEN)) return false;
     boolean result_;
     boolean pinned_;
@@ -4511,23 +4499,23 @@ public class HaskellParser implements PsiParser {
     result_ = consumeToken(builder_, MODULETOKEN);
     pinned_ = result_; // pin = 1
     result_ = result_ && report_error_(builder_, qconid(builder_, level_ + 1));
-    result_ = pinned_ && report_error_(builder_, moduleline_2(builder_, level_ + 1)) && result_;
-    result_ = pinned_ && report_error_(builder_, moduleline_3(builder_, level_ + 1)) && result_;
+    result_ = pinned_ && report_error_(builder_, moduledecl_2(builder_, level_ + 1)) && result_;
+    result_ = pinned_ && report_error_(builder_, moduledecl_3(builder_, level_ + 1)) && result_;
     result_ = pinned_ && consumeToken(builder_, WHERE) && result_;
-    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
+    exit_section_(builder_, level_, marker_, MODULEDECL, result_, pinned_, null);
     return result_ || pinned_;
   }
 
   // [ppragma]
-  private static boolean moduleline_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "moduleline_2")) return false;
+  private static boolean moduledecl_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "moduledecl_2")) return false;
     ppragma(builder_, level_ + 1);
     return true;
   }
 
   // [exports]
-  private static boolean moduleline_3(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "moduleline_3")) return false;
+  private static boolean moduledecl_3(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "moduledecl_3")) return false;
     exports(builder_, level_ + 1);
     return true;
   }

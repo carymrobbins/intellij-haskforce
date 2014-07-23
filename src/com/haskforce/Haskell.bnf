@@ -176,9 +176,7 @@
 
 module ::= (ppragma | cpp)* [moduledecl] body
 
-moduledecl ::= moduleline {pin(".*")=1}
-
-private moduleline ::= "module" qconid [ppragma] [exports] "where" {pin=1}
+moduledecl ::= "module" qconid [ppragma] [exports] "where" {pin=1}
 
 exports ::= <<commaSeparate2 export>>
 export ::= cpp+ export

@@ -35,9 +35,9 @@ public class HaskellNewtypedeclImpl extends ASTWrapperPsiElement implements Hask
   }
 
   @Override
-  @Nullable
-  public HaskellQtycls getQtycls() {
-    return findChildByClass(HaskellQtycls.class);
+  @NotNull
+  public List<HaskellQtycls> getQtyclsList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQtycls.class);
   }
 
   @Override
