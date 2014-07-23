@@ -2365,101 +2365,24 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // cpp+ export
-  //         | qvar
+  // "module" qconid
   //         // Really (qtycon|qtycls) but they are both ::= qconid.
   //         | qtycon [ '(' (".." | cnames | qvars) ')']
-  //         | "module" qconid
+  //         | qvar
   public static boolean export(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "export")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<export>");
     result_ = export_0(builder_, level_ + 1);
+    if (!result_) result_ = export_1(builder_, level_ + 1);
     if (!result_) result_ = qvar(builder_, level_ + 1);
-    if (!result_) result_ = export_2(builder_, level_ + 1);
-    if (!result_) result_ = export_3(builder_, level_ + 1);
     exit_section_(builder_, level_, marker_, EXPORT, result_, false, null);
     return result_;
   }
 
-  // cpp+ export
+  // "module" qconid
   private static boolean export_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "export_0")) return false;
-    boolean result_;
-    boolean pinned_;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = export_0_0(builder_, level_ + 1);
-    pinned_ = result_; // pin = 1
-    result_ = result_ && export(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
-    return result_ || pinned_;
-  }
-
-  // cpp+
-  private static boolean export_0_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "export_0_0")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = cpp(builder_, level_ + 1);
-    int pos_ = current_position_(builder_);
-    while (result_) {
-      if (!cpp(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "export_0_0", pos_)) break;
-      pos_ = current_position_(builder_);
-    }
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // qtycon [ '(' (".." | cnames | qvars) ')']
-  private static boolean export_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "export_2")) return false;
-    boolean result_;
-    boolean pinned_;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = qtycon(builder_, level_ + 1);
-    pinned_ = result_; // pin = 1
-    result_ = result_ && export_2_1(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
-    return result_ || pinned_;
-  }
-
-  // [ '(' (".." | cnames | qvars) ')']
-  private static boolean export_2_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "export_2_1")) return false;
-    export_2_1_0(builder_, level_ + 1);
-    return true;
-  }
-
-  // '(' (".." | cnames | qvars) ')'
-  private static boolean export_2_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "export_2_1_0")) return false;
-    boolean result_;
-    boolean pinned_;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = consumeToken(builder_, LPAREN);
-    pinned_ = result_; // pin = 1
-    result_ = result_ && report_error_(builder_, export_2_1_0_1(builder_, level_ + 1));
-    result_ = pinned_ && consumeToken(builder_, RPAREN) && result_;
-    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
-    return result_ || pinned_;
-  }
-
-  // ".." | cnames | qvars
-  private static boolean export_2_1_0_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "export_2_1_0_1")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, DOUBLEPERIOD);
-    if (!result_) result_ = cnames(builder_, level_ + 1);
-    if (!result_) result_ = qvars(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // "module" qconid
-  private static boolean export_3(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "export_3")) return false;
     boolean result_;
     boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
@@ -2468,6 +2391,52 @@ public class HaskellParser implements PsiParser {
     result_ = result_ && qconid(builder_, level_ + 1);
     exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
     return result_ || pinned_;
+  }
+
+  // qtycon [ '(' (".." | cnames | qvars) ')']
+  private static boolean export_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "export_1")) return false;
+    boolean result_;
+    boolean pinned_;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
+    result_ = qtycon(builder_, level_ + 1);
+    pinned_ = result_; // pin = 1
+    result_ = result_ && export_1_1(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
+    return result_ || pinned_;
+  }
+
+  // [ '(' (".." | cnames | qvars) ')']
+  private static boolean export_1_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "export_1_1")) return false;
+    export_1_1_0(builder_, level_ + 1);
+    return true;
+  }
+
+  // '(' (".." | cnames | qvars) ')'
+  private static boolean export_1_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "export_1_1_0")) return false;
+    boolean result_;
+    boolean pinned_;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
+    result_ = consumeToken(builder_, LPAREN);
+    pinned_ = result_; // pin = 1
+    result_ = result_ && report_error_(builder_, export_1_1_0_1(builder_, level_ + 1));
+    result_ = pinned_ && consumeToken(builder_, RPAREN) && result_;
+    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
+    return result_ || pinned_;
+  }
+
+  // ".." | cnames | qvars
+  private static boolean export_1_1_0_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "export_1_1_0_1")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, DOUBLEPERIOD);
+    if (!result_) result_ = cnames(builder_, level_ + 1);
+    if (!result_) result_ = qvars(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
   }
 
   /* ********************************************************** */
@@ -2494,15 +2463,38 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // <<commaSeparate2 export>>
+  // <<commaSeparate2 (cpp* export)>>
   public static boolean exports(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "exports")) return false;
     if (!nextTokenIs(builder_, LPAREN)) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = commaSeparate2(builder_, level_ + 1, export_parser_);
+    result_ = commaSeparate2(builder_, level_ + 1, exports_0_0_parser_);
     exit_section_(builder_, marker_, EXPORTS, result_);
     return result_;
+  }
+
+  // cpp* export
+  private static boolean exports_0_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "exports_0_0")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = exports_0_0_0(builder_, level_ + 1);
+    result_ = result_ && export(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // cpp*
+  private static boolean exports_0_0_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "exports_0_0_0")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!cpp(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "exports_0_0_0", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
   }
 
   /* ********************************************************** */
@@ -6450,9 +6442,9 @@ public class HaskellParser implements PsiParser {
       return dclass(builder_, level_ + 1);
     }
   };
-  final static Parser export_parser_ = new Parser() {
+  final static Parser exports_0_0_parser_ = new Parser() {
     public boolean parse(PsiBuilder builder_, int level_) {
-      return export(builder_, level_ + 1);
+      return exports_0_0(builder_, level_ + 1);
     }
   };
   final static Parser importt_parser_ = new Parser() {

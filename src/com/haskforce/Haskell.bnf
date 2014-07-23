@@ -178,12 +178,11 @@ module ::= (ppragma | cpp)* [moduledecl] body
 
 moduledecl ::= "module" qconid [ppragma] [exports] "where" {pin=1}
 
-exports ::= <<commaSeparate2 export>>
-export ::= cpp+ export
-        | qvar
+exports ::= <<commaSeparate2 (cpp* export)>>
+export ::= "module" qconid
         // Really (qtycon|qtycls) but they are both ::= qconid.
         | qtycon [ '(' (".." | cnames | qvars) ')']
-        | "module" qconid {pin(".*")=1}
+        | qvar {pin(".*")=1}
 
 body ::= (cpp | ppragma)* open [bodyaux] close {pin=2}
 
