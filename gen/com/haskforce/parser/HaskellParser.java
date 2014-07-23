@@ -4237,26 +4237,36 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // floattoken ['#'|'##'] | integertoken ['#'|'##'] | chartoken ['#'] | pstringtoken ['#']
+  // (floattoken | integertoken) ['#'|'##']
+  //                   | (chartoken | pstringtoken) ['#']
   static boolean literal(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "literal")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = literal_0(builder_, level_ + 1);
     if (!result_) result_ = literal_1(builder_, level_ + 1);
-    if (!result_) result_ = literal_2(builder_, level_ + 1);
-    if (!result_) result_ = literal_3(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // floattoken ['#'|'##']
+  // (floattoken | integertoken) ['#'|'##']
   private static boolean literal_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "literal_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, FLOATTOKEN);
+    result_ = literal_0_0(builder_, level_ + 1);
     result_ = result_ && literal_0_1(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // floattoken | integertoken
+  private static boolean literal_0_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "literal_0_0")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, FLOATTOKEN);
+    if (!result_) result_ = consumeToken(builder_, INTEGERTOKEN);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -4279,67 +4289,31 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // integertoken ['#'|'##']
+  // (chartoken | pstringtoken) ['#']
   private static boolean literal_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "literal_1")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, INTEGERTOKEN);
+    result_ = literal_1_0(builder_, level_ + 1);
     result_ = result_ && literal_1_1(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // ['#'|'##']
-  private static boolean literal_1_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "literal_1_1")) return false;
-    literal_1_1_0(builder_, level_ + 1);
-    return true;
-  }
-
-  // '#'|'##'
-  private static boolean literal_1_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "literal_1_1_0")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, HASH);
-    if (!result_) result_ = consumeToken(builder_, DOUBLEHASH);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // chartoken ['#']
-  private static boolean literal_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "literal_2")) return false;
+  // chartoken | pstringtoken
+  private static boolean literal_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "literal_1_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, CHARTOKEN);
-    result_ = result_ && literal_2_1(builder_, level_ + 1);
+    if (!result_) result_ = pstringtoken(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   // ['#']
-  private static boolean literal_2_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "literal_2_1")) return false;
-    consumeToken(builder_, HASH);
-    return true;
-  }
-
-  // pstringtoken ['#']
-  private static boolean literal_3(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "literal_3")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = pstringtoken(builder_, level_ + 1);
-    result_ = result_ && literal_3_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // ['#']
-  private static boolean literal_3_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "literal_3_1")) return false;
+  private static boolean literal_1_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "literal_1_1")) return false;
     consumeToken(builder_, HASH);
     return true;
   }

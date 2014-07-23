@@ -505,7 +505,8 @@ private pkind ::= qtycon
 
 private comma_kinds1 ::= kind  [',' comma_kinds1]
 
-private literal ::= floattoken ['#'|'##'] | integertoken ['#'|'##'] | chartoken ['#'] | pstringtoken ['#']
+private literal ::= (floattoken | integertoken) ['#'|'##']
+                  | (chartoken | pstringtoken) ['#']
 private space ::= LINE_WS
 private newline ::= EOL
 private whitestuff ::= whitechar | comment | haddock
