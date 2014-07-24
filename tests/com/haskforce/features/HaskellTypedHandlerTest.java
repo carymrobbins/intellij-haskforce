@@ -18,6 +18,9 @@ package com.haskforce.features;
 
 import com.haskforce.HaskellLightPlatformCodeInsightFixtureTestCase;
 
+/**
+ * Typed handler test driver. Add new typed handler testcases here.
+ */
 public class HaskellTypedHandlerTest extends HaskellLightPlatformCodeInsightFixtureTestCase {
     public HaskellTypedHandlerTest() {
         super("features", "features");
