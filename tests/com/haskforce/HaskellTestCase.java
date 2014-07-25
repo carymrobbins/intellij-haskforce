@@ -23,6 +23,7 @@
 package com.haskforce;
 
 import com.haskforce.codeInsight.HaskellCompletionTest;
+import com.haskforce.codeInsight.HaskellFindUsagesTest;
 import com.haskforce.features.HaskellFeaturesTest;
 import com.haskforce.features.HaskellFoldingBuilderTest;
 import com.haskforce.features.HaskellTypedHandlerTest;
@@ -47,6 +48,7 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(HaskellFoldingBuilderTest.class);
         suite.addTestSuite(HaskellTypedHandlerTest.class);
         suite.addTestSuite(HaskellCompletionTest.class);
+        suite.addTestSuite(HaskellFindUsagesTest.class);
         return suite;
     }
 }
