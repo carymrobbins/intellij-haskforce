@@ -374,8 +374,8 @@ private lexp ::= "\\case" altslist
                | "let" decls "in" exp
                | "if" exp [semi] "then" exp [semi] "else" exp
                | "case" exp "of" altslist
-               | "do" open [stmts] close
-               | "mdo" open [stmts] close
+               | "do" open stmts close
+               | "mdo" open stmts close
                | "proc" aexp "->" exp
                | ppragma exp
                | fexp
@@ -445,7 +445,7 @@ stmts ::= stmt* exp [semi]
 
 private stmt ::= [exp] semi
                | pat '<-' exp semi
-               | ["rec"] "let" decls semi {pin(".*")=2}
+               | ["rec"] "let" decls semi
 
 private fbind ::= qvar '=' exp {pin=2}
 
