@@ -198,6 +198,12 @@ public class HaskellExpImpl extends ASTWrapperPsiElement implements HaskellExp {
 
   @Override
   @Nullable
+  public PsiElement getIdsplice() {
+    return findChildByType(IDSPLICE);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getLbrace() {
     return findChildByType(LBRACE);
   }

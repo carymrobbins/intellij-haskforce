@@ -93,6 +93,7 @@
     exclamation='!'
     doublehash='##'
     hash='#'
+    idsplice="regexp:\$[a-z_][a-zA-Z_0-9']*"
     dollar='$'
     percent='%'
     ampersand='&'
@@ -383,7 +384,8 @@ private lexp ::= "\\case" altslist
 private fexp ::= aexp [fexp]
 
 private aexp ::= recordlikelhs '{' (fbind ',')* fbind '}'
-               | [singlequote | '$'] qvar
+               | [singlequote] qvar
+               | idsplice
                | thquote qcon
                | gcon
                | literal

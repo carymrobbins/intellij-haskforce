@@ -95,6 +95,9 @@ public interface HaskellExp extends PsiElement {
   PsiElement getDoubleperiod();
 
   @Nullable
+  PsiElement getIdsplice();
+
+  @Nullable
   PsiElement getLbrace();
 
   @Nullable

@@ -124,6 +124,7 @@ public interface HaskellTypes {
   IElementType HADDOCK = new HaskellTokenType("haddock");
   IElementType HASH = new HaskellTokenType("#");
   IElementType HIDING = new HaskellTokenType("hiding");
+  IElementType IDSPLICE = new HaskellTokenType("idsplice");
   IElementType IF = new HaskellTokenType("if");
   IElementType IMPORT = new HaskellTokenType("import");
   IElementType IN = new HaskellTokenType("in");

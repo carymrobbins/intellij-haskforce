@@ -83,6 +83,9 @@ public interface HaskellGuard extends PsiElement {
   PsiElement getDoubleperiod();
 
   @Nullable
+  PsiElement getIdsplice();
+
+  @Nullable
   PsiElement getLbrace();
 
   @Nullable

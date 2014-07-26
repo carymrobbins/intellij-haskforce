@@ -174,6 +174,12 @@ public class HaskellGuardImpl extends ASTWrapperPsiElement implements HaskellGua
 
   @Override
   @Nullable
+  public PsiElement getIdsplice() {
+    return findChildByType(IDSPLICE);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getLbrace() {
     return findChildByType(LBRACE);
   }

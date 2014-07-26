@@ -23,9 +23,9 @@ public class HaskellImporttImpl extends ASTWrapperPsiElement implements HaskellI
   }
 
   @Override
-  @Nullable
-  public HaskellCon getCon() {
-    return findChildByClass(HaskellCon.class);
+  @NotNull
+  public List<HaskellCon> getConList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellCon.class);
   }
 
   @Override
@@ -35,9 +35,9 @@ public class HaskellImporttImpl extends ASTWrapperPsiElement implements HaskellI
   }
 
   @Override
-  @Nullable
-  public HaskellVarid getVarid() {
-    return findChildByClass(HaskellVarid.class);
+  @NotNull
+  public List<HaskellVarid> getVaridList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVarid.class);
   }
 
   @Override
@@ -47,9 +47,9 @@ public class HaskellImporttImpl extends ASTWrapperPsiElement implements HaskellI
   }
 
   @Override
-  @Nullable
-  public HaskellVarsym getVarsym() {
-    return findChildByClass(HaskellVarsym.class);
+  @NotNull
+  public List<HaskellVarsym> getVarsymList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVarsym.class);
   }
 
   @Override

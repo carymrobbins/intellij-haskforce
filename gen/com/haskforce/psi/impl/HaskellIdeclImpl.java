@@ -29,9 +29,9 @@ public class HaskellIdeclImpl extends ASTWrapperPsiElement implements HaskellIde
   }
 
   @Override
-  @Nullable
-  public HaskellCon getCon() {
-    return findChildByClass(HaskellCon.class);
+  @NotNull
+  public List<HaskellCon> getConList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellCon.class);
   }
 
   @Override
@@ -95,9 +95,9 @@ public class HaskellIdeclImpl extends ASTWrapperPsiElement implements HaskellIde
   }
 
   @Override
-  @Nullable
-  public HaskellQtycls getQtycls() {
-    return findChildByClass(HaskellQtycls.class);
+  @NotNull
+  public List<HaskellQtycls> getQtyclsList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQtycls.class);
   }
 
   @Override

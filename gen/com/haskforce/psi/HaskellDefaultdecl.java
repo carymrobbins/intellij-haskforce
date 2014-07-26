@@ -7,8 +7,8 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellDefaultdecl extends PsiElement {
 
-  @Nullable
-  HaskellTypee getTypee();
+  @NotNull
+  List<HaskellTypee> getTypeeList();
 
   @Nullable
   PsiElement getLparen();
