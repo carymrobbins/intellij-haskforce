@@ -2,6 +2,7 @@ package com.haskforce.highlighting;
 
 import com.haskforce.psi.*;
 import com.haskforce.quickfixes.HaskellModuleFilenameFix;
+import com.haskforce.quickfixes.HaskellModuleNameFix;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
@@ -60,13 +61,15 @@ public class HaskellAnnotator implements Annotator {
             public void visitModuledecl(@NotNull HaskellModuledecl o) {
                 super.visitModuledecl(o);
                 HaskellQconid qc = o.getQconid();
-                String moduleName = qc.getConidRegexp().getText();
+                String moduleName = qc.getConid().getText();
                 String fullFileName = o.getContainingFile().getName();
                 String fileSuffix = fullFileName.substring(fullFileName.lastIndexOf('.'));
                 String fileName = fullFileName.substring(0, fullFileName.length() - fileSuffix.length());
                 if (!moduleName.equals(fileName)) {
-                    HaskellModuleFilenameFix fix = new HaskellModuleFilenameFix(moduleName + fileSuffix);
-                    holder.createErrorAnnotation(qc, MSG).registerFix(fix);
+                    HaskellModuleFilenameFix fixFile = new HaskellModuleFilenameFix(moduleName + fileSuffix);
+                    HaskellModuleNameFix fixName = new HaskellModuleNameFix(o.getQconid().getConid(), fileName);
+                    holder.createErrorAnnotation(qc, MSG).registerFix(fixFile);
+                    holder.createErrorAnnotation(qc, MSG).registerFix(fixName);
                 }
             }
         });

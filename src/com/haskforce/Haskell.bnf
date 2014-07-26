@@ -537,7 +537,7 @@ tycls ::= conid
 modulePrefix ::= (conidRegexp '.')+
 
 qvarid ::= [modulePrefix] varid
-qconid ::= [modulePrefix] conidRegexp
+qconid ::= [modulePrefix] conid
 qtycon ::= [modulePrefix] tycon
 qtycls ::= [modulePrefix] tycls
 qvarsym ::= [modulePrefix] varsym

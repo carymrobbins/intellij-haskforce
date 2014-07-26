@@ -5000,14 +5000,14 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // [modulePrefix] conidRegexp
+  // [modulePrefix] conid
   public static boolean qconid(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qconid")) return false;
     if (!nextTokenIs(builder_, CONIDREGEXP)) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = qconid_0(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, CONIDREGEXP);
+    result_ = result_ && conid(builder_, level_ + 1);
     exit_section_(builder_, marker_, QCONID, result_);
     return result_;
   }

@@ -23,15 +23,15 @@ public class HaskellQconidImpl extends ASTWrapperPsiElement implements HaskellQc
   }
 
   @Override
-  @Nullable
-  public HaskellModulePrefix getModulePrefix() {
-    return findChildByClass(HaskellModulePrefix.class);
+  @NotNull
+  public HaskellConid getConid() {
+    return findNotNullChildByClass(HaskellConid.class);
   }
 
   @Override
-  @NotNull
-  public PsiElement getConidRegexp() {
-    return findNotNullChildByType(CONIDREGEXP);
+  @Nullable
+  public HaskellModulePrefix getModulePrefix() {
+    return findChildByClass(HaskellModulePrefix.class);
   }
 
 }
