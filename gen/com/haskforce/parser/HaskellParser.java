@@ -4553,8 +4553,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // '(' '~' ')'         // An "ordinary" qualified tycon;
-  //           | '(' qtyconsym ')'  // These can appear in export lists
+  // '(' ('~' | qtyconsym) ')'        // An "ordinary" qualified tycon;
   //           | qtycon
   public static boolean oqtycon(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "oqtycon")) return false;
@@ -4562,32 +4561,30 @@ public class HaskellParser implements PsiParser {
     boolean result_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<oqtycon>");
     result_ = oqtycon_0(builder_, level_ + 1);
-    if (!result_) result_ = oqtycon_1(builder_, level_ + 1);
     if (!result_) result_ = qtycon(builder_, level_ + 1);
     exit_section_(builder_, level_, marker_, OQTYCON, result_, false, null);
     return result_;
   }
 
-  // '(' '~' ')'
+  // '(' ('~' | qtyconsym) ')'
   private static boolean oqtycon_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "oqtycon_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LPAREN);
-    result_ = result_ && consumeToken(builder_, TILDE);
+    result_ = result_ && oqtycon_0_1(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, RPAREN);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // '(' qtyconsym ')'
-  private static boolean oqtycon_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "oqtycon_1")) return false;
+  // '~' | qtyconsym
+  private static boolean oqtycon_0_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "oqtycon_0_1")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, LPAREN);
-    result_ = result_ && qtyconsym(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, RPAREN);
+    result_ = consumeToken(builder_, TILDE);
+    if (!result_) result_ = qtyconsym(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }

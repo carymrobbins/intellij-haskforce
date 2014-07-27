@@ -553,9 +553,8 @@ varop ::= varsym | '`' varid '`'
 qvarop ::= qvarsym | '`' qvarid '`'
 conop ::= consym | '`' conid '`'
 qconop ::= gconsym | '`' qconid '`'
-oqtycon ::= '(' '~' ')'         // An "ordinary" qualified tycon;
-          | '(' qtyconsym ')'  // These can appear in export lists
-          | qtycon
+oqtycon ::= '(' ('~' | qtyconsym) ')'        // An "ordinary" qualified tycon;
+          | qtycon                           // These can appear in export lists
 
 qtyconop ::= qtyconsym | '`' qtycon '`'
 qtyconsym ::= qconsym | qvarsym | tyconsym
