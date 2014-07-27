@@ -21,6 +21,7 @@
 
 package com.haskforce.highlighting;
 
+
 import com.google.gson.GsonBuilder;
 import com.haskforce.HaskellFileType;
 import com.haskforce.utils.ExecUtil;
@@ -101,29 +102,8 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
     @Nullable
     @Override
     public State collectInformation(@NotNull PsiFile file) {
-        VirtualFile vFile = file.getVirtualFile();
-        if (vFile == null || vFile.getFileType() != HaskellFileType.INSTANCE) {
-            return null;
-        }
-        String canonicalPath = vFile.getCanonicalPath();
-        if (canonicalPath == null) {
-            return null;
-        }
-        Module module = ModuleUtilCore.findModuleForPsiElement(file);
-        if (module == null) {
-            return null;
-        }
-        Sdk sdk = ModuleRootManager.getInstance(module).getSdk();
-        if (sdk == null) {
-            return null;
-        }
-        String homePath = sdk.getHomePath();
-        if (homePath == null) {
-            return null;
-        }
-
         final String workingDir = file.getProject().getBasePath();
-        final String hlintPath = PropertiesComponent.getInstance(module.getProject()).getValue("hlintPath");
+        final String hlintPath = PropertiesComponent.getInstance(file.getProject()).getValue("hlintPath");
         return hlintPath == null || hlintPath.isEmpty() ? null : new State(hlintPath, getVersion(hlintPath), file.getText(), workingDir);
     }
 

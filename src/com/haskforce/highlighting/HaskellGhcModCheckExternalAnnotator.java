@@ -1,18 +1,13 @@
 package com.haskforce.highlighting;
 
-import com.haskforce.HaskellFileType;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.ExternalAnnotator;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.roots.ModuleRootManager;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,27 +22,11 @@ public class HaskellGhcModCheckExternalAnnotator extends ExternalAnnotator<PsiFi
     @Nullable
     @Override
     public GhcMod.Problems doAnnotate(PsiFile file) {
-        final VirtualFile vFile = file.getVirtualFile();
-        if (vFile == null || vFile.getFileType() != HaskellFileType.INSTANCE) {
-            return null;
-        }
-        final String canonicalPath = vFile.getCanonicalPath();
+        final String canonicalPath = file.getVirtualFile().getCanonicalPath();
         if (canonicalPath == null) {
             return null;
         }
-        final Module module = ModuleUtilCore.findModuleForPsiElement(file);
-        if (module == null) {
-            return null;
-        }
-        final Sdk sdk = ModuleRootManager.getInstance(module).getSdk();
-        if (sdk == null) {
-            return null;
-        }
-        final String homePath = sdk.getHomePath();
-        if (homePath == null) {
-            return null;
-        }
-        final String workingDir = file.getProject().getBasePath();
+
         // Force all files to save to ensure annotations are in sync with the file system.
         ApplicationManager.getApplication().invokeAndWait(new Runnable() {
             @Override
@@ -55,7 +34,9 @@ public class HaskellGhcModCheckExternalAnnotator extends ExternalAnnotator<PsiFi
                 FileDocumentManager.getInstance().saveAllDocuments();
             }
         }, ModalityState.any());
-        return GhcMod.check(workingDir, file.getVirtualFile().getCanonicalPath());
+
+        final Project project = file.getProject();
+        return GhcMod.check(project, file.getProject().getBasePath(), canonicalPath);
     }
 
     @Override
