@@ -17,10 +17,7 @@ import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class HaskellGhcModCheckExternalAnnotator extends ExternalAnnotator<PsiFile, List<GhcMod.Problem>> {
+public class HaskellGhcModCheckExternalAnnotator extends ExternalAnnotator<PsiFile, GhcMod.Problems> {
     @Nullable
     @Override
     public PsiFile collectInformation(@NotNull PsiFile file) {
@@ -29,7 +26,7 @@ public class HaskellGhcModCheckExternalAnnotator extends ExternalAnnotator<PsiFi
 
     @Nullable
     @Override
-    public List<GhcMod.Problem> doAnnotate(PsiFile file) {
+    public GhcMod.Problems doAnnotate(PsiFile file) {
         final VirtualFile vFile = file.getVirtualFile();
         if (vFile == null || vFile.getFileType() != HaskellFileType.INSTANCE) {
             return null;
@@ -62,7 +59,7 @@ public class HaskellGhcModCheckExternalAnnotator extends ExternalAnnotator<PsiFi
     }
 
     @Override
-    public void apply(@NotNull PsiFile file, List<GhcMod.Problem> annotationResult, @NotNull AnnotationHolder holder) {
+    public void apply(@NotNull PsiFile file, GhcMod.Problems annotationResult, @NotNull AnnotationHolder holder) {
         if (annotationResult == null || !file.isValid() || annotationResult.isEmpty()) {
             return;
         }
@@ -80,10 +77,10 @@ public class HaskellGhcModCheckExternalAnnotator extends ExternalAnnotator<PsiFi
                 }
             }
             TextRange problemRange = TextRange.create(offsetStart, offsetEnd);
-            if (problem.message.startsWith("Warning: ")) {
-                holder.createWeakWarningAnnotation(problemRange, problem.message.substring("Warning: ".length()));
-            } else {
+            if (problem.isError) {
                 holder.createErrorAnnotation(problemRange, problem.message);
+            } else {
+                holder.createWeakWarningAnnotation(problemRange, problem.message.substring("Warning: ".length()));
             }
         }
     }

@@ -6,12 +6,11 @@ import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class GhcMod {
     @Nullable
-    public static List<Problem> check(String workingDirectory, String file) {
+    public static Problems check(String workingDirectory, String file) {
         // TODO: Add ghc-mod in Haskell Tools.
         GeneralCommandLine commandLine = new GeneralCommandLine("ghc-mod", "check", file);
         commandLine.setWorkDirectory(workingDirectory);
@@ -22,8 +21,8 @@ public class GhcMod {
         return parseProblems(new Scanner(stdout));
     }
 
-    public static List<Problem> parseProblems(Scanner scanner) {
-        List<Problem> result = new ArrayList<Problem>(0);
+    public static Problems parseProblems(Scanner scanner) {
+        Problems result = new Problems();
         Problem problem;
         while ((problem = parseProblem(scanner)) != null) {
             result.add(problem);
@@ -55,18 +54,21 @@ public class GhcMod {
         return new Problem(file, startLine, startColumn, message);
     }
 
+    public static class Problems extends ArrayList<Problem>{}
+
     public static class Problem {
         public String file;
         public int startLine;
         public int startColumn;
         public String message;
+        public boolean isError;
 
         public Problem(String file, int startLine, int startColumn, String message) {
             this.file = file;
             this.startLine = startLine;
             this.startColumn = startColumn;
             this.message = message;
+            this.isError = !message.startsWith("Warning: ");
         }
     }
-
 }
