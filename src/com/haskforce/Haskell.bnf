@@ -436,7 +436,6 @@ private gdpat ::= guards '->' exp [gdpat] {pin=2}
 private squal ::= transformqual
                 | qual
 
-// FIXME: Add lexer support.
 private transformqual ::= 'then' ('group' ['by' exp] 'using' exp | exp ['by' exp])
 
 private qual ::= pat '<-' exp
