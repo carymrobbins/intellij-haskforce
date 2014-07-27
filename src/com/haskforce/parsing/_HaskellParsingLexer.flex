@@ -262,6 +262,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   "!"                 { return EXCLAMATION; }
   "##"                { return DOUBLEHASH; }
   "#"                 { return HASH; }
+  "$("                { return PARENSPLICE; }
   ("$"{VARIDREGEXP})  { return IDSPLICE; }
   "$"                 { return DOLLAR; }
   "%"                 { return PERCENT; }

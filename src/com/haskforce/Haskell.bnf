@@ -93,6 +93,7 @@
     exclamation='!'
     doublehash='##'
     hash='#'
+    parensplice="$("
     idsplice="regexp:\$[a-z_][a-zA-Z_0-9']*"
     dollar='$'
     percent='%'
@@ -384,6 +385,7 @@ private lexp ::= "\\case" altslist
 private fexp ::= aexp [fexp]
 
 private aexp ::= recordlikelhs '{' (fbind ',')* fbind '}'
+               | parensplice exp ')'
                | [singlequote] qvar
                | idsplice
                | thquote qcon
@@ -394,8 +396,6 @@ private aexp ::= recordlikelhs '{' (fbind ',')* fbind '}'
 //               | "[||" exp '||]'
                | '[' ("t" '|' ctype | "p" '|' infixexp |  "d" '|' open topdecls close ) '|]'
                | '(#' '#)'
-               // TODO: Add $( when lexer supports TH.
-               | '$' '(' exp ')'
                | listlike
                | parenlike
 

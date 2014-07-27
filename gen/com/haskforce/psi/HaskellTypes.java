@@ -151,6 +151,7 @@ public interface HaskellTypes {
   IElementType OF = new HaskellTokenType("of");
   IElementType OPENCOM = new HaskellTokenType("{-");
   IElementType OPENPRAGMA = new HaskellTokenType("{-#");
+  IElementType PARENSPLICE = new HaskellTokenType("$(");
   IElementType PERCENT = new HaskellTokenType("%");
   IElementType PERIOD = new HaskellTokenType(".");
   IElementType PIPE = new HaskellTokenType("|");

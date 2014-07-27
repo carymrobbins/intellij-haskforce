@@ -243,6 +243,7 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // recordlikelhs '{' (fbind ',')* fbind '}'
+  //                | parensplice exp ')'
   //                | [singlequote] qvar
   //                | idsplice
   //                | thquote qcon
@@ -253,8 +254,6 @@ public class HaskellParser implements PsiParser {
   // //               | "[||" exp '||]'
   //                | '[' ("t" '|' ctype | "p" '|' infixexp |  "d" '|' open topdecls close ) '|]'
   //                | '(#' '#)'
-  //                // TODO: Add $( when lexer supports TH.
-  //                | '$' '(' exp ')'
   //                | listlike
   //                | parenlike
   static boolean aexp(PsiBuilder builder_, int level_) {
@@ -263,11 +262,11 @@ public class HaskellParser implements PsiParser {
     Marker marker_ = enter_section_(builder_);
     result_ = aexp_0(builder_, level_ + 1);
     if (!result_) result_ = aexp_1(builder_, level_ + 1);
+    if (!result_) result_ = aexp_2(builder_, level_ + 1);
     if (!result_) result_ = consumeToken(builder_, IDSPLICE);
-    if (!result_) result_ = aexp_3(builder_, level_ + 1);
+    if (!result_) result_ = aexp_4(builder_, level_ + 1);
     if (!result_) result_ = gcon(builder_, level_ + 1);
     if (!result_) result_ = literal(builder_, level_ + 1);
-    if (!result_) result_ = aexp_6(builder_, level_ + 1);
     if (!result_) result_ = aexp_7(builder_, level_ + 1);
     if (!result_) result_ = aexp_8(builder_, level_ + 1);
     if (!result_) result_ = aexp_9(builder_, level_ + 1);
@@ -314,27 +313,39 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // [singlequote] qvar
+  // parensplice exp ')'
   private static boolean aexp_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "aexp_1")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = aexp_1_0(builder_, level_ + 1);
+    result_ = consumeToken(builder_, PARENSPLICE);
+    result_ = result_ && exp(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RPAREN);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // [singlequote] qvar
+  private static boolean aexp_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "aexp_2")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = aexp_2_0(builder_, level_ + 1);
     result_ = result_ && qvar(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   // [singlequote]
-  private static boolean aexp_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "aexp_1_0")) return false;
+  private static boolean aexp_2_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "aexp_2_0")) return false;
     consumeToken(builder_, SINGLEQUOTE);
     return true;
   }
 
   // thquote qcon
-  private static boolean aexp_3(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "aexp_3")) return false;
+  private static boolean aexp_4(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "aexp_4")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, THQUOTE);
@@ -344,83 +355,83 @@ public class HaskellParser implements PsiParser {
   }
 
   // ('[|' | '[' exp '|' [semi]) exp [semi]'|]'
-  private static boolean aexp_6(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "aexp_6")) return false;
+  private static boolean aexp_7(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "aexp_7")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = aexp_6_0(builder_, level_ + 1);
+    result_ = aexp_7_0(builder_, level_ + 1);
     result_ = result_ && exp(builder_, level_ + 1);
-    result_ = result_ && aexp_6_2(builder_, level_ + 1);
+    result_ = result_ && aexp_7_2(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, RTHCLOSE);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   // '[|' | '[' exp '|' [semi]
-  private static boolean aexp_6_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "aexp_6_0")) return false;
+  private static boolean aexp_7_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "aexp_7_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LTHOPEN);
-    if (!result_) result_ = aexp_6_0_1(builder_, level_ + 1);
+    if (!result_) result_ = aexp_7_0_1(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   // '[' exp '|' [semi]
-  private static boolean aexp_6_0_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "aexp_6_0_1")) return false;
+  private static boolean aexp_7_0_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "aexp_7_0_1")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LBRACKET);
     result_ = result_ && exp(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, PIPE);
-    result_ = result_ && aexp_6_0_1_3(builder_, level_ + 1);
+    result_ = result_ && aexp_7_0_1_3(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   // [semi]
-  private static boolean aexp_6_0_1_3(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "aexp_6_0_1_3")) return false;
+  private static boolean aexp_7_0_1_3(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "aexp_7_0_1_3")) return false;
     semi(builder_, level_ + 1);
     return true;
   }
 
   // [semi]
-  private static boolean aexp_6_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "aexp_6_2")) return false;
+  private static boolean aexp_7_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "aexp_7_2")) return false;
     semi(builder_, level_ + 1);
     return true;
   }
 
   // '[' ("t" '|' ctype | "p" '|' infixexp |  "d" '|' open topdecls close ) '|]'
-  private static boolean aexp_7(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "aexp_7")) return false;
+  private static boolean aexp_8(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "aexp_8")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LBRACKET);
-    result_ = result_ && aexp_7_1(builder_, level_ + 1);
+    result_ = result_ && aexp_8_1(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, RTHCLOSE);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   // "t" '|' ctype | "p" '|' infixexp |  "d" '|' open topdecls close
-  private static boolean aexp_7_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "aexp_7_1")) return false;
+  private static boolean aexp_8_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "aexp_8_1")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = aexp_7_1_0(builder_, level_ + 1);
-    if (!result_) result_ = aexp_7_1_1(builder_, level_ + 1);
-    if (!result_) result_ = aexp_7_1_2(builder_, level_ + 1);
+    result_ = aexp_8_1_0(builder_, level_ + 1);
+    if (!result_) result_ = aexp_8_1_1(builder_, level_ + 1);
+    if (!result_) result_ = aexp_8_1_2(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   // "t" '|' ctype
-  private static boolean aexp_7_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "aexp_7_1_0")) return false;
+  private static boolean aexp_8_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "aexp_8_1_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, "t");
@@ -431,8 +442,8 @@ public class HaskellParser implements PsiParser {
   }
 
   // "p" '|' infixexp
-  private static boolean aexp_7_1_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "aexp_7_1_1")) return false;
+  private static boolean aexp_8_1_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "aexp_8_1_1")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, "p");
@@ -443,8 +454,8 @@ public class HaskellParser implements PsiParser {
   }
 
   // "d" '|' open topdecls close
-  private static boolean aexp_7_1_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "aexp_7_1_2")) return false;
+  private static boolean aexp_8_1_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "aexp_8_1_2")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, "d");
@@ -457,25 +468,12 @@ public class HaskellParser implements PsiParser {
   }
 
   // '(#' '#)'
-  private static boolean aexp_8(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "aexp_8")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, LUNBOXPAREN);
-    result_ = result_ && consumeToken(builder_, RUNBOXPAREN);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // '$' '(' exp ')'
   private static boolean aexp_9(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "aexp_9")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, DOLLAR);
-    result_ = result_ && consumeToken(builder_, LPAREN);
-    result_ = result_ && exp(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, RPAREN);
+    result_ = consumeToken(builder_, LUNBOXPAREN);
+    result_ = result_ && consumeToken(builder_, RUNBOXPAREN);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }

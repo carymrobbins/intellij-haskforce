@@ -83,9 +83,6 @@ public interface HaskellExp extends PsiElement {
   PsiElement getBackslash();
 
   @Nullable
-  PsiElement getDollar();
-
-  @Nullable
   PsiElement getDoublearrow();
 
   @Nullable
@@ -105,6 +102,9 @@ public interface HaskellExp extends PsiElement {
 
   @Nullable
   PsiElement getLunboxparen();
+
+  @Nullable
+  PsiElement getParensplice();
 
   @Nullable
   PsiElement getRbrace();

@@ -77,9 +77,6 @@ public interface HaskellGuard extends PsiElement {
   PsiElement getBackslash();
 
   @Nullable
-  PsiElement getDollar();
-
-  @Nullable
   PsiElement getDoubleperiod();
 
   @Nullable
@@ -93,6 +90,9 @@ public interface HaskellGuard extends PsiElement {
 
   @Nullable
   PsiElement getLunboxparen();
+
+  @Nullable
+  PsiElement getParensplice();
 
   @Nullable
   PsiElement getRbrace();

@@ -162,12 +162,6 @@ public class HaskellGuardImpl extends ASTWrapperPsiElement implements HaskellGua
 
   @Override
   @Nullable
-  public PsiElement getDollar() {
-    return findChildByType(DOLLAR);
-  }
-
-  @Override
-  @Nullable
   public PsiElement getDoubleperiod() {
     return findChildByType(DOUBLEPERIOD);
   }
@@ -194,6 +188,12 @@ public class HaskellGuardImpl extends ASTWrapperPsiElement implements HaskellGua
   @Nullable
   public PsiElement getLunboxparen() {
     return findChildByType(LUNBOXPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getParensplice() {
+    return findChildByType(PARENSPLICE);
   }
 
   @Override

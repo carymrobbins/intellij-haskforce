@@ -174,12 +174,6 @@ public class HaskellExpImpl extends ASTWrapperPsiElement implements HaskellExp {
 
   @Override
   @Nullable
-  public PsiElement getDollar() {
-    return findChildByType(DOLLAR);
-  }
-
-  @Override
-  @Nullable
   public PsiElement getDoublearrow() {
     return findChildByType(DOUBLEARROW);
   }
@@ -218,6 +212,12 @@ public class HaskellExpImpl extends ASTWrapperPsiElement implements HaskellExp {
   @Nullable
   public PsiElement getLunboxparen() {
     return findChildByType(LUNBOXPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getParensplice() {
+    return findChildByType(PARENSPLICE);
   }
 
   @Override
