@@ -12,8 +12,8 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class GhcMod {
+    @Nullable
     public static String getPath(@NotNull Project project) {
-        // TODO: Add ghc-mod to Haskell Tools.
         final String path = PropertiesComponent.getInstance(project).getValue("ghcModPath");
         return path == null || path.isEmpty() ? null : path;
     }

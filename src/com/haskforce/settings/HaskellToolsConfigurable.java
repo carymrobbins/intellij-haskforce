@@ -3,20 +3,15 @@ package com.haskforce.settings;
 import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.GuiUtil;
 import com.intellij.ide.util.PropertiesComponent;
-import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
-import com.intellij.ui.TextAccessor;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * The "Haskell Tools" option in Preferences->Project Settings.
@@ -24,12 +19,9 @@ import java.awt.event.ActionListener;
 public class HaskellToolsConfigurable implements SearchableConfigurable {
     public static final String HASKELL_TOOLS_ID = "Haskell Tools";
 
-    private Project project;
+    private PropertiesComponent propertiesComponent;
 
-    // Old values to detect user updates.
-    private String oldParserHelperPath;
-    private String oldStylishPath;
-    private String oldHlintPath;
+    private Project project;
 
     // Swing components.
     private JPanel mainPanel;
@@ -42,28 +34,75 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     private TextFieldWithBrowseButton hlintPath;
     private JButton hlintAutoFind;
     private JLabel hlintVersion;
+    private TextFieldWithBrowseButton ghcModPath;
+    private JButton ghcModAutoFind;
+    private JLabel ghcModVersion;
 
-    public HaskellToolsConfigurable(@NotNull Project inProject) {
-        project = inProject;
-        oldParserHelperPath = PropertiesComponent.getInstance(project).getValue("parserHelperPath", "");
-        oldStylishPath = PropertiesComponent.getInstance(project).getValue("stylishPath", "");
-        oldHlintPath = PropertiesComponent.getInstance(project).getValue("hlintPath", "");
-        if (!oldParserHelperPath.isEmpty()) {
-            parserHelperPath.setText(oldParserHelperPath);
+    private Tool[] tools;
+
+    public HaskellToolsConfigurable(@NotNull Project project) {
+        this.project = project;
+        this.propertiesComponent = PropertiesComponent.getInstance(project);
+        tools = new Tool[]{
+                new Tool(project, "parser-helper", "parserHelperPath", parserHelperPath, parserHelperAutoFind, parserHelperVersion, "--numeric-version"),
+                new Tool(project, "stylish-haskell", "stylishPath", stylishPath, stylishAutoFind, stylishVersion),
+                new Tool(project, "hlint", "hlintPath", hlintPath, hlintAutoFind, hlintVersion),
+                new Tool(project, "ghc-mod", "ghcModPath", ghcModPath, ghcModAutoFind, ghcModVersion),
+        };
+    }
+
+    class Tool {
+        public final Project project;
+        public final String command;
+        public final String key;
+        public String oldPath;
+        public final TextFieldWithBrowseButton pathField;
+        public final JLabel versionField;
+        public final String versionParam;
+        public final JButton autoFindButton;
+
+        Tool(Project project, String command, String key, TextFieldWithBrowseButton pathField, JButton autoFindButton,
+             JLabel versionField) {
+            this(project, command, key, pathField, autoFindButton, versionField, "--version");
         }
-        if (!oldStylishPath.isEmpty()) {
-            stylishPath.setText(oldStylishPath);
+
+        Tool(Project project, String command, String key, TextFieldWithBrowseButton pathField, JButton autoFindButton,
+             JLabel versionField, String versionParam) {
+            this.project = project;
+            this.command = command;
+            this.key = key;
+            this.oldPath = propertiesComponent.getValue(key, "");
+            this.pathField = pathField;
+            this.versionField = versionField;
+            this.versionParam = versionParam;
+            this.autoFindButton = autoFindButton;
+
+            if (!oldPath.isEmpty()) {
+                pathField.setText(oldPath);
+            }
+            GuiUtil.addFolderListener(pathField, command);
+            GuiUtil.addApplyPathAction(autoFindButton, pathField, command);
+            updateVersion();
         }
-        if (!oldHlintPath.isEmpty()) {
-            hlintPath.setText(oldHlintPath);
+
+        public void updateVersion() {
+            String pathText = pathField.getText();
+            if (!pathText.isEmpty()) {
+                versionField.setText(getVersion(pathText, versionParam));
+            }
         }
-        GuiUtil.addFolderListener(parserHelperPath, "parser-helper");
-        GuiUtil.addFolderListener(stylishPath, "stylish-haskell");
-        GuiUtil.addFolderListener(hlintPath, "hlint");
-        GuiUtil.addApplyPathAction(parserHelperAutoFind, parserHelperPath, "parser-helper");
-        GuiUtil.addApplyPathAction(stylishAutoFind, stylishPath, "stylish-haskell");
-        GuiUtil.addApplyPathAction(hlintAutoFind, hlintPath, "hlint");
-        updateVersionInfoFields();
+
+        public boolean isModified() {
+            return !pathField.getText().equals(oldPath);
+        }
+
+        private void saveState() {
+            propertiesComponent.setValue(key, oldPath = pathField.getText());
+        }
+
+        private void restoreState() {
+            pathField.setText(oldPath);
+        }
     }
 
     @NotNull
@@ -75,6 +114,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     @Nullable
     @Override
     public Runnable enableSearch(String s) {
+        // TODO
         return null;
     }
 
@@ -100,9 +140,12 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
      */
     @Override
     public boolean isModified() {
-        return !(parserHelperPath.getText().equals(oldParserHelperPath) &&
-                stylishPath.getText().equals(oldStylishPath) &&
-                hlintPath.getText().equals(oldHlintPath));
+        for (Tool tool : tools) {
+            if (tool.isModified()) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -139,19 +182,8 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
      * Updates the version info fields for all files configured.
      */
     private void updateVersionInfoFields() {
-        // Parser-helper.
-        if (!parserHelperPath.getText().isEmpty()) {
-            parserHelperVersion.setText(getVersion(parserHelperPath.getText(), "--numeric-version"));
-        }
-
-        // Stylish-Haskell.
-        if (!stylishPath.getText().isEmpty()) {
-            stylishVersion.setText(getVersion(stylishPath.getText(), "--version"));
-        }
-
-        // Hlint.
-        if (!hlintPath.getText().isEmpty()) {
-            hlintVersion.setText(getVersion(hlintPath.getText(), "--version"));
+        for (Tool tool : tools) {
+            tool.updateVersion();
         }
     }
 
@@ -159,20 +191,17 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
      * Persistent save of the current state.
      */
     private void saveState() {
-        PropertiesComponent.getInstance(project).setValue("parserHelperPath", parserHelperPath.getText());
-        PropertiesComponent.getInstance(project).setValue("stylishPath", stylishPath.getText());
-        PropertiesComponent.getInstance(project).setValue("hlintPath", hlintPath.getText());
-        oldParserHelperPath = parserHelperPath.getText();
-        oldStylishPath = stylishPath.getText();
-        oldHlintPath = hlintPath.getText();
+        for (Tool tool : tools) {
+            tool.saveState();
+        }
     }
 
     /**
      * Restore components to the initial state.
      */
     private void restoreState() {
-        parserHelperPath.setText(oldParserHelperPath);
-        stylishPath.setText(oldStylishPath);
-        hlintPath.setText(oldHlintPath);
+        for (Tool tool : tools) {
+            tool.restoreState();
+        }
     }
 }
