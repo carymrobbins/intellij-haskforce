@@ -36,10 +36,17 @@ public class HaskellParserWrapper extends HaskellParser {
         }
     };
 
+    private boolean myDebugMode;
+
+    public HaskellParserWrapper(boolean debugMode) {
+        myDebugMode = debugMode;
+    }
+
     @NotNull
     @Override
     public ASTNode parse(IElementType root_, PsiBuilder builder_) {
         builder_.setTokenTypeRemapper(myRemapper);
+        builder_.setDebugMode(myDebugMode);
         return super.parse(root_, builder_);
     }
 }

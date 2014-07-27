@@ -33,6 +33,15 @@ public class HaskellParserDefinition implements ParserDefinition {
 
     public static final IFileElementType FILE = new IFileElementType(Language.<HaskellLanguage>findInstance(HaskellLanguage.class));
 
+    /**
+     * [SLOW; +300%] Enable internal consistency checks in PsiBuilder.
+     */
+    private boolean myDebugMode;
+
+    public HaskellParserDefinition(boolean debugMode) {
+        myDebugMode = debugMode;
+    }
+
     @NotNull
     @Override
     public Lexer createLexer(Project project) {
@@ -67,7 +76,7 @@ public class HaskellParserDefinition implements ParserDefinition {
         if (pjbuild || System.getProperty("PARSER", "").equals("2")) {
             return new HaskellParser2(project);
         }
-        return new HaskellParserWrapper();
+        return new HaskellParserWrapper(myDebugMode);
     }
 
     @Override
