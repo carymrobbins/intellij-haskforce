@@ -23,20 +23,13 @@ package com.haskforce.highlighting;
 
 
 import com.google.gson.GsonBuilder;
-import com.haskforce.HaskellFileType;
 import com.haskforce.utils.ExecUtil;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.lang.annotation.ExternalAnnotator;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.projectRoots.Sdk;
-import com.intellij.openapi.roots.ModuleRootManager;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
@@ -55,7 +48,7 @@ import java.util.regex.Pattern;
  * The annotator runs once all other background processes have completed, such as the lexer, parser, highlighter, etc.
  * If the file does not parse, these annotations will not be available.
  */
-public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlintExternalAnnotator.State, HaskellHlintExternalAnnotator.State> {
+public class HaskellHlintExternalAnnotator extends HaskellExternalAnnotatorBase<HaskellHlintExternalAnnotator.State, HaskellHlintExternalAnnotator.State> {
     private static final Logger LOG = Logger.getInstance(HaskellHlintExternalAnnotator.class);
     private static final Pattern WHITESPACE_REGEX = Pattern.compile("\\s+");
     private static final Pattern HLINT_VERSION_REGEX = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)");
@@ -151,7 +144,7 @@ public class HaskellHlintExternalAnnotator extends ExternalAnnotator<HaskellHlin
             }
             TextRange problemRange = TextRange.create(offsetStart, offsetEnd);
             String message = problem.hint + (problem.to == null ? "" : ", why not: " + problem.to);
-            holder.createWarningAnnotation(problemRange, message);
+            createWarningAnnotation(holder, problemRange, message);
             // TODO: Add an inspection to fix/ignore.
         }
     }

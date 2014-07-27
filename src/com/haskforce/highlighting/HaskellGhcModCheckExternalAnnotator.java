@@ -1,7 +1,6 @@
 package com.haskforce.highlighting;
 
 import com.intellij.lang.annotation.AnnotationHolder;
-import com.intellij.lang.annotation.ExternalAnnotator;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
@@ -20,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
  * The annotator runs once all other background processes have completed, such as the lexer, parser, highlighter, etc.
  * If the file does not parse, these annotations will not be available.
  */
-public class HaskellGhcModCheckExternalAnnotator extends ExternalAnnotator<PsiFile, GhcMod.Problems> {
+public class HaskellGhcModCheckExternalAnnotator extends HaskellExternalAnnotatorBase<PsiFile, GhcMod.Problems> {
     @Nullable
     @Override
     public PsiFile collectInformation(@NotNull PsiFile file) {
@@ -67,9 +66,9 @@ public class HaskellGhcModCheckExternalAnnotator extends ExternalAnnotator<PsiFi
             }
             TextRange problemRange = TextRange.create(offsetStart, offsetEnd);
             if (problem.isError) {
-                holder.createErrorAnnotation(problemRange, problem.message);
+                createErrorAnnotation(holder, problemRange, problem.message);
             } else {
-                holder.createWeakWarningAnnotation(problemRange, problem.message.substring("Warning: ".length()));
+                createWeakWarningAnnotation(holder, problemRange, problem.message.substring("Warning: ".length()));
             }
         }
     }

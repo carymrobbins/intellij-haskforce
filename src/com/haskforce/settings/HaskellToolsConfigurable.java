@@ -47,7 +47,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
                 new Tool(project, "parser-helper", "parserHelperPath", parserHelperPath, parserHelperAutoFind, parserHelperVersion, "--numeric-version"),
                 new Tool(project, "stylish-haskell", "stylishPath", stylishPath, stylishAutoFind, stylishVersion),
                 new Tool(project, "hlint", "hlintPath", hlintPath, hlintAutoFind, hlintVersion),
-                new Tool(project, "ghc-mod", "ghcModPath", ghcModPath, ghcModAutoFind, ghcModVersion),
+                new Tool(project, "ghc-mod", "ghcModPath", ghcModPath, ghcModAutoFind, ghcModVersion, "version"),
         };
     }
 
