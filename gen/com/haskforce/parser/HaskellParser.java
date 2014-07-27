@@ -3262,64 +3262,36 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // ppragma+ idecls
-  //                  | open [idecls1] close
+  // ppragma* open [idecls1] close
   static boolean idecls(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "idecls")) return false;
     boolean result_;
-    Marker marker_ = enter_section_(builder_);
+    boolean pinned_;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = idecls_0(builder_, level_ + 1);
-    if (!result_) result_ = idecls_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // ppragma+ idecls
-  private static boolean idecls_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "idecls_0")) return false;
-    boolean result_;
-    boolean pinned_;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = idecls_0_0(builder_, level_ + 1);
-    pinned_ = result_; // pin = 1
-    result_ = result_ && idecls(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
-    return result_ || pinned_;
-  }
-
-  // ppragma+
-  private static boolean idecls_0_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "idecls_0_0")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = ppragma(builder_, level_ + 1);
-    int pos_ = current_position_(builder_);
-    while (result_) {
-      if (!ppragma(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "idecls_0_0", pos_)) break;
-      pos_ = current_position_(builder_);
-    }
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // open [idecls1] close
-  private static boolean idecls_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "idecls_1")) return false;
-    boolean result_;
-    boolean pinned_;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = open(builder_, level_ + 1);
-    pinned_ = result_; // pin = 1
-    result_ = result_ && report_error_(builder_, idecls_1_1(builder_, level_ + 1));
+    result_ = result_ && open(builder_, level_ + 1);
+    pinned_ = result_; // pin = 2
+    result_ = result_ && report_error_(builder_, idecls_2(builder_, level_ + 1));
     result_ = pinned_ && close(builder_, level_ + 1) && result_;
     exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
     return result_ || pinned_;
   }
 
+  // ppragma*
+  private static boolean idecls_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "idecls_0")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!ppragma(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "idecls_0", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
+  }
+
   // [idecls1]
-  private static boolean idecls_1_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "idecls_1_1")) return false;
+  private static boolean idecls_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "idecls_2")) return false;
     idecls1(builder_, level_ + 1);
     return true;
   }

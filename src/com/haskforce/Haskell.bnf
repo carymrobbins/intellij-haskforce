@@ -245,9 +245,7 @@ cdecl ::= atdecl
 private atdecl ::= "type" (typee [kindsig] | ctype '=' ctype)
                  | "data" ctype [kindsig]
 
-// TODO: Parse errors if joining the two alternatives. Revisit later.
-private idecls ::= ppragma+ idecls
-                 | open [idecls1] close {pin(".*")=1}
+private idecls ::= ppragma* open [idecls1] close {pin=2}
 
 private idecls1 ::= idecl0 [semi idecls1]
 
