@@ -503,34 +503,36 @@ private comma_kinds1 ::= kind  [',' comma_kinds1]
 
 private literal ::= (floattoken | integertoken) ['#'|'##']
                   | (chartoken | pstringtoken) ['#']
-private space ::= LINE_WS
-private newline ::= EOL
-private whitestuff ::= whitechar | comment | haddock
-private whitechar ::= space | newline | '\t'
+
 ppragma ::= openpragma PRAGMA+ closepragma {pin(".*")=3}
-special ::= '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}' | thquote | backtick
-private symbol ::= symbol1 | '=' | '|' | '!' | '#' |
+
+// private symbol ::= symbol1 | '=' | '|' | '!' | '#' |
+
+// Stripped down version of symbol; real definition in comment above.
 private symbol1 ::= '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '>' | '?' | '@'
          | '\' | '^' | '-' | '~' | ':'
-varid ::= !reservedid (varidRegexp | "as") {
+varid ::= (varidRegexp | "as") {
         methods=[getName getNameIdentifier getReference setName getPresentation]
     }
 conid ::= conidRegexp {
         methods=[getName getNameIdentifier getReference setName getPresentation]
     }
 
-private reservedExpr ::= 'case' | 'do' | 'else' | 'if' | 'in' | 'let' | 'of' | 'then'
-private reservedDecl ::= 'class' | 'data' | 'default' | 'deriving' | 'foreign' | 'instance'
-                       | 'newtype' | 'type' | 'where' | 'forall'
-private reservedMeta ::= 'export' | 'foreign' | 'import' | 'infix'
-                       | 'infixl' | 'infixr'
-private reservedVar ::= '_'
-private reservedid  ::= reservedExpr | reservedDecl | reservedMeta | reservedVar
-
 varsym ::= VARSYMTOK | symbol1
 consym ::= CONSYMTOK
 
-reservedop ::= '..' | '::' | '=' | '\' | '|' | '<-' | '->' | '@' | '~' | '=>'
+// Quick documentation of various syntactic categories.
+//
+// special ::= '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}' | thquote | backtick
+//
+// private reservedExpr ::= 'case' | 'do' | 'else' | 'if' | 'in' | 'let' | 'of' | 'then'
+// private reservedDecl ::= 'class' | 'data' | 'default' | 'deriving' | 'foreign' | 'instance'
+//                        | 'newtype' | 'type' | 'where' | 'forall'
+// private reservedMeta ::= 'export' | 'foreign' | 'import' | 'infix'
+//                        | 'infixl' | 'infixr'
+// private reservedVar ::= '_'
+// private reservedid  ::= reservedExpr | reservedDecl | reservedMeta | reservedVar
+// reservedop ::= '..' | '::' | '=' | '\' | '|' | '<-' | '->' | '@' | '~' | '=>'
 
 tyvar ::= varid
 tycon ::= conid

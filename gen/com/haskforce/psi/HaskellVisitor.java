@@ -227,15 +227,7 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitReservedop(@NotNull HaskellReservedop o) {
-    visitPsiElement(o);
-  }
-
   public void visitRhs(@NotNull HaskellRhs o) {
-    visitPsiElement(o);
-  }
-
-  public void visitSpecial(@NotNull HaskellSpecial o) {
     visitPsiElement(o);
   }
 

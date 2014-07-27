@@ -26,10 +26,6 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
             "HASKELL_RESERVEDID", DefaultLanguageHighlighterColors.KEYWORD);
     public static final TextAttributesKey[] RESERVEDID_KEYS = new TextAttributesKey[]{RESERVEDID};
 
-    public static final TextAttributesKey RESERVEDOP = TextAttributesKey.createTextAttributesKey(
-            "HASKELL_RESERVEDOP", DefaultLanguageHighlighterColors.KEYWORD);
-    public static final TextAttributesKey[] RESERVEDOP_KEYS = new TextAttributesKey[]{RESERVEDOP};
-
     public static final TextAttributesKey MODULE = TextAttributesKey.createTextAttributesKey(
             "HASKELL_MODULE", DefaultLanguageHighlighterColors.INTERFACE_NAME);
     public static final TextAttributesKey[] MODULE_KEYS = new TextAttributesKey[]{MODULE};
@@ -105,6 +101,15 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
                     , INFIXL, INFIXR, INSTANCE, LET, HaskellTypes.MODULETOKEN
                     , NEWTYPE, OF, QUALIFIED, THEN, TYPE, WHERE}));
 
+    /**
+     * Tokens of specials.
+     *
+     * Used for mapping how the token should be highlighted.
+     */
+    private static final HashSet<IElementType> specialTokens = new HashSet<IElementType>(
+            Arrays.asList(new IElementType[]{LPAREN, RPAREN, COMMA, SEMICOLON
+                    , LBRACKET, RBRACKET, LBRACE, RBRACE}));
+
     @NotNull
     @Override
     public Lexer getHighlightingLexer() {
@@ -129,7 +134,7 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
         } else if (tokenType.equals(HaskellTypes.STRINGTOKEN) ||
                 tokenType.equals(HaskellTypes.DOUBLEQUOTE)) {
             return STRING_KEYS;
-        } else if (tokenType.equals(HaskellTypes.SPECIAL)) {
+        } else if (specialTokens.contains(tokenType)) {
             return SPECIAL_KEYS;
         } else if (tokenType.equals(HaskellTypes.COMMENTTEXT) ||
                 tokenType.equals(HaskellTypes.OPENCOM) ||
@@ -143,8 +148,6 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
             return CONSYM_KEYS;
         } else if (tokenType.equals(HaskellTypes.VARSYM)) {
             return VARSYM_KEYS;
-        } else if (tokenType.equals(HaskellTypes.RESERVEDOP)) {
-            return RESERVEDOP_KEYS;
         } else if (reservedIds.contains(tokenType)) {
             return RESERVEDID_KEYS;
         }

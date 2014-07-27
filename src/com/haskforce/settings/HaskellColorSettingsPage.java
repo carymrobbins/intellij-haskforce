@@ -110,7 +110,6 @@ public class HaskellColorSettingsPage implements ColorSettingsPage {
         map.put("vi", HaskellSyntaxHighlighter.VARID);
         map.put("iv", HaskellSyntaxHighlighter.INFIXVARID);
         map.put("nc", HaskellSyntaxHighlighter.NCOMMENT);
-        map.put("ro", HaskellSyntaxHighlighter.RESERVEDOP);
         map.put("sp", HaskellSyntaxHighlighter.SPECIAL);
         return map;
     }

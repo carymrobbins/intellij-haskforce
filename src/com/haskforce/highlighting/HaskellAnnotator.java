@@ -52,12 +52,6 @@ public class HaskellAnnotator implements Annotator {
             }
 
             @Override
-            public void visitReservedop(@NotNull HaskellReservedop o) {
-                super.visitReservedop(o);
-                setHighlighting(o, holder, HaskellSyntaxHighlighter.RESERVEDOP);
-            }
-
-            @Override
             public void visitModuledecl(@NotNull HaskellModuledecl o) {
                 super.visitModuledecl(o);
                 HaskellQconid qc = o.getQconid();

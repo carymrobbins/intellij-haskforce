@@ -63,9 +63,7 @@ public interface HaskellTypes {
   IElementType QVAROP = new HaskellElementType("QVAROP");
   IElementType QVARS = new HaskellElementType("QVARS");
   IElementType QVARSYM = new HaskellElementType("QVARSYM");
-  IElementType RESERVEDOP = new HaskellElementType("RESERVEDOP");
   IElementType RHS = new HaskellElementType("RHS");
-  IElementType SPECIAL = new HaskellElementType("SPECIAL");
   IElementType STMTS = new HaskellElementType("STMTS");
   IElementType TV_BNDR = new HaskellElementType("TV_BNDR");
   IElementType TYCLS = new HaskellElementType("TYCLS");
@@ -113,7 +111,6 @@ public interface HaskellTypes {
   IElementType DOUBLEPERIOD = new HaskellTokenType("..");
   IElementType DOUBLEQUOTE = new HaskellTokenType("\"");
   IElementType ELSE = new HaskellTokenType("else");
-  IElementType EOL = new HaskellTokenType("EOL");
   IElementType EQUALS = new HaskellTokenType("=");
   IElementType EXCLAMATION = new HaskellTokenType("!");
   IElementType EXPORTTOKEN = new HaskellTokenType("export");
@@ -139,7 +136,6 @@ public interface HaskellTypes {
   IElementType LEFTARROW = new HaskellTokenType("<-");
   IElementType LESSTHAN = new HaskellTokenType("<");
   IElementType LET = new HaskellTokenType("let");
-  IElementType LINE_WS = new HaskellTokenType("LINE_WS");
   IElementType LPAREN = new HaskellTokenType("(");
   IElementType LTHOPEN = new HaskellTokenType("[|");
   IElementType LUNBOXPAREN = new HaskellTokenType("(#");
@@ -170,7 +166,6 @@ public interface HaskellTypes {
   IElementType SINGLEQUOTE = new HaskellTokenType("'");
   IElementType SLASH = new HaskellTokenType("/");
   IElementType STRINGTOKEN = new HaskellTokenType("STRINGTOKEN");
-  IElementType SYMBOL_5_0 = new HaskellTokenType("symbol_5_0");
   IElementType THEN = new HaskellTokenType("then");
   IElementType THQUOTE = new HaskellTokenType("''");
   IElementType TILDE = new HaskellTokenType("~");
@@ -352,14 +347,8 @@ public interface HaskellTypes {
       else if (type == QVARSYM) {
         return new HaskellQvarsymImpl(node);
       }
-      else if (type == RESERVEDOP) {
-        return new HaskellReservedopImpl(node);
-      }
       else if (type == RHS) {
         return new HaskellRhsImpl(node);
-      }
-      else if (type == SPECIAL) {
-        return new HaskellSpecialImpl(node);
       }
       else if (type == STMTS) {
         return new HaskellStmtsImpl(node);

@@ -110,12 +110,6 @@ public interface HaskellTypes2 {
             else if (type == QVARSYM) {
                 return new HaskellQvarsymImpl(node);
             }
-            else if (type == RESERVEDOP) {
-                return new HaskellReservedopImpl(node);
-            }
-            else if (type == SPECIAL) {
-                return new HaskellSpecialImpl(node);
-            }
             else if (type == TYCLS) {
                 return new HaskellTyclsImpl(node);
             }

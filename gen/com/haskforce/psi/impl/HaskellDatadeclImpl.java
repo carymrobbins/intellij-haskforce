@@ -29,9 +29,9 @@ public class HaskellDatadeclImpl extends ASTWrapperPsiElement implements Haskell
   }
 
   @Override
-  @NotNull
-  public List<HaskellCon> getConList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellCon.class);
+  @Nullable
+  public HaskellCon getCon() {
+    return findChildByClass(HaskellCon.class);
   }
 
   @Override
