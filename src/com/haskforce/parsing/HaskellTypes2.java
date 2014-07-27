@@ -37,8 +37,8 @@ public interface HaskellTypes2 {
     IElementType QVARS = new HaskellElementType("QVARS");
     IElementType QVARSYM = new HaskellElementType("QVARSYM");
     IElementType RESERVEDOP = new HaskellElementType("RESERVEDOP");
-    IElementType SPECIAL = new HaskellElementType("SPECIAL");
-    IElementType SYMBOL = new HaskellElementType("SYMBOL");
+    IElementType SPECIAL = new HaskellElementType("SPECIALS");
+    IElementType SYMBOL = new HaskellElementType("SYMBOLS");
     IElementType TYCLS = new HaskellElementType("TYCLS");
     IElementType TYCON = new HaskellElementType("TYCON");
     IElementType TYVAR = new HaskellElementType("TYVAR");

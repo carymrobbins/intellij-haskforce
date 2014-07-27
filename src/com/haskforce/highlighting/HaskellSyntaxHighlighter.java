@@ -1,19 +1,14 @@
 package com.haskforce.highlighting;
 
+import com.haskforce.HaskellLanguage;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
-import com.intellij.openapi.editor.colors.CodeInsightColors;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.util.containers.HashSet;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.*;
-
 import com.haskforce.psi.HaskellTypes;
-
-import static com.haskforce.psi.HaskellTypes.*;
 
 public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
     /*
@@ -51,7 +46,7 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey[] CONSYM_KEYS = new TextAttributesKey[]{CONSYM};
 
     public static final TextAttributesKey SPECIAL = TextAttributesKey.createTextAttributesKey(
-            "HASKELL_SPECIAL", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
+            "SPECIALS", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
     public static final TextAttributesKey[] SPECIAL_KEYS = new TextAttributesKey[]{SPECIAL};
 
     public static final TextAttributesKey STRING = TextAttributesKey.createTextAttributesKey(
@@ -90,26 +85,6 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
             "HASKELL_ESCAPE", DefaultLanguageHighlighterColors.VALID_STRING_ESCAPE);
     public static final TextAttributesKey[] ESCAPE_KEYS = new TextAttributesKey[]{ESCAPE};
 
-    /**
-     * Tokens of reserved IDs.
-     *
-     * Used for mapping how the token should be highlighted.
-     */
-    private static final HashSet<IElementType> reservedIds = new HashSet<IElementType>(
-            Arrays.asList(new IElementType[]{AS, CASE, CLASSTOKEN, DATA, DEFAULT
-                    , DERIVING, DO, ELSE, FOREIGN, HIDING, IF, IMPORT, IN, INFIX
-                    , INFIXL, INFIXR, INSTANCE, LET, HaskellTypes.MODULETOKEN
-                    , NEWTYPE, OF, QUALIFIED, THEN, TYPE, WHERE}));
-
-    /**
-     * Tokens of specials.
-     *
-     * Used for mapping how the token should be highlighted.
-     */
-    private static final HashSet<IElementType> specialTokens = new HashSet<IElementType>(
-            Arrays.asList(new IElementType[]{LPAREN, RPAREN, COMMA, SEMICOLON
-                    , LBRACKET, RBRACKET, LBRACE, RBRACE}));
-
     @NotNull
     @Override
     public Lexer getHighlightingLexer() {
@@ -134,7 +109,7 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
         } else if (tokenType.equals(HaskellTypes.STRINGTOKEN) ||
                 tokenType.equals(HaskellTypes.DOUBLEQUOTE)) {
             return STRING_KEYS;
-        } else if (specialTokens.contains(tokenType)) {
+        } else if (HaskellLanguage.SPECIAL_TOKENS.contains(tokenType)) {
             return SPECIAL_KEYS;
         } else if (tokenType.equals(HaskellTypes.COMMENTTEXT) ||
                 tokenType.equals(HaskellTypes.OPENCOM) ||
@@ -148,7 +123,7 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
             return CONSYM_KEYS;
         } else if (tokenType.equals(HaskellTypes.VARSYM)) {
             return VARSYM_KEYS;
-        } else if (reservedIds.contains(tokenType)) {
+        } else if (HaskellLanguage.RESERVED_IDS_TOKENS.contains(tokenType)) {
             return RESERVEDID_KEYS;
         }
         return EMPTY;
