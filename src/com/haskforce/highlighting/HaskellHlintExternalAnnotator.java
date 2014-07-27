@@ -50,9 +50,7 @@ import java.util.regex.Pattern;
 /**
  * An external annotator providing warning highlights from hlint.
  *
- * You can set the path to hlint via the Haskell Tools section of the project settings.  However, if it is
- * not set then the annotator will attempt to find hlint automatically and use it.  If it cannot find hlint it will
- * not attempt to provide annotations.
+ * You can set the path to hlint via the Haskell Tools section of the project settings.
  *
  * The annotator runs once all other background processes have completed, such as the lexer, parser, highlighter, etc.
  * If the file does not parse, these annotations will not be available.
