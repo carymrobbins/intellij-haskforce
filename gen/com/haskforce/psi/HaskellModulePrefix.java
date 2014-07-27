@@ -7,4 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellModulePrefix extends PsiElement {
 
+  @NotNull
+  List<HaskellConid> getConidList();
+
 }

@@ -24,14 +24,14 @@ public class HaskellConImpl extends ASTWrapperPsiElement implements HaskellCon {
 
   @Override
   @Nullable
-  public HaskellConsym getConsym() {
-    return findChildByClass(HaskellConsym.class);
+  public HaskellConid getConid() {
+    return findChildByClass(HaskellConid.class);
   }
 
   @Override
   @Nullable
-  public PsiElement getConidRegexp() {
-    return findChildByType(CONIDREGEXP);
+  public HaskellConsym getConsym() {
+    return findChildByClass(HaskellConsym.class);
   }
 
   @Override

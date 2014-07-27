@@ -1667,13 +1667,13 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // conidRegexp | '(' consym ')'
+  // conid | '(' consym ')'
   public static boolean con(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "con")) return false;
     if (!nextTokenIs(builder_, "<con>", LPAREN, CONIDREGEXP)) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<con>");
-    result_ = consumeToken(builder_, CONIDREGEXP);
+    result_ = conid(builder_, level_ + 1);
     if (!result_) result_ = con_1(builder_, level_ + 1);
     exit_section_(builder_, level_, marker_, CON, result_, false, null);
     return result_;
@@ -4343,7 +4343,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // (conidRegexp '.')+
+  // (conid '.')+
   public static boolean modulePrefix(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "modulePrefix")) return false;
     if (!nextTokenIs(builder_, CONIDREGEXP)) return false;
@@ -4360,12 +4360,12 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // conidRegexp '.'
+  // conid '.'
   private static boolean modulePrefix_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "modulePrefix_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, CONIDREGEXP);
+    result_ = conid(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, PERIOD);
     exit_section_(builder_, marker_, null, result_);
     return result_;

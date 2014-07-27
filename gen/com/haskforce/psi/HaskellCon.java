@@ -8,10 +8,10 @@ import com.intellij.psi.PsiElement;
 public interface HaskellCon extends PsiElement {
 
   @Nullable
-  HaskellConsym getConsym();
+  HaskellConid getConid();
 
   @Nullable
-  PsiElement getConidRegexp();
+  HaskellConsym getConsym();
 
   @Nullable
   PsiElement getLparen();

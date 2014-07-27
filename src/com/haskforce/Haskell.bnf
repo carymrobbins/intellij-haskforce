@@ -537,7 +537,7 @@ consym ::= CONSYMTOK
 tyvar ::= varid
 tycon ::= conid
 tycls ::= conid
-modulePrefix ::= (conidRegexp '.')+
+modulePrefix ::= (conid '.')+
 
 qvarid ::= [modulePrefix] varid
 qconid ::= [modulePrefix] conid
@@ -549,7 +549,7 @@ qconsym ::= [modulePrefix] consym
 private var ::= varid | '(' varsym ')'
 qvars ::= <<sequence qvar>>
 qvar ::= qvarid | '(' qvarsym ')'
-con ::= conidRegexp | '(' consym ')'
+con ::= conid | '(' consym ')'
 qcon ::= qconid | '(' gconsym ')'
 varop ::= varsym | '`' varid '`'
 qvarop ::= qvarsym | '`' qvarid '`'

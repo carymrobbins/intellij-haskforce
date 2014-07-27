@@ -22,4 +22,10 @@ public class HaskellModulePrefixImpl extends ASTWrapperPsiElement implements Has
     else super.accept(visitor);
   }
 
+  @Override
+  @NotNull
+  public List<HaskellConid> getConidList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellConid.class);
+  }
+
 }
