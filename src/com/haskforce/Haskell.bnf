@@ -577,6 +577,7 @@ private open ::= '{'
 
 private close ::= '}'
                 | WHITESPACERBRACETOK
+                | <<stateHackMess>>
 
 private semi ::= ';'
                | WHITESPACESEMITOK {pin(".*")=1}

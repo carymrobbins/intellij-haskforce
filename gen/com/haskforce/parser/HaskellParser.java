@@ -1484,13 +1484,14 @@ public class HaskellParser implements PsiParser {
   /* ********************************************************** */
   // '}'
   //                 | WHITESPACERBRACETOK
+  //                 | <<stateHackMess>>
   static boolean close(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "close")) return false;
-    if (!nextTokenIs(builder_, "", RBRACE, WHITESPACERBRACETOK)) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, RBRACE);
     if (!result_) result_ = consumeToken(builder_, WHITESPACERBRACETOK);
+    if (!result_) result_ = stateHackMess(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }

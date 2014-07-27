@@ -6,6 +6,7 @@ import com.haskforce.parsing.HaskellParser2;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.ITokenTypeRemapper;
 import com.intellij.lang.PsiBuilder;
+import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,12 +15,18 @@ import org.jetbrains.annotations.NotNull;
  * a token-remapper.
  */
 public class HaskellParserWrapper extends HaskellParser {
-    final static ITokenTypeRemapper myRemapper = new ITokenTypeRemapper() {
+    private int rbraceDebt;
+
+    final ITokenTypeRemapper myRemapper = new ITokenTypeRemapper() {
         /**
-         * Intercept varsymplus tokens and correct them.
+         * Intercept synthetic rbraces and varsymplus tokens and correct them.
          */
         @Override
         public IElementType filter(IElementType source, int start, int end, CharSequence text) {
+            if (rbraceDebt > 0 && HaskellTypes.WHITESPACERBRACETOK.equals(source)) {
+                rbraceDebt--;
+                return TokenType.WHITE_SPACE;
+            }
             if (!HaskellTypes.VARSYMTOKPLUS.equals(source)) return source;
 
             String token = text.toString();
@@ -48,5 +55,12 @@ public class HaskellParserWrapper extends HaskellParser {
         builder_.setTokenTypeRemapper(myRemapper);
         builder_.setDebugMode(myDebugMode);
         return super.parse(root_, builder_);
+    }
+
+    /**
+     * Increases how many synthetic rbraces the remapper should consume.
+     */
+    public void increaseRbraceDebt() {
+        rbraceDebt++;
     }
 }
