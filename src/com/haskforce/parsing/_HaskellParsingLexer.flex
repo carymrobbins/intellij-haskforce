@@ -29,6 +29,7 @@ import com.intellij.util.containers.Stack;
 %%
 
 %{
+  private static final Pair<Integer, Integer> NO_LAYOUT = Pair.create(-1, -1);
   private int commentLevel;
   private int indent;
   private boolean retry;
@@ -84,8 +85,8 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
 
 <<EOF>>             {
                         if (indentationStack.size() > 0) {
-                            indentationStack.pop();
-                            return WHITESPACERBRACETOK;
+                            Pair<Integer, Integer> p = indentationStack.pop();
+                            return NO_LAYOUT.equals(p) ? RBRACE : WHITESPACERBRACETOK;
                         }
                         return null;
                     }
@@ -256,8 +257,19 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         yybegin(INCOMMENT);
                         return OPENCOM;
                       }
-  "{"                 { return LBRACE; }
-  "}"                 { return RBRACE; }
+  "{"               {
+                        indentationStack.push(NO_LAYOUT);
+                        return LBRACE;
+                    }
+  "}"               {
+                        if (indentationStack.size() > 0) {
+                            Pair<Integer, Integer> p = indentationStack.peek();
+                            if (NO_LAYOUT.equals(p)) {
+                                indentationStack.pop();
+                            }
+                        }
+                        return RBRACE;
+                    }
   "'"                 { return SINGLEQUOTE; }
   "!"                 { return EXCLAMATION; }
   "##"                { return DOUBLEHASH; }
