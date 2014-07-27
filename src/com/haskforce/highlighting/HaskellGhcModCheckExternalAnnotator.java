@@ -1,5 +1,8 @@
 package com.haskforce.highlighting;
 
+import com.haskforce.features.intentions.AddTypeSignature;
+import com.haskforce.highlighting.GhcMod.*;
+import com.intellij.lang.annotation.Annotation;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
@@ -19,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
  * The annotator runs once all other background processes have completed, such as the lexer, parser, highlighter, etc.
  * If the file does not parse, these annotations will not be available.
  */
-public class HaskellGhcModCheckExternalAnnotator extends HaskellExternalAnnotatorBase<PsiFile, GhcMod.Problems> {
+public class HaskellGhcModCheckExternalAnnotator extends HaskellExternalAnnotatorBase<PsiFile, Problems> {
     @Nullable
     @Override
     public PsiFile collectInformation(@NotNull PsiFile file) {
@@ -28,7 +31,7 @@ public class HaskellGhcModCheckExternalAnnotator extends HaskellExternalAnnotato
 
     @Nullable
     @Override
-    public GhcMod.Problems doAnnotate(PsiFile file) {
+    public Problems doAnnotate(PsiFile file) {
         final String canonicalPath = file.getVirtualFile().getCanonicalPath();
         if (canonicalPath == null) {
             return null;
@@ -47,12 +50,12 @@ public class HaskellGhcModCheckExternalAnnotator extends HaskellExternalAnnotato
     }
 
     @Override
-    public void apply(@NotNull PsiFile file, GhcMod.Problems annotationResult, @NotNull AnnotationHolder holder) {
+    public void apply(@NotNull PsiFile file, Problems annotationResult, @NotNull AnnotationHolder holder) {
         if (annotationResult == null || !file.isValid() || annotationResult.isEmpty()) {
             return;
         }
         String text = file.getText();
-        for (GhcMod.Problem problem : annotationResult) {
+        for (Problem problem : annotationResult) {
             final int offsetStart = StringUtil.lineColToOffset(file.getText(), problem.startLine - 1, problem.startColumn - 1);
             if (offsetStart == -1) {
                 continue;
@@ -68,7 +71,11 @@ public class HaskellGhcModCheckExternalAnnotator extends HaskellExternalAnnotato
             if (problem.isError) {
                 createErrorAnnotation(holder, problemRange, problem.message);
             } else {
-                createWeakWarningAnnotation(holder, problemRange, problem.message.substring("Warning: ".length()));
+                final Annotation annotation = createWeakWarningAnnotation(holder, problemRange, problem.message);
+                if (problem.message.startsWith("Top-level binding with no type signature:")) {
+                    //noinspection ObjectAllocationInLoop
+                    annotation.registerFix(new AddTypeSignature(problem));
+                }
             }
         }
     }

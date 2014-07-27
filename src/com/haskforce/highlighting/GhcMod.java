@@ -94,6 +94,11 @@ public class GhcMod {
             this.startColumn = startColumn;
             this.message = message;
             this.isError = !message.startsWith("Warning: ");
+            if (this.isError) {
+                this.message = message;
+            } else {
+                this.message = message.substring("Warning: ".length());
+            }
         }
     }
 }
