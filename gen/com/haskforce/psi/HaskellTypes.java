@@ -9,7 +9,7 @@ import com.haskforce.psi.impl.*;
 public interface HaskellTypes {
 
   IElementType AKIND = new HaskellElementType("AKIND");
-  IElementType ALTS = new HaskellElementType("ALTS");
+  IElementType ALT = new HaskellElementType("ALT");
   IElementType ATYPE = new HaskellElementType("ATYPE");
   IElementType BKIND = new HaskellElementType("BKIND");
   IElementType BODY = new HaskellElementType("BODY");
@@ -185,8 +185,8 @@ public interface HaskellTypes {
        if (type == AKIND) {
         return new HaskellAkindImpl(node);
       }
-      else if (type == ALTS) {
-        return new HaskellAltsImpl(node);
+      else if (type == ALT) {
+        return new HaskellAltImpl(node);
       }
       else if (type == ATYPE) {
         return new HaskellAtypeImpl(node);

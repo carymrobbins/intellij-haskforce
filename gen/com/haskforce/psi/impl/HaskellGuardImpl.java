@@ -24,8 +24,8 @@ public class HaskellGuardImpl extends ASTWrapperPsiElement implements HaskellGua
 
   @Override
   @Nullable
-  public HaskellAlts getAlts() {
-    return findChildByClass(HaskellAlts.class);
+  public HaskellAlt getAlt() {
+    return findChildByClass(HaskellAlt.class);
   }
 
   @Override
@@ -206,6 +206,12 @@ public class HaskellGuardImpl extends ASTWrapperPsiElement implements HaskellGua
   @Nullable
   public PsiElement getRunboxparen() {
     return findChildByType(RUNBOXPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getSemicolon() {
+    return findChildByType(SEMICOLON);
   }
 
   @Override

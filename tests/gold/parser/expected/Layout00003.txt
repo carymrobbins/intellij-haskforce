@@ -32,7 +32,7 @@ Haskell File
                   HaskellVaridImpl(VARID)
                     PsiElement(HaskellTokenType.varidRegexp)('mbHead')
             PsiElement(HaskellTokenType.of)('of')
-            HaskellAltsImpl(ALTS)
+            HaskellAltImpl(ALT)
               HaskellPatImpl(PAT)
                 HaskellQconImpl(QCON)
                   HaskellQconidImpl(QCONID)

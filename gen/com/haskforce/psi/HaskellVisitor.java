@@ -11,7 +11,7 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitAlts(@NotNull HaskellAlts o) {
+  public void visitAlt(@NotNull HaskellAlt o) {
     visitPsiElement(o);
   }
 

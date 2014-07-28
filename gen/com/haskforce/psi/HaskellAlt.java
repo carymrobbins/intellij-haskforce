@@ -5,10 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellAlts extends PsiElement {
-
-  @Nullable
-  HaskellAlts getAlts();
+public interface HaskellAlt extends PsiElement {
 
   @Nullable
   HaskellExp getExp();
@@ -39,5 +36,8 @@ public interface HaskellAlts extends PsiElement {
 
   @Nullable
   PsiElement getRightarrow();
+
+  @Nullable
+  PsiElement getSemicolon();
 
 }

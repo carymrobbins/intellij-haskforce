@@ -23,8 +23,8 @@ public class HaskellParser implements PsiParser {
     if (root_ == AKIND) {
       result_ = akind(builder_, 0);
     }
-    else if (root_ == ALTS) {
-      result_ = alts(builder_, 0);
+    else if (root_ == ALT) {
+      result_ = alt(builder_, 0);
     }
     else if (root_ == ATYPE) {
       result_ = atype(builder_, 0);
@@ -505,16 +505,16 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // pat ('->' exp | gdpat) [wheredecls]
-  static boolean alt(PsiBuilder builder_, int level_) {
+  public static boolean alt(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "alt")) return false;
     boolean result_;
     boolean pinned_;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<alt>");
     result_ = pat(builder_, level_ + 1);
     pinned_ = result_; // pin = 1
     result_ = result_ && report_error_(builder_, alt_1(builder_, level_ + 1));
     result_ = pinned_ && alt_2(builder_, level_ + 1) && result_;
-    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
+    exit_section_(builder_, level_, marker_, ALT, result_, pinned_, null);
     return result_ || pinned_;
   }
 
@@ -551,15 +551,15 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // alt [semi alts]
-  public static boolean alts(PsiBuilder builder_, int level_) {
+  static boolean alts(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "alts")) return false;
     boolean result_;
     boolean pinned_;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<alts>");
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = alt(builder_, level_ + 1);
     pinned_ = result_; // pin = 1
     result_ = result_ && alts_1(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, ALTS, result_, pinned_, null);
+    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
     return result_ || pinned_;
   }
 

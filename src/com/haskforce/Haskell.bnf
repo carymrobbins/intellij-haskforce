@@ -425,9 +425,9 @@ private recordlikeparen ::= exp
 
 private altslist ::= open [alts] close {pin=1}
 
-alts ::= alt [semi alts] {pin(".*")=1}
+private alts ::= alt [semi alts] {pin(".*")=1}
 
-private alt ::= pat ('->' exp | gdpat) [wheredecls] {pin(".*")=1}
+alt ::= pat ('->' exp | gdpat) [wheredecls] {pin(".*")=1}
 
 private gdpat ::= guards '->' exp [gdpat] {pin=2}
 

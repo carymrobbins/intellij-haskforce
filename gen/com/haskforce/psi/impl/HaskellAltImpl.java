@@ -11,21 +11,15 @@ import static com.haskforce.psi.HaskellTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellAltsImpl extends ASTWrapperPsiElement implements HaskellAlts {
+public class HaskellAltImpl extends ASTWrapperPsiElement implements HaskellAlt {
 
-  public HaskellAltsImpl(ASTNode node) {
+  public HaskellAltImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitAlts(this);
+    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitAlt(this);
     else super.accept(visitor);
-  }
-
-  @Override
-  @Nullable
-  public HaskellAlts getAlts() {
-    return findChildByClass(HaskellAlts.class);
   }
 
   @Override
@@ -86,6 +80,12 @@ public class HaskellAltsImpl extends ASTWrapperPsiElement implements HaskellAlts
   @Nullable
   public PsiElement getRightarrow() {
     return findChildByType(RIGHTARROW);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getSemicolon() {
+    return findChildByType(SEMICOLON);
   }
 
 }

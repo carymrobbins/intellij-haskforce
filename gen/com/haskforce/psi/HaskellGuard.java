@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement;
 public interface HaskellGuard extends PsiElement {
 
   @Nullable
-  HaskellAlts getAlts();
+  HaskellAlt getAlt();
 
   @Nullable
   HaskellClassdecl getClassdecl();
@@ -99,6 +99,9 @@ public interface HaskellGuard extends PsiElement {
 
   @Nullable
   PsiElement getRunboxparen();
+
+  @Nullable
+  PsiElement getSemicolon();
 
   @Nullable
   PsiElement getSinglequote();
