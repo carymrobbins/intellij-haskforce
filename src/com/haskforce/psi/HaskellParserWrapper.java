@@ -20,7 +20,7 @@ import java.util.HashMap;
 public class HaskellParserWrapper extends HaskellParser {
     private int rbraceDebt;
 
-    private final HashMap<Integer, Boolean> debtPoints = ContainerUtil.newHashMap();
+    private final HashMap<Integer, Integer> debtPoints = ContainerUtil.newHashMap();
 
     final ITokenTypeRemapper myRemapper = new ITokenTypeRemapper() {
         /**
@@ -61,9 +61,10 @@ public class HaskellParserWrapper extends HaskellParser {
      * Increases how many synthetic rbraces the remapper should consume.
      */
     public void increaseRbraceDebt(int offset) {
-        if (debtPoints.containsKey(offset)) return;
+        Integer oldValue = ContainerUtil.getOrCreate(debtPoints, offset, 0);
 
         rbraceDebt++;
-        debtPoints.put(offset, true);
+        oldValue++;
+        debtPoints.put(offset, oldValue);
     }
 }

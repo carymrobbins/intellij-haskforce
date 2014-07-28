@@ -5519,14 +5519,13 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // stmt* exp [semi]
+  // stmt* exp
   public static boolean stmts(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "stmts")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<stmts>");
     result_ = stmts_0(builder_, level_ + 1);
     result_ = result_ && exp(builder_, level_ + 1);
-    result_ = result_ && stmts_2(builder_, level_ + 1);
     exit_section_(builder_, level_, marker_, STMTS, result_, false, null);
     return result_;
   }
@@ -5540,13 +5539,6 @@ public class HaskellParser implements PsiParser {
       if (!empty_element_parsed_guard_(builder_, "stmts_0", pos_)) break;
       pos_ = current_position_(builder_);
     }
-    return true;
-  }
-
-  // [semi]
-  private static boolean stmts_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "stmts_2")) return false;
-    semi(builder_, level_ + 1);
     return true;
   }
 

@@ -29,6 +29,9 @@ public class HaskellParserTest extends HaskellParserTestBase {
         super("parser", "hs", new HaskellParserDefinition());
     }
 
+    // See comment in HaskellLexerTest.java.
+    public void testAStack00001()       { doTest(true, true); }
+
     public void testArrow00001()        { doTest(true, true); }
     public void testFun00001()          { doTest(true, true); }
     public void testFun00002()          { doTest(true, true); }

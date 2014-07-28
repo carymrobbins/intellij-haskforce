@@ -440,7 +440,7 @@ private qual ::= pat '<-' exp
               | "let" decls
               | exp
 
-stmts ::= stmt* exp [semi]
+stmts ::= stmt* exp
 
 private stmt ::= [exp] semi
                | pat '<-' exp semi
