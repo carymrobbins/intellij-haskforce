@@ -3,6 +3,8 @@ package com.haskforce.psi;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiParser;
 import com.intellij.lang.parser.GeneratedParserUtilBase;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -22,15 +24,12 @@ public class HaskellParserUtilBase extends GeneratedParserUtilBase {
         PsiParser wrapper = ((Builder) builder).parser;
         if (!(wrapper instanceof HaskellParserWrapper)) return false;
 
-        ((HaskellParserWrapper) wrapper).increaseRbraceDebt();
-        return true;
-/*
-Debug utilities for future use.
-
         IElementType tok = builder.getTokenType();
         int offs = builder.getCurrentOffset();
-        // System.out.println("Confused at: " + offs + " on token " + tok);
+        int line = StringUtil.offsetToLineNumber(builder.getOriginalText(), offs);
+        // System.out.println("Confused at: " + offs + " line " + line + " on token " + tok);
+
+        ((HaskellParserWrapper) wrapper).increaseRbraceDebt(builder.getCurrentOffset());
         return true;
-*/
     }
 }

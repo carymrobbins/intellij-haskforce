@@ -8,7 +8,10 @@ import com.intellij.lang.ITokenTypeRemapper;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
+import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
 
 /**
  * Wraps the entry-point for the Grammar-Kit parser to register
@@ -16,6 +19,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public class HaskellParserWrapper extends HaskellParser {
     private int rbraceDebt;
+
+    private final HashMap<Integer, Boolean> debtPoints = ContainerUtil.newHashMap();
 
     final ITokenTypeRemapper myRemapper = new ITokenTypeRemapper() {
         /**
@@ -47,13 +52,18 @@ public class HaskellParserWrapper extends HaskellParser {
     @Override
     public ASTNode parse(IElementType root_, PsiBuilder builder_) {
         builder_.setTokenTypeRemapper(myRemapper);
-        return super.parse(root_, builder_);
+        ASTNode node = super.parse(root_, builder_);
+        debtPoints.clear();
+        return node;
     }
 
     /**
      * Increases how many synthetic rbraces the remapper should consume.
      */
-    public void increaseRbraceDebt() {
+    public void increaseRbraceDebt(int offset) {
+        if (debtPoints.containsKey(offset)) return;
+
         rbraceDebt++;
+        debtPoints.put(offset, true);
     }
 }
