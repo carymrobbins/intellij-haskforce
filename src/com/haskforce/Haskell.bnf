@@ -439,11 +439,10 @@ private qual ::= pat '<-' exp
               | "let" decls
               | exp
 
-stmts ::= stmt* exp
+stmts ::= (stmt semi)* exp
 
-private stmt ::= [exp] semi
-               | pat '<-' exp semi
-               | ["rec"] "let" decls semi
+private stmt ::= ["rec"] "let" decls
+               | [pat '<-'] exp
 
 private fbind ::= qvar '=' exp {pin=2}
 

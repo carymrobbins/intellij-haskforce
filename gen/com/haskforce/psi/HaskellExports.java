@@ -10,8 +10,8 @@ public interface HaskellExports extends PsiElement {
   @NotNull
   List<HaskellCpp> getCppList();
 
-  @Nullable
-  HaskellExport getExport();
+  @NotNull
+  List<HaskellExport> getExportList();
 
   @NotNull
   PsiElement getLparen();
