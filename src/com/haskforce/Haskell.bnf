@@ -365,7 +365,7 @@ guard ::= pat '<-' infixexp
         | "let" decls
         | infixexp
 
-exp ::= infixexp ["::" [context "=>"] typee]
+exp ::= ppragma* infixexp ["::" [context "=>"] typee]
 
 private infixexp ::= '-'* lexp [qop infixexp]
 
@@ -377,7 +377,6 @@ private lexp ::= "\\case" altslist
                | "do" open stmts close
                | "mdo" open stmts close
                | "proc" aexp "->" exp
-               | ppragma exp
                | fexp
 
 private fexp ::= aexp [fexp]

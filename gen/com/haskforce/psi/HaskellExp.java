@@ -49,8 +49,8 @@ public interface HaskellExp extends PsiElement {
   @NotNull
   List<HaskellPat> getPatList();
 
-  @Nullable
-  HaskellPpragma getPpragma();
+  @NotNull
+  List<HaskellPpragma> getPpragmaList();
 
   @NotNull
   List<HaskellPstringtoken> getPstringtokenList();
