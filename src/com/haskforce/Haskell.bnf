@@ -502,10 +502,10 @@ private literal ::= (floattoken | integertoken) ['#'|'##']
 
 ppragma ::= openpragma PRAGMA+ closepragma {pin(".*")=3}
 
-// private symbol ::= symbol1 | '=' | '|' | '!' | '#' |
+// private symbol ::= symbol1 | '=' | '|' | '#' |
 
 // Stripped down version of symbol; real definition in comment above.
-private symbol1 ::= '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '>' | '?' | '@'
+private symbol1 ::= '!' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '>' | '?' | '@'
          | '\' | '^' | '-' | '~' | ':'
 varid ::= (varidRegexp | "as") {
         methods=[getName getNameIdentifier getReference setName getPresentation]

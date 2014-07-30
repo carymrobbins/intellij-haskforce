@@ -5549,13 +5549,14 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '>' | '?' | '@'
+  // '!' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '>' | '?' | '@'
   //          | '\' | '^' | '-' | '~' | ':'
   static boolean symbol1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "symbol1")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, DOLLAR);
+    result_ = consumeToken(builder_, EXCLAMATION);
+    if (!result_) result_ = consumeToken(builder_, DOLLAR);
     if (!result_) result_ = consumeToken(builder_, PERCENT);
     if (!result_) result_ = consumeToken(builder_, AMPERSAND);
     if (!result_) result_ = consumeToken(builder_, ASTERISK);

@@ -29,6 +29,9 @@ public interface HaskellVarsym extends PsiElement {
   PsiElement getDollar();
 
   @Nullable
+  PsiElement getExclamation();
+
+  @Nullable
   PsiElement getGreaterthan();
 
   @Nullable

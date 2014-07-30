@@ -66,6 +66,12 @@ public class HaskellVarsymImpl extends ASTWrapperPsiElement implements HaskellVa
 
   @Override
   @Nullable
+  public PsiElement getExclamation() {
+    return findChildByType(EXCLAMATION);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getGreaterthan() {
     return findChildByType(GREATERTHAN);
   }
