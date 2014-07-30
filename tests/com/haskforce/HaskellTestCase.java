@@ -30,6 +30,7 @@ import com.haskforce.features.HaskellTypedHandlerTest;
 import com.haskforce.highlighting.HaskellLexerTest;
 import com.haskforce.parser.HaskellParserTest;
 import com.haskforce.parser.HaskellParsingLexerTest;
+import com.haskforce.refactoring.HaskellRenameTest;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
@@ -49,6 +50,7 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(HaskellTypedHandlerTest.class);
         suite.addTestSuite(HaskellCompletionTest.class);
         suite.addTestSuite(HaskellFindUsagesTest.class);
+        suite.addTestSuite(HaskellRenameTest.class);
         return suite;
     }
 }
