@@ -4,6 +4,7 @@ import com.intellij.psi.tree.IElementType;
 import static com.haskforce.psi.HaskellTypes.*;
 import com.intellij.util.containers.ContainerUtil;
 import com.intellij.openapi.util.Pair;
+import java.util.*;
 import com.intellij.util.containers.Stack;
 
 /**
@@ -36,6 +37,7 @@ import com.intellij.util.containers.Stack;
   private int emptyblockPhase;
   private Stack<Pair<Integer,Integer>> indentationStack;
   private Stack<Integer> stateStack;
+  public LinkedList<Pair<Pair<Integer,Integer>,Integer>> openBraces;
   // %line/%%column does not declare these.
   private int yyline;
   private int yycolumn;
@@ -45,6 +47,8 @@ import com.intellij.util.containers.Stack;
     commentLevel = 0;
     retry = false;
     emptyblockPhase = 0;
+    openBraces = ContainerUtil.newLinkedList();
+    openBraces.push(Pair.create(Pair.create(-1,-1), 0));
     indentationStack = ContainerUtil.newStack();
     stateStack = ContainerUtil.newStack();
   }
@@ -86,6 +90,11 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
 <<EOF>>             {
                         if (indentationStack.size() > 0) {
                             Pair<Integer, Integer> p = indentationStack.pop();
+                            if (!NO_LAYOUT.equals(p)) {
+                                int lastNum = openBraces.peek().getSecond();
+                                openBraces.push(Pair.create(Pair.create(yyline,yycolumn), --lastNum));
+                            }
+                            openBraces.removeLast();
                             return NO_LAYOUT.equals(p) ? RBRACE : WHITESPACERBRACETOK;
                         }
                         return null;
@@ -134,6 +143,8 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         indentationStack.push(Pair.create(yyline, yycolumn));
                         yybegin(REALLYYINITIAL);
                         yypushback(1);
+                        int lastNum = openBraces.peek().getSecond();
+                        openBraces.push(Pair.create(Pair.create(yyline,yycolumn), ++lastNum));
                         return WHITESPACELBRACETOK;
                     }
 
@@ -208,6 +219,8 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                                 indentationStack.pop();
                                 yypushback(2);
                                 retry = true;
+                                int lastNum = openBraces.peek().getSecond();
+                                openBraces.push(Pair.create(Pair.create(yyline,yycolumn), --lastNum));
                                 return WHITESPACERBRACETOK;
                             }
                             return IN;
@@ -384,6 +397,8 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         } else if (!indentationStack.isEmpty() && indent < indentationStack.peek().getSecond()) {
                             indentationStack.pop();
                             yypushback(1);
+                            int lastNum = openBraces.peek().getSecond();
+                            openBraces.push(Pair.create(Pair.create(yyline,yycolumn), --lastNum));
                             return WHITESPACERBRACETOK;
                         }
                         yybegin(REALLYYINITIAL);
@@ -422,12 +437,16 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
     <<EOF>>         {   // Deal with "module Modid where \n\n\n".
                         indentationStack.push(Pair.create(yyline, yycolumn));
                         yybegin(REALLYYINITIAL);
+                        int lastNum = openBraces.peek().getSecond();
+                        openBraces.push(Pair.create(Pair.create(yyline,yycolumn), ++lastNum));
                         return WHITESPACELBRACETOK;
                     }
     [^]             {
                         yypushback(1);
                         if (emptyblockPhase == 1) {
                             emptyblockPhase = 2;
+                            int lastNum = openBraces.peek().getSecond();
+                            openBraces.push(Pair.create(Pair.create(yyline,yycolumn), --lastNum));
                             return WHITESPACERBRACETOK;
                         } else if (emptyblockPhase == 2) {
                             emptyblockPhase = 0;
@@ -436,10 +455,14 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         } else if (!indentationStack.isEmpty() &&
                                 indent == indentationStack.peek().getSecond()) {
                             emptyblockPhase = 1;
+                            int lastNum = openBraces.peek().getSecond();
+                            openBraces.push(Pair.create(Pair.create(yyline,yycolumn), ++lastNum));
                             return WHITESPACELBRACETOK;
                         } else {
                             indentationStack.push(Pair.create(yyline, yycolumn));
                             yybegin(REALLYYINITIAL);
+                            int lastNum = openBraces.peek().getSecond();
+                            openBraces.push(Pair.create(Pair.create(yyline,yycolumn), ++lastNum));
                             return WHITESPACELBRACETOK;
                         }
                     }

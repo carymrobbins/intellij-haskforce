@@ -26,7 +26,7 @@ public class HaskellParsingLexerTest extends HaskellLexerTestBase {
     public void testAStack00001()      { doTest(true, true); }
 
     /* Borrow the test inputs from ParserTest. */
-    public void testArrow00001()        { doTest(true, true); }
+         public void testArrow00001()        { doTest(true, true); }
     public void testFun00001()          { doTest(true, true); }
     public void testFun00002()          { doTest(true, true); }
     public void testFun00003()          { doTest(true, true); }
@@ -61,6 +61,8 @@ public class HaskellParsingLexerTest extends HaskellLexerTestBase {
     public void testLayout00006()       { doTest(true, true); }
     public void testLayout00007()       { doTest(true, true); }
     public void testLayout00008()       { doTest(true, true); }
+    public void testLayout00009()       { doTest(true, true); }
+    public void testLayout00010()       { doTest(true, true); }
     public void testComment00001()      { doTest(true, true); }
     public void testComment00002()      { doTest(true, true); }
     public void testComment00003()      { doTest(true, true); }
