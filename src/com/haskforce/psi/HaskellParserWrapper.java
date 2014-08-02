@@ -71,7 +71,7 @@ public class HaskellParserWrapper extends HaskellParser {
     @Override
     public ASTNode parse(IElementType root_, PsiBuilder builder_) {
         maxRbraceDebt = -1;
-        lastCountedTok = 0;
+        lastCountedTok = -1;
         regressed = false;
         debtPoints.clear();
         builder_.setTokenTypeRemapper(myRemapper);
