@@ -94,9 +94,9 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                                 int lastNum = openBraces.peek().getSecond();
                                 openBraces.push(Pair.create(Pair.create(yyline,yycolumn), --lastNum));
                             }
-                            openBraces.removeLast();
                             return NO_LAYOUT.equals(p) ? RBRACE : WHITESPACERBRACETOK;
                         }
+                        openBraces.removeLast();
                         return null;
                     }
 
