@@ -437,7 +437,7 @@
   </target>
 
   <target name="generate.sources"
-          depends="check.jflex, generate.jflex, generate.jflex2"/>
+          depends="check.jflex, generate.jflex, generate.jflex2, generate.jflex3"/>
 
   <target name="check.jflex">
     <condition property="jflex.notRequired">
