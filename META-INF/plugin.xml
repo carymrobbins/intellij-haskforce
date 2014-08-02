@@ -100,6 +100,7 @@
       <!-- Cabal support -->
       <fileTypeFactory implementation="com.haskforce.cabal.CabalFileTypeFactory"/>
       <lang.commenter language="Cabal" implementationClass="com.haskforce.cabal.CabalCommenter"/>
+      <lang.syntaxHighlighterFactory key="Cabal" implementationClass="com.haskforce.cabal.highlighting.CabalSyntaxHighlighterFactory"/>
 
       <!-- External builder support -->
       <compileServer.plugin classpath="jps/jps-plugin.jar;jps-shared.jar"/>
