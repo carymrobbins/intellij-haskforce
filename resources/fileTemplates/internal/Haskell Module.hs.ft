@@ -1,2 +1,2 @@
-module ${NAME} where
+module ${HASKELL_MODULE_NAME} where
 
