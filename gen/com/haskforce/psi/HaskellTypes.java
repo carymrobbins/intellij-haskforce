@@ -114,6 +114,7 @@ public interface HaskellTypes {
   IElementType EQUALS = new HaskellTokenType("=");
   IElementType EXCLAMATION = new HaskellTokenType("!");
   IElementType EXPORTTOKEN = new HaskellTokenType("export");
+  IElementType FAMILYTOKEN = new HaskellTokenType("family");
   IElementType FLOATTOKEN = new HaskellTokenType("floattoken");
   IElementType FORALLTOKEN = new HaskellTokenType("forall");
   IElementType FOREIGN = new HaskellTokenType("foreign");

@@ -71,6 +71,7 @@ public class HaskellParserTest extends HaskellParserTestBase {
     public void testLayout00010()       { doTest(true, true); }
     public void testLayout00011()       { doTest(true, true); }
     public void testLayout00012()       { doTest(true, true); }
+    public void testLayout00013()       { doTest(true, true); }
     public void testComment00001()      { doTest(true, true); }
     public void testComment00002()      { doTest(true, true); }
     public void testComment00003()      { doTest(true, true); }

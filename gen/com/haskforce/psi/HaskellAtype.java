@@ -10,8 +10,8 @@ public interface HaskellAtype extends PsiElement {
   @Nullable
   HaskellAtype getAtype();
 
-  @NotNull
-  List<HaskellCtype> getCtypeList();
+  @Nullable
+  HaskellCtype getCtype();
 
   @Nullable
   HaskellKind getKind();

@@ -5850,7 +5850,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // "type" ["instance"] typee '=' typee
+  // "type" ["family" | "instance"] typee ['=' typee]
   public static boolean typedecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "typedecl")) return false;
     if (!nextTokenIs(builder_, TYPE)) return false;
@@ -5861,17 +5861,45 @@ public class HaskellParser implements PsiParser {
     pinned_ = result_; // pin = 1
     result_ = result_ && report_error_(builder_, typedecl_1(builder_, level_ + 1));
     result_ = pinned_ && report_error_(builder_, typee(builder_, level_ + 1)) && result_;
-    result_ = pinned_ && report_error_(builder_, consumeToken(builder_, EQUALS)) && result_;
-    result_ = pinned_ && typee(builder_, level_ + 1) && result_;
+    result_ = pinned_ && typedecl_3(builder_, level_ + 1) && result_;
     exit_section_(builder_, level_, marker_, TYPEDECL, result_, pinned_, null);
     return result_ || pinned_;
   }
 
-  // ["instance"]
+  // ["family" | "instance"]
   private static boolean typedecl_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "typedecl_1")) return false;
-    consumeToken(builder_, INSTANCE);
+    typedecl_1_0(builder_, level_ + 1);
     return true;
+  }
+
+  // "family" | "instance"
+  private static boolean typedecl_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "typedecl_1_0")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, FAMILYTOKEN);
+    if (!result_) result_ = consumeToken(builder_, INSTANCE);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // ['=' typee]
+  private static boolean typedecl_3(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "typedecl_3")) return false;
+    typedecl_3_0(builder_, level_ + 1);
+    return true;
+  }
+
+  // '=' typee
+  private static boolean typedecl_3_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "typedecl_3_0")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, EQUALS);
+    result_ = result_ && typee(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
   }
 
   /* ********************************************************** */

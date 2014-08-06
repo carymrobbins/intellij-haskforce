@@ -23,9 +23,9 @@ public class HaskellExportImpl extends ASTWrapperPsiElement implements HaskellEx
   }
 
   @Override
-  @NotNull
-  public List<HaskellCon> getConList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellCon.class);
+  @Nullable
+  public HaskellCon getCon() {
+    return findChildByClass(HaskellCon.class);
   }
 
   @Override
@@ -53,15 +53,15 @@ public class HaskellExportImpl extends ASTWrapperPsiElement implements HaskellEx
   }
 
   @Override
-  @NotNull
-  public List<HaskellVarid> getVaridList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVarid.class);
+  @Nullable
+  public HaskellVarid getVarid() {
+    return findChildByClass(HaskellVarid.class);
   }
 
   @Override
-  @NotNull
-  public List<HaskellVarsym> getVarsymList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVarsym.class);
+  @Nullable
+  public HaskellVarsym getVarsym() {
+    return findChildByClass(HaskellVarsym.class);
   }
 
   @Override

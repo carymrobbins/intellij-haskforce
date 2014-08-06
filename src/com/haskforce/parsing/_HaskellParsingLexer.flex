@@ -176,6 +176,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   "export"            { return EXPORTTOKEN; }
   "foreign"           { return FOREIGN; }
   "instance"          { return INSTANCE; }
+  "family"            { return FAMILYTOKEN; }
   "module"            { return MODULETOKEN; }
   "newtype"           { return NEWTYPE; }
   "type"              { return TYPE; }

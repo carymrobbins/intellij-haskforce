@@ -138,6 +138,7 @@
     DERIVING='deriving'
     FOREIGN='foreign'
     INSTANCE='instance'
+    FAMILYTOKEN='family'
     MODULETOKEN='module'
     NEWTYPE='newtype'
     TYPE='type'
@@ -223,7 +224,7 @@ private topdecl1 ::= typedecl
                   | decl
                   | infixexp // TH-extension.
 
-typedecl ::= "type" ["instance"] typee '=' typee {pin=1}
+typedecl ::= "type" ["family" | "instance"] typee ['=' typee] {pin=1}
 // Both data declaration and gadt declaration. The syntactic difference between
 // the two is between typee and [deriving].
 datadecl ::= "data" ["instance"] [context "=>"] typee ['=' constrs| [kindsig] ["where" gadtconstrs]] [deriving] {pin=1}
