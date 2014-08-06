@@ -16,6 +16,9 @@ public interface HaskellExp extends PsiElement {
   @Nullable
   HaskellContext getContext();
 
+  @NotNull
+  List<HaskellCpp> getCppList();
+
   @Nullable
   HaskellCtype getCtype();
 

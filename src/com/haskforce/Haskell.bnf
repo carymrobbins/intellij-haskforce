@@ -210,7 +210,7 @@ private cname ::= var | con
 
 vars ::= <<sequence var>>
 
-private topdecl ::= topdecl1 ppragma*
+private topdecl ::= topdecl1 (cpp | ppragma)*
 
 private topdecl1 ::= typedecl
                   | datadecl

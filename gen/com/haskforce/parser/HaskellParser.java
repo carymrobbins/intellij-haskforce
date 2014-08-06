@@ -5604,7 +5604,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // topdecl1 ppragma*
+  // topdecl1 (cpp | ppragma)*
   static boolean topdecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "topdecl")) return false;
     boolean result_;
@@ -5615,16 +5615,27 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // ppragma*
+  // (cpp | ppragma)*
   private static boolean topdecl_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "topdecl_1")) return false;
     int pos_ = current_position_(builder_);
     while (true) {
-      if (!ppragma(builder_, level_ + 1)) break;
+      if (!topdecl_1_0(builder_, level_ + 1)) break;
       if (!empty_element_parsed_guard_(builder_, "topdecl_1", pos_)) break;
       pos_ = current_position_(builder_);
     }
     return true;
+  }
+
+  // cpp | ppragma
+  private static boolean topdecl_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "topdecl_1_0")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = cpp(builder_, level_ + 1);
+    if (!result_) result_ = ppragma(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
   }
 
   /* ********************************************************** */
