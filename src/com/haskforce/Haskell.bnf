@@ -223,7 +223,7 @@ private topdecl1 ::= typedecl
                   | decl
                   | infixexp // TH-extension.
 
-typedecl ::= "type" typee '=' typee {pin=1}
+typedecl ::= "type" ["instance"] typee '=' typee {pin=1}
 // Both data declaration and gadt declaration. The syntactic difference between
 // the two is between typee and [deriving].
 datadecl ::= "data" ["instance"] [context "=>"] typee ['=' constrs| [kindsig] ["where" gadtconstrs]] [deriving] {pin=1}
@@ -242,8 +242,8 @@ cdecl ::= atdecl
         | (funlhs | var) rhs
         | gendecl
 
-private atdecl ::= "type" (typee [kindsig] | ctype '=' ctype)
-                 | "data" ctype [kindsig]
+private atdecl ::= "type" ["instance"] (typee [kindsig] | ctype '=' ctype)
+                 | "data" ["instance"] ctype [kindsig]
 
 private idecls ::= ppragma* open [idecls1] close {pin=2}
 

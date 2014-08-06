@@ -934,8 +934,8 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // "type" (typee [kindsig] | ctype '=' ctype)
-  //                  | "data" ctype [kindsig]
+  // "type" ["instance"] (typee [kindsig] | ctype '=' ctype)
+  //                  | "data" ["instance"] ctype [kindsig]
   static boolean atdecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "atdecl")) return false;
     if (!nextTokenIs(builder_, "", DATA, TYPE)) return false;
@@ -947,49 +947,57 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // "type" (typee [kindsig] | ctype '=' ctype)
+  // "type" ["instance"] (typee [kindsig] | ctype '=' ctype)
   private static boolean atdecl_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "atdecl_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, TYPE);
     result_ = result_ && atdecl_0_1(builder_, level_ + 1);
+    result_ = result_ && atdecl_0_2(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // typee [kindsig] | ctype '=' ctype
+  // ["instance"]
   private static boolean atdecl_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "atdecl_0_1")) return false;
+    consumeToken(builder_, INSTANCE);
+    return true;
+  }
+
+  // typee [kindsig] | ctype '=' ctype
+  private static boolean atdecl_0_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "atdecl_0_2")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = atdecl_0_1_0(builder_, level_ + 1);
-    if (!result_) result_ = atdecl_0_1_1(builder_, level_ + 1);
+    result_ = atdecl_0_2_0(builder_, level_ + 1);
+    if (!result_) result_ = atdecl_0_2_1(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   // typee [kindsig]
-  private static boolean atdecl_0_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "atdecl_0_1_0")) return false;
+  private static boolean atdecl_0_2_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "atdecl_0_2_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = typee(builder_, level_ + 1);
-    result_ = result_ && atdecl_0_1_0_1(builder_, level_ + 1);
+    result_ = result_ && atdecl_0_2_0_1(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   // [kindsig]
-  private static boolean atdecl_0_1_0_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "atdecl_0_1_0_1")) return false;
+  private static boolean atdecl_0_2_0_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "atdecl_0_2_0_1")) return false;
     kindsig(builder_, level_ + 1);
     return true;
   }
 
   // ctype '=' ctype
-  private static boolean atdecl_0_1_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "atdecl_0_1_1")) return false;
+  private static boolean atdecl_0_2_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "atdecl_0_2_1")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = ctype(builder_, level_ + 1);
@@ -999,21 +1007,29 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // "data" ctype [kindsig]
+  // "data" ["instance"] ctype [kindsig]
   private static boolean atdecl_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "atdecl_1")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, DATA);
+    result_ = result_ && atdecl_1_1(builder_, level_ + 1);
     result_ = result_ && ctype(builder_, level_ + 1);
-    result_ = result_ && atdecl_1_2(builder_, level_ + 1);
+    result_ = result_ && atdecl_1_3(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
+  // ["instance"]
+  private static boolean atdecl_1_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "atdecl_1_1")) return false;
+    consumeToken(builder_, INSTANCE);
+    return true;
+  }
+
   // [kindsig]
-  private static boolean atdecl_1_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "atdecl_1_2")) return false;
+  private static boolean atdecl_1_3(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "atdecl_1_3")) return false;
     kindsig(builder_, level_ + 1);
     return true;
   }
@@ -5823,7 +5839,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // "type" typee '=' typee
+  // "type" ["instance"] typee '=' typee
   public static boolean typedecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "typedecl")) return false;
     if (!nextTokenIs(builder_, TYPE)) return false;
@@ -5832,11 +5848,19 @@ public class HaskellParser implements PsiParser {
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, TYPE);
     pinned_ = result_; // pin = 1
-    result_ = result_ && report_error_(builder_, typee(builder_, level_ + 1));
+    result_ = result_ && report_error_(builder_, typedecl_1(builder_, level_ + 1));
+    result_ = pinned_ && report_error_(builder_, typee(builder_, level_ + 1)) && result_;
     result_ = pinned_ && report_error_(builder_, consumeToken(builder_, EQUALS)) && result_;
     result_ = pinned_ && typee(builder_, level_ + 1) && result_;
     exit_section_(builder_, level_, marker_, TYPEDECL, result_, pinned_, null);
     return result_ || pinned_;
+  }
+
+  // ["instance"]
+  private static boolean typedecl_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "typedecl_1")) return false;
+    consumeToken(builder_, INSTANCE);
+    return true;
   }
 
   /* ********************************************************** */
