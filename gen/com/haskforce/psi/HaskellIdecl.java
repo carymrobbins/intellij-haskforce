@@ -23,9 +23,6 @@ public interface HaskellIdecl extends PsiElement {
   List<HaskellExp> getExpList();
 
   @Nullable
-  HaskellIdecl getIdecl();
-
-  @Nullable
   HaskellKind getKind();
 
   @Nullable
@@ -33,9 +30,6 @@ public interface HaskellIdecl extends PsiElement {
 
   @NotNull
   List<HaskellPat> getPatList();
-
-  @NotNull
-  List<HaskellPpragma> getPpragmaList();
 
   @NotNull
   List<HaskellPstringtoken> getPstringtokenList();
@@ -66,20 +60,5 @@ public interface HaskellIdecl extends PsiElement {
 
   @NotNull
   List<HaskellVarsym> getVarsymList();
-
-  @Nullable
-  PsiElement getEquals();
-
-  @Nullable
-  PsiElement getExclamation();
-
-  @Nullable
-  PsiElement getLparen();
-
-  @Nullable
-  PsiElement getRparen();
-
-  @Nullable
-  PsiElement getSemicolon();
 
 }

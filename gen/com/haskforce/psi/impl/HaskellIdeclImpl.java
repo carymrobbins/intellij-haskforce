@@ -54,12 +54,6 @@ public class HaskellIdeclImpl extends ASTWrapperPsiElement implements HaskellIde
 
   @Override
   @Nullable
-  public HaskellIdecl getIdecl() {
-    return findChildByClass(HaskellIdecl.class);
-  }
-
-  @Override
-  @Nullable
   public HaskellKind getKind() {
     return findChildByClass(HaskellKind.class);
   }
@@ -74,12 +68,6 @@ public class HaskellIdeclImpl extends ASTWrapperPsiElement implements HaskellIde
   @NotNull
   public List<HaskellPat> getPatList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPat.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellPpragma> getPpragmaList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPpragma.class);
   }
 
   @Override
@@ -140,36 +128,6 @@ public class HaskellIdeclImpl extends ASTWrapperPsiElement implements HaskellIde
   @NotNull
   public List<HaskellVarsym> getVarsymList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVarsym.class);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getEquals() {
-    return findChildByType(EQUALS);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getExclamation() {
-    return findChildByType(EXCLAMATION);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getLparen() {
-    return findChildByType(LPAREN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getRparen() {
-    return findChildByType(RPAREN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getSemicolon() {
-    return findChildByType(SEMICOLON);
   }
 
 }

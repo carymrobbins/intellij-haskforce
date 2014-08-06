@@ -3215,88 +3215,72 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // ppragma+ idecl
-  //         | itdecl
-  //         | (funlhs | var) rhs
+  // itdecl
+  //         | (funlhs | pat) rhs
   public static boolean idecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "idecl")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<idecl>");
-    result_ = idecl_0(builder_, level_ + 1);
-    if (!result_) result_ = itdecl(builder_, level_ + 1);
-    if (!result_) result_ = idecl_2(builder_, level_ + 1);
+    result_ = itdecl(builder_, level_ + 1);
+    if (!result_) result_ = idecl_1(builder_, level_ + 1);
     exit_section_(builder_, level_, marker_, IDECL, result_, false, null);
     return result_;
   }
 
-  // ppragma+ idecl
-  private static boolean idecl_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "idecl_0")) return false;
+  // (funlhs | pat) rhs
+  private static boolean idecl_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "idecl_1")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = idecl_0_0(builder_, level_ + 1);
-    result_ = result_ && idecl(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // ppragma+
-  private static boolean idecl_0_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "idecl_0_0")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = ppragma(builder_, level_ + 1);
-    int pos_ = current_position_(builder_);
-    while (result_) {
-      if (!ppragma(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "idecl_0_0", pos_)) break;
-      pos_ = current_position_(builder_);
-    }
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // (funlhs | var) rhs
-  private static boolean idecl_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "idecl_2")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = idecl_2_0(builder_, level_ + 1);
+    result_ = idecl_1_0(builder_, level_ + 1);
     result_ = result_ && rhs(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // funlhs | var
-  private static boolean idecl_2_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "idecl_2_0")) return false;
+  // funlhs | pat
+  private static boolean idecl_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "idecl_1_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = funlhs(builder_, level_ + 1);
-    if (!result_) result_ = var(builder_, level_ + 1);
+    if (!result_) result_ = pat(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   /* ********************************************************** */
-  // idecl ppragma*
+  // ppragma* idecl ppragma*
   static boolean idecl0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "idecl0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = idecl(builder_, level_ + 1);
-    result_ = result_ && idecl0_1(builder_, level_ + 1);
+    result_ = idecl0_0(builder_, level_ + 1);
+    result_ = result_ && idecl(builder_, level_ + 1);
+    result_ = result_ && idecl0_2(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   // ppragma*
-  private static boolean idecl0_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "idecl0_1")) return false;
+  private static boolean idecl0_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "idecl0_0")) return false;
     int pos_ = current_position_(builder_);
     while (true) {
       if (!ppragma(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "idecl0_1", pos_)) break;
+      if (!empty_element_parsed_guard_(builder_, "idecl0_0", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
+  }
+
+  // ppragma*
+  private static boolean idecl0_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "idecl0_2")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!ppragma(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "idecl0_2", pos_)) break;
       pos_ = current_position_(builder_);
     }
     return true;
