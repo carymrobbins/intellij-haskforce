@@ -28,6 +28,9 @@ import java.util.List;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
+/**
+ * The "New Haskell file" menu item+actions available under "New".
+ */
 public class CreateHaskellFileAction extends CreateFileFromTemplateAction implements DumbAware {
     private static final String NEW_HASKELL_FILE = "New Haskell File";
     private static final Pattern VALID_MODULE_NAME_REGEX = Pattern.compile("^[A-Z][A-Za-z0-9]*(\\.hs)?$");
@@ -86,7 +89,10 @@ public class CreateHaskellFileAction extends CreateFileFromTemplateAction implem
         // We can't override it directly, and more importantly we can't override its call to
         // FileTemplateUtil.createFromTemplate()
         List<String> pathItems = FileUtil.getPathFromSourceRoot(dir.getProject(), dir.getVirtualFile());
-        final String modulePrefix = pathItems == null ? "" : StringUtil.join(pathItems, ".");
+        // modulePrefix is the empty string if the module is either in the top
+        // level directory or one of the subdirectories start with a lower-case
+        // letter.
+        final String modulePrefix = pathItems == null || invalidPathItems(pathItems) ? "" : StringUtil.join(pathItems, ".");
 
         // Adapted from super definition.
         CreateFileAction.MkDirs mkdirs = new CreateFileAction.MkDirs(name, dir);
@@ -124,6 +130,16 @@ public class CreateHaskellFileAction extends CreateFileFromTemplateAction implem
         }
 
         return null;
+    }
+
+    /**
+     * Returns true if any directory name starts with a lower case letter.
+     */
+    private static boolean invalidPathItems(List<String> pathItems) {
+        for (String s : pathItems) {
+            if (s.isEmpty() || !StringUtil.isCapitalized(s.substring(0,1))) return true;
+        }
+        return false;
     }
 
     @Override
