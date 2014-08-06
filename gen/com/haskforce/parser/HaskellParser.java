@@ -236,7 +236,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // recordlikelhs '{' (fbind ',')* fbind '}'
+  // recordlikelhs '{' (fbind ',')* (".." | fbind) '}'
   //                | parensplice exp ')'
   //                | [singlequote] qvar
   //                | idsplice
@@ -270,7 +270,7 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // recordlikelhs '{' (fbind ',')* fbind '}'
+  // recordlikelhs '{' (fbind ',')* (".." | fbind) '}'
   private static boolean aexp_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "aexp_0")) return false;
     boolean result_;
@@ -278,7 +278,7 @@ public class HaskellParser implements PsiParser {
     result_ = recordlikelhs(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, LBRACE);
     result_ = result_ && aexp_0_2(builder_, level_ + 1);
-    result_ = result_ && fbind(builder_, level_ + 1);
+    result_ = result_ && aexp_0_3(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, RBRACE);
     exit_section_(builder_, marker_, null, result_);
     return result_;
@@ -303,6 +303,17 @@ public class HaskellParser implements PsiParser {
     Marker marker_ = enter_section_(builder_);
     result_ = fbind(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, COMMA);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // ".." | fbind
+  private static boolean aexp_0_3(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "aexp_0_3")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, DOUBLEPERIOD);
+    if (!result_) result_ = fbind(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }

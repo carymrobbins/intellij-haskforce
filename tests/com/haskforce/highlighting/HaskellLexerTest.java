@@ -43,6 +43,7 @@ public class HaskellLexerTest extends HaskellLexerTestBase {
     public void testLayout00006()       { doTest(true, true); }
     public void testLayout00007()       { doTest(true, true); }
     public void testLayout00008()       { doTest(true, true); }
+    public void testLayout00011()       { doTest(true, true); }
     public void testComment00001()      { doTest(true, true); }
     public void testComment00002()      { doTest(true, true); }
     public void testComment00003()      { doTest(true, true); }

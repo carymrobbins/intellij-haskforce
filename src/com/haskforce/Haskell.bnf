@@ -381,7 +381,7 @@ private lexp ::= "\\case" altslist
 
 private fexp ::= aexp [fexp]
 
-private aexp ::= recordlikelhs '{' (fbind ',')* fbind '}'
+private aexp ::= recordlikelhs '{' (fbind ',')* (".." | fbind) '}'
                | parensplice exp ')'
                | [singlequote] qvar
                | idsplice
