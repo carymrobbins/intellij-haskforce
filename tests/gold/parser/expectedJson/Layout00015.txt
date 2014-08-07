@@ -1,0 +1,1 @@
+ERROR:ViewPatterns is not enabled

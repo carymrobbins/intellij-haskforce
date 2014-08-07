@@ -457,7 +457,7 @@ private apat ::= literal
                | ('!'|'~') apat
                | var ('+' integertoken | ['@' apat])
                | qcon '{' [(fpat ',')* fpat] '}'
-               | '(' pat ("->" pat | [',' (pat ',')* pat]) ')'
+               | '(' pat (apat* "->" pat | [',' (pat ',')* pat]) ')'
                // Second option is quasiquotes. See TemplateHaskell00002.hs.
                | '[' (pat (',' pat)* ']' |  exp '|' [semi] exp [semi]'|]')
                | gcon

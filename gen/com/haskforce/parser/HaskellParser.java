@@ -620,7 +620,7 @@ public class HaskellParser implements PsiParser {
   //                | ('!'|'~') apat
   //                | var ('+' integertoken | ['@' apat])
   //                | qcon '{' [(fpat ',')* fpat] '}'
-  //                | '(' pat ("->" pat | [',' (pat ',')* pat]) ')'
+  //                | '(' pat (apat* "->" pat | [',' (pat ',')* pat]) ')'
   //                // Second option is quasiquotes. See TemplateHaskell00002.hs.
   //                | '[' (pat (',' pat)* ']' |  exp '|' [semi] exp [semi]'|]')
   //                | gcon
@@ -767,7 +767,7 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // '(' pat ("->" pat | [',' (pat ',')* pat]) ')'
+  // '(' pat (apat* "->" pat | [',' (pat ',')* pat]) ')'
   private static boolean apat_5(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat_5")) return false;
     boolean result_;
@@ -780,7 +780,7 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // "->" pat | [',' (pat ',')* pat]
+  // apat* "->" pat | [',' (pat ',')* pat]
   private static boolean apat_5_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat_5_2")) return false;
     boolean result_;
@@ -791,15 +791,28 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // "->" pat
+  // apat* "->" pat
   private static boolean apat_5_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat_5_2_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, RIGHTARROW);
+    result_ = apat_5_2_0_0(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RIGHTARROW);
     result_ = result_ && pat(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
+  }
+
+  // apat*
+  private static boolean apat_5_2_0_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "apat_5_2_0_0")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!apat(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "apat_5_2_0_0", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
   }
 
   // [',' (pat ',')* pat]
