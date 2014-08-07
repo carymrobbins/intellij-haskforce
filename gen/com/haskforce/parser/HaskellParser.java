@@ -3166,36 +3166,14 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // itdecl
-  //         | (funlhs | pat) rhs
+  //         | funorpatdecl
   public static boolean idecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "idecl")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<idecl>");
     result_ = itdecl(builder_, level_ + 1);
-    if (!result_) result_ = idecl_1(builder_, level_ + 1);
+    if (!result_) result_ = funorpatdecl(builder_, level_ + 1);
     exit_section_(builder_, level_, marker_, IDECL, result_, false, null);
-    return result_;
-  }
-
-  // (funlhs | pat) rhs
-  private static boolean idecl_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "idecl_1")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = idecl_1_0(builder_, level_ + 1);
-    result_ = result_ && rhs(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // funlhs | pat
-  private static boolean idecl_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "idecl_1_0")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = funlhs(builder_, level_ + 1);
-    if (!result_) result_ = pat(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 

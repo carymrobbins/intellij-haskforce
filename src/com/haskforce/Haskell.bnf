@@ -253,7 +253,7 @@ private idecls1 ::= idecl0 [semi idecls1]
 private idecl0 ::= ppragma* idecl ppragma*
 
 idecl ::= itdecl
-        | (funlhs | pat) rhs
+        | funorpatdecl
 
 private itdecl ::= "type" ctype '=' ctype
                  | ("data" | "newtype") ctype ([kindsig] gadtconstrs | ['=' constrs]) [deriving]

@@ -10,8 +10,8 @@ public interface HaskellIdecl extends PsiElement {
   @Nullable
   HaskellAtype getAtype();
 
-  @Nullable
-  HaskellCon getCon();
+  @NotNull
+  List<HaskellCon> getConList();
 
   @NotNull
   List<HaskellConstr> getConstrList();
@@ -19,8 +19,8 @@ public interface HaskellIdecl extends PsiElement {
   @NotNull
   List<HaskellCtype> getCtypeList();
 
-  @NotNull
-  List<HaskellExp> getExpList();
+  @Nullable
+  HaskellFunorpatdecl getFunorpatdecl();
 
   @Nullable
   HaskellKind getKind();
@@ -29,36 +29,27 @@ public interface HaskellIdecl extends PsiElement {
   HaskellOqtycon getOqtycon();
 
   @NotNull
-  List<HaskellPat> getPatList();
-
-  @NotNull
-  List<HaskellPstringtoken> getPstringtokenList();
-
-  @NotNull
-  List<HaskellQcon> getQconList();
-
-  @Nullable
-  HaskellQtycls getQtycls();
-
-  @NotNull
-  List<HaskellQvar> getQvarList();
-
-  @Nullable
-  HaskellRhs getRhs();
+  List<HaskellQtycls> getQtyclsList();
 
   @Nullable
   HaskellTypee getTypee();
 
-  @NotNull
-  List<HaskellVarid> getVaridList();
-
-  @Nullable
-  HaskellVarop getVarop();
-
   @Nullable
   HaskellVars getVars();
 
-  @NotNull
-  List<HaskellVarsym> getVarsymList();
+  @Nullable
+  PsiElement getEquals();
+
+  @Nullable
+  PsiElement getExclamation();
+
+  @Nullable
+  PsiElement getLparen();
+
+  @Nullable
+  PsiElement getRparen();
+
+  @Nullable
+  PsiElement getSemicolon();
 
 }

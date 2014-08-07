@@ -29,9 +29,9 @@ public class HaskellIdeclImpl extends ASTWrapperPsiElement implements HaskellIde
   }
 
   @Override
-  @Nullable
-  public HaskellCon getCon() {
-    return findChildByClass(HaskellCon.class);
+  @NotNull
+  public List<HaskellCon> getConList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellCon.class);
   }
 
   @Override
@@ -47,9 +47,9 @@ public class HaskellIdeclImpl extends ASTWrapperPsiElement implements HaskellIde
   }
 
   @Override
-  @NotNull
-  public List<HaskellExp> getExpList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellExp.class);
+  @Nullable
+  public HaskellFunorpatdecl getFunorpatdecl() {
+    return findChildByClass(HaskellFunorpatdecl.class);
   }
 
   @Override
@@ -66,38 +66,8 @@ public class HaskellIdeclImpl extends ASTWrapperPsiElement implements HaskellIde
 
   @Override
   @NotNull
-  public List<HaskellPat> getPatList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPat.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellPstringtoken> getPstringtokenList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPstringtoken.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellQcon> getQconList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQcon.class);
-  }
-
-  @Override
-  @Nullable
-  public HaskellQtycls getQtycls() {
-    return findChildByClass(HaskellQtycls.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellQvar> getQvarList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQvar.class);
-  }
-
-  @Override
-  @Nullable
-  public HaskellRhs getRhs() {
-    return findChildByClass(HaskellRhs.class);
+  public List<HaskellQtycls> getQtyclsList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQtycls.class);
   }
 
   @Override
@@ -107,27 +77,39 @@ public class HaskellIdeclImpl extends ASTWrapperPsiElement implements HaskellIde
   }
 
   @Override
-  @NotNull
-  public List<HaskellVarid> getVaridList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVarid.class);
-  }
-
-  @Override
-  @Nullable
-  public HaskellVarop getVarop() {
-    return findChildByClass(HaskellVarop.class);
-  }
-
-  @Override
   @Nullable
   public HaskellVars getVars() {
     return findChildByClass(HaskellVars.class);
   }
 
   @Override
-  @NotNull
-  public List<HaskellVarsym> getVarsymList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVarsym.class);
+  @Nullable
+  public PsiElement getEquals() {
+    return findChildByType(EQUALS);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getExclamation() {
+    return findChildByType(EXCLAMATION);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getLparen() {
+    return findChildByType(LPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRparen() {
+    return findChildByType(RPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getSemicolon() {
+    return findChildByType(SEMICOLON);
   }
 
 }
