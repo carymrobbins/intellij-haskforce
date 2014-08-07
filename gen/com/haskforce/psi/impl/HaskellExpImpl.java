@@ -41,12 +41,6 @@ public class HaskellExpImpl extends ASTWrapperPsiElement implements HaskellExp {
   }
 
   @Override
-  @NotNull
-  public List<HaskellCpp> getCppList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellCpp.class);
-  }
-
-  @Override
   @Nullable
   public HaskellCtype getCtype() {
     return findChildByClass(HaskellCtype.class);

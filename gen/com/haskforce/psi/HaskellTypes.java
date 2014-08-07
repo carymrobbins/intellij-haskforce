@@ -21,7 +21,6 @@ public interface HaskellTypes {
   IElementType CONSTR = new HaskellElementType("CONSTR");
   IElementType CONSYM = new HaskellElementType("CONSYM");
   IElementType CONTEXT = new HaskellElementType("CONTEXT");
-  IElementType CPP = new HaskellElementType("CPP");
   IElementType CTYPE = new HaskellElementType("CTYPE");
   IElementType DATADECL = new HaskellElementType("DATADECL");
   IElementType DEFAULTDECL = new HaskellElementType("DEFAULTDECL");
@@ -221,9 +220,6 @@ public interface HaskellTypes {
       }
       else if (type == CONTEXT) {
         return new HaskellContextImpl(node);
-      }
-      else if (type == CPP) {
-        return new HaskellCppImpl(node);
       }
       else if (type == CTYPE) {
         return new HaskellCtypeImpl(node);

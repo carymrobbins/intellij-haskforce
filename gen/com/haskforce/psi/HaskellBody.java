@@ -10,9 +10,6 @@ public interface HaskellBody extends PsiElement {
   @Nullable
   HaskellClassdecl getClassdecl();
 
-  @NotNull
-  List<HaskellCpp> getCppList();
-
   @Nullable
   HaskellDatadecl getDatadecl();
 

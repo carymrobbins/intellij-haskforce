@@ -62,9 +62,6 @@ public interface HaskellTypes2 {
             else if (type == CONSYM) {
                 return new HaskellConsymImpl(node);
             }
-            else if (type == CPP) {
-                return new HaskellCppImpl(node);
-            }
             else if (type == EXPORT) {
                 return new HaskellExportImpl(node);
             }

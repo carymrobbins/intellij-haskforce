@@ -8,10 +8,7 @@ import com.intellij.psi.PsiElement;
 public interface HaskellExports extends PsiElement {
 
   @NotNull
-  List<HaskellCpp> getCppList();
-
-  @Nullable
-  HaskellExport getExport();
+  List<HaskellExport> getExportList();
 
   @NotNull
   PsiElement getLparen();

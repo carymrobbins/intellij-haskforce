@@ -24,12 +24,6 @@ public class HaskellImpdeclImpl extends ASTWrapperPsiElement implements HaskellI
 
   @Override
   @Nullable
-  public HaskellCpp getCpp() {
-    return findChildByClass(HaskellCpp.class);
-  }
-
-  @Override
-  @Nullable
   public HaskellImportt getImportt() {
     return findChildByClass(HaskellImportt.class);
   }

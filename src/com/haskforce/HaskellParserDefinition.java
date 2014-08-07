@@ -28,7 +28,8 @@ public class HaskellParserDefinition implements ParserDefinition {
     private static final boolean pjbuild = false;
     public static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
     public static final TokenSet COMMENTS = TokenSet.create(HaskellTypes.COMMENT,
-            HaskellTypes.COMMENTTEXT, HaskellTypes.OPENCOM, HaskellTypes.CLOSECOM);
+            HaskellTypes.COMMENTTEXT, HaskellTypes.OPENCOM, HaskellTypes.CLOSECOM,
+            HaskellTypes.CPPIF, HaskellTypes.CPPELSE, HaskellTypes.CPPENDIF);
     public static final TokenSet STRINGS = TokenSet.create(HaskellTypes.STRINGTOKEN);
 
     public static final IFileElementType FILE = new IFileElementType(Language.<HaskellLanguage>findInstance(HaskellLanguage.class));

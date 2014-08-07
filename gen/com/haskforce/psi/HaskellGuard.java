@@ -13,9 +13,6 @@ public interface HaskellGuard extends PsiElement {
   @Nullable
   HaskellClassdecl getClassdecl();
 
-  @NotNull
-  List<HaskellCpp> getCppList();
-
   @Nullable
   HaskellCtype getCtype();
 

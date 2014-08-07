@@ -177,17 +177,17 @@
 
 // Haskell 2010 Report - http://www.haskell.org/onlinereport/haskell2010/haskellch2.html#x7-140002
 
-module ::= (ppragma | cpp)* [moduledecl] body
+module ::= ppragma* [moduledecl] body
 
 moduledecl ::= "module" qconid [ppragma] [exports] "where" {pin=1}
 
-exports ::= <<commaSeparate2 (cpp* export)>>
+exports ::= <<commaSeparate2 export>>
 export ::= "module" qconid
         // Really (qtycon|qtycls) but they are both ::= qconid.
         | qtycon [ '(' (".." | cnames | qvars) ')']
         | qvar {pin(".*")=1}
 
-body ::= (cpp | ppragma)* open [bodyaux] close {pin=2}
+body ::= ppragma* open [bodyaux] close {pin=2}
 
 private bodyaux ::= impdecls [semi topdecls]
                   | [impdecls semi] topdecls
@@ -197,7 +197,7 @@ private impdecls ::= impdecl [semi impdecls] {pin=1}
 
 private topdecls ::= topdecl [semi topdecls] {pin(".*")=1}
 
-impdecl ::= "import" ["qualified"] qconid ["as" qconid] [impspec] [cpp] {pin(".*")=1}
+impdecl ::= "import" ["qualified"] qconid ["as" qconid] [impspec] {pin(".*")=1}
 
 private impspec ::= ["hiding"] '(' [<<sequence importt>>] ')' {pin(".*")=2}
 
@@ -211,7 +211,7 @@ private cname ::= var | con
 
 vars ::= <<sequence var>>
 
-private topdecl ::= topdecl1 (cpp | ppragma)*
+private topdecl ::= topdecl1 ppragma*
 
 private topdecl1 ::= typedecl
                   | datadecl
@@ -567,8 +567,6 @@ tv_bndr ::= '(' tyvar kindsig ')'
 pstringtoken ::= '"' STRINGTOKEN* '"'
 
 // Misc cross-cutting stuff.
-
-cpp ::= CPPIF | CPPELSE | CPPENDIF
 
 private open ::= '{'
                 | WHITESPACELBRACETOK {pin(".*")=1}

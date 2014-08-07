@@ -29,12 +29,6 @@ public class HaskellBodyImpl extends ASTWrapperPsiElement implements HaskellBody
   }
 
   @Override
-  @NotNull
-  public List<HaskellCpp> getCppList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellCpp.class);
-  }
-
-  @Override
   @Nullable
   public HaskellDatadecl getDatadecl() {
     return findChildByClass(HaskellDatadecl.class);

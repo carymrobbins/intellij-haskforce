@@ -59,10 +59,6 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
-  public void visitCpp(@NotNull HaskellCpp o) {
-    visitPsiElement(o);
-  }
-
   public void visitCtype(@NotNull HaskellCtype o) {
     visitPsiElement(o);
   }
