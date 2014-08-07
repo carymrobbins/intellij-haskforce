@@ -8,6 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface HaskellQvars extends PsiElement {
 
   @NotNull
-  List<HaskellQvar> getQvarList();
+  HaskellQvar getQvar();
 
 }

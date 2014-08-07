@@ -25,8 +25,8 @@ public interface HaskellGuard extends PsiElement {
   @Nullable
   HaskellDerivingdecl getDerivingdecl();
 
-  @NotNull
-  List<HaskellExp> getExpList();
+  @Nullable
+  HaskellExp getExp();
 
   @Nullable
   HaskellForeigndecl getForeigndecl();
@@ -43,8 +43,8 @@ public interface HaskellGuard extends PsiElement {
   @Nullable
   HaskellNewtypedecl getNewtypedecl();
 
-  @NotNull
-  List<HaskellPat> getPatList();
+  @Nullable
+  HaskellPat getPat();
 
   @Nullable
   HaskellPpragma getPpragma();
@@ -84,6 +84,9 @@ public interface HaskellGuard extends PsiElement {
 
   @Nullable
   PsiElement getLbrace();
+
+  @Nullable
+  PsiElement getLeftarrow();
 
   @Nullable
   PsiElement getLthopen();

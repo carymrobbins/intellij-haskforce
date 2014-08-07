@@ -3099,7 +3099,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // pat '<-' infixexp
+  // pat '<-' exp
   //         | "let" decls
   //         | infixexp
   public static boolean guard(PsiBuilder builder_, int level_) {
@@ -3113,14 +3113,14 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // pat '<-' infixexp
+  // pat '<-' exp
   private static boolean guard_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "guard_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = pat(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, LEFTARROW);
-    result_ = result_ && infixexp(builder_, level_ + 1);
+    result_ = result_ && exp(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }

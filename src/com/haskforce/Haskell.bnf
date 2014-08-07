@@ -361,7 +361,7 @@ private gdrhs ::= guards '=' exp {pin=2}
 
 private guards ::= '|' guard (',' guard)* {pin(".*")=1}
 
-guard ::= pat '<-' infixexp
+guard ::= pat '<-' exp
         | "let" decls
         | infixexp
 

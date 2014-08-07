@@ -59,9 +59,9 @@ public class HaskellGuardImpl extends ASTWrapperPsiElement implements HaskellGua
   }
 
   @Override
-  @NotNull
-  public List<HaskellExp> getExpList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellExp.class);
+  @Nullable
+  public HaskellExp getExp() {
+    return findChildByClass(HaskellExp.class);
   }
 
   @Override
@@ -95,9 +95,9 @@ public class HaskellGuardImpl extends ASTWrapperPsiElement implements HaskellGua
   }
 
   @Override
-  @NotNull
-  public List<HaskellPat> getPatList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPat.class);
+  @Nullable
+  public HaskellPat getPat() {
+    return findChildByClass(HaskellPat.class);
   }
 
   @Override
@@ -176,6 +176,12 @@ public class HaskellGuardImpl extends ASTWrapperPsiElement implements HaskellGua
   @Nullable
   public PsiElement getLbrace() {
     return findChildByType(LBRACE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getLeftarrow() {
+    return findChildByType(LEFTARROW);
   }
 
   @Override
