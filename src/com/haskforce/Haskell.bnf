@@ -507,7 +507,7 @@ ppragma ::= openpragma PRAGMA+ closepragma {pin(".*")=3}
 // Stripped down version of symbol; real definition in comment above.
 private symbol1 ::= '!' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '>' | '?' | '@'
          | '\' | '^' | '-' | '~' | ':'
-varid ::= (varidRegexp | "as") {
+varid ::= (varidRegexp | "as" | "rec") {
         methods=[getName getNameIdentifier getReference setName getPresentation]
     }
 conid ::= conidRegexp {

@@ -5894,7 +5894,6 @@ public class HaskellParser implements PsiParser {
   // varid
   public static boolean tyvar(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "tyvar")) return false;
-    if (!nextTokenIs(builder_, "<tyvar>", AS, VARIDREGEXP)) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<tyvar>");
     result_ = varid(builder_, level_ + 1);
@@ -5927,14 +5926,14 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // varidRegexp | "as"
+  // varidRegexp | "as" | "rec"
   public static boolean varid(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varid")) return false;
-    if (!nextTokenIs(builder_, "<varid>", AS, VARIDREGEXP)) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<varid>");
     result_ = consumeToken(builder_, VARIDREGEXP);
     if (!result_) result_ = consumeToken(builder_, AS);
+    if (!result_) result_ = consumeToken(builder_, RECTOK);
     exit_section_(builder_, level_, marker_, VARID, result_, false, null);
     return result_;
   }
