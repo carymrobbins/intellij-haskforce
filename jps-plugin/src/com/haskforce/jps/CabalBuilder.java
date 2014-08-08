@@ -297,14 +297,25 @@ public class CabalBuilder extends ModuleLevelBuilder {
                         matcher.group(3) == null ? BuildMessage.Kind.WARNING : BuildMessage.Kind.ERROR;
 
                 final String trimmedMessage = msg.toString().trim();
-                //noinspection ObjectAllocationInLoop
-                context.processMessage(new CompilerMessage(
-                        "ghc",
-                        kind,
-                        trimmedMessage,
-                        sourcePath,
-                        -1L, -1L, -1L,
-                        lineNum, colNum));
+                if (trimmedMessage.isEmpty()) { // DEBUG code for #31.
+                    //noinspection ObjectAllocationInLoop
+                    context.processMessage(new CompilerMessage(
+                            "ghc",
+                            BuildMessage.Kind.WARNING,
+                            "INTERNAL HaskForce ERROR: Got an empty compiler message from:\n" + msg + "\nWith line:\n" + line + '\n',
+                            sourcePath,
+                            -1L, -1L, -1L,
+                            lineNum, colNum));
+                } else {
+                    //noinspection ObjectAllocationInLoop
+                    context.processMessage(new CompilerMessage(
+                            "ghc",
+                            kind,
+                            trimmedMessage,
+                            sourcePath,
+                            -1L, -1L, -1L,
+                            lineNum, colNum));
+                }
             } else if (logAll) {
                 //noinspection ObjectAllocationInLoop
                 context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.INFO, processOut.next()));
