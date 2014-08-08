@@ -11,6 +11,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Interface + encapsulation of details concerning ghc-mod communication.
+ */
 public class GhcMod {
     @Nullable
     public static String getPath(@NotNull Project project) {
@@ -59,7 +62,7 @@ public class GhcMod {
         if (!scanner.hasNext()) {
             return null;
         }
-        final String file = scanner.next();
+        String file = scanner.next();
         if (!scanner.hasNextInt()) {
             return null;
         }
@@ -76,6 +79,8 @@ public class GhcMod {
         // Remove "In a stmt..." text and set newlines.
         // TODO: How to format annotation with newlines?
         final String message = StringUtil.split(scanner.next(), "\0In a stmt").get(0).replace('\0', '\n');
+        // Remove newlines from filename.
+        file = file.trim();
         return new Problem(file, startLine, startColumn, message);
     }
 
