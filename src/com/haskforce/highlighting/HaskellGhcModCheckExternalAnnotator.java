@@ -117,6 +117,13 @@ public class HaskellGhcModCheckExternalAnnotator extends HaskellExternalAnnotato
             if (offsetStart == -1) {
                 continue;
             }
+
+            // The problem might not be ours; move on to the next problem in
+            // that case.
+            if(!problem.file.equals(file.getVirtualFile().getCanonicalPath())) {
+                continue;
+            }
+
             int offsetEnd = offsetStart;
             while ((++offsetEnd) < text.length()) {
                 final char c = text.charAt(offsetEnd);
