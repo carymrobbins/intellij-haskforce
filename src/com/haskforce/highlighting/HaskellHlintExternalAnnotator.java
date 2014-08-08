@@ -22,6 +22,7 @@
 package com.haskforce.highlighting;
 
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.haskforce.utils.ExecUtil;
 import com.intellij.execution.configurations.GeneralCommandLine;
@@ -53,13 +54,14 @@ public class HaskellHlintExternalAnnotator extends HaskellExternalAnnotatorBase<
     private static final Pattern WHITESPACE_REGEX = Pattern.compile("\\s+");
     private static final Pattern HLINT_VERSION_REGEX = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)");
     private static final VersionTriple HLINT_MIN_VERSION_WITH_JSON_SUPPORT = new VersionTriple(1, 9, 1);
+    private static final Gson gson = new GsonBuilder().create();
     public boolean useJson = false;
 
     /**
      * Parse problems from the hlint --json output.
      */
     private static Problem[] parseProblemsJson(String input) {
-        return new GsonBuilder().create().fromJson(input, Problem[].class);
+        return gson.fromJson(input, Problem[].class);
     }
 
     /**
