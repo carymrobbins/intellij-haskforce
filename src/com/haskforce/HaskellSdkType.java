@@ -2,6 +2,7 @@ package com.haskforce;
 
 import com.haskforce.jps.model.JpsHaskellModelSerializerExtension;
 import com.haskforce.utils.ExecUtil;
+import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.projectRoots.AdditionalDataConfigurable;
@@ -110,7 +111,7 @@ public class HaskellSdkType extends SdkType {
         }
         File ghc = getExecutable(sdkHome);
         if (ghc.canExecute()) {
-            return ExecUtil.exec(ghc.getPath() + " --numeric-version");
+            return ExecUtil.readCommandLine(new GeneralCommandLine(ghc.getPath(), "--numeric-version"));
         }
         return null;
     }
