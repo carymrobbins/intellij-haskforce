@@ -145,7 +145,7 @@ public class HaskellHlintExternalAnnotator extends HaskellExternalAnnotatorBase<
                 continue;
             }
             TextRange problemRange = TextRange.create(offsetStart, offsetEnd);
-            String message = problem.hint + (problem.to == null ? "" : ", why not: " + problem.to);
+            String message = problem.hint + (problem.to == null || problem.to.isEmpty() ? "" : ", why not: " + problem.to);
             createWarningAnnotation(holder, problemRange, message);
             // TODO: Add an inspection to fix/ignore.
         }
