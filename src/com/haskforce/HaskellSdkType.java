@@ -131,7 +131,9 @@ public class HaskellSdkType extends SdkType {
             LOG.warn("Did not get any output from ghc --print-libdir.");
             return null;
         }
-        return new File(libPath).getParentFile().getParent();
+        final File libDir = new File(libPath);
+        // On some platforms (e.g. Windows), libDir will point to the actual lib directory instead of lib/ghc-x.x.x
+        return libDir.getName().equals("lib") ? libDir.getParent() : libDir.getParentFile().getParent();
     }
 
     /**
