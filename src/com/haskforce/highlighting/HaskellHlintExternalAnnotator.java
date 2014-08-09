@@ -139,10 +139,11 @@ public class HaskellHlintExternalAnnotator extends HaskellExternalAnnotatorBase<
             if (offsetStart == -1) {
                 continue;
             }
-            final int offsetEnd = useJson ? StringUtil.lineColToOffset(text, problem.endLine - 1, problem.endColumn - 1)
-                                          : getOffsetEndFallback(offsetStart, problem, text);
+            int offsetEnd = useJson ? StringUtil.lineColToOffset(text, problem.endLine - 1, problem.endColumn - 1)
+                                    : getOffsetEndFallback(offsetStart, problem, text);
             if (offsetEnd == -1) {
-                continue;
+                // User is probably just missing a newline at the end of the file.
+                offsetEnd = text.length();
             }
             TextRange problemRange = TextRange.create(offsetStart, offsetEnd);
             String message = problem.hint + (problem.to == null || problem.to.isEmpty() ? "" : ", why not: " + problem.to);
