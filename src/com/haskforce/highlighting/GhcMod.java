@@ -63,8 +63,15 @@ public class GhcMod {
             return null;
         }
         String file = scanner.next();
-        if (!scanner.hasNextInt()) {
+        if (!scanner.hasNext()) {
             return null;
+        }
+        if (!scanner.hasNextInt()) {
+            // We're probably parsing something like C:\path\to\file.hs
+            file += ':' + scanner.next();
+            if (!scanner.hasNextInt()) {
+                return null;
+            }
         }
         final int startLine = scanner.nextInt();
         if (!scanner.hasNextInt()) {

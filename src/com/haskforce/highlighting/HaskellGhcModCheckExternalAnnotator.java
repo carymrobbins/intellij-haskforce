@@ -13,6 +13,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -118,9 +119,11 @@ public class HaskellGhcModCheckExternalAnnotator extends HaskellExternalAnnotato
                 continue;
             }
 
-            // The problem might not be ours; move on to the next problem in
-            // that case.
-            if(!problem.file.equals(file.getVirtualFile().getCanonicalPath())) {
+            // The problem might not be ours; move on to the next problem in that case.
+            // TODO: There is probably a better way to compare these two file paths.
+            // Note that Windows paths end up with different slashes, so getPresentableUrl() normalizes them.
+            final VirtualFile vFile = file.getVirtualFile();
+            if(!(problem.file.equals(vFile.getCanonicalPath()) || problem.file.equals(vFile.getPresentableUrl()))) {
                 continue;
             }
 
