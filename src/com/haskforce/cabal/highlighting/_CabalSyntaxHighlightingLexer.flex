@@ -28,7 +28,7 @@ WHITE_SPACE=[\ \t\f]
 KEY_PATTERN=[a-z0-9\-]+\ *:
 END_OF_LINE_COMMENT=--[^\r\n]*
 COLON=:
-CONFIG=(executable|library|test-suite)[^\n\r]*
+CONFIG=(executable|library|benchmark|test-suite)[^\n\r]*
 
 %state WAITING_VALUE
 
