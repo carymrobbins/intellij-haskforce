@@ -36,7 +36,7 @@ public class HaskellRenameTest extends HaskellLightPlatformCodeInsightFixtureTes
     private void doTest(String newName, boolean isRenameModuleTest) {
         myFixture.testRename(getTestName(false) + ".hs", getTestName(false) + "-after.hs", newName);
         if (isRenameModuleTest) {
-            assertEquals(StringUtil.unquoteString(newName, '\'') + ".hs", myFixture.getFile().getName());
+            assertEquals(StringUtil.unquoteString(newName) + ".hs", myFixture.getFile().getName());
         }
     }
 }

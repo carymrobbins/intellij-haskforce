@@ -5,6 +5,7 @@ import com.intellij.lang.annotation.Annotation;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.ExternalAnnotator;
 import com.intellij.lang.annotation.HighlightSeverity;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.xml.util.XmlStringUtil;
 import org.jetbrains.annotations.NotNull;
@@ -13,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.regex.Pattern;
 
 public abstract class HaskellExternalAnnotatorBase<InitialInfoType, AnnotationResultType> extends ExternalAnnotator<InitialInfoType, AnnotationResultType> {
+    private static final Logger LOG = Logger.getInstance(HaskellExternalAnnotatorBase.class);
     private static final Pattern NEWLINE_REGEX = Pattern.compile("\n");
     private static final Pattern SPACE_REGEX = Pattern.compile(" ");
 
@@ -28,7 +30,24 @@ public abstract class HaskellExternalAnnotatorBase<InitialInfoType, AnnotationRe
             ((AnnotationHolderImpl)holder).add(annotation);
             return annotation;
         }
-        return holder.createAnnotation(severity, range, message);
+        // AnnotationHolder.createAnnotation() doesn't exist in IntelliJ 13.0
+        if (severity == HighlightSeverity.INFORMATION) {
+            return holder.createInfoAnnotation(range, message);
+        }
+        if (severity == HighlightSeverity.WEAK_WARNING) {
+            return holder.createWeakWarningAnnotation(range, message);
+        }
+        if (severity == HighlightSeverity.WARNING) {
+            return holder.createWarningAnnotation(range, message);
+        }
+        if (severity == HighlightSeverity.ERROR) {
+            return holder.createErrorAnnotation(range, message);
+        }
+        if (severity == HighlightSeverity.GENERIC_SERVER_ERROR_OR_WARNING) {
+            return holder.createErrorAnnotation(range, message);
+        }
+        LOG.warn("Unknown severity: " + severity);
+        return holder.createInfoAnnotation(range, message);
     }
 
     public static Annotation createInfoAnnotation(@NotNull AnnotationHolder holder, @NotNull TextRange range, @Nullable String message) {
