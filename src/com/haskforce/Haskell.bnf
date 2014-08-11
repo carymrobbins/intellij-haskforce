@@ -376,7 +376,7 @@ private lexp ::= "\\case" altslist
                | "do" open stmts close
                | "mdo" open stmts close
                | "proc" aexp "->" exp
-               | fexp
+               | fexp {pin(".*")=1}
 
 private fexp ::= aexp [fexp]
 

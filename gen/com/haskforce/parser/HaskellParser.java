@@ -3755,24 +3755,28 @@ public class HaskellParser implements PsiParser {
   private static boolean lexp_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexp_0")) return false;
     boolean result_;
-    Marker marker_ = enter_section_(builder_);
+    boolean pinned_;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, "\\case");
+    pinned_ = result_; // pin = 1
     result_ = result_ && altslist(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
+    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
+    return result_ || pinned_;
   }
 
   // '\' apat+ "->" exp
   private static boolean lexp_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexp_1")) return false;
     boolean result_;
-    Marker marker_ = enter_section_(builder_);
+    boolean pinned_;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, BACKSLASH);
-    result_ = result_ && lexp_1_1(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, RIGHTARROW);
-    result_ = result_ && exp(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
+    pinned_ = result_; // pin = 1
+    result_ = result_ && report_error_(builder_, lexp_1_1(builder_, level_ + 1));
+    result_ = pinned_ && report_error_(builder_, consumeToken(builder_, RIGHTARROW)) && result_;
+    result_ = pinned_ && exp(builder_, level_ + 1) && result_;
+    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
+    return result_ || pinned_;
   }
 
   // apat+
@@ -3795,30 +3799,34 @@ public class HaskellParser implements PsiParser {
   private static boolean lexp_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexp_2")) return false;
     boolean result_;
-    Marker marker_ = enter_section_(builder_);
+    boolean pinned_;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, LET);
-    result_ = result_ && decls(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, IN);
-    result_ = result_ && exp(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
+    pinned_ = result_; // pin = 1
+    result_ = result_ && report_error_(builder_, decls(builder_, level_ + 1));
+    result_ = pinned_ && report_error_(builder_, consumeToken(builder_, IN)) && result_;
+    result_ = pinned_ && exp(builder_, level_ + 1) && result_;
+    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
+    return result_ || pinned_;
   }
 
   // "if" exp [semi] "then" exp [semi] "else" exp
   private static boolean lexp_3(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexp_3")) return false;
     boolean result_;
-    Marker marker_ = enter_section_(builder_);
+    boolean pinned_;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, IF);
-    result_ = result_ && exp(builder_, level_ + 1);
-    result_ = result_ && lexp_3_2(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, THEN);
-    result_ = result_ && exp(builder_, level_ + 1);
-    result_ = result_ && lexp_3_5(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, ELSE);
-    result_ = result_ && exp(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
+    pinned_ = result_; // pin = 1
+    result_ = result_ && report_error_(builder_, exp(builder_, level_ + 1));
+    result_ = pinned_ && report_error_(builder_, lexp_3_2(builder_, level_ + 1)) && result_;
+    result_ = pinned_ && report_error_(builder_, consumeToken(builder_, THEN)) && result_;
+    result_ = pinned_ && report_error_(builder_, exp(builder_, level_ + 1)) && result_;
+    result_ = pinned_ && report_error_(builder_, lexp_3_5(builder_, level_ + 1)) && result_;
+    result_ = pinned_ && report_error_(builder_, consumeToken(builder_, ELSE)) && result_;
+    result_ = pinned_ && exp(builder_, level_ + 1) && result_;
+    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
+    return result_ || pinned_;
   }
 
   // [semi]
@@ -3839,52 +3847,60 @@ public class HaskellParser implements PsiParser {
   private static boolean lexp_4(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexp_4")) return false;
     boolean result_;
-    Marker marker_ = enter_section_(builder_);
+    boolean pinned_;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, CASE);
-    result_ = result_ && exp(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, OF);
-    result_ = result_ && altslist(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
+    pinned_ = result_; // pin = 1
+    result_ = result_ && report_error_(builder_, exp(builder_, level_ + 1));
+    result_ = pinned_ && report_error_(builder_, consumeToken(builder_, OF)) && result_;
+    result_ = pinned_ && altslist(builder_, level_ + 1) && result_;
+    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
+    return result_ || pinned_;
   }
 
   // "do" open stmts close
   private static boolean lexp_5(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexp_5")) return false;
     boolean result_;
-    Marker marker_ = enter_section_(builder_);
+    boolean pinned_;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, DO);
-    result_ = result_ && open(builder_, level_ + 1);
-    result_ = result_ && stmts(builder_, level_ + 1);
-    result_ = result_ && close(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
+    pinned_ = result_; // pin = 1
+    result_ = result_ && report_error_(builder_, open(builder_, level_ + 1));
+    result_ = pinned_ && report_error_(builder_, stmts(builder_, level_ + 1)) && result_;
+    result_ = pinned_ && close(builder_, level_ + 1) && result_;
+    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
+    return result_ || pinned_;
   }
 
   // "mdo" open stmts close
   private static boolean lexp_6(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexp_6")) return false;
     boolean result_;
-    Marker marker_ = enter_section_(builder_);
+    boolean pinned_;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, MDOTOK);
-    result_ = result_ && open(builder_, level_ + 1);
-    result_ = result_ && stmts(builder_, level_ + 1);
-    result_ = result_ && close(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
+    pinned_ = result_; // pin = 1
+    result_ = result_ && report_error_(builder_, open(builder_, level_ + 1));
+    result_ = pinned_ && report_error_(builder_, stmts(builder_, level_ + 1)) && result_;
+    result_ = pinned_ && close(builder_, level_ + 1) && result_;
+    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
+    return result_ || pinned_;
   }
 
   // "proc" aexp "->" exp
   private static boolean lexp_7(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexp_7")) return false;
     boolean result_;
-    Marker marker_ = enter_section_(builder_);
+    boolean pinned_;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, "proc");
-    result_ = result_ && aexp(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, RIGHTARROW);
-    result_ = result_ && exp(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
+    pinned_ = result_; // pin = 1
+    result_ = result_ && report_error_(builder_, aexp(builder_, level_ + 1));
+    result_ = pinned_ && report_error_(builder_, consumeToken(builder_, RIGHTARROW)) && result_;
+    result_ = pinned_ && exp(builder_, level_ + 1) && result_;
+    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
+    return result_ || pinned_;
   }
 
   /* ********************************************************** */
