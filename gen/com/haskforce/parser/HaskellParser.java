@@ -3709,7 +3709,7 @@ public class HaskellParser implements PsiParser {
   // "\\case" altslist
   //                | '\' apat+ "->" exp
   //                | "let" decls "in" exp
-  //                | "if" exp [semi] "then" exp [semi] "else" exp
+  //                | "if" exp "then" exp "else" exp
   //                | "case" exp "of" altslist
   //                | "do" open stmts close
   //                | "mdo" open stmts close
@@ -3791,7 +3791,7 @@ public class HaskellParser implements PsiParser {
     return result_ || pinned_;
   }
 
-  // "if" exp [semi] "then" exp [semi] "else" exp
+  // "if" exp "then" exp "else" exp
   private static boolean lexp_3(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexp_3")) return false;
     boolean result_;
@@ -3800,28 +3800,12 @@ public class HaskellParser implements PsiParser {
     result_ = consumeToken(builder_, IF);
     pinned_ = result_; // pin = 1
     result_ = result_ && report_error_(builder_, exp(builder_, level_ + 1));
-    result_ = pinned_ && report_error_(builder_, lexp_3_2(builder_, level_ + 1)) && result_;
     result_ = pinned_ && report_error_(builder_, consumeToken(builder_, THEN)) && result_;
     result_ = pinned_ && report_error_(builder_, exp(builder_, level_ + 1)) && result_;
-    result_ = pinned_ && report_error_(builder_, lexp_3_5(builder_, level_ + 1)) && result_;
     result_ = pinned_ && report_error_(builder_, consumeToken(builder_, ELSE)) && result_;
     result_ = pinned_ && exp(builder_, level_ + 1) && result_;
     exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
     return result_ || pinned_;
-  }
-
-  // [semi]
-  private static boolean lexp_3_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "lexp_3_2")) return false;
-    semi(builder_, level_ + 1);
-    return true;
-  }
-
-  // [semi]
-  private static boolean lexp_3_5(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "lexp_3_5")) return false;
-    semi(builder_, level_ + 1);
-    return true;
   }
 
   // "case" exp "of" altslist
