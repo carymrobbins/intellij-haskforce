@@ -85,7 +85,11 @@ public class GhcMod {
         }
         // Remove "In a stmt..." text and set newlines.
         // TODO: How to format annotation with newlines?
-        final String message = StringUtil.split(scanner.next(), "\0In a stmt").get(0).replace('\0', '\n');
+        String message = StringUtil.split(scanner.next(), "\0In a stmt").get(0).replace('\0', '\n');
+        // Remove "Use -v to .." suffix from message.
+        if (message.endsWith("\nUse -v to see a list of the files searched for.")) {
+            message = message.substring(0, message.length() - "\nUse -v to see a list of the files searched for.".length());
+        }
         // Remove newlines from filename.
         file = file.trim();
         return new Problem(file, startLine, startColumn, message);
