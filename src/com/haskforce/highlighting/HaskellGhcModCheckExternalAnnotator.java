@@ -9,6 +9,8 @@ import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
@@ -41,7 +43,7 @@ public class HaskellGhcModCheckExternalAnnotator extends HaskellExternalAnnotato
 
     @Nullable
     @Override
-    public Problems doAnnotate(PsiFile file) {
+    public Problems doAnnotate(@NotNull PsiFile file) {
         final String canonicalPath = file.getVirtualFile().getCanonicalPath();
         if (canonicalPath == null) {
             return null;
@@ -55,8 +57,14 @@ public class HaskellGhcModCheckExternalAnnotator extends HaskellExternalAnnotato
             }
         }, ModalityState.any());
 
+        // Use the module directory as working directory if it exists.
+        // If not, use the project directory.
         final Project project = file.getProject();
-        return GhcMod.check(project, file.getProject().getBasePath(), canonicalPath);
+        final Module module = ModuleUtilCore.findModuleForFile(file.getVirtualFile(), project);
+        final VirtualFile moduleFile = module == null ? null : module.getModuleFile();
+        final VirtualFile moduleDir = moduleFile == null ? null : moduleFile.getParent();
+        final String workDir = moduleDir == null ? project.getBasePath() : moduleDir.getPath();
+        return GhcMod.check(project, workDir, canonicalPath);
     }
 
     abstract static class RegisterFixHandler {
