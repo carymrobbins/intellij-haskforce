@@ -376,9 +376,7 @@ private lexp ::= "\\case" altslist
                | "do" open stmts close
                | "mdo" open stmts close
                | "proc" aexp "->" exp
-               | fexp {pin(".*")=1}
-
-private fexp ::= aexp [fexp]
+               | aexp+ {pin(".*")=1}
 
 private aexp ::= recordlikelhs '{' (fbind ',')* (".." | fbind) '}'
                | parensplice exp ')'
