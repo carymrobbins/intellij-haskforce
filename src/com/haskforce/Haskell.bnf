@@ -358,7 +358,7 @@ rhs ::= ('=' exp | gdrhs+) [wheredecls] {pin(".*")=1}
 
 private gdrhs ::= guards '=' exp {pin=2}
 
-private guards ::= '|' guard (',' guard)* {pin(".*")=1}
+private guards ::= '|' guard (',' guard)* {pin=1}
 
 guard ::= pat '<-' exp
         | "let" decls
@@ -376,7 +376,7 @@ private lexp ::= "\\case" altslist
                | "do" open stmts close
                | "mdo" open stmts close
                | "proc" aexp "->" exp
-               | aexp+ {pin(".*")=1}
+               | aexp+ {pin(".*")=2}
 
 private aexp ::= recordlikelhs '{' (fbind ',')* (".." | fbind) '}'
                | parensplice exp ')'
@@ -419,11 +419,9 @@ private recordlikeparen ::= exp
                           | infixexp qop
                           | qop infixexp
 
-private altslist ::= open [alts] close {pin=1}
+private altslist ::= open alt (semi alt)* close {pin(".*")=2}
 
-private alts ::= alt [semi alts] {pin(".*")=1}
-
-alt ::= pat ('->' exp | gdpat) [wheredecls] {pin(".*")=1}
+alt ::= pat ('->' exp | gdpat) [wheredecls] {pin=1}
 
 private gdpat ::= guards '->' exp [gdpat] {pin=2}
 
@@ -436,7 +434,7 @@ private qual ::= pat '<-' exp
               | "let" decls
               | exp
 
-stmts ::= stmt* exp {pin=1}
+stmts ::= stmt* exp
 
 private stmt ::= ["rec"] "let" decls semi
                | [pat '<-'] exp semi

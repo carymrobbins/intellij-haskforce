@@ -45,6 +45,7 @@ public class HaskellParserUtilBase extends GeneratedParserUtilBase {
         //        + ((HaskellParserWrapper) wrapper).maxRbraceDebt);
 
         boolean ret = ((HaskellParserWrapper) wrapper).increaseRbraceDebt(builder.getCurrentOffset());
+        if (((HaskellParserWrapper) wrapper).maxRbraceDebt == 0) ((HaskellParserWrapper) wrapper).maxRbraceDebt = -1;
         return ret;
     }
 

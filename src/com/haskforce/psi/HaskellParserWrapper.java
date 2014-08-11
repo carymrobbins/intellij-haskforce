@@ -45,7 +45,7 @@ public class HaskellParserWrapper extends HaskellParser {
                 regressed = start != lastCountedTok;
             }
             if (HaskellTypes.WHITESPACERBRACETOK.equals(source)) {
-                if (!regressed && rbraceDebt > 0) {
+                if (rbraceDebt > 0) {
                     rbraceDebt--;
                     return TokenType.WHITE_SPACE;
                 }
@@ -84,7 +84,7 @@ public class HaskellParserWrapper extends HaskellParser {
      * Increases how many synthetic rbraces the remapper should consume.
      */
     public boolean increaseRbraceDebt(int offset) {
-        if (regressed || maxRbraceDebt < 1) return false;
+        if (maxRbraceDebt < 1) return false;
 
         Pair<Integer,Integer> oldValue = ContainerUtil.getOrCreate(debtPoints, offset, INIT_KEY);
         Pair<Integer,Integer> newValue;

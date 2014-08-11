@@ -7,8 +7,8 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellGuard extends PsiElement {
 
-  @Nullable
-  HaskellAlt getAlt();
+  @NotNull
+  List<HaskellAlt> getAltList();
 
   @Nullable
   HaskellClassdecl getClassdecl();

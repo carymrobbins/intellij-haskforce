@@ -23,9 +23,9 @@ public class HaskellExpImpl extends ASTWrapperPsiElement implements HaskellExp {
   }
 
   @Override
-  @Nullable
-  public HaskellAlt getAlt() {
-    return findChildByClass(HaskellAlt.class);
+  @NotNull
+  public List<HaskellAlt> getAltList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellAlt.class);
   }
 
   @Override
@@ -230,12 +230,6 @@ public class HaskellExpImpl extends ASTWrapperPsiElement implements HaskellExp {
   @Nullable
   public PsiElement getRunboxparen() {
     return findChildByType(RUNBOXPAREN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getSemicolon() {
-    return findChildByType(SEMICOLON);
   }
 
   @Override

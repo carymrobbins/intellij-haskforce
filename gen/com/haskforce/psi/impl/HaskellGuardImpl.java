@@ -23,9 +23,9 @@ public class HaskellGuardImpl extends ASTWrapperPsiElement implements HaskellGua
   }
 
   @Override
-  @Nullable
-  public HaskellAlt getAlt() {
-    return findChildByClass(HaskellAlt.class);
+  @NotNull
+  public List<HaskellAlt> getAltList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellAlt.class);
   }
 
   @Override
