@@ -13,8 +13,8 @@ public interface HaskellNewtypedecl extends PsiElement {
   @Nullable
   HaskellNewconstr getNewconstr();
 
-  @Nullable
-  HaskellQtycls getQtycls();
+  @NotNull
+  List<HaskellQtycls> getQtyclsList();
 
   @Nullable
   HaskellTycon getTycon();

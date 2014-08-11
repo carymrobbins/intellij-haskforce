@@ -1243,7 +1243,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // ppragma* open [bodyaux] close
+  // ppragma* open bodyaux close
   public static boolean body(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "body")) return false;
     boolean result_;
@@ -1252,7 +1252,7 @@ public class HaskellParser implements PsiParser {
     result_ = body_0(builder_, level_ + 1);
     result_ = result_ && open(builder_, level_ + 1);
     pinned_ = result_; // pin = 2
-    result_ = result_ && report_error_(builder_, body_2(builder_, level_ + 1));
+    result_ = result_ && report_error_(builder_, bodyaux(builder_, level_ + 1));
     result_ = pinned_ && close(builder_, level_ + 1) && result_;
     exit_section_(builder_, level_, marker_, BODY, result_, pinned_, null);
     return result_ || pinned_;
@@ -1270,82 +1270,53 @@ public class HaskellParser implements PsiParser {
     return true;
   }
 
-  // [bodyaux]
-  private static boolean body_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "body_2")) return false;
-    bodyaux(builder_, level_ + 1);
-    return true;
-  }
-
   /* ********************************************************** */
-  // impdecls [semi topdecls]
-  //                   | [impdecls semi] topdecls
+  // impdecls* [[semi] topdecls]
   static boolean bodyaux(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "bodyaux")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = bodyaux_0(builder_, level_ + 1);
-    if (!result_) result_ = bodyaux_1(builder_, level_ + 1);
+    result_ = result_ && bodyaux_1(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // impdecls [semi topdecls]
+  // impdecls*
   private static boolean bodyaux_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "bodyaux_0")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = impdecls(builder_, level_ + 1);
-    result_ = result_ && bodyaux_0_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // [semi topdecls]
-  private static boolean bodyaux_0_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "bodyaux_0_1")) return false;
-    bodyaux_0_1_0(builder_, level_ + 1);
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!impdecls(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "bodyaux_0", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
     return true;
   }
 
-  // semi topdecls
-  private static boolean bodyaux_0_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "bodyaux_0_1_0")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = semi(builder_, level_ + 1);
-    result_ = result_ && topdecls(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // [impdecls semi] topdecls
+  // [[semi] topdecls]
   private static boolean bodyaux_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "bodyaux_1")) return false;
+    bodyaux_1_0(builder_, level_ + 1);
+    return true;
+  }
+
+  // [semi] topdecls
+  private static boolean bodyaux_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "bodyaux_1_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = bodyaux_1_0(builder_, level_ + 1);
+    result_ = bodyaux_1_0_0(builder_, level_ + 1);
     result_ = result_ && topdecls(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // [impdecls semi]
-  private static boolean bodyaux_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "bodyaux_1_0")) return false;
-    bodyaux_1_0_0(builder_, level_ + 1);
-    return true;
-  }
-
-  // impdecls semi
+  // [semi]
   private static boolean bodyaux_1_0_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "bodyaux_1_0_0")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = impdecls(builder_, level_ + 1);
-    result_ = result_ && semi(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
+    semi(builder_, level_ + 1);
+    return true;
   }
 
   /* ********************************************************** */

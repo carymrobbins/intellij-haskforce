@@ -28,8 +28,8 @@ public interface HaskellBody extends PsiElement {
   @Nullable
   HaskellGendecl getGendecl();
 
-  @Nullable
-  HaskellImpdecl getImpdecl();
+  @NotNull
+  List<HaskellImpdecl> getImpdeclList();
 
   @Nullable
   HaskellInstancedecl getInstancedecl();

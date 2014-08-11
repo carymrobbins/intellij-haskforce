@@ -65,9 +65,9 @@ public class HaskellBodyImpl extends ASTWrapperPsiElement implements HaskellBody
   }
 
   @Override
-  @Nullable
-  public HaskellImpdecl getImpdecl() {
-    return findChildByClass(HaskellImpdecl.class);
+  @NotNull
+  public List<HaskellImpdecl> getImpdeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellImpdecl.class);
   }
 
   @Override
