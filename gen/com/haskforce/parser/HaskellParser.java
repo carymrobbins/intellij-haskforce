@@ -5370,8 +5370,8 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // ["rec"] "let" decls
-  //                | [pat '<-'] exp
+  // ["rec"] "let" decls semi
+  //                | [pat '<-'] exp semi
   static boolean stmt(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "stmt")) return false;
     boolean result_;
@@ -5382,7 +5382,7 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // ["rec"] "let" decls
+  // ["rec"] "let" decls semi
   private static boolean stmt_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "stmt_0")) return false;
     boolean result_;
@@ -5390,6 +5390,7 @@ public class HaskellParser implements PsiParser {
     result_ = stmt_0_0(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, LET);
     result_ = result_ && decls(builder_, level_ + 1);
+    result_ = result_ && semi(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -5401,13 +5402,14 @@ public class HaskellParser implements PsiParser {
     return true;
   }
 
-  // [pat '<-'] exp
+  // [pat '<-'] exp semi
   private static boolean stmt_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "stmt_1")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = stmt_1_0(builder_, level_ + 1);
     result_ = result_ && exp(builder_, level_ + 1);
+    result_ = result_ && semi(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -5431,38 +5433,29 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // (stmt semi)* exp
+  // stmt* exp
   public static boolean stmts(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "stmts")) return false;
     boolean result_;
+    boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<stmts>");
     result_ = stmts_0(builder_, level_ + 1);
+    pinned_ = result_; // pin = 1
     result_ = result_ && exp(builder_, level_ + 1);
-    exit_section_(builder_, level_, marker_, STMTS, result_, false, null);
-    return result_;
+    exit_section_(builder_, level_, marker_, STMTS, result_, pinned_, null);
+    return result_ || pinned_;
   }
 
-  // (stmt semi)*
+  // stmt*
   private static boolean stmts_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "stmts_0")) return false;
     int pos_ = current_position_(builder_);
     while (true) {
-      if (!stmts_0_0(builder_, level_ + 1)) break;
+      if (!stmt(builder_, level_ + 1)) break;
       if (!empty_element_parsed_guard_(builder_, "stmts_0", pos_)) break;
       pos_ = current_position_(builder_);
     }
     return true;
-  }
-
-  // stmt semi
-  private static boolean stmts_0_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "stmts_0_0")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = stmt(builder_, level_ + 1);
-    result_ = result_ && semi(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
   }
 
   /* ********************************************************** */
