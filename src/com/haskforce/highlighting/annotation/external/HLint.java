@@ -6,8 +6,6 @@ import com.haskforce.highlighting.annotation.HaskellAnnotationHolder;
 import com.haskforce.highlighting.annotation.HaskellProblem;
 import com.haskforce.highlighting.annotation.Problems;
 import com.haskforce.utils.ExecUtil;
-import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.lang.annotation.Annotation;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
@@ -18,17 +16,20 @@ import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Encapsulation of HLint internals. Uses hlint --json for precise error regions.
+ * Still functional with older hlints, but error regions are less percise.
+ */
 public class HLint {
     private static final Logger LOG = Logger.getInstance(HLint.class);
     private static final VersionTriple HLINT_MIN_VERSION_WITH_JSON_SUPPORT = new VersionTriple(1, 9, 1);
     private static final Gson gson = new GsonBuilder().create();
 
+    @NotNull
     public static Problems lint(@NotNull Project project, @NotNull String workingDirectory, @NotNull String file) {
         final String hlintPath = getPath(project);
         return parseProblems(workingDirectory, hlintPath, file);
@@ -38,6 +39,7 @@ public class HLint {
         return ExecUtil.getExternalToolPath(project, ExecUtil.HLINT_PATH_KEY);
     }
 
+    @NotNull
     public static Problems parseProblems(@NotNull String workingDirectory, @NotNull String hlintPath, @NotNull String file) {
         VersionTriple version = getVersion(workingDirectory, hlintPath);
         if (version == null) {
@@ -72,6 +74,7 @@ public class HLint {
     /**
      * Parse a single problem from the old hlint output if json is not supported.
      */
+    @Nullable
     public static Problem parseProblemFallback(String lint) {
         List<String> split = StringUtil.split(lint, ":");
         if (split.size() < 5) {
@@ -100,6 +103,7 @@ public class HLint {
     /**
      * Parse problems from the old hlint output if json is not supported.
      */
+    @NotNull
     public static Problems parseProblemsFallback(String stdout) {
         final List<String> lints = StringUtil.split(stdout, "\n\n");
         Problems problems = new Problems();
