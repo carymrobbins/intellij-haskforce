@@ -52,8 +52,7 @@
       <lang.syntaxHighlighterFactory key="Haskell" implementationClass="com.haskforce.highlighting.HaskellSyntaxHighlighterFactory"/>
       <lang.parserDefinition language="Haskell" implementationClass="com.haskforce.HaskellParserDefinition"/>
       <annotator language="Haskell" implementationClass="com.haskforce.highlighting.HaskellAnnotator" />
-      <externalAnnotator language="Haskell" implementationClass="com.haskforce.highlighting.HaskellHlintExternalAnnotator"/>
-      <externalAnnotator language="Haskell" implementationClass="com.haskforce.highlighting.HaskellGhcModCheckExternalAnnotator"/>
+      <externalAnnotator language="Haskell" implementationClass="com.haskforce.highlighting.annotation.external.HaskellExternalAnnotator"/>
       <configurationType implementation="com.haskforce.run.HaskellApplicationConfigurationType"/>
       <configurationType implementation="com.haskforce.run.HaskellTestConfigurationType"/>
       <programRunner implementation="com.haskforce.run.HaskellRunner"/>

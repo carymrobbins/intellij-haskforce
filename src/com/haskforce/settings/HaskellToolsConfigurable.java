@@ -44,10 +44,14 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
         this.project = project;
         this.propertiesComponent = PropertiesComponent.getInstance(project);
         tools = new Tool[]{
-                new Tool(project, "parser-helper", "parserHelperPath", parserHelperPath, parserHelperAutoFind, parserHelperVersion, "--numeric-version"),
-                new Tool(project, "stylish-haskell", "stylishPath", stylishPath, stylishAutoFind, stylishVersion),
-                new Tool(project, "hlint", "hlintPath", hlintPath, hlintAutoFind, hlintVersion),
-                new Tool(project, "ghc-mod", "ghcModPath", ghcModPath, ghcModAutoFind, ghcModVersion, "version"),
+                new Tool(project, "parser-helper", ExecUtil.PARSER_HELPER_PATH_KEY, parserHelperPath,
+                        parserHelperAutoFind, parserHelperVersion, "--numeric-version"),
+                new Tool(project, "stylish-haskell", ExecUtil.STYLISH_HASKELL_PATH_KEY, stylishPath,
+                        stylishAutoFind, stylishVersion),
+                new Tool(project, "hlint", ExecUtil.HLINT_PATH_KEY, hlintPath,
+                        hlintAutoFind, hlintVersion),
+                new Tool(project, "ghc-mod", ExecUtil.GHC_MOD_PATH_KEY, ghcModPath,
+                        ghcModAutoFind, ghcModVersion, "version"),
         };
     }
 
@@ -61,17 +65,17 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
         public final String versionParam;
         public final JButton autoFindButton;
 
-        Tool(Project project, String command, String key, TextFieldWithBrowseButton pathField, JButton autoFindButton,
+        Tool(Project project, String command, ExecUtil.PathKey key, TextFieldWithBrowseButton pathField, JButton autoFindButton,
              JLabel versionField) {
             this(project, command, key, pathField, autoFindButton, versionField, "--version");
         }
 
-        Tool(Project project, String command, String key, TextFieldWithBrowseButton pathField, JButton autoFindButton,
+        Tool(Project project, String command, ExecUtil.PathKey key, TextFieldWithBrowseButton pathField, JButton autoFindButton,
              JLabel versionField, String versionParam) {
             this.project = project;
             this.command = command;
-            this.key = key;
-            this.oldPath = propertiesComponent.getValue(key, "");
+            this.key = key.pathKey;
+            this.oldPath = propertiesComponent.getValue(key.pathKey, "");
             this.pathField = pathField;
             this.versionField = versionField;
             this.versionParam = versionParam;

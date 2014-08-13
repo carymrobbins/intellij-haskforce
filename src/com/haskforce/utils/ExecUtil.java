@@ -6,6 +6,7 @@ import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.CapturingProcessHandler;
 import com.intellij.execution.process.ProcessOutput;
 import com.intellij.execution.ui.layout.impl.RunnerLayout;
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
@@ -170,5 +171,44 @@ public class ExecUtil {
     @Nullable
     public static String readCommandLine(@NotNull GeneralCommandLine commandLine) {
         return readCommandLine(commandLine, null);
+    }
+
+    @Nullable
+    public static String readCommandLine(@Nullable String workingDirectory, @NotNull String command, @NotNull String[] params, @Nullable String input) {
+        GeneralCommandLine commandLine = new GeneralCommandLine(command);
+        if (workingDirectory != null) {
+            commandLine.setWorkDirectory(workingDirectory);
+        }
+        commandLine.addParameters(params);
+        return readCommandLine(commandLine, input);
+    }
+
+    @Nullable
+    public static String readCommandLine(@Nullable String workingDirectory, @NotNull String command, @NotNull String... params) {
+        return readCommandLine(workingDirectory, command, params, null);
+    }
+
+    /**
+     * String wrapper to ensure that we don't accidentally pass an invalid path key.
+     * These are set as property keys in HaskellToolsConfigurable.
+     */
+    public static class PathKey {
+        public final String pathKey;
+
+        PathKey(String pathKey) {
+            this.pathKey = pathKey;
+        }
+    }
+
+    public static final PathKey PARSER_HELPER_PATH_KEY = new PathKey("parserHelperPath");
+    public static final PathKey STYLISH_HASKELL_PATH_KEY = new PathKey("stylishHaskellPath");
+    public static final PathKey HLINT_PATH_KEY = new PathKey("hlintPath");
+    public static final PathKey GHC_MOD_PATH_KEY = new PathKey("ghcModPath");
+
+
+    @Nullable
+    public static String getExternalToolPath(@NotNull Project project, @NotNull PathKey pathKey) {
+        final String path = PropertiesComponent.getInstance(project).getValue(pathKey.pathKey);
+        return path == null || path.isEmpty() ? null : path;
     }
 }
