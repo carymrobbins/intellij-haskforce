@@ -1709,7 +1709,7 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // (btype | '!'atype) conop (btype | '!'atype)
-  //          | con ('{' (fielddecl ',')* fielddecl '}' | ([ppragma] ['!'] atype)*)
+  //          | con ('{' [(fielddecl ',')* fielddecl] '}' | ([ppragma] ['!'] atype)*)
   public static boolean constr(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "constr")) return false;
     boolean result_;
@@ -1776,7 +1776,7 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // con ('{' (fielddecl ',')* fielddecl '}' | ([ppragma] ['!'] atype)*)
+  // con ('{' [(fielddecl ',')* fielddecl] '}' | ([ppragma] ['!'] atype)*)
   private static boolean constr_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "constr_1")) return false;
     boolean result_;
@@ -1787,7 +1787,7 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // '{' (fielddecl ',')* fielddecl '}' | ([ppragma] ['!'] atype)*
+  // '{' [(fielddecl ',')* fielddecl] '}' | ([ppragma] ['!'] atype)*
   private static boolean constr_1_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "constr_1_1")) return false;
     boolean result_;
@@ -1798,34 +1798,51 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // '{' (fielddecl ',')* fielddecl '}'
+  // '{' [(fielddecl ',')* fielddecl] '}'
   private static boolean constr_1_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "constr_1_1_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LBRACE);
     result_ = result_ && constr_1_1_0_1(builder_, level_ + 1);
-    result_ = result_ && fielddecl(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, RBRACE);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // (fielddecl ',')*
+  // [(fielddecl ',')* fielddecl]
   private static boolean constr_1_1_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "constr_1_1_0_1")) return false;
+    constr_1_1_0_1_0(builder_, level_ + 1);
+    return true;
+  }
+
+  // (fielddecl ',')* fielddecl
+  private static boolean constr_1_1_0_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constr_1_1_0_1_0")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = constr_1_1_0_1_0_0(builder_, level_ + 1);
+    result_ = result_ && fielddecl(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // (fielddecl ',')*
+  private static boolean constr_1_1_0_1_0_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constr_1_1_0_1_0_0")) return false;
     int pos_ = current_position_(builder_);
     while (true) {
-      if (!constr_1_1_0_1_0(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "constr_1_1_0_1", pos_)) break;
+      if (!constr_1_1_0_1_0_0_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "constr_1_1_0_1_0_0", pos_)) break;
       pos_ = current_position_(builder_);
     }
     return true;
   }
 
   // fielddecl ','
-  private static boolean constr_1_1_0_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "constr_1_1_0_1_0")) return false;
+  private static boolean constr_1_1_0_1_0_0_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constr_1_1_0_1_0_0_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = fielddecl(builder_, level_ + 1);

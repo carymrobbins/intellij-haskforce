@@ -315,7 +315,7 @@ private gadtconstr ::= <<sequence con>> "::" ctype
 private constrs ::= constr ('|' constr)*
 
 constr ::= (btype | '!'atype) conop (btype | '!'atype)
-         | con ('{' (fielddecl ',')* fielddecl '}' | ([ppragma] ['!'] atype)*)
+         | con ('{' [(fielddecl ',')* fielddecl] '}' | ([ppragma] ['!'] atype)*)
 
 newconstr ::= con (atype | '{' var '::' typee '}') {pin(".*")=1}
 
