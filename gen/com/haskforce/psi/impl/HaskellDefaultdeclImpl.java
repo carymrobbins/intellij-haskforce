@@ -23,9 +23,9 @@ public class HaskellDefaultdeclImpl extends ASTWrapperPsiElement implements Hask
   }
 
   @Override
-  @NotNull
-  public List<HaskellTypee> getTypeeList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTypee.class);
+  @Nullable
+  public HaskellTypee getTypee() {
+    return findChildByClass(HaskellTypee.class);
   }
 
   @Override

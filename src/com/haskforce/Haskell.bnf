@@ -371,7 +371,7 @@ private infixexp ::= '-'* lexp [qop infixexp]
 private lexp ::= "\\case" altslist
                | '\' apat+ "->" exp
                | "let" decls "in" exp
-               | "if" exp "then" exp "else" exp
+               | "if" exp [semi] "then" exp [semi] "else" exp
                | "case" exp "of" altslist
                | "do" open stmts close
                | "mdo" open stmts close
