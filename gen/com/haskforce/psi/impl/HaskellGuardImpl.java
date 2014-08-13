@@ -101,9 +101,9 @@ public class HaskellGuardImpl extends ASTWrapperPsiElement implements HaskellGua
   }
 
   @Override
-  @Nullable
-  public HaskellPpragma getPpragma() {
-    return findChildByClass(HaskellPpragma.class);
+  @NotNull
+  public List<HaskellPpragma> getPpragmaList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPpragma.class);
   }
 
   @Override

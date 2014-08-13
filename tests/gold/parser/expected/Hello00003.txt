@@ -21,7 +21,7 @@ Haskell File
             PsiElement(HaskellTokenType.")('"')
             PsiElement(HaskellTokenType.STRINGTOKEN)('Hello, World!')
             PsiElement(HaskellTokenType.")('"')
-    PsiErrorElement:<funorpatdecl>, <gendecl>, <qcon>, <qvar>, HaskellTokenType.", HaskellTokenType.$(, HaskellTokenType.', HaskellTokenType.'', HaskellTokenType.(, HaskellTokenType.(#, HaskellTokenType.-, HaskellTokenType.[, HaskellTokenType.[|, HaskellTokenType.\, HaskellTokenType.case, HaskellTokenType.chartoken, HaskellTokenType.class, HaskellTokenType.data, HaskellTokenType.default, HaskellTokenType.deriving, HaskellTokenType.do, HaskellTokenType.floattoken, HaskellTokenType.foreign, HaskellTokenType.idsplice, HaskellTokenType.if, HaskellTokenType.instance, HaskellTokenType.integertoken, HaskellTokenType.let, HaskellTokenType.mdo, HaskellTokenType.newtype, HaskellTokenType.type, HaskellTokenType.{-#, '\case' or proc expected, got 'module'
+    PsiErrorElement:<funorpatdecl>, <gendecl>, <qcon>, <qvar>, HaskellTokenType.", HaskellTokenType.$(, HaskellTokenType.', HaskellTokenType.'', HaskellTokenType.(, HaskellTokenType.(#, HaskellTokenType.-, HaskellTokenType.[, HaskellTokenType.[|, HaskellTokenType.\, HaskellTokenType.case, HaskellTokenType.chartoken, HaskellTokenType.class, HaskellTokenType.data, HaskellTokenType.default, HaskellTokenType.deriving, HaskellTokenType.do, HaskellTokenType.floattoken, HaskellTokenType.foreign, HaskellTokenType.idsplice, HaskellTokenType.if, HaskellTokenType.instance, HaskellTokenType.integertoken, HaskellTokenType.let, HaskellTokenType.mdo, HaskellTokenType.newtype, HaskellTokenType.type, '\case' or proc expected, got 'module'
       <empty list>
   PsiElement(HaskellTokenType.module)('module')
   PsiElement(DUMMY_BLOCK)

@@ -2120,14 +2120,12 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // funorpatdecl
-  //                | ppragma
   //                | gendecl
   static boolean decl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "decl")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = funorpatdecl(builder_, level_ + 1);
-    if (!result_) result_ = ppragma(builder_, level_ + 1);
     if (!result_) result_ = gendecl(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
@@ -2157,27 +2155,53 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // decl [semi decls1]
+  // ppragma* decl ppragma* [semi decls1]
   static boolean decls1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "decls1")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = decl(builder_, level_ + 1);
-    result_ = result_ && decls1_1(builder_, level_ + 1);
+    result_ = decls1_0(builder_, level_ + 1);
+    result_ = result_ && decl(builder_, level_ + 1);
+    result_ = result_ && decls1_2(builder_, level_ + 1);
+    result_ = result_ && decls1_3(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
+  // ppragma*
+  private static boolean decls1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "decls1_0")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!ppragma(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "decls1_0", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
+  }
+
+  // ppragma*
+  private static boolean decls1_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "decls1_2")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!ppragma(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "decls1_2", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
+  }
+
   // [semi decls1]
-  private static boolean decls1_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "decls1_1")) return false;
-    decls1_1_0(builder_, level_ + 1);
+  private static boolean decls1_3(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "decls1_3")) return false;
+    decls1_3_0(builder_, level_ + 1);
     return true;
   }
 
   // semi decls1
-  private static boolean decls1_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "decls1_1_0")) return false;
+  private static boolean decls1_3_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "decls1_3_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = semi(builder_, level_ + 1);

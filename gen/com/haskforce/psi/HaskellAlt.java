@@ -22,8 +22,8 @@ public interface HaskellAlt extends PsiElement {
   @NotNull
   HaskellPat getPat();
 
-  @Nullable
-  HaskellPpragma getPpragma();
+  @NotNull
+  List<HaskellPpragma> getPpragmaList();
 
   @Nullable
   PsiElement getLbrace();

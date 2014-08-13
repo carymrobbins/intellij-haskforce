@@ -46,8 +46,8 @@ public interface HaskellGuard extends PsiElement {
   @Nullable
   HaskellPat getPat();
 
-  @Nullable
-  HaskellPpragma getPpragma();
+  @NotNull
+  List<HaskellPpragma> getPpragmaList();
 
   @NotNull
   List<HaskellPstringtoken> getPstringtokenList();

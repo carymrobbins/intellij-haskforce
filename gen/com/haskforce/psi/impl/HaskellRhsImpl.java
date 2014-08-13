@@ -47,9 +47,9 @@ public class HaskellRhsImpl extends ASTWrapperPsiElement implements HaskellRhs {
   }
 
   @Override
-  @Nullable
-  public HaskellPpragma getPpragma() {
-    return findChildByClass(HaskellPpragma.class);
+  @NotNull
+  public List<HaskellPpragma> getPpragmaList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPpragma.class);
   }
 
   @Override

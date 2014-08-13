@@ -466,10 +466,9 @@ private gcon ::= '[' ']'
 
 private decls ::= open [decls1] close {pin=1}
 
-private decls1 ::= decl [semi decls1]
+private decls1 ::= ppragma* decl ppragma* [semi decls1]
 
 private decl ::= funorpatdecl
-               | ppragma
                | gendecl
 
 funorpatdecl ::= (funlhs | pat) rhs
