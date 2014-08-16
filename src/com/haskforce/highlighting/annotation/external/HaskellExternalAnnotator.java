@@ -68,7 +68,7 @@ public class HaskellExternalAnnotator extends ExternalAnnotator<PsiFile, Problem
             return;
         }
         for (HaskellProblem problem : problems) {
-            problem.createAnnotation(file, holder);
+            problem.createAnnotations(file, holder);
         }
     }
 

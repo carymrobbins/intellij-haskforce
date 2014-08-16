@@ -7,13 +7,10 @@ import com.haskforce.highlighting.annotation.HaskellAnnotationHolder;
 import com.haskforce.highlighting.annotation.HaskellProblem;
 import com.haskforce.highlighting.annotation.Problems;
 import com.haskforce.utils.ExecUtil;
-import com.intellij.execution.configurations.GeneralCommandLine;
-import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.lang.annotation.Annotation;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
@@ -170,20 +167,19 @@ public class GhcMod {
         /**
          * Create an annotation from this problem and add it to the annotation holder.
          */
-        @Nullable
         @Override
-        public Annotation createAnnotation(@NotNull PsiFile psiFile, @NotNull HaskellAnnotationHolder holder) {
+        public void createAnnotations(@NotNull PsiFile psiFile, @NotNull HaskellAnnotationHolder holder) {
             final String text = psiFile.getText();
             final int offsetStart = getOffsetStart(text);
             if (offsetStart == -1) {
-                return null;
+                return;
             }
             // TODO: There is probably a better way to compare these two file paths.
             // The problem might not be ours; ignore this problem in that case.
             // Note that Windows paths end up with different slashes, so getPresentableUrl() normalizes them.
             final VirtualFile vFile = psiFile.getVirtualFile();
             if (!(file.equals(vFile.getCanonicalPath()) || file.equals(vFile.getPresentableUrl()))) {
-                return null;
+                return;
             }
             // Since we don't have ending regions from ghc-mod, highlight until the first whitespace.
             Matcher matcher = WHITESPACE_REGEX.matcher(text.substring(offsetStart));
@@ -196,7 +192,6 @@ public class GhcMod {
                 annotation = holder.createWeakWarningAnnotation(range, message);
             }
             registerFix(annotation);
-            return annotation;
         }
     }
 }

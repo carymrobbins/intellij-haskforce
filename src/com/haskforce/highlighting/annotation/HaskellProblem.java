@@ -10,8 +10,7 @@ public abstract class HaskellProblem {
     public int startLine;
     public int startColumn;
 
-    @Nullable
-    public abstract Annotation createAnnotation(@NotNull PsiFile file, @NotNull HaskellAnnotationHolder holder);
+    public abstract void createAnnotations(@NotNull PsiFile file, @NotNull HaskellAnnotationHolder holder);
 
     public int getOffsetStart(final String fileText) {
         return StringUtil.lineColToOffset(fileText, startLine - 1, startColumn - 1);

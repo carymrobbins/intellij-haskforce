@@ -6,7 +6,6 @@ import com.haskforce.highlighting.annotation.HaskellAnnotationHolder;
 import com.haskforce.highlighting.annotation.HaskellProblem;
 import com.haskforce.highlighting.annotation.Problems;
 import com.haskforce.utils.ExecUtil;
-import com.intellij.lang.annotation.Annotation;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
@@ -22,7 +21,7 @@ import java.util.regex.Pattern;
 
 /**
  * Encapsulation of HLint internals. Uses hlint --json for precise error regions.
- * Still functional with older hlints, but error regions are less percise.
+ * Still functional with older hlints, but error regions are less precise.
  */
 public class HLint {
     private static final Logger LOG = Logger.getInstance(HLint.class);
@@ -63,7 +62,7 @@ public class HLint {
      */
     @NotNull
     public static Problems parseProblemsJson(@NotNull String stdout) {
-        final HaskellProblem[] problems = gson.fromJson(stdout, Problem[].class);
+        final Problem[] problems = gson.fromJson(stdout, Problem[].class);
         if (problems == null) {
             LOG.warn("Unable to parse hlint json output: " + stdout);
             return new Problems();
@@ -177,17 +176,38 @@ public class HLint {
             return hint + (to == null || to.isEmpty() ? "" : ", why not: " + to);
         }
 
-        @Nullable
         @Override
-        public Annotation createAnnotation(@NotNull PsiFile file, @NotNull HaskellAnnotationHolder holder) {
+        public void createAnnotations(@NotNull PsiFile file, @NotNull HaskellAnnotationHolder holder) {
             final String text = file.getText();
-            final int offsetStart = getOffsetStart(text);
-            if (offsetStart == -1) {
-                return null;
+            final int start = getOffsetStart(text);
+            final int end = getOffsetEnd(start, text);
+            if (end == -1) {
+                return;
             }
-            final int offsetEnd = getOffsetEnd(offsetStart, text);
-            TextRange range = TextRange.create(offsetStart, offsetEnd);
-            return holder.createWarningAnnotation(range, getMessage());
+            if (useJson && hint.equals("Use camelCase")) {
+                createUseCamelCaseAnnotations(text, start, end, holder);
+            } else {
+                createDefaultAnnotations(start, end, holder);
+            }
+        }
+
+        public static Pattern NON_CAMEL_CASE_REGEX = Pattern.compile("\\b\\w+_\\w+\\b");
+
+        public void createUseCamelCaseAnnotations(@NotNull String text, int start, int end, @NotNull HaskellAnnotationHolder holder) {
+            final String section = text.substring(start, end);
+            Matcher m = NON_CAMEL_CASE_REGEX.matcher(section);
+            if (m.find()) {
+                do {
+                    final TextRange range = TextRange.create(start + m.start(), start + m.end());
+                    holder.createWarningAnnotation(range, "Use camelCase");
+                } while (m.find());
+            } else {
+                createDefaultAnnotations(start, end, holder);
+            }
+        }
+
+        public void createDefaultAnnotations(int start, int end, @NotNull HaskellAnnotationHolder holder) {
+            holder.createWarningAnnotation(TextRange.create(start, end), getMessage());
         }
 
         public int getOffsetEnd(int offsetStart, String fileText) {
