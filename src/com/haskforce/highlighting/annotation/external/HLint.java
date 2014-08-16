@@ -47,7 +47,7 @@ public class HLint {
         if (version == null) {
             return new Problems();
         }
-        final boolean useJson = version.lte(HLINT_MIN_VERSION_WITH_JSON_SUPPORT);
+        final boolean useJson = version.gte(HLINT_MIN_VERSION_WITH_JSON_SUPPORT);
         final String stdout = ExecUtil.readCommandLine(workingDirectory, hlintPath,
                                                        useJson ? new String[]{"--json", file} : new String[]{file});
         if (stdout == null) {
