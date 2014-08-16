@@ -385,8 +385,7 @@ private aexp ::= recordlikelhs '{' (fbind ',')* (".." | fbind) '}'
                | thquote qcon
                | gcon
                | literal
-               // TODO: Remove semi when lexer supports TH.
-               | ('[|' | '[' exp '|' [semi]) exp [semi]'|]'
+               | ('[|' | '[' exp '|' [semi]) (exp [semi])+ '|]'
 //               | "[||" exp '||]'
                | '[' ("t" '|' ctype | "p" '|' infixexp |  "d" '|' open topdecls close ) '|]'
                | '(#' '#)'

@@ -240,8 +240,7 @@ public class HaskellParser implements PsiParser {
   //                | thquote qcon
   //                | gcon
   //                | literal
-  //                // TODO: Remove semi when lexer supports TH.
-  //                | ('[|' | '[' exp '|' [semi]) exp [semi]'|]'
+  //                | ('[|' | '[' exp '|' [semi]) (exp [semi])+ '|]'
   // //               | "[||" exp '||]'
   //                | '[' ("t" '|' ctype | "p" '|' infixexp |  "d" '|' open topdecls close ) '|]'
   //                | '(#' '#)'
@@ -356,14 +355,13 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // ('[|' | '[' exp '|' [semi]) exp [semi]'|]'
+  // ('[|' | '[' exp '|' [semi]) (exp [semi])+ '|]'
   private static boolean aexp_7(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "aexp_7")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = aexp_7_0(builder_, level_ + 1);
-    result_ = result_ && exp(builder_, level_ + 1);
-    result_ = result_ && aexp_7_2(builder_, level_ + 1);
+    result_ = result_ && aexp_7_1(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, RTHCLOSE);
     exit_section_(builder_, marker_, null, result_);
     return result_;
@@ -400,9 +398,36 @@ public class HaskellParser implements PsiParser {
     return true;
   }
 
+  // (exp [semi])+
+  private static boolean aexp_7_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "aexp_7_1")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = aexp_7_1_0(builder_, level_ + 1);
+    int pos_ = current_position_(builder_);
+    while (result_) {
+      if (!aexp_7_1_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "aexp_7_1", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // exp [semi]
+  private static boolean aexp_7_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "aexp_7_1_0")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = exp(builder_, level_ + 1);
+    result_ = result_ && aexp_7_1_0_1(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
   // [semi]
-  private static boolean aexp_7_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "aexp_7_2")) return false;
+  private static boolean aexp_7_1_0_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "aexp_7_1_0_1")) return false;
     semi(builder_, level_ + 1);
     return true;
   }

@@ -92,6 +92,7 @@ public class HaskellParserTest extends HaskellParserTestBase {
     public void testString00005()       { doTest(true, true); }
     public void testTempHask00001()     { doTest(true, true); }
     public void testTempHask00002()     { doTest(true, true); }
+    public void testTempHask00003()     { doTest(true, true); }
     public void testQuote00001()        { doTest(true, true); }
     // public void testParseMonad()        { doTest(true, true); }
     // TODO: Change to doTest(true, true) after bugfixes.
