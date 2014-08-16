@@ -2,6 +2,7 @@ package com.haskforce.highlighting.annotation.external;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.haskforce.features.intentions.IgnoreHLint;
 import com.haskforce.highlighting.annotation.HaskellAnnotationHolder;
 import com.haskforce.highlighting.annotation.HaskellProblem;
 import com.haskforce.highlighting.annotation.Problems;
@@ -176,6 +177,10 @@ public class HLint {
             return hint + (to == null || to.isEmpty() ? "" : ", why not: " + to);
         }
 
+        protected void createAnnotation(@NotNull HaskellAnnotationHolder holder, int start, int end, @NotNull String message) {
+            holder.createWarningAnnotation(TextRange.create(start, end), message).registerFix(new IgnoreHLint(hint));
+        }
+
         @Override
         public void createAnnotations(@NotNull PsiFile file, @NotNull HaskellAnnotationHolder holder) {
             final String text = file.getText();
@@ -198,8 +203,7 @@ public class HLint {
             Matcher m = NON_CAMEL_CASE_REGEX.matcher(section);
             if (m.find()) {
                 do {
-                    final TextRange range = TextRange.create(start + m.start(), start + m.end());
-                    holder.createWarningAnnotation(range, "Use camelCase");
+                    createAnnotation(holder, start + m.start(), start + m.end(), "Use camelCase");
                 } while (m.find());
             } else {
                 createDefaultAnnotations(start, end, holder);
@@ -207,7 +211,7 @@ public class HLint {
         }
 
         public void createDefaultAnnotations(int start, int end, @NotNull HaskellAnnotationHolder holder) {
-            holder.createWarningAnnotation(TextRange.create(start, end), getMessage());
+            createAnnotation(holder, start, end, getMessage());
         }
 
         public int getOffsetEnd(int offsetStart, String fileText) {

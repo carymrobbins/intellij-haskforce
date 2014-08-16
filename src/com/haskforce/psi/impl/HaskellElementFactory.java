@@ -1,15 +1,11 @@
 package com.haskforce.psi.impl;
 
 import com.haskforce.HaskellLanguage;
-import com.haskforce.psi.HaskellConid;
-import com.haskforce.psi.HaskellFile;
-import com.haskforce.psi.HaskellQvarid;
-import com.haskforce.psi.HaskellTycls;
-import com.haskforce.psi.HaskellTycon;
-import com.haskforce.psi.HaskellVarid;
+import com.haskforce.psi.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
+import com.intellij.psi.PsiWhiteSpace;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,6 +55,16 @@ public class HaskellElementFactory {
     @NotNull
     public static HaskellTycls createTyclsFromText(@NotNull Project project, @NotNull String name) {
         return ((HaskellTycls) (createExpressionFromText(project, name + "uniq = " + name)).getFirstChild());
+    }
+
+    @NotNull
+    public static HaskellPpragma createPpragmaFromText(@NotNull Project project, @NotNull String text) {
+        return ((HaskellPpragma) (createFileFromText(project, text + "\nmodule Foo where").getFirstChild()));
+    }
+
+    @NotNull
+    public static PsiWhiteSpace createNewLine(@NotNull Project project) {
+        return ((PsiWhiteSpace) (createFileFromText(project, System.getProperty("line.separator"))).getFirstChild());
     }
 
     /**
