@@ -32,6 +32,8 @@ public class HLint {
     @NotNull
     public static Problems lint(@NotNull Project project, @NotNull String workingDirectory, @NotNull String file) {
         final String hlintPath = getPath(project);
+        if (hlintPath == null) return new Problems();
+
         return parseProblems(workingDirectory, hlintPath, file);
     }
 
