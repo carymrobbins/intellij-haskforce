@@ -142,7 +142,14 @@ public class HLint {
         public String severity;
         public int endLine;
         public int endColumn;
-        public boolean useJson = true;
+        public boolean useJson;
+
+        /**
+         * Provide a default constructor so gson objects will default to `useJson = true`.
+         */
+        public Problem() {
+            useJson = true;
+        }
 
         public Problem(String decl, String file, String hint, String from, String to, String module, String[] note,
                        String severity, int startLine, int startColumn, int endLine, int endColumn) {
