@@ -8,6 +8,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.lang.FileASTNode;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.tree.TokenSet;
@@ -46,15 +47,29 @@ public class IgnoreHLint extends BaseIntentionAction {
                 project, "{-# ANN module (\"HLint: ignore " + hint + "\"::String) #-}");
         FileASTNode fileNode = file.getNode();
 
+        ASTNode[] nodes;
+        ASTNode node;
+
+        // If the user has imports, place the pragma after them.
+        node = fileNode.findChildByType(HaskellTypes.BODY);
+        if (node != null) {
+            nodes = node.getChildren(TokenSet.create(HaskellTypes.IMPDECL));
+            if (nodes.length > 0) {
+                PsiElement element = node.getPsi();
+                element.addBefore(newline, element.addAfter(ppragma, nodes[nodes.length - 1].getPsi()));
+                return;
+            }
+        }
+
         // If the user has a module declaration, place the pragma after it.
-        ASTNode node = fileNode.findChildByType(HaskellTypes.MODULEDECL);
+        node = fileNode.findChildByType(HaskellTypes.MODULEDECL);
         if (node != null) {
             file.addBefore(newline, file.addAfter(ppragma, node.getPsi()));
             return;
         }
 
         // If the user has any existing pragmas, place the pragma after them.
-        ASTNode[] nodes = fileNode.getChildren(TokenSet.create(HaskellTypes.PPRAGMA));
+        nodes = fileNode.getChildren(TokenSet.create(HaskellTypes.PPRAGMA));
         if (nodes.length > 0) {
             file.addBefore(newline, file.addAfter(ppragma, nodes[nodes.length - 1].getPsi()));
             return;
