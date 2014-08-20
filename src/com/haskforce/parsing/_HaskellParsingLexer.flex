@@ -127,6 +127,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         return OPENPRAGMA;
                     }
     "{-"            {
+                        commentLevel++;
                         stateStack.push(YYINITIAL);
                         yybegin(INCOMMENT);
                         return OPENCOM;
