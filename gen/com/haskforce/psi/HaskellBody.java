@@ -7,6 +7,9 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellBody extends PsiElement {
 
+  @NotNull
+  List<HaskellAlt> getAltList();
+
   @Nullable
   HaskellClassdecl getClassdecl();
 
@@ -18,6 +21,9 @@ public interface HaskellBody extends PsiElement {
 
   @Nullable
   HaskellDerivingdecl getDerivingdecl();
+
+  @NotNull
+  List<HaskellExp> getExpList();
 
   @Nullable
   HaskellForeigndecl getForeigndecl();
@@ -38,15 +44,60 @@ public interface HaskellBody extends PsiElement {
   HaskellNewtypedecl getNewtypedecl();
 
   @NotNull
+  List<HaskellPat> getPatList();
+
+  @NotNull
   List<HaskellPpragma> getPpragmaList();
+
+  @NotNull
+  List<HaskellPstringtoken> getPstringtokenList();
+
+  @NotNull
+  List<HaskellQcon> getQconList();
+
+  @NotNull
+  List<HaskellQop> getQopList();
+
+  @NotNull
+  List<HaskellQvar> getQvarList();
+
+  @NotNull
+  List<HaskellQvarid> getQvaridList();
+
+  @Nullable
+  HaskellStmts getStmts();
 
   @Nullable
   HaskellTypedecl getTypedecl();
 
-  @Nullable
-  PsiElement getLbrace();
+  @NotNull
+  List<HaskellVarid> getVaridList();
+
+  @NotNull
+  List<HaskellVarsym> getVarsymList();
 
   @Nullable
-  PsiElement getRbrace();
+  PsiElement getBackslash();
+
+  @Nullable
+  PsiElement getDoubleperiod();
+
+  @Nullable
+  PsiElement getIdsplice();
+
+  @Nullable
+  PsiElement getLunboxparen();
+
+  @Nullable
+  PsiElement getParensplice();
+
+  @Nullable
+  PsiElement getRunboxparen();
+
+  @Nullable
+  PsiElement getSinglequote();
+
+  @Nullable
+  PsiElement getThquote();
 
 }

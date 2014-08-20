@@ -11,40 +11,16 @@ public interface HaskellExp extends PsiElement {
   List<HaskellAlt> getAltList();
 
   @Nullable
-  HaskellClassdecl getClassdecl();
-
-  @Nullable
   HaskellContext getContext();
-
-  @Nullable
-  HaskellCtype getCtype();
-
-  @Nullable
-  HaskellDatadecl getDatadecl();
-
-  @Nullable
-  HaskellDefaultdecl getDefaultdecl();
-
-  @Nullable
-  HaskellDerivingdecl getDerivingdecl();
 
   @NotNull
   List<HaskellExp> getExpList();
-
-  @Nullable
-  HaskellForeigndecl getForeigndecl();
 
   @Nullable
   HaskellFunorpatdecl getFunorpatdecl();
 
   @Nullable
   HaskellGendecl getGendecl();
-
-  @Nullable
-  HaskellInstancedecl getInstancedecl();
-
-  @Nullable
-  HaskellNewtypedecl getNewtypedecl();
 
   @NotNull
   List<HaskellPat> getPatList();
@@ -64,11 +40,11 @@ public interface HaskellExp extends PsiElement {
   @NotNull
   List<HaskellQvar> getQvarList();
 
-  @Nullable
-  HaskellStmts getStmts();
+  @NotNull
+  List<HaskellQvarid> getQvaridList();
 
   @Nullable
-  HaskellTypedecl getTypedecl();
+  HaskellStmts getStmts();
 
   @Nullable
   HaskellTypee getTypee();
@@ -96,9 +72,6 @@ public interface HaskellExp extends PsiElement {
 
   @Nullable
   PsiElement getLbrace();
-
-  @Nullable
-  PsiElement getLthopen();
 
   @Nullable
   PsiElement getLunboxparen();

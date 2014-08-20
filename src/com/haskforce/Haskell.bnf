@@ -76,6 +76,8 @@
     pipe='|'
     comma=','
     semicolon=';'
+    qqopen='Quasi-['
+    qqtext='Quasi-stuff'
     lthopen='[|'
     rthclose='|]'
     lbracket='['
@@ -369,7 +371,7 @@ exp ::= ppragma* infixexp ["::" [context "=>"] typee]
 private infixexp ::= '-'* lexp [qop infixexp]
 
 private lexp ::= "\\case" altslist
-               | '\' apat+ "->" exp
+               | '\' (apat | thaexp)+ "->" exp
                | "let" decls "in" exp
                | "if" exp [semi] "then" exp [semi] "else" exp
                | "case" exp "of" altslist
@@ -385,12 +387,17 @@ private aexp ::= recordlikelhs '{' (fbind ',')* (".." | fbind) '}'
                | thquote qcon
                | gcon
                | literal
-               | ('[|' | '[' exp '|' [semi]) (exp [semi])+ '|]'
-//               | "[||" exp '||]'
-               | '[' ("t" '|' ctype | "p" '|' infixexp |  "d" '|' open topdecls close ) '|]'
+               | thaexp
                | '(#' '#)'
                | listlike
                | parenlike
+
+private thaexp ::= '[|' (exp [semi])+ '|]'
+                 // TODO: Enable more precise TH parsing with t/p/d.
+//                 | '[' ("t" '|' ctype | "p" '|' infixexp |  "d" '|' open topdecls close ) '|]'
+                 | qqopen qvarid '|' qqtext+ '|]'
+//               | "[||" exp '||]'
+
 
 private listlike ::=  '[' exp [listlike1] ']' {pin=1}
 

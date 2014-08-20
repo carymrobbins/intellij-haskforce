@@ -153,6 +153,8 @@ public interface HaskellTypes {
   IElementType PIPE = new HaskellTokenType("|");
   IElementType PLUS = new HaskellTokenType("+");
   IElementType PRAGMA = new HaskellTokenType("PRAGMA");
+  IElementType QQOPEN = new HaskellTokenType("Quasi-[");
+  IElementType QQTEXT = new HaskellTokenType("Quasi-stuff");
   IElementType QUALIFIED = new HaskellTokenType("qualified");
   IElementType QUESTION = new HaskellTokenType("?");
   IElementType RBRACE = new HaskellTokenType("}");

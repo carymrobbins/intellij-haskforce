@@ -32,6 +32,7 @@ import com.intellij.util.containers.Stack;
 %{
   private static final Pair<Integer, Integer> NO_LAYOUT = Pair.create(-1, -1);
   private int commentLevel;
+  private int qqLevel;
   private int indent;
   private boolean retry;
   private int emptyblockPhase;
@@ -45,6 +46,7 @@ import com.intellij.util.containers.Stack;
   public _HaskellParsingLexer() {
     this((java.io.Reader)null);
     commentLevel = 0;
+    qqLevel = 0;
     retry = false;
     emptyblockPhase = 0;
     openBraces = ContainerUtil.newLinkedList();
@@ -79,11 +81,12 @@ COMMENT=--([^\^\r\n][^\r\n]*\n|[\r\n])
 HADDOCK=--\^[^\r\n]*
 CPPIF=#if ([^\r\n]*)
 ASCSYMBOL=[\!\#\$\%\&\*\+\.\/\<\=\>\?\@\\\^\|\-\~\:]
+MAYBEQVARID=({CONID}\.)*{VARIDREGEXP}
 
 STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
 
 // Avoid "COMMENT" since that collides with the token definition above.
-%state REALLYYINITIAL INCOMMENT INSTRING INPRAGMA ININDENTATION FINDINGINDENTATIONCONTEXT
+%state REALLYYINITIAL INCOMMENT INSTRING INPRAGMA ININDENTATION FINDINGINDENTATIONCONTEXT INQUASIQUOTE INQUASIQUOTEHEAD
 
 %%
 
@@ -248,11 +251,18 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   "#)"                { return RUNBOXPAREN; }
   "("                 { return LPAREN; }
   ")"                 { return RPAREN; }
+  "|]"                { return RTHCLOSE; }
   "|"                 { return PIPE; }
   ","                 { return COMMA; }
   ";"                 { return SEMICOLON; }
   "[|"                { return LTHOPEN; }
-  "|]"                { return RTHCLOSE; }
+  ("["{MAYBEQVARID}"|") {
+                            yypushback(yytext().length() - 1);
+                            qqLevel++;
+                            stateStack.push(REALLYYINITIAL);
+                            yybegin(INQUASIQUOTEHEAD);
+                            return QQOPEN;
+                        }
   "["                 { return LBRACKET; }
   "]"                 { return RBRACKET; }
   "''"                { return THQUOTE; }
@@ -468,4 +478,41 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                             return WHITESPACELBRACETOK;
                         }
                     }
+}
+
+<INQUASIQUOTE> {
+    "|]"                    {
+                                qqLevel--;
+                                yybegin(stateStack.pop());
+                                if (qqLevel == 0) {
+                                    return RTHCLOSE;
+                                }
+                                return QQTEXT;
+                            }
+
+    ("["{MAYBEQVARID}"|")   {
+                                yypushback(yytext().length() - 1);
+                                qqLevel++;
+                                stateStack.push(INQUASIQUOTE);
+                                yybegin(INQUASIQUOTEHEAD);
+                                return QQTEXT;
+                            }
+    [^|\]\[]+               { return QQTEXT; }
+    [^]                     { return QQTEXT; }
+}
+
+<INQUASIQUOTEHEAD> {
+  "|"                       {
+                                yybegin(INQUASIQUOTE);
+                                return PIPE;
+                            }
+  {VARIDREGEXP}             { return VARIDREGEXP; }
+  {CONID}                   { return CONIDREGEXP; }
+  "."                       { return PERIOD;}
+  {EOL}+                    {
+                                indent = 0;
+                                return com.intellij.psi.TokenType.WHITE_SPACE;
+                            }
+  [\ \f\t]+                 { return com.intellij.psi.TokenType.WHITE_SPACE; }
+  [^]                       { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }

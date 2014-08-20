@@ -30,44 +30,8 @@ public class HaskellGuardImpl extends ASTWrapperPsiElement implements HaskellGua
 
   @Override
   @Nullable
-  public HaskellClassdecl getClassdecl() {
-    return findChildByClass(HaskellClassdecl.class);
-  }
-
-  @Override
-  @Nullable
-  public HaskellCtype getCtype() {
-    return findChildByClass(HaskellCtype.class);
-  }
-
-  @Override
-  @Nullable
-  public HaskellDatadecl getDatadecl() {
-    return findChildByClass(HaskellDatadecl.class);
-  }
-
-  @Override
-  @Nullable
-  public HaskellDefaultdecl getDefaultdecl() {
-    return findChildByClass(HaskellDefaultdecl.class);
-  }
-
-  @Override
-  @Nullable
-  public HaskellDerivingdecl getDerivingdecl() {
-    return findChildByClass(HaskellDerivingdecl.class);
-  }
-
-  @Override
-  @Nullable
   public HaskellExp getExp() {
     return findChildByClass(HaskellExp.class);
-  }
-
-  @Override
-  @Nullable
-  public HaskellForeigndecl getForeigndecl() {
-    return findChildByClass(HaskellForeigndecl.class);
   }
 
   @Override
@@ -80,18 +44,6 @@ public class HaskellGuardImpl extends ASTWrapperPsiElement implements HaskellGua
   @Nullable
   public HaskellGendecl getGendecl() {
     return findChildByClass(HaskellGendecl.class);
-  }
-
-  @Override
-  @Nullable
-  public HaskellInstancedecl getInstancedecl() {
-    return findChildByClass(HaskellInstancedecl.class);
-  }
-
-  @Override
-  @Nullable
-  public HaskellNewtypedecl getNewtypedecl() {
-    return findChildByClass(HaskellNewtypedecl.class);
   }
 
   @Override
@@ -131,15 +83,15 @@ public class HaskellGuardImpl extends ASTWrapperPsiElement implements HaskellGua
   }
 
   @Override
-  @Nullable
-  public HaskellStmts getStmts() {
-    return findChildByClass(HaskellStmts.class);
+  @NotNull
+  public List<HaskellQvarid> getQvaridList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQvarid.class);
   }
 
   @Override
   @Nullable
-  public HaskellTypedecl getTypedecl() {
-    return findChildByClass(HaskellTypedecl.class);
+  public HaskellStmts getStmts() {
+    return findChildByClass(HaskellStmts.class);
   }
 
   @Override
@@ -182,12 +134,6 @@ public class HaskellGuardImpl extends ASTWrapperPsiElement implements HaskellGua
   @Nullable
   public PsiElement getLeftarrow() {
     return findChildByType(LEFTARROW);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getLthopen() {
-    return findChildByType(LTHOPEN);
   }
 
   @Override
