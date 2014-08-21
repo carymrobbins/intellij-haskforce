@@ -1773,32 +1773,51 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // constr ('|' constr)*
+  // [context "=>"] constr ('|' constr)*
   static boolean constrs(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "constrs")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = constr(builder_, level_ + 1);
-    result_ = result_ && constrs_1(builder_, level_ + 1);
+    result_ = constrs_0(builder_, level_ + 1);
+    result_ = result_ && constr(builder_, level_ + 1);
+    result_ = result_ && constrs_2(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // [context "=>"]
+  private static boolean constrs_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constrs_0")) return false;
+    constrs_0_0(builder_, level_ + 1);
+    return true;
+  }
+
+  // context "=>"
+  private static boolean constrs_0_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constrs_0_0")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = context(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, DOUBLEARROW);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   // ('|' constr)*
-  private static boolean constrs_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "constrs_1")) return false;
+  private static boolean constrs_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constrs_2")) return false;
     int pos_ = current_position_(builder_);
     while (true) {
-      if (!constrs_1_0(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "constrs_1", pos_)) break;
+      if (!constrs_2_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "constrs_2", pos_)) break;
       pos_ = current_position_(builder_);
     }
     return true;
   }
 
   // '|' constr
-  private static boolean constrs_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "constrs_1_0")) return false;
+  private static boolean constrs_2_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "constrs_2_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, PIPE);
@@ -5398,6 +5417,8 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // '[|' (exp [semi])+ '|]'
+  //                  // TODO: Enable more precise TH parsing with t/p/d.
+  // //                 | '[' ("t" '|' ctype | "p" '|' infixexp |  "d" '|' open topdecls close ) '|]'
   //                  | qqopen qvarid '|' qqtext+ '|]'
   static boolean thaexp(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "thaexp")) return false;

@@ -314,7 +314,7 @@ private gadtconstrs1 ::= gadtconstr semi gadtconstrs1
 private gadtconstr ::= <<sequence con>> "::" ctype
                      | oqtycon '{' fielddecls '}' "::" ctype
 
-private constrs ::= constr ('|' constr)*
+private constrs ::= [context "=>"] constr ('|' constr)*
 
 constr ::= (btype | '!'atype) conop (btype | '!'atype)
          | con ('{' [(fielddecl ',')* fielddecl] '}' | ([ppragma] ['!'] atype)*)

@@ -29,15 +29,21 @@ public class HaskellIdeclImpl extends ASTWrapperPsiElement implements HaskellIde
   }
 
   @Override
-  @NotNull
-  public List<HaskellCon> getConList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellCon.class);
+  @Nullable
+  public HaskellCon getCon() {
+    return findChildByClass(HaskellCon.class);
   }
 
   @Override
   @NotNull
   public List<HaskellConstr> getConstrList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellConstr.class);
+  }
+
+  @Override
+  @Nullable
+  public HaskellContext getContext() {
+    return findChildByClass(HaskellContext.class);
   }
 
   @Override
@@ -65,9 +71,9 @@ public class HaskellIdeclImpl extends ASTWrapperPsiElement implements HaskellIde
   }
 
   @Override
-  @NotNull
-  public List<HaskellQtycls> getQtyclsList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQtycls.class);
+  @Nullable
+  public HaskellQtycls getQtycls() {
+    return findChildByClass(HaskellQtycls.class);
   }
 
   @Override
@@ -80,6 +86,12 @@ public class HaskellIdeclImpl extends ASTWrapperPsiElement implements HaskellIde
   @Nullable
   public HaskellVars getVars() {
     return findChildByClass(HaskellVars.class);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getDoublearrow() {
+    return findChildByType(DOUBLEARROW);
   }
 
   @Override

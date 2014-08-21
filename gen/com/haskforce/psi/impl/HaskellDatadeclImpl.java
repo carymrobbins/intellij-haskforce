@@ -29,9 +29,9 @@ public class HaskellDatadeclImpl extends ASTWrapperPsiElement implements Haskell
   }
 
   @Override
-  @NotNull
-  public List<HaskellCon> getConList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellCon.class);
+  @Nullable
+  public HaskellCon getCon() {
+    return findChildByClass(HaskellCon.class);
   }
 
   @Override
@@ -41,9 +41,9 @@ public class HaskellDatadeclImpl extends ASTWrapperPsiElement implements Haskell
   }
 
   @Override
-  @Nullable
-  public HaskellContext getContext() {
-    return findChildByClass(HaskellContext.class);
+  @NotNull
+  public List<HaskellContext> getContextList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellContext.class);
   }
 
   @Override
@@ -65,9 +65,9 @@ public class HaskellDatadeclImpl extends ASTWrapperPsiElement implements Haskell
   }
 
   @Override
-  @NotNull
-  public List<HaskellQtycls> getQtyclsList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQtycls.class);
+  @Nullable
+  public HaskellQtycls getQtycls() {
+    return findChildByClass(HaskellQtycls.class);
   }
 
   @Override
@@ -80,12 +80,6 @@ public class HaskellDatadeclImpl extends ASTWrapperPsiElement implements Haskell
   @Nullable
   public HaskellVars getVars() {
     return findChildByClass(HaskellVars.class);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getDoublearrow() {
-    return findChildByType(DOUBLEARROW);
   }
 
   @Override

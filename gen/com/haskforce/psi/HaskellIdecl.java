@@ -10,11 +10,14 @@ public interface HaskellIdecl extends PsiElement {
   @Nullable
   HaskellAtype getAtype();
 
-  @NotNull
-  List<HaskellCon> getConList();
+  @Nullable
+  HaskellCon getCon();
 
   @NotNull
   List<HaskellConstr> getConstrList();
+
+  @Nullable
+  HaskellContext getContext();
 
   @NotNull
   List<HaskellCtype> getCtypeList();
@@ -28,14 +31,17 @@ public interface HaskellIdecl extends PsiElement {
   @Nullable
   HaskellOqtycon getOqtycon();
 
-  @NotNull
-  List<HaskellQtycls> getQtyclsList();
+  @Nullable
+  HaskellQtycls getQtycls();
 
   @Nullable
   HaskellTypee getTypee();
 
   @Nullable
   HaskellVars getVars();
+
+  @Nullable
+  PsiElement getDoublearrow();
 
   @Nullable
   PsiElement getEquals();
