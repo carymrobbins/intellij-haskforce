@@ -95,6 +95,7 @@
       <moduleConfigurationEditorProvider implementation="com.haskforce.settings.HaskellModuleConfigurationEditor" order="first"/>
       <!-- Tab in IntelliJ -> Preferences -->
       <colorSettingsPage implementation="com.haskforce.settings.HaskellColorSettingsPage"/>
+      <colorSettingsPage implementation="com.haskforce.settings.CabalColorSettingsPage"/>
 
       <!-- Cabal support -->
       <fileTypeFactory implementation="com.haskforce.cabal.CabalFileTypeFactory"/>
