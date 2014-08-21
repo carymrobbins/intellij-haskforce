@@ -17,6 +17,9 @@ import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Single annotator that calls all external tools used for annotations.
+ */
 public class HaskellExternalAnnotator extends ExternalAnnotator<PsiFile, Problems> {
     private static final Logger LOG = Logger.getInstance(HaskellExternalAnnotator.class);
 
@@ -36,7 +39,7 @@ public class HaskellExternalAnnotator extends ExternalAnnotator<PsiFile, Problem
 
     @Nullable
     @Override
-    public Problems doAnnotate(PsiFile file) {
+    public Problems doAnnotate(@NotNull PsiFile file) {
         final String canonicalPath = file.getVirtualFile().getCanonicalPath();
         if (canonicalPath == null) {
             return null;
@@ -63,7 +66,7 @@ public class HaskellExternalAnnotator extends ExternalAnnotator<PsiFile, Problem
         return problems;
     }
 
-    public static void apply(PsiFile file, Problems problems, HaskellAnnotationHolder holder) {
+    public static void apply(@NotNull PsiFile file, Problems problems, @NotNull HaskellAnnotationHolder holder) {
         if (problems == null || problems.isEmpty() || !file.isValid()) {
             return;
         }
