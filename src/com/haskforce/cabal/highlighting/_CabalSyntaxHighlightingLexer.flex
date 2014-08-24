@@ -25,10 +25,10 @@ import com.haskforce.cabal.psi.CabalTypes;
 
 CRLF= \n|\r|\r\n
 WHITE_SPACE=[\ \t\f]
-KEY_PATTERN=[a-z0-9\-]+\ *:
+KEY_PATTERN=[A-Za-z0-9\-]+\ *:
 END_OF_LINE_COMMENT=--[^\r\n]*
 COLON=:
-CONFIG=(executable|library|benchmark|test-suite)[^\n\r]*
+CONFIG=(executable|library|benchmark|test-suite|flag )[^\n\r]*
 
 %state WAITING_VALUE
 
