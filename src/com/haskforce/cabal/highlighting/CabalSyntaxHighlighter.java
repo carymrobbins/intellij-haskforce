@@ -25,6 +25,10 @@ public class CabalSyntaxHighlighter extends SyntaxHighlighterBase {
             "CABAL_CONFIG", DefaultLanguageHighlighterColors.NUMBER);
     public static final TextAttributesKey[] CONFIG_KEYS = new TextAttributesKey[]{CONFIG};
 
+    public static final TextAttributesKey CONDITIONAL = TextAttributesKey.createTextAttributesKey(
+            "CABAL_CONDITIONAL", DefaultLanguageHighlighterColors.INSTANCE_METHOD);
+    public static final TextAttributesKey[] CONDITIONAL_KEYS = new TextAttributesKey[]{CONDITIONAL};
+
     @NotNull
     @Override
     public Lexer getHighlightingLexer() {
@@ -45,6 +49,9 @@ public class CabalSyntaxHighlighter extends SyntaxHighlighterBase {
         }
         if (tokenType == CabalTypes.CONFIG) {
             return CONFIG_KEYS;
+        }
+        if (tokenType == CabalTypes.CONDITIONAL) {
+            return CONDITIONAL_KEYS;
         }
         return EMPTY;
     }

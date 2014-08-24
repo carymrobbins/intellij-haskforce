@@ -9,4 +9,5 @@ public interface CabalTypes {
     IElementType VALUE_CHAR = new CabalTokenType("VALUE_CHAR");
     IElementType CRLF = new CabalTokenType("CRLF");
     IElementType CONFIG = new CabalElementType("CONFIG");
+    IElementType CONDITIONAL = new CabalElementType("CONDITIONAL");
 }

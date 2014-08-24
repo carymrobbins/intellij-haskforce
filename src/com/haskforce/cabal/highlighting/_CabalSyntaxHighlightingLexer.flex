@@ -29,6 +29,7 @@ KEY_PATTERN=[A-Za-z0-9\-]+\ *:
 END_OF_LINE_COMMENT=--[^\r\n]*
 COLON=:
 CONFIG=(executable|library|benchmark|test-suite|flag )[^\n\r]*
+CONDITIONAL=(if [^\n\r]+|else)
 
 %state WAITING_VALUE
 
@@ -38,9 +39,10 @@ CONFIG=(executable|library|benchmark|test-suite|flag )[^\n\r]*
 <YYINITIAL> {COLON}                                 { yybegin(WAITING_VALUE); return CabalTypes.COLON; }
 <YYINITIAL> {KEY_PATTERN}                           { yypushback(1); yybegin(YYINITIAL); return CabalTypes.KEY; }
 <YYINITIAL> {CONFIG}                                { yybegin(YYINITIAL); return CabalTypes.CONFIG; }
+<YYINITIAL> {CONDITIONAL}                           { yybegin(YYINITIAL); return CabalTypes.CONDITIONAL; }
 <YYINITIAL> {WHITE_SPACE}+                          { yybegin(YYINITIAL); return TokenType.WHITE_SPACE; }
 <YYINITIAL> {CRLF}                                  { yybegin(YYINITIAL); return CabalTypes.CRLF; }
-<WAITING_VALUE> {CRLF} {WHITE_SPACE}* ({KEY_PATTERN} | {CONFIG})
+<WAITING_VALUE> {CRLF} {WHITE_SPACE}* ({KEY_PATTERN} | {CONFIG} | {CONDITIONAL})
                                                     { yypushback(yylength()); yybegin(YYINITIAL); return CabalTypes.CRLF; }
 <WAITING_VALUE> {END_OF_LINE_COMMENT}               { return CabalTypes.COMMENT; }
 <WAITING_VALUE> [^]                                 { return CabalTypes.VALUE_CHAR; }
