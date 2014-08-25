@@ -59,7 +59,7 @@ public class HaskellAnnotator implements Annotator {
                 String fullFileName = o.getContainingFile().getName();
                 String fileSuffix = fullFileName.substring(fullFileName.lastIndexOf('.'));
                 String fileName = fullFileName.substring(0, fullFileName.length() - fileSuffix.length());
-                if (!moduleName.equals(fileName)) {
+                if (!moduleName.equals(fileName) && !"Main".equals(moduleName)) {
                     HaskellModuleFilenameFix fixFile = new HaskellModuleFilenameFix(moduleName + fileSuffix);
                     HaskellModuleNameFix fixName = new HaskellModuleNameFix(o.getQconid().getConid(), fileName);
                     holder.createErrorAnnotation(qc, MSG).registerFix(fixFile);
