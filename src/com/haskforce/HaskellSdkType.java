@@ -170,6 +170,12 @@ public class HaskellSdkType extends SdkType {
         return new File(path + extra, SystemInfo.isWindows ? "ghc.exe" : "ghc");
     }
 
+    @Nullable
+    public static File getExecutable(@NotNull final Project project) {
+        final String sdkPath = getHaskellSdkPath(project);
+        return sdkPath == null ? null : getExecutable(sdkPath);
+    }
+
     /**
      * Gets the Haskell SDK path for a project.
      */
