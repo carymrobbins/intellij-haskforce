@@ -19,6 +19,9 @@ public interface HaskellRhs extends PsiElement {
   @NotNull
   List<HaskellGuard> getGuardList();
 
+  @Nullable
+  HaskellImpdecl getImpdecl();
+
   @NotNull
   List<HaskellPpragma> getPpragmaList();
 

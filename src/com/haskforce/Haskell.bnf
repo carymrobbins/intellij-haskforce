@@ -476,6 +476,7 @@ private decls1 ::= ppragma* decl ppragma* [semi decls1]
 
 private decl ::= funorpatdecl
                | gendecl
+               | impdecl
 
 funorpatdecl ::= (funlhs | pat) rhs
 

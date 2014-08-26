@@ -30,7 +30,7 @@ public class HaskellConidImpl extends ASTWrapperPsiElement implements HaskellCon
     return findNotNullChildByType(CONIDREGEXP);
   }
 
-  @NotNull
+  @Nullable
   public String getName() {
     return HaskellPsiImplUtil.getName(this);
   }

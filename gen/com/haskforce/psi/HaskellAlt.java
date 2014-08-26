@@ -19,6 +19,9 @@ public interface HaskellAlt extends PsiElement {
   @NotNull
   List<HaskellGuard> getGuardList();
 
+  @Nullable
+  HaskellImpdecl getImpdecl();
+
   @NotNull
   HaskellPat getPat();
 

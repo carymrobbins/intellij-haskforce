@@ -17,6 +17,9 @@ public interface HaskellStmts extends PsiElement {
   List<HaskellGendecl> getGendeclList();
 
   @NotNull
+  List<HaskellImpdecl> getImpdeclList();
+
+  @NotNull
   List<HaskellPat> getPatList();
 
   @NotNull

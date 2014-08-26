@@ -246,7 +246,7 @@ public class HaskellParser implements PsiParser {
   //                | parenlike
   static boolean aexp(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "aexp")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = aexp_0(builder_, level_ + 1);
     if (!result_) result_ = aexp_1(builder_, level_ + 1);
@@ -266,7 +266,7 @@ public class HaskellParser implements PsiParser {
   // recordlikelhs '{' (fbind ',')* (".." | fbind) '}'
   private static boolean aexp_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "aexp_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = recordlikelhs(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, LBRACE);
@@ -292,7 +292,7 @@ public class HaskellParser implements PsiParser {
   // fbind ','
   private static boolean aexp_0_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "aexp_0_2_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = fbind(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, COMMA);
@@ -303,7 +303,7 @@ public class HaskellParser implements PsiParser {
   // ".." | fbind
   private static boolean aexp_0_3(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "aexp_0_3")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, DOUBLEPERIOD);
     if (!result_) result_ = fbind(builder_, level_ + 1);
@@ -314,7 +314,7 @@ public class HaskellParser implements PsiParser {
   // parensplice exp ')'
   private static boolean aexp_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "aexp_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, PARENSPLICE);
     result_ = result_ && exp(builder_, level_ + 1);
@@ -326,7 +326,7 @@ public class HaskellParser implements PsiParser {
   // [singlequote] qvar
   private static boolean aexp_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "aexp_2")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = aexp_2_0(builder_, level_ + 1);
     result_ = result_ && qvar(builder_, level_ + 1);
@@ -344,7 +344,7 @@ public class HaskellParser implements PsiParser {
   // thquote qcon
   private static boolean aexp_4(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "aexp_4")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, THQUOTE);
     result_ = result_ && qcon(builder_, level_ + 1);
@@ -355,7 +355,7 @@ public class HaskellParser implements PsiParser {
   // '(#' '#)'
   private static boolean aexp_8(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "aexp_8")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LUNBOXPAREN);
     result_ = result_ && consumeToken(builder_, RUNBOXPAREN);
@@ -371,7 +371,7 @@ public class HaskellParser implements PsiParser {
   //         | tyvar
   public static boolean akind(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "akind")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<akind>");
     result_ = consumeToken(builder_, ASTERISK);
     if (!result_) result_ = consumeToken(builder_, EXCLAMATION);
@@ -385,7 +385,7 @@ public class HaskellParser implements PsiParser {
   // '(' kind ')'
   private static boolean akind_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "akind_2")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LPAREN);
     result_ = result_ && kind(builder_, level_ + 1);
@@ -398,8 +398,8 @@ public class HaskellParser implements PsiParser {
   // pat ('->' exp | gdpat) [wheredecls]
   public static boolean alt(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "alt")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<alt>");
     result_ = pat(builder_, level_ + 1);
     pinned_ = result_; // pin = 1
@@ -412,7 +412,7 @@ public class HaskellParser implements PsiParser {
   // '->' exp | gdpat
   private static boolean alt_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "alt_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = alt_1_0(builder_, level_ + 1);
     if (!result_) result_ = gdpat(builder_, level_ + 1);
@@ -423,7 +423,7 @@ public class HaskellParser implements PsiParser {
   // '->' exp
   private static boolean alt_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "alt_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, RIGHTARROW);
     result_ = result_ && exp(builder_, level_ + 1);
@@ -443,8 +443,8 @@ public class HaskellParser implements PsiParser {
   static boolean altslist(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "altslist")) return false;
     if (!nextTokenIs(builder_, "", LBRACE, WHITESPACELBRACETOK)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = open(builder_, level_ + 1);
     result_ = result_ && alt(builder_, level_ + 1);
@@ -470,7 +470,7 @@ public class HaskellParser implements PsiParser {
   // semi alt
   private static boolean altslist_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "altslist_2_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = semi(builder_, level_ + 1);
     result_ = result_ && alt(builder_, level_ + 1);
@@ -490,7 +490,7 @@ public class HaskellParser implements PsiParser {
   //                | gcon
   static boolean apat(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = literal(builder_, level_ + 1);
     if (!result_) result_ = consumeToken(builder_, UNDERSCORE);
@@ -507,7 +507,7 @@ public class HaskellParser implements PsiParser {
   // ('!'|'~') apat
   private static boolean apat_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat_2")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = apat_2_0(builder_, level_ + 1);
     result_ = result_ && apat(builder_, level_ + 1);
@@ -518,7 +518,7 @@ public class HaskellParser implements PsiParser {
   // '!'|'~'
   private static boolean apat_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat_2_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, EXCLAMATION);
     if (!result_) result_ = consumeToken(builder_, TILDE);
@@ -529,7 +529,7 @@ public class HaskellParser implements PsiParser {
   // var ('+' integertoken | ['@' apat])
   private static boolean apat_3(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat_3")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = var(builder_, level_ + 1);
     result_ = result_ && apat_3_1(builder_, level_ + 1);
@@ -540,7 +540,7 @@ public class HaskellParser implements PsiParser {
   // '+' integertoken | ['@' apat]
   private static boolean apat_3_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat_3_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = apat_3_1_0(builder_, level_ + 1);
     if (!result_) result_ = apat_3_1_1(builder_, level_ + 1);
@@ -551,7 +551,7 @@ public class HaskellParser implements PsiParser {
   // '+' integertoken
   private static boolean apat_3_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat_3_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, PLUS);
     result_ = result_ && consumeToken(builder_, INTEGERTOKEN);
@@ -569,7 +569,7 @@ public class HaskellParser implements PsiParser {
   // '@' apat
   private static boolean apat_3_1_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat_3_1_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, AMPERSAT);
     result_ = result_ && apat(builder_, level_ + 1);
@@ -580,7 +580,7 @@ public class HaskellParser implements PsiParser {
   // qcon '{' [(fpat ',')* fpat] '}'
   private static boolean apat_4(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat_4")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = qcon(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, LBRACE);
@@ -600,7 +600,7 @@ public class HaskellParser implements PsiParser {
   // (fpat ',')* fpat
   private static boolean apat_4_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat_4_2_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = apat_4_2_0_0(builder_, level_ + 1);
     result_ = result_ && fpat(builder_, level_ + 1);
@@ -623,7 +623,7 @@ public class HaskellParser implements PsiParser {
   // fpat ','
   private static boolean apat_4_2_0_0_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat_4_2_0_0_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = fpat(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, COMMA);
@@ -634,7 +634,7 @@ public class HaskellParser implements PsiParser {
   // '(' pat (apat* "->" pat | [',' (pat ',')* pat]) ')'
   private static boolean apat_5(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat_5")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LPAREN);
     result_ = result_ && pat(builder_, level_ + 1);
@@ -647,7 +647,7 @@ public class HaskellParser implements PsiParser {
   // apat* "->" pat | [',' (pat ',')* pat]
   private static boolean apat_5_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat_5_2")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = apat_5_2_0(builder_, level_ + 1);
     if (!result_) result_ = apat_5_2_1(builder_, level_ + 1);
@@ -658,7 +658,7 @@ public class HaskellParser implements PsiParser {
   // apat* "->" pat
   private static boolean apat_5_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat_5_2_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = apat_5_2_0_0(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, RIGHTARROW);
@@ -689,7 +689,7 @@ public class HaskellParser implements PsiParser {
   // ',' (pat ',')* pat
   private static boolean apat_5_2_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat_5_2_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, COMMA);
     result_ = result_ && apat_5_2_1_0_1(builder_, level_ + 1);
@@ -713,7 +713,7 @@ public class HaskellParser implements PsiParser {
   // pat ','
   private static boolean apat_5_2_1_0_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat_5_2_1_0_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = pat(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, COMMA);
@@ -724,7 +724,7 @@ public class HaskellParser implements PsiParser {
   // '[' (pat (',' pat)* ']' |  exp '|' [semi] exp [semi]'|]')
   private static boolean apat_6(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat_6")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LBRACKET);
     result_ = result_ && apat_6_1(builder_, level_ + 1);
@@ -735,7 +735,7 @@ public class HaskellParser implements PsiParser {
   // pat (',' pat)* ']' |  exp '|' [semi] exp [semi]'|]'
   private static boolean apat_6_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat_6_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = apat_6_1_0(builder_, level_ + 1);
     if (!result_) result_ = apat_6_1_1(builder_, level_ + 1);
@@ -746,7 +746,7 @@ public class HaskellParser implements PsiParser {
   // pat (',' pat)* ']'
   private static boolean apat_6_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat_6_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = pat(builder_, level_ + 1);
     result_ = result_ && apat_6_1_0_1(builder_, level_ + 1);
@@ -770,7 +770,7 @@ public class HaskellParser implements PsiParser {
   // ',' pat
   private static boolean apat_6_1_0_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat_6_1_0_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, COMMA);
     result_ = result_ && pat(builder_, level_ + 1);
@@ -781,7 +781,7 @@ public class HaskellParser implements PsiParser {
   // exp '|' [semi] exp [semi]'|]'
   private static boolean apat_6_1_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "apat_6_1_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = exp(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, PIPE);
@@ -813,7 +813,7 @@ public class HaskellParser implements PsiParser {
   static boolean atdecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "atdecl")) return false;
     if (!nextTokenIs(builder_, "", DATA, TYPE)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = atdecl_0(builder_, level_ + 1);
     if (!result_) result_ = atdecl_1(builder_, level_ + 1);
@@ -824,7 +824,7 @@ public class HaskellParser implements PsiParser {
   // "type" ["instance"] (typee [kindsig] | ctype '=' ctype)
   private static boolean atdecl_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "atdecl_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, TYPE);
     result_ = result_ && atdecl_0_1(builder_, level_ + 1);
@@ -843,7 +843,7 @@ public class HaskellParser implements PsiParser {
   // typee [kindsig] | ctype '=' ctype
   private static boolean atdecl_0_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "atdecl_0_2")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = atdecl_0_2_0(builder_, level_ + 1);
     if (!result_) result_ = atdecl_0_2_1(builder_, level_ + 1);
@@ -854,7 +854,7 @@ public class HaskellParser implements PsiParser {
   // typee [kindsig]
   private static boolean atdecl_0_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "atdecl_0_2_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = typee(builder_, level_ + 1);
     result_ = result_ && atdecl_0_2_0_1(builder_, level_ + 1);
@@ -872,7 +872,7 @@ public class HaskellParser implements PsiParser {
   // ctype '=' ctype
   private static boolean atdecl_0_2_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "atdecl_0_2_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = ctype(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, EQUALS);
@@ -884,7 +884,7 @@ public class HaskellParser implements PsiParser {
   // "data" ["instance"] ctype [kindsig]
   private static boolean atdecl_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "atdecl_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, DATA);
     result_ = result_ && atdecl_1_1(builder_, level_ + 1);
@@ -919,7 +919,7 @@ public class HaskellParser implements PsiParser {
   //         | pstringtoken
   public static boolean atype(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "atype")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<atype>");
     result_ = atype_0(builder_, level_ + 1);
     if (!result_) result_ = tyvar(builder_, level_ + 1);
@@ -936,7 +936,7 @@ public class HaskellParser implements PsiParser {
   // [singlequote] ntgtycon ['##'|'#']
   private static boolean atype_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "atype_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = atype_0_0(builder_, level_ + 1);
     result_ = result_ && ntgtycon(builder_, level_ + 1);
@@ -962,7 +962,7 @@ public class HaskellParser implements PsiParser {
   // '##'|'#'
   private static boolean atype_0_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "atype_0_2_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, DOUBLEHASH);
     if (!result_) result_ = consumeToken(builder_, HASH);
@@ -973,7 +973,7 @@ public class HaskellParser implements PsiParser {
   // '{' fielddecls '}'
   private static boolean atype_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "atype_2")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LBRACE);
     result_ = result_ && fielddecls(builder_, level_ + 1);
@@ -985,7 +985,7 @@ public class HaskellParser implements PsiParser {
   // '(#' <<sequence ctype>> '#)'
   private static boolean atype_3(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "atype_3")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LUNBOXPAREN);
     result_ = result_ && sequence(builder_, level_ + 1, ctype_parser_);
@@ -997,7 +997,7 @@ public class HaskellParser implements PsiParser {
   // '(' ['?'] ctype "::" (kind | ctype)')'
   private static boolean atype_4(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "atype_4")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LPAREN);
     result_ = result_ && atype_4_1(builder_, level_ + 1);
@@ -1019,7 +1019,7 @@ public class HaskellParser implements PsiParser {
   // kind | ctype
   private static boolean atype_4_4(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "atype_4_4")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = kind(builder_, level_ + 1);
     if (!result_) result_ = ctype(builder_, level_ + 1);
@@ -1030,7 +1030,7 @@ public class HaskellParser implements PsiParser {
   // [singlequote] ('(' [<<sequence ctype>>] ')' | '[' <<sequence ctype>> ']')
   private static boolean atype_5(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "atype_5")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = atype_5_0(builder_, level_ + 1);
     result_ = result_ && atype_5_1(builder_, level_ + 1);
@@ -1048,7 +1048,7 @@ public class HaskellParser implements PsiParser {
   // '(' [<<sequence ctype>>] ')' | '[' <<sequence ctype>> ']'
   private static boolean atype_5_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "atype_5_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = atype_5_1_0(builder_, level_ + 1);
     if (!result_) result_ = atype_5_1_1(builder_, level_ + 1);
@@ -1059,7 +1059,7 @@ public class HaskellParser implements PsiParser {
   // '(' [<<sequence ctype>>] ')'
   private static boolean atype_5_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "atype_5_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LPAREN);
     result_ = result_ && atype_5_1_0_1(builder_, level_ + 1);
@@ -1078,7 +1078,7 @@ public class HaskellParser implements PsiParser {
   // '[' <<sequence ctype>> ']'
   private static boolean atype_5_1_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "atype_5_1_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LBRACKET);
     result_ = result_ && sequence(builder_, level_ + 1, ctype_parser_);
@@ -1091,7 +1091,7 @@ public class HaskellParser implements PsiParser {
   // akind [bkind]
   public static boolean bkind(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "bkind")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<bkind>");
     result_ = akind(builder_, level_ + 1);
     result_ = result_ && bkind_1(builder_, level_ + 1);
@@ -1110,8 +1110,8 @@ public class HaskellParser implements PsiParser {
   // ppragma* open bodyaux close
   public static boolean body(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "body")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<body>");
     result_ = body_0(builder_, level_ + 1);
     result_ = result_ && open(builder_, level_ + 1);
@@ -1138,7 +1138,7 @@ public class HaskellParser implements PsiParser {
   // impdecls* [[semi] topdecls]
   static boolean bodyaux(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "bodyaux")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = bodyaux_0(builder_, level_ + 1);
     result_ = result_ && bodyaux_1(builder_, level_ + 1);
@@ -1168,7 +1168,7 @@ public class HaskellParser implements PsiParser {
   // [semi] topdecls
   private static boolean bodyaux_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "bodyaux_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = bodyaux_1_0_0(builder_, level_ + 1);
     result_ = result_ && topdecls(builder_, level_ + 1);
@@ -1187,7 +1187,7 @@ public class HaskellParser implements PsiParser {
   // atype [btype]
   static boolean btype(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "btype")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = atype(builder_, level_ + 1);
     result_ = result_ && btype_1(builder_, level_ + 1);
@@ -1207,7 +1207,7 @@ public class HaskellParser implements PsiParser {
   //                    | "jvm" | "dotnet"
   static boolean callconv(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "callconv")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, "ccall");
     if (!result_) result_ = consumeToken(builder_, "stdcall");
@@ -1224,7 +1224,7 @@ public class HaskellParser implements PsiParser {
   //         | gendecl
   public static boolean cdecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "cdecl")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<cdecl>");
     result_ = atdecl(builder_, level_ + 1);
     if (!result_) result_ = cdecl_1(builder_, level_ + 1);
@@ -1236,7 +1236,7 @@ public class HaskellParser implements PsiParser {
   // (funlhs | var) rhs
   private static boolean cdecl_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "cdecl_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = cdecl_1_0(builder_, level_ + 1);
     result_ = result_ && rhs(builder_, level_ + 1);
@@ -1247,7 +1247,7 @@ public class HaskellParser implements PsiParser {
   // funlhs | var
   private static boolean cdecl_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "cdecl_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = funlhs(builder_, level_ + 1);
     if (!result_) result_ = var(builder_, level_ + 1);
@@ -1260,8 +1260,8 @@ public class HaskellParser implements PsiParser {
   static boolean cdecls(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "cdecls")) return false;
     if (!nextTokenIs(builder_, "", LBRACE, WHITESPACELBRACETOK)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = open(builder_, level_ + 1);
     pinned_ = result_; // pin = 1
@@ -1282,7 +1282,7 @@ public class HaskellParser implements PsiParser {
   // cdecl [semi cdecls1]
   static boolean cdecls1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "cdecls1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = cdecl(builder_, level_ + 1);
     result_ = result_ && cdecls1_1(builder_, level_ + 1);
@@ -1300,7 +1300,7 @@ public class HaskellParser implements PsiParser {
   // semi cdecls1
   private static boolean cdecls1_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "cdecls1_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = semi(builder_, level_ + 1);
     result_ = result_ && cdecls1(builder_, level_ + 1);
@@ -1313,8 +1313,8 @@ public class HaskellParser implements PsiParser {
   public static boolean classdecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "classdecl")) return false;
     if (!nextTokenIs(builder_, CLASSTOKEN)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, CLASSTOKEN);
     pinned_ = result_; // pin = 1
@@ -1334,7 +1334,7 @@ public class HaskellParser implements PsiParser {
   // "where" cdecls
   private static boolean classdecl_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "classdecl_2_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, WHERE);
     result_ = result_ && cdecls(builder_, level_ + 1);
@@ -1348,7 +1348,7 @@ public class HaskellParser implements PsiParser {
   //                 | <<stateHackMess>>
   static boolean close(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "close")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, RBRACE);
     if (!result_) result_ = consumeToken(builder_, WHITESPACERBRACETOK);
@@ -1361,7 +1361,7 @@ public class HaskellParser implements PsiParser {
   // var | con
   static boolean cname(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "cname")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = var(builder_, level_ + 1);
     if (!result_) result_ = con(builder_, level_ + 1);
@@ -1380,8 +1380,8 @@ public class HaskellParser implements PsiParser {
   static boolean commaSeparate(PsiBuilder builder_, int level_, final Parser p) {
     if (!recursion_guard_(builder_, level_, "commaSeparate")) return false;
     if (!nextTokenIs(builder_, LPAREN)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, LPAREN);
     pinned_ = result_; // pin = 1
@@ -1407,8 +1407,8 @@ public class HaskellParser implements PsiParser {
   // ',' <<p>>
   private static boolean commaSeparate_2_0(PsiBuilder builder_, int level_, final Parser p) {
     if (!recursion_guard_(builder_, level_, "commaSeparate_2_0")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, COMMA);
     pinned_ = result_; // pin = 1
@@ -1422,8 +1422,8 @@ public class HaskellParser implements PsiParser {
   static boolean commaSeparate2(PsiBuilder builder_, int level_, final Parser p) {
     if (!recursion_guard_(builder_, level_, "commaSeparate2")) return false;
     if (!nextTokenIs(builder_, LPAREN)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, LPAREN);
     pinned_ = result_; // pin = 1
@@ -1449,8 +1449,8 @@ public class HaskellParser implements PsiParser {
   // ',' (<<p>> | &')')
   private static boolean commaSeparate2_2_0(PsiBuilder builder_, int level_, final Parser p) {
     if (!recursion_guard_(builder_, level_, "commaSeparate2_2_0")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, COMMA);
     pinned_ = result_; // pin = 1
@@ -1462,7 +1462,7 @@ public class HaskellParser implements PsiParser {
   // <<p>> | &')'
   private static boolean commaSeparate2_2_0_1(PsiBuilder builder_, int level_, final Parser p) {
     if (!recursion_guard_(builder_, level_, "commaSeparate2_2_0_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = p.parse(builder_, level_);
     if (!result_) result_ = commaSeparate2_2_0_1_1(builder_, level_ + 1);
@@ -1473,7 +1473,7 @@ public class HaskellParser implements PsiParser {
   // &')'
   private static boolean commaSeparate2_2_0_1_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "commaSeparate2_2_0_1_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _AND_, null);
     result_ = consumeToken(builder_, RPAREN);
     exit_section_(builder_, level_, marker_, null, result_, false, null);
@@ -1484,7 +1484,7 @@ public class HaskellParser implements PsiParser {
   // kind  [',' comma_kinds1]
   static boolean comma_kinds1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "comma_kinds1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = kind(builder_, level_ + 1);
     result_ = result_ && comma_kinds1_1(builder_, level_ + 1);
@@ -1502,7 +1502,7 @@ public class HaskellParser implements PsiParser {
   // ',' comma_kinds1
   private static boolean comma_kinds1_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "comma_kinds1_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, COMMA);
     result_ = result_ && comma_kinds1(builder_, level_ + 1);
@@ -1515,7 +1515,7 @@ public class HaskellParser implements PsiParser {
   static boolean commas(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "commas")) return false;
     if (!nextTokenIs(builder_, COMMA)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, COMMA);
     int pos_ = current_position_(builder_);
@@ -1533,7 +1533,7 @@ public class HaskellParser implements PsiParser {
   public static boolean con(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "con")) return false;
     if (!nextTokenIs(builder_, "<con>", LPAREN, CONIDREGEXP)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<con>");
     result_ = conid(builder_, level_ + 1);
     if (!result_) result_ = con_1(builder_, level_ + 1);
@@ -1544,7 +1544,7 @@ public class HaskellParser implements PsiParser {
   // '(' consym ')'
   private static boolean con_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "con_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LPAREN);
     result_ = result_ && consym(builder_, level_ + 1);
@@ -1558,7 +1558,7 @@ public class HaskellParser implements PsiParser {
   public static boolean conid(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "conid")) return false;
     if (!nextTokenIs(builder_, CONIDREGEXP)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, CONIDREGEXP);
     exit_section_(builder_, marker_, CONID, result_);
@@ -1570,7 +1570,7 @@ public class HaskellParser implements PsiParser {
   public static boolean conop(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "conop")) return false;
     if (!nextTokenIs(builder_, "<conop>", BACKTICK, CONSYMTOK)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<conop>");
     result_ = consym(builder_, level_ + 1);
     if (!result_) result_ = conop_1(builder_, level_ + 1);
@@ -1581,7 +1581,7 @@ public class HaskellParser implements PsiParser {
   // '`' conid '`'
   private static boolean conop_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "conop_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, BACKTICK);
     result_ = result_ && conid(builder_, level_ + 1);
@@ -1595,7 +1595,7 @@ public class HaskellParser implements PsiParser {
   //          | con ('{' [(fielddecl ',')* fielddecl] '}' | ([ppragma] ['!'] atype)*)
   public static boolean constr(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "constr")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<constr>");
     result_ = constr_0(builder_, level_ + 1);
     if (!result_) result_ = constr_1(builder_, level_ + 1);
@@ -1606,7 +1606,7 @@ public class HaskellParser implements PsiParser {
   // (btype | '!'atype) conop (btype | '!'atype)
   private static boolean constr_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "constr_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = constr_0_0(builder_, level_ + 1);
     result_ = result_ && conop(builder_, level_ + 1);
@@ -1618,7 +1618,7 @@ public class HaskellParser implements PsiParser {
   // btype | '!'atype
   private static boolean constr_0_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "constr_0_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = btype(builder_, level_ + 1);
     if (!result_) result_ = constr_0_0_1(builder_, level_ + 1);
@@ -1629,7 +1629,7 @@ public class HaskellParser implements PsiParser {
   // '!'atype
   private static boolean constr_0_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "constr_0_0_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, EXCLAMATION);
     result_ = result_ && atype(builder_, level_ + 1);
@@ -1640,7 +1640,7 @@ public class HaskellParser implements PsiParser {
   // btype | '!'atype
   private static boolean constr_0_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "constr_0_2")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = btype(builder_, level_ + 1);
     if (!result_) result_ = constr_0_2_1(builder_, level_ + 1);
@@ -1651,7 +1651,7 @@ public class HaskellParser implements PsiParser {
   // '!'atype
   private static boolean constr_0_2_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "constr_0_2_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, EXCLAMATION);
     result_ = result_ && atype(builder_, level_ + 1);
@@ -1662,7 +1662,7 @@ public class HaskellParser implements PsiParser {
   // con ('{' [(fielddecl ',')* fielddecl] '}' | ([ppragma] ['!'] atype)*)
   private static boolean constr_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "constr_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = con(builder_, level_ + 1);
     result_ = result_ && constr_1_1(builder_, level_ + 1);
@@ -1673,7 +1673,7 @@ public class HaskellParser implements PsiParser {
   // '{' [(fielddecl ',')* fielddecl] '}' | ([ppragma] ['!'] atype)*
   private static boolean constr_1_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "constr_1_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = constr_1_1_0(builder_, level_ + 1);
     if (!result_) result_ = constr_1_1_1(builder_, level_ + 1);
@@ -1684,7 +1684,7 @@ public class HaskellParser implements PsiParser {
   // '{' [(fielddecl ',')* fielddecl] '}'
   private static boolean constr_1_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "constr_1_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LBRACE);
     result_ = result_ && constr_1_1_0_1(builder_, level_ + 1);
@@ -1703,7 +1703,7 @@ public class HaskellParser implements PsiParser {
   // (fielddecl ',')* fielddecl
   private static boolean constr_1_1_0_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "constr_1_1_0_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = constr_1_1_0_1_0_0(builder_, level_ + 1);
     result_ = result_ && fielddecl(builder_, level_ + 1);
@@ -1726,7 +1726,7 @@ public class HaskellParser implements PsiParser {
   // fielddecl ','
   private static boolean constr_1_1_0_1_0_0_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "constr_1_1_0_1_0_0_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = fielddecl(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, COMMA);
@@ -1749,7 +1749,7 @@ public class HaskellParser implements PsiParser {
   // [ppragma] ['!'] atype
   private static boolean constr_1_1_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "constr_1_1_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = constr_1_1_1_0_0(builder_, level_ + 1);
     result_ = result_ && constr_1_1_1_0_1(builder_, level_ + 1);
@@ -1776,7 +1776,7 @@ public class HaskellParser implements PsiParser {
   // [context "=>"] constr ('|' constr)*
   static boolean constrs(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "constrs")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = constrs_0(builder_, level_ + 1);
     result_ = result_ && constr(builder_, level_ + 1);
@@ -1795,7 +1795,7 @@ public class HaskellParser implements PsiParser {
   // context "=>"
   private static boolean constrs_0_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "constrs_0_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = context(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, DOUBLEARROW);
@@ -1818,7 +1818,7 @@ public class HaskellParser implements PsiParser {
   // '|' constr
   private static boolean constrs_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "constrs_2_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, PIPE);
     result_ = result_ && constr(builder_, level_ + 1);
@@ -1831,7 +1831,7 @@ public class HaskellParser implements PsiParser {
   public static boolean consym(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "consym")) return false;
     if (!nextTokenIs(builder_, CONSYMTOK)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, CONSYMTOK);
     exit_section_(builder_, marker_, CONSYM, result_);
@@ -1842,7 +1842,7 @@ public class HaskellParser implements PsiParser {
   // btype ['~' btype]
   public static boolean context(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "context")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<context>");
     result_ = btype(builder_, level_ + 1);
     result_ = result_ && context_1(builder_, level_ + 1);
@@ -1860,7 +1860,7 @@ public class HaskellParser implements PsiParser {
   // '~' btype
   private static boolean context_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "context_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, TILDE);
     result_ = result_ && btype(builder_, level_ + 1);
@@ -1872,8 +1872,8 @@ public class HaskellParser implements PsiParser {
   // context '=>' ctype
   static boolean contexttype(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "contexttype")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = context(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, DOUBLEARROW);
@@ -1889,7 +1889,7 @@ public class HaskellParser implements PsiParser {
   //         | typee
   public static boolean ctype(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "ctype")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<ctype>");
     result_ = foralltype(builder_, level_ + 1);
     if (!result_) result_ = contexttype(builder_, level_ + 1);
@@ -1903,8 +1903,8 @@ public class HaskellParser implements PsiParser {
   public static boolean datadecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "datadecl")) return false;
     if (!nextTokenIs(builder_, DATA)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, DATA);
     pinned_ = result_; // pin = 1
@@ -1934,7 +1934,7 @@ public class HaskellParser implements PsiParser {
   // context "=>"
   private static boolean datadecl_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "datadecl_2_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = context(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, DOUBLEARROW);
@@ -1952,7 +1952,7 @@ public class HaskellParser implements PsiParser {
   // '=' constrs| [kindsig] ["where" gadtconstrs]
   private static boolean datadecl_4_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "datadecl_4_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = datadecl_4_0_0(builder_, level_ + 1);
     if (!result_) result_ = datadecl_4_0_1(builder_, level_ + 1);
@@ -1963,7 +1963,7 @@ public class HaskellParser implements PsiParser {
   // '=' constrs
   private static boolean datadecl_4_0_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "datadecl_4_0_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, EQUALS);
     result_ = result_ && constrs(builder_, level_ + 1);
@@ -1974,7 +1974,7 @@ public class HaskellParser implements PsiParser {
   // [kindsig] ["where" gadtconstrs]
   private static boolean datadecl_4_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "datadecl_4_0_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = datadecl_4_0_1_0(builder_, level_ + 1);
     result_ = result_ && datadecl_4_0_1_1(builder_, level_ + 1);
@@ -1999,7 +1999,7 @@ public class HaskellParser implements PsiParser {
   // "where" gadtconstrs
   private static boolean datadecl_4_0_1_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "datadecl_4_0_1_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, WHERE);
     result_ = result_ && gadtconstrs(builder_, level_ + 1);
@@ -2023,12 +2023,14 @@ public class HaskellParser implements PsiParser {
   /* ********************************************************** */
   // funorpatdecl
   //                | gendecl
+  //                | impdecl
   static boolean decl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "decl")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = funorpatdecl(builder_, level_ + 1);
     if (!result_) result_ = gendecl(builder_, level_ + 1);
+    if (!result_) result_ = impdecl(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -2038,8 +2040,8 @@ public class HaskellParser implements PsiParser {
   static boolean decls(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "decls")) return false;
     if (!nextTokenIs(builder_, "", LBRACE, WHITESPACELBRACETOK)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = open(builder_, level_ + 1);
     pinned_ = result_; // pin = 1
@@ -2060,7 +2062,7 @@ public class HaskellParser implements PsiParser {
   // ppragma* decl ppragma* [semi decls1]
   static boolean decls1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "decls1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = decls1_0(builder_, level_ + 1);
     result_ = result_ && decl(builder_, level_ + 1);
@@ -2104,7 +2106,7 @@ public class HaskellParser implements PsiParser {
   // semi decls1
   private static boolean decls1_3_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "decls1_3_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = semi(builder_, level_ + 1);
     result_ = result_ && decls1(builder_, level_ + 1);
@@ -2117,8 +2119,8 @@ public class HaskellParser implements PsiParser {
   public static boolean defaultdecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "defaultdecl")) return false;
     if (!nextTokenIs(builder_, DEFAULT)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, DEFAULT);
     pinned_ = result_; // pin = 1
@@ -2132,8 +2134,8 @@ public class HaskellParser implements PsiParser {
   static boolean deriving(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "deriving")) return false;
     if (!nextTokenIs(builder_, DERIVING)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, DERIVING);
     pinned_ = result_; // pin = 1
@@ -2145,7 +2147,7 @@ public class HaskellParser implements PsiParser {
   // dclass|<<commaSeparate dclass>>
   private static boolean deriving_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "deriving_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = dclass(builder_, level_ + 1);
     if (!result_) result_ = commaSeparate(builder_, level_ + 1, dclass_parser_);
@@ -2158,8 +2160,8 @@ public class HaskellParser implements PsiParser {
   public static boolean derivingdecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "derivingdecl")) return false;
     if (!nextTokenIs(builder_, DERIVING)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, DERIVING);
     pinned_ = result_; // pin = 1
@@ -2181,7 +2183,7 @@ public class HaskellParser implements PsiParser {
   // ppragma* infixexp ["::" [context "=>"] typee]
   public static boolean exp(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "exp")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<exp>");
     result_ = exp_0(builder_, level_ + 1);
     result_ = result_ && infixexp(builder_, level_ + 1);
@@ -2212,7 +2214,7 @@ public class HaskellParser implements PsiParser {
   // "::" [context "=>"] typee
   private static boolean exp_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "exp_2_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, DOUBLECOLON);
     result_ = result_ && exp_2_0_1(builder_, level_ + 1);
@@ -2231,7 +2233,7 @@ public class HaskellParser implements PsiParser {
   // context "=>"
   private static boolean exp_2_0_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "exp_2_0_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = context(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, DOUBLEARROW);
@@ -2252,7 +2254,7 @@ public class HaskellParser implements PsiParser {
   //         | qvar
   public static boolean export(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "export")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<export>");
     result_ = export_0(builder_, level_ + 1);
     if (!result_) result_ = export_1(builder_, level_ + 1);
@@ -2264,8 +2266,8 @@ public class HaskellParser implements PsiParser {
   // "module" qconid
   private static boolean export_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "export_0")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, MODULETOKEN);
     pinned_ = result_; // pin = 1
@@ -2277,8 +2279,8 @@ public class HaskellParser implements PsiParser {
   // qtycon [ '(' (".." | cnames | qvars) ')']
   private static boolean export_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "export_1")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = qtycon(builder_, level_ + 1);
     pinned_ = result_; // pin = 1
@@ -2297,8 +2299,8 @@ public class HaskellParser implements PsiParser {
   // '(' (".." | cnames | qvars) ')'
   private static boolean export_1_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "export_1_1_0")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, LPAREN);
     pinned_ = result_; // pin = 1
@@ -2311,7 +2313,7 @@ public class HaskellParser implements PsiParser {
   // ".." | cnames | qvars
   private static boolean export_1_1_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "export_1_1_0_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, DOUBLEPERIOD);
     if (!result_) result_ = cnames(builder_, level_ + 1);
@@ -2325,8 +2327,8 @@ public class HaskellParser implements PsiParser {
   static boolean exportdecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "exportdecl")) return false;
     if (!nextTokenIs(builder_, EXPORTTOKEN)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, EXPORTTOKEN);
     pinned_ = result_; // pin = 1
@@ -2348,7 +2350,7 @@ public class HaskellParser implements PsiParser {
   public static boolean exports(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "exports")) return false;
     if (!nextTokenIs(builder_, LPAREN)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = commaSeparate2(builder_, level_ + 1, export_parser_);
     exit_section_(builder_, marker_, EXPORTS, result_);
@@ -2360,7 +2362,7 @@ public class HaskellParser implements PsiParser {
   static boolean fatype(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "fatype")) return false;
     if (!nextTokenIs(builder_, CONIDREGEXP)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = qtycon(builder_, level_ + 1);
     result_ = result_ && fatype_1(builder_, level_ + 1);
@@ -2384,8 +2386,8 @@ public class HaskellParser implements PsiParser {
   // qvar '=' exp
   static boolean fbind(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "fbind")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = qvar(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, EQUALS);
@@ -2400,7 +2402,7 @@ public class HaskellParser implements PsiParser {
   static boolean fdecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "fdecl")) return false;
     if (!nextTokenIs(builder_, "", EXPORTTOKEN, IMPORT)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = fdecl_0(builder_, level_ + 1);
     result_ = result_ && var(builder_, level_ + 1);
@@ -2413,7 +2415,7 @@ public class HaskellParser implements PsiParser {
   // importdecl | exportdecl
   private static boolean fdecl_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "fdecl_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = importdecl(builder_, level_ + 1);
     if (!result_) result_ = exportdecl(builder_, level_ + 1);
@@ -2425,8 +2427,8 @@ public class HaskellParser implements PsiParser {
   // vars "::" (typee | '!' atype)
   static boolean fielddecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "fielddecl")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = vars(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, DOUBLECOLON);
@@ -2439,7 +2441,7 @@ public class HaskellParser implements PsiParser {
   // typee | '!' atype
   private static boolean fielddecl_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "fielddecl_2")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = typee(builder_, level_ + 1);
     if (!result_) result_ = fielddecl_2_1(builder_, level_ + 1);
@@ -2450,7 +2452,7 @@ public class HaskellParser implements PsiParser {
   // '!' atype
   private static boolean fielddecl_2_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "fielddecl_2_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, EXCLAMATION);
     result_ = result_ && atype(builder_, level_ + 1);
@@ -2462,8 +2464,8 @@ public class HaskellParser implements PsiParser {
   // fielddecl [',' fielddecls]
   static boolean fielddecls(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "fielddecls")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = fielddecl(builder_, level_ + 1);
     pinned_ = result_; // pin = 1
@@ -2482,8 +2484,8 @@ public class HaskellParser implements PsiParser {
   // ',' fielddecls
   private static boolean fielddecls_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "fielddecls_1_0")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, COMMA);
     pinned_ = result_; // pin = 1
@@ -2496,7 +2498,7 @@ public class HaskellParser implements PsiParser {
   // "infix" | "infixr" | "infixl"
   public static boolean fixity(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "fixity")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<fixity>");
     result_ = consumeToken(builder_, INFIX);
     if (!result_) result_ = consumeToken(builder_, INFIXR);
@@ -2510,8 +2512,8 @@ public class HaskellParser implements PsiParser {
   static boolean foralltype(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "foralltype")) return false;
     if (!nextTokenIs(builder_, FORALLTOKEN)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, FORALLTOKEN);
     pinned_ = result_; // pin = 1
@@ -2539,8 +2541,8 @@ public class HaskellParser implements PsiParser {
   public static boolean foreigndecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "foreigndecl")) return false;
     if (!nextTokenIs(builder_, FOREIGN)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, FOREIGN);
     pinned_ = result_; // pin = 1
@@ -2554,7 +2556,7 @@ public class HaskellParser implements PsiParser {
   //                | ".."
   static boolean fpat(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "fpat")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = fpat_0(builder_, level_ + 1);
     if (!result_) result_ = consumeToken(builder_, DOUBLEPERIOD);
@@ -2565,8 +2567,8 @@ public class HaskellParser implements PsiParser {
   // qvar ['=' pat]
   private static boolean fpat_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "fpat_0")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = qvar(builder_, level_ + 1);
     pinned_ = result_; // pin = 1
@@ -2585,8 +2587,8 @@ public class HaskellParser implements PsiParser {
   // '=' pat
   private static boolean fpat_0_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "fpat_0_1_0")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, EQUALS);
     pinned_ = result_; // pin = 1
@@ -2600,7 +2602,7 @@ public class HaskellParser implements PsiParser {
   //                 | "()"
   static boolean ftype(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "ftype")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = ftype_0(builder_, level_ + 1);
     if (!result_) result_ = consumeToken(builder_, "()");
@@ -2611,7 +2613,7 @@ public class HaskellParser implements PsiParser {
   // fatype ["->" ftype]
   private static boolean ftype_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "ftype_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = fatype(builder_, level_ + 1);
     result_ = result_ && ftype_0_1(builder_, level_ + 1);
@@ -2629,7 +2631,7 @@ public class HaskellParser implements PsiParser {
   // "->" ftype
   private static boolean ftype_0_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "ftype_0_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, RIGHTARROW);
     result_ = result_ && ftype(builder_, level_ + 1);
@@ -2642,7 +2644,7 @@ public class HaskellParser implements PsiParser {
   //                  | pat varop pat
   static boolean funlhs(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "funlhs")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = funlhs_0(builder_, level_ + 1);
     if (!result_) result_ = funlhs_1(builder_, level_ + 1);
@@ -2653,7 +2655,7 @@ public class HaskellParser implements PsiParser {
   // (var |'(' funlhs ')') apat+
   private static boolean funlhs_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "funlhs_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = funlhs_0_0(builder_, level_ + 1);
     result_ = result_ && funlhs_0_1(builder_, level_ + 1);
@@ -2664,7 +2666,7 @@ public class HaskellParser implements PsiParser {
   // var |'(' funlhs ')'
   private static boolean funlhs_0_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "funlhs_0_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = var(builder_, level_ + 1);
     if (!result_) result_ = funlhs_0_0_1(builder_, level_ + 1);
@@ -2675,7 +2677,7 @@ public class HaskellParser implements PsiParser {
   // '(' funlhs ')'
   private static boolean funlhs_0_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "funlhs_0_0_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LPAREN);
     result_ = result_ && funlhs(builder_, level_ + 1);
@@ -2687,7 +2689,7 @@ public class HaskellParser implements PsiParser {
   // apat+
   private static boolean funlhs_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "funlhs_0_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = apat(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -2703,7 +2705,7 @@ public class HaskellParser implements PsiParser {
   // pat varop pat
   private static boolean funlhs_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "funlhs_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = pat(builder_, level_ + 1);
     result_ = result_ && varop(builder_, level_ + 1);
@@ -2716,7 +2718,7 @@ public class HaskellParser implements PsiParser {
   // (funlhs | pat) rhs
   public static boolean funorpatdecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "funorpatdecl")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<funorpatdecl>");
     result_ = funorpatdecl_0(builder_, level_ + 1);
     result_ = result_ && rhs(builder_, level_ + 1);
@@ -2727,7 +2729,7 @@ public class HaskellParser implements PsiParser {
   // funlhs | pat
   private static boolean funorpatdecl_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "funorpatdecl_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = funlhs(builder_, level_ + 1);
     if (!result_) result_ = pat(builder_, level_ + 1);
@@ -2741,7 +2743,7 @@ public class HaskellParser implements PsiParser {
   static boolean gadtconstr(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "gadtconstr")) return false;
     if (!nextTokenIs(builder_, "", LPAREN, CONIDREGEXP)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = gadtconstr_0(builder_, level_ + 1);
     if (!result_) result_ = gadtconstr_1(builder_, level_ + 1);
@@ -2752,7 +2754,7 @@ public class HaskellParser implements PsiParser {
   // <<sequence con>> "::" ctype
   private static boolean gadtconstr_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "gadtconstr_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = sequence(builder_, level_ + 1, con_parser_);
     result_ = result_ && consumeToken(builder_, DOUBLECOLON);
@@ -2764,7 +2766,7 @@ public class HaskellParser implements PsiParser {
   // oqtycon '{' fielddecls '}' "::" ctype
   private static boolean gadtconstr_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "gadtconstr_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = oqtycon(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, LBRACE);
@@ -2781,7 +2783,7 @@ public class HaskellParser implements PsiParser {
   static boolean gadtconstrs(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "gadtconstrs")) return false;
     if (!nextTokenIs(builder_, "", LBRACE, WHITESPACELBRACETOK)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = open(builder_, level_ + 1);
     result_ = result_ && gadtconstrs_1(builder_, level_ + 1);
@@ -2803,7 +2805,7 @@ public class HaskellParser implements PsiParser {
   static boolean gadtconstrs1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "gadtconstrs1")) return false;
     if (!nextTokenIs(builder_, "", LPAREN, CONIDREGEXP)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = gadtconstrs1_0(builder_, level_ + 1);
     if (!result_) result_ = gadtconstr(builder_, level_ + 1);
@@ -2814,7 +2816,7 @@ public class HaskellParser implements PsiParser {
   // gadtconstr semi gadtconstrs1
   private static boolean gadtconstrs1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "gadtconstrs1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = gadtconstr(builder_, level_ + 1);
     result_ = result_ && semi(builder_, level_ + 1);
@@ -2829,7 +2831,7 @@ public class HaskellParser implements PsiParser {
   //               | qcon
   static boolean gcon(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "gcon")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = gcon_0(builder_, level_ + 1);
     if (!result_) result_ = gcon_1(builder_, level_ + 1);
@@ -2841,7 +2843,7 @@ public class HaskellParser implements PsiParser {
   // '[' ']'
   private static boolean gcon_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "gcon_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LBRACKET);
     result_ = result_ && consumeToken(builder_, RBRACKET);
@@ -2852,7 +2854,7 @@ public class HaskellParser implements PsiParser {
   // '(' [commas] ')'
   private static boolean gcon_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "gcon_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LPAREN);
     result_ = result_ && gcon_1_1(builder_, level_ + 1);
@@ -2872,7 +2874,7 @@ public class HaskellParser implements PsiParser {
   // ':' | qconsym
   public static boolean gconsym(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "gconsym")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<gconsym>");
     result_ = consumeToken(builder_, COLON);
     if (!result_) result_ = qconsym(builder_, level_ + 1);
@@ -2885,8 +2887,8 @@ public class HaskellParser implements PsiParser {
   static boolean gdpat(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "gdpat")) return false;
     if (!nextTokenIs(builder_, PIPE)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = guards(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, RIGHTARROW);
@@ -2909,8 +2911,8 @@ public class HaskellParser implements PsiParser {
   static boolean gdrhs(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "gdrhs")) return false;
     if (!nextTokenIs(builder_, PIPE)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = guards(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, EQUALS);
@@ -2925,7 +2927,7 @@ public class HaskellParser implements PsiParser {
   //           | fixity [integertoken] (<<sequence op>>)
   public static boolean gendecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "gendecl")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<gendecl>");
     result_ = gendeclfst(builder_, level_ + 1);
     if (!result_) result_ = gendecl_1(builder_, level_ + 1);
@@ -2936,8 +2938,8 @@ public class HaskellParser implements PsiParser {
   // fixity [integertoken] (<<sequence op>>)
   private static boolean gendecl_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "gendecl_1")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = fixity(builder_, level_ + 1);
     pinned_ = result_; // pin = 1
@@ -2963,8 +2965,8 @@ public class HaskellParser implements PsiParser {
   // vars '::' ctype
   static boolean gendeclfst(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "gendeclfst")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = vars(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, DOUBLECOLON);
@@ -2980,7 +2982,7 @@ public class HaskellParser implements PsiParser {
   //         | infixexp
   public static boolean guard(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "guard")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<guard>");
     result_ = guard_0(builder_, level_ + 1);
     if (!result_) result_ = guard_1(builder_, level_ + 1);
@@ -2992,7 +2994,7 @@ public class HaskellParser implements PsiParser {
   // pat '<-' exp
   private static boolean guard_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "guard_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = pat(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, LEFTARROW);
@@ -3004,7 +3006,7 @@ public class HaskellParser implements PsiParser {
   // "let" decls
   private static boolean guard_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "guard_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LET);
     result_ = result_ && decls(builder_, level_ + 1);
@@ -3017,8 +3019,8 @@ public class HaskellParser implements PsiParser {
   static boolean guards(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "guards")) return false;
     if (!nextTokenIs(builder_, PIPE)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, PIPE);
     pinned_ = result_; // pin = 1
@@ -3043,7 +3045,7 @@ public class HaskellParser implements PsiParser {
   // ',' guard
   private static boolean guards_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "guards_2_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, COMMA);
     result_ = result_ && guard(builder_, level_ + 1);
@@ -3056,7 +3058,7 @@ public class HaskellParser implements PsiParser {
   //         | funorpatdecl
   public static boolean idecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "idecl")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<idecl>");
     result_ = itdecl(builder_, level_ + 1);
     if (!result_) result_ = funorpatdecl(builder_, level_ + 1);
@@ -3068,7 +3070,7 @@ public class HaskellParser implements PsiParser {
   // ppragma* idecl ppragma*
   static boolean idecl0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "idecl0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = idecl0_0(builder_, level_ + 1);
     result_ = result_ && idecl(builder_, level_ + 1);
@@ -3105,8 +3107,8 @@ public class HaskellParser implements PsiParser {
   // ppragma* open [idecls1] close
   static boolean idecls(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "idecls")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = idecls_0(builder_, level_ + 1);
     result_ = result_ && open(builder_, level_ + 1);
@@ -3140,7 +3142,7 @@ public class HaskellParser implements PsiParser {
   // idecl0 [semi idecls1]
   static boolean idecls1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "idecls1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = idecl0(builder_, level_ + 1);
     result_ = result_ && idecls1_1(builder_, level_ + 1);
@@ -3158,7 +3160,7 @@ public class HaskellParser implements PsiParser {
   // semi idecls1
   private static boolean idecls1_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "idecls1_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = semi(builder_, level_ + 1);
     result_ = result_ && idecls1(builder_, level_ + 1);
@@ -3171,8 +3173,8 @@ public class HaskellParser implements PsiParser {
   public static boolean impdecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "impdecl")) return false;
     if (!nextTokenIs(builder_, IMPORT)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, IMPORT);
     pinned_ = result_; // pin = 1
@@ -3201,8 +3203,8 @@ public class HaskellParser implements PsiParser {
   // "as" qconid
   private static boolean impdecl_3_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "impdecl_3_0")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, AS);
     pinned_ = result_; // pin = 1
@@ -3223,8 +3225,8 @@ public class HaskellParser implements PsiParser {
   static boolean impdecls(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "impdecls")) return false;
     if (!nextTokenIs(builder_, IMPORT)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = impdecl(builder_, level_ + 1);
     pinned_ = result_; // pin = 1
@@ -3243,7 +3245,7 @@ public class HaskellParser implements PsiParser {
   // semi impdecls
   private static boolean impdecls_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "impdecls_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = semi(builder_, level_ + 1);
     result_ = result_ && impdecls(builder_, level_ + 1);
@@ -3257,7 +3259,7 @@ public class HaskellParser implements PsiParser {
   //                  | pstringtoken
   static boolean impent(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "impent")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = impent_0(builder_, level_ + 1);
     if (!result_) result_ = impent_1(builder_, level_ + 1);
@@ -3269,7 +3271,7 @@ public class HaskellParser implements PsiParser {
   // '\"' "wrapper" '\"'
   private static boolean impent_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "impent_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, "\\\"");
     result_ = result_ && consumeToken(builder_, "wrapper");
@@ -3281,7 +3283,7 @@ public class HaskellParser implements PsiParser {
   // '\"' "dynamic" '\"'
   private static boolean impent_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "impent_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, "\\\"");
     result_ = result_ && consumeToken(builder_, "dynamic");
@@ -3295,8 +3297,8 @@ public class HaskellParser implements PsiParser {
   static boolean importdecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "importdecl")) return false;
     if (!nextTokenIs(builder_, IMPORT)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, IMPORT);
     pinned_ = result_; // pin = 1
@@ -3320,7 +3322,7 @@ public class HaskellParser implements PsiParser {
   //           | tycon ['(' (".." | cnames | vars) ')']
   public static boolean importt(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "importt")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<importt>");
     result_ = var(builder_, level_ + 1);
     if (!result_) result_ = importt_1(builder_, level_ + 1);
@@ -3331,7 +3333,7 @@ public class HaskellParser implements PsiParser {
   // tycon ['(' (".." | cnames | vars) ')']
   private static boolean importt_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "importt_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = tycon(builder_, level_ + 1);
     result_ = result_ && importt_1_1(builder_, level_ + 1);
@@ -3349,7 +3351,7 @@ public class HaskellParser implements PsiParser {
   // '(' (".." | cnames | vars) ')'
   private static boolean importt_1_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "importt_1_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LPAREN);
     result_ = result_ && importt_1_1_0_1(builder_, level_ + 1);
@@ -3361,7 +3363,7 @@ public class HaskellParser implements PsiParser {
   // ".." | cnames | vars
   private static boolean importt_1_1_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "importt_1_1_0_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, DOUBLEPERIOD);
     if (!result_) result_ = cnames(builder_, level_ + 1);
@@ -3375,8 +3377,8 @@ public class HaskellParser implements PsiParser {
   static boolean impspec(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "impspec")) return false;
     if (!nextTokenIs(builder_, "", LPAREN, HIDING)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = impspec_0(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, LPAREN);
@@ -3405,7 +3407,7 @@ public class HaskellParser implements PsiParser {
   // '-'* lexp [qop infixexp]
   static boolean infixexp(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "infixexp")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = infixexp_0(builder_, level_ + 1);
     result_ = result_ && lexp(builder_, level_ + 1);
@@ -3436,7 +3438,7 @@ public class HaskellParser implements PsiParser {
   // qop infixexp
   private static boolean infixexp_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "infixexp_2_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = qop(builder_, level_ + 1);
     result_ = result_ && infixexp(builder_, level_ + 1);
@@ -3449,8 +3451,8 @@ public class HaskellParser implements PsiParser {
   public static boolean instancedecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "instancedecl")) return false;
     if (!nextTokenIs(builder_, INSTANCE)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, INSTANCE);
     pinned_ = result_; // pin = 1
@@ -3470,7 +3472,7 @@ public class HaskellParser implements PsiParser {
   // "where" idecls
   private static boolean instancedecl_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "instancedecl_2_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, WHERE);
     result_ = result_ && idecls(builder_, level_ + 1);
@@ -3483,7 +3485,7 @@ public class HaskellParser implements PsiParser {
   //                  | ("data" | "newtype") ctype ([kindsig] gadtconstrs | ['=' constrs]) [deriving]
   static boolean itdecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "itdecl")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = itdecl_0(builder_, level_ + 1);
     if (!result_) result_ = itdecl_1(builder_, level_ + 1);
@@ -3494,7 +3496,7 @@ public class HaskellParser implements PsiParser {
   // "type" ctype '=' ctype
   private static boolean itdecl_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "itdecl_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, TYPE);
     result_ = result_ && ctype(builder_, level_ + 1);
@@ -3507,7 +3509,7 @@ public class HaskellParser implements PsiParser {
   // ("data" | "newtype") ctype ([kindsig] gadtconstrs | ['=' constrs]) [deriving]
   private static boolean itdecl_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "itdecl_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = itdecl_1_0(builder_, level_ + 1);
     result_ = result_ && ctype(builder_, level_ + 1);
@@ -3520,7 +3522,7 @@ public class HaskellParser implements PsiParser {
   // "data" | "newtype"
   private static boolean itdecl_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "itdecl_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, DATA);
     if (!result_) result_ = consumeToken(builder_, NEWTYPE);
@@ -3531,7 +3533,7 @@ public class HaskellParser implements PsiParser {
   // [kindsig] gadtconstrs | ['=' constrs]
   private static boolean itdecl_1_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "itdecl_1_2")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = itdecl_1_2_0(builder_, level_ + 1);
     if (!result_) result_ = itdecl_1_2_1(builder_, level_ + 1);
@@ -3542,7 +3544,7 @@ public class HaskellParser implements PsiParser {
   // [kindsig] gadtconstrs
   private static boolean itdecl_1_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "itdecl_1_2_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = itdecl_1_2_0_0(builder_, level_ + 1);
     result_ = result_ && gadtconstrs(builder_, level_ + 1);
@@ -3567,7 +3569,7 @@ public class HaskellParser implements PsiParser {
   // '=' constrs
   private static boolean itdecl_1_2_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "itdecl_1_2_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, EQUALS);
     result_ = result_ && constrs(builder_, level_ + 1);
@@ -3586,7 +3588,7 @@ public class HaskellParser implements PsiParser {
   // bkind ['->' kind]
   public static boolean kind(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "kind")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<kind>");
     result_ = bkind(builder_, level_ + 1);
     result_ = result_ && kind_1(builder_, level_ + 1);
@@ -3604,7 +3606,7 @@ public class HaskellParser implements PsiParser {
   // '->' kind
   private static boolean kind_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "kind_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, RIGHTARROW);
     result_ = result_ && kind(builder_, level_ + 1);
@@ -3617,8 +3619,8 @@ public class HaskellParser implements PsiParser {
   static boolean kindsig(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "kindsig")) return false;
     if (!nextTokenIs(builder_, DOUBLECOLON)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, DOUBLECOLON);
     pinned_ = result_; // pin = 1
@@ -3639,7 +3641,7 @@ public class HaskellParser implements PsiParser {
   //                | aexp+
   static boolean lexp(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexp")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = lexp_0(builder_, level_ + 1);
     if (!result_) result_ = lexp_1(builder_, level_ + 1);
@@ -3657,7 +3659,7 @@ public class HaskellParser implements PsiParser {
   // "\\case" altslist
   private static boolean lexp_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexp_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, "\\case");
     result_ = result_ && altslist(builder_, level_ + 1);
@@ -3668,8 +3670,8 @@ public class HaskellParser implements PsiParser {
   // '\' (apat | thaexp)+ "->" exp
   private static boolean lexp_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexp_1")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, BACKSLASH);
     result_ = result_ && lexp_1_1(builder_, level_ + 1);
@@ -3683,7 +3685,7 @@ public class HaskellParser implements PsiParser {
   // (apat | thaexp)+
   private static boolean lexp_1_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexp_1_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = lexp_1_1_0(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -3699,7 +3701,7 @@ public class HaskellParser implements PsiParser {
   // apat | thaexp
   private static boolean lexp_1_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexp_1_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = apat(builder_, level_ + 1);
     if (!result_) result_ = thaexp(builder_, level_ + 1);
@@ -3710,8 +3712,8 @@ public class HaskellParser implements PsiParser {
   // "let" decls "in" exp
   private static boolean lexp_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexp_2")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, LET);
     result_ = result_ && decls(builder_, level_ + 1);
@@ -3725,8 +3727,8 @@ public class HaskellParser implements PsiParser {
   // "if" exp [semi] "then" exp [semi] "else" exp
   private static boolean lexp_3(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexp_3")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, IF);
     result_ = result_ && exp(builder_, level_ + 1);
@@ -3758,8 +3760,8 @@ public class HaskellParser implements PsiParser {
   // "case" exp "of" altslist
   private static boolean lexp_4(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexp_4")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, CASE);
     result_ = result_ && exp(builder_, level_ + 1);
@@ -3773,8 +3775,8 @@ public class HaskellParser implements PsiParser {
   // "do" open stmts close
   private static boolean lexp_5(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexp_5")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, DO);
     result_ = result_ && open(builder_, level_ + 1);
@@ -3788,8 +3790,8 @@ public class HaskellParser implements PsiParser {
   // "mdo" open stmts close
   private static boolean lexp_6(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexp_6")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, MDOTOK);
     result_ = result_ && open(builder_, level_ + 1);
@@ -3803,8 +3805,8 @@ public class HaskellParser implements PsiParser {
   // "proc" aexp "->" exp
   private static boolean lexp_7(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexp_7")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, "proc");
     result_ = result_ && aexp(builder_, level_ + 1);
@@ -3818,7 +3820,7 @@ public class HaskellParser implements PsiParser {
   // aexp+
   private static boolean lexp_8(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lexp_8")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = aexp(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -3836,8 +3838,8 @@ public class HaskellParser implements PsiParser {
   static boolean listlike(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "listlike")) return false;
     if (!nextTokenIs(builder_, LBRACKET)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, LBRACKET);
     pinned_ = result_; // pin = 1
@@ -3861,7 +3863,7 @@ public class HaskellParser implements PsiParser {
   //                     | (',' exp)+
   static boolean listlike1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "listlike1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = listlike1_0(builder_, level_ + 1);
     if (!result_) result_ = listlike1_1(builder_, level_ + 1);
@@ -3873,7 +3875,7 @@ public class HaskellParser implements PsiParser {
   // ('|' (squal ',')* squal)+
   private static boolean listlike1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "listlike1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = listlike1_0_0(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -3889,7 +3891,7 @@ public class HaskellParser implements PsiParser {
   // '|' (squal ',')* squal
   private static boolean listlike1_0_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "listlike1_0_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, PIPE);
     result_ = result_ && listlike1_0_0_1(builder_, level_ + 1);
@@ -3913,7 +3915,7 @@ public class HaskellParser implements PsiParser {
   // squal ','
   private static boolean listlike1_0_0_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "listlike1_0_0_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = squal(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, COMMA);
@@ -3924,7 +3926,7 @@ public class HaskellParser implements PsiParser {
   // [',' exp] '..' [exp]
   private static boolean listlike1_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "listlike1_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = listlike1_1_0(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, DOUBLEPERIOD);
@@ -3943,7 +3945,7 @@ public class HaskellParser implements PsiParser {
   // ',' exp
   private static boolean listlike1_1_0_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "listlike1_1_0_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, COMMA);
     result_ = result_ && exp(builder_, level_ + 1);
@@ -3961,7 +3963,7 @@ public class HaskellParser implements PsiParser {
   // (',' exp)+
   private static boolean listlike1_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "listlike1_2")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = listlike1_2_0(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -3977,7 +3979,7 @@ public class HaskellParser implements PsiParser {
   // ',' exp
   private static boolean listlike1_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "listlike1_2_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, COMMA);
     result_ = result_ && exp(builder_, level_ + 1);
@@ -3990,7 +3992,7 @@ public class HaskellParser implements PsiParser {
   //                   | (chartoken | pstringtoken) ['#']
   static boolean literal(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "literal")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = literal_0(builder_, level_ + 1);
     if (!result_) result_ = literal_1(builder_, level_ + 1);
@@ -4001,7 +4003,7 @@ public class HaskellParser implements PsiParser {
   // (floattoken | integertoken) ['#'|'##']
   private static boolean literal_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "literal_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = literal_0_0(builder_, level_ + 1);
     result_ = result_ && literal_0_1(builder_, level_ + 1);
@@ -4012,7 +4014,7 @@ public class HaskellParser implements PsiParser {
   // floattoken | integertoken
   private static boolean literal_0_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "literal_0_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, FLOATTOKEN);
     if (!result_) result_ = consumeToken(builder_, INTEGERTOKEN);
@@ -4030,7 +4032,7 @@ public class HaskellParser implements PsiParser {
   // '#'|'##'
   private static boolean literal_0_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "literal_0_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, HASH);
     if (!result_) result_ = consumeToken(builder_, DOUBLEHASH);
@@ -4041,7 +4043,7 @@ public class HaskellParser implements PsiParser {
   // (chartoken | pstringtoken) ['#']
   private static boolean literal_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "literal_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = literal_1_0(builder_, level_ + 1);
     result_ = result_ && literal_1_1(builder_, level_ + 1);
@@ -4052,7 +4054,7 @@ public class HaskellParser implements PsiParser {
   // chartoken | pstringtoken
   private static boolean literal_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "literal_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, CHARTOKEN);
     if (!result_) result_ = pstringtoken(builder_, level_ + 1);
@@ -4073,7 +4075,7 @@ public class HaskellParser implements PsiParser {
   //                | apat
   static boolean lpat(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lpat")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = lpat_0(builder_, level_ + 1);
     if (!result_) result_ = lpat_1(builder_, level_ + 1);
@@ -4085,7 +4087,7 @@ public class HaskellParser implements PsiParser {
   // '-' (integertoken|floattoken)
   private static boolean lpat_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lpat_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, MINUS);
     result_ = result_ && lpat_0_1(builder_, level_ + 1);
@@ -4096,7 +4098,7 @@ public class HaskellParser implements PsiParser {
   // integertoken|floattoken
   private static boolean lpat_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lpat_0_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, INTEGERTOKEN);
     if (!result_) result_ = consumeToken(builder_, FLOATTOKEN);
@@ -4107,7 +4109,7 @@ public class HaskellParser implements PsiParser {
   // gcon apat+
   private static boolean lpat_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lpat_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = gcon(builder_, level_ + 1);
     result_ = result_ && lpat_1_1(builder_, level_ + 1);
@@ -4118,7 +4120,7 @@ public class HaskellParser implements PsiParser {
   // apat+
   private static boolean lpat_1_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "lpat_1_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = apat(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -4135,7 +4137,7 @@ public class HaskellParser implements PsiParser {
   // ppragma* [moduledecl] body
   static boolean module(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "module")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = module_0(builder_, level_ + 1);
     result_ = result_ && module_1(builder_, level_ + 1);
@@ -4168,7 +4170,7 @@ public class HaskellParser implements PsiParser {
   public static boolean modulePrefix(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "modulePrefix")) return false;
     if (!nextTokenIs(builder_, CONIDREGEXP)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = modulePrefix_0(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -4184,7 +4186,7 @@ public class HaskellParser implements PsiParser {
   // conid '.'
   private static boolean modulePrefix_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "modulePrefix_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = conid(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, PERIOD);
@@ -4197,8 +4199,8 @@ public class HaskellParser implements PsiParser {
   public static boolean moduledecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "moduledecl")) return false;
     if (!nextTokenIs(builder_, MODULETOKEN)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, MODULETOKEN);
     pinned_ = result_; // pin = 1
@@ -4229,8 +4231,8 @@ public class HaskellParser implements PsiParser {
   public static boolean newconstr(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "newconstr")) return false;
     if (!nextTokenIs(builder_, "<newconstr>", LPAREN, CONIDREGEXP)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<newconstr>");
     result_ = con(builder_, level_ + 1);
     pinned_ = result_; // pin = 1
@@ -4242,7 +4244,7 @@ public class HaskellParser implements PsiParser {
   // atype | '{' var '::' typee '}'
   private static boolean newconstr_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "newconstr_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = atype(builder_, level_ + 1);
     if (!result_) result_ = newconstr_1_1(builder_, level_ + 1);
@@ -4253,8 +4255,8 @@ public class HaskellParser implements PsiParser {
   // '{' var '::' typee '}'
   private static boolean newconstr_1_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "newconstr_1_1")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, LBRACE);
     pinned_ = result_; // pin = 1
@@ -4271,8 +4273,8 @@ public class HaskellParser implements PsiParser {
   public static boolean newtypedecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "newtypedecl")) return false;
     if (!nextTokenIs(builder_, NEWTYPE)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, NEWTYPE);
     pinned_ = result_; // pin = 1
@@ -4295,7 +4297,7 @@ public class HaskellParser implements PsiParser {
   // context "=>"
   private static boolean newtypedecl_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "newtypedecl_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = context(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, DOUBLEARROW);
@@ -4319,7 +4321,7 @@ public class HaskellParser implements PsiParser {
   //                    | oqtycon
   static boolean ntgtycon(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "ntgtycon")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = ntgtycon_0(builder_, level_ + 1);
     if (!result_) result_ = ntgtycon_1(builder_, level_ + 1);
@@ -4332,7 +4334,7 @@ public class HaskellParser implements PsiParser {
   // '(#' commas '#)'
   private static boolean ntgtycon_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "ntgtycon_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LUNBOXPAREN);
     result_ = result_ && commas(builder_, level_ + 1);
@@ -4344,7 +4346,7 @@ public class HaskellParser implements PsiParser {
   // '(' ('->' | commas) ')'
   private static boolean ntgtycon_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "ntgtycon_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LPAREN);
     result_ = result_ && ntgtycon_1_1(builder_, level_ + 1);
@@ -4356,7 +4358,7 @@ public class HaskellParser implements PsiParser {
   // '->' | commas
   private static boolean ntgtycon_1_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "ntgtycon_1_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, RIGHTARROW);
     if (!result_) result_ = commas(builder_, level_ + 1);
@@ -4367,7 +4369,7 @@ public class HaskellParser implements PsiParser {
   // '[' ']'
   private static boolean ntgtycon_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "ntgtycon_2")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LBRACKET);
     result_ = result_ && consumeToken(builder_, RBRACKET);
@@ -4379,7 +4381,7 @@ public class HaskellParser implements PsiParser {
   // varop | conop
   public static boolean op(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "op")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<op>");
     result_ = varop(builder_, level_ + 1);
     if (!result_) result_ = conop(builder_, level_ + 1);
@@ -4393,7 +4395,7 @@ public class HaskellParser implements PsiParser {
   static boolean open(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "open")) return false;
     if (!nextTokenIs(builder_, "", LBRACE, WHITESPACELBRACETOK)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LBRACE);
     if (!result_) result_ = consumeToken(builder_, WHITESPACELBRACETOK);
@@ -4407,7 +4409,7 @@ public class HaskellParser implements PsiParser {
   public static boolean oqtycon(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "oqtycon")) return false;
     if (!nextTokenIs(builder_, "<oqtycon>", LPAREN, CONIDREGEXP)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<oqtycon>");
     result_ = oqtycon_0(builder_, level_ + 1);
     if (!result_) result_ = qtycon(builder_, level_ + 1);
@@ -4418,7 +4420,7 @@ public class HaskellParser implements PsiParser {
   // '(' ('~' | qtyconsym) ')'
   private static boolean oqtycon_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "oqtycon_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LPAREN);
     result_ = result_ && oqtycon_0_1(builder_, level_ + 1);
@@ -4430,7 +4432,7 @@ public class HaskellParser implements PsiParser {
   // '~' | qtyconsym
   private static boolean oqtycon_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "oqtycon_0_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, TILDE);
     if (!result_) result_ = qtyconsym(builder_, level_ + 1);
@@ -4443,8 +4445,8 @@ public class HaskellParser implements PsiParser {
   static boolean parenlike(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parenlike")) return false;
     if (!nextTokenIs(builder_, LPAREN)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, LPAREN);
     pinned_ = result_; // pin = 1
@@ -4458,7 +4460,7 @@ public class HaskellParser implements PsiParser {
   //                      | parenlike2 ')'
   static boolean parenlike1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parenlike1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = parenlike1_0(builder_, level_ + 1);
     if (!result_) result_ = parenlike1_1(builder_, level_ + 1);
@@ -4469,7 +4471,7 @@ public class HaskellParser implements PsiParser {
   // exp [parenlikeoptseq] ')'
   private static boolean parenlike1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parenlike1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = exp(builder_, level_ + 1);
     result_ = result_ && parenlike1_0_1(builder_, level_ + 1);
@@ -4488,7 +4490,7 @@ public class HaskellParser implements PsiParser {
   // parenlike2 ')'
   private static boolean parenlike1_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parenlike1_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = parenlike2(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, RPAREN);
@@ -4501,7 +4503,7 @@ public class HaskellParser implements PsiParser {
   //                      | qop infixexp
   static boolean parenlike2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parenlike2")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = parenlike2_0(builder_, level_ + 1);
     if (!result_) result_ = parenlike2_1(builder_, level_ + 1);
@@ -4512,7 +4514,7 @@ public class HaskellParser implements PsiParser {
   // infixexp qop
   private static boolean parenlike2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parenlike2_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = infixexp(builder_, level_ + 1);
     result_ = result_ && qop(builder_, level_ + 1);
@@ -4523,7 +4525,7 @@ public class HaskellParser implements PsiParser {
   // qop infixexp
   private static boolean parenlike2_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parenlike2_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = qop(builder_, level_ + 1);
     result_ = result_ && infixexp(builder_, level_ + 1);
@@ -4536,8 +4538,8 @@ public class HaskellParser implements PsiParser {
   static boolean parenlikeoptseq(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parenlikeoptseq")) return false;
     if (!nextTokenIs(builder_, COMMA)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, COMMA);
     pinned_ = result_; // pin = 1
@@ -4562,7 +4564,7 @@ public class HaskellParser implements PsiParser {
   // exp ','
   private static boolean parenlikeoptseq_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parenlikeoptseq_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = exp(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, COMMA);
@@ -4574,7 +4576,7 @@ public class HaskellParser implements PsiParser {
   // lpat (qconop pat | ["::" ctype])
   public static boolean pat(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "pat")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<pat>");
     result_ = lpat(builder_, level_ + 1);
     result_ = result_ && pat_1(builder_, level_ + 1);
@@ -4585,7 +4587,7 @@ public class HaskellParser implements PsiParser {
   // qconop pat | ["::" ctype]
   private static boolean pat_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "pat_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = pat_1_0(builder_, level_ + 1);
     if (!result_) result_ = pat_1_1(builder_, level_ + 1);
@@ -4596,7 +4598,7 @@ public class HaskellParser implements PsiParser {
   // qconop pat
   private static boolean pat_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "pat_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = qconop(builder_, level_ + 1);
     result_ = result_ && pat(builder_, level_ + 1);
@@ -4614,7 +4616,7 @@ public class HaskellParser implements PsiParser {
   // "::" ctype
   private static boolean pat_1_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "pat_1_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, DOUBLECOLON);
     result_ = result_ && ctype(builder_, level_ + 1);
@@ -4628,7 +4630,7 @@ public class HaskellParser implements PsiParser {
   //                 | '[' kind [',' comma_kinds1] ']'
   static boolean pkind(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "pkind")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = qtycon(builder_, level_ + 1);
     if (!result_) result_ = pkind_1(builder_, level_ + 1);
@@ -4640,7 +4642,7 @@ public class HaskellParser implements PsiParser {
   // '(' [kind ',' comma_kinds1] ')'
   private static boolean pkind_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "pkind_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LPAREN);
     result_ = result_ && pkind_1_1(builder_, level_ + 1);
@@ -4659,7 +4661,7 @@ public class HaskellParser implements PsiParser {
   // kind ',' comma_kinds1
   private static boolean pkind_1_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "pkind_1_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = kind(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, COMMA);
@@ -4671,7 +4673,7 @@ public class HaskellParser implements PsiParser {
   // '[' kind [',' comma_kinds1] ']'
   private static boolean pkind_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "pkind_2")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LBRACKET);
     result_ = result_ && kind(builder_, level_ + 1);
@@ -4691,7 +4693,7 @@ public class HaskellParser implements PsiParser {
   // ',' comma_kinds1
   private static boolean pkind_2_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "pkind_2_2_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, COMMA);
     result_ = result_ && comma_kinds1(builder_, level_ + 1);
@@ -4704,7 +4706,7 @@ public class HaskellParser implements PsiParser {
   public static boolean ppragma(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "ppragma")) return false;
     if (!nextTokenIs(builder_, OPENPRAGMA)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, OPENPRAGMA);
     result_ = result_ && ppragma_1(builder_, level_ + 1);
@@ -4716,7 +4718,7 @@ public class HaskellParser implements PsiParser {
   // PRAGMA+
   private static boolean ppragma_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "ppragma_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, PRAGMA);
     int pos_ = current_position_(builder_);
@@ -4734,7 +4736,7 @@ public class HaskellParser implements PsiParser {
   public static boolean pstringtoken(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "pstringtoken")) return false;
     if (!nextTokenIs(builder_, DOUBLEQUOTE)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, DOUBLEQUOTE);
     result_ = result_ && pstringtoken_1(builder_, level_ + 1);
@@ -4760,7 +4762,7 @@ public class HaskellParser implements PsiParser {
   public static boolean qcon(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qcon")) return false;
     if (!nextTokenIs(builder_, "<qcon>", LPAREN, CONIDREGEXP)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<qcon>");
     result_ = qconid(builder_, level_ + 1);
     if (!result_) result_ = qcon_1(builder_, level_ + 1);
@@ -4771,7 +4773,7 @@ public class HaskellParser implements PsiParser {
   // '(' gconsym ')'
   private static boolean qcon_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qcon_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LPAREN);
     result_ = result_ && gconsym(builder_, level_ + 1);
@@ -4785,7 +4787,7 @@ public class HaskellParser implements PsiParser {
   public static boolean qconid(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qconid")) return false;
     if (!nextTokenIs(builder_, CONIDREGEXP)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = qconid_0(builder_, level_ + 1);
     result_ = result_ && conid(builder_, level_ + 1);
@@ -4804,7 +4806,7 @@ public class HaskellParser implements PsiParser {
   // gconsym | '`' qconid '`'
   public static boolean qconop(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qconop")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<qconop>");
     result_ = gconsym(builder_, level_ + 1);
     if (!result_) result_ = qconop_1(builder_, level_ + 1);
@@ -4815,7 +4817,7 @@ public class HaskellParser implements PsiParser {
   // '`' qconid '`'
   private static boolean qconop_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qconop_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, BACKTICK);
     result_ = result_ && qconid(builder_, level_ + 1);
@@ -4829,7 +4831,7 @@ public class HaskellParser implements PsiParser {
   public static boolean qconsym(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qconsym")) return false;
     if (!nextTokenIs(builder_, "<qconsym>", CONSYMTOK, CONIDREGEXP)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<qconsym>");
     result_ = qconsym_0(builder_, level_ + 1);
     result_ = result_ && consym(builder_, level_ + 1);
@@ -4848,7 +4850,7 @@ public class HaskellParser implements PsiParser {
   // qvarop | qconop
   public static boolean qop(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qop")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<qop>");
     result_ = qvarop(builder_, level_ + 1);
     if (!result_) result_ = qconop(builder_, level_ + 1);
@@ -4861,7 +4863,7 @@ public class HaskellParser implements PsiParser {
   public static boolean qtycls(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qtycls")) return false;
     if (!nextTokenIs(builder_, CONIDREGEXP)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = qtycls_0(builder_, level_ + 1);
     result_ = result_ && tycls(builder_, level_ + 1);
@@ -4881,7 +4883,7 @@ public class HaskellParser implements PsiParser {
   public static boolean qtycon(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qtycon")) return false;
     if (!nextTokenIs(builder_, CONIDREGEXP)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = qtycon_0(builder_, level_ + 1);
     result_ = result_ && tycon(builder_, level_ + 1);
@@ -4900,7 +4902,7 @@ public class HaskellParser implements PsiParser {
   // qtyconsym | '`' qtycon '`'
   public static boolean qtyconop(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qtyconop")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<qtyconop>");
     result_ = qtyconsym(builder_, level_ + 1);
     if (!result_) result_ = qtyconop_1(builder_, level_ + 1);
@@ -4911,7 +4913,7 @@ public class HaskellParser implements PsiParser {
   // '`' qtycon '`'
   private static boolean qtyconop_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qtyconop_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, BACKTICK);
     result_ = result_ && qtycon(builder_, level_ + 1);
@@ -4924,7 +4926,7 @@ public class HaskellParser implements PsiParser {
   // qconsym | qvarsym | tyconsym
   public static boolean qtyconsym(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qtyconsym")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<qtyconsym>");
     result_ = qconsym(builder_, level_ + 1);
     if (!result_) result_ = qvarsym(builder_, level_ + 1);
@@ -4939,7 +4941,7 @@ public class HaskellParser implements PsiParser {
   //               | exp
   static boolean qual(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qual")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = qual_0(builder_, level_ + 1);
     if (!result_) result_ = qual_1(builder_, level_ + 1);
@@ -4951,7 +4953,7 @@ public class HaskellParser implements PsiParser {
   // pat '<-' exp
   private static boolean qual_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qual_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = pat(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, LEFTARROW);
@@ -4963,7 +4965,7 @@ public class HaskellParser implements PsiParser {
   // "let" decls
   private static boolean qual_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qual_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LET);
     result_ = result_ && decls(builder_, level_ + 1);
@@ -4975,7 +4977,7 @@ public class HaskellParser implements PsiParser {
   // qvarid | '(' qvarsym ')'
   public static boolean qvar(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qvar")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<qvar>");
     result_ = qvarid(builder_, level_ + 1);
     if (!result_) result_ = qvar_1(builder_, level_ + 1);
@@ -4986,7 +4988,7 @@ public class HaskellParser implements PsiParser {
   // '(' qvarsym ')'
   private static boolean qvar_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qvar_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LPAREN);
     result_ = result_ && qvarsym(builder_, level_ + 1);
@@ -4999,7 +5001,7 @@ public class HaskellParser implements PsiParser {
   // [modulePrefix] varid
   public static boolean qvarid(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qvarid")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<qvarid>");
     result_ = qvarid_0(builder_, level_ + 1);
     result_ = result_ && varid(builder_, level_ + 1);
@@ -5018,7 +5020,7 @@ public class HaskellParser implements PsiParser {
   // qvarsym | '`' qvarid '`'
   public static boolean qvarop(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qvarop")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<qvarop>");
     result_ = qvarsym(builder_, level_ + 1);
     if (!result_) result_ = qvarop_1(builder_, level_ + 1);
@@ -5029,7 +5031,7 @@ public class HaskellParser implements PsiParser {
   // '`' qvarid '`'
   private static boolean qvarop_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qvarop_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, BACKTICK);
     result_ = result_ && qvarid(builder_, level_ + 1);
@@ -5042,7 +5044,7 @@ public class HaskellParser implements PsiParser {
   // <<sequence qvar>>
   public static boolean qvars(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qvars")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<qvars>");
     result_ = sequence(builder_, level_ + 1, qvar_parser_);
     exit_section_(builder_, level_, marker_, QVARS, result_, false, null);
@@ -5053,7 +5055,7 @@ public class HaskellParser implements PsiParser {
   // [modulePrefix] varsym
   public static boolean qvarsym(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qvarsym")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<qvarsym>");
     result_ = qvarsym_0(builder_, level_ + 1);
     result_ = result_ && varsym(builder_, level_ + 1);
@@ -5075,7 +5077,7 @@ public class HaskellParser implements PsiParser {
   //                         | '(' recordlikeparen ')'
   static boolean recordlikelhs(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "recordlikelhs")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = qvar(builder_, level_ + 1);
     if (!result_) result_ = qcon(builder_, level_ + 1);
@@ -5088,7 +5090,7 @@ public class HaskellParser implements PsiParser {
   // '(' recordlikeparen ')'
   private static boolean recordlikelhs_3(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "recordlikelhs_3")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LPAREN);
     result_ = result_ && recordlikeparen(builder_, level_ + 1);
@@ -5103,7 +5105,7 @@ public class HaskellParser implements PsiParser {
   //                           | qop infixexp
   static boolean recordlikeparen(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "recordlikeparen")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = exp(builder_, level_ + 1);
     if (!result_) result_ = recordlikeparen_1(builder_, level_ + 1);
@@ -5115,7 +5117,7 @@ public class HaskellParser implements PsiParser {
   // infixexp qop
   private static boolean recordlikeparen_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "recordlikeparen_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = infixexp(builder_, level_ + 1);
     result_ = result_ && qop(builder_, level_ + 1);
@@ -5126,7 +5128,7 @@ public class HaskellParser implements PsiParser {
   // qop infixexp
   private static boolean recordlikeparen_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "recordlikeparen_2")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = qop(builder_, level_ + 1);
     result_ = result_ && infixexp(builder_, level_ + 1);
@@ -5139,8 +5141,8 @@ public class HaskellParser implements PsiParser {
   public static boolean rhs(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "rhs")) return false;
     if (!nextTokenIs(builder_, "<rhs>", EQUALS, PIPE)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<rhs>");
     result_ = rhs_0(builder_, level_ + 1);
     pinned_ = result_; // pin = 1
@@ -5152,7 +5154,7 @@ public class HaskellParser implements PsiParser {
   // '=' exp | gdrhs+
   private static boolean rhs_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "rhs_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = rhs_0_0(builder_, level_ + 1);
     if (!result_) result_ = rhs_0_1(builder_, level_ + 1);
@@ -5163,8 +5165,8 @@ public class HaskellParser implements PsiParser {
   // '=' exp
   private static boolean rhs_0_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "rhs_0_0")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, EQUALS);
     pinned_ = result_; // pin = 1
@@ -5176,7 +5178,7 @@ public class HaskellParser implements PsiParser {
   // gdrhs+
   private static boolean rhs_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "rhs_0_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = gdrhs(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -5200,7 +5202,7 @@ public class HaskellParser implements PsiParser {
   // "unsafe" | "safe" | "interruptible"
   static boolean safety(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "safety")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, "unsafe");
     if (!result_) result_ = consumeToken(builder_, "safe");
@@ -5215,7 +5217,7 @@ public class HaskellParser implements PsiParser {
   static boolean semi(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "semi")) return false;
     if (!nextTokenIs(builder_, "", SEMICOLON, WHITESPACESEMITOK)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, SEMICOLON);
     if (!result_) result_ = consumeToken(builder_, WHITESPACESEMITOK);
@@ -5227,8 +5229,8 @@ public class HaskellParser implements PsiParser {
   // <<p>> (',' <<p>>)*
   static boolean sequence(PsiBuilder builder_, int level_, final Parser p) {
     if (!recursion_guard_(builder_, level_, "sequence")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = p.parse(builder_, level_);
     pinned_ = result_; // pin = 1
@@ -5252,8 +5254,8 @@ public class HaskellParser implements PsiParser {
   // ',' <<p>>
   private static boolean sequence_1_0(PsiBuilder builder_, int level_, final Parser p) {
     if (!recursion_guard_(builder_, level_, "sequence_1_0")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, COMMA);
     pinned_ = result_; // pin = 1
@@ -5267,7 +5269,7 @@ public class HaskellParser implements PsiParser {
   static boolean simpletype(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "simpletype")) return false;
     if (!nextTokenIs(builder_, CONIDREGEXP)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = tycon(builder_, level_ + 1);
     result_ = result_ && simpletype_1(builder_, level_ + 1);
@@ -5292,7 +5294,7 @@ public class HaskellParser implements PsiParser {
   //                 | qual
   static boolean squal(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "squal")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = transformqual(builder_, level_ + 1);
     if (!result_) result_ = qual(builder_, level_ + 1);
@@ -5305,7 +5307,7 @@ public class HaskellParser implements PsiParser {
   //                | [pat '<-'] exp semi
   static boolean stmt(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "stmt")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = stmt_0(builder_, level_ + 1);
     if (!result_) result_ = stmt_1(builder_, level_ + 1);
@@ -5316,7 +5318,7 @@ public class HaskellParser implements PsiParser {
   // ["rec"] "let" decls semi
   private static boolean stmt_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "stmt_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = stmt_0_0(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, LET);
@@ -5336,7 +5338,7 @@ public class HaskellParser implements PsiParser {
   // [pat '<-'] exp semi
   private static boolean stmt_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "stmt_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = stmt_1_0(builder_, level_ + 1);
     result_ = result_ && exp(builder_, level_ + 1);
@@ -5355,7 +5357,7 @@ public class HaskellParser implements PsiParser {
   // pat '<-'
   private static boolean stmt_1_0_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "stmt_1_0_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = pat(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, LEFTARROW);
@@ -5367,7 +5369,7 @@ public class HaskellParser implements PsiParser {
   // stmt* exp
   public static boolean stmts(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "stmts")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<stmts>");
     result_ = stmts_0(builder_, level_ + 1);
     result_ = result_ && exp(builder_, level_ + 1);
@@ -5392,7 +5394,7 @@ public class HaskellParser implements PsiParser {
   //          | '\' | '^' | '-' | '~' | ':'
   static boolean symbol1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "symbol1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, EXCLAMATION);
     if (!result_) result_ = consumeToken(builder_, DOLLAR);
@@ -5423,7 +5425,7 @@ public class HaskellParser implements PsiParser {
   static boolean thaexp(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "thaexp")) return false;
     if (!nextTokenIs(builder_, "", LTHOPEN, QQOPEN)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = thaexp_0(builder_, level_ + 1);
     if (!result_) result_ = thaexp_1(builder_, level_ + 1);
@@ -5434,7 +5436,7 @@ public class HaskellParser implements PsiParser {
   // '[|' (exp [semi])+ '|]'
   private static boolean thaexp_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "thaexp_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LTHOPEN);
     result_ = result_ && thaexp_0_1(builder_, level_ + 1);
@@ -5446,7 +5448,7 @@ public class HaskellParser implements PsiParser {
   // (exp [semi])+
   private static boolean thaexp_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "thaexp_0_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = thaexp_0_1_0(builder_, level_ + 1);
     int pos_ = current_position_(builder_);
@@ -5462,7 +5464,7 @@ public class HaskellParser implements PsiParser {
   // exp [semi]
   private static boolean thaexp_0_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "thaexp_0_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = exp(builder_, level_ + 1);
     result_ = result_ && thaexp_0_1_0_1(builder_, level_ + 1);
@@ -5480,7 +5482,7 @@ public class HaskellParser implements PsiParser {
   // qqopen qvarid '|' qqtext+ '|]'
   private static boolean thaexp_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "thaexp_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, QQOPEN);
     result_ = result_ && qvarid(builder_, level_ + 1);
@@ -5494,7 +5496,7 @@ public class HaskellParser implements PsiParser {
   // qqtext+
   private static boolean thaexp_1_3(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "thaexp_1_3")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, QQTEXT);
     int pos_ = current_position_(builder_);
@@ -5511,7 +5513,7 @@ public class HaskellParser implements PsiParser {
   // topdecl1 ppragma*
   static boolean topdecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "topdecl")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = topdecl1(builder_, level_ + 1);
     result_ = result_ && topdecl_1(builder_, level_ + 1);
@@ -5544,7 +5546,7 @@ public class HaskellParser implements PsiParser {
   //                   | infixexp
   static boolean topdecl1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "topdecl1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = typedecl(builder_, level_ + 1);
     if (!result_) result_ = datadecl(builder_, level_ + 1);
@@ -5564,8 +5566,8 @@ public class HaskellParser implements PsiParser {
   // topdecl [semi topdecls]
   static boolean topdecls(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "topdecls")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = topdecl(builder_, level_ + 1);
     pinned_ = result_; // pin = 1
@@ -5584,8 +5586,8 @@ public class HaskellParser implements PsiParser {
   // semi topdecls
   private static boolean topdecls_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "topdecls_1_0")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = semi(builder_, level_ + 1);
     pinned_ = result_; // pin = 1
@@ -5599,7 +5601,7 @@ public class HaskellParser implements PsiParser {
   static boolean transformqual(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "transformqual")) return false;
     if (!nextTokenIs(builder_, THEN)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, THEN);
     result_ = result_ && transformqual_1(builder_, level_ + 1);
@@ -5610,7 +5612,7 @@ public class HaskellParser implements PsiParser {
   // 'group' ['by' exp] 'using' exp | exp ['by' exp]
   private static boolean transformqual_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "transformqual_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = transformqual_1_0(builder_, level_ + 1);
     if (!result_) result_ = transformqual_1_1(builder_, level_ + 1);
@@ -5621,7 +5623,7 @@ public class HaskellParser implements PsiParser {
   // 'group' ['by' exp] 'using' exp
   private static boolean transformqual_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "transformqual_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, "group");
     result_ = result_ && transformqual_1_0_1(builder_, level_ + 1);
@@ -5641,7 +5643,7 @@ public class HaskellParser implements PsiParser {
   // 'by' exp
   private static boolean transformqual_1_0_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "transformqual_1_0_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, "by");
     result_ = result_ && exp(builder_, level_ + 1);
@@ -5652,7 +5654,7 @@ public class HaskellParser implements PsiParser {
   // exp ['by' exp]
   private static boolean transformqual_1_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "transformqual_1_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = exp(builder_, level_ + 1);
     result_ = result_ && transformqual_1_1_1(builder_, level_ + 1);
@@ -5670,7 +5672,7 @@ public class HaskellParser implements PsiParser {
   // 'by' exp
   private static boolean transformqual_1_1_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "transformqual_1_1_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, "by");
     result_ = result_ && exp(builder_, level_ + 1);
@@ -5683,7 +5685,7 @@ public class HaskellParser implements PsiParser {
   //           | tyvar
   public static boolean tv_bndr(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "tv_bndr")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<tv bndr>");
     result_ = tv_bndr_0(builder_, level_ + 1);
     if (!result_) result_ = tyvar(builder_, level_ + 1);
@@ -5694,7 +5696,7 @@ public class HaskellParser implements PsiParser {
   // '(' tyvar kindsig ')'
   private static boolean tv_bndr_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "tv_bndr_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LPAREN);
     result_ = result_ && tyvar(builder_, level_ + 1);
@@ -5709,7 +5711,7 @@ public class HaskellParser implements PsiParser {
   public static boolean tycls(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "tycls")) return false;
     if (!nextTokenIs(builder_, CONIDREGEXP)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = conid(builder_, level_ + 1);
     exit_section_(builder_, marker_, TYCLS, result_);
@@ -5721,7 +5723,7 @@ public class HaskellParser implements PsiParser {
   public static boolean tycon(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "tycon")) return false;
     if (!nextTokenIs(builder_, CONIDREGEXP)) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = conid(builder_, level_ + 1);
     exit_section_(builder_, marker_, TYCON, result_);
@@ -5732,7 +5734,7 @@ public class HaskellParser implements PsiParser {
   // consym | varsym | '*' | '-'
   public static boolean tyconsym(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "tyconsym")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<tyconsym>");
     result_ = consym(builder_, level_ + 1);
     if (!result_) result_ = varsym(builder_, level_ + 1);
@@ -5747,8 +5749,8 @@ public class HaskellParser implements PsiParser {
   public static boolean typedecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "typedecl")) return false;
     if (!nextTokenIs(builder_, TYPE)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, TYPE);
     pinned_ = result_; // pin = 1
@@ -5769,7 +5771,7 @@ public class HaskellParser implements PsiParser {
   // "family" | "instance"
   private static boolean typedecl_1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "typedecl_1_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, FAMILYTOKEN);
     if (!result_) result_ = consumeToken(builder_, INSTANCE);
@@ -5787,7 +5789,7 @@ public class HaskellParser implements PsiParser {
   // '=' typee
   private static boolean typedecl_3_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "typedecl_3_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, EQUALS);
     result_ = result_ && typee(builder_, level_ + 1);
@@ -5799,8 +5801,8 @@ public class HaskellParser implements PsiParser {
   // btype typeeaux
   public static boolean typee(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "typee")) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<typee>");
     result_ = btype(builder_, level_ + 1);
     pinned_ = result_; // pin = 1
@@ -5814,7 +5816,7 @@ public class HaskellParser implements PsiParser {
   //                    | [typeeopt]
   static boolean typeeaux(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "typeeaux")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = typeeaux_0(builder_, level_ + 1);
     if (!result_) result_ = typeeaux_1(builder_, level_ + 1);
@@ -5825,7 +5827,7 @@ public class HaskellParser implements PsiParser {
   // (singlequote (qconop | varop) | qtyconop) typee
   private static boolean typeeaux_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "typeeaux_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = typeeaux_0_0(builder_, level_ + 1);
     result_ = result_ && typee(builder_, level_ + 1);
@@ -5836,7 +5838,7 @@ public class HaskellParser implements PsiParser {
   // singlequote (qconop | varop) | qtyconop
   private static boolean typeeaux_0_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "typeeaux_0_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = typeeaux_0_0_0(builder_, level_ + 1);
     if (!result_) result_ = qtyconop(builder_, level_ + 1);
@@ -5847,7 +5849,7 @@ public class HaskellParser implements PsiParser {
   // singlequote (qconop | varop)
   private static boolean typeeaux_0_0_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "typeeaux_0_0_0")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, SINGLEQUOTE);
     result_ = result_ && typeeaux_0_0_0_1(builder_, level_ + 1);
@@ -5858,7 +5860,7 @@ public class HaskellParser implements PsiParser {
   // qconop | varop
   private static boolean typeeaux_0_0_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "typeeaux_0_0_0_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = qconop(builder_, level_ + 1);
     if (!result_) result_ = varop(builder_, level_ + 1);
@@ -5878,8 +5880,8 @@ public class HaskellParser implements PsiParser {
   static boolean typeeopt(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "typeeopt")) return false;
     if (!nextTokenIs(builder_, RIGHTARROW)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, RIGHTARROW);
     pinned_ = result_; // pin = 1
@@ -5892,7 +5894,7 @@ public class HaskellParser implements PsiParser {
   // varid
   public static boolean tyvar(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "tyvar")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<tyvar>");
     result_ = varid(builder_, level_ + 1);
     exit_section_(builder_, level_, marker_, TYVAR, result_, false, null);
@@ -5903,7 +5905,7 @@ public class HaskellParser implements PsiParser {
   // varid | '(' varsym ')'
   static boolean var(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "var")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = varid(builder_, level_ + 1);
     if (!result_) result_ = var_1(builder_, level_ + 1);
@@ -5914,7 +5916,7 @@ public class HaskellParser implements PsiParser {
   // '(' varsym ')'
   private static boolean var_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "var_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LPAREN);
     result_ = result_ && varsym(builder_, level_ + 1);
@@ -5927,7 +5929,7 @@ public class HaskellParser implements PsiParser {
   // varidRegexp | "as" | "rec"
   public static boolean varid(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varid")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<varid>");
     result_ = consumeToken(builder_, VARIDREGEXP);
     if (!result_) result_ = consumeToken(builder_, AS);
@@ -5940,7 +5942,7 @@ public class HaskellParser implements PsiParser {
   // varsym | '`' varid '`'
   public static boolean varop(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varop")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<varop>");
     result_ = varsym(builder_, level_ + 1);
     if (!result_) result_ = varop_1(builder_, level_ + 1);
@@ -5951,7 +5953,7 @@ public class HaskellParser implements PsiParser {
   // '`' varid '`'
   private static boolean varop_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varop_1")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, BACKTICK);
     result_ = result_ && varid(builder_, level_ + 1);
@@ -5964,7 +5966,7 @@ public class HaskellParser implements PsiParser {
   // <<sequence var>>
   public static boolean vars(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "vars")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<vars>");
     result_ = sequence(builder_, level_ + 1, var_parser_);
     exit_section_(builder_, level_, marker_, VARS, result_, false, null);
@@ -5975,7 +5977,7 @@ public class HaskellParser implements PsiParser {
   // VARSYMTOK | symbol1
   public static boolean varsym(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "varsym")) return false;
-    boolean result_;
+    boolean result_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<varsym>");
     result_ = consumeToken(builder_, VARSYMTOK);
     if (!result_) result_ = symbol1(builder_, level_ + 1);
@@ -5988,8 +5990,8 @@ public class HaskellParser implements PsiParser {
   static boolean wheredecls(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "wheredecls")) return false;
     if (!nextTokenIs(builder_, WHERE)) return false;
-    boolean result_;
-    boolean pinned_;
+    boolean result_ = false;
+    boolean pinned_ = false;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
     result_ = consumeToken(builder_, WHERE);
     pinned_ = result_; // pin = 1
