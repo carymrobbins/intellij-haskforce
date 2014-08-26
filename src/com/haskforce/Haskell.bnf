@@ -223,6 +223,7 @@ private topdecl1 ::= typedecl
                   | foreigndecl
                   | derivingdecl
                   | decl
+                  | impdecl // From #ifdefs
                   | infixexp // TH-extension.
 
 typedecl ::= "type" ["family" | "instance"] typee ['=' typee] {pin=1}
@@ -476,7 +477,6 @@ private decls1 ::= ppragma* decl ppragma* [semi decls1]
 
 private decl ::= funorpatdecl
                | gendecl
-               | impdecl
 
 funorpatdecl ::= (funlhs | pat) rhs
 

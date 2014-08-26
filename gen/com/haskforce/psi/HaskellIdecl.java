@@ -31,8 +31,8 @@ public interface HaskellIdecl extends PsiElement {
   @Nullable
   HaskellOqtycon getOqtycon();
 
-  @Nullable
-  HaskellQtycls getQtycls();
+  @NotNull
+  List<HaskellQtycls> getQtyclsList();
 
   @Nullable
   HaskellTypee getTypee();

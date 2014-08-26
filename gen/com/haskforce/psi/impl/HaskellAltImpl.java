@@ -47,12 +47,6 @@ public class HaskellAltImpl extends ASTWrapperPsiElement implements HaskellAlt {
   }
 
   @Override
-  @Nullable
-  public HaskellImpdecl getImpdecl() {
-    return findChildByClass(HaskellImpdecl.class);
-  }
-
-  @Override
   @NotNull
   public HaskellPat getPat() {
     return findNotNullChildByClass(HaskellPat.class);

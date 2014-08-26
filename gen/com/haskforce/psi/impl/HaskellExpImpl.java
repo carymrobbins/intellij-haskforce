@@ -53,12 +53,6 @@ public class HaskellExpImpl extends ASTWrapperPsiElement implements HaskellExp {
   }
 
   @Override
-  @Nullable
-  public HaskellImpdecl getImpdecl() {
-    return findChildByClass(HaskellImpdecl.class);
-  }
-
-  @Override
   @NotNull
   public List<HaskellPat> getPatList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPat.class);

@@ -48,12 +48,6 @@ public class HaskellGuardImpl extends ASTWrapperPsiElement implements HaskellGua
 
   @Override
   @Nullable
-  public HaskellImpdecl getImpdecl() {
-    return findChildByClass(HaskellImpdecl.class);
-  }
-
-  @Override
-  @Nullable
   public HaskellPat getPat() {
     return findChildByClass(HaskellPat.class);
   }

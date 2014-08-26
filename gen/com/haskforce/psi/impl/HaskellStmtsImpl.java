@@ -42,12 +42,6 @@ public class HaskellStmtsImpl extends ASTWrapperPsiElement implements HaskellStm
 
   @Override
   @NotNull
-  public List<HaskellImpdecl> getImpdeclList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellImpdecl.class);
-  }
-
-  @Override
-  @NotNull
   public List<HaskellPat> getPatList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPat.class);
   }

@@ -20,9 +20,6 @@ public interface HaskellGuard extends PsiElement {
   HaskellGendecl getGendecl();
 
   @Nullable
-  HaskellImpdecl getImpdecl();
-
-  @Nullable
   HaskellPat getPat();
 
   @NotNull

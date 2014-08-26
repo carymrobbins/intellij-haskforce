@@ -22,9 +22,6 @@ public interface HaskellExp extends PsiElement {
   @Nullable
   HaskellGendecl getGendecl();
 
-  @Nullable
-  HaskellImpdecl getImpdecl();
-
   @NotNull
   List<HaskellPat> getPatList();
 
