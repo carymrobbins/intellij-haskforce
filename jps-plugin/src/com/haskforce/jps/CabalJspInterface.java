@@ -57,7 +57,10 @@ public class CabalJspInterface {
     }
 
     public Process installDependencies(boolean dryRun) throws IOException, ExecutionException {
-        return runCommand("install", "--only-dependencies", dryRun ? "--dry-run" : "");
+        if (dryRun) {
+            return runCommand("install", "--only-dependencies", "--dry-run");
+        }
+        return runCommand("install", "--only-dependencies");
     }
 
     public Process installDependencies() throws IOException, ExecutionException {
