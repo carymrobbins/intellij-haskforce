@@ -8,6 +8,7 @@ import com.intellij.lang.annotation.ExternalAnnotator;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
@@ -29,6 +30,16 @@ public class HaskellExternalAnnotator extends ExternalAnnotator<PsiFile, Problem
     @Override
     public void apply(@NotNull PsiFile file, Problems annotationResult, @NotNull AnnotationHolder holder) {
         apply(file, annotationResult, new HaskellAnnotationHolder(holder));
+    }
+
+    /**
+     * The default implementation here is to not annotate files that have lexer/parser errors.  This is kind
+     * of lame since the error may be invalid.
+     */
+    @Nullable
+    @Override
+    public PsiFile collectInformation(@NotNull PsiFile file, @NotNull Editor editor, boolean hasErrors) {
+        return collectInformation(file);
     }
 
     @NotNull
