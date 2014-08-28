@@ -2128,7 +2128,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // "deriving" (dclass|<<commaSeparate dclass>>)
+  // "deriving" (dclass (dclass|tyvar)* | <<commaSeparate ((dclass|tyvar)*)>>)
   static boolean deriving(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "deriving")) return false;
     if (!nextTokenIs(builder_, DERIVING)) return false;
@@ -2142,13 +2142,70 @@ public class HaskellParser implements PsiParser {
     return result_ || pinned_;
   }
 
-  // dclass|<<commaSeparate dclass>>
+  // dclass (dclass|tyvar)* | <<commaSeparate ((dclass|tyvar)*)>>
   private static boolean deriving_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "deriving_1")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
+    result_ = deriving_1_0(builder_, level_ + 1);
+    if (!result_) result_ = commaSeparate(builder_, level_ + 1, deriving_1_1_0_parser_);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // dclass (dclass|tyvar)*
+  private static boolean deriving_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "deriving_1_0")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
     result_ = dclass(builder_, level_ + 1);
-    if (!result_) result_ = commaSeparate(builder_, level_ + 1, dclass_parser_);
+    result_ = result_ && deriving_1_0_1(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // (dclass|tyvar)*
+  private static boolean deriving_1_0_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "deriving_1_0_1")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!deriving_1_0_1_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "deriving_1_0_1", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
+  }
+
+  // dclass|tyvar
+  private static boolean deriving_1_0_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "deriving_1_0_1_0")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = dclass(builder_, level_ + 1);
+    if (!result_) result_ = tyvar(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // (dclass|tyvar)*
+  private static boolean deriving_1_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "deriving_1_1_0")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!deriving_1_1_0_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "deriving_1_1_0", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
+  }
+
+  // dclass|tyvar
+  private static boolean deriving_1_1_0_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "deriving_1_1_0_0")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = dclass(builder_, level_ + 1);
+    if (!result_) result_ = tyvar(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -6016,9 +6073,9 @@ public class HaskellParser implements PsiParser {
       return ctype(builder_, level_ + 1);
     }
   };
-  final static Parser dclass_parser_ = new Parser() {
+  final static Parser deriving_1_1_0_parser_ = new Parser() {
     public boolean parse(PsiBuilder builder_, int level_) {
-      return dclass(builder_, level_ + 1);
+      return deriving_1_1_0(builder_, level_ + 1);
     }
   };
   final static Parser export_parser_ = new Parser() {

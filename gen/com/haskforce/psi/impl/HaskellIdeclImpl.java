@@ -83,6 +83,12 @@ public class HaskellIdeclImpl extends ASTWrapperPsiElement implements HaskellIde
   }
 
   @Override
+  @NotNull
+  public List<HaskellTyvar> getTyvarList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTyvar.class);
+  }
+
+  @Override
   @Nullable
   public HaskellVars getVars() {
     return findChildByClass(HaskellVars.class);

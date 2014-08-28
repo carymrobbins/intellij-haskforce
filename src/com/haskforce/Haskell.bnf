@@ -333,7 +333,7 @@ private fielddecls ::= fielddecl [',' fielddecls] {pin(".*")=1}
 
 private fielddecl ::= vars "::" (typee | '!' atype) {pin=2}
 
-private deriving ::= "deriving" (dclass|<<commaSeparate dclass>>) {pin=1}
+private deriving ::= "deriving" (dclass (dclass|tyvar)* | <<commaSeparate ((dclass|tyvar)*)>>) {pin=1}
 private dclass ::= qtycls
 
 private fdecl ::= (importdecl | exportdecl) var "::" ftype

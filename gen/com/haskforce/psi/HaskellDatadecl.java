@@ -34,6 +34,9 @@ public interface HaskellDatadecl extends PsiElement {
   @NotNull
   List<HaskellTypee> getTypeeList();
 
+  @NotNull
+  List<HaskellTyvar> getTyvarList();
+
   @Nullable
   HaskellVars getVars();
 

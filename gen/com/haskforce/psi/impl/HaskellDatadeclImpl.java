@@ -77,6 +77,12 @@ public class HaskellDatadeclImpl extends ASTWrapperPsiElement implements Haskell
   }
 
   @Override
+  @NotNull
+  public List<HaskellTyvar> getTyvarList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTyvar.class);
+  }
+
+  @Override
   @Nullable
   public HaskellVars getVars() {
     return findChildByClass(HaskellVars.class);

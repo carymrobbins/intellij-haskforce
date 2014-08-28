@@ -37,6 +37,9 @@ public interface HaskellIdecl extends PsiElement {
   @Nullable
   HaskellTypee getTypee();
 
+  @NotNull
+  List<HaskellTyvar> getTyvarList();
+
   @Nullable
   HaskellVars getVars();
 
