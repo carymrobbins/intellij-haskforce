@@ -100,7 +100,7 @@ public interface HaskellTypes {
   IElementType CPPELSE = new HaskellTokenType("#else");
   IElementType CPPENDIF = new HaskellTokenType("#endif");
   IElementType CPPIF = new HaskellTokenType("CPPIF");
-  IElementType CPPIFDEF = new HaskellTokenType("#ifdef ([^\\r\\n]*)");
+  IElementType CPPIFDEF = new HaskellTokenType("CPPIFDEF");
   IElementType CPPINCLUDE = new HaskellTokenType("CPPINCLUDE");
   IElementType CPPLINE = new HaskellTokenType("CPPLINE");
   IElementType CPPPRAGMA = new HaskellTokenType("CPPPRAGMA");

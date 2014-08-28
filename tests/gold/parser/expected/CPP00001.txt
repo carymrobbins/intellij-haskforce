@@ -9,9 +9,9 @@ Haskell File
       HaskellConidImpl(CONID)
         PsiElement(HaskellTokenType.conidRegexp)('CPP00001')
     PsiElement(HaskellTokenType.where)('where')
-  PsiComment(HaskellTokenType.CPPIF)('#if __GLASGOW_HASKELL__ < 708')
-  PsiComment(HaskellTokenType.CPPDEFINE)('#define DIFFERENT_MONADIO 1')
-  PsiComment(HaskellTokenType.CPPDEFINE)('#define MONADIO_INSTANCES 1')
+  PsiComment(HaskellTokenType.CPPIF)('#if __GLASGOW_HASKELL__ < 708\n')
+  PsiComment(HaskellTokenType.CPPDEFINE)('#define DIFFERENT_MONADIO 1\n')
+  PsiComment(HaskellTokenType.CPPDEFINE)('#define MONADIO_INSTANCES 1\n')
   PsiComment(HaskellTokenType.#endif)('#endif')
   HaskellBodyImpl(BODY)
     <empty list>

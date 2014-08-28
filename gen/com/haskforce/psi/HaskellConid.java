@@ -12,7 +12,7 @@ public interface HaskellConid extends HaskellNamedElement {
   @NotNull
   PsiElement getConidRegexp();
 
-  @Nullable
+  @NotNull
   String getName();
 
   @Nullable

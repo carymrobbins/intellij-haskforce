@@ -132,7 +132,7 @@ Haskell File
         HaskellTyclsImpl(TYCLS)
           HaskellConidImpl(CONID)
             PsiElement(HaskellTokenType.conidRegexp)('MonadIO')
-      PsiComment(HaskellTokenType.CPPIF)('#if DIFFERENT_MONADIO')
+      PsiComment(HaskellTokenType.CPPIF)('#if DIFFERENT_MONADIO\n')
       PsiElement(HaskellTokenType.,)(',')
       HaskellQtyclsImpl(QTYCLS)
         HaskellModulePrefixImpl(MODULE_PREFIX)

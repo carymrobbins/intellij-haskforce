@@ -79,14 +79,14 @@ INTEGERTOKEN=(0(o|O)[0-7]+|0(x|X)[0-9a-fA-F]+|[0-9]+)
 FLOATTOKEN=([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))
 COMMENT=--([^\^\r\n][^\r\n]*\n|[\r\n])
 HADDOCK=--\^[^\r\n]*
-CPPIF=#if ([^\r\n]*)
-CPPIFDEF=#ifdef ([^\r\n]*)
-CPPELIF=#elif ([^\r\n]*)
-CPPDEFINE=#define ([^\r\n]*)
-CPPUNDEF=#undef ([^\r\n]*)
-CPPINCLUDE=#include ([^\r\n]*)
-CPPLINE=#line ([^\r\n]*)
-CPPPRAGMA=#pragma ([^\r\n]*)
+CPPIF=#if ([^\r\n]*){EOL}
+CPPIFDEF=#ifdef ([^\r\n]*){EOL}
+CPPELIF=#elif ([^\r\n]*){EOL}
+CPPDEFINE=#define ([^\r\n]*){EOL}
+CPPUNDEF=#undef ([^\r\n]*){EOL}
+CPPINCLUDE=#include ([^\r\n]*){EOL}
+CPPLINE=#line ([^\r\n]*){EOL}
+CPPPRAGMA=#pragma ([^\r\n]*){EOL}
 ASCSYMBOL=[\!\#\$\%\&\*\+\.\/\<\=\>\?\@\\\^\|\-\~\:]
 MAYBEQVARID=({CONID}\.)*{VARIDREGEXP}
 
