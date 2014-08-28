@@ -7,8 +7,8 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellImpdecl extends PsiElement {
 
-  @Nullable
-  HaskellImportt getImportt();
+  @NotNull
+  List<HaskellImportt> getImporttList();
 
   @NotNull
   List<HaskellQconid> getQconidList();

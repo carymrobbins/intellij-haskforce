@@ -10,8 +10,8 @@ public interface HaskellIdecl extends PsiElement {
   @Nullable
   HaskellAtype getAtype();
 
-  @Nullable
-  HaskellCon getCon();
+  @NotNull
+  List<HaskellCon> getConList();
 
   @NotNull
   List<HaskellConstr> getConstrList();
