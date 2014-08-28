@@ -158,7 +158,7 @@
     DO='do'
     RECTOK='rec'
     ELSE='else'
-    CPPIFDEF='#ifdef ([^\r\n]*)'
+    CPPIFDEF='regexp:#ifdef ([^\r\n]*)'
     CPPIF='regexp:#if ([^\r\n]*)'
     CPPELIF='regexp:#elif ([^\r\n]*)'
     CPPELSE='#else'
