@@ -30,9 +30,9 @@ public class HaskellParserDefinition implements ParserDefinition {
     public static final TokenSet COMMENTS = TokenSet.create(HaskellTypes.COMMENT,
             HaskellTypes.COMMENTTEXT, HaskellTypes.OPENCOM, HaskellTypes.CLOSECOM,
             // Interpret C preprocessor directives as comments.
-            HaskellTypes.CPPIF, HaskellTypes.CPPELSE, HaskellTypes.CPPENDIF, HaskellTypes.CPPDEFINE,
-            HaskellTypes.CPPIFDEF, HaskellTypes.CPPIF, HaskellTypes.CPPELIF, HaskellTypes.CPPELSE,
-            HaskellTypes.CPPENDIF, HaskellTypes.CPPDEFINE, HaskellTypes.CPPUNDEF, HaskellTypes.CPPLINE,
+            HaskellTypes.CPPIF, HaskellTypes.CPPELSE, HaskellTypes.CPPENDIF,
+            HaskellTypes.CPPIFDEF, HaskellTypes.CPPELIF,
+            HaskellTypes.CPPDEFINE, HaskellTypes.CPPUNDEF, HaskellTypes.CPPLINE,
             HaskellTypes.CPPPRAGMA
             );
     public static final TokenSet STRINGS = TokenSet.create(HaskellTypes.STRINGTOKEN);
