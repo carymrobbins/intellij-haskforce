@@ -276,10 +276,10 @@ private gendeclfst ::= vars '::' ctype  {pin(".*")=2}
 fixity ::= "infix" | "infixr" | "infixl" {pin(".*")=1}
 
 // Type already taken so we get collisions in generated code.
-typee ::= btype typeeaux {pin=1}
+typee ::= btype [typeeaux] {pin=1}
 
 private typeeaux ::= (singlequote (qconop | varop) | qtyconop) typee
-                   | [typeeopt]
+                   | typeeopt
 
 private typeeopt ::= "->" typee {pin=1}
 

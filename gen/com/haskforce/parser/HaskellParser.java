@@ -5828,7 +5828,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // btype typeeaux
+  // btype [typeeaux]
   public static boolean typee(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "typee")) return false;
     boolean result_;
@@ -5836,20 +5836,27 @@ public class HaskellParser implements PsiParser {
     Marker marker_ = enter_section_(builder_, level_, _NONE_, "<typee>");
     result_ = btype(builder_, level_ + 1);
     pinned_ = result_; // pin = 1
-    result_ = result_ && typeeaux(builder_, level_ + 1);
+    result_ = result_ && typee_1(builder_, level_ + 1);
     exit_section_(builder_, level_, marker_, TYPEE, result_, pinned_, null);
     return result_ || pinned_;
   }
 
+  // [typeeaux]
+  private static boolean typee_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "typee_1")) return false;
+    typeeaux(builder_, level_ + 1);
+    return true;
+  }
+
   /* ********************************************************** */
   // (singlequote (qconop | varop) | qtyconop) typee
-  //                    | [typeeopt]
+  //                    | typeeopt
   static boolean typeeaux(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "typeeaux")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = typeeaux_0(builder_, level_ + 1);
-    if (!result_) result_ = typeeaux_1(builder_, level_ + 1);
+    if (!result_) result_ = typeeopt(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
@@ -5896,13 +5903,6 @@ public class HaskellParser implements PsiParser {
     if (!result_) result_ = varop(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
-  }
-
-  // [typeeopt]
-  private static boolean typeeaux_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "typeeaux_1")) return false;
-    typeeopt(builder_, level_ + 1);
-    return true;
   }
 
   /* ********************************************************** */
