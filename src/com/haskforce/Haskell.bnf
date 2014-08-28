@@ -415,13 +415,8 @@ private listlike1 ::= ('|' (squal ',')* squal)+
 
 private parenlike ::= '(' parenlike1 {pin=1}
 
-private parenlike1 ::= exp [parenlikeoptseq] ')'
-                     | parenlike2 ')'
-
-private parenlikeoptseq ::= ',' (exp ',')* exp {pin=1}
-
-private parenlike2 ::= infixexp qop
-                     | qop infixexp
+private parenlike1 ::= exp (',' exp)* ')'
+                     | (infixexp qop | qop infixexp) ')'
 
 // Emulate the aexp part of "aexp '{' (fbind ',')* fbind '}'"
 private recordlikelhs ::= qvar

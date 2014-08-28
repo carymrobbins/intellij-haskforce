@@ -4484,8 +4484,8 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // exp [parenlikeoptseq] ')'
-  //                      | parenlike2 ')'
+  // exp (',' exp)* ')'
+  //                      | (infixexp qop | qop infixexp) ')'
   static boolean parenlike1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parenlike1")) return false;
     boolean result_;
@@ -4496,7 +4496,7 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // exp [parenlikeoptseq] ')'
+  // exp (',' exp)* ')'
   private static boolean parenlike1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parenlike1_0")) return false;
     boolean result_;
@@ -4508,40 +4508,54 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // [parenlikeoptseq]
+  // (',' exp)*
   private static boolean parenlike1_0_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parenlike1_0_1")) return false;
-    parenlikeoptseq(builder_, level_ + 1);
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!parenlike1_0_1_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "parenlike1_0_1", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
     return true;
   }
 
-  // parenlike2 ')'
+  // ',' exp
+  private static boolean parenlike1_0_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "parenlike1_0_1_0")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, COMMA);
+    result_ = result_ && exp(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // (infixexp qop | qop infixexp) ')'
   private static boolean parenlike1_1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "parenlike1_1")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = parenlike2(builder_, level_ + 1);
+    result_ = parenlike1_1_0(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, RPAREN);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  /* ********************************************************** */
-  // infixexp qop
-  //                      | qop infixexp
-  static boolean parenlike2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "parenlike2")) return false;
+  // infixexp qop | qop infixexp
+  private static boolean parenlike1_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "parenlike1_1_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = parenlike2_0(builder_, level_ + 1);
-    if (!result_) result_ = parenlike2_1(builder_, level_ + 1);
+    result_ = parenlike1_1_0_0(builder_, level_ + 1);
+    if (!result_) result_ = parenlike1_1_0_1(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   // infixexp qop
-  private static boolean parenlike2_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "parenlike2_0")) return false;
+  private static boolean parenlike1_1_0_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "parenlike1_1_0_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = infixexp(builder_, level_ + 1);
@@ -4551,51 +4565,12 @@ public class HaskellParser implements PsiParser {
   }
 
   // qop infixexp
-  private static boolean parenlike2_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "parenlike2_1")) return false;
+  private static boolean parenlike1_1_0_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "parenlike1_1_0_1")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = qop(builder_, level_ + 1);
     result_ = result_ && infixexp(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  /* ********************************************************** */
-  // ',' (exp ',')* exp
-  static boolean parenlikeoptseq(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "parenlikeoptseq")) return false;
-    if (!nextTokenIs(builder_, COMMA)) return false;
-    boolean result_;
-    boolean pinned_;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = consumeToken(builder_, COMMA);
-    pinned_ = result_; // pin = 1
-    result_ = result_ && report_error_(builder_, parenlikeoptseq_1(builder_, level_ + 1));
-    result_ = pinned_ && exp(builder_, level_ + 1) && result_;
-    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
-    return result_ || pinned_;
-  }
-
-  // (exp ',')*
-  private static boolean parenlikeoptseq_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "parenlikeoptseq_1")) return false;
-    int pos_ = current_position_(builder_);
-    while (true) {
-      if (!parenlikeoptseq_1_0(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "parenlikeoptseq_1", pos_)) break;
-      pos_ = current_position_(builder_);
-    }
-    return true;
-  }
-
-  // exp ','
-  private static boolean parenlikeoptseq_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "parenlikeoptseq_1_0")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = exp(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, COMMA);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
