@@ -29,7 +29,12 @@ public class HaskellParserDefinition implements ParserDefinition {
     public static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
     public static final TokenSet COMMENTS = TokenSet.create(HaskellTypes.COMMENT,
             HaskellTypes.COMMENTTEXT, HaskellTypes.OPENCOM, HaskellTypes.CLOSECOM,
-            HaskellTypes.CPPIF, HaskellTypes.CPPELSE, HaskellTypes.CPPENDIF);
+            // Interpret C preprocessor directives as comments.
+            HaskellTypes.CPPIF, HaskellTypes.CPPELSE, HaskellTypes.CPPENDIF, HaskellTypes.CPPDEFINE,
+            HaskellTypes.CPPIFDEF, HaskellTypes.CPPIF, HaskellTypes.CPPELIF, HaskellTypes.CPPELSE,
+            HaskellTypes.CPPENDIF, HaskellTypes.CPPDEFINE, HaskellTypes.CPPUNDEF, HaskellTypes.CPPLINE,
+            HaskellTypes.CPPPRAGMA
+            );
     public static final TokenSet STRINGS = TokenSet.create(HaskellTypes.STRINGTOKEN);
 
     public static final IFileElementType FILE = new IFileElementType(Language.<HaskellLanguage>findInstance(HaskellLanguage.class));

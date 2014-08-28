@@ -80,6 +80,13 @@ FLOATTOKEN=([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))
 COMMENT=--([^\^\r\n][^\r\n]*\n|[\r\n])
 HADDOCK=--\^[^\r\n]*
 CPPIF=#if ([^\r\n]*)
+CPPIFDEF=#ifdef ([^\r\n]*)
+CPPELIF=#elif ([^\r\n]*)
+CPPDEFINE=#define ([^\r\n]*)
+CPPUNDEF=#undef ([^\r\n]*)
+CPPINCLUDE=#include ([^\r\n]*)
+CPPLINE=#line ([^\r\n]*)
+CPPPRAGMA=#pragma ([^\r\n]*)
 ASCSYMBOL=[\!\#\$\%\&\*\+\.\/\<\=\>\?\@\\\^\|\-\~\:]
 MAYBEQVARID=({CONID}\.)*{VARIDREGEXP}
 
@@ -106,9 +113,16 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
 <YYINITIAL,ININDENTATION,FINDINGINDENTATIONCONTEXT> {
     {COMMENT}       { indent = 0; return COMMENT; }
     {HADDOCK}       { indent = 0; return HADDOCK; }
+    {CPPIFDEF}      { indent = 0; return CPPIFDEF; }
     {CPPIF}         { indent = 0; return CPPIF; }
+    {CPPELIF}       { indent = 0; return CPPELIF; }
     "#else"         { indent = 0; return CPPELSE; }
     "#endif"        { indent = 0; return CPPENDIF; }
+    {CPPDEFINE}     { indent = 0; return CPPDEFINE; }
+    {CPPUNDEF}      { indent = 0; return CPPUNDEF; }
+    {CPPINCLUDE}    { indent = 0; return CPPINCLUDE; }
+    {CPPLINE}       { indent = 0; return CPPLINE; }
+    {CPPPRAGMA}     { indent = 0; return CPPPRAGMA; }
 }
 
 <YYINITIAL> {

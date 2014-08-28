@@ -95,9 +95,16 @@ public interface HaskellTypes {
   IElementType COMMENTTEXT = new HaskellTokenType("commenttext");
   IElementType CONIDREGEXP = new HaskellTokenType("conidRegexp");
   IElementType CONSYMTOK = new HaskellTokenType("Consym");
+  IElementType CPPDEFINE = new HaskellTokenType("CPPDEFINE");
+  IElementType CPPELIF = new HaskellTokenType("CPPELIF");
   IElementType CPPELSE = new HaskellTokenType("#else");
   IElementType CPPENDIF = new HaskellTokenType("#endif");
   IElementType CPPIF = new HaskellTokenType("CPPIF");
+  IElementType CPPIFDEF = new HaskellTokenType("#ifdef ([^\\r\\n]*)");
+  IElementType CPPINCLUDE = new HaskellTokenType("CPPINCLUDE");
+  IElementType CPPLINE = new HaskellTokenType("CPPLINE");
+  IElementType CPPPRAGMA = new HaskellTokenType("CPPPRAGMA");
+  IElementType CPPUNDEF = new HaskellTokenType("CPPUNDEF");
   IElementType DASHES = new HaskellTokenType("dashes");
   IElementType DATA = new HaskellTokenType("data");
   IElementType DEFAULT = new HaskellTokenType("default");
