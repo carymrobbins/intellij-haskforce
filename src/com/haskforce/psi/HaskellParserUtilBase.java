@@ -73,4 +73,80 @@ public class HaskellParserUtilBase extends GeneratedParserUtilBase {
         }
         return e != null ? e.getSecond() - 1 : -1;
     }
+
+    public static boolean trackPos(@NotNull PsiBuilder builder, int level) {
+        if (!(builder instanceof Builder)) return false;
+        PsiParser wrapper = ((Builder) builder).parser;
+        if (!(wrapper instanceof HaskellParserWrapper)) return false;
+
+        int offs = builder.getCurrentOffset();
+        int line = StringUtil.offsetToLineNumber(builder.getOriginalText(), offs);
+        int lineStart = StringUtil.lineColToOffset(builder.getOriginalText(), line, 0);
+
+        CharSequence lineStuff = builder.getOriginalText().subSequence(lineStart, offs);
+        Pair<Integer, Integer> pos = ((HaskellParserWrapper) wrapper).trackedPos;
+        int len = lineStuff.length();
+        ((HaskellParserWrapper) wrapper).trackedPos = Pair.create(line, len);
+        return true;
+    }
+
+    public static boolean geIndent2(@NotNull PsiBuilder builder, int level, GeneratedParserUtilBase.Parser p) {
+        if (!(builder instanceof Builder)) return false;
+        PsiParser wrapper = ((Builder) builder).parser;
+        if (!(wrapper instanceof HaskellParserWrapper)) return false;
+
+        int offs = builder.getCurrentOffset();
+        int line = StringUtil.offsetToLineNumber(builder.getOriginalText(), offs);
+        int lineStart = StringUtil.lineColToOffset(builder.getOriginalText(), line, 0);
+
+        IElementType t = builder.getTokenType();
+        CharSequence lineStuff = builder.getOriginalText().subSequence(lineStart, offs);
+        Pair<Integer, Integer> pos = ((HaskellParserWrapper) wrapper).trackedPos;
+        int len = lineStuff.length();
+        if (pos.getFirst().equals(line) && len <= pos.getSecond()) return false;
+        ((HaskellParserWrapper) wrapper).trackedPos = Pair.create(line, lineStuff.length());
+        return p.parse(builder, level);
+    }
+
+    public static boolean validatePos(@NotNull PsiBuilder builder, int level) {
+        if (!(builder instanceof Builder)) return false;
+        PsiParser wrapper = ((Builder) builder).parser;
+        if (!(wrapper instanceof HaskellParserWrapper)) return false;
+
+        int offs = builder.getCurrentOffset();
+        int line = StringUtil.offsetToLineNumber(builder.getOriginalText(), offs);
+        int lineStart = StringUtil.lineColToOffset(builder.getOriginalText(), line, 0);
+
+        CharSequence lineStuff = builder.getOriginalText().subSequence(lineStart, offs);
+        int len = lineStuff.length();
+        Pair<Integer, Integer> pos = ((HaskellParserWrapper) wrapper).trackedPos;
+        if (pos.getFirst().equals(line) && len != pos.getSecond()) return false;
+        return true;
+    }
+
+    public static boolean indented(@NotNull PsiBuilder builder, int level) {
+        if (!(builder instanceof Builder)) return false;
+        PsiParser wrapper = ((Builder) builder).parser;
+        if (!(wrapper instanceof HaskellParserWrapper)) return false;
+
+        IElementType currtok = builder.getTokenType();
+        IElementType prevtok = builder.lookAhead(-1);
+        int offs = builder.getCurrentOffset();
+        int line = StringUtil.offsetToLineNumber(builder.getOriginalText(), offs);
+        int prevline = StringUtil.offsetToLineNumber(builder.getOriginalText(), offs - 1);
+
+        if (prevline < line) return false;
+        return true;
+    }
+
+
+    public static boolean resetPos(@NotNull PsiBuilder builder, int level) {
+        if (!(builder instanceof Builder)) return false;
+        PsiParser wrapper = ((Builder) builder).parser;
+        if (!(wrapper instanceof HaskellParserWrapper)) return false;
+
+        ((HaskellParserWrapper) wrapper).trackedPos = Pair.create(-1, -1);
+        return true;
+    }
+
 }
