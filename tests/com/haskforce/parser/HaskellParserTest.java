@@ -82,6 +82,7 @@ public class HaskellParserTest extends HaskellParserTestBase {
     // FIXME: Layout00019.hs fails to parse.
     // public void testLayout00019()       { doTest(true, true); }
     public void testLayout00020()       { doTest(true, true); }
+    public void testLayout00021()       { doTest(true, true); }
     public void testComment00001()      { doTest(true, true); }
     public void testComment00002()      { doTest(true, true); }
     public void testComment00003()      { doTest(true, true); }

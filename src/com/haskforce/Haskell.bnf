@@ -429,7 +429,11 @@ private recordlikeparen ::= exp
                           | infixexp qop
                           | qop infixexp
 
-private altslist ::= open alt (semi alt)* close {pin(".*")=2}
+
+private altslist ::= '{' alt (semi alt)* '}'
+                   | iAlts
+
+private iAlts ::= open <<trackPos>> alt (<<validatePos>> semi alt)* <<resetPos>> close?
 
 alt ::= pat ('->' exp | gdpat) [wheredecls] {pin=1}
 
@@ -577,7 +581,7 @@ private open ::= '{'
 
 private close ::= '}'
                 | WHITESPACERBRACETOK
-                | <<stateHackMess>>
+                | [<<stateHackMess>>]
 
 private semi ::= ';'
                | WHITESPACESEMITOK {pin(".*")=1}

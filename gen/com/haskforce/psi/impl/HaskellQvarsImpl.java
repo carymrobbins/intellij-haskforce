@@ -24,8 +24,8 @@ public class HaskellQvarsImpl extends ASTWrapperPsiElement implements HaskellQva
 
   @Override
   @NotNull
-  public List<HaskellQvar> getQvarList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQvar.class);
+  public HaskellQvar getQvar() {
+    return findNotNullChildByClass(HaskellQvar.class);
   }
 
 }

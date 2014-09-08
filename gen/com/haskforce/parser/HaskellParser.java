@@ -434,37 +434,47 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // open alt (semi alt)* close
+  // '{' alt (semi alt)* '}'
+  //                    | iAlts
   static boolean altslist(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "altslist")) return false;
     if (!nextTokenIs(builder_, "", LBRACE, WHITESPACELBRACETOK)) return false;
     boolean result_;
-    boolean pinned_;
-    Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = open(builder_, level_ + 1);
+    Marker marker_ = enter_section_(builder_);
+    result_ = altslist_0(builder_, level_ + 1);
+    if (!result_) result_ = iAlts(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // '{' alt (semi alt)* '}'
+  private static boolean altslist_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "altslist_0")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, LBRACE);
     result_ = result_ && alt(builder_, level_ + 1);
-    pinned_ = result_; // pin = 2
-    result_ = result_ && report_error_(builder_, altslist_2(builder_, level_ + 1));
-    result_ = pinned_ && close(builder_, level_ + 1) && result_;
-    exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
-    return result_ || pinned_;
+    result_ = result_ && altslist_0_2(builder_, level_ + 1);
+    result_ = result_ && consumeToken(builder_, RBRACE);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
   }
 
   // (semi alt)*
-  private static boolean altslist_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "altslist_2")) return false;
+  private static boolean altslist_0_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "altslist_0_2")) return false;
     int pos_ = current_position_(builder_);
     while (true) {
-      if (!altslist_2_0(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "altslist_2", pos_)) break;
+      if (!altslist_0_2_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "altslist_0_2", pos_)) break;
       pos_ = current_position_(builder_);
     }
     return true;
   }
 
   // semi alt
-  private static boolean altslist_2_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "altslist_2_0")) return false;
+  private static boolean altslist_0_2_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "altslist_0_2_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = semi(builder_, level_ + 1);
@@ -1340,16 +1350,23 @@ public class HaskellParser implements PsiParser {
   /* ********************************************************** */
   // '}'
   //                 | WHITESPACERBRACETOK
-  //                 | <<stateHackMess>>
+  //                 | [<<stateHackMess>>]
   static boolean close(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "close")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, RBRACE);
     if (!result_) result_ = consumeToken(builder_, WHITESPACERBRACETOK);
-    if (!result_) result_ = stateHackMess(builder_, level_ + 1);
+    if (!result_) result_ = close_2(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
+  }
+
+  // [<<stateHackMess>>]
+  private static boolean close_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "close_2")) return false;
+    stateHackMess(builder_, level_ + 1);
+    return true;
   }
 
   /* ********************************************************** */
@@ -3074,6 +3091,54 @@ public class HaskellParser implements PsiParser {
     result_ = result_ && guard(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
+  }
+
+  /* ********************************************************** */
+  // open <<trackPos>> alt (<<validatePos>> semi alt)* <<resetPos>> close?
+  static boolean iAlts(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "iAlts")) return false;
+    if (!nextTokenIs(builder_, "", LBRACE, WHITESPACELBRACETOK)) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = open(builder_, level_ + 1);
+    result_ = result_ && trackPos(builder_, level_ + 1);
+    result_ = result_ && alt(builder_, level_ + 1);
+    result_ = result_ && iAlts_3(builder_, level_ + 1);
+    result_ = result_ && resetPos(builder_, level_ + 1);
+    result_ = result_ && iAlts_5(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // (<<validatePos>> semi alt)*
+  private static boolean iAlts_3(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "iAlts_3")) return false;
+    int pos_ = current_position_(builder_);
+    while (true) {
+      if (!iAlts_3_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "iAlts_3", pos_)) break;
+      pos_ = current_position_(builder_);
+    }
+    return true;
+  }
+
+  // <<validatePos>> semi alt
+  private static boolean iAlts_3_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "iAlts_3_0")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = validatePos(builder_, level_ + 1);
+    result_ = result_ && semi(builder_, level_ + 1);
+    result_ = result_ && alt(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // close?
+  private static boolean iAlts_5(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "iAlts_5")) return false;
+    close(builder_, level_ + 1);
+    return true;
   }
 
   /* ********************************************************** */
