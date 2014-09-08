@@ -81,6 +81,7 @@ public abstract class HaskellParserTestBase extends ParsingTestCase {
         doCheckResult(myFullDataPath, file, checkAllPsiRoots(),
                 "expected" + File.separator + targetDataName, skipSpaces(),
                 includeRanges());
+/* TODO: Re-enable if we return to parser-helper.
         String phPath = ExecUtil.locateExecutableByGuessing("parser-helper");
         if (phPath != null && !phPath.isEmpty()) {
             String expectedFile = myFullDataPath + File.separator +
@@ -90,6 +91,7 @@ public abstract class HaskellParserTestBase extends ParsingTestCase {
         } else {
             assertEquals(true, false); // Always false.
         }
+*/
     }
 
     @Override
