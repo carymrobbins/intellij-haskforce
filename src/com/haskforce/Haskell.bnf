@@ -390,6 +390,7 @@ private lexp ::= "\\case" altslist
 
 private aexp ::= parensplice exp ')'
                | singlequote qvar
+               | singlequote qcon
                | idsplice
                | thquote qcon
                | literal
