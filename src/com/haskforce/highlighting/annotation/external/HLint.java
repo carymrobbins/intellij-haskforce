@@ -16,6 +16,7 @@ import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -48,8 +49,8 @@ public class HLint {
             return new Problems();
         }
         final boolean useJson = version.gte(HLINT_MIN_VERSION_WITH_JSON_SUPPORT);
-        final String stdout = ExecUtil.readCommandLine(workingDirectory, hlintPath,
-                                                       useJson ? new String[]{"--json", file} : new String[]{file});
+        final String stdout = runHlint(workingDirectory, hlintPath,
+                                       useJson ? new String[]{"--json", file} : new String[]{file});
         if (stdout == null) {
             LOG.warn("Unable to get output from hlint");
             return new Problems();
@@ -119,7 +120,7 @@ public class HLint {
 
     @Nullable
     private static VersionTriple getVersion(String workingDirectory, String hlintPath) {
-        final String version = ExecUtil.readCommandLine(workingDirectory, hlintPath, "--version");
+        final String version = runHlint(workingDirectory, hlintPath, "--version");
         if (version == null) {
             return null;
         }
@@ -131,6 +132,31 @@ public class HLint {
                 Integer.parseInt(m.group(1)),
                 Integer.parseInt(m.group(2)),
                 Integer.parseInt(m.group(3)));
+    }
+
+    /**
+     * Runs hlintProg with parameter if hlintProg can be executed.
+     */
+    @Nullable
+    private static String runHlint(@NotNull String workingDirectory,
+                                   @NotNull String hlintProg,
+                                   @NotNull String params) {
+        if (!(new File(hlintProg).canExecute())) return null;
+
+        return ExecUtil.readCommandLine(workingDirectory, hlintProg, params);
+    }
+
+
+    /**
+     * Runs hlintProg with parameters if hlintProg can be executed.
+     */
+    @Nullable
+    private static String runHlint(@NotNull String workingDirectory,
+                                   @NotNull String hlintProg,
+                                   @NotNull String[] params) {
+        if (!(new File(hlintProg).canExecute())) return null;
+
+        return ExecUtil.readCommandLine(workingDirectory, hlintProg, params);
     }
 
     public static class Problem extends HaskellProblem {
