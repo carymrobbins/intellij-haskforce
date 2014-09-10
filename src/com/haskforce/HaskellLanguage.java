@@ -33,7 +33,7 @@ public class HaskellLanguage extends Language {
                     , "]", "`", "{", "}"}));
     public static final HashSet<IElementType> SPECIAL_TOKENS = new HashSet<IElementType>(
             Arrays.asList(new IElementType[]{LPAREN, RPAREN, COMMA, SEMICOLON
-                    , LBRACKET, RBRACKET, LBRACE, RBRACE, PARENSPLICE, LTHOPEN, RTHCLOSE}));
+                    , LBRACKET, RBRACKET, LBRACE, RBRACE, PARENSPLICE, LTHOPEN, RTHCLOSE, QQOPEN}));
 
     /**
      * Strings and tokens of symbols.

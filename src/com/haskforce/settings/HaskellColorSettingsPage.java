@@ -31,7 +31,8 @@ public class HaskellColorSettingsPage implements ColorSettingsPage {
             new AttributesDescriptor("Line Comment", HaskellSyntaxHighlighter.COMMENT),
             new AttributesDescriptor("Block Comment", HaskellSyntaxHighlighter.NCOMMENT),
             new AttributesDescriptor("Doc Comment", HaskellSyntaxHighlighter.HADDOCK),
-            new AttributesDescriptor("Escape", HaskellSyntaxHighlighter.ESCAPE)
+            new AttributesDescriptor("Escape", HaskellSyntaxHighlighter.ESCAPE),
+            new AttributesDescriptor("Quasi Quotes", HaskellSyntaxHighlighter.QQTEXT),
     };
 
     @Nullable
@@ -49,7 +50,7 @@ public class HaskellColorSettingsPage implements ColorSettingsPage {
     @NotNull
     @Override
     public String getDemoText() {
-        return  "{-# LANGUAGE OverloadedStrings #-}\n" +
+        return  "{-# LANGUAGE OverloadedStrings, QuasiQuotes #-}\n" +
                 "<ri>module</ri> Example <sp>(</sp><vi>foo</vi><sp>,</sp> <vi>bar</vi><sp>)</sp> <ri>where</ri>\n" +
                 "\n" +
                 "<ri>import</ri> Control.Monad <ri>as</ri> M\n" +
@@ -97,7 +98,10 @@ public class HaskellColorSettingsPage implements ColorSettingsPage {
                 "    \\This string \\\n" +
                 "    \\spans \\\"multiple\\\" \\\n" +
                 "    \\lines!\\\n" +
-                "    \\\"\n";
+                "    \\\"\n" +
+                "quasiQuoted = <sp>[</sp>myQuoter|<qq>\n" +
+                "   Here's some quasi quotes!\n" +
+                "</qq><sp>|]</sp>";
     }
 
     @Nullable
@@ -111,6 +115,7 @@ public class HaskellColorSettingsPage implements ColorSettingsPage {
         map.put("iv", HaskellSyntaxHighlighter.INFIXVARID);
         map.put("nc", HaskellSyntaxHighlighter.NCOMMENT);
         map.put("sp", HaskellSyntaxHighlighter.SPECIAL);
+        map.put("qq", HaskellSyntaxHighlighter.QQTEXT);
         return map;
     }
 

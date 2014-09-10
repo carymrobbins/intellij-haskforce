@@ -2,6 +2,8 @@ package com.haskforce.highlighting;
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import static com.haskforce.psi.HaskellTypes.*;
+import com.intellij.util.containers.ContainerUtil;
+import com.intellij.util.containers.Stack;
 
 /**
  * Hand-written lexer used for syntax highlighting in IntelliJ.
@@ -26,6 +28,9 @@ import static com.haskforce.psi.HaskellTypes.*;
 
 %{
   private int commentLevel;
+  private int qqLevel;
+  private int indent;
+  private Stack<Integer> stateStack = ContainerUtil.newStack();
 
   public _HaskellSyntaxHighlightingLexer() {
     this((java.io.Reader)null);
@@ -62,9 +67,10 @@ CPPIF=#if ([^\r\n]*)
 ASCSYMBOL=[\!\#\$\%\&\*\+\.\/\<\=\>\?\@\\\^\|\-\~\:]
 
 STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
+MAYBEQVARID=({CONID}\.)*{VARIDREGEXP}
 
 // Avoid "COMMENT" since that collides with the token definition above.
-%state INCOMMENT INSTRING INPRAGMA
+%state INCOMMENT, INSTRING, INPRAGMA, INQUASIQUOTE, INQUASIQUOTEHEAD
 
 %%
 <YYINITIAL> {
@@ -115,6 +121,13 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   ","                 { return COMMA; }
   ";"                 { return SEMICOLON; }
   "[|"                { return LTHOPEN; }
+  ("["{MAYBEQVARID}"|") {
+                            yypushback(yytext().length() - 1);
+                            qqLevel++;
+                            stateStack.push(YYINITIAL);
+                            yybegin(INQUASIQUOTEHEAD);
+                            return QQOPEN;
+                        }
   "|]"                { return RTHCLOSE; }
   "["                 { return LBRACKET; }
   "]"                 { return RBRACKET; }
@@ -213,4 +226,41 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                     }
     [^-}#]+         { return PRAGMA; }
     [^]             { return PRAGMA; }
+}
+
+<INQUASIQUOTE> {
+    "|]"                    {
+                                qqLevel--;
+                                yybegin(stateStack.pop());
+                                if (qqLevel == 0) {
+                                    return RTHCLOSE;
+                                }
+                                return QQTEXT;
+                            }
+
+    ("["{MAYBEQVARID}"|")   {
+                                yypushback(yytext().length() - 1);
+                                qqLevel++;
+                                stateStack.push(INQUASIQUOTE);
+                                yybegin(INQUASIQUOTEHEAD);
+                                return QQTEXT;
+                            }
+    [^|\]\[]+               { return QQTEXT; }
+    [^]                     { return QQTEXT; }
+}
+
+<INQUASIQUOTEHEAD> {
+  "|"                       {
+                                yybegin(INQUASIQUOTE);
+                                return PIPE;
+                            }
+  {VARIDREGEXP}             { return VARIDREGEXP; }
+  {CONID}                   { return CONIDREGEXP; }
+  "."                       { return PERIOD;}
+  {EOL}+                    {
+                                indent = 0;
+                                return com.intellij.psi.TokenType.WHITE_SPACE;
+                            }
+  [\ \f\t]+                 { return com.intellij.psi.TokenType.WHITE_SPACE; }
+  [^]                       { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }

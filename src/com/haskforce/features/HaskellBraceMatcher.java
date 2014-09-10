@@ -23,7 +23,8 @@ public class HaskellBraceMatcher implements PairedBraceMatcher {
             new BracePair(HaskellTypes.OPENPRAGMA, HaskellTypes.CLOSEPRAGMA, true),
             new BracePair(HaskellTypes.PARENSPLICE, HaskellTypes.RPAREN, true),
             new BracePair(HaskellTypes.LTHOPEN, HaskellTypes.RTHCLOSE, true),
-            new BracePair(HaskellTypes.LBRACKET, HaskellTypes.RTHCLOSE, true)
+            new BracePair(HaskellTypes.LBRACKET, HaskellTypes.RTHCLOSE, true),
+            new BracePair(HaskellTypes.QQOPEN, HaskellTypes.RTHCLOSE, true),
     };
 
     private static final TokenSet alwaysMatch = TokenSet.create(HaskellTypes.LBRACE, HaskellTypes.OPENCOM, HaskellTypes.OPENPRAGMA);

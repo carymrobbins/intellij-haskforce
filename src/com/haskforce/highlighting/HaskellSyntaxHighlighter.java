@@ -10,6 +10,10 @@ import org.jetbrains.annotations.NotNull;
 
 import com.haskforce.psi.HaskellTypes;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
     /*
      * Constructors, type classes, data types, .., are nice to distinguish
@@ -17,73 +21,53 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
      * out from the keywords by default and we are unlikely need it for other
      * purposes.
      */
-    public static final TextAttributesKey RESERVEDID = TextAttributesKey.createTextAttributesKey(
-            "HASKELL_RESERVEDID", DefaultLanguageHighlighterColors.KEYWORD);
-    public static final TextAttributesKey[] RESERVEDID_KEYS = new TextAttributesKey[]{RESERVEDID};
 
-    public static final TextAttributesKey MODULE = TextAttributesKey.createTextAttributesKey(
-            "HASKELL_MODULE", DefaultLanguageHighlighterColors.INTERFACE_NAME);
-    public static final TextAttributesKey[] MODULE_KEYS = new TextAttributesKey[]{MODULE};
+    public static final TextAttributesKey RESERVEDID = DefaultLanguageHighlighterColors.KEYWORD;
+    public static final TextAttributesKey SPECIAL = DefaultLanguageHighlighterColors.INSTANCE_FIELD;
+    public static final TextAttributesKey NCOMMENT = DefaultLanguageHighlighterColors.BLOCK_COMMENT;
+    public static final TextAttributesKey HADDOCK = DefaultLanguageHighlighterColors.DOC_COMMENT;
+    public static final TextAttributesKey COMMENT = DefaultLanguageHighlighterColors.LINE_COMMENT;
+    public static final TextAttributesKey INTEGER = DefaultLanguageHighlighterColors.NUMBER;
+    public static final TextAttributesKey FLOAT = DefaultLanguageHighlighterColors.NUMBER;
+    public static final TextAttributesKey CHAR = DefaultLanguageHighlighterColors.NUMBER;
+    public static final TextAttributesKey CONID = DefaultLanguageHighlighterColors.INSTANCE_FIELD;
+    public static final TextAttributesKey VARID = DefaultLanguageHighlighterColors.IDENTIFIER;
+    public static final TextAttributesKey INFIXVARID = DefaultLanguageHighlighterColors.METADATA;
+    public static final TextAttributesKey VARSYM = DefaultLanguageHighlighterColors.OPERATION_SIGN;
+    public static final TextAttributesKey CONSYM = DefaultLanguageHighlighterColors.OPERATION_SIGN;
+    public static final TextAttributesKey PRAGMA = DefaultLanguageHighlighterColors.METADATA;
+    public static final TextAttributesKey STRING = DefaultLanguageHighlighterColors.STRING;
+    public static final TextAttributesKey QQTEXT = DefaultLanguageHighlighterColors.STRING;
+    public static final TextAttributesKey ESCAPE = DefaultLanguageHighlighterColors.VALID_STRING_ESCAPE;
 
-    public static final TextAttributesKey CONID =  TextAttributesKey.createTextAttributesKey(
-            "HASKELL_CONID", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
-    public static final TextAttributesKey[] CONID_KEYS = new TextAttributesKey[]{CONID};
+    private static final Map<IElementType, TextAttributesKey> keys;
 
-    public static final TextAttributesKey VARID = TextAttributesKey.createTextAttributesKey(
-            "HASKELL_VARID", DefaultLanguageHighlighterColors.IDENTIFIER);
-    public static final TextAttributesKey[] VARID_KEYS = new TextAttributesKey[]{VARID};
+    /**
+     * Helper to point multiple token types to a single color.
+     */
+    private static void keysPutEach(Iterable<IElementType> tokenTypes, TextAttributesKey value) {
+        for (IElementType tokenType : tokenTypes) {
+            keys.put(tokenType, value);
+        }
+    }
 
-    public static final TextAttributesKey INFIXVARID = TextAttributesKey.createTextAttributesKey(
-            "HASKELL_INFIXVARID", DefaultLanguageHighlighterColors.METADATA);
-    public static final TextAttributesKey[] INFIXVARID_KEYS = new TextAttributesKey[]{INFIXVARID};
-
-    public static final TextAttributesKey VARSYM = TextAttributesKey.createTextAttributesKey(
-            "HASKELL_VARSYM", DefaultLanguageHighlighterColors.OPERATION_SIGN);
-    public static final TextAttributesKey[] VARSYM_KEYS = new TextAttributesKey[]{VARSYM};
-
-    public static final TextAttributesKey CONSYM = TextAttributesKey.createTextAttributesKey(
-            "HASKELL_CONSYM", DefaultLanguageHighlighterColors.OPERATION_SIGN);
-    public static final TextAttributesKey[] CONSYM_KEYS = new TextAttributesKey[]{CONSYM};
-
-    public static final TextAttributesKey SPECIAL = TextAttributesKey.createTextAttributesKey(
-            "SPECIALS", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
-    public static final TextAttributesKey[] SPECIAL_KEYS = new TextAttributesKey[]{SPECIAL};
-
-    public static final TextAttributesKey STRING = TextAttributesKey.createTextAttributesKey(
-            "HASKELL_STRING", DefaultLanguageHighlighterColors.STRING);
-    public static final TextAttributesKey[] STRING_KEYS = new TextAttributesKey[]{STRING};
-
-    public static final TextAttributesKey INTEGER = TextAttributesKey.createTextAttributesKey(
-            "HASKELL_INTEGER", DefaultLanguageHighlighterColors.NUMBER);
-    public static final TextAttributesKey[] INTEGER_KEYS = new TextAttributesKey[]{INTEGER};
-
-    public static final TextAttributesKey FLOAT = TextAttributesKey.createTextAttributesKey(
-            "HASKELL_FLOAT", DefaultLanguageHighlighterColors.NUMBER);
-    public static final TextAttributesKey[] FLOAT_KEYS = new TextAttributesKey[]{FLOAT};
-
-    public static final TextAttributesKey CHAR = TextAttributesKey.createTextAttributesKey(
-            "HASKELL_CHAR", DefaultLanguageHighlighterColors.NUMBER);
-    public static final TextAttributesKey[] CHAR_KEYS = new TextAttributesKey[]{CHAR};
-
-    public static final TextAttributesKey COMMENT = TextAttributesKey.createTextAttributesKey(
-            "HASKELL_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
-    public static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{COMMENT};
-
-    public static final TextAttributesKey NCOMMENT = TextAttributesKey.createTextAttributesKey(
-            "HASKELL_NCOMMENT", DefaultLanguageHighlighterColors.BLOCK_COMMENT);
-    public static final TextAttributesKey[] NCOMMENT_KEYS = new TextAttributesKey[]{NCOMMENT};
-
-    public static final TextAttributesKey HADDOCK = TextAttributesKey.createTextAttributesKey(
-            "HASKELL_HADDOCK", DefaultLanguageHighlighterColors.DOC_COMMENT);
-    public static final TextAttributesKey[] HADDOCK_KEYS = new TextAttributesKey[]{HADDOCK};
-
-    public static final TextAttributesKey PRAGMA = TextAttributesKey.createTextAttributesKey(
-            "HASKELL_PRAGMA", DefaultLanguageHighlighterColors.METADATA);
-    public static final TextAttributesKey[] PRAGMA_KEYS = new TextAttributesKey[]{PRAGMA};
-
-    public static final TextAttributesKey ESCAPE = TextAttributesKey.createTextAttributesKey(
-            "HASKELL_ESCAPE", DefaultLanguageHighlighterColors.VALID_STRING_ESCAPE);
-    public static final TextAttributesKey[] ESCAPE_KEYS = new TextAttributesKey[]{ESCAPE};
+    static {
+        keys = new HashMap<IElementType, TextAttributesKey>(0);
+        keysPutEach(HaskellLanguage.RESERVED_IDS_TOKENS, RESERVEDID);
+        keysPutEach(HaskellLanguage.SPECIAL_TOKENS, SPECIAL);
+        keysPutEach(Arrays.asList(HaskellTypes.DOUBLEQUOTE, HaskellTypes.STRINGTOKEN), STRING);
+        keysPutEach(Arrays.asList(HaskellTypes.COMMENTTEXT, HaskellTypes.OPENCOM, HaskellTypes.CLOSECOM), NCOMMENT);
+        keysPutEach(Arrays.asList(HaskellTypes.PRAGMA, HaskellTypes.OPENPRAGMA, HaskellTypes.CLOSEPRAGMA), PRAGMA);
+        keys.put(HaskellTypes.CONIDREGEXP, CONID);
+        keys.put(HaskellTypes.COMMENT, COMMENT);
+        keys.put(HaskellTypes.HADDOCK, HADDOCK);
+        keys.put(HaskellTypes.INTEGERTOKEN, INTEGER);
+        keys.put(HaskellTypes.FLOATTOKEN, FLOAT);
+        keys.put(HaskellTypes.CHARTOKEN, CHAR);
+        keys.put(HaskellTypes.CONSYM, VARSYM);
+        keys.put(HaskellTypes.VARSYM, CONSYM);
+        keys.put(HaskellTypes.QQTEXT, QQTEXT);
+    }
 
     @NotNull
     @Override
@@ -94,38 +78,6 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
     @NotNull
     @Override
     public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
-        if (tokenType.equals(HaskellTypes.CONIDREGEXP)) {
-            return CONID_KEYS;
-        } else if (tokenType.equals(HaskellTypes.COMMENT)) {
-            return COMMENT_KEYS;
-        } else if (tokenType.equals(HaskellTypes.HADDOCK)) {
-            return HADDOCK_KEYS;
-        } else if (tokenType.equals(HaskellTypes.INTEGERTOKEN)) {
-            return INTEGER_KEYS;
-        } else if (tokenType.equals(HaskellTypes.FLOATTOKEN)) {
-            return FLOAT_KEYS;
-        } else if (tokenType.equals(HaskellTypes.CHARTOKEN)) {
-            return CHAR_KEYS;
-        } else if (tokenType.equals(HaskellTypes.STRINGTOKEN) ||
-                tokenType.equals(HaskellTypes.DOUBLEQUOTE)) {
-            return STRING_KEYS;
-        } else if (HaskellLanguage.SPECIAL_TOKENS.contains(tokenType)) {
-            return SPECIAL_KEYS;
-        } else if (tokenType.equals(HaskellTypes.COMMENTTEXT) ||
-                tokenType.equals(HaskellTypes.OPENCOM) ||
-                tokenType.equals(HaskellTypes.CLOSECOM)) {
-            return NCOMMENT_KEYS;
-        } else if (tokenType.equals(HaskellTypes.PRAGMA) ||
-                   tokenType.equals(HaskellTypes.OPENPRAGMA) ||
-                   tokenType.equals(HaskellTypes.CLOSEPRAGMA)) {
-            return PRAGMA_KEYS;
-        } else if (tokenType.equals(HaskellTypes.CONSYM)) {
-            return CONSYM_KEYS;
-        } else if (tokenType.equals(HaskellTypes.VARSYM)) {
-            return VARSYM_KEYS;
-        } else if (HaskellLanguage.RESERVED_IDS_TOKENS.contains(tokenType)) {
-            return RESERVEDID_KEYS;
-        }
-        return EMPTY;
+        return pack(keys.get(tokenType), EMPTY);
     }
 }
