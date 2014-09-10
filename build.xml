@@ -6,15 +6,19 @@
   <property name="build.compiler" value="modern"/>
   <property name="jflex.jar" value="JFlex.jar"/>
   <property name="jflex.skeleton" value="idea-flex.skeleton"/>
-  <property name="jflex.target.base" value="src/com/haskforce/highlighting/_HaskellSyntaxHighlightingLexer"/>
-  <property name="jflex.input.file" value="${jflex.target.base}.flex"/>
-  <property name="jflex.output.file" value="${jflex.target.base}.java"/>
-  <property name="jflex2.target.base" value="src/com/haskforce/parsing/_HaskellParsingLexer"/>
-  <property name="jflex2.input.file" value="${jflex2.target.base}.flex"/>
-  <property name="jflex2.output.file" value="${jflex2.target.base}.java"/>
-  <property name="jflex3.target.base" value="src/com/haskforce/cabal/highlighting/_CabalSyntaxHighlightingLexer"/>
-  <property name="jflex3.input.file" value="${jflex3.target.base}.flex"/>
-  <property name="jflex3.output.file" value="${jflex3.target.base}.java"/>
+  <!-- TODO: Consider using ant-contrib to generalize this pattern into a loop (task generate.sources) -->
+  <property name="jflex.haskellHighlight.target.base" value="src/com/haskforce/highlighting/_HaskellSyntaxHighlightingLexer"/>
+  <property name="jflex.haskellHighlight.input.file" value="${jflex.haskellHighlight.target.base}.flex"/>
+  <property name="jflex.haskellHighlight.output.file" value="${jflex.haskellHighlight.target.base}.java"/>
+  <property name="jflex.haskellParsing.target.base" value="src/com/haskforce/parsing/_HaskellParsingLexer"/>
+  <property name="jflex.haskellParsing.input.file" value="${jflex.haskellParsing.target.base}.flex"/>
+  <property name="jflex.haskellParsing.output.file" value="${jflex.haskellParsing.target.base}.java"/>
+  <property name="jflex.cabalHighlight.target.base" value="src/com/haskforce/cabal/highlighting/_CabalSyntaxHighlightingLexer"/>
+  <property name="jflex.cabalHighlight.input.file" value="${jflex.cabalHighlight.target.base}.flex"/>
+  <property name="jflex.cabalHighlight.output.file" value="${jflex.cabalHighlight.target.base}.java"/>
+  <property name="jflex.hamletHighlight.target.base" value="src/com/haskforce/yesod/shakespeare/hamlet/highlighting/_HamletSyntaxHighlightingLexer"/>
+  <property name="jflex.hamletHighlight.input.file" value="${jflex.hamletHighlight.target.base}.flex"/>
+  <property name="jflex.hamletHighlight.output.file" value="${jflex.hamletHighlight.target.base}.java"/>
 
   <!-- Set jdk.home if not specified in build.properties. -->
   <condition property="jdk.home" value="${java.home}/..">
@@ -436,59 +440,78 @@
     <echo message="Using JDK home: ${jdk.home}"/>
   </target>
 
+  <!-- TODO: Consider using ant-contrib to generalize this pattern into a loop -->
   <target name="generate.sources"
-          depends="check.jflex, generate.jflex, generate.jflex2, generate.jflex3"/>
+          depends="check.jflex, generate.jflex.haskellHighlight, generate.jflex.haskellParsing,
+                   generate.jflex.cabalHighlight, generate.jflex.hamletHighlight"/>
 
   <target name="check.jflex">
-    <condition property="jflex.notRequired">
+    <condition property="jflex.haskellHighlight.notRequired">
       <and>
-        <available file="${jflex.output.file}"/>
-        <uptodate srcfile="${jflex.input.file}" targetfile="${jflex.output.file}"/>
+        <available file="${jflex.haskellHighlight.output.file}"/>
+        <uptodate srcfile="${jflex.haskellHighlight.input.file}" targetfile="${jflex.haskellHighlight.output.file}"/>
       </and>
     </condition>
 
-    <condition property="jflex2.notRequired">
+    <condition property="jflex.haskellParsing.notRequired">
         <and>
-            <available file="${jflex2.output.file}"/>
-            <uptodate srcfile="${jflex2.input.file}" targetfile="${jflex2.output.file}"/>
+            <available file="${jflex.haskellParsing.output.file}"/>
+            <uptodate srcfile="${jflex.haskellParsing.input.file}" targetfile="${jflex.haskellParsing.output.file}"/>
         </and>
     </condition>
 
-    <condition property="jflex3.notRequired">
+    <condition property="jflex.cabalHighlight.notRequired">
       <and>
-        <available file="${jflex3.output.file}"/>
-        <uptodate srcfile="${jflex3.input.file}" targetfile="${jflex3.output.file}"/>
+        <available file="${jflex.cabalHighlight.output.file}"/>
+        <uptodate srcfile="${jflex.cabalHighlight.input.file}" targetfile="${jflex.cabalHighlight.output.file}"/>
+      </and>
+    </condition>
+
+    <condition property="jflex.hamletHighlight.notRequired">
+      <and>
+        <available file="${jflex.hamletHighlight.output.file}"/>
+        <uptodate srcfile="${jflex.hamletHighlight.input.file}" targetfile="${jflex.hamletHighlight.output.file}"/>
       </and>
     </condition>
   </target>
 
-  <target name="generate.jflex" unless="jflex.notRequired">
+  <target name="generate.jflex.haskellHighlight" unless="jflex.haskellHighlight.notRequired">
     <java jar="${jflex.jar}" fork="true">
       <arg value="--skel"/>
       <arg value="${jflex.skeleton}"/>
       <arg value="--charat"/>
       <arg value="--nobak"/>
-      <arg value="${jflex.input.file}"/>
+      <arg value="${jflex.haskellHighlight.input.file}"/>
     </java>
   </target>
 
-  <target name="generate.jflex2" unless="jflex2.notRequired">
+  <target name="generate.jflex.haskellParsing" unless="jflex.haskellParsing.notRequired">
     <java jar="${jflex.jar}" fork="true">
       <arg value="--skel"/>
       <arg value="${jflex.skeleton}"/>
       <arg value="--charat"/>
       <arg value="--nobak"/>
-      <arg value="${jflex2.input.file}"/>
+      <arg value="${jflex.haskellParsing.input.file}"/>
     </java>
   </target>
 
-  <target name="generate.jflex3" unless="jflex3.notRequired">
+  <target name="generate.jflex.cabalHighlight" unless="jflex.cabalHighlight.notRequired">
     <java jar="${jflex.jar}" fork="true">
       <arg value="--skel"/>
       <arg value="${jflex.skeleton}"/>
       <arg value="--charat"/>
       <arg value="--nobak"/>
-      <arg value="${jflex3.input.file}"/>
+      <arg value="${jflex.cabalHighlight.input.file}"/>
+    </java>
+  </target>
+
+  <target name="generate.jflex.hamletHighlight" unless="jflex.hamletHighlight.notRequired">
+    <java jar="${jflex.jar}" fork="true">
+      <arg value="--skel"/>
+      <arg value="${jflex.skeleton}"/>
+      <arg value="--charat"/>
+      <arg value="--nobak"/>
+      <arg value="${jflex.hamletHighlight.input.file}"/>
     </java>
   </target>
 
