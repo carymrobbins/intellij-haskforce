@@ -389,8 +389,7 @@ private lexp ::= "\\case" altslist
                | aexp+ {pin(".*")=2}
 
 private aexp ::= parensplice exp ')'
-               | singlequote qvar
-               | singlequote qcon
+               | singlequote (qvar | qcon)
                | idsplice
                | thquote qcon
                | literal

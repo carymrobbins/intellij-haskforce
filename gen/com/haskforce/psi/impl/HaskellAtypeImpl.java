@@ -29,9 +29,9 @@ public class HaskellAtypeImpl extends ASTWrapperPsiElement implements HaskellAty
   }
 
   @Override
-  @NotNull
-  public List<HaskellCtype> getCtypeList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellCtype.class);
+  @Nullable
+  public HaskellCtype getCtype() {
+    return findChildByClass(HaskellCtype.class);
   }
 
   @Override
