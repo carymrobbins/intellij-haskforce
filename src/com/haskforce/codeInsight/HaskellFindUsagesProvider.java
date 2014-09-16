@@ -25,8 +25,8 @@ public class HaskellFindUsagesProvider implements FindUsagesProvider {
     // Second parameter is nodes that are PsiNamedElements in practice.
     private final static WordsScanner SCANNER =
             new DefaultWordsScanner(new HaskellSyntaxHighlightingLexer(),
-                    TokenSet.create(HaskellTypes.VARID, HaskellTypes.VARIDREGEXP,
-                            HaskellTypes.CONID, HaskellTypes.CONIDREGEXP),
+                    TokenSet.create(HaskellTypes.VARIDREGEXP,
+                            HaskellTypes.CONIDREGEXP),
                     HaskellParserDefinition.COMMENTS, HaskellParserDefinition.STRINGS);
     @Nullable
     @Override
