@@ -1,5 +1,6 @@
 package com.haskforce.psi;
 
+import com.haskforce.HaskellParserDefinition;
 import com.intellij.lang.PsiBuilder;
 import com.intellij.lang.PsiParser;
 import com.intellij.lang.parser.GeneratedParserUtilBase;
@@ -7,6 +8,7 @@ import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedList;
 
@@ -56,6 +58,8 @@ public class HaskellParserUtilBase extends GeneratedParserUtilBase {
     private static int findBraces(LinkedList<Pair<Pair<Integer, Integer>, Integer>> l, int offs, int line, int lineStart) {
         int i = l.size() - 1;
         Pair<Pair<Integer, Integer>, Integer> last;
+        if (i == 0) return 0;
+
         Pair<Pair<Integer, Integer>, Integer> e = last = l.get(i--);
         while (e != null) {
             if (e.getFirst().getFirst() > line ||
@@ -128,15 +132,27 @@ public class HaskellParserUtilBase extends GeneratedParserUtilBase {
         if (!(builder instanceof Builder)) return false;
         PsiParser wrapper = ((Builder) builder).parser;
         if (!(wrapper instanceof HaskellParserWrapper)) return false;
+        if (builder.eof()) return false;
 
         IElementType currtok = builder.getTokenType();
-        IElementType prevtok = builder.lookAhead(-1);
+        Pair<Integer, IElementType> prevtok = previousElem(builder);
+        if (prevtok == null) return true;
+
         int offs = builder.getCurrentOffset();
         int line = StringUtil.offsetToLineNumber(builder.getOriginalText(), offs);
-        int prevline = StringUtil.offsetToLineNumber(builder.getOriginalText(), offs - 1);
+        int prevline = StringUtil.offsetToLineNumber(builder.getOriginalText(), offs + prevtok.getFirst());
+        if (prevline == line) return true;
 
-        if (prevline < line) return false;
-        return true;
+        int thisLineStart = StringUtil.lineColToOffset(builder.getOriginalText(), line, 0);
+        int prevLineStart = StringUtil.lineColToOffset(builder.getOriginalText(), prevline, 0);
+        CharSequence lineStuff = builder.getOriginalText().subSequence(thisLineStart, offs);
+        CharSequence prevLineStuff = builder.getOriginalText().subSequence(prevLineStart, thisLineStart - 1);
+        int indentation = indentationLevel(prevLineStuff);
+        int myindentation = offs - thisLineStart;
+        String tokName = builder.getTokenText();
+
+        if (myindentation > indentation) return true;
+        return false;
     }
 
 
@@ -149,4 +165,23 @@ public class HaskellParserUtilBase extends GeneratedParserUtilBase {
         return true;
     }
 
+    @Nullable
+    public static Pair<Integer, IElementType> previousElem(@NotNull PsiBuilder builder) {
+        int i = -1;
+        IElementType t = builder.rawLookup(i);
+        while (t != null &&
+                (HaskellParserDefinition.COMMENTS.contains(t) ||
+                    HaskellParserDefinition.WHITE_SPACES.contains(t))) {
+            t = builder.rawLookup(--i);
+        }
+        return t == null ? null : Pair.create(i - 1, t);
+    }
+
+    public static int indentationLevel(CharSequence c) {
+        int i = 0;
+        while(i < c.length() && c.charAt(i) == ' ') {
+            i++;
+        }
+        return i;
+    }
 }

@@ -3105,6 +3105,12 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
+  // <<indented>>
+  static boolean i(PsiBuilder builder_, int level_) {
+    return indented(builder_, level_ + 1);
+  }
+
+  /* ********************************************************** */
   // open <<trackPos>> alt (<<validatePos>> semi alt)* <<resetPos>> close?
   static boolean iAlts(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "iAlts")) return false;
