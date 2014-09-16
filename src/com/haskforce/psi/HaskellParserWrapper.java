@@ -28,7 +28,6 @@ public class HaskellParserWrapper extends HaskellParser {
     public int lastCountedTok;
     public boolean regressed;
     public _HaskellParsingLexer lexer;
-    public Pair<Integer, Integer> trackedPos;
 
     public final HashMap<Integer, Pair<Integer,Integer>> debtPoints = ContainerUtil.newHashMap();
 
@@ -72,7 +71,6 @@ public class HaskellParserWrapper extends HaskellParser {
     @Override
     public ASTNode parse(IElementType root_, PsiBuilder builder_) {
         maxRbraceDebt = -1;
-        trackedPos = Pair.create(-1, -1);
         lastCountedTok = -1;
         regressed = false;
         debtPoints.clear();

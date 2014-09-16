@@ -77,9 +77,9 @@ public class HaskellAltImpl extends ASTWrapperPsiElement implements HaskellAlt {
   }
 
   @Override
-  @Nullable
+  @NotNull
   public PsiElement getRightarrow() {
-    return findChildByType(RIGHTARROW);
+    return findNotNullChildByType(RIGHTARROW);
   }
 
   @Override

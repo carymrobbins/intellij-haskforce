@@ -23,9 +23,9 @@ public class HaskellExportsImpl extends ASTWrapperPsiElement implements HaskellE
   }
 
   @Override
-  @NotNull
-  public List<HaskellExport> getExportList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellExport.class);
+  @Nullable
+  public HaskellExport getExport() {
+    return findChildByClass(HaskellExport.class);
   }
 
   @Override

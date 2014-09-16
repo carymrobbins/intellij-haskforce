@@ -34,7 +34,7 @@ public interface HaskellAlt extends PsiElement {
   @Nullable
   PsiElement getRbrace();
 
-  @Nullable
+  @NotNull
   PsiElement getRightarrow();
 
   @Nullable
