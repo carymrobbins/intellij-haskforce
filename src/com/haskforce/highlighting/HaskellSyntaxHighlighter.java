@@ -65,8 +65,8 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
         keys.put(HaskellTypes.INTEGERTOKEN, INTEGER);
         keys.put(HaskellTypes.FLOATTOKEN, FLOAT);
         keys.put(HaskellTypes.CHARTOKEN, CHAR);
-        keys.put(HaskellTypes.VARSYM, VARSYM);
-        keys.put(HaskellTypes.CONSYM, CONSYM);
+        keys.put(HaskellTypes.VARSYMTOK, VARSYM);
+        keys.put(HaskellTypes.CONSYMTOK, CONSYM);
         keys.put(HaskellTypes.QQTEXT, QQTEXT);
         keys.put(HaskellTypes.INFIXVARID, INFIXVARID);
     }
