@@ -24,6 +24,7 @@ public class HaskellColorSettingsPage implements ColorSettingsPage {
             new AttributesDescriptor("Infix Function", HaskellSyntaxHighlighter.INFIXVARID),
             new AttributesDescriptor("Symbol", HaskellSyntaxHighlighter.VARSYM),
             new AttributesDescriptor("Cons Symbol", HaskellSyntaxHighlighter.CONSYM),
+            new AttributesDescriptor("Reserved Symbol", HaskellSyntaxHighlighter.RESERVEDOP),
             new AttributesDescriptor("Special", HaskellSyntaxHighlighter.SPECIAL),
             new AttributesDescriptor("String", HaskellSyntaxHighlighter.STRING),
             new AttributesDescriptor("Integer", HaskellSyntaxHighlighter.INTEGER),
