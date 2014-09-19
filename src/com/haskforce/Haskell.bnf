@@ -397,7 +397,7 @@ private aexp ::= parensplice exp i ')'
                | '(#' i '#)'
                | listlike
                | parenlike
-               | [recordlikelhs] i '{' (fbind ',')* e (".." | fbind) e '}'
+               | [recordlikelhs] i '{' (fbind ',')* [e] (".." | fbind) [e] '}'
                | gcon
                | qvar
 

@@ -242,7 +242,7 @@ public class HaskellParser implements PsiParser {
   //                | '(#' i '#)'
   //                | listlike
   //                | parenlike
-  //                | [recordlikelhs] i '{' (fbind ',')* e (".." | fbind) e '}'
+  //                | [recordlikelhs] i '{' (fbind ',')* [e] (".." | fbind) [e] '}'
   //                | gcon
   //                | qvar
   static boolean aexp(PsiBuilder builder_, int level_) {
@@ -325,7 +325,7 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // [recordlikelhs] i '{' (fbind ',')* e (".." | fbind) e '}'
+  // [recordlikelhs] i '{' (fbind ',')* [e] (".." | fbind) [e] '}'
   private static boolean aexp_9(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "aexp_9")) return false;
     boolean result_;
@@ -334,9 +334,9 @@ public class HaskellParser implements PsiParser {
     result_ = result_ && i(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, LBRACE);
     result_ = result_ && aexp_9_3(builder_, level_ + 1);
-    result_ = result_ && e(builder_, level_ + 1);
+    result_ = result_ && aexp_9_4(builder_, level_ + 1);
     result_ = result_ && aexp_9_5(builder_, level_ + 1);
-    result_ = result_ && e(builder_, level_ + 1);
+    result_ = result_ && aexp_9_6(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, RBRACE);
     exit_section_(builder_, marker_, null, result_);
     return result_;
@@ -372,6 +372,13 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
+  // [e]
+  private static boolean aexp_9_4(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "aexp_9_4")) return false;
+    e(builder_, level_ + 1);
+    return true;
+  }
+
   // ".." | fbind
   private static boolean aexp_9_5(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "aexp_9_5")) return false;
@@ -381,6 +388,13 @@ public class HaskellParser implements PsiParser {
     if (!result_) result_ = fbind(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
+  }
+
+  // [e]
+  private static boolean aexp_9_6(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "aexp_9_6")) return false;
+    e(builder_, level_ + 1);
+    return true;
   }
 
   /* ********************************************************** */
