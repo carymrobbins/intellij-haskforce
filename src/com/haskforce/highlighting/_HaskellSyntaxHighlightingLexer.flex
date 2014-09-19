@@ -56,8 +56,9 @@ EOL=\r|\n|\r\n
 LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 
-VARIDREGEXP=([a-z_][a-zA-Z_0-9']+)|[a-z]
-CONID=[A-Z][a-zA-Z_0-9']*
+VARIDREGEXP=([a-z_][a-zA-Z_0-9']+(\.[a-zA-Z_0-9']*)*)|[a-z]
+CONID=[A-Z][a-zA-Z_0-9']*(\.[a-zA-Z_0-9']*)*
+INFIXVARID=`[a-zA-Z_0-9][a-zA-Z_0-9']*`
 CHARTOKEN='(\\.|[^'])'
 INTEGERTOKEN=(0(o|O)[0-7]+|0(x|X)[0-9a-fA-F]+|[0-9]+)
 FLOATTOKEN=([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))
@@ -149,36 +150,15 @@ MAYBEQVARID=({CONID}\.)*{VARIDREGEXP}
   "{"                 { return LBRACE; }
   "}"                 { return RBRACE; }
   "'"                 { return SINGLEQUOTE; }
-  "!"                 { return EXCLAMATION; }
-  "##"                { return DOUBLEHASH; }
-  "#"                 { return HASH; }
   "$("                { return PARENSPLICE; }
   ("$"{VARIDREGEXP})  { return IDSPLICE; }
-  "$"                 { return DOLLAR; }
-  "%"                 { return PERCENT; }
-  "&"                 { return AMPERSAND; }
-  "*"                 { return ASTERISK; }
-  "+"                 { return PLUS; }
-  ".."                { return DOUBLEPERIOD; }
-  "."                 { return PERIOD; }
-  "/"                 { return SLASH; }
-  "<"                 { return LESSTHAN; }
-  "="                 { return EQUALS; }
-  ">"                 { return GREATERTHAN; }
-  "?"                 { return QUESTION; }
-  "@"                 { return AMPERSAT; }
-  "\\"                { return BACKSLASH; }
-  "^"                 { return CARET; }
-  "-"                 { return MINUS; }
-  "~"                 { return TILDE; }
   "_"                 { return UNDERSCORE; }
-  "::"                { return DOUBLECOLON; }
-  ":"                 { return COLON; }
-  (":"{ASCSYMBOL}+)   { return CONSYMTOK; }
-  ({ASCSYMBOL}+)      { return VARSYMTOKPLUS; }
+  (":"{ASCSYMBOL}+)   { return CONSYM; }
+  ({ASCSYMBOL}+)      { return VARSYM; }
 
   {VARIDREGEXP}       { return VARIDREGEXP; }
   {CONID}             { return CONIDREGEXP; }
+  {INFIXVARID}        { return INFIXVARID; }
   {CHARTOKEN}         { return CHARTOKEN; }
   {INTEGERTOKEN}      { return INTEGERTOKEN; }
   {FLOATTOKEN}        { return FLOATTOKEN; }

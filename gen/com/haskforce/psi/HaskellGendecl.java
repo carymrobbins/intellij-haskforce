@@ -13,8 +13,8 @@ public interface HaskellGendecl extends PsiElement {
   @Nullable
   HaskellFixity getFixity();
 
-  @NotNull
-  List<HaskellOp> getOpList();
+  @Nullable
+  HaskellOp getOp();
 
   @Nullable
   HaskellVars getVars();

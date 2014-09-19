@@ -181,6 +181,7 @@
     WHITESPACESEMITOK="Synthetic semicolon"
     WHITESPACELBRACETOK="Synthetic leftbrace"
     WHITESPACERBRACETOK="Synthetic rightbrace"
+    INFIXVARID='Infix varid'
   ]
 }
 

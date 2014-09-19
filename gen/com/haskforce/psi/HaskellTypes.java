@@ -135,6 +135,7 @@ public interface HaskellTypes {
   IElementType INFIX = new HaskellTokenType("infix");
   IElementType INFIXL = new HaskellTokenType("infixl");
   IElementType INFIXR = new HaskellTokenType("infixr");
+  IElementType INFIXVARID = new HaskellTokenType("Infix varid");
   IElementType INSTANCE = new HaskellTokenType("instance");
   IElementType INTEGERTOKEN = new HaskellTokenType("integertoken");
   IElementType LBRACE = new HaskellTokenType("{");

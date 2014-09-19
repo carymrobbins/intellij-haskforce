@@ -3,6 +3,7 @@ package com.haskforce.highlighting;
 import com.haskforce.HaskellLanguage;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
+import com.intellij.openapi.editor.colors.CodeInsightColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighterBase;
 import com.intellij.psi.tree.IElementType;
@@ -22,7 +23,7 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
      * purposes.
      */
 
-    public static final TextAttributesKey RESERVEDID = DefaultLanguageHighlighterColors.KEYWORD;
+    public static final TextAttributesKey RESERVEDID = DefaultLanguageHighlighterColors.FUNCTION_CALL;
     public static final TextAttributesKey SPECIAL = DefaultLanguageHighlighterColors.INSTANCE_FIELD;
     public static final TextAttributesKey NCOMMENT = DefaultLanguageHighlighterColors.BLOCK_COMMENT;
     public static final TextAttributesKey HADDOCK = DefaultLanguageHighlighterColors.DOC_COMMENT;
@@ -32,9 +33,9 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey CHAR = DefaultLanguageHighlighterColors.NUMBER;
     public static final TextAttributesKey CONID = DefaultLanguageHighlighterColors.INSTANCE_FIELD;
     public static final TextAttributesKey VARID = DefaultLanguageHighlighterColors.IDENTIFIER;
-    public static final TextAttributesKey INFIXVARID = DefaultLanguageHighlighterColors.METADATA;
-    public static final TextAttributesKey VARSYM = DefaultLanguageHighlighterColors.OPERATION_SIGN;
-    public static final TextAttributesKey CONSYM = DefaultLanguageHighlighterColors.OPERATION_SIGN;
+    public static final TextAttributesKey INFIXVARID = CodeInsightColors.TYPE_PARAMETER_NAME_ATTRIBUTES;
+    public static final TextAttributesKey VARSYM = CodeInsightColors.TYPE_PARAMETER_NAME_ATTRIBUTES;
+    public static final TextAttributesKey CONSYM = CodeInsightColors.TYPE_PARAMETER_NAME_ATTRIBUTES;
     public static final TextAttributesKey PRAGMA = DefaultLanguageHighlighterColors.METADATA;
     public static final TextAttributesKey STRING = DefaultLanguageHighlighterColors.STRING;
     public static final TextAttributesKey QQTEXT = DefaultLanguageHighlighterColors.STRING;
@@ -64,9 +65,10 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
         keys.put(HaskellTypes.INTEGERTOKEN, INTEGER);
         keys.put(HaskellTypes.FLOATTOKEN, FLOAT);
         keys.put(HaskellTypes.CHARTOKEN, CHAR);
-        keys.put(HaskellTypes.CONSYM, VARSYM);
-        keys.put(HaskellTypes.VARSYM, CONSYM);
+        keys.put(HaskellTypes.VARSYM, VARSYM);
+        keys.put(HaskellTypes.CONSYM, CONSYM);
         keys.put(HaskellTypes.QQTEXT, QQTEXT);
+        keys.put(HaskellTypes.INFIXVARID, INFIXVARID);
     }
 
     @NotNull
