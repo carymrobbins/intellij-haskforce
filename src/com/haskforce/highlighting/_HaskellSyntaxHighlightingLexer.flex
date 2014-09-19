@@ -110,9 +110,6 @@ MAYBEQVARID=({CONID}\.)*{VARIDREGEXP}
   "then"              { return THEN; }
   "forall"            { return FORALLTOKEN; }
 
-  "<-"                { return LEFTARROW; }
-  "->"                { return RIGHTARROW; }
-  "=>"                { return DOUBLEARROW; }
   "\\&"               { return NULLCHARACTER; }
   "(#"                { return LUNBOXPAREN; }
   "#)"                { return RUNBOXPAREN; }
