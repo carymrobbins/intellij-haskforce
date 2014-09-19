@@ -25,14 +25,6 @@ public class HaskellExternalAnnotator extends ExternalAnnotator<PsiFile, Problem
     private static final Logger LOG = Logger.getInstance(HaskellExternalAnnotator.class);
 
     /**
-     * Wrapper to simplify adding annotations to an AnnotationHolder.
-     */
-    @Override
-    public void apply(@NotNull PsiFile file, Problems annotationResult, @NotNull AnnotationHolder holder) {
-        apply(file, annotationResult, new HaskellAnnotationHolder(holder));
-    }
-
-    /**
      * The default implementation here is to not annotate files that have lexer/parser errors.  This is kind
      * of lame since the error may be invalid.
      */
@@ -75,6 +67,14 @@ public class HaskellExternalAnnotator extends ExternalAnnotator<PsiFile, Problem
         problems.addAllNotNull(GhcMod.check(project, workDir, canonicalPath));
         problems.addAllNotNull(HLint.lint(project, workDir, canonicalPath));
         return problems;
+    }
+
+    /**
+     * Wrapper to simplify adding annotations to an AnnotationHolder.
+     */
+    @Override
+    public void apply(@NotNull PsiFile file, Problems annotationResult, @NotNull AnnotationHolder holder) {
+        apply(file, annotationResult, new HaskellAnnotationHolder(holder));
     }
 
     public static void apply(@NotNull PsiFile file, Problems problems, @NotNull HaskellAnnotationHolder holder) {

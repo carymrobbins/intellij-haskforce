@@ -35,9 +35,9 @@ public class HaskellGendeclImpl extends ASTWrapperPsiElement implements HaskellG
   }
 
   @Override
-  @NotNull
-  public List<HaskellOp> getOpList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellOp.class);
+  @Nullable
+  public HaskellOp getOp() {
+    return findChildByClass(HaskellOp.class);
   }
 
   @Override

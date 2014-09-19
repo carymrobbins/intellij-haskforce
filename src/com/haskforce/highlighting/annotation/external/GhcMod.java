@@ -66,11 +66,9 @@ public class GhcMod {
     }
 
     /**
-     * Wrapper to execute ghc-mod commands in the context of our SDK.  ghc-mod executes `ghc --print-libdir`.
-     * While this works in most cases, if have multiple versions of ghc we need to explicitly expose the correct
-     * one at the start of the PATH so ghc-mod will pick that one.
-     *
-     * TODO: It would be nice if ghc-mod allowed a parameter like `--set-libdir` so we didn't have to hack the PATH.
+     * Wrapper to execute ghc-mod commands in the context of our SDK.  Old versions of ghc-mod execute
+     * `ghc --print-libdir`.  While this works in most cases, if have multiple versions of ghc we need to
+     * explicitly expose the correct one at the start of the PATH so ghc-mod will pick that one.
      */
     @Nullable
     public static String exec(@NotNull Project project, @NotNull String workingDirectory, @NotNull String ghcModPath,
