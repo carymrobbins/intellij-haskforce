@@ -1,6 +1,6 @@
 HaskellTokenType.varidRegexp ('main')
 WHITE_SPACE (' ')
-HaskellTokenType.= ('=')
+VARSYM ('=')
 WHITE_SPACE (' ')
 HaskellTokenType.varidRegexp ('print')
 WHITE_SPACE (' ')
