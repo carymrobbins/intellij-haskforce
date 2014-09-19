@@ -150,6 +150,17 @@ MAYBEQVARID=({CONID}\.)*{VARIDREGEXP}
   "$("                { return PARENSPLICE; }
   ("$"{VARIDREGEXP})  { return IDSPLICE; }
   "_"                 { return UNDERSCORE; }
+  ".."                { return DOUBLEPERIOD; }
+  ":"                 { return COLON; }
+  "::"                { return DOUBLECOLON; }
+  "="                 { return EQUALS; }
+  "\\"                { return BACKSLASH; }
+  "|"                 { return PIPE; }
+  "<-"                { return LEFTARROW; }
+  "->"                { return RIGHTARROW; }
+  "@"                 { return AMPERSAT; }
+  "~"                 { return TILDE; }
+  "=>"                { return DOUBLEARROW; }
   (":"{ASCSYMBOL}+)   { return CONSYMTOK; }
   ({ASCSYMBOL}+)      { return VARSYMTOK; }
 

@@ -29,39 +29,41 @@ public class HaskellLanguage extends Language {
      * Strings and tokens of specials.
      */
     public static final HashSet<String> SPECIALS = new HashSet<String>(
-            Arrays.asList(new String[]{"(", ")", ",", ";", "["
-                    , "]", "`", "{", "}"}));
+            Arrays.asList("(", ")", ",", ";", "[", "]", "`", "{", "}"));
     public static final HashSet<IElementType> SPECIAL_TOKENS = new HashSet<IElementType>(
-            Arrays.asList(new IElementType[]{LPAREN, RPAREN, COMMA, SEMICOLON
-                    , LBRACKET, RBRACKET, LBRACE, RBRACE, PARENSPLICE, LTHOPEN, RTHCLOSE, QQOPEN}));
+            Arrays.asList(LPAREN, RPAREN, COMMA, SEMICOLON
+                    , LBRACKET, RBRACKET, LBRACE, RBRACE, PARENSPLICE, LTHOPEN, RTHCLOSE, QQOPEN));
 
     /**
      * Strings and tokens of symbols.
      */
     public static final HashSet<String> SYMBOLS = new HashSet<String>(
-            Arrays.asList(new String[]{"!", "#", "$", "%", "&"
+            Arrays.asList("!", "#", "$", "%", "&"
                     , "*", "+", ".", "/", "<", "="
                     , ">", "?", "@", "\\", "^", "|", "_"
-                    , "~", ":"}));
+                    , "~", ":"));
     public static final HashSet<IElementType> SYMBOL_TOKENS = new HashSet<IElementType>(
-            Arrays.asList(new IElementType[]{EXCLAMATION, HASH, DOLLAR, PERCENT, AMPERSAND
+            Arrays.asList(EXCLAMATION, HASH, DOLLAR, PERCENT, AMPERSAND
                     , ASTERISK, PLUS, PERIOD, SLASH, LESSTHAN, EQUALS
                     , GREATERTHAN, QUESTION, AMPERSAT, BACKSLASH, CARET, PIPE, UNDERSCORE
-                    , TILDE, COLON}));
+                    , TILDE, COLON));
 
     /**
      * Tokens of reserved IDs.
      */
     public static final HashSet<IElementType> RESERVED_IDS_TOKENS = new HashSet<IElementType>(
-            Arrays.asList(new IElementType[]{AS, CASE, CLASSTOKEN, DATA, DEFAULT
+            Arrays.asList(AS, CASE, CLASSTOKEN, DATA, DEFAULT
                     , DERIVING, DO, ELSE, FOREIGN, HIDING, IF, IMPORT, IN, INFIX
                     , INFIXL, INFIXR, HaskellTypes.INSTANCE, LET, MODULETOKEN
-                    , NEWTYPE, OF, QUALIFIED, THEN, TYPE, WHERE}));
+                    , NEWTYPE, OF, QUALIFIED, THEN, TYPE, WHERE));
 
     /**
      * Strings of reserved ops.
      */
     public static final HashSet<String> RESERVEDOPS = new HashSet<String>(
-            Arrays.asList(new String[]{"..", ":", "::", "=", "\\"
-                    , "|", "<-", "->", "@", "~", "=>"}));
+            Arrays.asList("..", ":", "::", "=", "\\", "|", "<-", "->", "@", "~", "=>"));
+
+    public static final HashSet<IElementType> RESERVED_OPS_TOKENS = new HashSet<IElementType>(
+            Arrays.asList(DOUBLEPERIOD, COLON, DOUBLECOLON, EQUALS, BACKSLASH, PIPE, LEFTARROW, RIGHTARROW
+                    , AMPERSAT, TILDE, DOUBLEARROW));
 }
