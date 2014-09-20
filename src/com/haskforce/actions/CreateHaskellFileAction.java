@@ -80,7 +80,7 @@ public class CreateHaskellFileAction extends CreateFileFromTemplateAction implem
 
     @SuppressWarnings("DialogTitleCapitalization")
     @Nullable
-    public static PsiFile createFileFromTemplate(@Nullable String name,
+    public static PsiFile createFileFromTemplate(@SuppressWarnings("NullableProblems") @NotNull String name,
                                                  @NotNull FileTemplate template,
                                                  @NotNull PsiDirectory dir,
                                                  @Nullable String defaultTemplateProperty) {

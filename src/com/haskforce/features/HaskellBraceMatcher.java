@@ -31,7 +31,7 @@ public class HaskellBraceMatcher implements PairedBraceMatcher {
 
     @Override
     public BracePair[] getPairs() {
-        return PAIRS.clone();
+        return PAIRS;
     }
 
     @Override
