@@ -71,7 +71,8 @@ public class HaskellReference extends PsiReferenceBase<PsiElement> implements Ps
         List<PsiNamedElement> namedNodes = HaskellUtil.findDefinitionNodes(project);
         List<LookupElement> variants = new ArrayList<LookupElement>(20);
         for (final PsiNamedElement namedElement : namedNodes) {
-            if (namedElement.getName() != null && !namedElement.getName().isEmpty()) {
+            final String name = namedElement.getName();
+            if (name != null && !name.isEmpty()) {
                 variants.add(LookupElementBuilder.create(namedElement).
                                 withIcon(HaskellIcons.FILE).
                                 withTypeText(namedElement.getContainingFile().getName())

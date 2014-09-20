@@ -70,7 +70,7 @@ public class CreateHaskellFileAction extends CreateFileFromTemplateAction implem
     }
 
     @Override
-    protected PsiFile createFileFromTemplate(String name, FileTemplate template, PsiDirectory dir) {
+    protected PsiFile createFileFromTemplate(@NotNull String name, @NotNull FileTemplate template, @NotNull PsiDirectory dir) {
         // Strip extension so we don't end up with a file saved as "Foo.hs.hs" and content of `module Foo.hs where`
         if (name.endsWith(".hs")) {
             name = name.substring(0, name.lastIndexOf('.'));
@@ -103,7 +103,7 @@ public class CreateHaskellFileAction extends CreateFileFromTemplateAction implem
         try {
             // Patch props with custom property.
             Properties props = FileTemplateManager.getInstance().getDefaultProperties(project);
-            props.setProperty("HASKELL_MODULE_NAME", modulePrefix.isEmpty() || name == null ? name : modulePrefix + '.' + name);
+            props.setProperty("HASKELL_MODULE_NAME", modulePrefix.isEmpty() ? name : modulePrefix + '.' + name);
             element = FileTemplateUtil
                     .createFromTemplate(template, name, props, dir);
 

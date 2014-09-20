@@ -20,8 +20,9 @@ public class HaskellChooseByNameContributor implements ChooseByNameContributor {
         List<PsiNamedElement> definitions = HaskellUtil.findDefinitionNodes(project);
         List<String> names = ContainerUtil.newArrayListWithCapacity(definitions.size());
         for (PsiNamedElement def : definitions) {
-            if (def.getName() != null && !def.getName().isEmpty()) {
-                names.add(def.getName());
+            final String name = def.getName();
+            if (name != null && !name.isEmpty()) {
+                names.add(name);
             }
         }
         return names.toArray(new String[names.size()]);
