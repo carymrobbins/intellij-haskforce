@@ -95,6 +95,8 @@ public class HaskellStylishFormatAction extends AnAction implements DumbAware {
             String backingFilePath = backingFile.getCanonicalPath();
             if (backingFilePath == null) return;
             commandLine.addParameter(backingFilePath);
+            // Set the work dir so stylish can pick up the user config, if it exists.
+            commandLine.setWorkDirectory(backingFile.getParent().getCanonicalPath());
 
             ApplicationManager.getApplication().saveAll();
 
