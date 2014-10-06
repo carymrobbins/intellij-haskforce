@@ -10,6 +10,7 @@ import com.haskforce.highlighting.annotation.Problems;
 import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.HaskellToolsNotificationListener;
 import com.intellij.execution.configurations.GeneralCommandLine;
+import com.intellij.execution.configurations.ParametersList;
 import com.intellij.lang.annotation.Annotation;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
@@ -31,38 +32,49 @@ import java.util.regex.Pattern;
  * Interface + encapsulation of details concerning ghc-mod communication and annotation.
  */
 public class GhcMod {
-    // Map of Project -> ghcModPath.  Useful to ensure we don't output the same error multiple times.
+    // Map of project -> errorMessage.  Useful to ensure we don't output the same error multiple times.
     private static Map<Project, String> errorState = new HashMap<Project, String>(0);
 
-    @NotNull
+    @Nullable
     public static Problems check(@NotNull Project project, @NotNull String workingDirectory, @NotNull String file) {
-        String ghcModPath = getPath(project);
+        final String ghcModPath = ExecUtil.GHC_MOD_KEY.getPath(project);
+        final String ghcModFlags = ExecUtil.GHC_MOD_KEY.getFlags(project);
         String stdout;
-        if (ghcModPath == null || (stdout = exec(project, workingDirectory, ghcModPath, "check", file)) == null) {
+        if (ghcModPath == null
+                || (stdout = exec(workingDirectory, ghcModPath, "check", ghcModFlags, file)) == null
+                || stdout.length() == 0) {
             return new Problems();
         }
-        return handleErrors(project, ghcModPath, parseProblems(new Scanner(stdout)));
+        return handleErrors(project, stdout);
     }
 
-    @NotNull
-    public static Problems handleErrors(@NotNull Project project, @NotNull String ghcModPath, @NotNull Problems problems) {
-        if (problems.size() == 1) {
+    @Nullable
+    public static Problems handleErrors(@NotNull Project project, @NotNull String stdout) {
+        final Problems problems = parseProblems(new Scanner(stdout));
+        if (problems == null) {
+            // parseProblems should have returned something, so let's just dump the output to the user.
+            displayError(project, stdout.replace("\n", "<br/>"));
+            return null;
+        } else if (problems.size() == 1) {
             final Problem problem = (Problem)problems.get(0);
             if (problem.startLine == 0 && problem.startColumn == 0) {
-                if (!ghcModPath.equals(errorState.get(project))) {
-                    // Update the errorState to ensure we don't display duplicate errors.
-                    errorState.put(project, ghcModPath);
-                    Notifications.Bus.notify(new Notification(
-                            "ghc-mod error", "ghc-mod error",
-                            problem.message + "<br/><a href='configureHaskellTools'>Configure</a>",
-                            NotificationType.ERROR, new HaskellToolsNotificationListener(project)), project);
-                    return new Problems();
-                }
+                displayError(project, problem.message);
+                return null;
             }
         }
         // Clear the errorState since ghc-mod was successful.
         errorState.remove(project);
         return problems;
+    }
+
+    private static void displayError(@NotNull Project project, @NotNull String message) {
+        if (!message.equals(errorState.get(project))) {
+            errorState.put(project, message);
+            Notifications.Bus.notify(new Notification(
+                    "ghc-mod error", "ghc-mod error",
+                    message + "<br/><a href='configureHaskellTools'>Configure</a>",
+                    NotificationType.ERROR, new HaskellToolsNotificationListener(project)), project);
+        }
     }
 
     /**
@@ -71,39 +83,28 @@ public class GhcMod {
      * explicitly expose the correct one at the start of the PATH so ghc-mod will pick that one.
      */
     @Nullable
-    public static String exec(@NotNull Project project, @NotNull String workingDirectory, @NotNull String ghcModPath,
-                              @NotNull String command, String... params) {
+    public static String exec(@NotNull String workingDirectory, @NotNull String ghcModPath,
+                              @NotNull String command, @NotNull String ghcModFlags, String... params) {
         GeneralCommandLine commandLine = new GeneralCommandLine(ghcModPath, command);
-        commandLine.addParameters(params);
+        ParametersList parametersList = commandLine.getParametersList();
+        parametersList.addParametersString(ghcModFlags);
+        parametersList.addAll(params);
         commandLine.setWorkDirectory(workingDirectory);
         // Make sure we can actually see the errors.
         commandLine.setRedirectErrorStream(true);
-        // We'll need to manually update the PATH env var so ghc-mod can find our SDK's ghc.
-        // TODO: This may be better refactored into an ExecUtil helper.
-        Map<String, String> env = commandLine.getEnvironment();
-        final File ghcFile = HaskellSdkType.getExecutable(project);
-        if (ghcFile != null) {
-            final String ghcPath = ghcFile.getParent();
-            if (ghcPath != null) {
-                env.put("PATH", ghcPath + System.getProperty("path.separator") + System.getenv("PATH"));
-            }
-        }
         return ExecUtil.readCommandLine(commandLine);
     }
 
     @Nullable
-    public static String getPath(@NotNull Project project) {
-        return ExecUtil.GHC_MOD_KEY.getPath(project);
-    }
-
-    @NotNull
     public static Problems parseProblems(@NotNull Scanner scanner) {
         Problems result = new Problems();
         Problem problem;
         while ((problem = parseProblem(scanner)) != null) {
             result.add(problem);
         }
-        return result;
+        // We only call this function if ghc-mod returned errors, so if we couldn't parse a result something
+        // bad happened.  We'll check for a null return value in handleErrors.
+        return result.size() == 0 ? null : result;
     }
 
     private static final Pattern IN_A_STMT_REGEX = Pattern.compile("\nIn a stmt.*");
