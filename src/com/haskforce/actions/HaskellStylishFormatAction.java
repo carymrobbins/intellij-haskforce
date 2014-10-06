@@ -20,6 +20,7 @@ package com.haskforce.actions;
  * Adapted from the Emacs-formatter in the Erlang plugin. 17 May 2014.
  */
 
+import com.haskforce.utils.ExecUtil;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -79,7 +80,8 @@ public class HaskellStylishFormatAction extends AnAction implements DumbAware {
         final String groupId = e.getPresentation().getText();
         try {
             GeneralCommandLine commandLine = new GeneralCommandLine();
-            String stylishPath = PropertiesComponent.getInstance(project).getValue("stylishPath", "");
+            final String stylishPath = PropertiesComponent.getInstance(project).getValue(ExecUtil.STYLISH_HASKELL_KEY.pathKey, "");
+            final String stylishFlags = PropertiesComponent.getInstance(project).getValue(ExecUtil.STYLISH_HASKELL_KEY.flagsKey, "");
             if (stylishPath.isEmpty()) {
                 Notifications.Bus.notify(
                         new Notification(groupId, NOTIFICATION_TITLE,
@@ -89,6 +91,7 @@ public class HaskellStylishFormatAction extends AnAction implements DumbAware {
                 return;
             }
             commandLine.setExePath(stylishPath);
+            commandLine.getParametersList().addParametersString(stylishFlags);
 
             final VirtualFile backingFile = psiFile.getVirtualFile();
             if (backingFile == null) return;
