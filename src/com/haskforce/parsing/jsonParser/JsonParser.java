@@ -48,7 +48,9 @@ public class JsonParser {
     public TopPair parse(@NotNull CharSequence input) {
         TopPair tp = new TopPair();
         PropertiesComponent prop = PropertiesComponent.getInstance(myProject);
-        String parserHelperPath = prop == null ? ExecUtil.locateExecutableByGuessing("parser-helper") : prop.getValue("parserHelperPath", "");
+        String parserHelperPath = prop == null ? ExecUtil.locateExecutableByGuessing("parser-helper")
+                                               : prop.getValue(ExecUtil.PARSER_HELPER_KEY.pathKey, "");
+        String parserHelperFlags = prop == null ? "" : prop.getValue(ExecUtil.PARSER_HELPER_KEY.flagsKey, "");
 
         if (parserHelperPath == null || parserHelperPath.isEmpty()) {
             if (!haveGivenPathWarning) {
@@ -89,7 +91,7 @@ public class JsonParser {
             haveGivenVersionWarning = true;
         }
 
-        String json = getJson(input, parserHelperPath);
+        String json = getJson(input, parserHelperPath, parserHelperFlags);
         if (json == null || json.startsWith("ERROR:")) {
             tp.error = json == null ? "Unable to execute Parser-helper." : json.substring("ERROR:".length());
             return tp;
@@ -111,7 +113,7 @@ public class JsonParser {
      * Executes parser-helper and returns the result.
      */
     @Nullable
-    public String getJson(@NotNull CharSequence input, @NotNull String parserHelperPath) {
+    public String getJson(@NotNull CharSequence input, @NotNull String parserHelperPath, @NotNull String parserHelperFlags) {
         final String bwPath = ".dist-buildwrapper";
         try {
             String fixedInput = cppPattern.matcher(input).replaceAll(" ");
@@ -119,7 +121,7 @@ public class JsonParser {
             FileUtil.appendToFile(tmpFile, fixedInput);
 
             // Construct command line for parser-helper.
-            final String stuffToRun = parserHelperPath + ' ' + bwPath + File.separator + tmpFile.getName();
+            final String stuffToRun = parserHelperPath + ' ' + parserHelperFlags + ' ' + bwPath + File.separator + tmpFile.getName();
 
             // Run parser-helper.
             return ExecUtil.exec(stuffToRun);

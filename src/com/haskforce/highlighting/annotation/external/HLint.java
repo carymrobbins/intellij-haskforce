@@ -39,7 +39,7 @@ public class HLint {
     }
 
     public static String getPath(@NotNull Project project) {
-        return ExecUtil.getExternalToolPath(project, ExecUtil.HLINT_PATH_KEY);
+        return ExecUtil.getExternalToolPath(project, ExecUtil.HLINT_KEY);
     }
 
     @NotNull

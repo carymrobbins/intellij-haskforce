@@ -8,7 +8,6 @@ import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.ui.RawCommandLineEditor;
-import com.intellij.ui.TextFieldWithHistory;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -47,13 +46,13 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     public HaskellToolsConfigurable(@NotNull Project project) {
         this.propertiesComponent = PropertiesComponent.getInstance(project);
         tools = new Tool[]{
-                new Tool(project, "parser-helper", ExecUtil.PARSER_HELPER_PATH_KEY, parserHelperPath, parserHelperFlags,
+                new Tool(project, "parser-helper", ExecUtil.PARSER_HELPER_KEY, parserHelperPath, parserHelperFlags,
                         parserHelperAutoFind, parserHelperVersion, "--numeric-version"),
-                new Tool(project, "stylish-haskell", ExecUtil.STYLISH_HASKELL_PATH_KEY, stylishPath, stylishFlags,
+                new Tool(project, "stylish-haskell", ExecUtil.STYLISH_HASKELL_KEY, stylishPath, stylishFlags,
                         stylishAutoFind, stylishVersion),
-                new Tool(project, "hlint", ExecUtil.HLINT_PATH_KEY, hlintPath, hlintFlags,
+                new Tool(project, "hlint", ExecUtil.HLINT_KEY, hlintPath, hlintFlags,
                         hlintAutoFind, hlintVersion),
-                new Tool(project, "ghc-mod", ExecUtil.GHC_MOD_PATH_KEY, ghcModPath, ghcModFlags,
+                new Tool(project, "ghc-mod", ExecUtil.GHC_MOD_KEY, ghcModPath, ghcModFlags,
                         ghcModAutoFind, ghcModVersion, "version"),
         };
     }
@@ -61,8 +60,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     class Tool {
         public final Project project;
         public final String command;
-        public final String pathKey;
-        public final String flagsKey;
+        public final ExecUtil.ToolKey key;
         public String oldPath;
         public String oldFlags;
         public final TextFieldWithBrowseButton pathField;
@@ -71,29 +69,28 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
         public final String versionParam;
         public final JButton autoFindButton;
 
-        Tool(Project project, String command, ExecUtil.PathKey key, TextFieldWithBrowseButton pathField,
+        Tool(Project project, String command, ExecUtil.ToolKey key, TextFieldWithBrowseButton pathField,
              RawCommandLineEditor flagsField, JButton autoFindButton, JLabel versionField) {
             this(project, command, key, pathField, flagsField, autoFindButton, versionField, "--version");
         }
 
-        Tool(Project project, String command, ExecUtil.PathKey key, TextFieldWithBrowseButton pathField,
+        Tool(Project project, String command, ExecUtil.ToolKey key, TextFieldWithBrowseButton pathField,
              RawCommandLineEditor flagsField, JButton autoFindButton, JLabel versionField, String versionParam) {
             this.project = project;
             this.command = command;
+            this.key = key;
             this.pathField = pathField;
             this.flagsField = flagsField;
             this.versionField = versionField;
             this.versionParam = versionParam;
             this.autoFindButton = autoFindButton;
 
-            this.pathKey = key.pathKey;
-            this.oldPath = propertiesComponent.getValue(this.pathKey, "");
+            this.oldPath = propertiesComponent.getValue(key.pathKey, "");
             if (!oldPath.isEmpty()) {
                 pathField.setText(oldPath);
             }
 
-            this.flagsKey = key.pathKey + "Flags";
-            this.oldFlags = propertiesComponent.getValue(this.flagsKey, "");
+            this.oldFlags = propertiesComponent.getValue(key.flagsKey, "");
             if (!oldFlags.isEmpty()) {
                 pathField.setText(oldFlags);
             }
@@ -115,8 +112,8 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
         }
 
         private void saveState() {
-            propertiesComponent.setValue(pathKey, oldPath = pathField.getText());
-            propertiesComponent.setValue(flagsKey, oldFlags = flagsField.getText());
+            propertiesComponent.setValue(key.pathKey, oldPath = pathField.getText());
+            propertiesComponent.setValue(key.flagsKey, oldFlags = flagsField.getText());
         }
 
         private void restoreState() {

@@ -5,7 +5,6 @@ import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.CapturingProcessHandler;
 import com.intellij.execution.process.ProcessOutput;
-import com.intellij.execution.ui.layout.impl.RunnerLayout;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
@@ -189,25 +188,27 @@ public class ExecUtil {
     }
 
     /**
-     * String wrapper to ensure that we don't accidentally pass an invalid path key.
+     * String wrapper to ensure that we don't accidentally pass an invalid key to the PropertiesComponent.
      * These are set as property keys in HaskellToolsConfigurable.
      */
-    public static class PathKey {
+    public static class ToolKey {
         public final String pathKey;
+        public final String flagsKey;
 
-        PathKey(String pathKey) {
-            this.pathKey = pathKey;
+        ToolKey(String name) {
+            this.pathKey = name + "Path";
+            this.flagsKey = name + "Flags";
         }
     }
 
-    public static final PathKey PARSER_HELPER_PATH_KEY = new PathKey("parserHelperPath");
-    public static final PathKey STYLISH_HASKELL_PATH_KEY = new PathKey("stylishHaskellPath");
-    public static final PathKey HLINT_PATH_KEY = new PathKey("hlintPath");
-    public static final PathKey GHC_MOD_PATH_KEY = new PathKey("ghcModPath");
+    public static final ToolKey PARSER_HELPER_KEY = new ToolKey("parserHelper");
+    public static final ToolKey STYLISH_HASKELL_KEY = new ToolKey("stylishHaskell");
+    public static final ToolKey HLINT_KEY = new ToolKey("hlint");
+    public static final ToolKey GHC_MOD_KEY = new ToolKey("ghcMod");
 
 
     @Nullable
-    public static String getExternalToolPath(@NotNull Project project, @NotNull PathKey pathKey) {
+    public static String getExternalToolPath(@NotNull Project project, @NotNull ToolKey pathKey) {
         final String path = PropertiesComponent.getInstance(project).getValue(pathKey.pathKey);
         return path == null || path.isEmpty() ? null : path;
     }

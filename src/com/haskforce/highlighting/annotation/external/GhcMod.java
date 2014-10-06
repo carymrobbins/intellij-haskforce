@@ -93,7 +93,7 @@ public class GhcMod {
 
     @Nullable
     public static String getPath(@NotNull Project project) {
-        return ExecUtil.getExternalToolPath(project, ExecUtil.GHC_MOD_PATH_KEY);
+        return ExecUtil.getExternalToolPath(project, ExecUtil.GHC_MOD_KEY);
     }
 
     @NotNull
