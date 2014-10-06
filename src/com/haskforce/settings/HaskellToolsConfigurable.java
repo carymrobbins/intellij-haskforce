@@ -7,6 +7,8 @@ import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.intellij.ui.RawCommandLineEditor;
+import com.intellij.ui.TextFieldWithHistory;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,36 +23,37 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
 
     private PropertiesComponent propertiesComponent;
 
-    private Project project;
-
     // Swing components.
     private JPanel mainPanel;
     private TextFieldWithBrowseButton parserHelperPath;
+    private RawCommandLineEditor parserHelperFlags;
     private JLabel parserHelperVersion;
     private JButton parserHelperAutoFind;
     private TextFieldWithBrowseButton stylishPath;
+    private RawCommandLineEditor stylishFlags;
     private JButton stylishAutoFind;
     private JLabel stylishVersion;
     private TextFieldWithBrowseButton hlintPath;
+    private RawCommandLineEditor hlintFlags;
     private JButton hlintAutoFind;
     private JLabel hlintVersion;
     private TextFieldWithBrowseButton ghcModPath;
+    private RawCommandLineEditor ghcModFlags;
     private JButton ghcModAutoFind;
     private JLabel ghcModVersion;
 
     private Tool[] tools;
 
     public HaskellToolsConfigurable(@NotNull Project project) {
-        this.project = project;
         this.propertiesComponent = PropertiesComponent.getInstance(project);
         tools = new Tool[]{
-                new Tool(project, "parser-helper", ExecUtil.PARSER_HELPER_PATH_KEY, parserHelperPath,
+                new Tool(project, "parser-helper", ExecUtil.PARSER_HELPER_PATH_KEY, parserHelperPath, parserHelperFlags,
                         parserHelperAutoFind, parserHelperVersion, "--numeric-version"),
-                new Tool(project, "stylish-haskell", ExecUtil.STYLISH_HASKELL_PATH_KEY, stylishPath,
+                new Tool(project, "stylish-haskell", ExecUtil.STYLISH_HASKELL_PATH_KEY, stylishPath, stylishFlags,
                         stylishAutoFind, stylishVersion),
-                new Tool(project, "hlint", ExecUtil.HLINT_PATH_KEY, hlintPath,
+                new Tool(project, "hlint", ExecUtil.HLINT_PATH_KEY, hlintPath, hlintFlags,
                         hlintAutoFind, hlintVersion),
-                new Tool(project, "ghc-mod", ExecUtil.GHC_MOD_PATH_KEY, ghcModPath,
+                new Tool(project, "ghc-mod", ExecUtil.GHC_MOD_PATH_KEY, ghcModPath, ghcModFlags,
                         ghcModAutoFind, ghcModVersion, "version"),
         };
     }
@@ -58,32 +61,43 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     class Tool {
         public final Project project;
         public final String command;
-        public final String key;
+        public final String pathKey;
+        public final String flagsKey;
         public String oldPath;
+        public String oldFlags;
         public final TextFieldWithBrowseButton pathField;
+        public final RawCommandLineEditor flagsField;
         public final JLabel versionField;
         public final String versionParam;
         public final JButton autoFindButton;
 
-        Tool(Project project, String command, ExecUtil.PathKey key, TextFieldWithBrowseButton pathField, JButton autoFindButton,
-             JLabel versionField) {
-            this(project, command, key, pathField, autoFindButton, versionField, "--version");
+        Tool(Project project, String command, ExecUtil.PathKey key, TextFieldWithBrowseButton pathField,
+             RawCommandLineEditor flagsField, JButton autoFindButton, JLabel versionField) {
+            this(project, command, key, pathField, flagsField, autoFindButton, versionField, "--version");
         }
 
-        Tool(Project project, String command, ExecUtil.PathKey key, TextFieldWithBrowseButton pathField, JButton autoFindButton,
-             JLabel versionField, String versionParam) {
+        Tool(Project project, String command, ExecUtil.PathKey key, TextFieldWithBrowseButton pathField,
+             RawCommandLineEditor flagsField, JButton autoFindButton, JLabel versionField, String versionParam) {
             this.project = project;
             this.command = command;
-            this.key = key.pathKey;
-            this.oldPath = propertiesComponent.getValue(key.pathKey, "");
             this.pathField = pathField;
+            this.flagsField = flagsField;
             this.versionField = versionField;
             this.versionParam = versionParam;
             this.autoFindButton = autoFindButton;
 
+            this.pathKey = key.pathKey;
+            this.oldPath = propertiesComponent.getValue(this.pathKey, "");
             if (!oldPath.isEmpty()) {
                 pathField.setText(oldPath);
             }
+
+            this.flagsKey = key.pathKey + "Flags";
+            this.oldFlags = propertiesComponent.getValue(this.flagsKey, "");
+            if (!oldFlags.isEmpty()) {
+                pathField.setText(oldFlags);
+            }
+
             GuiUtil.addFolderListener(pathField, command);
             GuiUtil.addApplyPathAction(autoFindButton, pathField, command);
             updateVersion();
@@ -97,15 +111,17 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
         }
 
         public boolean isModified() {
-            return !pathField.getText().equals(oldPath);
+            return !(pathField.getText().equals(oldPath) || flagsField.getText().equals(oldFlags));
         }
 
         private void saveState() {
-            propertiesComponent.setValue(key, oldPath = pathField.getText());
+            propertiesComponent.setValue(pathKey, oldPath = pathField.getText());
+            propertiesComponent.setValue(flagsKey, oldFlags = flagsField.getText());
         }
 
         private void restoreState() {
             pathField.setText(oldPath);
+            flagsField.setText(oldFlags);
         }
     }
 
@@ -139,6 +155,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     public JComponent createComponent() {
         return mainPanel;
     }
+
     /**
      * Enables the apply button if anything changed.
      */

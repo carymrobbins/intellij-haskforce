@@ -25,7 +25,7 @@ import java.util.Collection;
  *
  * Each configuration variable must be read and written from the readExternal and writeExternal
  * methods, respectively.  Otherwise, user configuration is not persisted across IntelliJ restarts.
- * As demonstrated, use a unique string key for each configuration variable and implement its read
+ * As demonstrated, use a unique string pathKey for each configuration variable and implement its read
  * and write.
  */
 public class HaskellTestRunConfiguration extends HaskellRunConfigurationBase {
