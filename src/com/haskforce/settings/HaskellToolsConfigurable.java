@@ -108,7 +108,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
         }
 
         public boolean isModified() {
-            return !(pathField.getText().equals(oldPath) || flagsField.getText().equals(oldFlags));
+            return !(pathField.getText().equals(oldPath) && flagsField.getText().equals(oldFlags));
         }
 
         private void saveState() {

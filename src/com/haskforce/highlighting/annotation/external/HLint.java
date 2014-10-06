@@ -7,6 +7,8 @@ import com.haskforce.highlighting.annotation.HaskellAnnotationHolder;
 import com.haskforce.highlighting.annotation.HaskellProblem;
 import com.haskforce.highlighting.annotation.Problems;
 import com.haskforce.utils.ExecUtil;
+import com.intellij.execution.configurations.GeneralCommandLine;
+import com.intellij.execution.configurations.ParametersList;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
@@ -32,24 +34,21 @@ public class HLint {
 
     @NotNull
     public static Problems lint(@NotNull Project project, @NotNull String workingDirectory, @NotNull String file) {
-        final String hlintPath = getPath(project);
+        final String hlintPath = ExecUtil.HLINT_KEY.getPath(project);
+        final String hlintFlags = ExecUtil.HLINT_KEY.getFlags(project);
         if (hlintPath == null) return new Problems();
 
-        return parseProblems(workingDirectory, hlintPath, file);
-    }
-
-    public static String getPath(@NotNull Project project) {
-        return ExecUtil.getExternalToolPath(project, ExecUtil.HLINT_KEY);
+        return parseProblems(workingDirectory, hlintPath, hlintFlags, file);
     }
 
     @NotNull
-    public static Problems parseProblems(@NotNull String workingDirectory, @NotNull String hlintPath, @NotNull String file) {
-        VersionTriple version = getVersion(workingDirectory, hlintPath);
+    public static Problems parseProblems(@NotNull String workingDirectory, @NotNull String path, @NotNull String flags, @NotNull String file) {
+        VersionTriple version = getVersion(workingDirectory, path);
         if (version == null) {
             return new Problems();
         }
         final boolean useJson = version.gte(HLINT_MIN_VERSION_WITH_JSON_SUPPORT);
-        final String stdout = runHlint(workingDirectory, hlintPath,
+        final String stdout = runHlint(workingDirectory, path, flags,
                                        useJson ? new String[]{"--json", file} : new String[]{file});
         if (stdout == null) {
             LOG.warn("Unable to get output from hlint");
@@ -135,28 +134,22 @@ public class HLint {
     }
 
     /**
-     * Runs hlintProg with parameter if hlintProg can be executed.
-     */
-    @Nullable
-    private static String runHlint(@NotNull String workingDirectory,
-                                   @NotNull String hlintProg,
-                                   @NotNull String params) {
-        if (!(new File(hlintProg).canExecute())) return null;
-
-        return ExecUtil.readCommandLine(workingDirectory, hlintProg, params);
-    }
-
-
-    /**
      * Runs hlintProg with parameters if hlintProg can be executed.
      */
     @Nullable
     private static String runHlint(@NotNull String workingDirectory,
                                    @NotNull String hlintProg,
-                                   @NotNull String[] params) {
+                                   @NotNull String hlintFlags,
+                                   @NotNull String... params) {
         if (!(new File(hlintProg).canExecute())) return null;
 
-        return ExecUtil.readCommandLine(workingDirectory, hlintProg, params);
+        GeneralCommandLine commandLine = new GeneralCommandLine();
+        commandLine.setWorkDirectory(workingDirectory);
+        commandLine.setExePath(hlintProg);
+        ParametersList parametersList = commandLine.getParametersList();
+        parametersList.addParametersString(hlintFlags);
+        parametersList.addAll(params);
+        return ExecUtil.readCommandLine(commandLine);
     }
 
     public static class Problem extends HaskellProblem {

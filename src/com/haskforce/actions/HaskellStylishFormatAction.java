@@ -80,9 +80,9 @@ public class HaskellStylishFormatAction extends AnAction implements DumbAware {
         final String groupId = e.getPresentation().getText();
         try {
             GeneralCommandLine commandLine = new GeneralCommandLine();
-            final String stylishPath = PropertiesComponent.getInstance(project).getValue(ExecUtil.STYLISH_HASKELL_KEY.pathKey, "");
-            final String stylishFlags = PropertiesComponent.getInstance(project).getValue(ExecUtil.STYLISH_HASKELL_KEY.flagsKey, "");
-            if (stylishPath.isEmpty()) {
+            final String stylishPath = ExecUtil.STYLISH_HASKELL_KEY.getPath(project);
+            final String stylishFlags = ExecUtil.STYLISH_HASKELL_KEY.getFlags(project);
+            if (stylishPath == null || stylishPath.isEmpty()) {
                 Notifications.Bus.notify(
                         new Notification(groupId, NOTIFICATION_TITLE,
                                 "Stylish-Haskell executable path is empty"+

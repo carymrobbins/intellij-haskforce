@@ -199,17 +199,22 @@ public class ExecUtil {
             this.pathKey = name + "Path";
             this.flagsKey = name + "Flags";
         }
+
+        @Nullable
+        public String getPath(@NotNull Project project) {
+            final String path = PropertiesComponent.getInstance(project).getValue(pathKey);
+            return path == null || path.isEmpty() ? null : path;
+        }
+
+        @NotNull
+        public String getFlags(@NotNull Project project) {
+            final String flags = PropertiesComponent.getInstance(project).getValue(flagsKey);
+            return flags == null ? "" : flags;
+        }
     }
 
     public static final ToolKey PARSER_HELPER_KEY = new ToolKey("parserHelper");
     public static final ToolKey STYLISH_HASKELL_KEY = new ToolKey("stylishHaskell");
     public static final ToolKey HLINT_KEY = new ToolKey("hlint");
     public static final ToolKey GHC_MOD_KEY = new ToolKey("ghcMod");
-
-
-    @Nullable
-    public static String getExternalToolPath(@NotNull Project project, @NotNull ToolKey pathKey) {
-        final String path = PropertiesComponent.getInstance(project).getValue(pathKey.pathKey);
-        return path == null || path.isEmpty() ? null : path;
-    }
 }
