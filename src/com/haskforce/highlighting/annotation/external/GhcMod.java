@@ -1,6 +1,5 @@
 package com.haskforce.highlighting.annotation.external;
 
-import com.haskforce.HaskellSdkType;
 import com.haskforce.features.intentions.AddLanguagePragma;
 import com.haskforce.features.intentions.AddTypeSignature;
 import com.haskforce.features.intentions.RemoveForall;
@@ -23,7 +22,6 @@ import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -77,11 +75,6 @@ public class GhcMod {
         }
     }
 
-    /**
-     * Wrapper to execute ghc-mod commands in the context of our SDK.  Old versions of ghc-mod execute
-     * `ghc --print-libdir`.  While this works in most cases, if have multiple versions of ghc we need to
-     * explicitly expose the correct one at the start of the PATH so ghc-mod will pick that one.
-     */
     @Nullable
     public static String exec(@NotNull String workingDirectory, @NotNull String ghcModPath,
                               @NotNull String command, @NotNull String ghcModFlags, String... params) {
