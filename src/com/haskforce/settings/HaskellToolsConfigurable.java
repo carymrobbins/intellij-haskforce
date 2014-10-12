@@ -27,10 +27,6 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
 
     // Swing components.
     private JPanel mainPanel;
-    private TextFieldWithBrowseButton parserHelperPath;
-    private RawCommandLineEditor parserHelperFlags;
-    private JTextField parserHelperVersion;
-    private JButton parserHelperAutoFind;
     private TextFieldWithBrowseButton stylishPath;
     private RawCommandLineEditor stylishFlags;
     private JButton stylishAutoFind;
@@ -49,8 +45,6 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     public HaskellToolsConfigurable(@NotNull Project project) {
         this.propertiesComponent = PropertiesComponent.getInstance(project);
         tools = new Tool[]{
-                new Tool(project, "parser-helper", ExecUtil.PARSER_HELPER_KEY, parserHelperPath, parserHelperFlags,
-                         parserHelperAutoFind, parserHelperVersion, "--numeric-version"),
                 new Tool(project, "stylish-haskell", ExecUtil.STYLISH_HASKELL_KEY, stylishPath, stylishFlags,
                          stylishAutoFind, stylishVersion),
                 new Tool(project, "hlint", ExecUtil.HLINT_KEY, hlintPath, hlintFlags,
