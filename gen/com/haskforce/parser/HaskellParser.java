@@ -4295,33 +4295,41 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // ppragma* [moduledecl] body
+  // shebang? ppragma* [moduledecl] body
   static boolean module(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "module")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = module_0(builder_, level_ + 1);
     result_ = result_ && module_1(builder_, level_ + 1);
+    result_ = result_ && module_2(builder_, level_ + 1);
     result_ = result_ && body(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // ppragma*
+  // shebang?
   private static boolean module_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "module_0")) return false;
+    consumeToken(builder_, SHEBANG);
+    return true;
+  }
+
+  // ppragma*
+  private static boolean module_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "module_1")) return false;
     int pos_ = current_position_(builder_);
     while (true) {
       if (!ppragma(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "module_0", pos_)) break;
+      if (!empty_element_parsed_guard_(builder_, "module_1", pos_)) break;
       pos_ = current_position_(builder_);
     }
     return true;
   }
 
   // [moduledecl]
-  private static boolean module_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "module_1")) return false;
+  private static boolean module_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "module_2")) return false;
     moduledecl(builder_, level_ + 1);
     return true;
   }

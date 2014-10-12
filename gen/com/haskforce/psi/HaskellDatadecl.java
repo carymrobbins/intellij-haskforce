@@ -28,8 +28,8 @@ public interface HaskellDatadecl extends PsiElement {
   @Nullable
   HaskellOqtycon getOqtycon();
 
-  @Nullable
-  HaskellQtycls getQtycls();
+  @NotNull
+  List<HaskellQtycls> getQtyclsList();
 
   @NotNull
   List<HaskellTypee> getTypeeList();

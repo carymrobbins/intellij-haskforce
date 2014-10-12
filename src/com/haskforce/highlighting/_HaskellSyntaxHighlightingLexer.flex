@@ -31,6 +31,7 @@ import com.intellij.util.containers.Stack;
   private int qqLevel;
   private int indent;
   private Stack<Integer> stateStack = ContainerUtil.newStack();
+  private int yychar;
 
   public _HaskellSyntaxHighlightingLexer() {
     this((java.io.Reader)null);
@@ -49,6 +50,7 @@ import com.intellij.util.containers.Stack;
 %function advance
 %type IElementType
 %unicode
+%char
 %eof{  return;
 %eof}
 
@@ -69,12 +71,18 @@ ASCSYMBOL=[\!\#\$\%\&\*\+\.\/\<\=\>\?\@\\\^\|\-\~\:]
 
 STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
 MAYBEQVARID=({CONID}\.)*{VARIDREGEXP}
+SHEBANG=#\![^\r\n]*
 
 // Avoid "COMMENT" since that collides with the token definition above.
 %state INCOMMENT, INSTRING, INPRAGMA, INQUASIQUOTE, INQUASIQUOTEHEAD
 
 %%
 <YYINITIAL> {
+   {SHEBANG}          {   // The shebang can only occur at the start of the file.
+                          if (yychar == 0) {
+                              return SHEBANG;
+                          }
+                      }
   {WHITE_SPACE}       { return com.intellij.psi.TokenType.WHITE_SPACE; }
 
   "class"             { return CLASSTOKEN; }

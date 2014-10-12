@@ -133,6 +133,7 @@
     haddock='regexp:--\^[^\r\n]*'
     stringtoken='regexp:"(\\\s*\n\s*\\|\\"|[^"\n])*"'
     badstringtoken='regexp:"(\\\s*\n\s*|\\"|[^"\n])*'
+    shebang='regexp:#![^\r\n]*'
     // Reserved IDs. Should be tokens for IntelliJ reasons. Gives us a nicer
     // PSI tree as side effect.
     DATA='data'
@@ -187,7 +188,7 @@
 
 // Haskell 2010 Report - http://www.haskell.org/onlinereport/haskell2010/haskellch2.html#x7-140002
 
-module ::= ppragma* [moduledecl] body
+module ::= shebang? ppragma* [moduledecl] body
 
 moduledecl ::= "module" qconid [ppragma] [exports] "where" {pin=1}
 

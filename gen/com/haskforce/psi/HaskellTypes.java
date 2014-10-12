@@ -173,6 +173,7 @@ public interface HaskellTypes {
   IElementType RTHCLOSE = new HaskellTokenType("|]");
   IElementType RUNBOXPAREN = new HaskellTokenType("#)");
   IElementType SEMICOLON = new HaskellTokenType(";");
+  IElementType SHEBANG = new HaskellTokenType("shebang");
   IElementType SINGLEQUOTE = new HaskellTokenType("'");
   IElementType SLASH = new HaskellTokenType("/");
   IElementType STRINGTOKEN = new HaskellTokenType("STRINGTOKEN");

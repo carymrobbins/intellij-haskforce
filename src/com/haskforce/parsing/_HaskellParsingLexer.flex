@@ -39,9 +39,10 @@ import com.intellij.util.containers.Stack;
   private Stack<Pair<Integer,Integer>> indentationStack;
   private Stack<Integer> stateStack;
   public LinkedList<Pair<Pair<Integer,Integer>,Integer>> openBraces;
-  // %line/%%column does not declare these.
+  // %line/%column/%char does not declare these.
   private int yyline;
   private int yycolumn;
+  private int yychar;
 
   public _HaskellParsingLexer() {
     this((java.io.Reader)null);
@@ -68,6 +69,7 @@ import com.intellij.util.containers.Stack;
 %function advance
 %type IElementType
 %unicode
+%char
 %line
 %column
 
@@ -91,9 +93,10 @@ ASCSYMBOL=[\!\#\$\%\&\*\+\.\/\<\=\>\?\@\\\^\|\-\~\:]
 MAYBEQVARID=({CONID}\.)*{VARIDREGEXP}
 
 STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
+SHEBANG=#\![^\r\n]*
 
 // Avoid "COMMENT" since that collides with the token definition above.
-%state REALLYYINITIAL INCOMMENT INSTRING INPRAGMA ININDENTATION FINDINGINDENTATIONCONTEXT INQUASIQUOTE INQUASIQUOTEHEAD
+%state REALLYYINITIAL, INCOMMENT, INSTRING, INPRAGMA, ININDENTATION, FINDINGINDENTATIONCONTEXT, INQUASIQUOTE, INQUASIQUOTEHEAD
 
 %%
 
@@ -126,6 +129,11 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
 }
 
 <YYINITIAL> {
+    {SHEBANG}       {   // The shebang can only occur at the start of the file.
+                        if (yychar == 0) {
+                            return SHEBANG;
+                        }
+                    }
     {EOL}+          {
                         indent = 0;
                         return com.intellij.psi.TokenType.WHITE_SPACE;
