@@ -185,6 +185,9 @@ public class HaskellParser implements PsiParser {
     else if (root_ == RHS) {
       result_ = rhs(builder_, 0);
     }
+    else if (root_ == SHEBANG) {
+      result_ = shebang(builder_, 0);
+    }
     else if (root_ == STMTS) {
       result_ = stmts(builder_, 0);
     }
@@ -4311,7 +4314,7 @@ public class HaskellParser implements PsiParser {
   // shebang?
   private static boolean module_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "module_0")) return false;
-    consumeToken(builder_, SHEBANG);
+    shebang(builder_, level_ + 1);
     return true;
   }
 
@@ -5404,6 +5407,26 @@ public class HaskellParser implements PsiParser {
     result_ = result_ && p.parse(builder_, level_);
     exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
     return result_ || pinned_;
+  }
+
+  /* ********************************************************** */
+  // SHEBANGSTART SHEBANGPATH?
+  public static boolean shebang(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "shebang")) return false;
+    if (!nextTokenIs(builder_, SHEBANGSTART)) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, SHEBANGSTART);
+    result_ = result_ && shebang_1(builder_, level_ + 1);
+    exit_section_(builder_, marker_, SHEBANG, result_);
+    return result_;
+  }
+
+  // SHEBANGPATH?
+  private static boolean shebang_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "shebang_1")) return false;
+    consumeToken(builder_, SHEBANGPATH);
+    return true;
   }
 
   /* ********************************************************** */

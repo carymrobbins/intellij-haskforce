@@ -227,6 +227,10 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitShebang(@NotNull HaskellShebang o) {
+    visitPsiElement(o);
+  }
+
   public void visitStmts(@NotNull HaskellStmts o) {
     visitPsiElement(o);
   }

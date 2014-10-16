@@ -63,6 +63,7 @@ public interface HaskellTypes {
   IElementType QVARS = new HaskellElementType("QVARS");
   IElementType QVARSYM = new HaskellElementType("QVARSYM");
   IElementType RHS = new HaskellElementType("RHS");
+  IElementType SHEBANG = new HaskellElementType("SHEBANG");
   IElementType STMTS = new HaskellElementType("STMTS");
   IElementType TV_BNDR = new HaskellElementType("TV_BNDR");
   IElementType TYCLS = new HaskellElementType("TYCLS");
@@ -173,7 +174,8 @@ public interface HaskellTypes {
   IElementType RTHCLOSE = new HaskellTokenType("|]");
   IElementType RUNBOXPAREN = new HaskellTokenType("#)");
   IElementType SEMICOLON = new HaskellTokenType(";");
-  IElementType SHEBANG = new HaskellTokenType("shebang");
+  IElementType SHEBANGPATH = new HaskellTokenType("Synthetic shebang path");
+  IElementType SHEBANGSTART = new HaskellTokenType("Synthetic shebang start \"#!\"");
   IElementType SINGLEQUOTE = new HaskellTokenType("'");
   IElementType SLASH = new HaskellTokenType("/");
   IElementType STRINGTOKEN = new HaskellTokenType("STRINGTOKEN");
@@ -357,6 +359,9 @@ public interface HaskellTypes {
       }
       else if (type == RHS) {
         return new HaskellRhsImpl(node);
+      }
+      else if (type == SHEBANG) {
+        return new HaskellShebangImpl(node);
       }
       else if (type == STMTS) {
         return new HaskellStmtsImpl(node);

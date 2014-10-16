@@ -39,6 +39,9 @@ import com.intellij.util.containers.Stack;
   private Stack<Pair<Integer,Integer>> indentationStack;
   private Stack<Integer> stateStack;
   public LinkedList<Pair<Pair<Integer,Integer>,Integer>> openBraces;
+  // Shared varsym token to ensure that shebang lex failures return the same
+  // token as normal varsyms.
+  public static final IElementType SHARED_VARSYM_TOKEN = VARSYMTOKPLUS;
   // %line/%column/%char does not declare these.
   private int yyline;
   private int yycolumn;
@@ -93,10 +96,10 @@ ASCSYMBOL=[\!\#\$\%\&\*\+\.\/\<\=\>\?\@\\\^\|\-\~\:]
 MAYBEQVARID=({CONID}\.)*{VARIDREGEXP}
 
 STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
-SHEBANG=#\![^\r\n]*
 
 // Avoid "COMMENT" since that collides with the token definition above.
-%state REALLYYINITIAL, INCOMMENT, INSTRING, INPRAGMA, ININDENTATION, FINDINGINDENTATIONCONTEXT, INQUASIQUOTE, INQUASIQUOTEHEAD
+%state REALLYYINITIAL, INCOMMENT, INSTRING, INPRAGMA, ININDENTATION, FINDINGINDENTATIONCONTEXT, INQUASIQUOTE
+%state INQUASIQUOTEHEAD, INSHEBANG
 
 %%
 
@@ -129,10 +132,12 @@ SHEBANG=#\![^\r\n]*
 }
 
 <YYINITIAL> {
-    {SHEBANG}       {   // The shebang can only occur at the start of the file.
-                        if (yychar == 0) {
-                            return SHEBANG;
-                        }
+    "#!"            {
+                      if (yychar == 0) {
+                          yybegin(INSHEBANG);
+                          return SHEBANGSTART;
+                      }
+                      return SHARED_VARSYM_TOKEN;
                     }
     {EOL}+          {
                         indent = 0;
@@ -344,7 +349,7 @@ SHEBANG=#\![^\r\n]*
   "::"                { return DOUBLECOLON; }
   ":"                 { return COLON; }
   (":"{ASCSYMBOL}+)     { return CONSYMTOK; }
-  ({ASCSYMBOL}+)      { return VARSYMTOKPLUS; }
+  ({ASCSYMBOL}+)      { return SHARED_VARSYM_TOKEN; }
 
   {VARIDREGEXP}       { return VARIDREGEXP; }
   {CONID}             { return CONIDREGEXP; }
@@ -352,6 +357,11 @@ SHEBANG=#\![^\r\n]*
   {INTEGERTOKEN}      { return INTEGERTOKEN; }
   {FLOATTOKEN}        { return FLOATTOKEN; }
   [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
+}
+
+<INSHEBANG> {
+  [^\n\r]+  { yybegin(YYINITIAL); return SHEBANGPATH; }
+  [\n\r]    { yybegin(YYINITIAL); return com.intellij.psi.TokenType.WHITE_SPACE; }
 }
 
 <INCOMMENT> {

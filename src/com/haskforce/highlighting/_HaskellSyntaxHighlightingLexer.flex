@@ -32,7 +32,9 @@ import com.intellij.util.containers.Stack;
   private int indent;
   private Stack<Integer> stateStack = ContainerUtil.newStack();
   private int yychar;
-
+  // Shared varsym token to ensure that shebang lex failures return the same
+  // token as normal varsyms.
+  public static final IElementType SHARED_VARSYM_TOKEN = VARSYMTOK;
   public _HaskellSyntaxHighlightingLexer() {
     this((java.io.Reader)null);
   }
@@ -71,17 +73,18 @@ ASCSYMBOL=[\!\#\$\%\&\*\+\.\/\<\=\>\?\@\\\^\|\-\~\:]
 
 STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
 MAYBEQVARID=({CONID}\.)*{VARIDREGEXP}
-SHEBANG=#\![^\r\n]*
 
 // Avoid "COMMENT" since that collides with the token definition above.
-%state INCOMMENT, INSTRING, INPRAGMA, INQUASIQUOTE, INQUASIQUOTEHEAD
+%state INCOMMENT, INSTRING, INPRAGMA, INQUASIQUOTE, INQUASIQUOTEHEAD, INSHEBANG
 
 %%
 <YYINITIAL> {
-   {SHEBANG}          {   // The shebang can only occur at the start of the file.
-                          if (yychar == 0) {
-                              return SHEBANG;
-                          }
+  "#!"                {
+                        if (yychar == 0) {
+                            yybegin(INSHEBANG);
+                            return SHEBANGSTART;
+                        }
+                        return SHARED_VARSYM_TOKEN;
                       }
   {WHITE_SPACE}       { return com.intellij.psi.TokenType.WHITE_SPACE; }
 
@@ -170,7 +173,7 @@ SHEBANG=#\![^\r\n]*
   "~"                 { return TILDE; }
   "=>"                { return DOUBLEARROW; }
   (":"{ASCSYMBOL}+)   { return CONSYMTOK; }
-  ({ASCSYMBOL}+)      { return VARSYMTOK; }
+  ({ASCSYMBOL}+)      { return SHARED_VARSYM_TOKEN; }
 
   {VARIDREGEXP}       { return VARIDREGEXP; }
   {CONID}             { return CONIDREGEXP; }
@@ -183,6 +186,11 @@ SHEBANG=#\![^\r\n]*
   {CPPIF}             { return CPPIF; }
 
   [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
+}
+
+<INSHEBANG> {
+  [^\n\r]+  { yybegin(YYINITIAL); return SHEBANGPATH; }
+  [\n\r]    { yybegin(YYINITIAL); return com.intellij.psi.TokenType.WHITE_SPACE; }
 }
 
 <INCOMMENT> {

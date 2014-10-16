@@ -48,7 +48,7 @@ import com.haskforce.yesod.shakespeare.hamlet.psi.HamletTypes;
     yybegin(INTERPOLATION);
   }
 
-  Pattern interpolateOpenRegex = Pattern.compile("(#|@|\\^)\\{");
+  public static final Pattern interpolateOpenRegex = Pattern.compile("(#|@|\\^)\\{");
 %}
 
 %class _HamletSyntaxHighlightingLexer

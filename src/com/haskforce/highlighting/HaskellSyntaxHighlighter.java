@@ -71,7 +71,8 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
         keys.put(HaskellTypes.CONSYMTOK, CONSYM);
         keys.put(HaskellTypes.QQTEXT, QQTEXT);
         keys.put(HaskellTypes.INFIXVARID, INFIXVARID);
-        keys.put(HaskellTypes.SHEBANG, COMMENT);
+        keys.put(HaskellTypes.SHEBANGSTART, COMMENT);
+        keys.put(HaskellTypes.SHEBANGPATH, COMMENT);
     }
 
     @NotNull

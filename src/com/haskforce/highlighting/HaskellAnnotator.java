@@ -52,6 +52,12 @@ public class HaskellAnnotator implements Annotator {
             }
 
             @Override
+            public void visitShebang(@NotNull HaskellShebang o) {
+                super.visitShebang(o);
+                setHighlighting(o, holder, HaskellSyntaxHighlighter.COMMENT);
+            }
+
+            @Override
             public void visitModuledecl(@NotNull HaskellModuledecl o) {
                 super.visitModuledecl(o);
                 final HaskellQconid qc = o.getQconid();
