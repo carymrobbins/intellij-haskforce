@@ -1,5 +1,7 @@
 Haskell File
-  PsiElement(HaskellTokenType.shebang)('#!/usr/bin/env runhaskell')
+  HaskellShebangImpl(SHEBANG)
+    PsiElement(HaskellTokenType.Synthetic shebang start "#!")('#!')
+    PsiElement(HaskellTokenType.Synthetic shebang path)('/usr/bin/env runhaskell')
   HaskellModuledeclImpl(MODULEDECL)
     PsiElement(HaskellTokenType.module)('module')
     HaskellQconidImpl(QCONID)
