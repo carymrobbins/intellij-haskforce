@@ -25,7 +25,9 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
 
     public static final TextAttributesKey RESERVEDID = DefaultLanguageHighlighterColors.FUNCTION_CALL;
     public static final TextAttributesKey RESERVEDOP = DefaultLanguageHighlighterColors.FUNCTION_CALL;
-    public static final TextAttributesKey SPECIAL = DefaultLanguageHighlighterColors.INSTANCE_FIELD;
+    public static final TextAttributesKey COMMA = DefaultLanguageHighlighterColors.COMMA;
+    public static final TextAttributesKey SEMICOLON = DefaultLanguageHighlighterColors.SEMICOLON;
+    public static final TextAttributesKey BRACKETS = DefaultLanguageHighlighterColors.PARENTHESES;
     public static final TextAttributesKey NCOMMENT = DefaultLanguageHighlighterColors.BLOCK_COMMENT;
     public static final TextAttributesKey HADDOCK = DefaultLanguageHighlighterColors.DOC_COMMENT;
     public static final TextAttributesKey COMMENT = DefaultLanguageHighlighterColors.LINE_COMMENT;
@@ -57,10 +59,12 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
         keys = new HashMap<IElementType, TextAttributesKey>(0);
         keysPutEach(HaskellLanguage.RESERVED_IDS_TOKENS, RESERVEDID);
         keysPutEach(HaskellLanguage.RESERVED_OPS_TOKENS, RESERVEDOP);
-        keysPutEach(HaskellLanguage.SPECIAL_TOKENS, SPECIAL);
+        keysPutEach(HaskellLanguage.BRACKET_TOKENS, BRACKETS);
         keysPutEach(Arrays.asList(HaskellTypes.DOUBLEQUOTE, HaskellTypes.STRINGTOKEN), STRING);
         keysPutEach(Arrays.asList(HaskellTypes.COMMENTTEXT, HaskellTypes.OPENCOM, HaskellTypes.CLOSECOM), NCOMMENT);
         keysPutEach(Arrays.asList(HaskellTypes.PRAGMA, HaskellTypes.OPENPRAGMA, HaskellTypes.CLOSEPRAGMA), PRAGMA);
+        keys.put(HaskellTypes.COMMA, COMMA);
+        keys.put(HaskellTypes.SEMICOLON, SEMICOLON);
         keys.put(HaskellTypes.CONIDREGEXP, CONID);
         keys.put(HaskellTypes.COMMENT, COMMENT);
         keys.put(HaskellTypes.HADDOCK, HADDOCK);

@@ -78,7 +78,7 @@ import com.intellij.util.containers.Stack;
 
 EOL=\r|\n|\r\n
 VARIDREGEXP=([a-z_][a-zA-Z_0-9']+)|[a-z]
-CONID=[A-Z][a-zA-Z_0-9']*
+CONID=([A-Z][a-zA-Z_0-9']*)|(\(\))
 CHARTOKEN='(\\.|[^'])'
 INTEGERTOKEN=(0(o|O)[0-7]+|0(x|X)[0-9a-fA-F]+|[0-9]+)
 FLOATTOKEN=([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))

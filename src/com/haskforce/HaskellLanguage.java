@@ -26,27 +26,10 @@ public class HaskellLanguage extends Language {
     }
 
     /**
-     * Strings and tokens of specials.
+     * Tokens of bracket symbols.
      */
-    public static final HashSet<String> SPECIALS = new HashSet<String>(
-            Arrays.asList("(", ")", ",", ";", "[", "]", "`", "{", "}"));
-    public static final HashSet<IElementType> SPECIAL_TOKENS = new HashSet<IElementType>(
-            Arrays.asList(LPAREN, RPAREN, COMMA, SEMICOLON
-                    , LBRACKET, RBRACKET, LBRACE, RBRACE, PARENSPLICE, LTHOPEN, RTHCLOSE, QQOPEN));
-
-    /**
-     * Strings and tokens of symbols.
-     */
-    public static final HashSet<String> SYMBOLS = new HashSet<String>(
-            Arrays.asList("!", "#", "$", "%", "&"
-                    , "*", "+", ".", "/", "<", "="
-                    , ">", "?", "@", "\\", "^", "|", "_"
-                    , "~", ":"));
-    public static final HashSet<IElementType> SYMBOL_TOKENS = new HashSet<IElementType>(
-            Arrays.asList(EXCLAMATION, HASH, DOLLAR, PERCENT, AMPERSAND
-                    , ASTERISK, PLUS, PERIOD, SLASH, LESSTHAN, EQUALS
-                    , GREATERTHAN, QUESTION, AMPERSAT, BACKSLASH, CARET, PIPE, UNDERSCORE
-                    , TILDE, COLON));
+    public static final HashSet<IElementType> BRACKET_TOKENS = new HashSet<IElementType>(
+            Arrays.asList(LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE, PARENSPLICE, LTHOPEN, RTHCLOSE, QQOPEN));
 
     /**
      * Tokens of reserved IDs.
