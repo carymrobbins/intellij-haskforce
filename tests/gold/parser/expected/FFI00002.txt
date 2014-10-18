@@ -1,7 +1,10 @@
 Haskell File
   HaskellPpragmaImpl(PPRAGMA)
     PsiElement(HaskellTokenType.{-#)('{-#')
-    PsiElement(HaskellTokenType.PRAGMA)(' LANGUAGE ForeignFunctionInterface, InterruptibleFFI, CApiFFI ')
+    PsiElement(HaskellTokenType.PRAGMA)('LANGUAGE')
+    PsiElement(HaskellTokenType.PRAGMA)('ForeignFunctionInterface,')
+    PsiElement(HaskellTokenType.PRAGMA)('InterruptibleFFI,')
+    PsiElement(HaskellTokenType.PRAGMA)('CApiFFI')
     PsiElement(HaskellTokenType.#-})('#-}')
   HaskellModuledeclImpl(MODULEDECL)
     PsiElement(HaskellTokenType.module)('module')

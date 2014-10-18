@@ -1,7 +1,8 @@
 Haskell File
   HaskellPpragmaImpl(PPRAGMA)
     PsiElement(HaskellTokenType.{-#)('{-#')
-    PsiElement(HaskellTokenType.PRAGMA)(' LANGUAGE TupleSections ')
+    PsiElement(HaskellTokenType.PRAGMA)('LANGUAGE')
+    PsiElement(HaskellTokenType.PRAGMA)('TupleSections')
     PsiElement(HaskellTokenType.#-})('#-}')
   HaskellModuledeclImpl(MODULEDECL)
     PsiElement(HaskellTokenType.module)('module')

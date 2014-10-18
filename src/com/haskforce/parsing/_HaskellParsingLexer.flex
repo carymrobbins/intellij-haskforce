@@ -77,6 +77,8 @@ import com.intellij.util.containers.Stack;
 %column
 
 EOL=\r|\n|\r\n
+LINE_WS=[\ \t\f]
+WHITE_SPACE=({LINE_WS}|{EOL})+
 VARIDREGEXP=([a-z_][a-zA-Z_0-9']+)|[a-z]
 CONID=([A-Z][a-zA-Z_0-9']*)|(\(\))
 CHARTOKEN='(\\.|[^'])'
@@ -399,7 +401,8 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         yybegin(stateStack.pop());
                         return CLOSEPRAGMA;
                     }
-    [^-}#]+         { return PRAGMA; }
+    [^ \n\r\t\f#]+  { return PRAGMA; }
+    {WHITE_SPACE}   { return com.intellij.psi.TokenType.WHITE_SPACE; }
     [^]             { return PRAGMA; }
 }
 

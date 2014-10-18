@@ -1,7 +1,8 @@
 Haskell File
   HaskellPpragmaImpl(PPRAGMA)
     PsiElement(HaskellTokenType.{-#)('{-#')
-    PsiElement(HaskellTokenType.PRAGMA)(' OPTIONS_HADDOCK hide ')
+    PsiElement(HaskellTokenType.PRAGMA)('OPTIONS_HADDOCK')
+    PsiElement(HaskellTokenType.PRAGMA)('hide')
     PsiElement(HaskellTokenType.#-})('#-}')
   PsiComment(HaskellTokenType.comment)('-----------------------------------------------------------------------------\n')
   PsiComment(HaskellTokenType.comment)('-- |\n')

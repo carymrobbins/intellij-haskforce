@@ -36,4 +36,3 @@ public class HaskellChooseByNameContributor implements ChooseByNameContributor {
         return definitions.toArray(new NavigationItem[definitions.size()]);
     }
 }
-

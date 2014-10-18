@@ -1,7 +1,8 @@
 Haskell File
   HaskellPpragmaImpl(PPRAGMA)
     PsiElement(HaskellTokenType.{-#)('{-#')
-    PsiElement(HaskellTokenType.PRAGMA)(' LANGUAGE GADTs ')
+    PsiElement(HaskellTokenType.PRAGMA)('LANGUAGE')
+    PsiElement(HaskellTokenType.PRAGMA)('GADTs')
     PsiElement(HaskellTokenType.#-})('#-}')
   HaskellModuledeclImpl(MODULEDECL)
     PsiElement(HaskellTokenType.module)('module')
