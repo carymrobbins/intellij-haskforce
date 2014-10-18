@@ -10,6 +10,8 @@ import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.psi.PsiElement;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 /**
  * Annotator that:
  *
@@ -61,25 +63,24 @@ public class HaskellAnnotator implements Annotator {
             public void visitModuledecl(@NotNull HaskellModuledecl o) {
                 super.visitModuledecl(o);
                 final HaskellQconid qc = o.getQconid();
-                if (qc != null) {
-                    String moduleName = qc.getConid().getText();
-                    String fullFileName = o.getContainingFile().getName();
-                    //noinspection ConstantConditions
-                    if (fullFileName == null) {
-                        return;
-                    }
-                    String fileSuffix = fullFileName.substring(fullFileName.lastIndexOf('.'));
-                    String fileName = fullFileName.substring(0, fullFileName.length() - fileSuffix.length());
-                    if (!moduleName.equals(fileName) && !"Main".equals(moduleName)) {
-                        HaskellModuleFilenameFix fixFile = new HaskellModuleFilenameFix(moduleName + fileSuffix);
-                        final HaskellQconid qc2 = o.getQconid();
-                        if (qc2 == null) {
-                            return;
-                        }
-                        HaskellModuleNameFix fixName = new HaskellModuleNameFix(qc2.getConid(), fileName);
-                        holder.createErrorAnnotation(qc, MSG).registerFix(fixFile);
-                        holder.createErrorAnnotation(qc, MSG).registerFix(fixName);
-                    }
+                if (qc == null) {
+                    return;
+                }
+                final List<HaskellConid> conidList = qc.getConidList();
+                final HaskellConid lastConid = conidList.get(conidList.size() - 1);
+                String moduleName = lastConid.getText();
+                String fullFileName = o.getContainingFile().getName();
+                //noinspection ConstantConditions
+                if (fullFileName == null) {
+                    return;
+                }
+                String fileSuffix = fullFileName.substring(fullFileName.lastIndexOf('.'));
+                String fileName = fullFileName.substring(0, fullFileName.length() - fileSuffix.length());
+                if (!moduleName.equals(fileName) && !"Main".equals(moduleName)) {
+                    HaskellModuleFilenameFix fixFile = new HaskellModuleFilenameFix(moduleName + fileSuffix);
+                    HaskellModuleNameFix fixName = new HaskellModuleNameFix(lastConid, fileName);
+                    holder.createErrorAnnotation(qc, MSG).registerFix(fixFile);
+                    holder.createErrorAnnotation(qc, MSG).registerFix(fixName);
                 }
             }
         });

@@ -3,6 +3,7 @@ package com.haskforce.highlighting.annotation.external;
 import com.haskforce.highlighting.annotation.HaskellAnnotationHolder;
 import com.haskforce.highlighting.annotation.HaskellProblem;
 import com.haskforce.highlighting.annotation.Problems;
+import com.haskforce.utils.ExecUtil;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.ExternalAnnotator;
 import com.intellij.openapi.application.ApplicationManager;
@@ -66,6 +67,7 @@ public class HaskellExternalAnnotator extends ExternalAnnotator<PsiFile, Problem
         Problems problems = new Problems();
         problems.addAllNotNull(GhcMod.check(project, workDir, canonicalPath));
         problems.addAllNotNull(HLint.lint(project, workDir, canonicalPath));
+        file.putUserData(ExecUtil.MODULE_CACHE_KEY, GhcMod.list(project, workDir));
         return problems;
     }
 

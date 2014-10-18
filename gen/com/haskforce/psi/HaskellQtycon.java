@@ -7,8 +7,8 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellQtycon extends PsiElement {
 
-  @Nullable
-  HaskellModulePrefix getModulePrefix();
+  @NotNull
+  List<HaskellConid> getConidList();
 
   @NotNull
   HaskellTycon getTycon();

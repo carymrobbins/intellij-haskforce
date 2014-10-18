@@ -23,9 +23,9 @@ public class HaskellQvaridImpl extends ASTWrapperPsiElement implements HaskellQv
   }
 
   @Override
-  @Nullable
-  public HaskellModulePrefix getModulePrefix() {
-    return findChildByClass(HaskellModulePrefix.class);
+  @NotNull
+  public List<HaskellConid> getConidList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellConid.class);
   }
 
   @Override

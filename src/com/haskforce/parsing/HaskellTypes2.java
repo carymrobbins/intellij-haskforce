@@ -74,9 +74,10 @@ public interface HaskellTypes2 {
             else if (type == IMPORTT) {
                 return new HaskellImporttImpl(node);
             }
-            else if (type == HaskellTypes.MODULETOKEN) {
-                return new HaskellModulePrefixImpl(node);
-            }
+            // TODO: HaskellModulePrefixImpl no longer exists.
+            // else if (type == HaskellTypes.MODULETOKEN) {
+            //     return new HaskellModulePrefixImpl(node);
+            // }
             else if (type == PPRAGMA) {
                 return new HaskellPpragmaImpl(node);
             }

@@ -546,7 +546,7 @@ consym ::= CONSYMTOK
 tyvar ::= varid
 tycon ::= conid
 tycls ::= conid
-modulePrefix ::= (conid '.')+
+private modulePrefix ::= (conid '.')+
 
 qvarid ::= [modulePrefix] varid
 qconid ::= [modulePrefix] conid

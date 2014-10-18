@@ -24,14 +24,14 @@ public class HaskellQconsymImpl extends ASTWrapperPsiElement implements HaskellQ
 
   @Override
   @NotNull
-  public HaskellConsym getConsym() {
-    return findNotNullChildByClass(HaskellConsym.class);
+  public List<HaskellConid> getConidList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellConid.class);
   }
 
   @Override
-  @Nullable
-  public HaskellModulePrefix getModulePrefix() {
-    return findChildByClass(HaskellModulePrefix.class);
+  @NotNull
+  public HaskellConsym getConsym() {
+    return findNotNullChildByClass(HaskellConsym.class);
   }
 
 }

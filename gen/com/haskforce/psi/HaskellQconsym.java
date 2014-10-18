@@ -8,9 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface HaskellQconsym extends PsiElement {
 
   @NotNull
-  HaskellConsym getConsym();
+  List<HaskellConid> getConidList();
 
-  @Nullable
-  HaskellModulePrefix getModulePrefix();
+  @NotNull
+  HaskellConsym getConsym();
 
 }

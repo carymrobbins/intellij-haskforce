@@ -47,6 +47,18 @@ public class GhcMod {
     }
 
     @Nullable
+    public static String list(@NotNull Project project, @NotNull String workingDirectory) {
+        final String ghcModPath = ExecUtil.GHC_MOD_KEY.getPath(project);
+        String stdout;
+        if (ghcModPath == null
+                || (stdout = exec(workingDirectory, ghcModPath, "list", "")) == null
+                || stdout.length() == 0) {
+            return null;
+        }
+        return stdout;
+    }
+
+    @Nullable
     public static Problems handleErrors(@NotNull Project project, @NotNull String stdout) {
         final Problems problems = parseProblems(new Scanner(stdout));
         if (problems == null) {

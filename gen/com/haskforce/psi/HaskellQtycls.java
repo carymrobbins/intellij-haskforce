@@ -7,8 +7,8 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellQtycls extends PsiElement {
 
-  @Nullable
-  HaskellModulePrefix getModulePrefix();
+  @NotNull
+  List<HaskellConid> getConidList();
 
   @NotNull
   HaskellTycls getTycls();

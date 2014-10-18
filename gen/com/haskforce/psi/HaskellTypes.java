@@ -40,7 +40,6 @@ public interface HaskellTypes {
   IElementType INSTANCEDECL = new HaskellElementType("INSTANCEDECL");
   IElementType KIND = new HaskellElementType("KIND");
   IElementType MODULEDECL = new HaskellElementType("MODULEDECL");
-  IElementType MODULE_PREFIX = new HaskellElementType("MODULE_PREFIX");
   IElementType NEWCONSTR = new HaskellElementType("NEWCONSTR");
   IElementType NEWTYPEDECL = new HaskellElementType("NEWTYPEDECL");
   IElementType OP = new HaskellElementType("OP");
@@ -290,9 +289,6 @@ public interface HaskellTypes {
       }
       else if (type == MODULEDECL) {
         return new HaskellModuledeclImpl(node);
-      }
-      else if (type == MODULE_PREFIX) {
-        return new HaskellModulePrefixImpl(node);
       }
       else if (type == NEWCONSTR) {
         return new HaskellNewconstrImpl(node);

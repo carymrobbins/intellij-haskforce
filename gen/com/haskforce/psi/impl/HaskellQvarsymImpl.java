@@ -23,9 +23,9 @@ public class HaskellQvarsymImpl extends ASTWrapperPsiElement implements HaskellQ
   }
 
   @Override
-  @Nullable
-  public HaskellModulePrefix getModulePrefix() {
-    return findChildByClass(HaskellModulePrefix.class);
+  @NotNull
+  public List<HaskellConid> getConidList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellConid.class);
   }
 
   @Override

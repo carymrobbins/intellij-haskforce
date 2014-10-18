@@ -113,9 +113,6 @@ public class HaskellParser implements PsiParser {
     else if (root_ == KIND) {
       result_ = kind(builder_, 0);
     }
-    else if (root_ == MODULE_PREFIX) {
-      result_ = modulePrefix(builder_, 0);
-    }
     else if (root_ == MODULEDECL) {
       result_ = moduledecl(builder_, 0);
     }
@@ -4339,7 +4336,7 @@ public class HaskellParser implements PsiParser {
 
   /* ********************************************************** */
   // (conid '.')+
-  public static boolean modulePrefix(PsiBuilder builder_, int level_) {
+  static boolean modulePrefix(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "modulePrefix")) return false;
     if (!nextTokenIs(builder_, CONIDREGEXP)) return false;
     boolean result_;
@@ -4351,7 +4348,7 @@ public class HaskellParser implements PsiParser {
       if (!empty_element_parsed_guard_(builder_, "modulePrefix", pos_)) break;
       pos_ = current_position_(builder_);
     }
-    exit_section_(builder_, marker_, MODULE_PREFIX, result_);
+    exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
