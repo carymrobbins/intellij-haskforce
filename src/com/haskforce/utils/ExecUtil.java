@@ -1,6 +1,7 @@
 package com.haskforce.utils;
 
 import com.haskforce.HaskellSdkType;
+import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.CapturingProcessHandler;
@@ -11,7 +12,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.SystemInfo;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -220,5 +220,6 @@ public class ExecUtil {
     public static final ToolKey HLINT_KEY = new ToolKey("hlint");
     public static final ToolKey GHC_MOD_KEY = new ToolKey("ghcMod");
 
-    public static final Key<String> MODULE_CACHE_KEY = new Key<String>("MODULE_CACHE_KEY");
+    public static final Key<String> MODULE_CACHE_KEY = new Key<String>("MODULE_CACHE");
+    public static final Key<List<LookupElement>> LANGUAGE_CACHE_KEY = new Key<List<LookupElement>>("LANGUAGE_CACHE");
 }

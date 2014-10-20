@@ -1,9 +1,11 @@
 package com.haskforce.highlighting.annotation.external;
 
+import com.haskforce.codeInsight.HaskellCompletionContributor;
 import com.haskforce.highlighting.annotation.HaskellAnnotationHolder;
 import com.haskforce.highlighting.annotation.HaskellProblem;
 import com.haskforce.highlighting.annotation.Problems;
 import com.haskforce.utils.ExecUtil;
+import com.haskforce.utils.LogicUtil;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.ExternalAnnotator;
 import com.intellij.openapi.application.ApplicationManager;
@@ -80,6 +82,8 @@ public class HaskellExternalAnnotator extends ExternalAnnotator<PsiFile, Problem
         ApplicationManager.getApplication().invokeLater(new Runnable() {
             @Override
             public void run() {
+                file.putUserData(ExecUtil.LANGUAGE_CACHE_KEY,
+                        LogicUtil.map(HaskellCompletionContributor.stringToLookupElement, GhcMod.lang(project, workDir)));
                 file.putUserData(ExecUtil.MODULE_CACHE_KEY, GhcMod.list(project, workDir));
             }
         });

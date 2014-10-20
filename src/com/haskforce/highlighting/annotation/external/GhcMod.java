@@ -17,6 +17,7 @@ import com.intellij.notification.Notifications;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
@@ -47,18 +48,6 @@ public class GhcMod {
     }
 
     @Nullable
-    public static String list(@NotNull Project project, @NotNull String workingDirectory) {
-        final String ghcModPath = ExecUtil.GHC_MOD_KEY.getPath(project);
-        String stdout;
-        if (ghcModPath == null
-                || (stdout = exec(workingDirectory, ghcModPath, "list", "")) == null
-                || stdout.length() == 0) {
-            return null;
-        }
-        return stdout;
-    }
-
-    @Nullable
     public static Problems handleErrors(@NotNull Project project, @NotNull String stdout) {
         final Problems problems = parseProblems(new Scanner(stdout));
         if (problems == null) {
@@ -75,6 +64,30 @@ public class GhcMod {
         // Clear the errorState since ghc-mod was successful.
         errorState.remove(project);
         return problems;
+    }
+
+    @Nullable
+    public static String list(@NotNull Project project, @NotNull String workingDirectory) {
+        final String ghcModPath = ExecUtil.GHC_MOD_KEY.getPath(project);
+        final String stdout;
+        if (ghcModPath == null
+                || (stdout = exec(workingDirectory, ghcModPath, "list", "")) == null
+                || stdout.length() == 0) {
+            return null;
+        }
+        return stdout;
+    }
+
+    @Nullable
+    public static String[] lang(@NotNull Project project, @NotNull String workingDirectory) {
+        final String ghcModPath = ExecUtil.GHC_MOD_KEY.getPath(project);
+        final String stdout;
+        if (ghcModPath == null
+                || (stdout = exec(workingDirectory, ghcModPath, "lang", "")) == null
+                || stdout.length() == 0) {
+            return null;
+        }
+        return StringUtil.splitByLines(stdout);
     }
 
     private static void displayError(@NotNull Project project, @NotNull String message) {
