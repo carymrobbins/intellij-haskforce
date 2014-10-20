@@ -64,11 +64,25 @@ public class HaskellExternalAnnotator extends ExternalAnnotator<PsiFile, Problem
         final VirtualFile moduleFile = module == null ? null : module.getModuleFile();
         final VirtualFile moduleDir = moduleFile == null ? null : moduleFile.getParent();
         final String workDir = moduleDir == null ? project.getBasePath() : moduleDir.getPath();
+        loadCacheData(file, project, workDir);
         Problems problems = new Problems();
         problems.addAllNotNull(GhcMod.check(project, workDir, canonicalPath));
         problems.addAllNotNull(HLint.lint(project, workDir, canonicalPath));
-        file.putUserData(ExecUtil.MODULE_CACHE_KEY, GhcMod.list(project, workDir));
         return problems;
+    }
+
+    /**
+     * Helper method to load data from ghc-mod into a file cache to be used for autocompletion.  This is done in a
+     * Java thread so execution can continue.  It just so happens to be very convenient to do this in the external
+     * annotator; however, there may be a better place to do this.
+     */
+    public static void loadCacheData(@NotNull final PsiFile file, @NotNull final Project project, @NotNull final String workDir) {
+        ApplicationManager.getApplication().invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                file.putUserData(ExecUtil.MODULE_CACHE_KEY, GhcMod.list(project, workDir));
+            }
+        });
     }
 
     /**
