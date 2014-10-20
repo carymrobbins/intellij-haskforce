@@ -68,26 +68,17 @@ public class GhcMod {
 
     @Nullable
     public static String list(@NotNull Project project, @NotNull String workingDirectory) {
-        final String ghcModPath = ExecUtil.GHC_MOD_KEY.getPath(project);
-        final String stdout;
-        if (ghcModPath == null
-                || (stdout = exec(workingDirectory, ghcModPath, "list", "")) == null
-                || stdout.length() == 0) {
-            return null;
-        }
-        return stdout;
+        return simpleExec("list", project, workingDirectory, "");
     }
 
     @Nullable
     public static String[] lang(@NotNull Project project, @NotNull String workingDirectory) {
-        final String ghcModPath = ExecUtil.GHC_MOD_KEY.getPath(project);
-        final String stdout;
-        if (ghcModPath == null
-                || (stdout = exec(workingDirectory, ghcModPath, "lang", "")) == null
-                || stdout.length() == 0) {
-            return null;
-        }
-        return StringUtil.splitByLines(stdout);
+        return simpleExecToLines("lang", project, workingDirectory, "");
+    }
+
+    @Nullable
+    public static String[] flag(@NotNull Project project, @NotNull String workingDirectory) {
+        return simpleExecToLines("flag", project, workingDirectory, "");
     }
 
     private static void displayError(@NotNull Project project, @NotNull String message) {
@@ -98,6 +89,24 @@ public class GhcMod {
                     message + "<br/><a href='configureHaskellTools'>Configure</a>",
                     NotificationType.ERROR, new HaskellToolsNotificationListener(project)), project);
         }
+    }
+
+    @Nullable
+    public static String simpleExec(@NotNull String command, @NotNull Project project, @NotNull String workingDirectory, @NotNull String ghcModFlags) {
+        final String ghcModPath = ExecUtil.GHC_MOD_KEY.getPath(project);
+        final String stdout;
+        if (ghcModPath == null
+                || (stdout = exec(workingDirectory, ghcModPath, command, ghcModFlags)) == null
+                || stdout.length() == 0) {
+            return null;
+        }
+        return stdout;
+    }
+
+    @Nullable
+    public static String[] simpleExecToLines(@NotNull String command, @NotNull Project project, @NotNull String workingDirectory, @NotNull String ghcModFlags) {
+        final String result = simpleExec(command, project, workingDirectory, ghcModFlags);
+        return result == null ? null : StringUtil.splitByLines(result);
     }
 
     @Nullable

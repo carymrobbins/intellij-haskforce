@@ -14,6 +14,8 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.util.Function;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
@@ -26,6 +28,10 @@ import java.util.*;
  */
 public class HaskellCompletionContributor extends CompletionContributor {
     public HaskellCompletionContributor() {
+        // TODO: It probably makes more sense to use a single extend() to more easily control including completions
+        // so we can share traversals of the Psi tree and integrate into logic paths.  However, it would probably
+        // be best at that point to break out sections into methods to avoid creating one giant function.
+
         // Keywords
         extend(CompletionType.BASIC,
                 PlatformPatterns.psiElement().withLanguage(HaskellLanguage.INSTANCE),
@@ -68,11 +74,72 @@ public class HaskellCompletionContributor extends CompletionContributor {
                     protected void addCompletions(@NotNull CompletionParameters parameters,
                                                   ProcessingContext context,
                                                   @NotNull CompletionResultSet result) {
-                        // TODO: Add other pragma types and ghc flags (preferably with `ghc-mod flag`).
-                        result.addElement(LookupElementBuilder.create("LANGUAGE"));
-                        List<LookupElement> langs = parameters.getPosition().getContainingFile().getOriginalFile().getUserData(ExecUtil.LANGUAGE_CACHE_KEY);
-                        if (langs != null) {
-                            result.addAllElements(langs);
+                        final PsiElement position = parameters.getPosition();
+                        final PsiFile originalFile = position.getContainingFile().getOriginalFile();
+
+                        final PsiElement prevSibling = getFirstPrevSiblingWhere(new Function<PsiElement, Boolean>() {
+                            @Override
+                            public Boolean fun(PsiElement psiElement) {
+                                return !(psiElement instanceof PsiWhiteSpace);
+                            }
+                        }, position);
+
+                        // Pragma types.
+                        if (prevSibling != null && "{-#".equals(prevSibling.getText())) {
+                            result.addAllElements(LogicUtil.map(stringToLookupElement, Arrays.asList(
+                                    "LANGUAGE ",
+                                    "OPTIONS_GHC ",
+                                    "WARNING ",
+                                    "DEPRECATED ",
+                                    "INLINE ",
+                                    "NOINLINE ",
+                                    "INLINABLE ",
+                                    "CONLIKE ",
+                                    "RULES ",
+                                    "ANN ",
+                                    "LINE ",
+                                    "SPECIALIZE ",
+                                    "UNPACK ",
+                                    "SOURCE "
+                            )));
+                        }
+
+                        final PsiElement openPragma = getFirstPrevSiblingWhere(new Function<PsiElement, Boolean>() {
+                            @Override
+                            public Boolean fun(PsiElement psiElement) {
+                                return psiElement.getText().equals("{-#");
+                            }
+                        }, position);
+
+                        final PsiElement pragmaTypeElement = getFirstNextSiblingWhere(new Function<PsiElement, Boolean>() {
+                            @Override
+                            public Boolean fun(PsiElement psiElement) {
+                                return !(psiElement instanceof PsiWhiteSpace);
+                            }
+                        }, openPragma);
+
+                        if (pragmaTypeElement == null) {
+                            return;
+                        }
+
+                        final String pragmaType = pragmaTypeElement.getText();
+
+                        if ("LANGUAGE".equals(pragmaType)) {
+                            addAllElements(result, originalFile.getUserData(ExecUtil.LANGUAGE_CACHE_KEY));
+                        } else if ("OPTIONS_GHC".equals(pragmaType)) {
+                            // TODO: Workaround since completion autocompletes after the "-", so without this
+                            // we may end up completing -foo with --foo (inserting a "-").
+                            final String[] flags = originalFile.getUserData(ExecUtil.FLAG_CACHE_KEY);
+                            if (position.getText().startsWith("-")) {
+                                addAllElements(result, LogicUtil.map(new Function<String, LookupElement>() {
+                                    @Override
+                                    public LookupElement fun(String s) {
+                                        return stringToLookupElement.fun(s.startsWith("-") ? s.substring(1) : s);
+                                    }
+                                }, flags));
+                            } else {
+                                addAllElements(result, LogicUtil.map(stringToLookupElement, flags));
+                            }
                         }
                     }
                 });
@@ -129,7 +196,48 @@ public class HaskellCompletionContributor extends CompletionContributor {
                 });
     }
 
+    /**
+     * Helper to prevent having to do a null check before adding elements to the completion result.
+     */
+    public static void addAllElements(CompletionResultSet result, List<LookupElement> elements) {
+        if (elements != null) {
+            result.addAllElements(elements);
+        }
+    }
 
+    @Nullable
+    public static PsiElement getFirstElementWhere(Function<PsiElement, PsiElement> modify,
+                                                  Function<PsiElement, Boolean> where,
+                                                  PsiElement initialElement) {
+        PsiElement result = modify.fun(initialElement);
+        while (result != null) {
+            if (where.fun(result)) {
+                return result;
+            }
+            result = modify.fun(result);
+        }
+        return null;
+    }
+
+    @Nullable
+    public static PsiElement getFirstPrevSiblingWhere(Function<PsiElement, Boolean> f, PsiElement e) {
+        return getFirstElementWhere(new Function<PsiElement, PsiElement>() {
+            @Override
+            public PsiElement fun(PsiElement psiElement) {
+                return psiElement.getPrevSibling();
+            }
+        }, f, e);
+    }
+
+    @Nullable
+    public static PsiElement getFirstNextSiblingWhere(Function<PsiElement, Boolean> f, PsiElement e) {
+        return getFirstElementWhere(new Function<PsiElement, PsiElement>() {
+            @Override
+            public PsiElement fun(PsiElement psiElement) {
+                return psiElement.getNextSibling();
+            }
+        }, f, e);
+    }
 
     /**
      * Adjust the error message when no lookup is found.

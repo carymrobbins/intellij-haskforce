@@ -222,4 +222,5 @@ public class ExecUtil {
 
     public static final Key<String> MODULE_CACHE_KEY = new Key<String>("MODULE_CACHE");
     public static final Key<List<LookupElement>> LANGUAGE_CACHE_KEY = new Key<List<LookupElement>>("LANGUAGE_CACHE");
+    public static final Key<String[]> FLAG_CACHE_KEY = new Key<String[]>("FLAG_CACHE_KEY");
 }

@@ -6,6 +6,7 @@ import com.haskforce.highlighting.annotation.HaskellProblem;
 import com.haskforce.highlighting.annotation.Problems;
 import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.LogicUtil;
+import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.ExternalAnnotator;
 import com.intellij.openapi.application.ApplicationManager;
@@ -20,6 +21,8 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * Single annotator that calls all external tools used for annotations.
@@ -82,11 +85,15 @@ public class HaskellExternalAnnotator extends ExternalAnnotator<PsiFile, Problem
         ApplicationManager.getApplication().invokeLater(new Runnable() {
             @Override
             public void run() {
-                file.putUserData(ExecUtil.LANGUAGE_CACHE_KEY,
-                        LogicUtil.map(HaskellCompletionContributor.stringToLookupElement, GhcMod.lang(project, workDir)));
+                file.putUserData(ExecUtil.LANGUAGE_CACHE_KEY, mapStringToLookupElement(GhcMod.lang(project, workDir)));
+                file.putUserData(ExecUtil.FLAG_CACHE_KEY, GhcMod.flag(project, workDir));
                 file.putUserData(ExecUtil.MODULE_CACHE_KEY, GhcMod.list(project, workDir));
             }
         });
+    }
+
+    public static List<LookupElement> mapStringToLookupElement(String[] strings) {
+        return LogicUtil.map(HaskellCompletionContributor.stringToLookupElement, strings);
     }
 
     /**
