@@ -48,6 +48,15 @@ public class HaskellAnnotator implements Annotator {
             }
 
             @Override
+            public void visitConid(@NotNull HaskellConid o) {
+                super.visitConid(o);
+                // Highlight the () unit type as a CONID.
+                if (o.getText().equals("()")) {
+                    setHighlighting(o, holder, HaskellSyntaxHighlighter.CONID);
+                }
+            }
+
+            @Override
             public void visitPstringtoken(@NotNull HaskellPstringtoken o) {
                 super.visitPstringtoken(o);
                 setHighlighting(o, holder, HaskellSyntaxHighlighter.STRING);

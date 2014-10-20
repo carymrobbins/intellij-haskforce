@@ -61,7 +61,10 @@ LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 
 VARIDREGEXP=([a-z_][a-zA-Z_0-9']+(\.[a-zA-Z_0-9']*)*)|[a-z]
-CONID=([A-Z][a-zA-Z_0-9']*(\.[a-zA-Z_0-9']*)*)|(\(\))
+// Unlike HaskellParsingLexer, we don't lex the unit type () as a CONID.
+// The reason is that brace matching breaks.  The HaskellAnnotator takes care
+// of the appropriate highlighting for unit type ().
+CONID=[A-Z][a-zA-Z_0-9']*(\.[a-zA-Z_0-9']*)*
 INFIXVARID=`[a-zA-Z_0-9][a-zA-Z_0-9']*`
 CHARTOKEN='(\\.|[^'])'
 INTEGERTOKEN=(0(o|O)[0-7]+|0(x|X)[0-9a-fA-F]+|[0-9]+)
