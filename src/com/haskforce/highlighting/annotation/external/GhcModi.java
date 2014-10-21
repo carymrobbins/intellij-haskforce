@@ -5,6 +5,7 @@ import com.haskforce.utils.ExecUtil;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,21 +29,31 @@ public class GhcModi {
 
     @Nullable
     public static Problems check(@NotNull Project project, @NotNull String workingDirectory, @NotNull String file) {
-        final String stdout = simpleExec(project, workingDirectory, getFlags(project), "check " + file);
+        final String stdout = simpleExec(project, workingDirectory, "check " + file);
         return stdout == null ? new Problems() : GhcMod.handleCheck(project, stdout, "ghc-modi");
     }
 
     @Nullable
-    public static String simpleExec(@NotNull Project project, @NotNull String workingDirectory,
-                                    @NotNull String flags, @NotNull String command) {
+    public static String[] browse(@NotNull Project project, @NotNull String workingDirectory, @NotNull String module) {
+        return simpleExecToLines(project, workingDirectory, "browse " + module);
+    }
+
+    @Nullable
+    public static String simpleExec(@NotNull Project project, @NotNull String workingDirectory, @NotNull String command) {
         final String path = getPath(project);
         final String stdout;
         if (path == null
-                || (stdout = exec(project, workingDirectory, path, flags, command)) == null
+                || (stdout = exec(project, workingDirectory, path, getFlags(project), command)) == null
                 || stdout.length() == 0) {
             return null;
         }
         return stdout;
+    }
+
+    @Nullable
+    public static String[] simpleExecToLines(@NotNull Project project, @NotNull String workingDirectory, @NotNull String command) {
+        final String result = simpleExec(project, workingDirectory, command);
+        return result == null ? null : StringUtil.splitByLines(result);
     }
 
     @Nullable

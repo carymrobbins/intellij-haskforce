@@ -1,16 +1,15 @@
 package com.haskforce.codeInsight;
 
 import com.haskforce.HaskellLanguage;
-import com.haskforce.psi.HaskellConid;
-import com.haskforce.psi.HaskellImpdecl;
-import com.haskforce.psi.HaskellQconid;
-import com.haskforce.psi.HaskellTypes;
+import com.haskforce.highlighting.annotation.external.GhcModi;
+import com.haskforce.psi.*;
 import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.LogicUtil;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiElement;
@@ -75,7 +74,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
                                                   ProcessingContext context,
                                                   @NotNull CompletionResultSet result) {
                         final PsiElement position = parameters.getPosition();
-                        final PsiFile originalFile = position.getContainingFile().getOriginalFile();
+                        final PsiFile originalFile = parameters.getOriginalFile();
 
                         final PsiElement prevSibling = getFirstPrevSiblingWhere(new Function<PsiElement, Boolean>() {
                             @Override
@@ -167,7 +166,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
                         if (!(el instanceof HaskellImpdecl)) {
                             return;
                         }
-                        final String list = position.getContainingFile().getOriginalFile().getUserData(ExecUtil.MODULE_CACHE_KEY);
+                        final String list = parameters.getOriginalFile().getUserData(ExecUtil.MODULE_CACHE_KEY);
                         if (list == null) {
                             return;
                         }
@@ -192,6 +191,43 @@ public class HaskellCompletionContributor extends CompletionContributor {
                             }
                         }
                         result.addAllElements(LogicUtil.map(stringToLookupElement, newLines));
+                    }
+                });
+
+        // Importing names.
+        extend(CompletionType.BASIC,
+                PlatformPatterns.psiElement().withLanguage(HaskellLanguage.INSTANCE),
+                new CompletionProvider<CompletionParameters>() {
+                    @Override
+                    protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
+                        final PsiElement position = parameters.getPosition();
+                        final PsiFile file = parameters.getOriginalFile();
+                        final Project project = position.getProject();
+                        // Only provide this feature if GhcModi is enabled.
+                        if (!ExecUtil.GhcModiToolKey.isEnabledFor(project)) {
+                            return;
+                        }
+                        PsiElement el = position.getParent();
+                        if (el == null) {
+                            return;
+                        }
+                        el = el.getParent();
+                        if (!(el instanceof HaskellImportt)) {
+                            return;
+                        }
+                        el = getFirstPrevSiblingWhere(new Function<PsiElement, Boolean>() {
+                            @Override
+                            public Boolean fun(PsiElement psiElement) {
+                                return psiElement instanceof HaskellQconid;
+                            }
+                        }, el);
+                        if (el == null) {
+                            return;
+                        }
+                        final String module = el.getText();
+                        // TODO: Break this out so we can test this without needing ghc-modi.
+                        final String[] names = GhcModi.browse(project, ExecUtil.guessWorkDir(file), module);
+                        addAllElements(result, LogicUtil.map(stringToLookupElement, names));
                     }
                 });
     }

@@ -8,10 +8,14 @@ import com.intellij.execution.process.CapturingProcessHandler;
 import com.intellij.execution.process.ProcessOutput;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.SystemInfo;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiFile;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -143,6 +147,19 @@ public class ExecUtil {
         return null;
     }
 
+    @NotNull
+    public static String guessWorkDir(@NotNull Project project, @NotNull VirtualFile file) {
+        final Module module = ModuleUtilCore.findModuleForFile(file, project);
+        final VirtualFile moduleFile = module == null ? null : module.getModuleFile();
+        final VirtualFile moduleDir = moduleFile == null ? null : moduleFile.getParent();
+        return moduleDir == null ? project.getBasePath() : moduleDir.getPath();
+    }
+
+    @NotNull
+    public static String guessWorkDir(@NotNull PsiFile file) {
+        return guessWorkDir(file.getProject(), file.getVirtualFile());
+    }
+
     /**
      * Executes commandLine, optionally piping input to stdin, and return stdout.
      */
@@ -228,7 +245,7 @@ public class ExecUtil {
             super("ghcModi");
         }
 
-        public static boolean use(@NotNull Project project) {
+        public static boolean isEnabledFor(@NotNull Project project) {
             return trueValue.equals(PropertiesComponent.getInstance(project).getValue(useKey));
         }
     }

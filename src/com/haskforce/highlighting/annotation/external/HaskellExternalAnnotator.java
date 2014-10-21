@@ -71,7 +71,7 @@ public class HaskellExternalAnnotator extends ExternalAnnotator<PsiFile, Problem
         final String workDir = moduleDir == null ? project.getBasePath() : moduleDir.getPath();
         loadCacheData(file, project, workDir);
         Problems problems = new Problems();
-        if (ExecUtil.GhcModiToolKey.use(project)) {
+        if (ExecUtil.GhcModiToolKey.isEnabledFor(project)) {
             problems.addAllNotNull(GhcModi.check(project, workDir, canonicalPath));
         } else {
             problems.addAllNotNull(GhcMod.check(project, workDir, canonicalPath));

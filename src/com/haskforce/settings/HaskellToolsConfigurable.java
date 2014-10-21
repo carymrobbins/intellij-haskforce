@@ -135,7 +135,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
         GhcModiTool(Project project) {
             super(project, "ghc-modi", ExecUtil.GHC_MODI_KEY, ghcModiPath, ghcModiFlags, ghcModiAutoFind, ghcModiVersion, "version");
             key = ExecUtil.GHC_MODI_KEY;
-            oldUse = key.use(project);
+            oldUse = key.isEnabledFor(project);
         }
 
         @Override

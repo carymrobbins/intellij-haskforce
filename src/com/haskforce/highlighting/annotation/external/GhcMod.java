@@ -71,17 +71,17 @@ public class GhcMod {
 
     @Nullable
     public static String list(@NotNull Project project, @NotNull String workingDirectory) {
-        return simpleExec(project, workingDirectory, "list", "");
+        return simpleExec(project, workingDirectory, "", "list");
     }
 
     @Nullable
     public static String[] lang(@NotNull Project project, @NotNull String workingDirectory) {
-        return simpleExecToLines(project, workingDirectory, "lang", "");
+        return simpleExecToLines(project, workingDirectory, "", "lang");
     }
 
     @Nullable
     public static String[] flag(@NotNull Project project, @NotNull String workingDirectory) {
-        return simpleExecToLines(project, workingDirectory, "flag", "");
+        return simpleExecToLines(project, workingDirectory, "", "flag");
     }
 
     public static void displayError(@NotNull Project project, @NotNull String message, @NotNull String toolName) {
