@@ -1,7 +1,6 @@
 package com.haskforce.utils;
 
 import com.haskforce.HaskellSdkType;
-import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.CapturingProcessHandler;
@@ -12,7 +11,6 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
-import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
@@ -207,6 +205,12 @@ public class ExecUtil {
         return readCommandLine(workingDirectory, command, params, null);
     }
 
+    public static final ToolKey PARSER_HELPER_KEY = new ToolKey("parserHelper");
+    public static final ToolKey STYLISH_HASKELL_KEY = new ToolKey("stylishHaskell");
+    public static final ToolKey HLINT_KEY = new ToolKey("hlint");
+    public static final ToolKey GHC_MOD_KEY = new ToolKey("ghcMod");
+    public static final GhcModiToolKey GHC_MODI_KEY = new GhcModiToolKey();
+
     /**
      * String wrapper to ensure that we don't accidentally pass an invalid key to the PropertiesComponent.
      * These are set as property keys in HaskellToolsConfigurable.
@@ -233,11 +237,6 @@ public class ExecUtil {
         }
     }
 
-    public static final ToolKey PARSER_HELPER_KEY = new ToolKey("parserHelper");
-    public static final ToolKey STYLISH_HASKELL_KEY = new ToolKey("stylishHaskell");
-    public static final ToolKey HLINT_KEY = new ToolKey("hlint");
-    public static final ToolKey GHC_MOD_KEY = new ToolKey("ghcMod");
-
     public static class GhcModiToolKey extends ToolKey {
         public static final String useKey = "useGhcModi";
         public static final String trueValue = "true";
@@ -250,11 +249,4 @@ public class ExecUtil {
             return trueValue.equals(PropertiesComponent.getInstance(project).getValue(useKey));
         }
     }
-
-    public static final GhcModiToolKey GHC_MODI_KEY = new GhcModiToolKey();
-
-    public static final Key<String> MODULE_CACHE_KEY = new Key("MODULE_CACHE");
-    public static final Key<List<LookupElement>> LANGUAGE_CACHE_KEY = new Key("LANGUAGE_CACHE");
-    public static final Key<String[]> FLAG_CACHE_KEY = new Key("FLAG_CACHE");
-    public static final Key<Map<String, List<LookupElement>>> QUALIFIED_CACHE_KEY = new Key("QUALIFIED_CACHE");
 }

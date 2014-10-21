@@ -12,6 +12,7 @@ import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiElement;
@@ -28,6 +29,11 @@ import java.util.*;
  * Fills the list of completions available on ctrl-space.
  */
 public class HaskellCompletionContributor extends CompletionContributor {
+    public static final Key<String> MODULE_CACHE_KEY = new Key("MODULE_CACHE");
+    public static final Key<List<LookupElement>> LANGUAGE_CACHE_KEY = new Key("LANGUAGE_CACHE");
+    public static final Key<String[]> FLAG_CACHE_KEY = new Key("FLAG_CACHE");
+    public static final Key<Map<String, List<LookupElement>>> QUALIFIED_CACHE_KEY = new Key("QUALIFIED_CACHE");
+
     public HaskellCompletionContributor() {
         // TODO: It probably makes more sense to use a single extend() to more easily control including completions
         // so we can share traversals of the Psi tree and integrate into logic paths.  However, it would probably
@@ -126,11 +132,11 @@ public class HaskellCompletionContributor extends CompletionContributor {
                         final String pragmaType = pragmaTypeElement.getText();
 
                         if ("LANGUAGE".equals(pragmaType)) {
-                            addAllElements(result, originalFile.getUserData(ExecUtil.LANGUAGE_CACHE_KEY));
+                            addAllElements(result, originalFile.getUserData(LANGUAGE_CACHE_KEY));
                         } else if ("OPTIONS_GHC".equals(pragmaType)) {
                             // TODO: Workaround since completion autocompletes after the "-", so without this
                             // we may end up completing -foo with --foo (inserting a "-").
-                            final String[] flags = originalFile.getUserData(ExecUtil.FLAG_CACHE_KEY);
+                            final String[] flags = originalFile.getUserData(FLAG_CACHE_KEY);
                             if (position.getText().startsWith("-")) {
                                 addAllElements(result, LogicUtil.map(new Function<String, LookupElement>() {
                                     @Override
@@ -168,18 +174,19 @@ public class HaskellCompletionContributor extends CompletionContributor {
                         if (!(el instanceof HaskellImpdecl)) {
                             return;
                         }
-                        final String list = parameters.getOriginalFile().getUserData(ExecUtil.MODULE_CACHE_KEY);
+                        final String list = parameters.getOriginalFile().getUserData(MODULE_CACHE_KEY);
                         if (list == null) {
                             return;
                         }
-                        String partialModule = "";
+                        StringBuilder builder = new StringBuilder(0);
                         el = position.getParent();
                         while (el != null) {
                             el = el.getPrevSibling();
                             if (el != null) {
-                                partialModule = el.getText() + partialModule;
+                                builder.insert(0, el.getText());
                             }
                         }
+                        final String partialModule = builder.toString();
                         List<String> lines = Arrays.asList(StringUtil.splitByLines(list));
                         Set<String> newLines = new HashSet<String>(0);
                         for (String line : lines) {
@@ -261,20 +268,15 @@ public class HaskellCompletionContributor extends CompletionContributor {
                         }
                         final String module = qName.substring(0, lastDotPos);
                         // Pull user-qualified names from cache.
-                        final Map<String, List<LookupElement>> cache = file.getUserData(ExecUtil.QUALIFIED_CACHE_KEY);
+                        final Map<String, List<LookupElement>> cache = file.getUserData(QUALIFIED_CACHE_KEY);
                         if (cache != null) {
                             addAllElements(result, cache.get(module));
                         }
-                        // TODO: Break this out so we can test this without needing ghc-modi.
-                        final String[] names = GhcModi.browse(project, ExecUtil.guessWorkDir(file), module);
-                        addAllElements(result, LogicUtil.map(stringToLookupElement, names));
                     }
                 });
     }
 
-    public static Map<String, List<LookupElement>> getQualifiedNameCache(@NotNull final PsiFile file,
-                                                                         @NotNull final Project project,
-                                                                         @NotNull final String workDir) {
+    public static Map<String, String> mapAliasesToQualifiedModules(@NotNull final PsiFile file) {
         PsiElement el = null;
         for (PsiElement child : file.getChildren()) {
             if (child instanceof HaskellBody) {
@@ -285,21 +287,39 @@ public class HaskellCompletionContributor extends CompletionContributor {
         if (el == null) {
             return null;
         }
-        Map<String, List<LookupElement>> result = new HashMap(0);
+        Map<String, String> result = new HashMap(0);
         for (PsiElement child : el.getChildren()) {
             if (child instanceof HaskellImpdecl) {
                 String module = null;
+                String alias = null;
                 for (PsiElement gChild : child.getChildren()) {
                     if (module == null && gChild instanceof HaskellQconid) {
                         module = gChild.getText();
                     } else if (module != null && gChild instanceof HaskellQconid) {
-                        final String[] names = GhcModi.browse(project, workDir, module);
-                        result.put(gChild.getText(), LogicUtil.map(stringToLookupElement, names));
+                        alias = gChild.getText();
                     }
                 }
+                if (module != null) {
+                    // If the user didn't alias the module then the full module name is used.
+                    if (alias == null) {
+                        alias = module;
+                    }
+                    result.put(alias, module);
+                }
+
             }
         }
         return result;
+    }
+
+    public static Map<String, List<LookupElement>> getQualifiedNameCache(@NotNull final PsiFile file, @NotNull final Project project,
+                                                                         @NotNull final String workDir) {
+        return LogicUtil.map(new Function<Map.Entry<String, String>, List<LookupElement>>() {
+            @Override
+            public List<LookupElement> fun(Map.Entry<String, String> e) {
+                return LogicUtil.map(stringToLookupElement, GhcModi.browse(project, workDir, e.getValue()));
+            }
+        }, mapAliasesToQualifiedModules(file));
     }
 
     /**
@@ -311,10 +331,10 @@ public class HaskellCompletionContributor extends CompletionContributor {
         ApplicationManager.getApplication().invokeLater(new Runnable() {
             @Override
             public void run() {
-                file.putUserData(ExecUtil.LANGUAGE_CACHE_KEY, LogicUtil.map(stringToLookupElement, GhcMod.lang(project, workDir)));
-                file.putUserData(ExecUtil.FLAG_CACHE_KEY, GhcMod.flag(project, workDir));
-                file.putUserData(ExecUtil.MODULE_CACHE_KEY, GhcMod.list(project, workDir));
-                file.putUserData(ExecUtil.QUALIFIED_CACHE_KEY, getQualifiedNameCache(file, project, workDir));
+                file.putUserData(LANGUAGE_CACHE_KEY, LogicUtil.map(stringToLookupElement, GhcMod.lang(project, workDir)));
+                file.putUserData(FLAG_CACHE_KEY, GhcMod.flag(project, workDir));
+                file.putUserData(MODULE_CACHE_KEY, GhcMod.list(project, workDir));
+                file.putUserData(QUALIFIED_CACHE_KEY, getQualifiedNameCache(file, project, workDir));
             }
         });
     }
