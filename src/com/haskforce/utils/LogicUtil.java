@@ -33,16 +33,4 @@ public class LogicUtil {
         }
         return result;
     }
-
-    @Nullable
-    public static <K, T, U> Map<K, U> map(final Function<Map.Entry<K, T>, U> function, final Map<K, T> m) {
-        if (m == null) {
-            return null;
-        }
-        HashMap<K, U> result = new HashMap(0);
-        for (Map.Entry<K, T> e : m.entrySet()) {
-            result.put(e.getKey(), function.fun(e));
-        }
-        return result;
-    }
 }

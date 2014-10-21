@@ -4,7 +4,6 @@ import com.haskforce.HaskellLanguage;
 import com.haskforce.highlighting.annotation.external.GhcMod;
 import com.haskforce.highlighting.annotation.external.GhcModi;
 import com.haskforce.psi.*;
-import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.LogicUtil;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -32,7 +31,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
     public static final Key<String> MODULE_CACHE_KEY = new Key("MODULE_CACHE");
     public static final Key<List<LookupElement>> LANGUAGE_CACHE_KEY = new Key("LANGUAGE_CACHE");
     public static final Key<String[]> FLAG_CACHE_KEY = new Key("FLAG_CACHE");
-    public static final Key<Map<String, List<LookupElement>>> QUALIFIED_CACHE_KEY = new Key("QUALIFIED_CACHE");
+    public static final Key<Map<String, List<LookupElement>>> BROWSE_CACHE_KEY = new Key("BROWSE_CACHE");
 
     public HaskellCompletionContributor() {
         // TODO: It probably makes more sense to use a single extend() to more easily control including completions
@@ -49,7 +48,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
                         // We don't really need every keyword, just the longer ones (probably).
                         // It's also helpful to add the trailing space (if applicable) so the user doesn't have to.
                         // TODO: Refine these keywords within their appropriate scope in the psi tree.
-                        result.addAllElements(LogicUtil.map(stringToLookupElement, new String[]{
+                        addAllElements(result, LogicUtil.map(stringToLookupElement, new String[]{
                                 "deriving ",
                                 "import ",
                                 "instance",
@@ -93,7 +92,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
 
                         // Pragma types.
                         if (prevSibling != null && "{-#".equals(prevSibling.getText())) {
-                            result.addAllElements(LogicUtil.map(stringToLookupElement, Arrays.asList(
+                            addAllElements(result, LogicUtil.map(stringToLookupElement, Arrays.asList(
                                     "LANGUAGE ",
                                     "OPTIONS_GHC ",
                                     "WARNING ",
@@ -199,7 +198,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
                                 newLines.add(newLine);
                             }
                         }
-                        result.addAllElements(LogicUtil.map(stringToLookupElement, newLines));
+                        addAllElements(result, LogicUtil.map(stringToLookupElement, newLines));
                     }
                 });
 
@@ -211,11 +210,6 @@ public class HaskellCompletionContributor extends CompletionContributor {
                     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
                         final PsiElement position = parameters.getPosition();
                         final PsiFile file = parameters.getOriginalFile();
-                        final Project project = position.getProject();
-                        // Only provide this feature if GhcModi is enabled.
-                        if (!ExecUtil.GhcModiToolKey.isEnabledFor(project)) {
-                            return;
-                        }
                         PsiElement el = position.getParent();
                         if (el == null) {
                             return;
@@ -234,9 +228,10 @@ public class HaskellCompletionContributor extends CompletionContributor {
                             return;
                         }
                         final String module = el.getText();
-                        // TODO: Break this out so we can test this without needing ghc-modi.
-                        final String[] names = GhcModi.browse(project, ExecUtil.guessWorkDir(file), module);
-                        addAllElements(result, LogicUtil.map(stringToLookupElement, names));
+                        final Map<String, List<LookupElement>> cache = file.getUserData(BROWSE_CACHE_KEY);
+                        if (cache != null) {
+                            addAllElements(result, cache.get(module));
+                        }
                     }
                 });
 
@@ -248,11 +243,6 @@ public class HaskellCompletionContributor extends CompletionContributor {
                     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
                         final PsiElement position = parameters.getPosition();
                         final PsiFile file = parameters.getOriginalFile();
-                        final Project project = position.getProject();
-                        // Only provide this feature if GhcModi is enabled.
-                        if (!ExecUtil.GhcModiToolKey.isEnabledFor(project)) {
-                            return;
-                        }
                         PsiElement el = position.getParent();
                         if (el == null) {
                             return;
@@ -268,7 +258,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
                         }
                         final String module = qName.substring(0, lastDotPos);
                         // Pull user-qualified names from cache.
-                        final Map<String, List<LookupElement>> cache = file.getUserData(QUALIFIED_CACHE_KEY);
+                        final Map<String, List<LookupElement>> cache = file.getUserData(BROWSE_CACHE_KEY);
                         if (cache != null) {
                             addAllElements(result, cache.get(module));
                         }
@@ -276,7 +266,11 @@ public class HaskellCompletionContributor extends CompletionContributor {
                 });
     }
 
-    public static Map<String, String> mapAliasesToQualifiedModules(@NotNull final PsiFile file) {
+    /**
+     * Returns a map of alias -> module for each imported module.  For modules imported without an alias, the
+     * full module name itself will be considered the alias.
+     */
+    public static Map<String, String> mapAliasesToModules(@NotNull final PsiFile file) {
         PsiElement el = null;
         for (PsiElement child : file.getChildren()) {
             if (child instanceof HaskellBody) {
@@ -312,14 +306,19 @@ public class HaskellCompletionContributor extends CompletionContributor {
         return result;
     }
 
-    public static Map<String, List<LookupElement>> getQualifiedNameCache(@NotNull final PsiFile file, @NotNull final Project project,
+    public static Map<String, List<LookupElement>> getQualifiedNameCache(@NotNull final PsiFile file,
+                                                                         @NotNull final Project project,
                                                                          @NotNull final String workDir) {
-        return LogicUtil.map(new Function<Map.Entry<String, String>, List<LookupElement>>() {
-            @Override
-            public List<LookupElement> fun(Map.Entry<String, String> e) {
-                return LogicUtil.map(stringToLookupElement, GhcModi.browse(project, workDir, e.getValue()));
-            }
-        }, mapAliasesToQualifiedModules(file));
+        Map<String, List<LookupElement>> result = new HashMap(0);
+        for (Map.Entry<String, String> e : mapAliasesToModules(file).entrySet()) {
+            final String alias = e.getKey();
+            final String module = e.getValue();
+            final List<LookupElement> names = LogicUtil.map(stringToLookupElement, GhcModi.browse(project, workDir, module));
+            // We should autocomplete for the alias and the fully qualified module name.
+            result.put(alias, names);
+            result.put(module, names);
+        }
+        return result;
     }
 
     /**
@@ -334,7 +333,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
                 file.putUserData(LANGUAGE_CACHE_KEY, LogicUtil.map(stringToLookupElement, GhcMod.lang(project, workDir)));
                 file.putUserData(FLAG_CACHE_KEY, GhcMod.flag(project, workDir));
                 file.putUserData(MODULE_CACHE_KEY, GhcMod.list(project, workDir));
-                file.putUserData(QUALIFIED_CACHE_KEY, getQualifiedNameCache(file, project, workDir));
+                file.putUserData(BROWSE_CACHE_KEY, getQualifiedNameCache(file, project, workDir));
             }
         });
     }
