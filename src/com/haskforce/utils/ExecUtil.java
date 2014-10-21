@@ -220,6 +220,21 @@ public class ExecUtil {
     public static final ToolKey HLINT_KEY = new ToolKey("hlint");
     public static final ToolKey GHC_MOD_KEY = new ToolKey("ghcMod");
 
+    public static class GhcModiToolKey extends ToolKey {
+        public static final String useKey = "useGhcModi";
+        public static final String trueValue = "true";
+
+        GhcModiToolKey() {
+            super("ghcModi");
+        }
+
+        public static boolean use(@NotNull Project project) {
+            return trueValue.equals(PropertiesComponent.getInstance(project).getValue(useKey));
+        }
+    }
+
+    public static final GhcModiToolKey GHC_MODI_KEY = new GhcModiToolKey();
+
     public static final Key<String> MODULE_CACHE_KEY = new Key<String>("MODULE_CACHE");
     public static final Key<List<LookupElement>> LANGUAGE_CACHE_KEY = new Key<List<LookupElement>>("LANGUAGE_CACHE");
     public static final Key<String[]> FLAG_CACHE_KEY = new Key<String[]>("FLAG_CACHE_KEY");

@@ -39,6 +39,11 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     private RawCommandLineEditor ghcModFlags;
     private JButton ghcModAutoFind;
     private JTextField ghcModVersion;
+    private TextFieldWithBrowseButton ghcModiPath;
+    private JButton ghcModiAutoFind;
+    private JTextField ghcModiVersion;
+    private RawCommandLineEditor ghcModiFlags;
+    private JCheckBox useGhcModi;
 
     private Tool[] tools;
 
@@ -51,6 +56,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
                          hlintAutoFind, hlintVersion),
                 new Tool(project, "ghc-mod", ExecUtil.GHC_MOD_KEY, ghcModPath, ghcModFlags,
                          ghcModAutoFind, ghcModVersion, "version"),
+                new GhcModiTool(project),
         };
     }
 
@@ -108,16 +114,45 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
             return false;
         }
 
-        private void saveState() {
+        protected void saveState() {
             for (PropertyField propertyField : propertyFields) {
                 propertyField.saveState();
             }
         }
 
-        private void restoreState() {
+        protected void restoreState() {
             for (PropertyField propertyField : propertyFields) {
                 propertyField.restoreState();
             }
+        }
+    }
+
+    @SuppressWarnings("AccessStaticViaInstance")
+    class GhcModiTool extends Tool {
+        public boolean oldUse;
+        public final ExecUtil.GhcModiToolKey key;
+
+        GhcModiTool(Project project) {
+            super(project, "ghc-modi", ExecUtil.GHC_MODI_KEY, ghcModiPath, ghcModiFlags, ghcModiAutoFind, ghcModiVersion, "version");
+            key = ExecUtil.GHC_MODI_KEY;
+            oldUse = key.use(project);
+        }
+
+        @Override
+        public boolean isModified() {
+            return super.isModified() || useGhcModi.isSelected() != oldUse;
+        }
+
+        @Override
+        protected void saveState() {
+            super.saveState();
+            propertiesComponent.setValue(key.useKey, (oldUse = useGhcModi.isSelected()) ? key.trueValue : null);
+        }
+
+        @Override
+        protected void restoreState() {
+            super.restoreState();
+            useGhcModi.setSelected(oldUse);
         }
     }
 
