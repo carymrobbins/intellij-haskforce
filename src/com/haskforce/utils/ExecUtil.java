@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Helper class to perform execution related tasks, including locating programs.
@@ -252,7 +253,8 @@ public class ExecUtil {
 
     public static final GhcModiToolKey GHC_MODI_KEY = new GhcModiToolKey();
 
-    public static final Key<String> MODULE_CACHE_KEY = new Key<String>("MODULE_CACHE");
-    public static final Key<List<LookupElement>> LANGUAGE_CACHE_KEY = new Key<List<LookupElement>>("LANGUAGE_CACHE");
-    public static final Key<String[]> FLAG_CACHE_KEY = new Key<String[]>("FLAG_CACHE_KEY");
+    public static final Key<String> MODULE_CACHE_KEY = new Key("MODULE_CACHE");
+    public static final Key<List<LookupElement>> LANGUAGE_CACHE_KEY = new Key("LANGUAGE_CACHE");
+    public static final Key<String[]> FLAG_CACHE_KEY = new Key("FLAG_CACHE");
+    public static final Key<Map<String, List<LookupElement>>> QUALIFIED_CACHE_KEY = new Key("QUALIFIED_CACHE");
 }

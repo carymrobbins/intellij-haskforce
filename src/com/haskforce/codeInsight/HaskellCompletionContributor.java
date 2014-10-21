@@ -1,6 +1,7 @@
 package com.haskforce.codeInsight;
 
 import com.haskforce.HaskellLanguage;
+import com.haskforce.highlighting.annotation.external.GhcMod;
 import com.haskforce.highlighting.annotation.external.GhcModi;
 import com.haskforce.psi.*;
 import com.haskforce.utils.ExecUtil;
@@ -8,6 +9,7 @@ import com.haskforce.utils.LogicUtil;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
@@ -230,6 +232,91 @@ public class HaskellCompletionContributor extends CompletionContributor {
                         addAllElements(result, LogicUtil.map(stringToLookupElement, names));
                     }
                 });
+
+        // Qualified names.
+        extend(CompletionType.BASIC,
+                PlatformPatterns.psiElement().withLanguage(HaskellLanguage.INSTANCE),
+                new CompletionProvider<CompletionParameters>() {
+                    @Override
+                    protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
+                        final PsiElement position = parameters.getPosition();
+                        final PsiFile file = parameters.getOriginalFile();
+                        final Project project = position.getProject();
+                        // Only provide this feature if GhcModi is enabled.
+                        if (!ExecUtil.GhcModiToolKey.isEnabledFor(project)) {
+                            return;
+                        }
+                        PsiElement el = position.getParent();
+                        if (el == null) {
+                            return;
+                        }
+                        el = el.getParent();
+                        if (!(el instanceof HaskellQconid || el instanceof HaskellQvarid)) {
+                            return;
+                        }
+                        final String qName = el.getText();
+                        final int lastDotPos = qName.lastIndexOf('.');
+                        if (lastDotPos == -1) {
+                            return;
+                        }
+                        final String module = qName.substring(0, lastDotPos);
+                        // Pull user-qualified names from cache.
+                        final Map<String, List<LookupElement>> cache = file.getUserData(ExecUtil.QUALIFIED_CACHE_KEY);
+                        if (cache != null) {
+                            addAllElements(result, cache.get(module));
+                        }
+                        // TODO: Break this out so we can test this without needing ghc-modi.
+                        final String[] names = GhcModi.browse(project, ExecUtil.guessWorkDir(file), module);
+                        addAllElements(result, LogicUtil.map(stringToLookupElement, names));
+                    }
+                });
+    }
+
+    public static Map<String, List<LookupElement>> getQualifiedNameCache(@NotNull final PsiFile file,
+                                                                         @NotNull final Project project,
+                                                                         @NotNull final String workDir) {
+        PsiElement el = null;
+        for (PsiElement child : file.getChildren()) {
+            if (child instanceof HaskellBody) {
+                el = child;
+                break;
+            }
+        }
+        if (el == null) {
+            return null;
+        }
+        Map<String, List<LookupElement>> result = new HashMap(0);
+        for (PsiElement child : el.getChildren()) {
+            if (child instanceof HaskellImpdecl) {
+                String module = null;
+                for (PsiElement gChild : child.getChildren()) {
+                    if (module == null && gChild instanceof HaskellQconid) {
+                        module = gChild.getText();
+                    } else if (module != null && gChild instanceof HaskellQconid) {
+                        final String[] names = GhcModi.browse(project, workDir, module);
+                        result.put(gChild.getText(), LogicUtil.map(stringToLookupElement, names));
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Helper method to load data from ghc-mod into a file cache to be used for autocompletion.  This is done in a
+     * Java thread so execution can continue.  It just so happens to be very convenient to do this in the external
+     * annotator; however, there may be a better place to do this.
+     */
+    public static void loadCacheData(@NotNull final PsiFile file, @NotNull final Project project, @NotNull final String workDir) {
+        ApplicationManager.getApplication().invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                file.putUserData(ExecUtil.LANGUAGE_CACHE_KEY, LogicUtil.map(stringToLookupElement, GhcMod.lang(project, workDir)));
+                file.putUserData(ExecUtil.FLAG_CACHE_KEY, GhcMod.flag(project, workDir));
+                file.putUserData(ExecUtil.MODULE_CACHE_KEY, GhcMod.list(project, workDir));
+                file.putUserData(ExecUtil.QUALIFIED_CACHE_KEY, getQualifiedNameCache(file, project, workDir));
+            }
+        });
     }
 
     /**
