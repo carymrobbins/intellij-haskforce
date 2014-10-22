@@ -82,7 +82,7 @@ public class HaskellElementFactory {
      * Create a file containing text.
      */
     @NotNull
-    private static HaskellFile createFileFromText(@NotNull Project project, @NotNull String text) {
+    public static HaskellFile createFileFromText(@NotNull Project project, @NotNull String text) {
         return (HaskellFile) PsiFileFactory.getInstance(project).createFileFromText("A.hs", HaskellLanguage.INSTANCE, text);
     }
 }

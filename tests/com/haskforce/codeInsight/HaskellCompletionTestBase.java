@@ -19,8 +19,13 @@ package com.haskforce.codeInsight;
 // Imported from Erlang repository on 24 July 2014.
 
 import com.haskforce.HaskellLightPlatformCodeInsightFixtureTestCase;
+import com.haskforce.utils.LogicUtil;
 import com.intellij.codeInsight.completion.CompletionType;
+import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.openapi.util.Key;
+import com.intellij.psi.PsiFile;
 import com.intellij.testFramework.UsefulTestCase;
+import com.intellij.util.Function;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +36,8 @@ import java.util.List;
  * Common functionality for completion tests
  */
 abstract public class HaskellCompletionTestBase extends HaskellLightPlatformCodeInsightFixtureTestCase {
+    protected List<Function<PsiFile, Void>> cacheLoaders = new ArrayList(0);
+
     protected HaskellCompletionTestBase() {
         super("codeInsight", "codeInsight");
     }
@@ -72,8 +79,33 @@ abstract public class HaskellCompletionTestBase extends HaskellLightPlatformCode
     protected void doTestVariants(String txt, CompletionType type, int count,
                                   CheckType checkType,
                                   String... variants) throws Throwable {
-        myFixture.configureByText("a.erl", txt);
+        myFixture.configureByText("a.hs", txt);
+        PsiFile file = myFixture.getFile();
+        for (Function f : cacheLoaders) {
+            f.fun(file);
+        }
         doTestVariantsInner(type, count, checkType, variants);
+    }
+
+    /**
+     * Helper to load fake completion data.
+     */
+    protected <T> void loadCache(final Key<T> key, final T value) {
+        cacheLoaders.add(new Function<PsiFile, Void>() {
+            @Override
+            public Void fun(PsiFile psiFile) {
+                psiFile.putUserData(key, value);
+                return null;
+            }
+        });
+    }
+
+    protected void loadCache(final Key<List<LookupElement>> key, final String[] value) {
+        loadCache(key, LogicUtil.map(HaskellCompletionContributor.stringToLookupElement, value));
+    }
+
+    protected void clearCache() {
+        cacheLoaders.clear();
     }
 
     protected void doTestVariantsInner(CompletionType type, int count,
