@@ -24,7 +24,7 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
     }
 
     public void testPragmaTypes() throws Throwable {
-        doTestInclude("{-# <caret> #-}",  PRAGMA_TYPES);
+        doTestInclude("{-# <caret> #-}",  getPragmaTypes());
     }
 
     public void testLanguages() throws Throwable {

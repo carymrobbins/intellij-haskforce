@@ -29,7 +29,7 @@ public class HaskellParserUtilBase extends GeneratedParserUtilBase {
         PsiParser wrapper = ((Builder) builder).parser;
         if (!(wrapper instanceof HaskellParserWrapper)) return false;
 
-        IElementType tok = builder.getTokenType();
+        // IElementType tok = builder.getTokenType();
         int offs = builder.getCurrentOffset();
         int line = StringUtil.offsetToLineNumber(builder.getOriginalText(), offs);
         int lineStart = StringUtil.lineColToOffset(builder.getOriginalText(), line, 1);
@@ -84,7 +84,7 @@ public class HaskellParserUtilBase extends GeneratedParserUtilBase {
         if (!(wrapper instanceof HaskellParserWrapper)) return false;
         if (builder.eof()) return false;
 
-        IElementType currtok = builder.getTokenType();
+        // IElementType currtok = builder.getTokenType();
         Pair<Integer, IElementType> prevtok = previousElem(builder);
         if (prevtok == null) return true;
 
@@ -95,11 +95,11 @@ public class HaskellParserUtilBase extends GeneratedParserUtilBase {
 
         int thisLineStart = StringUtil.lineColToOffset(builder.getOriginalText(), line, 0);
         int prevLineStart = StringUtil.lineColToOffset(builder.getOriginalText(), prevline, 0);
-        CharSequence lineStuff = builder.getOriginalText().subSequence(thisLineStart, offs);
+        // CharSequence lineStuff = builder.getOriginalText().subSequence(thisLineStart, offs);
         CharSequence prevLineStuff = builder.getOriginalText().subSequence(prevLineStart, thisLineStart - 1);
         int indentation = indentationLevel(prevLineStuff);
         int myindentation = offs - thisLineStart;
-        String tokName = builder.getTokenText();
+        // String tokName = builder.getTokenText();
 
         if (geq && myindentation >= indentation ||
                 !geq && myindentation > indentation) return true;

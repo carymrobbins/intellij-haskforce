@@ -35,10 +35,13 @@ public class HaskellCompletionContributor extends CompletionContributor {
     public static final Key<String[]> FLAG_CACHE_KEY = new Key("FLAG_CACHE");
     public static final Key<Map<String, List<LookupElement>>> BROWSE_CACHE_KEY = new Key("BROWSE_CACHE");
 
-    public static final String[] PRAGMA_TYPES = new String[]{
+    private static String[] PRAGMA_TYPES = new String[]{
             "LANGUAGE ", "OPTIONS_GHC ", "WARNING ", "DEPRECATED ", "INLINE ", "NOINLINE ", "INLINABLE ", "CONLIKE ",
-            "RULES ", "ANN ", "LINE ", "SPECIALIZE ", "UNPACK ", "SOURCE "
-    };
+            "RULES ", "ANN ", "LINE ", "SPECIALIZE ", "UNPACK ", "SOURCE "};
+
+    public static String[] getPragmaTypes() {
+        return PRAGMA_TYPES.clone();
+    }
 
     public HaskellCompletionContributor() {
         // TODO: It probably makes more sense to use a single extend() to more easily control including completions

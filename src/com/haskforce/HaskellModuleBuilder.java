@@ -13,6 +13,7 @@ import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.projectRoots.SdkTypeId;
 import com.intellij.openapi.roots.ModifiableRootModel;
 import com.intellij.openapi.util.text.StringUtil;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -76,5 +77,10 @@ public class HaskellModuleBuilder extends JavaModuleBuilder implements SourcePat
             c.setCompilerOutputDirectory(out);
         }
         return super.modifySettingsStep(settingsStep);
+    }
+
+    @Override
+    public int hashCode() {
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 }

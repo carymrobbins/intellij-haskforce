@@ -1,5 +1,5 @@
 <FindBugsFilter>
-  <!-- Ignore generated lexers -->
+  <!-- Ignore generated lexers.-->
   <Match>
     <Class name="~.*\._.*Lexer"/>
   </Match>
@@ -13,10 +13,20 @@
   <Match>
     <Class name="~com\.haskforce\.parsing\.srcExtsDatatypes\..*"/>
   </Match>
+  <!-- For efficiency reasons, we want to return the array here. -->
   <Match>
     <Class name="com.haskforce.features.HaskellBraceMatcher"/>
     <Bug pattern="EI_EXPOSE_REP"/>
   </Match>
+  <!-- Ignore certain bugs for JSON serialized classes. -->
+  <Match>
+    <Class name="com.haskforce.highlighting.annotation.external.HLint$Problem"/>
+    <Or>
+      <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+      <Bug pattern="EI_EXPOSE_REP2"/>
+    </Or>
+  </Match>
+  <!-- Ignore redundant null checks by @NotNull annotations. -->
   <Match>
     <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
   </Match>

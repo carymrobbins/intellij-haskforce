@@ -37,7 +37,7 @@ public class HaskellParserWrapper extends HaskellParser {
          */
         @Override
         public IElementType filter(IElementType source, int start, int end, CharSequence text) {
-            int lastLastCountedTok = lastCountedTok;
+            // int lastLastCountedTok = lastCountedTok;
             if (start > lastCountedTok) {
                 lastCountedTok = start;
                 regressed = false;

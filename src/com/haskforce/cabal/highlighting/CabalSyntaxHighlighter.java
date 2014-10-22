@@ -11,23 +11,23 @@ import org.jetbrains.annotations.NotNull;
 public class CabalSyntaxHighlighter extends SyntaxHighlighterBase {
     public static final TextAttributesKey COLON = TextAttributesKey.createTextAttributesKey(
             "CABAL_COLON", DefaultLanguageHighlighterColors.OPERATION_SIGN);
-    public static final TextAttributesKey[] COLON_KEYS = new TextAttributesKey[]{COLON};
+    private static final TextAttributesKey[] COLON_KEYS = new TextAttributesKey[]{COLON};
 
     public static final TextAttributesKey KEY = TextAttributesKey.createTextAttributesKey(
             "CABAL_KEY", DefaultLanguageHighlighterColors.INSTANCE_FIELD);
-    public static final TextAttributesKey[] KEY_KEYS = new TextAttributesKey[]{KEY};
+    private static final TextAttributesKey[] KEY_KEYS = new TextAttributesKey[]{KEY};
 
     public static final TextAttributesKey COMMENT = TextAttributesKey.createTextAttributesKey(
             "CABAL_COMMENT", DefaultLanguageHighlighterColors.LINE_COMMENT);
-    public static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{COMMENT};
+    private static final TextAttributesKey[] COMMENT_KEYS = new TextAttributesKey[]{COMMENT};
 
     public static final TextAttributesKey CONFIG = TextAttributesKey.createTextAttributesKey(
             "CABAL_CONFIG", DefaultLanguageHighlighterColors.NUMBER);
-    public static final TextAttributesKey[] CONFIG_KEYS = new TextAttributesKey[]{CONFIG};
+    private static final TextAttributesKey[] CONFIG_KEYS = new TextAttributesKey[]{CONFIG};
 
     public static final TextAttributesKey CONDITIONAL = TextAttributesKey.createTextAttributesKey(
             "CABAL_CONDITIONAL", DefaultLanguageHighlighterColors.INSTANCE_METHOD);
-    public static final TextAttributesKey[] CONDITIONAL_KEYS = new TextAttributesKey[]{CONDITIONAL};
+    private static final TextAttributesKey[] CONDITIONAL_KEYS = new TextAttributesKey[]{CONDITIONAL};
 
     @NotNull
     @Override
