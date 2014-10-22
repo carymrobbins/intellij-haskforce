@@ -1,0 +1,23 @@
+<FindBugsFilter>
+  <!-- Ignore generated lexers -->
+  <Match>
+    <Class name="~.*\._.*Lexer"/>
+  </Match>
+  <!-- Ignore HaskellParser2-related classes. -->
+  <Match>
+    <Class name="com.haskforce.parsing.HaskellParser2"/>
+  </Match>
+  <Match>
+    <Class name="~com\.haskforce\.parsing\.jsonParser\..*"/>
+  </Match>
+  <Match>
+    <Class name="~com\.haskforce\.parsing\.srcExtsDatatypes\..*"/>
+  </Match>
+  <Match>
+    <Class name="com.haskforce.features.HaskellBraceMatcher"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+  <Match>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+</FindBugsFilter>
