@@ -49,9 +49,9 @@ public class GhcModi {
         }
         List<Pair<String, String>> result = new ArrayList<Pair<String, String>>(lines.length);
         for (String line : lines) {
-            final String[] parts = TYPE_SPLIT_REGEX.split(line);
+            final String[] parts = TYPE_SPLIT_REGEX.split(line, 2);
             //noinspection ObjectAllocationInLoop
-            result.add(new Pair<String, String>(parts[0], parts[1]));
+            result.add(new Pair<String, String>(parts[0], parts.length == 2 ? parts[1] : ""));
         }
         return result;
     }
