@@ -1,5 +1,6 @@
 package com.haskforce.codeInsight;
 
+import com.haskforce.HaskellIcons;
 import com.haskforce.HaskellLanguage;
 import com.haskforce.highlighting.annotation.external.GhcMod;
 import com.haskforce.highlighting.annotation.external.GhcModi;
@@ -12,6 +13,7 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiElement;
@@ -28,10 +30,15 @@ import java.util.*;
  * Fills the list of completions available on ctrl-space.
  */
 public class HaskellCompletionContributor extends CompletionContributor {
-    public static final Key<String> MODULE_CACHE_KEY = new Key("MODULE_CACHE");
+    public static final Key<String[]> MODULE_CACHE_KEY = new Key("MODULE_CACHE");
     public static final Key<List<LookupElement>> LANGUAGE_CACHE_KEY = new Key("LANGUAGE_CACHE");
     public static final Key<String[]> FLAG_CACHE_KEY = new Key("FLAG_CACHE");
     public static final Key<Map<String, List<LookupElement>>> BROWSE_CACHE_KEY = new Key("BROWSE_CACHE");
+
+    public static final String[] PRAGMA_TYPES = new String[]{
+            "LANGUAGE ", "OPTIONS_GHC ", "WARNING ", "DEPRECATED ", "INLINE ", "NOINLINE ", "INLINABLE ", "CONLIKE ",
+            "RULES ", "ANN ", "LINE ", "SPECIALIZE ", "UNPACK ", "SOURCE "
+    };
 
     public HaskellCompletionContributor() {
         // TODO: It probably makes more sense to use a single extend() to more easily control including completions
@@ -92,22 +99,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
 
                         // Pragma types.
                         if (prevSibling != null && "{-#".equals(prevSibling.getText())) {
-                            addAllElements(result, LogicUtil.map(stringToLookupElement, Arrays.asList(
-                                    "LANGUAGE ",
-                                    "OPTIONS_GHC ",
-                                    "WARNING ",
-                                    "DEPRECATED ",
-                                    "INLINE ",
-                                    "NOINLINE ",
-                                    "INLINABLE ",
-                                    "CONLIKE ",
-                                    "RULES ",
-                                    "ANN ",
-                                    "LINE ",
-                                    "SPECIALIZE ",
-                                    "UNPACK ",
-                                    "SOURCE "
-                            )));
+                            addAllElements(result, LogicUtil.map(stringToLookupElement, PRAGMA_TYPES));
                         }
 
                         final PsiElement openPragma = getFirstPrevSiblingWhere(new Function<PsiElement, Boolean>() {
@@ -173,7 +165,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
                         if (!(el instanceof HaskellImpdecl)) {
                             return;
                         }
-                        final String list = parameters.getOriginalFile().getUserData(MODULE_CACHE_KEY);
+                        final String[] list = parameters.getOriginalFile().getUserData(MODULE_CACHE_KEY);
                         if (list == null) {
                             return;
                         }
@@ -186,9 +178,8 @@ public class HaskellCompletionContributor extends CompletionContributor {
                             }
                         }
                         final String partialModule = builder.toString();
-                        List<String> lines = Arrays.asList(StringUtil.splitByLines(list));
                         Set<String> newLines = new HashSet<String>(0);
-                        for (String line : lines) {
+                        for (String line : list) {
                             if (line.startsWith(partialModule)) {
                                 String newLine = line.replace(partialModule, "");
                                 final int firstDotPos = newLine.indexOf('.');
@@ -216,7 +207,12 @@ public class HaskellCompletionContributor extends CompletionContributor {
                         }
                         el = el.getParent();
                         if (!(el instanceof HaskellImportt)) {
-                            return;
+                            if (el != null) {
+                                el = el.getParent();
+                                if (!(el instanceof HaskellImportt)) {
+                                    return;
+                                }
+                            }
                         }
                         el = getFirstPrevSiblingWhere(new Function<PsiElement, Boolean>() {
                             @Override
@@ -313,7 +309,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
         for (Map.Entry<String, String> e : mapAliasesToModules(file).entrySet()) {
             final String alias = e.getKey();
             final String module = e.getValue();
-            final List<LookupElement> names = LogicUtil.map(stringToLookupElement, GhcModi.browse(project, workDir, module));
+            final List<LookupElement> names = LogicUtil.map(pairToLookupElement, GhcModi.browse(project, workDir, module));
             // We should autocomplete for the alias and the fully qualified module name.
             result.put(alias, names);
             result.put(module, names);
@@ -351,6 +347,9 @@ public class HaskellCompletionContributor extends CompletionContributor {
     public static PsiElement getFirstElementWhere(Function<PsiElement, PsiElement> modify,
                                                   Function<PsiElement, Boolean> where,
                                                   PsiElement initialElement) {
+        if (initialElement == null) {
+            return null;
+        }
         PsiElement result = modify.fun(initialElement);
         while (result != null) {
             if (where.fun(result)) {
@@ -393,7 +392,14 @@ public class HaskellCompletionContributor extends CompletionContributor {
     public static final Function<String, LookupElement> stringToLookupElement = new Function<String, LookupElement>() {
         @Override
         public LookupElement fun(String s) {
-            return LookupElementBuilder.create(s);
+            return LookupElementBuilder.create(s).withIcon(HaskellIcons.FILE);
+        }
+    };
+
+    public static final Function<Pair<String, String>, LookupElement> pairToLookupElement = new Function<Pair<String, String>, LookupElement>() {
+        @Override
+        public LookupElement fun(Pair<String, String> pair) {
+            return ((LookupElementBuilder)stringToLookupElement.fun(pair.first)).withTypeText(pair.second);
         }
     };
 }

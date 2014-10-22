@@ -70,8 +70,8 @@ public class GhcMod {
     }
 
     @Nullable
-    public static String list(@NotNull Project project, @NotNull String workingDirectory) {
-        return simpleExec(project, workingDirectory, "", "list");
+    public static String[] list(@NotNull Project project, @NotNull String workingDirectory) {
+        return simpleExecToLines(project, workingDirectory, "", "list");
     }
 
     @Nullable

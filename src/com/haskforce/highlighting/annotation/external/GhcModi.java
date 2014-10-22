@@ -2,19 +2,25 @@ package com.haskforce.highlighting.annotation.external;
 
 import com.haskforce.highlighting.annotation.Problems;
 import com.haskforce.utils.ExecUtil;
+import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class GhcModi {
     private static Process process;
     private static BufferedReader input;
     private static BufferedWriter output;
+    public static final Pattern TYPE_SPLIT_REGEX = Pattern.compile(" :: ");
 
     @Nullable
     public static String getPath(@NotNull Project project) {
@@ -32,9 +38,22 @@ public class GhcModi {
         return stdout == null ? new Problems() : GhcMod.handleCheck(project, stdout, "ghc-modi");
     }
 
+    /**
+     * Returns an array of (name, type) pairs exposed for a given module.
+     */
     @Nullable
-    public static String[] browse(@NotNull Project project, @NotNull String workingDirectory, @NotNull String module) {
-        return simpleExecToLines(project, workingDirectory, "browse " + module);
+    public static List<Pair<String, String>> browse(@NotNull Project project, @NotNull String workingDirectory, @NotNull String module) {
+        String[] lines = simpleExecToLines(project, workingDirectory, "browse -d " + module);
+        if (lines == null) {
+            return null;
+        }
+        List<Pair<String, String>> result = new ArrayList<Pair<String, String>>(lines.length);
+        for (String line : lines) {
+            final String[] parts = TYPE_SPLIT_REGEX.split(line);
+            //noinspection ObjectAllocationInLoop
+            result.add(new Pair<String, String>(parts[0], parts[1]));
+        }
+        return result;
     }
 
     @Nullable
@@ -67,7 +86,7 @@ public class GhcModi {
             commandLine.setRedirectErrorStream(true);
             try {
                 process = commandLine.createProcess();
-            } catch (com.intellij.execution.ExecutionException e) {
+            } catch (ExecutionException e) {
                 // Notify the user that something terrible has happened.
                 GhcMod.displayError(project, e.toString(), "ghc-modi");
                 return null;
