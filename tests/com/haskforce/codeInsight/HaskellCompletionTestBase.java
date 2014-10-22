@@ -76,6 +76,10 @@ abstract public class HaskellCompletionTestBase extends HaskellLightPlatformCode
         doTestVariants(txt, CompletionType.BASIC, 1, CheckType.INCLUDES, variants);
     }
 
+    protected void doTestExclude(String txt, String... variants) throws Throwable {
+        doTestVariants(txt, CompletionType.BASIC, 1, CheckType.EXCLUDES, variants);
+    }
+
     protected void doTestVariants(String txt, CompletionType type, int count,
                                   CheckType checkType,
                                   String... variants) throws Throwable {

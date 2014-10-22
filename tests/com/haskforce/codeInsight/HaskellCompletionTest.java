@@ -86,6 +86,19 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
                 fakeBrowseCache.get("Data.ByteString.Char8"));
     }
 
+    public void testReferenceCompletion() throws Throwable {
+        doTestInclude(
+                "foo :: String -> String\n" +
+                "foo = undefined\n" +
+                "bar = <caret>",
+                    "foo");
+        doTestExclude(
+                "import <caret>\n" +
+                "foo :: String -> String\n" +
+                "foo = undefined",
+                    "foo");
+    }
+
     /**
      * Terrible hack to make constructing and using these maps way simpler.
      */
