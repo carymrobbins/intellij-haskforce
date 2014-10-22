@@ -14,7 +14,6 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.Pair;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -309,10 +308,11 @@ public class HaskellCompletionContributor extends CompletionContributor {
                                                                          @NotNull final Project project,
                                                                          @NotNull final String workDir) {
         Map<String, List<LookupElement>> result = new HashMap(0);
+        GhcModi ghcModi = GhcModi.getInstance(project, workDir);
         for (Map.Entry<String, String> e : mapAliasesToModules(file).entrySet()) {
             final String alias = e.getKey();
             final String module = e.getValue();
-            final List<LookupElement> names = LogicUtil.map(pairToLookupElement, GhcModi.browse(project, workDir, module));
+            final List<LookupElement> names = LogicUtil.map(pairToLookupElement, ghcModi.browse(module));
             // We should autocomplete for the alias and the fully qualified module name.
             result.put(alias, names);
             result.put(module, names);

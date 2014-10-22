@@ -13,14 +13,61 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class GhcModi {
-    private static Process process;
-    private static BufferedReader input;
-    private static BufferedWriter output;
+    public final Project project;
+    public final String workingDirectory;
+    public final String path;
+    public final String flags;
+    private Process process;
+    private BufferedReader input;
+    private BufferedWriter output;
     public static final Pattern TYPE_SPLIT_REGEX = Pattern.compile(" :: ");
+    private static Map<Project, GhcModi> instanceMap = new HashMap<Project, GhcModi>(0);
+
+    public static GhcModi getInstance(Project project, String workingDirectory) {
+        final String path = getPath(project);
+        final String flags = getFlags(project);
+        final GhcModi instance = instanceMap.get(project);
+        if (instance != null) {
+            if (instance.workingDirectory.equals(workingDirectory)
+                    && instance.path.equals(path)
+                    && instance.flags.equals(flags)) {
+                return instance;
+            }
+            instance.kill();
+        }
+        final GhcModi newInstance = new GhcModi(project, workingDirectory, path, flags);
+        instanceMap.put(project, newInstance);
+        return newInstance;
+    }
+
+    private GhcModi(Project project, String workingDirectory, String path, String flags) {
+        this.project = project;
+        this.workingDirectory = workingDirectory;
+        this.path = path;
+        this.flags = flags;
+    }
+
+    private synchronized void kill() {
+        if (process != null) {
+            process.destroy();
+        }
+        try {
+            input.close();
+        } catch (IOException e) {
+            // Ignored.
+        }
+        try {
+            output.close();
+        } catch (IOException e) {
+            // Ignored.
+        }
+    }
 
     @Nullable
     public static String getPath(@NotNull Project project) {
@@ -33,8 +80,8 @@ public class GhcModi {
     }
 
     @Nullable
-    public static Problems check(@NotNull Project project, @NotNull String workingDirectory, @NotNull String file) {
-        final String stdout = simpleExec(project, workingDirectory, "check " + file);
+    public Problems check(@NotNull String file) {
+        final String stdout = simpleExec("check " + file);
         return stdout == null ? new Problems() : GhcMod.handleCheck(project, stdout, "ghc-modi");
     }
 
@@ -42,8 +89,8 @@ public class GhcModi {
      * Returns an array of (name, type) pairs exposed for a given module.
      */
     @Nullable
-    public static List<Pair<String, String>> browse(@NotNull Project project, @NotNull String workingDirectory, @NotNull String module) {
-        String[] lines = simpleExecToLines(project, workingDirectory, "browse -d " + module);
+    public List<Pair<String, String>> browse(@NotNull String module) {
+        String[] lines = simpleExecToLines("browse -d " + module);
         if (lines == null) {
             return null;
         }
@@ -57,11 +104,11 @@ public class GhcModi {
     }
 
     @Nullable
-    public static String simpleExec(@NotNull Project project, @NotNull String workingDirectory, @NotNull String command) {
+    public String simpleExec(@NotNull String command) {
         final String path = getPath(project);
         final String stdout;
         if (path == null
-                || (stdout = exec(project, workingDirectory, path, getFlags(project), command)) == null
+                || (stdout = exec(command)) == null
                 || stdout.length() == 0) {
             return null;
         }
@@ -69,14 +116,13 @@ public class GhcModi {
     }
 
     @Nullable
-    public static String[] simpleExecToLines(@NotNull Project project, @NotNull String workingDirectory, @NotNull String command) {
-        final String result = simpleExec(project, workingDirectory, command);
+    public String[] simpleExecToLines(@NotNull String command) {
+        final String result = simpleExec(command);
         return result == null ? null : StringUtil.splitByLines(result);
     }
 
     @Nullable
-    public static String exec(@NotNull Project project, @NotNull String workingDirectory, @NotNull String path,
-                              @NotNull String flags, @NotNull String command) {
+    public synchronized String exec(@NotNull String command) {
         if (process == null) {
             GeneralCommandLine commandLine = new GeneralCommandLine(path);
             ParametersList parametersList = commandLine.getParametersList();
