@@ -1,7 +1,10 @@
 package com.haskforce.psi.references;
 
 import com.haskforce.HaskellIcons;
+import com.haskforce.highlighting.annotation.external.GhcModi;
 import com.haskforce.psi.HaskellConid;
+import com.haskforce.psi.HaskellExp;
+import com.haskforce.psi.HaskellGendecl;
 import com.haskforce.psi.HaskellVarid;
 import com.haskforce.psi.impl.HaskellPsiImplUtil;
 import com.haskforce.utils.HaskellUtil;
@@ -67,15 +70,35 @@ public class HaskellReference extends PsiReferenceBase<PsiElement> implements Ps
     @NotNull
     @Override
     public Object[] getVariants() {
+        // If we are not in an expression, don't provide references.
+        PsiElement el;
+        if ((el = myElement.getParent()) == null
+                || (el = el.getParent()) == null
+                || !(el.getParent() instanceof HaskellExp)) {
+            return new Object[]{};
+        }
         Project project = myElement.getProject();
         List<PsiNamedElement> namedNodes = HaskellUtil.findDefinitionNodes(project);
         List<LookupElement> variants = new ArrayList<LookupElement>(20);
         for (final PsiNamedElement namedElement : namedNodes) {
+            if ((el = namedElement.getParent()) != null
+                    && (el = el.getParent()) instanceof HaskellGendecl) {
+                final String[] parts = GhcModi.TYPE_SPLIT_REGEX.split(el.getText(), 2);
+                final String moduleName = " (" + namedElement.getContainingFile().getName() + ')';
+                if (parts.length == 2) {
+                    variants.add(LookupElementBuilder.create(parts[0])
+                                    .withIcon(HaskellIcons.FILE)
+                                    .withTailText(moduleName, true)
+                                    .withTypeText(parts[1]));
+                    continue;
+                }
+            }
             final String name = namedElement.getName();
             if (name != null && !name.isEmpty()) {
-                variants.add(LookupElementBuilder.create(namedElement).
-                                withIcon(HaskellIcons.FILE).
-                                withTypeText(namedElement.getContainingFile().getName())
+                final String moduleName = " (" + namedElement.getContainingFile().getName() + ')';
+                variants.add(LookupElementBuilder.create(namedElement)
+                                .withIcon(HaskellIcons.FILE)
+                                .withTailText(moduleName, true)
                 );
             }
         }
