@@ -58,6 +58,7 @@ public class GhcModi {
     }
 
     private synchronized void kill() {
+        instanceMap.remove(project);
         if (process != null) {
             process.destroy();
             process = null;
@@ -78,7 +79,6 @@ public class GhcModi {
         } catch (IOException e) {
             // Ignored.
         }
-        instanceMap.remove(project);
     }
 
     private synchronized void killAndDisplayError(String command, String error) {
@@ -158,6 +158,14 @@ public class GhcModi {
             output = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
         }
         try {
+            if (output == null) {
+                killAndDisplayError(command, "Output stream was unexpectedly null.");
+                return null;
+            }
+            if (input == null) {
+                killAndDisplayError(command, "Input stream was unexpectedly null.");
+                return null;
+            }
             output.write(command + System.getProperty("line.separator"));
             output.flush();
             StringBuilder builder = new StringBuilder(0);
