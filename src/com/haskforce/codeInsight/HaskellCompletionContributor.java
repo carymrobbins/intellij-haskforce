@@ -304,11 +304,15 @@ public class HaskellCompletionContributor extends CompletionContributor {
         return result;
     }
 
+    @NotNull
     public static Map<String, List<LookupElement>> getQualifiedNameCache(@NotNull final PsiFile file,
                                                                          @NotNull final Project project,
                                                                          @NotNull final String workDir) {
         Map<String, List<LookupElement>> result = new HashMap(0);
         GhcModi ghcModi = GhcModi.getInstance(project, workDir);
+        if (ghcModi == null) {
+            return result;
+        }
         for (Map.Entry<String, String> e : mapAliasesToModules(file).entrySet()) {
             final String alias = e.getKey();
             final String module = e.getValue();

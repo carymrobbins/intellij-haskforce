@@ -19,18 +19,22 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 public class GhcModi {
-    public final Project project;
-    public final String workingDirectory;
-    public final String path;
-    public final String flags;
-    private Process process;
-    private BufferedReader input;
-    private BufferedWriter output;
+    public final @NotNull Project project;
+    public final @NotNull String workingDirectory;
+    public final @NotNull String path;
+    public final @NotNull String flags;
+    private @Nullable Process process;
+    private @Nullable BufferedReader input;
+    private @Nullable BufferedWriter output;
     public static final Pattern TYPE_SPLIT_REGEX = Pattern.compile(" :: ");
-    private static Map<Project, GhcModi> instanceMap = new HashMap<Project, GhcModi>(0);
+    private static @NotNull Map<Project, GhcModi> instanceMap = new HashMap<Project, GhcModi>(0);
 
-    public static GhcModi getInstance(Project project, String workingDirectory) {
+    @Nullable
+    public static GhcModi getInstance(@NotNull Project project, @NotNull String workingDirectory) {
         final String path = getPath(project);
+        if (path == null) {
+            return null;
+        }
         final String flags = getFlags(project);
         final GhcModi instance = instanceMap.get(project);
         if (instance != null) {
@@ -46,7 +50,7 @@ public class GhcModi {
         return newInstance;
     }
 
-    private GhcModi(Project project, String workingDirectory, String path, String flags) {
+    private GhcModi(@NotNull Project project, @NotNull String workingDirectory, @NotNull String path, @NotNull String flags) {
         this.project = project;
         this.workingDirectory = workingDirectory;
         this.path = path;
@@ -56,17 +60,31 @@ public class GhcModi {
     private synchronized void kill() {
         if (process != null) {
             process.destroy();
+            process = null;
         }
         try {
-            input.close();
+            if (input != null) {
+                input.close();
+                input = null;
+            }
         } catch (IOException e) {
             // Ignored.
         }
         try {
-            output.close();
+            if (output != null) {
+                output.close();
+                output = null;
+            }
         } catch (IOException e) {
             // Ignored.
         }
+        instanceMap.remove(project);
+    }
+
+    private synchronized void killAndDisplayError(String command, String error) {
+        kill();
+        final String message = "Command: " + command + "<br/>Error: " + error;
+        GhcMod.displayError(project, message, "ghc-modi");
     }
 
     @Nullable
@@ -133,8 +151,7 @@ public class GhcModi {
             try {
                 process = commandLine.createProcess();
             } catch (ExecutionException e) {
-                // Notify the user that something terrible has happened.
-                GhcMod.displayError(project, e.toString(), "ghc-modi");
+                killAndDisplayError(command, e.toString());
                 return null;
             }
             input = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -151,12 +168,12 @@ public class GhcModi {
                 line = input.readLine();
             }
             if (line != null && line.startsWith("NG")) {
-                GhcMod.displayError(project, line, "ghc-modi");
+                killAndDisplayError(command, line);
                 return null;
             }
             return builder.toString();
         } catch (IOException e) {
-            GhcMod.displayError(project, e.toString(), "ghc-modi");
+            killAndDisplayError(command, e.toString());
             return null;
         }
     }
