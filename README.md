@@ -3,7 +3,7 @@
 The IntelliJ plugin for Haskell.
 --------
 
-You can install the plugin using the build method below.  Check out the
+You can install the plugin by downloading the latest zip archive from the [releases page](https://github.com/carymrobbins/intellij-haskforce/releases) and loading it in IntelliJ via **Preferences > Plugins > Install plugin from disk**.  Check out the
 [Quick Start Guide](https://github.com/carymrobbins/intellij-haskforce/wiki/Quick-Start-Guide)
 for more info!
 
