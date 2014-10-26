@@ -14,6 +14,7 @@ import com.intellij.lang.annotation.Annotation;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
@@ -31,6 +32,8 @@ import java.util.regex.Pattern;
  * Interface + encapsulation of details concerning ghc-mod communication and annotation.
  */
 public class GhcMod {
+    private static final Logger LOG = Logger.getInstance(GhcMod.class);
+
     // Map of project -> errorMessage.  Useful to ensure we don't output the same error multiple times.
     private static Map<Project, String> errorState = new HashMap<Project, String>(0);
 

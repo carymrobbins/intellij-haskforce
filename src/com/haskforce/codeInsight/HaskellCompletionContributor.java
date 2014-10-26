@@ -11,13 +11,17 @@ import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.patterns.PlatformPatterns;
+import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Function;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
@@ -48,35 +52,45 @@ public class HaskellCompletionContributor extends CompletionContributor {
         // be best at that point to break out sections into methods to avoid creating one giant function.
 
         // Keywords
+        // TODO: Only 'import' is implemented; implement other keywords with context-awareness.
         extend(CompletionType.BASIC,
                 PlatformPatterns.psiElement().withLanguage(HaskellLanguage.INSTANCE),
                 new CompletionProvider<CompletionParameters>() {
                     public void addCompletions(@NotNull CompletionParameters parameters,
                                                ProcessingContext context,
                                                @NotNull CompletionResultSet result) {
-                        // We don't really need every keyword, just the longer ones (probably).
-                        // It's also helpful to add the trailing space (if applicable) so the user doesn't have to.
-                        // TODO: Refine these keywords within their appropriate scope in the psi tree.
-                        addAllElements(result, LogicUtil.map(stringToLookupElement, new String[]{
-                                "deriving ",
-                                "import ",
-                                "instance",
-                                "module ",
-                                "newtype ",
-                                "where",
-                        }));
+                        // Traverse upwards, stop before we reach the top-level body.
+                        PsiElement el = parameters.getPosition();
+                        while (el != null) {
+                            PsiElement parent = el.getParent();
+                            if (parent instanceof HaskellBody) {
+                                break;
+                            }
+                            el = parent;
+                        }
+                        PsiElement prev = getPrevSiblingWhere(new Function<PsiElement, Boolean>() {
+                            @Override
+                            public Boolean fun(PsiElement psiElement) {
+                                return !PsiTreeUtil.instanceOf(psiElement,
+                                        HaskellPpragma.class, PsiWhiteSpace.class, PsiComment.class);
+                            }
+                        }, el);
+                        // Check if previous sibling is an import or does not exist (first import).
+                        if (prev == null || prev instanceof HaskellImpdecl) {
+                            result.addElement(stringToLookupElement.fun("import "));
+                        }
                     }
                 }
         );
 
-        // Only autocomplete "qualified" after "import"
+        // Autocomplete "qualified" after "import"
         extend(CompletionType.BASIC,
                 PlatformPatterns.psiElement().afterLeaf("import").withLanguage(HaskellLanguage.INSTANCE),
                 new CompletionProvider<CompletionParameters>() {
                     public void addCompletions(@NotNull CompletionParameters parameters,
                                                ProcessingContext context,
                                                @NotNull CompletionResultSet result) {
-                        result.addElement(LookupElementBuilder.create("qualified "));
+                        result.addElement(stringToLookupElement.fun("qualified "));
                     }
                 }
         );
@@ -90,9 +104,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
                                                   ProcessingContext context,
                                                   @NotNull CompletionResultSet result) {
                         final PsiElement position = parameters.getPosition();
-                        final PsiFile originalFile = parameters.getOriginalFile();
-
-                        final PsiElement prevSibling = getFirstPrevSiblingWhere(new Function<PsiElement, Boolean>() {
+                        final PsiElement prevSibling = getPrevSiblingWhere(new Function<PsiElement, Boolean>() {
                             @Override
                             public Boolean fun(PsiElement psiElement) {
                                 return !(psiElement instanceof PsiWhiteSpace);
@@ -104,14 +116,14 @@ public class HaskellCompletionContributor extends CompletionContributor {
                             addAllElements(result, LogicUtil.map(stringToLookupElement, PRAGMA_TYPES));
                         }
 
-                        final PsiElement openPragma = getFirstPrevSiblingWhere(new Function<PsiElement, Boolean>() {
+                        final PsiElement openPragma = getPrevSiblingWhere(new Function<PsiElement, Boolean>() {
                             @Override
                             public Boolean fun(PsiElement psiElement) {
                                 return psiElement.getText().equals("{-#");
                             }
                         }, position);
 
-                        final PsiElement pragmaTypeElement = getFirstNextSiblingWhere(new Function<PsiElement, Boolean>() {
+                        final PsiElement pragmaTypeElement = getNextSiblingWhere(new Function<PsiElement, Boolean>() {
                             @Override
                             public Boolean fun(PsiElement psiElement) {
                                 return !(psiElement instanceof PsiWhiteSpace);
@@ -124,12 +136,14 @@ public class HaskellCompletionContributor extends CompletionContributor {
 
                         final String pragmaType = pragmaTypeElement.getText();
 
+                        final PsiFile originalFile = parameters.getOriginalFile();
+                        final UserDataHolder cacheHolder = getCacheHolder(originalFile);
                         if ("LANGUAGE".equals(pragmaType)) {
-                            addAllElements(result, originalFile.getUserData(LANGUAGE_CACHE_KEY));
+                            addAllElements(result, cacheHolder.getUserData(LANGUAGE_CACHE_KEY));
                         } else if ("OPTIONS_GHC".equals(pragmaType)) {
                             // TODO: Workaround since completion autocompletes after the "-", so without this
                             // we may end up completing -foo with --foo (inserting a "-").
-                            final String[] flags = originalFile.getUserData(FLAG_CACHE_KEY);
+                            final String[] flags = cacheHolder.getUserData(FLAG_CACHE_KEY);
                             if (position.getText().startsWith("-")) {
                                 addAllElements(result, LogicUtil.map(new Function<String, LookupElement>() {
                                     @Override
@@ -152,7 +166,6 @@ public class HaskellCompletionContributor extends CompletionContributor {
                     protected void addCompletions(@NotNull CompletionParameters parameters,
                                                   ProcessingContext context,
                                                   @NotNull CompletionResultSet result) {
-                        // TODO: Write some tests!
                         // TODO: Refactor this implementation.
                         final PsiElement position = parameters.getPosition();
                         PsiElement el = position.getParent();
@@ -167,7 +180,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
                         if (!(el instanceof HaskellImpdecl)) {
                             return;
                         }
-                        final String[] list = parameters.getOriginalFile().getUserData(MODULE_CACHE_KEY);
+                        final String[] list = getCacheHolder(parameters.getOriginalFile()).getUserData(MODULE_CACHE_KEY);
                         if (list == null) {
                             return;
                         }
@@ -202,7 +215,6 @@ public class HaskellCompletionContributor extends CompletionContributor {
                     @Override
                     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
                         final PsiElement position = parameters.getPosition();
-                        final PsiFile file = parameters.getOriginalFile();
                         PsiElement el = position.getParent();
                         if (el == null) {
                             return;
@@ -216,7 +228,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
                                 }
                             }
                         }
-                        el = getFirstPrevSiblingWhere(new Function<PsiElement, Boolean>() {
+                        el = getPrevSiblingWhere(new Function<PsiElement, Boolean>() {
                             @Override
                             public Boolean fun(PsiElement psiElement) {
                                 return psiElement instanceof HaskellQconid;
@@ -226,9 +238,11 @@ public class HaskellCompletionContributor extends CompletionContributor {
                             return;
                         }
                         final String module = el.getText();
-                        final Map<String, List<LookupElement>> cache = file.getUserData(BROWSE_CACHE_KEY);
-                        if (cache != null) {
-                            addAllElements(result, cache.get(module));
+                        final PsiFile file = parameters.getOriginalFile();
+                        final UserDataHolder cacheHolder = getCacheHolder(file);
+                        final Map<String, List<LookupElement>> cachedNames = cacheHolder.getUserData(BROWSE_CACHE_KEY);
+                        if (cachedNames != null) {
+                            addAllElements(result, cachedNames.get(module));
                         }
                     }
                 });
@@ -240,7 +254,6 @@ public class HaskellCompletionContributor extends CompletionContributor {
                     @Override
                     protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
                         final PsiElement position = parameters.getPosition();
-                        final PsiFile file = parameters.getOriginalFile();
                         PsiElement el = position.getParent();
                         if (el == null) {
                             return;
@@ -256,9 +269,40 @@ public class HaskellCompletionContributor extends CompletionContributor {
                         }
                         final String module = qName.substring(0, lastDotPos);
                         // Pull user-qualified names from cache.
-                        final Map<String, List<LookupElement>> cache = file.getUserData(BROWSE_CACHE_KEY);
-                        if (cache != null) {
-                            addAllElements(result, cache.get(module));
+                        final PsiFile file = parameters.getOriginalFile();
+                        final UserDataHolder cacheHolder = getCacheHolder(file);
+                        final Map<String, List<LookupElement>> cachedNames = cacheHolder.getUserData(BROWSE_CACHE_KEY);
+                        if (cachedNames != null) {
+                            addAllElements(result, cachedNames.get(module));
+                        }
+                    }
+                });
+
+        // Local names.
+        extend(CompletionType.BASIC,
+                PlatformPatterns.psiElement().withLanguage(HaskellLanguage.INSTANCE),
+                new CompletionProvider<CompletionParameters>() {
+                    @Override
+                    protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
+                        final PsiElement position = parameters.getPosition();
+                        if (PsiTreeUtil.getParentOfType(position, HaskellExp.class) == null) {
+                            return;
+                        }
+                        final PsiFile file = parameters.getOriginalFile();
+                        final UserDataHolder cacheHolder = getCacheHolder(file);
+                        final Map<String, List<LookupElement>> cachedNames = cacheHolder.getUserData(BROWSE_CACHE_KEY);
+                        if (cachedNames == null) {
+                            return;
+                        }
+                        final Map<String, String> aliasMap = mapAliasesToModules(file);
+                        for (Map.Entry<String, String> e : aliasMap.entrySet()) {
+                            final String alias = e.getKey();
+                            final String module = e.getValue();
+                            // If they are equal, then the module probably wasn't imported qualified.
+                            // Although, this won't work when it's fully qualified, e.g. import qualified Foo.Bar
+                            if (alias.equals(module)) {
+                                addAllElements(result, cachedNames.get(module));
+                            }
                         }
                     }
                 });
@@ -279,7 +323,9 @@ public class HaskellCompletionContributor extends CompletionContributor {
         if (el == null) {
             return null;
         }
-        Map<String, String> result = new HashMap(0);
+        Map<String, String> result = new HashMap(1);
+        // For simplicity, let's just assume Prelude is always there.
+        result.put("Prelude", "Prelude");
         for (PsiElement child : el.getChildren()) {
             if (child instanceof HaskellImpdecl) {
                 String module = null;
@@ -304,24 +350,35 @@ public class HaskellCompletionContributor extends CompletionContributor {
         return result;
     }
 
-    @NotNull
-    public static Map<String, List<LookupElement>> getQualifiedNameCache(@NotNull final PsiFile file,
+    @Nullable
+    public static Map<String, List<LookupElement>> getQualifiedNameCache(@NotNull final UserDataHolder holder,
+                                                                         @NotNull final PsiFile file,
                                                                          @NotNull final Project project,
-                                                                         @NotNull final String workDir) {
-        Map<String, List<LookupElement>> result = new HashMap(0);
+                                                                         @NotNull final String workDir,
+                                                                         final boolean force) {
         GhcModi ghcModi = GhcModi.getInstance(project, workDir);
         if (ghcModi == null) {
-            return result;
+            return null;
         }
-        for (Map.Entry<String, String> e : mapAliasesToModules(file).entrySet()) {
+        Map<String, List<LookupElement>> browseCache = force ? null : holder.getUserData(BROWSE_CACHE_KEY);
+        Map<String, String> aliasMap = mapAliasesToModules(file);
+        if (browseCache == null) {
+            browseCache = new HashMap<String, List<LookupElement>>(aliasMap.size());
+        }
+        for (Map.Entry<String, String> e : aliasMap.entrySet()) {
             final String alias = e.getKey();
             final String module = e.getValue();
-            final List<LookupElement> names = LogicUtil.map(pairToLookupElement, ghcModi.browse(module));
+            final List<LookupElement> cachedNames = browseCache.get(module);
+            if (cachedNames != null) {
+                browseCache.put(alias, cachedNames);
+                continue;
+            }
+            final List<LookupElement> names = LogicUtil.map(browseItemToLookupElement, ghcModi.browse(module));
             // We should autocomplete for the alias and the fully qualified module name.
-            result.put(alias, names);
-            result.put(module, names);
+            browseCache.put(alias, names);
+            browseCache.put(module, names);
         }
-        return result;
+        return browseCache;
     }
 
     /**
@@ -330,15 +387,32 @@ public class HaskellCompletionContributor extends CompletionContributor {
      * annotator; however, there may be a better place to do this.
      */
     public static void loadCacheData(@NotNull final PsiFile file, @NotNull final Project project, @NotNull final String workDir) {
+        loadCacheData(file, project, workDir, false);
+    }
+
+    public static void loadCacheData(@NotNull final PsiFile file, @NotNull final Project project, @NotNull final String workDir, final boolean force) {
+        final UserDataHolder cache = getCacheHolder(file);
         ApplicationManager.getApplication().invokeLater(new Runnable() {
             @Override
             public void run() {
-                file.putUserData(LANGUAGE_CACHE_KEY, LogicUtil.map(stringToLookupElement, GhcMod.lang(project, workDir)));
-                file.putUserData(FLAG_CACHE_KEY, GhcMod.flag(project, workDir));
-                file.putUserData(MODULE_CACHE_KEY, GhcMod.list(project, workDir));
-                file.putUserData(BROWSE_CACHE_KEY, getQualifiedNameCache(file, project, workDir));
+                if (force || cache.getUserData(LANGUAGE_CACHE_KEY) == null) {
+                    cache.putUserData(LANGUAGE_CACHE_KEY, LogicUtil.map(stringToLookupElement, GhcMod.lang(project, workDir)));
+                }
+                if (force || cache.getUserData(FLAG_CACHE_KEY) == null) {
+                    cache.putUserData(FLAG_CACHE_KEY, GhcMod.flag(project, workDir));
+                }
+                if (force || cache.getUserData(MODULE_CACHE_KEY) == null) {
+                    cache.putUserData(MODULE_CACHE_KEY, GhcMod.list(project, workDir));
+                }
+                // Checks for existing cache are done in getQualifiedNameCache()
+                cache.putUserData(BROWSE_CACHE_KEY, getQualifiedNameCache(cache, file, project, workDir, force));
             }
         });
+    }
+
+    public static UserDataHolder getCacheHolder(@NotNull PsiFile file) {
+        final Module module = ModuleUtilCore.findModuleForPsiElement(file);
+        return module == null ? file : module;
     }
 
     /**
@@ -368,7 +442,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
     }
 
     @Nullable
-    public static PsiElement getFirstPrevSiblingWhere(Function<PsiElement, Boolean> f, PsiElement e) {
+    public static PsiElement getPrevSiblingWhere(Function<PsiElement, Boolean> f, PsiElement e) {
         return getFirstElementWhere(new Function<PsiElement, PsiElement>() {
             @Override
             public PsiElement fun(PsiElement psiElement) {
@@ -378,7 +452,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
     }
 
     @Nullable
-    public static PsiElement getFirstNextSiblingWhere(Function<PsiElement, Boolean> f, PsiElement e) {
+    public static PsiElement getNextSiblingWhere(Function<PsiElement, Boolean> f, PsiElement e) {
         return getFirstElementWhere(new Function<PsiElement, PsiElement>() {
             @Override
             public PsiElement fun(PsiElement psiElement) {
@@ -396,6 +470,12 @@ public class HaskellCompletionContributor extends CompletionContributor {
         return "HaskForce: no completion found.";
     }
 
+    public static LookupElement createLookupElement(@NotNull String name, @NotNull String module, @NotNull String type) {
+        return LookupElementBuilder.create(name).withIcon(HaskellIcons.FILE)
+                .withTailText(" (" + module + ')', true)
+                .withTypeText(type);
+    }
+
     public static final Function<String, LookupElement> stringToLookupElement = new Function<String, LookupElement>() {
         @Override
         public LookupElement fun(String s) {
@@ -403,10 +483,10 @@ public class HaskellCompletionContributor extends CompletionContributor {
         }
     };
 
-    public static final Function<Pair<String, String>, LookupElement> pairToLookupElement = new Function<Pair<String, String>, LookupElement>() {
+    public static final Function<GhcModi.BrowseItem, LookupElement> browseItemToLookupElement = new Function<GhcModi.BrowseItem, LookupElement>() {
         @Override
-        public LookupElement fun(Pair<String, String> pair) {
-            return ((LookupElementBuilder)stringToLookupElement.fun(pair.first)).withTypeText(pair.second);
+        public LookupElement fun(GhcModi.BrowseItem x) {
+            return createLookupElement(x.name, x.module, x.type);
         }
     };
 }

@@ -23,6 +23,7 @@ import com.haskforce.utils.LogicUtil;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.openapi.util.Key;
+import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiFile;
 import com.intellij.testFramework.UsefulTestCase;
 import com.intellij.util.Function;
@@ -36,10 +37,11 @@ import java.util.List;
  * Common functionality for completion tests
  */
 abstract public class HaskellCompletionTestBase extends HaskellLightPlatformCodeInsightFixtureTestCase {
-    protected List<Function<PsiFile, Void>> cacheLoaders = new ArrayList(0);
+    final protected List<Function<UserDataHolder, Void>> cacheLoaders;
 
     protected HaskellCompletionTestBase() {
         super("codeInsight", "codeInsight");
+        cacheLoaders = new ArrayList<Function<UserDataHolder, Void>>(0);
     }
 
 /*
@@ -85,8 +87,9 @@ abstract public class HaskellCompletionTestBase extends HaskellLightPlatformCode
                                   String... variants) throws Throwable {
         myFixture.configureByText("a.hs", txt);
         PsiFile file = myFixture.getFile();
+        UserDataHolder cacheHolder = HaskellCompletionContributor.getCacheHolder(file);
         for (Function f : cacheLoaders) {
-            f.fun(file);
+            f.fun(cacheHolder);
         }
         doTestVariantsInner(type, count, checkType, variants);
     }
@@ -95,10 +98,10 @@ abstract public class HaskellCompletionTestBase extends HaskellLightPlatformCode
      * Helper to load fake completion data.
      */
     protected <T> void loadCache(final Key<T> key, final T value) {
-        cacheLoaders.add(new Function<PsiFile, Void>() {
+        cacheLoaders.add(new Function<UserDataHolder, Void>() {
             @Override
-            public Void fun(PsiFile psiFile) {
-                psiFile.putUserData(key, value);
+            public Void fun(UserDataHolder holder) {
+                holder.putUserData(key, value);
                 return null;
             }
         });

@@ -21,7 +21,6 @@ package com.haskforce.actions;
  */
 
 import com.haskforce.utils.ExecUtil;
-import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;

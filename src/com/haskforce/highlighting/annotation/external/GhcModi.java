@@ -5,20 +5,21 @@ import com.haskforce.utils.ExecUtil;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 public class GhcModi {
+    @SuppressWarnings("UnusedDeclaration")
+    private static final Logger LOG = Logger.getInstance(GhcMod.class);
+
     public final @NotNull Project project;
     public final @NotNull String workingDirectory;
     public final @NotNull String path;
@@ -107,18 +108,31 @@ public class GhcModi {
      * Returns an array of (name, type) pairs exposed for a given module.
      */
     @Nullable
-    public List<Pair<String, String>> browse(@NotNull String module) {
+    public BrowseItem[] browse(@NotNull final String module) {
         String[] lines = simpleExecToLines("browse -d " + module);
         if (lines == null) {
             return null;
         }
-        List<Pair<String, String>> result = new ArrayList<Pair<String, String>>(lines.length);
-        for (String line : lines) {
-            final String[] parts = TYPE_SPLIT_REGEX.split(line, 2);
+        BrowseItem[] result = new BrowseItem[lines.length];
+        for (int i = 0; i < lines.length; ++i) {
+            final String[] parts = TYPE_SPLIT_REGEX.split(lines[i], 2);
             //noinspection ObjectAllocationInLoop
-            result.add(new Pair<String, String>(parts[0], parts.length == 2 ? parts[1] : ""));
+            result[i] = new BrowseItem(parts[0], module, parts.length == 2 ? parts[1] : "");
         }
         return result;
+    }
+
+    public static class BrowseItem {
+        public final @NotNull String name;
+        public final @NotNull String module;
+        public final @NotNull String type;
+
+        public BrowseItem(@NotNull String name, @NotNull String module, @NotNull String type) {
+            this.name = name;
+            this.module = module;
+            this.type = type;
+        }
+
     }
 
     @Nullable

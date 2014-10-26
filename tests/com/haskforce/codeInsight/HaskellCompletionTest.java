@@ -12,11 +12,48 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Completion test driver. Add new completion testcases here.
+ * Completion test driver. Add new completion test cases here.
  */
 public class HaskellCompletionTest extends HaskellCompletionTestBase {
     public void testKeywordImport() throws Throwable {
+        // Top level should work fine.
         doTestInclude("<caret>", "import ");
+        // As well as after a module declaration.
+        doTestInclude(
+                "module Main where\n" +
+                "<caret>",
+                    "import ");
+        // After multiple imports.
+        doTestInclude(
+                "import Foo\n" +
+                "import qualified Bar\n" +
+                "<caret>",
+                    "import ");
+        // After an appropriate pragma.
+        doTestInclude(
+                "import Foo\n" +
+                "{-# ANN module \"foo\" -#}\n" +
+                "<caret>",
+                    "import ");
+        // After a CPP.
+        doTestInclude(
+                "import Foo\n" +
+                "#if foo\n" +
+                "<caret>",
+                    "import ");
+        // But not after we've started definitions.
+        doTestExclude(
+                "import Foo\n" +
+                "foo = 1\n" +
+                "<caret>",
+                    "import ");
+        // Not even after a pragma.
+        doTestExclude(
+                "import Foo\n" +
+                "foo = 1\n" +
+                "{-# ANN module \"foo\" #-}\n" +
+                "<caret>",
+                    "import ");
     }
 
     public void testKeywordQualified() throws Throwable {
@@ -87,11 +124,19 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
     }
 
     public void testReferenceCompletion() throws Throwable {
+        // Complete basic references.
         doTestInclude(
                 "foo :: String -> String\n" +
                 "foo = undefined\n" +
                 "bar = <caret>",
                     "foo");
+        // Complete multiple names from a multi-name reference.
+        doTestInclude(
+                "foo, bar :: String -> String\n" +
+                "foo = undefined\n" +
+                "bar = <caret>",
+                    "foo", "bar");
+        // Don't complete references in the wrong context.
         doTestExclude(
                 "import <caret>\n" +
                 "foo :: String -> String\n" +

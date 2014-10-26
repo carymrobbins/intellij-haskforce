@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
  * Single annotator that calls all external tools used for annotations.
  */
 public class HaskellExternalAnnotator extends ExternalAnnotator<PsiFile, Problems> {
+    @SuppressWarnings("UnusedDeclaration")
     private static final Logger LOG = Logger.getInstance(HaskellExternalAnnotator.class);
 
     /**
