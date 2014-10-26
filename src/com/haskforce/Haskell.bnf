@@ -203,7 +203,7 @@ export ::= "module" qconid
 
 body ::= ppragma* open bodyaux close {pin=2}
 
-private bodyaux ::= impdecls* [[semi] topdecls]
+private bodyaux ::= impdecls* ppragma* [[semi] topdecls]
 
 // Do not pin semi in impdecls, that parse-conflicts with the semi in bodyaux.
 private impdecls ::= impdecl [semi impdecls] {pin=1}
