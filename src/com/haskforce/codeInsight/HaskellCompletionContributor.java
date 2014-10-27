@@ -14,6 +14,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.patterns.PlatformPatterns;
@@ -24,6 +25,7 @@ import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Function;
 import com.intellij.util.ProcessingContext;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,6 +57,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
                                                @NotNull CompletionResultSet result) {
                         PsiElement position = parameters.getPosition();
                         PsiFile file = parameters.getOriginalFile();
+                        List<ModuleAlias> moduleAliases = parseModuleAliases(file);
                         UserDataHolder cacheHolder = getCacheHolder(file);
                         // Completion methods should return either void or boolean.  If boolean, then it should indicate
                         // whether or not we were in the appropriate context.  This is useful to determine if following
@@ -63,8 +66,9 @@ public class HaskellCompletionContributor extends CompletionContributor {
                         completeKeywordQualified(position, result);
                         if (completePragma(position, cacheHolder, result)) return;
                         if (completeModuleImport(position, cacheHolder, result)) return;
-                        if (completeQualifiedNames(position, cacheHolder, result)) return;
+                        if (completeQualifiedNames(position, moduleAliases, cacheHolder, result)) return;
                         if (completeNameImport(position, cacheHolder, result)) return;
+                        completeLocalNames(position, moduleAliases, cacheHolder, result);
                     }
                 }
         );
@@ -236,6 +240,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
     }
 
     public static boolean completeQualifiedNames(@NotNull final PsiElement position,
+                                                 @NotNull final List<ModuleAlias> moduleAliases,
                                                  @NotNull final UserDataHolder cacheHolder,
                                                  @NotNull final CompletionResultSet result) {
         PsiElement el = position.getParent();
@@ -251,75 +256,76 @@ public class HaskellCompletionContributor extends CompletionContributor {
         if (lastDotPos == -1) {
             return false;
         }
-        final String module = qName.substring(0, lastDotPos);
+        final String alias = qName.substring(0, lastDotPos);
         // Pull user-qualified names from cache.
-        final Map<String, List<LookupElement>> cachedNames = cacheHolder.getUserData(BROWSE_CACHE_KEY);
-        if (cachedNames != null) {
-            addAllElements(result, cachedNames.get(module));
+        final Map<String, List<LookupElement>> browseCache = cacheHolder.getUserData(BROWSE_CACHE_KEY);
+        if (browseCache != null) {
+            final ModuleAlias moduleAlias = LogicUtil.first(new Function<ModuleAlias, Boolean>() {
+                @Override
+                public Boolean fun(ModuleAlias x) {
+                    return x != null && alias.equals(x.alias);
+                }
+            }, moduleAliases);
+            if (moduleAlias != null) {
+                addAllElements(result, browseCache.get(moduleAlias.module));
+            }
         }
         return true;
     }
 
     public static boolean completeLocalNames(@NotNull final PsiElement position,
-                                             @NotNull final PsiFile file,
-                                             @NotNull final UserDataHolder cacheHolder,
+                                             @NotNull final List<ModuleAlias> moduleAliases,
+                                             @NotNull final UserDataHolder holder,
                                              @NotNull final CompletionResultSet result) {
         if (PsiTreeUtil.getParentOfType(position, HaskellExp.class) == null) {
             return false;
         }
-        final Map<String, List<LookupElement>> cachedNames = cacheHolder.getUserData(BROWSE_CACHE_KEY);
+        final Map<String, List<LookupElement>> cachedNames = holder.getUserData(BROWSE_CACHE_KEY);
         if (cachedNames == null) {
             return false;
         }
-        final Map<String, String> aliasMap = mapAliasesToModules(file);
-        for (Map.Entry<String, String> e : aliasMap.entrySet()) {
-            final String alias = e.getKey();
-            final String module = e.getValue();
-            // If they are equal, then the module probably wasn't imported qualified.
-            // TODO: Although, this won't work when it's fully qualified, e.g. import qualified Foo.Bar
-            if (alias.equals(module)) {
-                addAllElements(result, cachedNames.get(module));
+        for (ModuleAlias x : moduleAliases) {
+            // If alias is null, then it was not imported qualified, so it should be globally available.
+            if (x.alias == null) {
+                addAllElements(result, cachedNames.get(x.module));
             }
         }
         return true;
     }
 
     @Nullable
-    public static Map<String, List<LookupElement>> getQualifiedNameCache(@NotNull final UserDataHolder holder,
-                                                                         @NotNull final PsiFile file,
-                                                                         @NotNull final Project project,
-                                                                         @NotNull final String workDir,
-                                                                         final boolean force) {
+    public static Map<String, List<LookupElement>> getBrowseCache(@NotNull final UserDataHolder holder,
+                                                                  @NotNull final PsiFile file,
+                                                                  @NotNull final Project project,
+                                                                  @NotNull final String workDir,
+                                                                  final boolean force) {
         GhcModi ghcModi = GhcModi.getInstance(project, workDir);
         if (ghcModi == null) {
             return null;
         }
+        List<ModuleAlias> moduleAliases = parseModuleAliases(file);
         Map<String, List<LookupElement>> browseCache = force ? null : holder.getUserData(BROWSE_CACHE_KEY);
-        Map<String, String> aliasMap = mapAliasesToModules(file);
         if (browseCache == null) {
-            browseCache = new HashMap<String, List<LookupElement>>(aliasMap.size());
+            browseCache = new HashMap<String, List<LookupElement>>(moduleAliases.size());
         }
-        for (Map.Entry<String, String> e : aliasMap.entrySet()) {
-            final String alias = e.getKey();
-            final String module = e.getValue();
-            final List<LookupElement> cachedNames = browseCache.get(module);
-            if (cachedNames != null) {
-                browseCache.put(alias, cachedNames);
+        for (ModuleAlias x : moduleAliases) {
+            final List<LookupElement> cachedNames = browseCache.get(x.module);
+            if (cachedNames != null && !browseCache.containsKey(x.module)) {
+                browseCache.put(x.module, cachedNames);
                 continue;
             }
-            final List<LookupElement> names = LogicUtil.map(browseItemToLookupElement, ghcModi.browse(module));
-            // We should autocomplete for the alias and the fully qualified module name.
-            browseCache.put(alias, names);
-            browseCache.put(module, names);
+            final List<LookupElement> names = LogicUtil.map(browseItemToLookupElement, ghcModi.browse(x.module));
+            browseCache.put(x.module, names);
         }
         return browseCache;
     }
 
     /**
-     * Returns a map of alias -> module for each imported module.  For modules imported without an alias, the
-     * full module name itself will be considered the alias.
+     * Returns a map of module -> alias for each imported module.  If a module is imported but not qualified, alias
+     * will be null.
      */
-    public static Map<String, String> mapAliasesToModules(@NotNull final PsiFile file) {
+    @NotNull
+    public static List<ModuleAlias> parseModuleAliases(@NotNull final PsiFile file) {
         PsiElement el = null;
         for (PsiElement child : file.getChildren()) {
             if (child instanceof HaskellBody) {
@@ -328,33 +334,58 @@ public class HaskellCompletionContributor extends CompletionContributor {
             }
         }
         if (el == null) {
-            return null;
+            return new ArrayList(0);
         }
-        Map<String, String> result = new HashMap(1);
+        List<ModuleAlias> result = new ArrayList<ModuleAlias>(10);
         // For simplicity, let's just assume Prelude is always there.
-        result.put("Prelude", "Prelude");
+        result.add(new ModuleAlias("Prelude", null));
         for (PsiElement child : el.getChildren()) {
             if (child instanceof HaskellImpdecl) {
                 String module = null;
                 String alias = null;
+                boolean isQualified = child.getText().startsWith("import qualified");
                 for (PsiElement gChild : child.getChildren()) {
-                    if (module == null && gChild instanceof HaskellQconid) {
-                        module = gChild.getText();
-                    } else if (module != null && gChild instanceof HaskellQconid) {
-                        alias = gChild.getText();
+                    if (gChild instanceof HaskellQconid) {
+                        if (module == null) {
+                            module = gChild.getText();
+                        } else {
+                            alias = gChild.getText();
+                        }
                     }
                 }
                 if (module != null) {
-                    // If the user didn't alias the module then the full module name is used.
-                    if (alias == null) {
+                    // If the user didn't alias the module and it was imported qualified, the full module name is used.
+                    if (alias == null && isQualified) {
                         alias = module;
                     }
-                    result.put(alias, module);
+                    //noinspection ObjectAllocationInLoop
+                    result.add(new ModuleAlias(module, alias));
                 }
-
             }
         }
         return result;
+    }
+
+    public static class ModuleAlias {
+        public @NotNull final String module;
+        public @Nullable final String alias;
+
+        public ModuleAlias(@NotNull String module, @Nullable String alias) {
+            this.module = module;
+            this.alias = alias;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return o instanceof ModuleAlias
+                    && Comparing.equal(module, ((ModuleAlias) o).module)
+                    && Comparing.equal(alias, ((ModuleAlias) o).alias);
+        }
+
+        @Override
+        public int hashCode() {
+            return HashCodeBuilder.reflectionHashCode(this);
+        }
     }
 
     /**
@@ -380,8 +411,8 @@ public class HaskellCompletionContributor extends CompletionContributor {
                 if (force || cache.getUserData(MODULE_CACHE_KEY) == null) {
                     cache.putUserData(MODULE_CACHE_KEY, GhcMod.list(project, workDir));
                 }
-                // Checks for existing cache are done in getQualifiedNameCache()
-                cache.putUserData(BROWSE_CACHE_KEY, getQualifiedNameCache(cache, file, project, workDir, force));
+                // Checks for force and existing cache are done in getBrowseCache()
+                cache.putUserData(BROWSE_CACHE_KEY, getBrowseCache(cache, file, project, workDir, force));
             }
         });
     }

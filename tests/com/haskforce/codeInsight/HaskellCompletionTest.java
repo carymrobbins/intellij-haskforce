@@ -4,12 +4,13 @@ import com.haskforce.psi.impl.HaskellElementFactory;
 import com.haskforce.utils.LogicUtil;
 import static com.haskforce.codeInsight.HaskellCompletionContributor.*;
 import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiFile;
+import com.intellij.util.Function;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Completion test driver. Add new completion test cases here.
@@ -103,10 +104,12 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
     public void testImportAliasMapping() throws Throwable {
         PsiFile file = HaskellElementFactory.createFileFromText(myFixture.getProject(),
                 "import qualified Data.ByteString.Char8 as C\n" +
+                "import qualified Control.Monad\n" +
                 "import Data.Maybe");
-        Map<String, String> map = mapAliasesToModules(file);
-        assertEquals(map.get("C"), "Data.ByteString.Char8");
-        assertEquals(map.get("Data.Maybe"), "Data.Maybe");
+        assertContainsElements(parseModuleAliases(file),
+                new ModuleAlias("Data.ByteString.Char8", "C"),
+                new ModuleAlias("Control.Monad", "Control.Monad"),
+                new ModuleAlias("Data.Maybe", null));
     }
 
     public void testQualifiedNames() throws Throwable {
@@ -119,13 +122,32 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
                 "foo = C.<caret>",
                 fakeBrowseCache.get("Data.ByteString.Char8"));
         doTestInclude(
-                "import qualified Data.ByteString.Char8 as C\n" +
+                "import qualified Data.ByteString.Char8\n" +
                 "foo = Data.ByteString.Char8.<caret>",
                 fakeBrowseCache.get("Data.ByteString.Char8"));
         // We should not autocomplete browse cache in imports.
         doTestExclude(
                 "import Data.ByteString.Char8.<caret>",
                 fakeBrowseCache.get("Data.ByteString.Char8"));
+    }
+
+    public void testLocalNames() throws Throwable {
+        FakeBrowseCache fakeBrowseCache = new FakeBrowseCache(
+                "Prelude", Arrays.asList("Just", "Nothing", "all", "any", "readFile"),
+                "Control.Monad", Arrays.asList("liftM", "mapM", "forM"),
+                "C", Arrays.asList("ByteString", "all", "any", "append", "appendFile", "break"));
+        loadCache(BROWSE_CACHE_KEY, fakeBrowseCache);
+        doTestInclude(
+                "foo = <caret>",
+                fakeBrowseCache.get("Prelude"));
+        doTestInclude(
+                "import Control.Monad\n" +
+                "foo = <caret>",
+                fakeBrowseCache.get("Control.Monad"));
+        // Don't include Control.Monad completion if not imported.
+        doTestExclude(
+                "foo = <caret>",
+                fakeBrowseCache.get("Control.Monad"));
     }
 
     public void testReferenceCompletion() throws Throwable {
@@ -146,6 +168,11 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
                 "import <caret>\n" +
                 "foo :: String -> String\n" +
                 "foo = undefined",
+                    "foo");
+        doTestExclude(
+                "import qualified Control.Applicative as A\n" +
+                "foo :: String -> String\n" +
+                "foo = A.<caret>",
                     "foo");
     }
 

@@ -33,4 +33,17 @@ public class LogicUtil {
         }
         return result;
     }
+
+    @Nullable
+    public static <T> T first(final Function<T, Boolean> predicate, final Collection<T> list) {
+        if (list == null) {
+            return null;
+        }
+        for (T x : list) {
+            if (predicate.fun(x)) {
+                return x;
+            }
+        }
+        return null;
+    }
 }

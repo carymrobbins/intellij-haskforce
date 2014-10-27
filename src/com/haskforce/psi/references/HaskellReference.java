@@ -70,6 +70,11 @@ public class HaskellReference extends PsiReferenceBase<PsiElement> implements Ps
         if (PsiTreeUtil.getParentOfType(myElement, HaskellExp.class) == null) {
             return new Object[]{};
         }
+        // If we are in a qualified name, don't provide reference completion.
+        final PsiElement qId = PsiTreeUtil.getParentOfType(myElement, HaskellQconid.class, HaskellQvarid.class);
+        if (qId != null && qId.textContains('.')) {
+            return new Object[]{};
+        }
         Project project = myElement.getProject();
         List<PsiNamedElement> namedNodes = HaskellUtil.findDefinitionNodes(project);
         List<LookupElement> variants = new ArrayList<LookupElement>(20);
