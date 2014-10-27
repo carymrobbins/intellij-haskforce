@@ -47,265 +47,272 @@ public class HaskellCompletionContributor extends CompletionContributor {
     }
 
     public HaskellCompletionContributor() {
-        // TODO: It probably makes more sense to use a single extend() to more easily control including completions
-        // so we can share traversals of the Psi tree and integrate into logic paths.  However, it would probably
-        // be best at that point to break out sections into methods to avoid creating one giant function.
-
-        // Keywords
-        // TODO: Only 'import' is implemented; implement other keywords with context-awareness.
         extend(CompletionType.BASIC,
                 PlatformPatterns.psiElement().withLanguage(HaskellLanguage.INSTANCE),
                 new CompletionProvider<CompletionParameters>() {
                     public void addCompletions(@NotNull CompletionParameters parameters,
                                                ProcessingContext context,
                                                @NotNull CompletionResultSet result) {
-                        // Traverse upwards, stop before we reach the top-level body.
-                        PsiElement el = parameters.getPosition();
-                        while (el != null) {
-                            PsiElement parent = el.getParent();
-                            if (parent instanceof HaskellBody) {
-                                break;
-                            }
-                            el = parent;
-                        }
-                        PsiElement prev = getPrevSiblingWhere(new Function<PsiElement, Boolean>() {
-                            @Override
-                            public Boolean fun(PsiElement psiElement) {
-                                return !PsiTreeUtil.instanceOf(psiElement,
-                                        HaskellPpragma.class, PsiWhiteSpace.class, PsiComment.class);
-                            }
-                        }, el);
-                        // Check if previous sibling is an import or does not exist (first import).
-                        if (prev == null || prev instanceof HaskellImpdecl) {
-                            result.addElement(stringToLookupElement.fun("import "));
-                        }
+                        PsiElement position = parameters.getPosition();
+                        PsiFile file = parameters.getOriginalFile();
+                        UserDataHolder cacheHolder = getCacheHolder(file);
+                        // Completion methods should return either void or boolean.  If boolean, then it should indicate
+                        // whether or not we were in the appropriate context.  This is useful to determine if following
+                        // completions should be added.
+                        completeKeywordImport(position, result);
+                        completeKeywordQualified(position, result);
+                        if (completePragma(position, cacheHolder, result)) return;
+                        if (completeModuleImport(position, cacheHolder, result)) return;
+                        if (completeQualifiedNames(position, cacheHolder, result)) return;
+                        if (completeNameImport(position, cacheHolder, result)) return;
                     }
                 }
         );
+    }
 
-        // Autocomplete "qualified" after "import"
-        extend(CompletionType.BASIC,
-                PlatformPatterns.psiElement().afterLeaf("import").withLanguage(HaskellLanguage.INSTANCE),
-                new CompletionProvider<CompletionParameters>() {
-                    public void addCompletions(@NotNull CompletionParameters parameters,
-                                               ProcessingContext context,
-                                               @NotNull CompletionResultSet result) {
-                        result.addElement(stringToLookupElement.fun("qualified "));
+    public static void completeKeywordImport(@NotNull final PsiElement position, @NotNull final CompletionResultSet result) {
+        PsiElement el = position;
+        while (el != null) {
+            PsiElement parent = el.getParent();
+            if (parent instanceof HaskellImpdecl) {
+                // We shouldn't completion "import" if we're already in an import.
+                return;
+            }
+            if (parent instanceof HaskellBody) {
+                break;
+            }
+            el = parent;
+        }
+        PsiElement prev = getPrevSiblingWhere(new Function<PsiElement, Boolean>() {
+            @Override
+            public Boolean fun(PsiElement psiElement) {
+                return !PsiTreeUtil.instanceOf(psiElement, HaskellPpragma.class, PsiWhiteSpace.class, PsiComment.class);
+            }
+        }, el);
+        // Check if previous sibling is an import or does not exist (first import).
+        if (prev == null || prev instanceof HaskellImpdecl) {
+            result.addElement(stringToLookupElement.fun("import "));
+        }
+    }
+
+    public static void completeKeywordQualified(@NotNull final PsiElement position, @NotNull final CompletionResultSet result) {
+        final PsiElement prevLeaf = PsiTreeUtil.prevVisibleLeaf(position);
+        if (prevLeaf != null && prevLeaf.getText().equals("import")) {
+            result.addElement(stringToLookupElement.fun("qualified "));
+        }
+    }
+
+    public static boolean completePragma(@NotNull final PsiElement position,
+                                         @NotNull final UserDataHolder cacheHolder,
+                                         @NotNull final CompletionResultSet result) {
+        final PsiElement prevSibling = getPrevSiblingWhere(new Function<PsiElement, Boolean>() {
+            @Override
+            public Boolean fun(PsiElement psiElement) {
+                return !(psiElement instanceof PsiWhiteSpace);
+            }
+        }, position);
+
+        // Pragma types.
+        if (prevSibling != null && "{-#".equals(prevSibling.getText())) {
+            addAllElements(result, LogicUtil.map(stringToLookupElement, PRAGMA_TYPES));
+        }
+
+        final PsiElement openPragma = getPrevSiblingWhere(new Function<PsiElement, Boolean>() {
+            @Override
+            public Boolean fun(PsiElement psiElement) {
+                return psiElement.getText().equals("{-#");
+            }
+        }, position);
+
+        final PsiElement pragmaTypeElement = getNextSiblingWhere(new Function<PsiElement, Boolean>() {
+            @Override
+            public Boolean fun(PsiElement psiElement) {
+                return !(psiElement instanceof PsiWhiteSpace);
+            }
+        }, openPragma);
+
+        if (pragmaTypeElement == null) {
+            return false;
+        }
+
+        final String pragmaType = pragmaTypeElement.getText();
+
+        if ("LANGUAGE".equals(pragmaType)) {
+            addAllElements(result, cacheHolder.getUserData(LANGUAGE_CACHE_KEY));
+        } else if ("OPTIONS_GHC".equals(pragmaType)) {
+            // TODO: Workaround since completion autocompletes after the "-", so without this
+            // we may end up completing -foo with --foo (inserting a "-").
+            final String[] flags = cacheHolder.getUserData(FLAG_CACHE_KEY);
+            if (position.getText().startsWith("-")) {
+                addAllElements(result, LogicUtil.map(new Function<String, LookupElement>() {
+                    @Override
+                    public LookupElement fun(String s) {
+                        return stringToLookupElement.fun(s.startsWith("-") ? s.substring(1) : s);
                     }
+                }, flags));
+            } else {
+                addAllElements(result, LogicUtil.map(stringToLookupElement, flags));
+            }
+        }
+        return true;
+    }
+
+    public static boolean completeModuleImport(@NotNull final PsiElement position,
+                                               @NotNull final UserDataHolder cacheHolder,
+                                               @NotNull final CompletionResultSet result) {
+        // TODO: Refactor this implementation.
+        PsiElement el = position.getParent();
+        if (!(el instanceof HaskellConid)) {
+            return false;
+        }
+        el = el.getParent();
+        if (!(el instanceof HaskellQconid)) {
+            return false;
+        }
+        el = el.getParent();
+        if (!(el instanceof HaskellImpdecl)) {
+            return false;
+        }
+        // Regardless of whether we actually have cache data to work with, we still want to return true
+        // after this point since we've already identified that we are in the appropriate context.
+        final String[] list = cacheHolder.getUserData(MODULE_CACHE_KEY);
+        if (list != null) {
+            StringBuilder builder = new StringBuilder(0);
+            el = position.getParent();
+            while (el != null) {
+                el = el.getPrevSibling();
+                if (el != null) {
+                    builder.insert(0, el.getText());
                 }
-        );
-
-        // Pragma
-        extend(CompletionType.BASIC,
-                PlatformPatterns.psiElement(HaskellTypes.PRAGMA).withLanguage(HaskellLanguage.INSTANCE),
-                new CompletionProvider<CompletionParameters>() {
-                    @Override
-                    protected void addCompletions(@NotNull CompletionParameters parameters,
-                                                  ProcessingContext context,
-                                                  @NotNull CompletionResultSet result) {
-                        final PsiElement position = parameters.getPosition();
-                        final PsiElement prevSibling = getPrevSiblingWhere(new Function<PsiElement, Boolean>() {
-                            @Override
-                            public Boolean fun(PsiElement psiElement) {
-                                return !(psiElement instanceof PsiWhiteSpace);
-                            }
-                        }, position);
-
-                        // Pragma types.
-                        if (prevSibling != null && "{-#".equals(prevSibling.getText())) {
-                            addAllElements(result, LogicUtil.map(stringToLookupElement, PRAGMA_TYPES));
-                        }
-
-                        final PsiElement openPragma = getPrevSiblingWhere(new Function<PsiElement, Boolean>() {
-                            @Override
-                            public Boolean fun(PsiElement psiElement) {
-                                return psiElement.getText().equals("{-#");
-                            }
-                        }, position);
-
-                        final PsiElement pragmaTypeElement = getNextSiblingWhere(new Function<PsiElement, Boolean>() {
-                            @Override
-                            public Boolean fun(PsiElement psiElement) {
-                                return !(psiElement instanceof PsiWhiteSpace);
-                            }
-                        }, openPragma);
-
-                        if (pragmaTypeElement == null) {
-                            return;
-                        }
-
-                        final String pragmaType = pragmaTypeElement.getText();
-
-                        final PsiFile originalFile = parameters.getOriginalFile();
-                        final UserDataHolder cacheHolder = getCacheHolder(originalFile);
-                        if ("LANGUAGE".equals(pragmaType)) {
-                            addAllElements(result, cacheHolder.getUserData(LANGUAGE_CACHE_KEY));
-                        } else if ("OPTIONS_GHC".equals(pragmaType)) {
-                            // TODO: Workaround since completion autocompletes after the "-", so without this
-                            // we may end up completing -foo with --foo (inserting a "-").
-                            final String[] flags = cacheHolder.getUserData(FLAG_CACHE_KEY);
-                            if (position.getText().startsWith("-")) {
-                                addAllElements(result, LogicUtil.map(new Function<String, LookupElement>() {
-                                    @Override
-                                    public LookupElement fun(String s) {
-                                        return stringToLookupElement.fun(s.startsWith("-") ? s.substring(1) : s);
-                                    }
-                                }, flags));
-                            } else {
-                                addAllElements(result, LogicUtil.map(stringToLookupElement, flags));
-                            }
-                        }
+            }
+            final String partialModule = builder.toString();
+            Set<String> newLines = new HashSet<String>(0);
+            for (String line : list) {
+                if (line.startsWith(partialModule)) {
+                    String newLine = line.replace(partialModule, "");
+                    final int firstDotPos = newLine.indexOf('.');
+                    if (firstDotPos != -1) {
+                        newLine = newLine.substring(0, firstDotPos);
                     }
-                });
+                    newLines.add(newLine);
+                }
+            }
+            addAllElements(result, LogicUtil.map(stringToLookupElement, newLines));
+        }
+        return true;
+    }
 
-        // Modules
-        extend(CompletionType.BASIC,
-                PlatformPatterns.psiElement().withLanguage(HaskellLanguage.INSTANCE),
-                new CompletionProvider<CompletionParameters>() {
-                    @Override
-                    protected void addCompletions(@NotNull CompletionParameters parameters,
-                                                  ProcessingContext context,
-                                                  @NotNull CompletionResultSet result) {
-                        // TODO: Refactor this implementation.
-                        final PsiElement position = parameters.getPosition();
-                        PsiElement el = position.getParent();
-                        if (!(el instanceof HaskellConid)) {
-                            return;
-                        }
-                        el = el.getParent();
-                        if (!(el instanceof HaskellQconid)) {
-                            return;
-                        }
-                        el = el.getParent();
-                        if (!(el instanceof HaskellImpdecl)) {
-                            return;
-                        }
-                        final String[] list = getCacheHolder(parameters.getOriginalFile()).getUserData(MODULE_CACHE_KEY);
-                        if (list == null) {
-                            return;
-                        }
-                        StringBuilder builder = new StringBuilder(0);
-                        el = position.getParent();
-                        while (el != null) {
-                            el = el.getPrevSibling();
-                            if (el != null) {
-                                builder.insert(0, el.getText());
-                            }
-                        }
-                        final String partialModule = builder.toString();
-                        Set<String> newLines = new HashSet<String>(0);
-                        for (String line : list) {
-                            if (line.startsWith(partialModule)) {
-                                String newLine = line.replace(partialModule, "");
-                                final int firstDotPos = newLine.indexOf('.');
-                                if (firstDotPos != -1) {
-                                    newLine = newLine.substring(0, firstDotPos);
-                                }
-                                newLines.add(newLine);
-                            }
-                        }
-                        addAllElements(result, LogicUtil.map(stringToLookupElement, newLines));
-                    }
-                });
+    public static boolean completeNameImport(@NotNull final PsiElement position,
+                                             @NotNull final UserDataHolder cacheHolder,
+                                             @NotNull final CompletionResultSet result) {
+        PsiElement el = position.getParent();
+        if (el == null) {
+            return false;
+        }
+        el = el.getParent();
+        if (!(el instanceof HaskellImportt)) {
+            if (el != null) {
+                el = el.getParent();
+                if (!(el instanceof HaskellImportt)) {
+                    return false;
+                }
+            }
+        }
+        el = getPrevSiblingWhere(new Function<PsiElement, Boolean>() {
+            @Override
+            public Boolean fun(PsiElement psiElement) {
+                return psiElement instanceof HaskellQconid;
+            }
+        }, el);
+        if (el == null) {
+            return false;
+        }
+        final String module = el.getText();
+        final Map<String, List<LookupElement>> cachedNames = cacheHolder.getUserData(BROWSE_CACHE_KEY);
+        if (cachedNames != null) {
+            addAllElements(result, cachedNames.get(module));
+        }
+        return true;
+    }
 
-        // Importing names.
-        extend(CompletionType.BASIC,
-                PlatformPatterns.psiElement().withLanguage(HaskellLanguage.INSTANCE),
-                new CompletionProvider<CompletionParameters>() {
-                    @Override
-                    protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
-                        final PsiElement position = parameters.getPosition();
-                        PsiElement el = position.getParent();
-                        if (el == null) {
-                            return;
-                        }
-                        el = el.getParent();
-                        if (!(el instanceof HaskellImportt)) {
-                            if (el != null) {
-                                el = el.getParent();
-                                if (!(el instanceof HaskellImportt)) {
-                                    return;
-                                }
-                            }
-                        }
-                        el = getPrevSiblingWhere(new Function<PsiElement, Boolean>() {
-                            @Override
-                            public Boolean fun(PsiElement psiElement) {
-                                return psiElement instanceof HaskellQconid;
-                            }
-                        }, el);
-                        if (el == null) {
-                            return;
-                        }
-                        final String module = el.getText();
-                        final PsiFile file = parameters.getOriginalFile();
-                        final UserDataHolder cacheHolder = getCacheHolder(file);
-                        final Map<String, List<LookupElement>> cachedNames = cacheHolder.getUserData(BROWSE_CACHE_KEY);
-                        if (cachedNames != null) {
-                            addAllElements(result, cachedNames.get(module));
-                        }
-                    }
-                });
+    public static boolean completeQualifiedNames(@NotNull final PsiElement position,
+                                                 @NotNull final UserDataHolder cacheHolder,
+                                                 @NotNull final CompletionResultSet result) {
+        PsiElement el = position.getParent();
+        if (el == null) {
+            return false;
+        }
+        el = el.getParent();
+        if (!(el instanceof HaskellQconid || el instanceof HaskellQvarid)) {
+            return false;
+        }
+        final String qName = el.getText();
+        final int lastDotPos = qName.lastIndexOf('.');
+        if (lastDotPos == -1) {
+            return false;
+        }
+        final String module = qName.substring(0, lastDotPos);
+        // Pull user-qualified names from cache.
+        final Map<String, List<LookupElement>> cachedNames = cacheHolder.getUserData(BROWSE_CACHE_KEY);
+        if (cachedNames != null) {
+            addAllElements(result, cachedNames.get(module));
+        }
+        return true;
+    }
 
-        // Qualified names.
-        extend(CompletionType.BASIC,
-                PlatformPatterns.psiElement().withLanguage(HaskellLanguage.INSTANCE),
-                new CompletionProvider<CompletionParameters>() {
-                    @Override
-                    protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
-                        final PsiElement position = parameters.getPosition();
-                        PsiElement el = position.getParent();
-                        if (el == null) {
-                            return;
-                        }
-                        el = el.getParent();
-                        if (!(el instanceof HaskellQconid || el instanceof HaskellQvarid)) {
-                            return;
-                        }
-                        final String qName = el.getText();
-                        final int lastDotPos = qName.lastIndexOf('.');
-                        if (lastDotPos == -1) {
-                            return;
-                        }
-                        final String module = qName.substring(0, lastDotPos);
-                        // Pull user-qualified names from cache.
-                        final PsiFile file = parameters.getOriginalFile();
-                        final UserDataHolder cacheHolder = getCacheHolder(file);
-                        final Map<String, List<LookupElement>> cachedNames = cacheHolder.getUserData(BROWSE_CACHE_KEY);
-                        if (cachedNames != null) {
-                            addAllElements(result, cachedNames.get(module));
-                        }
-                    }
-                });
+    public static boolean completeLocalNames(@NotNull final PsiElement position,
+                                             @NotNull final PsiFile file,
+                                             @NotNull final UserDataHolder cacheHolder,
+                                             @NotNull final CompletionResultSet result) {
+        if (PsiTreeUtil.getParentOfType(position, HaskellExp.class) == null) {
+            return false;
+        }
+        final Map<String, List<LookupElement>> cachedNames = cacheHolder.getUserData(BROWSE_CACHE_KEY);
+        if (cachedNames == null) {
+            return false;
+        }
+        final Map<String, String> aliasMap = mapAliasesToModules(file);
+        for (Map.Entry<String, String> e : aliasMap.entrySet()) {
+            final String alias = e.getKey();
+            final String module = e.getValue();
+            // If they are equal, then the module probably wasn't imported qualified.
+            // TODO: Although, this won't work when it's fully qualified, e.g. import qualified Foo.Bar
+            if (alias.equals(module)) {
+                addAllElements(result, cachedNames.get(module));
+            }
+        }
+        return true;
+    }
 
-        // Local names.
-        extend(CompletionType.BASIC,
-                PlatformPatterns.psiElement().withLanguage(HaskellLanguage.INSTANCE),
-                new CompletionProvider<CompletionParameters>() {
-                    @Override
-                    protected void addCompletions(@NotNull CompletionParameters parameters, ProcessingContext context, @NotNull CompletionResultSet result) {
-                        final PsiElement position = parameters.getPosition();
-                        if (PsiTreeUtil.getParentOfType(position, HaskellExp.class) == null) {
-                            return;
-                        }
-                        final PsiFile file = parameters.getOriginalFile();
-                        final UserDataHolder cacheHolder = getCacheHolder(file);
-                        final Map<String, List<LookupElement>> cachedNames = cacheHolder.getUserData(BROWSE_CACHE_KEY);
-                        if (cachedNames == null) {
-                            return;
-                        }
-                        final Map<String, String> aliasMap = mapAliasesToModules(file);
-                        for (Map.Entry<String, String> e : aliasMap.entrySet()) {
-                            final String alias = e.getKey();
-                            final String module = e.getValue();
-                            // If they are equal, then the module probably wasn't imported qualified.
-                            // Although, this won't work when it's fully qualified, e.g. import qualified Foo.Bar
-                            if (alias.equals(module)) {
-                                addAllElements(result, cachedNames.get(module));
-                            }
-                        }
-                    }
-                });
+    @Nullable
+    public static Map<String, List<LookupElement>> getQualifiedNameCache(@NotNull final UserDataHolder holder,
+                                                                         @NotNull final PsiFile file,
+                                                                         @NotNull final Project project,
+                                                                         @NotNull final String workDir,
+                                                                         final boolean force) {
+        GhcModi ghcModi = GhcModi.getInstance(project, workDir);
+        if (ghcModi == null) {
+            return null;
+        }
+        Map<String, List<LookupElement>> browseCache = force ? null : holder.getUserData(BROWSE_CACHE_KEY);
+        Map<String, String> aliasMap = mapAliasesToModules(file);
+        if (browseCache == null) {
+            browseCache = new HashMap<String, List<LookupElement>>(aliasMap.size());
+        }
+        for (Map.Entry<String, String> e : aliasMap.entrySet()) {
+            final String alias = e.getKey();
+            final String module = e.getValue();
+            final List<LookupElement> cachedNames = browseCache.get(module);
+            if (cachedNames != null) {
+                browseCache.put(alias, cachedNames);
+                continue;
+            }
+            final List<LookupElement> names = LogicUtil.map(browseItemToLookupElement, ghcModi.browse(module));
+            // We should autocomplete for the alias and the fully qualified module name.
+            browseCache.put(alias, names);
+            browseCache.put(module, names);
+        }
+        return browseCache;
     }
 
     /**
@@ -348,37 +355,6 @@ public class HaskellCompletionContributor extends CompletionContributor {
             }
         }
         return result;
-    }
-
-    @Nullable
-    public static Map<String, List<LookupElement>> getQualifiedNameCache(@NotNull final UserDataHolder holder,
-                                                                         @NotNull final PsiFile file,
-                                                                         @NotNull final Project project,
-                                                                         @NotNull final String workDir,
-                                                                         final boolean force) {
-        GhcModi ghcModi = GhcModi.getInstance(project, workDir);
-        if (ghcModi == null) {
-            return null;
-        }
-        Map<String, List<LookupElement>> browseCache = force ? null : holder.getUserData(BROWSE_CACHE_KEY);
-        Map<String, String> aliasMap = mapAliasesToModules(file);
-        if (browseCache == null) {
-            browseCache = new HashMap<String, List<LookupElement>>(aliasMap.size());
-        }
-        for (Map.Entry<String, String> e : aliasMap.entrySet()) {
-            final String alias = e.getKey();
-            final String module = e.getValue();
-            final List<LookupElement> cachedNames = browseCache.get(module);
-            if (cachedNames != null) {
-                browseCache.put(alias, cachedNames);
-                continue;
-            }
-            final List<LookupElement> names = LogicUtil.map(browseItemToLookupElement, ghcModi.browse(module));
-            // We should autocomplete for the alias and the fully qualified module name.
-            browseCache.put(alias, names);
-            browseCache.put(module, names);
-        }
-        return browseCache;
     }
 
     /**

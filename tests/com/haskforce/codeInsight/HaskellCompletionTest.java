@@ -88,6 +88,7 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
         loadCache(MODULE_CACHE_KEY, fakeModules);
         doTestInclude("import <caret>", "Control", "Data");
         doTestInclude("import Data.<caret>", "ByteString", "Byteable");
+        doTestExclude("import Data.<caret>", "import ");
     }
 
     public void testNameImports() throws Throwable {
@@ -120,6 +121,10 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
         doTestInclude(
                 "import qualified Data.ByteString.Char8 as C\n" +
                 "foo = Data.ByteString.Char8.<caret>",
+                fakeBrowseCache.get("Data.ByteString.Char8"));
+        // We should not autocomplete browse cache in imports.
+        doTestExclude(
+                "import Data.ByteString.Char8.<caret>",
                 fakeBrowseCache.get("Data.ByteString.Char8"));
     }
 
