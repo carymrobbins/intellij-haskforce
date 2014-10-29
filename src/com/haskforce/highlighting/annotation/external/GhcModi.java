@@ -16,6 +16,9 @@ import org.jetbrains.annotations.Nullable;
 import java.io.*;
 import java.util.regex.Pattern;
 
+/**
+ * Process wrapper for GhcModi.  Implements ModuleComponent so destruction of processes coincides with closing projects.
+ */
 public class GhcModi implements ModuleComponent {
     @SuppressWarnings("UnusedDeclaration")
     private static final Logger LOG = Logger.getInstance(GhcMod.class);
@@ -28,10 +31,11 @@ public class GhcModi implements ModuleComponent {
     private @Nullable BufferedReader input;
     private @Nullable BufferedWriter output;
     public static final Pattern TYPE_SPLIT_REGEX = Pattern.compile(" :: ");
-//    private static @NotNull Map<Module, GhcModi> instanceMap = new HashMap<Module, GhcModi>(0);
 
+    /**
+     * Kills the existing process and closes input and output if they exist.
+     */
     private synchronized void kill() {
-//        instanceMap.remove(module);
         if (process != null) {
             process.destroy();
             process = null;
@@ -54,12 +58,18 @@ public class GhcModi implements ModuleComponent {
         }
     }
 
+    /**
+     * Helper when ghc-modi encounters an error; kill it and display the error to the user.
+     */
     private synchronized void killAndDisplayError(String command, String error) {
         kill();
         final String message = "Command: " + command + "<br/>Error: " + error;
         GhcMod.displayError(module.getProject(), message, "ghc-modi");
     }
 
+    /**
+     * Checks the module with ghc-modi and returns Problems to be annotated in the source.
+     */
     @Nullable
     public Problems check(@NotNull String file) {
         final String stdout = simpleExec("check " + file);
@@ -67,7 +77,7 @@ public class GhcModi implements ModuleComponent {
     }
 
     /**
-     * Returns an array of (name, type) pairs exposed for a given module.
+     * Returns an array of browse information for a given module.
      */
     @Nullable
     public BrowseItem[] browse(@NotNull final String module) {
@@ -84,6 +94,9 @@ public class GhcModi implements ModuleComponent {
         return result;
     }
 
+    /**
+     * Wrapper class for the output of `ghc-modi browse` command.
+     */
     public static class BrowseItem {
         public final @NotNull String name;
         public final @NotNull String module;
@@ -97,6 +110,9 @@ public class GhcModi implements ModuleComponent {
 
     }
 
+    /**
+     * A wrapper to exec that checks stdout and returns null if there was no output.
+     */
     @Nullable
     public String simpleExec(@NotNull String command) {
         final String stdout = exec(command);
@@ -106,12 +122,19 @@ public class GhcModi implements ModuleComponent {
         return stdout;
     }
 
+    /**
+     * Same as simpleExec, except returns an array of Strings for each line in the output.
+     */
     @Nullable
     public String[] simpleExecToLines(@NotNull String command) {
         final String result = simpleExec(command);
         return result == null ? null : StringUtil.splitByLines(result);
     }
 
+    /**
+     * Lazily spawns a process if needed and executes the given command.  If this fails, returns null and displays
+     * the error to the user.  If the path to ghc-modi is not set, this simply returns null with no error message.
+     */
     @Nullable
     public synchronized String exec(@NotNull String command) {
         if (path == null) {
@@ -163,6 +186,9 @@ public class GhcModi implements ModuleComponent {
         }
     }
 
+    /**
+     * Private constructor used during module component initialization.
+     */
     @SuppressWarnings("UnusedDeclaration")
     private GhcModi(@NotNull Module module) {
         final Project project = module.getProject();
@@ -172,6 +198,10 @@ public class GhcModi implements ModuleComponent {
         this.workingDirectory = ExecUtil.guessWorkDir(module);
     }
 
+    /**
+     * Checks that all ghc-modi metadata is consistent with the current instance (path, flags, etc.).  If something
+     * has changed, updates the instance accordingly.
+     */
     private void ensureConsistent() {
         // Just used for equality checks.
         GhcModi check = new GhcModi(module);
