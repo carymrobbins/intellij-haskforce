@@ -12,6 +12,8 @@ import com.intellij.openapi.application.ModalityState;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
@@ -28,8 +30,7 @@ public class HaskellExternalAnnotator extends ExternalAnnotator<PsiFile, Problem
      * The default implementation here is to not annotate files that have lexer/parser errors.  This is kind
      * of lame since the error may be invalid.
      */
-    @Nullable
-    @Override
+    @Nullable @Override
     public PsiFile collectInformation(@NotNull PsiFile file, @NotNull Editor editor, boolean hasErrors) {
         return collectInformation(file);
     }
@@ -60,12 +61,15 @@ public class HaskellExternalAnnotator extends ExternalAnnotator<PsiFile, Problem
         // If not, use the project directory.
         final Project project = file.getProject();
         final String workDir = ExecUtil.guessWorkDir(file);
-        HaskellCompletionContributor.loadCacheData(file, project, workDir);
+        HaskellCompletionContributor.loadCacheData(file);
         Problems problems = new Problems();
         if (ExecUtil.GhcModiToolKey.isEnabledFor(project)) {
-            GhcModi ghcModi = GhcModi.getInstance(project, workDir);
-            if (ghcModi != null) {
-                problems.addAllNotNull(ghcModi.check(canonicalPath));
+            final Module module = ModuleUtilCore.findModuleForPsiElement(file);
+            if (module != null) {
+                GhcModi ghcModi = module.getComponent(GhcModi.class);
+                if (ghcModi != null) {
+                    problems.addAllNotNull(ghcModi.check(canonicalPath));
+                }
             }
         } else {
             problems.addAllNotNull(GhcMod.check(project, workDir, canonicalPath));

@@ -2,7 +2,6 @@ package com.haskforce.actions;
 
 import com.haskforce.codeInsight.HaskellCompletionContributor;
 import com.haskforce.psi.HaskellFile;
-import com.haskforce.utils.ExecUtil;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
@@ -11,7 +10,6 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.DumbAware;
-import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFile;
 
 public class HaskellReloadCompletionCache extends AnAction implements DumbAware {
@@ -34,8 +32,6 @@ public class HaskellReloadCompletionCache extends AnAction implements DumbAware 
             LOG.error(message);
             return;
         }
-        final Project project = file.getProject();
-        final String workDir = ExecUtil.guessWorkDir(file);
-        HaskellCompletionContributor.loadCacheData(file, project, workDir, true);
+        HaskellCompletionContributor.loadCacheData(file, true);
     }
 }

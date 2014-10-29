@@ -5,6 +5,7 @@ import com.haskforce.HaskellLanguage;
 import com.haskforce.highlighting.annotation.external.GhcMod;
 import com.haskforce.highlighting.annotation.external.GhcModi;
 import com.haskforce.psi.*;
+import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.LogicUtil;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -296,10 +297,12 @@ public class HaskellCompletionContributor extends CompletionContributor {
     @Nullable
     public static Map<String, List<LookupElement>> getBrowseCache(@NotNull final UserDataHolder holder,
                                                                   @NotNull final PsiFile file,
-                                                                  @NotNull final Project project,
-                                                                  @NotNull final String workDir,
                                                                   final boolean force) {
-        GhcModi ghcModi = GhcModi.getInstance(project, workDir);
+        final Module module = ModuleUtilCore.findModuleForPsiElement(file);
+        if (module == null) {
+            return null;
+        }
+        GhcModi ghcModi = module.getComponent(GhcModi.class);
         if (ghcModi == null) {
             return null;
         }
@@ -393,15 +396,17 @@ public class HaskellCompletionContributor extends CompletionContributor {
      * Java thread so execution can continue.  It just so happens to be very convenient to do this in the external
      * annotator; however, there may be a better place to do this.
      */
-    public static void loadCacheData(@NotNull final PsiFile file, @NotNull final Project project, @NotNull final String workDir) {
-        loadCacheData(file, project, workDir, false);
+    public static void loadCacheData(@NotNull final PsiFile file) {
+        loadCacheData(file, false);
     }
 
-    public static void loadCacheData(@NotNull final PsiFile file, @NotNull final Project project, @NotNull final String workDir, final boolean force) {
+    public static void loadCacheData(@NotNull final PsiFile file, final boolean force) {
         final UserDataHolder cache = getCacheHolder(file);
         ApplicationManager.getApplication().invokeLater(new Runnable() {
             @Override
             public void run() {
+                final Project project = file.getProject();
+                final String workDir = ExecUtil.guessWorkDir(file);
                 if (force || cache.getUserData(LANGUAGE_CACHE_KEY) == null) {
                     cache.putUserData(LANGUAGE_CACHE_KEY, LogicUtil.map(stringToLookupElement, GhcMod.lang(project, workDir)));
                 }
@@ -412,7 +417,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
                     cache.putUserData(MODULE_CACHE_KEY, GhcMod.list(project, workDir));
                 }
                 // Checks for force and existing cache are done in getBrowseCache()
-                cache.putUserData(BROWSE_CACHE_KEY, getBrowseCache(cache, file, project, workDir, force));
+                cache.putUserData(BROWSE_CACHE_KEY, getBrowseCache(cache, file, force));
             }
         });
     }

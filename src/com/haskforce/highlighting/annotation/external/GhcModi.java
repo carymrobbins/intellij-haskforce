@@ -6,60 +6,32 @@ import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Pattern;
 
-public class GhcModi {
+public class GhcModi implements ModuleComponent {
     @SuppressWarnings("UnusedDeclaration")
     private static final Logger LOG = Logger.getInstance(GhcMod.class);
 
-    public final @NotNull Project project;
-    public final @NotNull String workingDirectory;
-    public final @NotNull String path;
-    public final @NotNull String flags;
+    public @NotNull final Module module;
+    public @NotNull String workingDirectory;
+    public @Nullable String path;
+    public @NotNull String flags;
     private @Nullable Process process;
     private @Nullable BufferedReader input;
     private @Nullable BufferedWriter output;
     public static final Pattern TYPE_SPLIT_REGEX = Pattern.compile(" :: ");
-    private static @NotNull Map<Project, GhcModi> instanceMap = new HashMap<Project, GhcModi>(0);
-
-    @Nullable
-    public static GhcModi getInstance(@NotNull Project project, @NotNull String workingDirectory) {
-        final String path = getPath(project);
-        if (path == null) {
-            return null;
-        }
-        final String flags = getFlags(project);
-        final GhcModi instance = instanceMap.get(project);
-        if (instance != null) {
-            if (instance.workingDirectory.equals(workingDirectory)
-                    && instance.path.equals(path)
-                    && instance.flags.equals(flags)) {
-                return instance;
-            }
-            instance.kill();
-        }
-        final GhcModi newInstance = new GhcModi(project, workingDirectory, path, flags);
-        instanceMap.put(project, newInstance);
-        return newInstance;
-    }
-
-    private GhcModi(@NotNull Project project, @NotNull String workingDirectory, @NotNull String path, @NotNull String flags) {
-        this.project = project;
-        this.workingDirectory = workingDirectory;
-        this.path = path;
-        this.flags = flags;
-    }
+//    private static @NotNull Map<Module, GhcModi> instanceMap = new HashMap<Module, GhcModi>(0);
 
     private synchronized void kill() {
-        instanceMap.remove(project);
+//        instanceMap.remove(module);
         if (process != null) {
             process.destroy();
             process = null;
@@ -85,23 +57,13 @@ public class GhcModi {
     private synchronized void killAndDisplayError(String command, String error) {
         kill();
         final String message = "Command: " + command + "<br/>Error: " + error;
-        GhcMod.displayError(project, message, "ghc-modi");
-    }
-
-    @Nullable
-    public static String getPath(@NotNull Project project) {
-        return ExecUtil.GHC_MODI_KEY.getPath(project);
-    }
-
-    @NotNull
-    public static String getFlags(@NotNull Project project) {
-        return ExecUtil.GHC_MODI_KEY.getFlags(project);
+        GhcMod.displayError(module.getProject(), message, "ghc-modi");
     }
 
     @Nullable
     public Problems check(@NotNull String file) {
         final String stdout = simpleExec("check " + file);
-        return stdout == null ? new Problems() : GhcMod.handleCheck(project, stdout, "ghc-modi");
+        return stdout == null ? new Problems() : GhcMod.handleCheck(module.getProject(), stdout, "ghc-modi");
     }
 
     /**
@@ -137,11 +99,8 @@ public class GhcModi {
 
     @Nullable
     public String simpleExec(@NotNull String command) {
-        final String path = getPath(project);
-        final String stdout;
-        if (path == null
-                || (stdout = exec(command)) == null
-                || stdout.length() == 0) {
+        final String stdout = exec(command);
+        if (stdout == null || stdout.length() == 0) {
             return null;
         }
         return stdout;
@@ -155,6 +114,10 @@ public class GhcModi {
 
     @Nullable
     public synchronized String exec(@NotNull String command) {
+        if (path == null) {
+            return null;
+        }
+        ensureConsistent();
         if (process == null) {
             GeneralCommandLine commandLine = new GeneralCommandLine(path);
             ParametersList parametersList = commandLine.getParametersList();
@@ -199,4 +162,62 @@ public class GhcModi {
             return null;
         }
     }
+
+    @SuppressWarnings("UnusedDeclaration")
+    private GhcModi(@NotNull Module module) {
+        final Project project = module.getProject();
+        this.module = module;
+        this.path = ExecUtil.GHC_MODI_KEY.getPath(project);
+        this.flags = ExecUtil.GHC_MODI_KEY.getFlags(project);
+        this.workingDirectory = ExecUtil.guessWorkDir(module);
+    }
+
+    private void ensureConsistent() {
+        // Just used for equality checks.
+        GhcModi check = new GhcModi(module);
+        // Ensure that nothing has changed; if so, kill the existing process and re-spawn.
+        if (check.path == null
+                || !check.path.equals(path)
+                || !check.flags.equals(flags)
+                || !check.workingDirectory.equals(workingDirectory)) {
+            kill();
+            path = check.path;
+            flags = check.flags;
+            workingDirectory = check.workingDirectory;
+        }
+    }
+
+    // Implemented methods for ModuleComponent.
+
+    @Override
+    public void projectOpened() {
+        // No need to do anything here.
+    }
+
+    @Override
+    public void projectClosed() {
+        kill();
+    }
+
+    @Override
+    public void moduleAdded() {
+        // No need to do anything here.
+    }
+
+    @Override
+    public void initComponent() {
+        // No need to do anything here.
+    }
+
+    @Override
+    public void disposeComponent() {
+        kill();
+    }
+
+    @NotNull
+    @Override
+    public String getComponentName() {
+        return "GhcModi";
+    }
+
 }

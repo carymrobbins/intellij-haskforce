@@ -115,4 +115,10 @@
       <!-- External builder support -->
       <compileServer.plugin classpath="jps/jps-plugin.jar;jps-shared.jar"/>
   </extensions>
+  <module-components>
+    <component>
+      <implementation-class>com.haskforce.highlighting.annotation.external.GhcModi</implementation-class>
+      <interface-class>com.haskforce.highlighting.annotation.external.GhcModi</interface-class>
+    </component>
+  </module-components>
 </idea-plugin>

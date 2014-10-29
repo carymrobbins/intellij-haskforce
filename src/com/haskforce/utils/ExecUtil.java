@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Helper class to perform execution related tasks, including locating programs.
@@ -41,14 +40,16 @@ public class ExecUtil {
         // Find some valid working directory, doesn't matter which one.
         ProjectManager pm = ProjectManager.getInstance();
         Project[] projects = pm == null ? null : pm.getOpenProjects();
-        String workDir = ".";
+        final String defaultWorkDir = ".";
+        final String workDir;
         // Set the working directory if there is an open project.
         if (pm == null || projects.length == 0) {
             LOG.info("No open projects so cannot find a valid path. Using '.'.");
+            workDir = defaultWorkDir;
         } else {
             workDir = projects[0].getBaseDir().getCanonicalPath();
         }
-        return exec(workDir, command);
+        return exec(workDir == null ? defaultWorkDir : workDir, command);
     }
 
     /**
@@ -78,7 +79,7 @@ public class ExecUtil {
         }
         commandLine.addParameter(command);
 
-        ProcessOutput output = null;
+        ProcessOutput output;
         try {
             output = new CapturingProcessHandler(commandLine.createProcess(),
                             Charset.defaultCharset(), commandLine.getCommandLineString()).runProcess();
@@ -141,6 +142,7 @@ public class ExecUtil {
         }
         for (String path : paths) {
             String cmd = path + sep + command;
+            //noinspection ObjectAllocationInLoop
             if (new File(cmd).canExecute()) return cmd;
         }
         return null;
@@ -149,14 +151,19 @@ public class ExecUtil {
     @NotNull
     public static String guessWorkDir(@NotNull Project project, @NotNull VirtualFile file) {
         final Module module = ModuleUtilCore.findModuleForFile(file, project);
-        final VirtualFile moduleFile = module == null ? null : module.getModuleFile();
-        final VirtualFile moduleDir = moduleFile == null ? null : moduleFile.getParent();
-        return moduleDir == null ? project.getBasePath() : moduleDir.getPath();
+        return module == null ? project.getBasePath() : guessWorkDir(module);
     }
 
     @NotNull
     public static String guessWorkDir(@NotNull PsiFile file) {
         return guessWorkDir(file.getProject(), file.getVirtualFile());
+    }
+
+    @NotNull
+    public static String guessWorkDir(@NotNull Module module) {
+        final VirtualFile moduleFile = module.getModuleFile();
+        final VirtualFile moduleDir = moduleFile == null ? null : moduleFile.getParent();
+        return moduleDir == null ? module.getProject().getBasePath() : moduleDir.getPath();
     }
 
     /**
