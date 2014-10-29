@@ -4,3 +4,4 @@ dictionaries/*
 emacs.xml
 misc.xml
 copyright/profiles_settings.xml
+findbugs-idea.xml

@@ -2,3 +2,4 @@ out
 build.properties
 *.swp
 .ackrc
+.dist-buildwrapper/
