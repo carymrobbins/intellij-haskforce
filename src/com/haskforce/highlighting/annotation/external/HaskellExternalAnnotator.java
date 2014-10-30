@@ -63,7 +63,7 @@ public class HaskellExternalAnnotator extends ExternalAnnotator<PsiFile, Problem
         final String workDir = ExecUtil.guessWorkDir(file);
         HaskellCompletionContributor.loadCacheData(file);
         Problems problems = new Problems();
-        if (ExecUtil.GhcModiToolKey.isEnabledFor(project)) {
+        if (ExecUtil.GHC_MODI_KEY.getPath(project) != null) {
             final Module module = ModuleUtilCore.findModuleForPsiElement(file);
             if (module != null) {
                 GhcModi ghcModi = module.getComponent(GhcModi.class);

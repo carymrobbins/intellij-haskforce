@@ -216,7 +216,7 @@ public class ExecUtil {
     public static final ToolKey STYLISH_HASKELL_KEY = new ToolKey("stylishHaskell");
     public static final ToolKey HLINT_KEY = new ToolKey("hlint");
     public static final ToolKey GHC_MOD_KEY = new ToolKey("ghcMod");
-    public static final GhcModiToolKey GHC_MODI_KEY = new GhcModiToolKey();
+    public static final ToolKey GHC_MODI_KEY = new ToolKey("ghcModi");
 
     /**
      * String wrapper to ensure that we don't accidentally pass an invalid key to the PropertiesComponent.
@@ -241,19 +241,6 @@ public class ExecUtil {
         public String getFlags(@NotNull Project project) {
             final String flags = PropertiesComponent.getInstance(project).getValue(flagsKey);
             return flags == null ? "" : flags;
-        }
-    }
-
-    public static class GhcModiToolKey extends ToolKey {
-        public static final String useKey = "useGhcModi";
-        public static final String trueValue = "true";
-
-        GhcModiToolKey() {
-            super("ghcModi");
-        }
-
-        public static boolean isEnabledFor(@NotNull Project project) {
-            return trueValue.equals(PropertiesComponent.getInstance(project).getValue(useKey));
         }
     }
 }
