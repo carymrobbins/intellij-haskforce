@@ -1,7 +1,7 @@
 <idea-plugin version="2" use-idea-classloader="true">
   <id>com.haskforce</id>
   <name>HaskForce</name>
-  <version>0.3-beta.5</version>
+  <version>0.3-beta.6</version>
   <!--<vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>-->
 
   <description>Plugin for Haskell language support.</description>
@@ -115,6 +115,7 @@
       <lang.syntaxHighlighterFactory key="Hamlet" implementationClass="com.haskforce.yesod.shakespeare.hamlet.highlighting.HamletSyntaxHighlighterFactory"/>
 
       <!-- External builder support -->
+      <!-- Note that the classpath is needed for plugin deployment to export a zip archive. -->
       <compileServer.plugin classpath="jps/jps-plugin.jar;jps-shared.jar"/>
   </extensions>
   <module-components>
