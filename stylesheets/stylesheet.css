@@ -10,9 +10,15 @@ body {
 
 /* General & 'Reset' Stuff */
 
-.container {
+.container-heading {
   width: 90%;
   max-width: 600px;
+  margin: 0 auto;
+}
+
+.container-body {
+  width: 90%;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -46,7 +52,7 @@ header {
 header h1 {
   font-size: 30px;
   line-height: 1.5;
-  margin: 0 0 0 -40px;
+  margin: 0 0 0 0;
   font-weight: bold;
   font-family: Monaco, "Bitstream Vera Sans Mono", "Lucida Console", Terminal, monospace;
   color: #b5e853;
@@ -57,10 +63,10 @@ header h1 {
   -webkit-font-smoothing: antialiased;
 }
 
-header h1:before {
+/*header h1:before {
   content: "./ ";
   font-size: 24px;
-}
+}*/
 
 header h2 {
   font-size: 18px;
@@ -188,7 +194,7 @@ hr {
 /* Buttons
 */
 
-.btn {
+.my-btn {
   display: inline-block;
   background: -webkit-linear-gradient(top, rgba(40, 40, 40, 0.3), rgba(35, 35, 35, 0.3) 50%, rgba(10, 10, 10, 0.3) 50%, rgba(0, 0, 0, 0.3));
   padding: 8px 18px;
@@ -205,11 +211,11 @@ hr {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
-.btn:hover {
+.my-btn:hover {
   background: -webkit-linear-gradient(top, rgba(40, 40, 40, 0.6), rgba(35, 35, 35, 0.6) 50%, rgba(10, 10, 10, 0.8) 50%, rgba(0, 0, 0, 0.8));
 }
 
-.btn .icon {
+.my-btn .icon {
   display: inline-block;
   width: 16px;
   height: 16px;
@@ -217,7 +223,7 @@ hr {
   float: left;
 }
 
-.btn-github .icon {
+.my-btn-github .icon {
   opacity: 0.6;
   background: url("../images/blacktocat.png") 0 0 no-repeat;
 }
@@ -244,4 +250,10 @@ a {
 
 .cf {
   zoom:1;
+}
+
+/* Helpers */
+
+.text-center {
+    text-align: center;
 }

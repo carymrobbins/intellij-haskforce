@@ -3,111 +3,165 @@
   <head>
     <meta charset='utf-8'>
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <!-- Yesod.Form.Bootstrap3       (BootstrapFormLayout (..), renderBootstrap3) -->
+    <!-- Bootstrap CND -->
+    <!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">-->
+    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>-->
 
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <link rel="icon" type="image/png" href="favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print"/>
 
-    <title>HaskForce by carymrobbins</title>
+    <title>HaskForce</title>
   </head>
 
   <body>
 
     <header>
-      <div class="container">
-        <h1>HaskForce</h1>
-        <h2>The Haskell plugin for IntelliJ IDEA</h2>
+      <div class="container-heading">
+        <h1 class="text-center">HaskForce</h1>
+        <h2 class="text-center">The Haskell plugin for IntelliJ IDEA</h2>
 
-        <section id="downloads">
-          <a href="https://github.com/carymrobbins/intellij-haskforce/zipball/master" class="btn">Download as .zip</a>
-          <a href="https://github.com/carymrobbins/intellij-haskforce/tarball/master" class="btn">Download as .tar.gz</a>
-          <a href="https://github.com/carymrobbins/intellij-haskforce" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        <section id="downloads" class="text-center">
+          <a href="https://github.com/carymrobbins/intellij-haskforce/releases" class="my-btn">Download the latest release</a>
+          <a href="https://github.com/carymrobbins/intellij-haskforce" class="my-btn my-btn-github"><span class="icon"></span>View on GitHub</a>
         </section>
       </div>
     </header>
 
-    <div class="container">
+    <div class="container-body">
       <section id="main_content">
-        <h1>
-<a name="haskforce-" class="anchor" href="#haskforce-"><span class="octicon octicon-link"></span></a>HaskForce <a href="https://travis-ci.org/carymrobbins/intellij-haskforce"><img src="https://travis-ci.org/carymrobbins/intellij-haskforce.svg?branch=master" alt="Build Status"></a>
-</h1>
 
-<h2>
-<a name="the-intellij-plugin-for-haskell" class="anchor" href="#the-intellij-plugin-for-haskell"><span class="octicon octicon-link"></span></a>The IntelliJ plugin for Haskell.</h2>
 
-<p>You can install the plugin using the build method below.  Check out the
-<a href="https://github.com/carymrobbins/intellij-haskforce/wiki/Quick-Start-Guide">Quick Start Guide</a>
-for more info!</p>
+        <h1>Intelligent, context-aware autocompletion</h1>
+        <img src="images/completion.gif"/>
 
-<h2>
-<a name="building-the-plugin" class="anchor" href="#building-the-plugin"><span class="octicon octicon-link"></span></a>Building the plugin</h2>
+        <table>
+          <tr>
+            <td>
+              <h1>Automatically add type signatures</h1>
+              <img src="images/add-type-sig.gif"/>
+            </td>
+            <td>
+              <h1>HLint integration</h1>
+              <img src="images/hlint.gif"/>
+            </td>
+          </tr>
+        </table>
 
-<ol>
-<li><p>Clone HaskForce.</p></li>
-<li><p>If you haven't already, download and install IntelliJ IDEA and Java JDK.</p></li>
-<li>
-<p>(Optional) Check out the Community Edition source files.</p>
+        <table>
+          <tr>
+            <td>
+              <h1>Jump to function declaration</h1>
+              <img src="images/jump-to-decl.gif"/>
+            </td>
+            <td>
+              <h1>Prettify with Stylish Haskell</h1>
+              <img src="images/stylish.gif"/>
+            </td>
+          </tr>
+        </table>
 
-<ul>
-<li><code>$ git clone git@github.com:JetBrains/intellij-community.git idea</code></li>
-<li>Check the version of your IntelliJ installation by going to About IntelliJ IDEA and checking the
-build number.</li>
-<li>Check out the appropriate tag for your build number.  For instance, you have Build #IC-135.909, then do
-<code>$ git checkout idea/135.909</code>
-</li>
-<li>Be sure to <code>git checkout</code> the new tag each time you upgrade IntelliJ.</li>
-</ul>
-</li>
-<li>Install and enable additional plugins.
+        <table>
+          <tr>
+            <td rowspan="2">
+              <h1>Simple tool configuration</h1>
+              <img src="images/tools.gif"/>
+            </td>
+            <td>
+              <h1>Cabal syntax</h1>
+              <img src="images/cabal.gif"/>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <h1>Hamlet syntax</h1>
+              <img src="images/hamlet.gif"/>
+            </td>
+          </tr>
+        </table>
 
-<ul>
-<li>JFlex Support</li>
-<li>Plugin DevKit (already installed)</li>
-<li>PsiViewer</li>
-</ul>
-</li>
-<li>Configure JFlex settings.
+        <!--<h1>-->
+<!--<a name="haskforce-" class="anchor" href="#haskforce-"><span class="octicon octicon-link"></span></a>HaskForce <a href="https://travis-ci.org/carymrobbins/intellij-haskforce"><img src="https://travis-ci.org/carymrobbins/intellij-haskforce.svg?branch=master" alt="Build Status"></a>-->
+<!--</h1>-->
 
-<ul>
-<li>Go to Preferences.  Below the IDE Settings section locate JFlex.  Set the path and skeleton to the
-idea/tools/lexer files.</li>
-</ul>
-</li>
-<li>Configure SDK and source files.
+<!--<h2>-->
+<!--<a name="the-intellij-plugin-for-haskell" class="anchor" href="#the-intellij-plugin-for-haskell"><span class="octicon octicon-link"></span></a>The IntelliJ plugin for Haskell.</h2>-->
 
-<ul>
-<li>Create a new <strong>IntelliJ Platform Project</strong> from existing sources (pointed to your cloned HaskForce directory).</li>
-<li>Go to File &gt; Project Structure.  Add SDKs for JDK and IDEA Plugins.  For the IDEA Plugins, add sources
-from the cloned idea to the Sourcepath, if applicable.</li>
-</ul>
-</li>
-<li>Set the project SDK to the IDEA SDK.</li>
-<li>From the menu go to <strong>Run &gt; Edit Configurations</strong>
-</li>
-<li>Click on the <code>+</code> sign and choose <strong>Plugin</strong>, click <strong>OK</strong>, then run your new configuration.</li>
-</ol>
+<!--<p>You can install the plugin using the build method below.  Check out the-->
+<!--<a href="https://github.com/carymrobbins/intellij-haskforce/wiki/Quick-Start-Guide">Quick Start Guide</a>-->
+<!--for more info!</p>-->
 
-<h2>
-<a name="testing-the-plugin" class="anchor" href="#testing-the-plugin"><span class="octicon octicon-link"></span></a>Testing the plugin</h2>
+<!--<h2>-->
+<!--<a name="building-the-plugin" class="anchor" href="#building-the-plugin"><span class="octicon octicon-link"></span></a>Building the plugin</h2>-->
 
-<p>To run the tests, you'll need to create a run configuration:</p>
+<!--<ol>-->
+<!--<li><p>Clone HaskForce.</p></li>-->
+<!--<li><p>If you haven't already, download and install IntelliJ IDEA and Java JDK.</p></li>-->
+<!--<li>-->
+<!--<p>(Optional) Check out the Community Edition source files.</p>-->
 
-<ol>
-<li>Go to <strong>Run &gt; Edit Configurations</strong>
-</li>
-<li>Click on the <code>+</code> sign and choose <strong>JUnit</strong>
-</li>
-<li>In the Class field enter <strong>HaskellTestCase</strong>, which should auto-complete for you.</li>
-<li>Click <strong>OK</strong> and run your new test configuration.</li>
-</ol>
+<!--<ul>-->
+<!--<li><code>$ git clone git@github.com:JetBrains/intellij-community.git idea</code></li>-->
+<!--<li>Check the version of your IntelliJ installation by going to About IntelliJ IDEA and checking the-->
+<!--build number.</li>-->
+<!--<li>Check out the appropriate tag for your build number.  For instance, you have Build #IC-135.909, then do-->
+<!--<code>$ git checkout idea/135.909</code>-->
+<!--</li>-->
+<!--<li>Be sure to <code>git checkout</code> the new tag each time you upgrade IntelliJ.</li>-->
+<!--</ul>-->
+<!--</li>-->
+<!--<li>Install and enable additional plugins.-->
 
-<p>To add more tests:</p>
+<!--<ul>-->
+<!--<li>JFlex Support</li>-->
+<!--<li>Plugin DevKit (already installed)</li>-->
+<!--<li>PsiViewer</li>-->
+<!--</ul>-->
+<!--</li>-->
+<!--<li>Configure JFlex settings.-->
 
-<ul>
-<li>Edit Haskell*Test.java files to add more tests of the same kind that already exists.</li>
-<li>Edit HaskellTestCase.java if you need to add tests of a different
-kind.</li>
-</ul>
+<!--<ul>-->
+<!--<li>Go to Preferences.  Below the IDE Settings section locate JFlex.  Set the path and skeleton to the-->
+<!--idea/tools/lexer files.</li>-->
+<!--</ul>-->
+<!--</li>-->
+<!--<li>Configure SDK and source files.-->
+
+<!--<ul>-->
+<!--<li>Create a new <strong>IntelliJ Platform Project</strong> from existing sources (pointed to your cloned HaskForce directory).</li>-->
+<!--<li>Go to File &gt; Project Structure.  Add SDKs for JDK and IDEA Plugins.  For the IDEA Plugins, add sources-->
+<!--from the cloned idea to the Sourcepath, if applicable.</li>-->
+<!--</ul>-->
+<!--</li>-->
+<!--<li>Set the project SDK to the IDEA SDK.</li>-->
+<!--<li>From the menu go to <strong>Run &gt; Edit Configurations</strong>-->
+<!--</li>-->
+<!--<li>Click on the <code>+</code> sign and choose <strong>Plugin</strong>, click <strong>OK</strong>, then run your new configuration.</li>-->
+<!--</ol>-->
+
+<!--<h2>-->
+<!--<a name="testing-the-plugin" class="anchor" href="#testing-the-plugin"><span class="octicon octicon-link"></span></a>Testing the plugin</h2>-->
+
+<!--<p>To run the tests, you'll need to create a run configuration:</p>-->
+
+<!--<ol>-->
+<!--<li>Go to <strong>Run &gt; Edit Configurations</strong>-->
+<!--</li>-->
+<!--<li>Click on the <code>+</code> sign and choose <strong>JUnit</strong>-->
+<!--</li>-->
+<!--<li>In the Class field enter <strong>HaskellTestCase</strong>, which should auto-complete for you.</li>-->
+<!--<li>Click <strong>OK</strong> and run your new test configuration.</li>-->
+<!--</ol>-->
+
+<!--<p>To add more tests:</p>-->
+
+<!--<ul>-->
+<!--<li>Edit Haskell*Test.java files to add more tests of the same kind that already exists.</li>-->
+<!--<li>Edit HaskellTestCase.java if you need to add tests of a different-->
+<!--kind.</li>-->
+<!--</ul>-->
       </section>
     </div>
 
