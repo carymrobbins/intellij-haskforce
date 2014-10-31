@@ -1,5 +1,6 @@
 package com.haskforce.psi;
 
+import com.haskforce.HaskellIcons;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
@@ -28,6 +29,6 @@ public class HaskellFile extends PsiFileBase {
 
     @Override
     public Icon getIcon(int flags) {
-        return super.getIcon(flags);
+        return HaskellIcons.FILE;
     }
 }
