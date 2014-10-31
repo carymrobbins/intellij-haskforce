@@ -15,7 +15,7 @@ Building the plugin
 1. If you haven't already, download and install IntelliJ IDEA and Java JDK.
 
 1. (Optional) Check out the Community Edition source files.
-  * `$ git clone git@github.com:JetBrains/intellij-community.git idea`
+  * `$ git clone https://github.com/JetBrains/intellij-community.git idea`
   * Check the version of your IntelliJ installation by going to About IntelliJ IDEA and checking the
     build number.
   * Check out the appropriate tag for your build number.  For instance, you have Build #IC-135.909, then do
