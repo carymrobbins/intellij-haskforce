@@ -65,7 +65,7 @@ VARIDREGEXP=([a-z_][a-zA-Z_0-9']+(\.[a-zA-Z_0-9']*)*)|[a-z]|[A-Z][a-zA-Z_0-9']*(
 // The reason is that brace matching breaks.  The HaskellAnnotator takes care
 // of the appropriate highlighting for unit type ().
 CONID=[A-Z][a-zA-Z_0-9']*(\.[A-Z][a-zA-Z_0-9']*)*
-INFIXVARID=`[a-zA-Z_0-9][a-zA-Z_0-9']*`
+INFIXVARID=`[a-zA-Z_0-9][a-zA-Z_0-9'.]*`
 CHARTOKEN='(\\.|[^'])'
 INTEGERTOKEN=(0(o|O)[0-7]+|0(x|X)[0-9a-fA-F]+|[0-9]+)
 FLOATTOKEN=([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))
