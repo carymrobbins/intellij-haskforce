@@ -1,7 +1,7 @@
 <idea-plugin version="2" use-idea-classloader="true">
   <id>com.haskforce</id>
   <name>HaskForce</name>
-  <version>0.3-beta.6</version>
+  <version>0.3-beta.7</version>
   <!--<vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>-->
 
   <description>Plugin for Haskell language support.</description>
