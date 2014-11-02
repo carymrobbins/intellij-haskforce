@@ -137,10 +137,10 @@ public class GhcModi implements ModuleComponent {
      */
     @Nullable
     public synchronized String exec(@NotNull String command) {
+        ensureConsistent();
         if (path == null) {
             return null;
         }
-        ensureConsistent();
         if (process == null) {
             GeneralCommandLine commandLine = new GeneralCommandLine(path);
             ParametersList parametersList = commandLine.getParametersList();
