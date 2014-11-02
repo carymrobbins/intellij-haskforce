@@ -180,11 +180,8 @@ public class ExecUtil {
                 writer.flush();
                 writer.close();
             }
-            process.waitFor();
             output = new CapturingProcessHandler(process).runProcess().getStdout();
         } catch (ExecutionException e) {
-            LOG.debug(e);
-        } catch (InterruptedException e) {
             LOG.debug(e);
         } catch (IOException e) {
             LOG.debug(e);
