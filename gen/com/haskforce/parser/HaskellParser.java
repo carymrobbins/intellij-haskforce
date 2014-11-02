@@ -3994,44 +3994,31 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // '[' e exp [e listlike1] e ']'
+  // '[' exp [listlike1] ']'
   static boolean listlike(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "listlike")) return false;
     if (!nextTokenIs(builder_, LBRACKET)) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, LBRACKET);
-    result_ = result_ && e(builder_, level_ + 1);
     result_ = result_ && exp(builder_, level_ + 1);
-    result_ = result_ && listlike_3(builder_, level_ + 1);
-    result_ = result_ && e(builder_, level_ + 1);
+    result_ = result_ && listlike_2(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, RBRACKET);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // [e listlike1]
-  private static boolean listlike_3(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "listlike_3")) return false;
-    listlike_3_0(builder_, level_ + 1);
+  // [listlike1]
+  private static boolean listlike_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "listlike_2")) return false;
+    listlike1(builder_, level_ + 1);
     return true;
   }
 
-  // e listlike1
-  private static boolean listlike_3_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "listlike_3_0")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = e(builder_, level_ + 1);
-    result_ = result_ && listlike1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
   /* ********************************************************** */
-  // (e '|' (squal ',')* e squal)+
+  // ('|' (squal ',')* squal)+
   //                     | [',' exp] '..' [exp]
-  //                     | (',' e exp)+
+  //                     | (',' exp)+
   static boolean listlike1(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "listlike1")) return false;
     boolean result_;
@@ -4043,7 +4030,7 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // (e '|' (squal ',')* e squal)+
+  // ('|' (squal ',')* squal)+
   private static boolean listlike1_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "listlike1_0")) return false;
     boolean result_;
@@ -4059,35 +4046,33 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // e '|' (squal ',')* e squal
+  // '|' (squal ',')* squal
   private static boolean listlike1_0_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "listlike1_0_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = e(builder_, level_ + 1);
-    result_ = result_ && consumeToken(builder_, PIPE);
-    result_ = result_ && listlike1_0_0_2(builder_, level_ + 1);
-    result_ = result_ && e(builder_, level_ + 1);
+    result_ = consumeToken(builder_, PIPE);
+    result_ = result_ && listlike1_0_0_1(builder_, level_ + 1);
     result_ = result_ && squal(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   // (squal ',')*
-  private static boolean listlike1_0_0_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "listlike1_0_0_2")) return false;
+  private static boolean listlike1_0_0_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "listlike1_0_0_1")) return false;
     int pos_ = current_position_(builder_);
     while (true) {
-      if (!listlike1_0_0_2_0(builder_, level_ + 1)) break;
-      if (!empty_element_parsed_guard_(builder_, "listlike1_0_0_2", pos_)) break;
+      if (!listlike1_0_0_1_0(builder_, level_ + 1)) break;
+      if (!empty_element_parsed_guard_(builder_, "listlike1_0_0_1", pos_)) break;
       pos_ = current_position_(builder_);
     }
     return true;
   }
 
   // squal ','
-  private static boolean listlike1_0_0_2_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "listlike1_0_0_2_0")) return false;
+  private static boolean listlike1_0_0_1_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "listlike1_0_0_1_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = squal(builder_, level_ + 1);
@@ -4133,7 +4118,7 @@ public class HaskellParser implements PsiParser {
     return true;
   }
 
-  // (',' e exp)+
+  // (',' exp)+
   private static boolean listlike1_2(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "listlike1_2")) return false;
     boolean result_;
@@ -4149,13 +4134,12 @@ public class HaskellParser implements PsiParser {
     return result_;
   }
 
-  // ',' e exp
+  // ',' exp
   private static boolean listlike1_2_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "listlike1_2_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, COMMA);
-    result_ = result_ && e(builder_, level_ + 1);
     result_ = result_ && exp(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;

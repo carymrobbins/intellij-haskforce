@@ -413,11 +413,11 @@ private thaexp ::= '[|' e (exp [semi])+ e '|]'
 //               | "[||" exp '||]'
 
 
-private listlike ::=  '[' e exp [e listlike1] e ']'
+private listlike ::=  '[' exp [listlike1] ']'
 
-private listlike1 ::= (e '|' (squal ',')* e squal)+
+private listlike1 ::= ('|' (squal ',')* squal)+
                     | [',' exp] '..' [exp]
-                    | (',' e exp)+
+                    | (',' exp)+
 
 private parenlike ::= '(' parenlike1
 
