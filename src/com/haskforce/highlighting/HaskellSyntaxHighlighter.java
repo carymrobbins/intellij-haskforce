@@ -23,8 +23,11 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
      * purposes.
      */
 
-    public static final TextAttributesKey RESERVEDID = DefaultLanguageHighlighterColors.FUNCTION_CALL;
-    public static final TextAttributesKey RESERVEDOP = DefaultLanguageHighlighterColors.FUNCTION_CALL;
+    // TODO: Create text attributes specifically for Haskell - https://confluence.jetbrains.com/pages/viewpage.action?pageId=49463468
+    private static final TextAttributesKey JAVA_KEYWORD = TextAttributesKey.createTextAttributesKey("JAVA_KEYWORD", DefaultLanguageHighlighterColors.KEYWORD);
+
+    public static final TextAttributesKey RESERVEDID = JAVA_KEYWORD;
+    public static final TextAttributesKey RESERVEDOP = JAVA_KEYWORD;
     public static final TextAttributesKey COMMA = DefaultLanguageHighlighterColors.COMMA;
     public static final TextAttributesKey SEMICOLON = DefaultLanguageHighlighterColors.SEMICOLON;
     public static final TextAttributesKey BRACKETS = DefaultLanguageHighlighterColors.PARENTHESES;
