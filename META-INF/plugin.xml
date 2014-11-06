@@ -1,14 +1,14 @@
 <idea-plugin version="2" use-idea-classloader="true">
   <id>com.haskforce</id>
   <name>HaskForce</name>
-  <version>0.3-beta.7</version>
+  <version>0.3-beta.8</version>
   <!--<vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>-->
 
   <description>Plugin for Haskell language support.</description>
 
   <change-notes><![CDATA[
-      Add change notes here.<br>
-      <small>most HTML tags may be used</small>
+      <br>
+      <small></small>
       ]]>
   </change-notes>
 

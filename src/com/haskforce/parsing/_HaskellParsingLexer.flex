@@ -436,20 +436,27 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         indent = 0;
                         return COMMENT;
                     }
-    [^]             {
-                        if (!indentationStack.isEmpty() && indent == indentationStack.peek().getSecond()) {
+
+    ("where"|[^])   {
+                        boolean isWhere = yytext().toString().equals("where");
+                        boolean equalIndent = !indentationStack.isEmpty() && indent == indentationStack.peek().getSecond();
+                        boolean isDedent = !indentationStack.isEmpty() && indent < indentationStack.peek().getSecond();
+                        if (!isWhere && equalIndent) {
                             yybegin(REALLYYINITIAL);
-                            yypushback(1);
+                            yypushback(yylength());
                             return WHITESPACESEMITOK;
-                        } else if (!indentationStack.isEmpty() && indent < indentationStack.peek().getSecond()) {
+                        // "where" clauses can be equally indented with do blocks.  If this happens, we should close out
+                        // the previous do block with a synthetic rbrace, essentially the same as a dedent.
+                        // See https://github.com/carymrobbins/intellij-haskforce/issues/81
+                        } else if (isDedent || (isWhere && equalIndent)) {
                             indentationStack.pop();
-                            yypushback(1);
+                            yypushback(yylength());
                             int lastNum = openBraces.peek().getSecond();
                             openBraces.push(Pair.create(Pair.create(yyline,yycolumn), --lastNum));
                             return WHITESPACERBRACETOK;
                         }
                         yybegin(REALLYYINITIAL);
-                        yypushback(1);
+                        yypushback(yylength());
                     }
 }
 
