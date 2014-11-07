@@ -1,13 +1,17 @@
 package com.haskforce.features.intentions;
 
 import com.haskforce.highlighting.annotation.external.GhcMod.*;
-import com.haskforce.utils.FileUtil;
+import com.haskforce.psi.HaskellBody;
+import com.haskforce.psi.HaskellFunorpatdecl;
+import com.haskforce.psi.HaskellGendecl;
+import com.haskforce.psi.impl.HaskellElementFactory;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.util.Function;
+import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,17 +48,17 @@ public class AddTypeSignature extends BaseIntentionAction {
     @Override
     public void invoke(@NotNull Project project, Editor editor, PsiFile file) throws IncorrectOperationException {
         final String[] messageParts = COLON_REGEX.split(problem.message, 2);
-        if (messageParts.length != 2) {
-            return;
-        }
+        if (messageParts.length != 2) { return; }
         // Substitute `String` for `[Char]` in type signatures.
         final String typeSignature = CHAR_LIST_REGEX.matcher(messageParts[1].trim()).replaceAll("String");
-        FileUtil.updateFileText(project, file, new Function<String, String>() {
-            @Override
-            public String fun(String text) {
-                final int offset = StringUtil.lineColToOffset(text, problem.startLine - 1, problem.startColumn - 1);
-                return text.substring(0, offset) + typeSignature + System.getProperty("line.separator") + text.substring(offset);
-            }
-        });
+        final PsiElement currentElement = file.findElementAt(editor.getCaretModel().getOffset());
+        final HaskellFunorpatdecl funorpatdecl = PsiTreeUtil.getParentOfType(currentElement, HaskellFunorpatdecl.class);
+        final HaskellBody body = PsiTreeUtil.getParentOfType(funorpatdecl, HaskellBody.class);
+        if (body != null) {
+            final HaskellGendecl gendecl = HaskellElementFactory.createGendeclFromText(project, typeSignature);
+            final PsiWhiteSpace newline = HaskellElementFactory.createNewLine(project);
+            body.addBefore(gendecl, funorpatdecl);
+            body.addBefore(newline, funorpatdecl);
+        }
     }
 }

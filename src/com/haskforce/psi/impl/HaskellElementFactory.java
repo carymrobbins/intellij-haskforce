@@ -63,6 +63,11 @@ public class HaskellElementFactory {
     }
 
     @NotNull
+    public static HaskellGendecl createGendeclFromText(@NotNull Project project, @NotNull String text) {
+        return ((HaskellGendecl) (createFileFromText(project, text).getFirstChild().getFirstChild()));
+    }
+
+    @NotNull
     public static PsiWhiteSpace createNewLine(@NotNull Project project) {
         return ((PsiWhiteSpace) (createFileFromText(project, "\n")).getFirstChild());
     }
