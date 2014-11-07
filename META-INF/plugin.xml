@@ -1,14 +1,19 @@
 <idea-plugin version="2" use-idea-classloader="true">
   <id>com.haskforce</id>
   <name>HaskForce</name>
-  <version>0.3-beta.8</version>
-  <!--<vendor email="support@yourcompany.com" url="http://www.yourcompany.com">YourCompany</vendor>-->
+  <version>0.3-beta.9</version>
+  <vendor url="https://github.com/carymrobbins/intellij-haskforce">HaskForce on GitHub</vendor>
 
   <description>Plugin for Haskell language support.</description>
 
   <change-notes><![CDATA[
-      <br>
-      <small></small>
+    <p>
+      <b>v0.3-beta.9</b>
+      <ul>
+        <li>Fixed auto-add type signature intention on Windows. (issue #79)</li>
+        <li>Fixed ignore hlint intention on Windows. (issue #59)</li>
+      </ul>
+    </p>
       ]]>
   </change-notes>
 
