@@ -64,7 +64,7 @@ public class HaskellElementFactory {
 
     @NotNull
     public static PsiWhiteSpace createNewLine(@NotNull Project project) {
-        return ((PsiWhiteSpace) (createFileFromText(project, System.getProperty("line.separator"))).getFirstChild());
+        return ((PsiWhiteSpace) (createFileFromText(project, "\n")).getFirstChild());
     }
 
     /**
