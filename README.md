@@ -25,16 +25,21 @@ Building the plugin
   * JFlex Support
   * Plugin DevKit (already installed)
   * PsiViewer
-1. Configure JFlex settings.
-  * Go to Preferences.  Below the IDE Settings section locate JFlex.  Set the path and skeleton to the
-    idea/tools/lexer files.
 1. Configure SDK and source files.
-  * Create a new **IntelliJ Platform Project** from existing sources (pointed to your cloned HaskForce directory).
+  * Create a new **IntelliJ Platform Plugin** project from existing sources (pointed to your cloned HaskForce directory).
   * Go to File > Project Structure.  Add SDKs for JDK and IDEA Plugins.  For the IDEA Plugins, add sources
     from the cloned idea to the Sourcepath, if applicable.
 1. Set the project SDK to the IDEA SDK.
+1. Generate lexers using **Build > haskforce > generate.sources**.  Alternatively, if you have the `ant` command line
+   tool you can run `ant generate.sources` from the project root.
+1. Choose **Build > Make Project**. If you want to see that something actually happened, you can open the log with **View > Tool Windows > Event Log**.
+
+
+Running the plugin
+--------
 1. From the menu go to **Run > Edit Configurations**
-1. Click on the `+` sign and choose **Plugin**, click **OK**, then run your new configuration.
+1. Click on the `+` sign and choose **Plugin**, name the configuration something evocative like **Haskforce**, click **OK**, then run your new configuration.
+1. Intellij will open a copy of itself, with default settings, and the plugin installed.
 
 Testing the plugin
 --------
