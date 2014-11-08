@@ -77,6 +77,8 @@
       <configurationType implementation="com.haskforce.run.HaskellApplicationConfigurationType"/>
       <configurationType implementation="com.haskforce.run.HaskellTestConfigurationType"/>
       <programRunner implementation="com.haskforce.run.HaskellRunner"/>
+      <codeStyleSettingsProvider implementation="com.haskforce.language.formatting.HaskellCodeStyleSettingsProvider"/>
+      <langCodeStyleSettingsProvider implementation="com.haskforce.language.formatting.HaskellLanguageCodeStyleSettingsProvider"/>
 
       <!-- Editing utils -->
       <lang.braceMatcher language="Haskell" implementationClass="com.haskforce.features.HaskellBraceMatcher"/>
