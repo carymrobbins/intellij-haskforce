@@ -34,7 +34,7 @@ public class HaskellReference extends PsiReferenceBase<PsiElement> implements Ps
     @Override
     public ResolveResult[] multiResolve(boolean incompleteCode) {
         Project project = myElement.getProject();
-        final List<PsiNamedElement> namedElements = HaskellUtil.findDefinitionNode(project, name);
+        final List<PsiNamedElement> namedElements = HaskellUtil.findDefinitionNode(project, name, myElement);
         // Guess 20 variants tops most of the time in any real code base.
         List<ResolveResult> results = new ArrayList<ResolveResult>(20);
         for (PsiNamedElement property : namedElements) {

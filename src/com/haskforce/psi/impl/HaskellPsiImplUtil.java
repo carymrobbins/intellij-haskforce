@@ -86,7 +86,7 @@ public class HaskellPsiImplUtil {
             @Nullable
             @Override
             public String getLocationString() {
-                return o.getContainingFile().getName();
+                return null;
             }
 
             @Nullable

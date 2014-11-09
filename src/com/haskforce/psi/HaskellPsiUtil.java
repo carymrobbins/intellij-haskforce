@@ -1,8 +1,10 @@
 package com.haskforce.psi;
 
+import com.haskforce.utils.LogicUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.Function;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -106,6 +108,17 @@ public class HaskellPsiUtil {
             result.addAll(getNamedElementsInImportt(importt));
         }
         return result;
+    }
+
+    @NotNull
+    public static List<String> getImportModuleNames(@NotNull List<Import> imports) {
+        //noinspection ConstantConditions
+        return LogicUtil.map(new Function<Import, String>() {
+            @Override
+            public String fun(Import anImport) {
+                return anImport.module;
+            }
+        }, imports);
     }
 
     public static class Import {

@@ -32,7 +32,7 @@ public class HaskellChooseByNameContributor implements ChooseByNameContributor {
     @Override
     public NavigationItem[] getItemsByName(String name, String pattern, Project project, boolean includeNonProjectItems) {
         // TODO: include non project items
-        List<PsiNamedElement> definitions = HaskellUtil.findDefinitionNode(project, name);
+        List<PsiNamedElement> definitions = HaskellUtil.findDefinitionNode(project, name, null);
         return definitions.toArray(new NavigationItem[definitions.size()]);
     }
 }
