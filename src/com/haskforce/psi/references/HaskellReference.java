@@ -1,5 +1,6 @@
 package com.haskforce.psi.references;
 
+import com.google.common.collect.Iterables;
 import com.haskforce.codeInsight.HaskellCompletionContributor;
 import com.haskforce.psi.*;
 import com.haskforce.psi.impl.HaskellPsiImplUtil;
@@ -27,12 +28,26 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
         name = element.getName();
     }
 
+    public static final ResolveResult[] EMPTY_RESOLVE_RESULT = new ResolveResult[0];
+
     /**
      * Resolves references to a set of results.
      */
     @NotNull
     @Override
     public ResolveResult[] multiResolve(boolean incompleteCode) {
+        // We should only be resolving varids or conids.
+        if (!(myElement instanceof HaskellVarid || myElement instanceof HaskellConid)) {
+            return EMPTY_RESOLVE_RESULT;
+        }
+        // Make sure that we only complete the last conid in a qualified expression.
+        if (myElement instanceof HaskellConid) {
+            // Don't resolve a module import to a constructor.
+            if (PsiTreeUtil.getParentOfType(myElement, HaskellImpdecl.class) != null) { return EMPTY_RESOLVE_RESULT; }
+            HaskellQconid qconid = PsiTreeUtil.getParentOfType(myElement, HaskellQconid.class);
+            if (qconid == null) { return EMPTY_RESOLVE_RESULT; }
+            if (!myElement.equals(Iterables.getLast(qconid.getConidList()))) { return EMPTY_RESOLVE_RESULT; }
+        }
         Project project = myElement.getProject();
         final List<PsiNamedElement> namedElements = HaskellUtil.findDefinitionNode(project, name, myElement);
         // Guess 20 variants tops most of the time in any real code base.

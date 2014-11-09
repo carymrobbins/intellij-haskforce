@@ -29,7 +29,7 @@ public class HaskellLineMarkerProvider extends RelatedItemLineMarkerProvider {
             if (value != null) {
                 Project project = element.getProject();
                 final List<PsiNamedElement> namedNodes =
-                        HaskellUtil.findDefinitionNode(project, value, element);
+                        HaskellUtil.findDefinitionNode(project, value, namedElement);
 
                 if (namedNodes.size() > 0) {
                     NavigationGutterIconBuilder<PsiElement> builder =

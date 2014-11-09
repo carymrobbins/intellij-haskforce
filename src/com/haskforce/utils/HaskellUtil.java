@@ -102,8 +102,24 @@ public class HaskellUtil {
      * Precondition: Element is in a Haskell file.
      */
     public static boolean definitionNode(@NotNull PsiNamedElement e) {
-        // Type signatures "pattern".
-        return HaskellPsiUtil.isType(e.getParent(), HaskellTypes.VARS);
+        if (e instanceof HaskellVarid) {
+            // Element is in the vars section of a type signature.
+            return HaskellPsiUtil.isType(e.getParent(), HaskellTypes.VARS);
+        }
+        if (e instanceof HaskellConid) {
+            // Element is defined as a constructor.
+            final HaskellConstr constr = PsiTreeUtil.getParentOfType(e, HaskellConstr.class);
+            final HaskellCon con;
+            if (constr != null) {
+                con = constr.getCon();
+            } else {
+                final HaskellNewconstr newconstr = PsiTreeUtil.getParentOfType(e, HaskellNewconstr.class);
+                con = newconstr == null ? null : newconstr.getCon();
+            }
+            final HaskellConid conid = con == null ? null : con.getConid();
+            return e.equals(conid);
+        }
+        return false;
     }
 
     @Nullable
