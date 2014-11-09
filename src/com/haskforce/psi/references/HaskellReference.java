@@ -7,12 +7,7 @@ import com.haskforce.utils.HaskellUtil;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementResolveResult;
-import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.PsiPolyVariantReference;
-import com.intellij.psi.PsiReferenceBase;
-import com.intellij.psi.ResolveResult;
+import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
@@ -80,7 +75,9 @@ public class HaskellReference extends PsiReferenceBase<PsiElement> implements Ps
         List<LookupElement> variants = new ArrayList<LookupElement>(20);
         for (final PsiNamedElement namedElement : namedNodes) {
             final PsiElement genDecl = PsiTreeUtil.getParentOfType(namedElement, HaskellGendecl.class);
-            final String module = namedElement.getContainingFile().getName();
+            final PsiFile psiFile = namedElement.getContainingFile();
+            final String parsedModuleName = HaskellPsiUtil.parseModuleName(psiFile);
+            final String module = parsedModuleName == null ? psiFile.getName() : parsedModuleName;
             final String name = namedElement.getName();
             if (name == null) {
                 continue;

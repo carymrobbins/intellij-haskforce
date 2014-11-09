@@ -1,12 +1,8 @@
 package com.haskforce.psi;
 
-import com.haskforce.utils.LogicUtil;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.util.Function;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -140,10 +136,6 @@ public class HaskellPsiUtil {
 
         public static Import qualifiedAs(@NotNull String module, @NotNull String alias, @NotNull String[] names, boolean hasHiding) {
             return new Import(module, alias, names, hasHiding);
-        }
-
-        public boolean isGlobal() {
-            return alias == null;
         }
 
         public boolean isQualified() {
