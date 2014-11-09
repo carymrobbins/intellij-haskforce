@@ -142,6 +142,14 @@ public class HaskellPsiUtil {
             return new Import(module, alias, names, hasHiding);
         }
 
+        public boolean isGlobal() {
+            return alias == null;
+        }
+
+        public boolean isQualified() {
+            return alias != null;
+        }
+
         @Override
         public String toString() {
             return ToStringBuilder.reflectionToString(this);

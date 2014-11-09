@@ -56,7 +56,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
                                                @NotNull CompletionResultSet result) {
                         PsiElement position = parameters.getPosition();
                         PsiFile file = parameters.getOriginalFile();
-                        List<HaskellPsiUtil.Import> moduleAliases = HaskellPsiUtil.parseImports(file);
+                        List<HaskellPsiUtil.Import> imports = HaskellPsiUtil.parseImports(file);
                         UserDataHolder cacheHolder = getCacheHolder(file);
                         // Completion methods should return either void or boolean.  If boolean, then it should indicate
                         // whether or not we were in the appropriate context.  This is useful to determine if following
@@ -65,9 +65,9 @@ public class HaskellCompletionContributor extends CompletionContributor {
                         completeKeywordQualified(position, result);
                         if (completePragma(position, cacheHolder, result)) return;
                         if (completeModuleImport(position, cacheHolder, result)) return;
-                        if (completeQualifiedNames(position, moduleAliases, cacheHolder, result)) return;
+                        if (completeQualifiedNames(position, imports, cacheHolder, result)) return;
                         if (completeNameImport(position, cacheHolder, result)) return;
-                        completeLocalNames(position, moduleAliases, cacheHolder, result);
+                        completeLocalNames(position, imports, cacheHolder, result);
                     }
                 }
         );
@@ -239,7 +239,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
     }
 
     public static boolean completeQualifiedNames(@NotNull final PsiElement position,
-                                                 @NotNull final List<HaskellPsiUtil.Import> moduleAliases,
+                                                 @NotNull final List<HaskellPsiUtil.Import> imports,
                                                  @NotNull final UserDataHolder cacheHolder,
                                                  @NotNull final CompletionResultSet result) {
         PsiElement el = position.getParent();
@@ -264,7 +264,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
                 public Boolean fun(HaskellPsiUtil.Import x) {
                     return x != null && alias.equals(x.alias);
                 }
-            }, moduleAliases);
+            }, imports);
             if (moduleAlias != null) {
                 addAllElements(result, browseCache.get(moduleAlias.module));
             }
@@ -273,7 +273,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
     }
 
     public static boolean completeLocalNames(@NotNull final PsiElement position,
-                                             @NotNull final List<HaskellPsiUtil.Import> moduleAliases,
+                                             @NotNull final List<HaskellPsiUtil.Import> imports,
                                              @NotNull final UserDataHolder holder,
                                              @NotNull final CompletionResultSet result) {
         if (PsiTreeUtil.getParentOfType(position, HaskellExp.class) == null) {
@@ -283,10 +283,26 @@ public class HaskellCompletionContributor extends CompletionContributor {
         if (cachedNames == null) {
             return false;
         }
-        for (HaskellPsiUtil.Import x : moduleAliases) {
-            // If alias is null, then it was not imported qualified, so it should be globally available.
-            if (x.alias == null) {
-                addAllElements(result, cachedNames.get(x.module));
+        for (HaskellPsiUtil.Import anImport : imports) {
+            final List<String> explicitImports = Arrays.asList(anImport.names);
+            final boolean hasExplicitImports = !explicitImports.isEmpty();
+            final List<String> hidingImports = Arrays.asList(anImport.hiding);
+            final boolean hasHidingImports = !hidingImports.isEmpty();
+            for (LookupElement cachedName : cachedNames.get(anImport.module)) {
+                if (hasExplicitImports) {
+                    if (explicitImports.contains(cachedName.getLookupString())) {
+                        result.addElement(cachedName);
+                    }
+                    continue;
+                }
+                if (hasHidingImports) {
+                    if (!hidingImports.contains(cachedName.getLookupString())) {
+                        result.addElement(cachedName);
+                    }
+                    continue;
+                }
+                // If no explicit or hiding names, just import everything.
+                result.addElement(cachedName);
             }
         }
         return true;
@@ -304,12 +320,12 @@ public class HaskellCompletionContributor extends CompletionContributor {
         if (ghcModi == null) {
             return null;
         }
-        List<HaskellPsiUtil.Import> moduleAliases = HaskellPsiUtil.parseImports(file);
+        List<HaskellPsiUtil.Import> imports = HaskellPsiUtil.parseImports(file);
         Map<String, List<LookupElement>> browseCache = force ? null : holder.getUserData(BROWSE_CACHE_KEY);
         if (browseCache == null) {
-            browseCache = new HashMap<String, List<LookupElement>>(moduleAliases.size());
+            browseCache = new HashMap<String, List<LookupElement>>(imports.size());
         }
-        for (HaskellPsiUtil.Import x : moduleAliases) {
+        for (HaskellPsiUtil.Import x : imports) {
             final List<LookupElement> cachedNames = browseCache.get(x.module);
             if (cachedNames != null && !browseCache.containsKey(x.module)) {
                 browseCache.put(x.module, cachedNames);
