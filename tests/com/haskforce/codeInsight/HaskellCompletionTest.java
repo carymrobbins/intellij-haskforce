@@ -1,12 +1,12 @@
 package com.haskforce.codeInsight;
 
+import com.haskforce.psi.HaskellPsiUtil;
 import com.haskforce.psi.impl.HaskellElementFactory;
 import com.haskforce.utils.LogicUtil;
 import static com.haskforce.codeInsight.HaskellCompletionContributor.*;
 import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.openapi.util.Pair;
 import com.intellij.psi.PsiFile;
-import com.intellij.util.Function;
+import org.junit.Assert;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -101,15 +101,21 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
         doTestInclude("import Data.Ord (Or<caret>)", "Ord", "Ordering");
     }
 
-    public void testImportAliasMapping() throws Throwable {
-        PsiFile file = HaskellElementFactory.createFileFromText(myFixture.getProject(),
+    public void testImportParsing() throws Throwable {
+        PsiFile psiFile = HaskellElementFactory.createFileFromText(myFixture.getProject(),
                 "import qualified Data.ByteString.Char8 as C\n" +
                 "import qualified Control.Monad\n" +
-                "import Data.Maybe");
-        assertContainsElements(parseModuleAliases(file),
-                new ModuleAlias("Data.ByteString.Char8", "C"),
-                new ModuleAlias("Control.Monad", "Control.Monad"),
-                new ModuleAlias("Data.Maybe", null));
+                "import Data.Maybe\n" +
+                "import Control.Applicative (liftA, liftA2, pure)\n" +
+                "import Prelude hiding (Maybe(Just, Nothing))");
+        List<HaskellPsiUtil.Import> actuals = HaskellPsiUtil.parseImports(psiFile);
+        List<HaskellPsiUtil.Import> expecteds = Arrays.asList(
+                HaskellPsiUtil.Import.qualifiedAs("Data.ByteString.Char8", "C", new String[]{}, false),
+                HaskellPsiUtil.Import.qualified("Control.Monad", new String[]{}, false),
+                HaskellPsiUtil.Import.global("Data.Maybe", new String[]{}, false),
+                HaskellPsiUtil.Import.global("Control.Applicative", new String[]{"liftA", "liftA2", "pure"}, false),
+                HaskellPsiUtil.Import.global("Prelude", new String[]{"Maybe", "Just", "Nothing"}, true));
+        Assert.assertArrayEquals(actuals.toArray(), expecteds.toArray());
     }
 
     public void testQualifiedNames() throws Throwable {
@@ -148,15 +154,25 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
         doTestExclude(
                 "foo = <caret>",
                 fakeBrowseCache.get("Control.Monad"));
+        // Don't include all names when excluded from explicit import.
+        doTestExclude(
+                "import Control.Monad (liftM)\n" +
+                "foo = <caret>",
+                    "mapM", "forM");
+        // Don't include names in the hiding clause.
+        doTestExclude(
+                "import Prelude hiding (Maybe(Just, Nothing), all)\n" +
+                "foo = <caret>",
+                    "Just", "Nothing", "all");
     }
 
     public void testReferenceCompletion() throws Throwable {
         // Complete basic references.
         doTestInclude(
                 "foo :: String -> String\n" +
-                "foo = undefined\n" +
-                "bar = <caret>",
-                    "foo");
+                        "foo = undefined\n" +
+                        "bar = <caret>",
+                "foo");
         // Complete multiple names from a multi-name reference.
         doTestInclude(
                 "foo, bar :: String -> String\n" +

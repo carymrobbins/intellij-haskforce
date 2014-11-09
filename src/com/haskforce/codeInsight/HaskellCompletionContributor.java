@@ -15,7 +15,6 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Comparing;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.patterns.PlatformPatterns;
@@ -26,7 +25,6 @@ import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Function;
 import com.intellij.util.ProcessingContext;
-import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -58,7 +56,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
                                                @NotNull CompletionResultSet result) {
                         PsiElement position = parameters.getPosition();
                         PsiFile file = parameters.getOriginalFile();
-                        List<ModuleAlias> moduleAliases = parseModuleAliases(file);
+                        List<HaskellPsiUtil.Import> moduleAliases = HaskellPsiUtil.parseImports(file);
                         UserDataHolder cacheHolder = getCacheHolder(file);
                         // Completion methods should return either void or boolean.  If boolean, then it should indicate
                         // whether or not we were in the appropriate context.  This is useful to determine if following
@@ -241,7 +239,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
     }
 
     public static boolean completeQualifiedNames(@NotNull final PsiElement position,
-                                                 @NotNull final List<ModuleAlias> moduleAliases,
+                                                 @NotNull final List<HaskellPsiUtil.Import> moduleAliases,
                                                  @NotNull final UserDataHolder cacheHolder,
                                                  @NotNull final CompletionResultSet result) {
         PsiElement el = position.getParent();
@@ -261,9 +259,9 @@ public class HaskellCompletionContributor extends CompletionContributor {
         // Pull user-qualified names from cache.
         final Map<String, List<LookupElement>> browseCache = cacheHolder.getUserData(BROWSE_CACHE_KEY);
         if (browseCache != null) {
-            final ModuleAlias moduleAlias = LogicUtil.first(new Function<ModuleAlias, Boolean>() {
+            final HaskellPsiUtil.Import moduleAlias = LogicUtil.first(new Function<HaskellPsiUtil.Import, Boolean>() {
                 @Override
-                public Boolean fun(ModuleAlias x) {
+                public Boolean fun(HaskellPsiUtil.Import x) {
                     return x != null && alias.equals(x.alias);
                 }
             }, moduleAliases);
@@ -275,7 +273,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
     }
 
     public static boolean completeLocalNames(@NotNull final PsiElement position,
-                                             @NotNull final List<ModuleAlias> moduleAliases,
+                                             @NotNull final List<HaskellPsiUtil.Import> moduleAliases,
                                              @NotNull final UserDataHolder holder,
                                              @NotNull final CompletionResultSet result) {
         if (PsiTreeUtil.getParentOfType(position, HaskellExp.class) == null) {
@@ -285,7 +283,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
         if (cachedNames == null) {
             return false;
         }
-        for (ModuleAlias x : moduleAliases) {
+        for (HaskellPsiUtil.Import x : moduleAliases) {
             // If alias is null, then it was not imported qualified, so it should be globally available.
             if (x.alias == null) {
                 addAllElements(result, cachedNames.get(x.module));
@@ -306,12 +304,12 @@ public class HaskellCompletionContributor extends CompletionContributor {
         if (ghcModi == null) {
             return null;
         }
-        List<ModuleAlias> moduleAliases = parseModuleAliases(file);
+        List<HaskellPsiUtil.Import> moduleAliases = HaskellPsiUtil.parseImports(file);
         Map<String, List<LookupElement>> browseCache = force ? null : holder.getUserData(BROWSE_CACHE_KEY);
         if (browseCache == null) {
             browseCache = new HashMap<String, List<LookupElement>>(moduleAliases.size());
         }
-        for (ModuleAlias x : moduleAliases) {
+        for (HaskellPsiUtil.Import x : moduleAliases) {
             final List<LookupElement> cachedNames = browseCache.get(x.module);
             if (cachedNames != null && !browseCache.containsKey(x.module)) {
                 browseCache.put(x.module, cachedNames);
@@ -321,74 +319,6 @@ public class HaskellCompletionContributor extends CompletionContributor {
             browseCache.put(x.module, names);
         }
         return browseCache;
-    }
-
-    /**
-     * Returns a map of module -> alias for each imported module.  If a module is imported but not qualified, alias
-     * will be null.
-     */
-    @NotNull
-    public static List<ModuleAlias> parseModuleAliases(@NotNull final PsiFile file) {
-        PsiElement el = null;
-        for (PsiElement child : file.getChildren()) {
-            if (child instanceof HaskellBody) {
-                el = child;
-                break;
-            }
-        }
-        if (el == null) {
-            return new ArrayList(0);
-        }
-        List<ModuleAlias> result = new ArrayList<ModuleAlias>(10);
-        // For simplicity, let's just assume Prelude is always there.
-        result.add(new ModuleAlias("Prelude", null));
-        for (PsiElement child : el.getChildren()) {
-            if (child instanceof HaskellImpdecl) {
-                String module = null;
-                String alias = null;
-                boolean isQualified = child.getText().startsWith("import qualified");
-                for (PsiElement gChild : child.getChildren()) {
-                    if (gChild instanceof HaskellQconid) {
-                        if (module == null) {
-                            module = gChild.getText();
-                        } else {
-                            alias = gChild.getText();
-                        }
-                    }
-                }
-                if (module != null) {
-                    // If the user didn't alias the module and it was imported qualified, the full module name is used.
-                    if (alias == null && isQualified) {
-                        alias = module;
-                    }
-                    //noinspection ObjectAllocationInLoop
-                    result.add(new ModuleAlias(module, alias));
-                }
-            }
-        }
-        return result;
-    }
-
-    public static class ModuleAlias {
-        public @NotNull final String module;
-        public @Nullable final String alias;
-
-        public ModuleAlias(@NotNull String module, @Nullable String alias) {
-            this.module = module;
-            this.alias = alias;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            return o instanceof ModuleAlias
-                    && Comparing.equal(module, ((ModuleAlias) o).module)
-                    && Comparing.equal(alias, ((ModuleAlias) o).alias);
-        }
-
-        @Override
-        public int hashCode() {
-            return HashCodeBuilder.reflectionHashCode(this);
-        }
     }
 
     /**

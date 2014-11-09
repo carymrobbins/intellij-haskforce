@@ -2,9 +2,12 @@ package com.haskforce.utils;
 
 import com.haskforce.HaskellFileType;
 import com.haskforce.psi.HaskellFile;
+import com.haskforce.psi.HaskellModuledecl;
+import com.haskforce.psi.HaskellQconid;
 import com.haskforce.psi.HaskellTypes;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.search.FileTypeIndex;
