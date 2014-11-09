@@ -75,9 +75,7 @@ public class HaskellReference extends PsiReferenceBase<PsiElement> implements Ps
         List<LookupElement> variants = new ArrayList<LookupElement>(20);
         for (final PsiNamedElement namedElement : namedNodes) {
             final PsiElement genDecl = PsiTreeUtil.getParentOfType(namedElement, HaskellGendecl.class);
-            final PsiFile psiFile = namedElement.getContainingFile();
-            final String parsedModuleName = HaskellPsiUtil.parseModuleName(psiFile);
-            final String module = parsedModuleName == null ? psiFile.getName() : parsedModuleName;
+            final String module = HaskellPsiUtil.getModuleOrFileName(namedElement.getContainingFile());
             final String name = namedElement.getName();
             if (name == null) {
                 continue;

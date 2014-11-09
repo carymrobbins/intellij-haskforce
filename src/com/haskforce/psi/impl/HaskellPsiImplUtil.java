@@ -1,6 +1,7 @@
 package com.haskforce.psi.impl;
 
 import com.haskforce.HaskellIcons;
+import com.haskforce.psi.HaskellPsiUtil;
 import com.haskforce.psi.references.HaskellReference;
 import com.haskforce.psi.HaskellConid;
 import com.haskforce.psi.HaskellVarid;
@@ -80,13 +81,12 @@ public class HaskellPsiImplUtil {
             }
 
             /**
-             * Shows the filename for each Varid in the StructureView panel.
-             * Return null since the StructureView is per file.
+             * This is needed to decipher between files when resolving multiple references.
              */
             @Nullable
             @Override
             public String getLocationString() {
-                return null;
+                return HaskellPsiUtil.getModuleOrFileName(o.getContainingFile());
             }
 
             @Nullable
@@ -107,13 +107,12 @@ public class HaskellPsiImplUtil {
             }
 
             /**
-             * Shows the filename for each Conid in the StructureView panel.
-             * Return null since the StructureView is per file.
+             * This is needed to decipher between files when resolving multiple references.
              */
             @Nullable
             @Override
             public String getLocationString() {
-                return null;
+                return HaskellPsiUtil.getModuleOrFileName(o.getContainingFile());
             }
 
             @Nullable
