@@ -5,6 +5,7 @@ import com.haskforce.psi.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.search.FileTypeIndex;
@@ -38,9 +39,14 @@ public class HaskellUtil {
         Collection<VirtualFile> virtualFiles =
                 FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME,
                         HaskellFileType.INSTANCE, GlobalSearchScope.allScope(proj));
+        final String qPrefix = e == null ? null : getQualifiedPrefix(e);
+        final PsiFile psiFile = e == null ? null : e.getContainingFile().getOriginalFile();
         for (VirtualFile vf : virtualFiles) {
             HaskellFile f = (HaskellFile) PsiManager.getInstance(proj).findFile(vf);
-            if ((name == null && e == null) || (f != null && potentialModules.contains(HaskellPsiUtil.parseModuleName(f)))) {
+            final boolean returnAllReferences = name == null;
+            final boolean inLocalModule = f != null && qPrefix == null && f.equals(psiFile);
+            final boolean inImportedModule = f != null && potentialModules.contains(HaskellPsiUtil.parseModuleName(f));
+            if (returnAllReferences || inLocalModule || inImportedModule) {
                 findDefinitionNode(f, name, result);
             }
         }
@@ -97,14 +103,20 @@ public class HaskellUtil {
         return false;
     }
 
-    @NotNull
-    public static List<String> getPotentialDefinitionModuleNames(@NotNull PsiElement e, @NotNull List<HaskellPsiUtil.Import> imports) {
+    @Nullable
+    public static String getQualifiedPrefix(@NotNull PsiElement e) {
         final PsiElement q = PsiTreeUtil.getParentOfType(e, HaskellQcon.class, HaskellQvar.class);
-        if (q == null) { return Collections.EMPTY_LIST; }
+        if (q == null) { return null; }
         final String qText = q.getText();
         final int lastDotPos = qText.lastIndexOf('.');
-        if (lastDotPos == -1) { return HaskellPsiUtil.getImportModuleNames(imports); }
-        final String qPrefix = qText.substring(0, lastDotPos);
+        if (lastDotPos == -1) { return null; }
+        return qText.substring(0, lastDotPos);
+    }
+
+    @NotNull
+    public static List<String> getPotentialDefinitionModuleNames(@NotNull PsiElement e, @NotNull List<HaskellPsiUtil.Import> imports) {
+        final String qPrefix = getQualifiedPrefix(e);
+        if (qPrefix == null) { return HaskellPsiUtil.getImportModuleNames(imports); }
         List<String> result = new ArrayList<String>(2);
         for (HaskellPsiUtil.Import anImport : imports) {
             if (qPrefix.equals(anImport.module) || qPrefix.equals(anImport.alias)) {
