@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Resolves references to elements.
  */
-public class HaskellReference extends PsiReferenceBase<PsiElement> implements PsiPolyVariantReference {
+public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implements PsiPolyVariantReference {
     private String name;
 
     public HaskellReference(@NotNull PsiNamedElement element, TextRange textRange) {

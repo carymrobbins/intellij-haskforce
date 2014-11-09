@@ -30,7 +30,7 @@ public class HaskellUtil {
      * definitions are found when name is null.
      */
     @NotNull
-    public static List<PsiNamedElement> findDefinitionNode(@NotNull Project proj, @Nullable String name, @Nullable PsiElement e) {
+    public static List<PsiNamedElement> findDefinitionNode(@NotNull Project proj, @Nullable String name, @Nullable PsiNamedElement e) {
         // Guess where the name could be defined by lookup up potential modules.
         final List<String> potentialModules =
                 e == null ? Collections.EMPTY_LIST
@@ -47,7 +47,7 @@ public class HaskellUtil {
             final boolean inLocalModule = f != null && qPrefix == null && f.equals(psiFile);
             final boolean inImportedModule = f != null && potentialModules.contains(HaskellPsiUtil.parseModuleName(f));
             if (returnAllReferences || inLocalModule || inImportedModule) {
-                findDefinitionNode(f, name, result);
+                findDefinitionNode(f, name, e, result);
             }
         }
         return result;
@@ -57,14 +57,20 @@ public class HaskellUtil {
      * Finds a name definition inside a Haskell file. All definitions are found when name
      * is null.
      */
-    public static void findDefinitionNode(@Nullable HaskellFile file, @Nullable String name, @NotNull List<PsiNamedElement> result) {
+    public static void findDefinitionNode(@Nullable HaskellFile file, @Nullable String name, @Nullable PsiNamedElement e, @NotNull List<PsiNamedElement> result) {
         if (file == null) return;
-
-        Collection<PsiNamedElement> namedElements =
-                PsiTreeUtil.findChildrenOfAnyType(file, PsiNamedElement.class);
+        // We only want to look for classes that match the element we are resolving (e.g. varid, conid, etc.)
+        final Class<? extends PsiNamedElement> elementClass;
+        if (e instanceof HaskellVarid) {
+            elementClass = HaskellVarid.class;
+        } else if (e instanceof HaskellConid) {
+            elementClass = HaskellConid.class;
+        } else {
+            elementClass = PsiNamedElement.class;
+        }
+        Collection<PsiNamedElement> namedElements = PsiTreeUtil.findChildrenOfType(file, elementClass);
         for (PsiNamedElement namedElement : namedElements) {
-            if ((name == null || name.equals(namedElement.getName())) &&
-                    definitionNode(namedElement)) {
+            if ((name == null || name.equals(namedElement.getName())) && definitionNode(namedElement)) {
                 result.add(namedElement);
             }
         }
@@ -77,7 +83,7 @@ public class HaskellUtil {
     @NotNull
     public static List<PsiNamedElement> findDefinitionNodes(@Nullable HaskellFile haskellFile, @Nullable String name) {
         List<PsiNamedElement> ret = ContainerUtil.newArrayList();
-        findDefinitionNode(haskellFile, name, ret);
+        findDefinitionNode(haskellFile, name, null, ret);
         return ret;
     }
 
