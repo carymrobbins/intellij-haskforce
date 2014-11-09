@@ -3,6 +3,7 @@ package com.haskforce.psi;
 import com.haskforce.utils.LogicUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Function;
 import org.apache.commons.lang.builder.EqualsBuilder;
@@ -61,9 +62,9 @@ public class HaskellPsiUtil {
             final String module = moduleQconid.getText();
             final String alias = numQconids > 1 ? qconids.get(1).getText() : null;
             final PsiElement maybeQualified = PsiTreeUtil.prevVisibleLeaf(moduleQconid);
-            final boolean isQualified = maybeQualified != null && maybeQualified.getText().equals("qualified");
+            final boolean isQualified = maybeQualified != null && isType(maybeQualified, HaskellTypes.QUALIFIED);
             final PsiElement maybeHiding = PsiTreeUtil.nextVisibleLeaf(moduleQconid);
-            final boolean hasHiding = maybeHiding != null && maybeHiding.getText().equals("hiding");
+            final boolean hasHiding = maybeHiding != null && isType(maybeHiding, HaskellTypes.HIDING);
             //noinspection SuspiciousArrayCast
             final String[] nameList = getTexts(collectNamedElementsInImporttList(impdecl.getImporttList()));
             importedPrelude = importedPrelude || module.equals("Prelude");
@@ -78,6 +79,10 @@ public class HaskellPsiUtil {
         // TODO: Eventually we'll want to get fancy and check the cabal file and pragmas for NoImplicitPrelude.
         if (!importedPrelude) { result.add(prelude); }
         return result;
+    }
+
+    public static boolean isType(@Nullable PsiElement e, @NotNull IElementType t) {
+        return e != null && e.getNode().getElementType().equals(t);
     }
 
     @NotNull

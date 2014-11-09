@@ -97,10 +97,7 @@ public class HaskellUtil {
      */
     public static boolean definitionNode(@NotNull PsiNamedElement e) {
         // Type signatures "pattern".
-        if (e.getParent().getNode().getElementType().equals(HaskellTypes.VARS)) {
-            return true;
-        }
-        return false;
+        return HaskellPsiUtil.isType(e.getParent(), HaskellTypes.VARS);
     }
 
     @Nullable
