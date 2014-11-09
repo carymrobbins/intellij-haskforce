@@ -8,6 +8,7 @@ import com.intellij.lang.annotation.Annotator;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -48,11 +49,16 @@ public class HaskellAnnotator implements Annotator {
             }
 
             @Override
-            public void visitConid(@NotNull HaskellConid o) {
-                super.visitConid(o);
-                // Highlight the () unit type as a CONID.
+            public void visitQcon(@NotNull HaskellQcon o) {
+                super.visitQcon(o);
+                // Highlight the () unit type as a CONID if it's not in an import, e.g. `import Foo ()`.
                 if (o.getText().equals("()")) {
-                    setHighlighting(o, holder, HaskellSyntaxHighlighter.CONID);
+                    final PsiElement prev1 = o.getPrevSibling();
+                    final PsiElement prev2 = prev1 == null ? null : prev1.getPrevSibling();
+                    final boolean inImport = prev1 instanceof HaskellImpdecl || prev2 instanceof HaskellImpdecl;
+                    if (!inImport) {
+                        setHighlighting(o, holder, HaskellSyntaxHighlighter.CONID);
+                    }
                 }
             }
 
