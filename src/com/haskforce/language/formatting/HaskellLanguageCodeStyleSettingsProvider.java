@@ -21,7 +21,14 @@ public class HaskellLanguageCodeStyleSettingsProvider extends LanguageCodeStyleS
 
     @Override
     public IndentOptionsEditor getIndentOptionsEditor() {
-        return new IndentOptionsEditor();
+        return new IndentOptionsEditor() {
+            @Override
+            public void setEnabled(boolean enabled) {
+                super.setEnabled(enabled);
+                myTabSizeField.setEnabled(false);
+                myTabSizeLabel.setEnabled(false);
+            }
+        };
     }
 
     @Override
