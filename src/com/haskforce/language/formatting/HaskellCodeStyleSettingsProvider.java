@@ -10,6 +10,9 @@ import com.intellij.psi.codeStyle.CodeStyleSettingsProvider;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Provides the settings panel for Haskell in the Code Style section.
+ */
 public class HaskellCodeStyleSettingsProvider extends CodeStyleSettingsProvider {
 
     @NotNull
