@@ -109,6 +109,7 @@ public class HaskellParserTest extends HaskellParserTestBase {
     public void testTempHask00003()     { doTest(true, true); }
     public void testTempHask00004()     { doTest(true, true); }
     public void testTempHask00005()     { doTest(true, true); }
+    public void testUnicode00001()      { doTest(true, true); }
     public void testType00001()         { doTest(true, true); }
     public void testType00002()         { doTest(true, true); }
     public void testVar00001()          { doTest(true, true); }

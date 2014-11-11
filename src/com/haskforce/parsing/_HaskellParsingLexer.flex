@@ -94,7 +94,8 @@ CPPUNDEF=#undef ([^\r\n]*){EOL}
 CPPINCLUDE=#include ([^\r\n]*){EOL}
 CPPLINE=#line ([^\r\n]*){EOL}
 CPPPRAGMA=#pragma ([^\r\n]*){EOL}
-ASCSYMBOL=[\!\#\$\%\&\*\+\.\/\<\=\>\?\@\\\^\|\-\~\:]
+// Unicode syntax also supported: https://www.haskell.org/ghc/docs/7.2.1/html/users_guide/syntax-extns.html
+ASCSYMBOL=[\!\#\$\%\&\*\+\.\/\<\=\>\?\@\\\^\|\-\~\:↢↣⤛⤜★]
 MAYBEQVARID=({CONID}\.)*{VARIDREGEXP}
 
 STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
@@ -270,11 +271,11 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                             return OF;
                         }
   "then"              { return THEN; }
-  "forall"            { return FORALLTOKEN; }
+  ("forall"|"∀")      { return FORALLTOKEN; }
 
-  "<-"                { return LEFTARROW; }
-  "->"                { return RIGHTARROW; }
-  "=>"                { return DOUBLEARROW; }
+  ("<-"|"←")          { return LEFTARROW; }
+  ("->"|"→")          { return RIGHTARROW; }
+  ("=>"|"⇒")          { return DOUBLEARROW; }
   "\\&"               { return NULLCHARACTER; }
   "(#"                { return LUNBOXPAREN; }
   "#)"                { return RUNBOXPAREN; }
@@ -348,7 +349,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   "-"                 { return MINUS; }
   "~"                 { return TILDE; }
   "_"                 { return UNDERSCORE; }
-  "::"                { return DOUBLECOLON; }
+  ("::"|"∷")          { return DOUBLECOLON; }
   ":"                 { return COLON; }
   (":"{ASCSYMBOL}+)     { return CONSYMTOK; }
   ({ASCSYMBOL}+)      { return SHARED_VARSYM_TOKEN; }

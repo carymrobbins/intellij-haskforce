@@ -98,5 +98,6 @@ public class HaskellParsingLexerTest extends HaskellLexerTestBase {
     public void testTempHask00002()     { doTest(true, true); }
     public void testTempHask00003()     { doTest(true, true); }
     public void testTempHask00004()     { doTest(true, true); }
+    public void testUnicode00001()      { doTest(true, true); }
     public void testQuote00001()        { doTest(true, true); }
 }

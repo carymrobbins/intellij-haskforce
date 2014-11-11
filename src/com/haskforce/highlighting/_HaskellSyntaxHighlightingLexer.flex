@@ -72,7 +72,8 @@ FLOATTOKEN=([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))
 COMMENT=--([^\^\r\n][^\r\n]*\n|[\r\n])
 HADDOCK=--\^[^\r\n]*
 CPPIF=#(el)?if ([^\r\n]*)
-ASCSYMBOL=[\!\#\$\%\&\*\+\.\/\<\=\>\?\@\\\^\|\-\~\:]
+// Unicode syntax also supported: https://www.haskell.org/ghc/docs/7.2.1/html/users_guide/syntax-extns.html
+ASCSYMBOL=[\!\#\$\%\&\*\+\.\/\<\=\>\?\@\\\^\|\-\~\:↢↣⤛⤜★]
 
 STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
 MAYBEQVARID=({CONID}\.)*{VARIDREGEXP}
@@ -122,7 +123,7 @@ MAYBEQVARID=({CONID}\.)*{VARIDREGEXP}
   "let"               { return LET; }
   "of"                { return OF; }
   "then"              { return THEN; }
-  "forall"            { return FORALLTOKEN; }
+  ("forall"|"∀")      { return FORALLTOKEN; }
 
   "\\&"               { return NULLCHARACTER; }
   "(#"                { return LUNBOXPAREN; }
@@ -166,15 +167,15 @@ MAYBEQVARID=({CONID}\.)*{VARIDREGEXP}
   "_"                 { return UNDERSCORE; }
   ".."                { return DOUBLEPERIOD; }
   ":"                 { return COLON; }
-  "::"                { return DOUBLECOLON; }
+  ("::"|"∷")          { return DOUBLECOLON; }
   "="                 { return EQUALS; }
   "\\"                { return BACKSLASH; }
   "|"                 { return PIPE; }
-  "<-"                { return LEFTARROW; }
-  "->"                { return RIGHTARROW; }
+  ("<-"|"←")          { return LEFTARROW; }
+  ("->"|"→")          { return RIGHTARROW; }
   "@"                 { return AMPERSAT; }
   "~"                 { return TILDE; }
-  "=>"                { return DOUBLEARROW; }
+  ("=>"|"⇒")          { return DOUBLEARROW; }
   (":"{ASCSYMBOL}+)   { return CONSYMTOK; }
   ({ASCSYMBOL}+)      { return SHARED_VARSYM_TOKEN; }
 
