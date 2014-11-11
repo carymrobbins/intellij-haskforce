@@ -46,9 +46,12 @@ public class HaskellTestRunConfiguration extends HaskellRunConfigurationBase {
         return new HaskellTestRunConfigurationEditorForm();
     }
 
+    /**
+     * If the user is not using cabal 1.18 or higher, an error is displayed in the run configuration dialog.
+     */
     @Override
     public void checkConfiguration() throws RuntimeConfigurationException {
-       // TODO
+        requireCabal1_18();
     }
 
     @Nullable

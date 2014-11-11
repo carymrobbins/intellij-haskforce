@@ -42,9 +42,12 @@ public class HaskellApplicationRunConfiguration extends HaskellRunConfigurationB
         return new HaskellApplicationRunConfigurationEditorForm();
     }
 
+    /**
+     * If the user is not using cabal 1.18 or higher, an error is displayed in the run configuration dialog.
+     */
     @Override
     public void checkConfiguration() throws RuntimeConfigurationException {
-       // TODO
+        requireCabal1_18();
     }
 
     @Nullable

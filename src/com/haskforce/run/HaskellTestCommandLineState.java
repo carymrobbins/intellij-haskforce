@@ -1,5 +1,6 @@
 package com.haskforce.run;
 
+import com.haskforce.settings.HaskellBuildSettings;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.CommandLineState;
 import com.intellij.execution.configurations.GeneralCommandLine;
@@ -24,7 +25,8 @@ public class HaskellTestCommandLineState extends CommandLineState {
         GeneralCommandLine commandLine = new GeneralCommandLine();
         commandLine.setWorkDirectory(env.getProject().getBasePath());
         // TODO: This should probably be a bit more generic than relying on `cabal test`.
-        commandLine.setExePath("cabal");
+        final String cabalPath = HaskellBuildSettings.getInstance(myConfig.getProject()).getCabalPath();
+        commandLine.setExePath(cabalPath);
         ParametersList parametersList = commandLine.getParametersList();
         parametersList.add("test");
         parametersList.addParametersString(myConfig.programArguments);
