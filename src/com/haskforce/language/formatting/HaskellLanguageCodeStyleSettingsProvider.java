@@ -7,6 +7,9 @@ import com.intellij.psi.codeStyle.CommonCodeStyleSettings;
 import com.intellij.psi.codeStyle.LanguageCodeStyleSettingsProvider;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Provides the indentation options editor for Haskell.
+ */
 public class HaskellLanguageCodeStyleSettingsProvider extends LanguageCodeStyleSettingsProvider {
     @NotNull
     @Override
@@ -21,14 +24,7 @@ public class HaskellLanguageCodeStyleSettingsProvider extends LanguageCodeStyleS
 
     @Override
     public IndentOptionsEditor getIndentOptionsEditor() {
-        return new IndentOptionsEditor() {
-            @Override
-            public void setEnabled(boolean enabled) {
-                super.setEnabled(enabled);
-                myTabSizeField.setEnabled(false);
-                myTabSizeLabel.setEnabled(false);
-            }
-        };
+        return new HaskellIndentOptionsEditor();
     }
 
     @Override
