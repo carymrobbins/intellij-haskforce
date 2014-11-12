@@ -8,6 +8,14 @@
 
   <change-notes><![CDATA[
     <p>
+      <span style="color:red"><b>Warning:</b> You cannot use multiple Haskell plugins at the same time.</span>
+      If you have installed a Haskell language plugin for IntelliJ be sure to uninstall it before installing this one.
+    </p>
+    <p>
+      If you encounter any issues, please submit them on our
+      <a href="https://github.com/carymrobbins/intellij-haskforce/issues">bug tracker</a>.
+    </p>
+    <p>
       <b>v0.3-beta.10</b>
       <ul>
         <li>Added support for jumping to data and newtype constructor definitions.</li>
