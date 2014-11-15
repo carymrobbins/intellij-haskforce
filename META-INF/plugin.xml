@@ -88,6 +88,9 @@
       <codeStyleSettingsProvider implementation="com.haskforce.language.formatting.HaskellCodeStyleSettingsProvider"/>
       <langCodeStyleSettingsProvider implementation="com.haskforce.language.formatting.HaskellLanguageCodeStyleSettingsProvider"/>
 
+      <!-- File indexes -->
+      <fileBasedIndex implementation="com.haskforce.index.HaskellModuleIndex"/>
+
       <!-- Editing utils -->
       <lang.braceMatcher language="Haskell" implementationClass="com.haskforce.features.HaskellBraceMatcher"/>
       <lang.commenter language="Haskell" implementationClass="com.haskforce.features.HaskellCommenter"/>

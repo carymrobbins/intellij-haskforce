@@ -10,6 +10,7 @@ import javax.swing.*;
 
 import com.haskforce.HaskellFileType;
 import com.haskforce.HaskellLanguage;
+import org.jetbrains.annotations.Nullable;
 
 public class HaskellFile extends PsiFileBase {
     public HaskellFile(@NotNull FileViewProvider viewProvider) {
@@ -30,5 +31,20 @@ public class HaskellFile extends PsiFileBase {
     @Override
     public Icon getIcon(int flags) {
         return HaskellIcons.FILE;
+    }
+
+    @Nullable
+    public String getModuleName() {
+        final HaskellModuledecl moduledecl = findChildByClass(HaskellModuledecl.class);
+        if (moduledecl == null) { return null; }
+        final HaskellQconid qconid = moduledecl.getQconid();
+        if (qconid == null) { return null; }
+        return qconid.getText();
+    }
+
+    @NotNull
+    public String getModuleOrFileName() {
+        final String moduleName = getModuleName();
+        return moduleName == null ? getName() : moduleName;
     }
 }

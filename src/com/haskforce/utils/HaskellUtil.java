@@ -1,18 +1,14 @@
 package com.haskforce.utils;
 
-import com.haskforce.HaskellFileType;
+import com.haskforce.index.HaskellModuleIndex;
 import com.haskforce.psi.*;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiNamedElement;
-import com.intellij.psi.search.FileTypeIndex;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.containers.ContainerUtil;
-import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,24 +26,26 @@ public class HaskellUtil {
      * definitions are found when name is null.
      */
     @NotNull
-    public static List<PsiNamedElement> findDefinitionNode(@NotNull Project proj, @Nullable String name, @Nullable PsiNamedElement e) {
+    public static List<PsiNamedElement> findDefinitionNode(@NotNull Project project, @Nullable String name, @Nullable PsiNamedElement e) {
         // Guess where the name could be defined by lookup up potential modules.
         final List<String> potentialModules =
                 e == null ? Collections.EMPTY_LIST
                           : getPotentialDefinitionModuleNames(e, HaskellPsiUtil.parseImports(e.getContainingFile()));
         List<PsiNamedElement> result = ContainerUtil.newArrayList();
-        Collection<VirtualFile> virtualFiles =
-                FileBasedIndex.getInstance().getContainingFiles(FileTypeIndex.NAME,
-                        HaskellFileType.INSTANCE, GlobalSearchScope.allScope(proj));
         final String qPrefix = e == null ? null : getQualifiedPrefix(e);
         final PsiFile psiFile = e == null ? null : e.getContainingFile().getOriginalFile();
-        for (VirtualFile vf : virtualFiles) {
-            HaskellFile f = (HaskellFile) PsiManager.getInstance(proj).findFile(vf);
-            final boolean returnAllReferences = name == null;
-            final boolean inLocalModule = f != null && qPrefix == null && f.equals(psiFile);
-            final boolean inImportedModule = f != null && potentialModules.contains(HaskellPsiUtil.parseModuleName(f));
-            if (returnAllReferences || inLocalModule || inImportedModule) {
-                findDefinitionNode(f, name, e, result);
+        if (psiFile instanceof HaskellFile) {
+            findDefinitionNode((HaskellFile)psiFile, name, e, result);
+        }
+        for (String potentialModule : potentialModules) {
+            List<HaskellFile> files = HaskellModuleIndex.getFilesByModuleName(project, potentialModule, GlobalSearchScope.allScope(project));
+            for (HaskellFile f : files) {
+                final boolean returnAllReferences = name == null;
+                final boolean inLocalModule = f != null && qPrefix == null && f.equals(psiFile);
+                final boolean inImportedModule = f != null && potentialModules.contains(f.getModuleName());
+                if (returnAllReferences || inLocalModule || inImportedModule) {
+                    findDefinitionNode(f, name, e, result);
+                }
             }
         }
         return result;

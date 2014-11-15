@@ -7,6 +7,7 @@ import java.util.*;
 
 /**
  * Helper class to simplify logic patterns.
+ * TODO: Looks like usages of these can probably be replaced with com.intellij.util.containers.ContainerUtil
  */
 public class LogicUtil {
     @Nullable

@@ -90,11 +90,11 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
         List<LookupElement> variants = new ArrayList<LookupElement>(20);
         for (final PsiNamedElement namedElement : namedNodes) {
             final PsiElement genDecl = PsiTreeUtil.getParentOfType(namedElement, HaskellGendecl.class);
-            final String module = HaskellPsiUtil.getModuleOrFileName(namedElement.getContainingFile());
+            final PsiFile psiFile = namedElement.getContainingFile();
+            if (!(psiFile instanceof HaskellFile)) { continue; }
+            final String module = ((HaskellFile) psiFile).getModuleOrFileName();
             final String name = namedElement.getName();
-            if (name == null) {
-                continue;
-            }
+            if (name == null) { continue; }
             final String type;
             if (genDecl != null) {
                 final PsiElement cType = PsiTreeUtil.getChildOfType(genDecl, HaskellCtype.class);

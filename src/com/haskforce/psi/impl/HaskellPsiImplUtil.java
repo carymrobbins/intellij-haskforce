@@ -1,7 +1,7 @@
 package com.haskforce.psi.impl;
 
 import com.haskforce.HaskellIcons;
-import com.haskforce.psi.HaskellPsiUtil;
+import com.haskforce.psi.HaskellFile;
 import com.haskforce.psi.references.HaskellReference;
 import com.haskforce.psi.HaskellConid;
 import com.haskforce.psi.HaskellVarid;
@@ -9,6 +9,7 @@ import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -86,7 +87,8 @@ public class HaskellPsiImplUtil {
             @Nullable
             @Override
             public String getLocationString() {
-                return HaskellPsiUtil.getModuleOrFileName(o.getContainingFile());
+                final PsiFile psiFile = o.getContainingFile();
+                return psiFile instanceof HaskellFile ? ((HaskellFile) psiFile).getModuleOrFileName() : null;
             }
 
             @Nullable
@@ -112,7 +114,8 @@ public class HaskellPsiImplUtil {
             @Nullable
             @Override
             public String getLocationString() {
-                return HaskellPsiUtil.getModuleOrFileName(o.getContainingFile());
+                final PsiFile psiFile = o.getContainingFile();
+                return psiFile instanceof HaskellFile ? ((HaskellFile) psiFile).getModuleOrFileName() : null;
             }
 
             @Nullable

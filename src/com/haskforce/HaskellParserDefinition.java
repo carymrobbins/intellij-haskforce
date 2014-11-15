@@ -3,6 +3,7 @@ package com.haskforce;
 import com.haskforce.parsing.HaskellParser2;
 import com.haskforce.parsing.HaskellParsingLexer;
 import com.haskforce.parsing.HaskellTypes2;
+import com.haskforce.psi.HaskellModuledecl;
 import com.haskforce.psi.HaskellParserWrapper;
 import com.haskforce.psi.HaskellTypes;
 import com.intellij.lang.ASTNode;
@@ -69,6 +70,7 @@ public class HaskellParserDefinition implements ParserDefinition {
     }
 
     @NotNull
+    @Override
     public PsiParser createParser(final Project project) {
         if (pjbuild || System.getProperty("PARSER", "").equals("2")) {
             return new HaskellParser2(project);

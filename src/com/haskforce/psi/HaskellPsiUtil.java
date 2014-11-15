@@ -27,21 +27,6 @@ public class HaskellPsiUtil {
         return result;
     }
 
-    @Nullable
-    public static String parseModuleName(@NotNull PsiFile psiFile) {
-        final HaskellModuledecl moduledecl = PsiTreeUtil.getChildOfType(psiFile, HaskellModuledecl.class);
-        if (moduledecl == null) { return null; }
-        final HaskellQconid qconid = moduledecl.getQconid();
-        if (qconid == null) { return null; }
-        return moduledecl.getQconid().getText();
-    }
-
-    @NotNull
-    public static String getModuleOrFileName(@NotNull PsiFile psiFile) {
-        final String moduleName = parseModuleName(psiFile);
-        return moduleName == null ? psiFile.getName() : moduleName;
-    }
-
     /**
      * Returns a map of module -> alias for each imported module.  If a module is imported but not qualified, alias
      * will be null.
