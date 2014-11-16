@@ -109,15 +109,17 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
                 "import Data.Maybe\n" +
                 "import Control.Applicative (liftA, liftA2, pure)\n" +
                 "import Prelude hiding (Maybe(Just, Nothing))\n" +
-                "import Control.Arrow ()");
+                "import Control.Arrow ()\n" +
+                "import Data.Either as E");
         List<HaskellPsiUtil.Import> actuals = HaskellPsiUtil.parseImports(psiFile);
         List<HaskellPsiUtil.Import> expecteds = Arrays.asList(
-                new HaskellPsiUtil.Import(true, "Data.ByteString.Char8", "C", false, null),
-                new HaskellPsiUtil.Import(true, "Control.Monad", null, false, null),
-                new HaskellPsiUtil.Import(false, "Data.Maybe", null, false, null),
-                new HaskellPsiUtil.Import(false, "Control.Applicative", null, false, new String[]{"liftA", "liftA2", "pure"}),
-                new HaskellPsiUtil.Import(false, "Prelude", null, true, new String[]{"Maybe", "Just", "Nothing"}),
-                new HaskellPsiUtil.Import(false, "Control.Arrow", null, false, new String[]{}));
+                HaskellPsiUtil.Import.qualifiedAs("Data.ByteString.Char8", "C", false, null),
+                HaskellPsiUtil.Import.qualified("Control.Monad", false, null),
+                HaskellPsiUtil.Import.global("Data.Maybe", false, null),
+                HaskellPsiUtil.Import.global("Control.Applicative", false, new String[]{"liftA", "liftA2", "pure"}),
+                HaskellPsiUtil.Import.global("Prelude", true, new String[]{"Maybe", "Just", "Nothing"}),
+                HaskellPsiUtil.Import.global("Control.Arrow", false, new String[]{}),
+                HaskellPsiUtil.Import.globalAs("Data.Either", "E", false, null));
         Assert.assertArrayEquals(expecteds.toArray(), actuals.toArray());
     }
 
