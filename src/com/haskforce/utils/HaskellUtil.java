@@ -95,6 +95,16 @@ public class HaskellUtil {
     }
 
     /**
+     * Finds name definitions that are within the scope of a file, including imports (to some degree).
+     */
+    @NotNull
+    public static List<PsiNamedElement> findDefinitionNodes(@NotNull HaskellFile psiFile) {
+        List<PsiNamedElement> result = findDefinitionNodes(psiFile, null);
+        result.addAll(findDefinitionNode(psiFile.getProject(), null, null));
+        return result;
+    }
+
+    /**
      * Tells whether a named node is a definition node based on its context.
      *
      * Precondition: Element is in a Haskell file.

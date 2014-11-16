@@ -85,8 +85,11 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
         if (qId != null && qId.textContains('.')) {
             return new Object[]{};
         }
-        Project project = myElement.getProject();
-        List<PsiNamedElement> namedNodes = HaskellUtil.findDefinitionNodes(project);
+        final PsiFile containingFile = myElement.getContainingFile();
+        if (!(containingFile instanceof HaskellFile)) {
+            return new Object[]{};
+        }
+        List<PsiNamedElement> namedNodes = HaskellUtil.findDefinitionNodes((HaskellFile)containingFile);
         List<LookupElement> variants = new ArrayList<LookupElement>(20);
         for (final PsiNamedElement namedElement : namedNodes) {
             final PsiElement genDecl = PsiTreeUtil.getParentOfType(namedElement, HaskellGendecl.class);
