@@ -23,6 +23,7 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiWhiteSpace;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.ArrayUtil;
 import com.intellij.util.Function;
 import com.intellij.util.ProcessingContext;
 import org.jetbrains.annotations.NotNull;
@@ -284,19 +285,15 @@ public class HaskellCompletionContributor extends CompletionContributor {
             return false;
         }
         for (HaskellPsiUtil.Import anImport : imports) {
-            final List<String> explicitImports = Arrays.asList(anImport.names);
-            final boolean hasExplicitImports = !explicitImports.isEmpty();
-            final List<String> hidingImports = Arrays.asList(anImport.hiding);
-            final boolean hasHidingImports = !hidingImports.isEmpty();
             for (LookupElement cachedName : cachedNames.get(anImport.module)) {
-                if (hasExplicitImports) {
-                    if (explicitImports.contains(cachedName.getLookupString())) {
+                if (anImport.getImportedNames() != null) {
+                    if (ArrayUtil.contains(cachedName.getLookupString(), anImport.getImportedNames())) {
                         result.addElement(cachedName);
                     }
                     continue;
                 }
-                if (hasHidingImports) {
-                    if (!hidingImports.contains(cachedName.getLookupString())) {
+                if (anImport.getHidingNames() != null) {
+                    if (!ArrayUtil.contains(cachedName.getLookupString(), anImport.getHidingNames())) {
                         result.addElement(cachedName);
                     }
                     continue;

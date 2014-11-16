@@ -6,6 +6,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.Function;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -33,7 +34,7 @@ public class HaskellPsiUtil {
      */
     @NotNull
     public static List<Import> parseImports(@NotNull final PsiFile file) {
-        final Import prelude = Import.global("Prelude", new String[0], false);
+        final Import prelude = new Import(false, "Prelude", null, false, null);
         boolean importedPrelude = false;
         HaskellImpdecl[] impdecls = PsiTreeUtil.getChildrenOfType(PsiTreeUtil.getChildOfType(file, HaskellBody.class), HaskellImpdecl.class);
         // TODO: For now, just assume Prelude was implicitly imported if there are no import declarations.
@@ -50,16 +51,20 @@ public class HaskellPsiUtil {
             final boolean isQualified = maybeQualified != null && isType(maybeQualified, HaskellTypes.QUALIFIED);
             final PsiElement maybeHiding = PsiTreeUtil.nextVisibleLeaf(moduleQconid);
             final boolean hasHiding = maybeHiding != null && isType(maybeHiding, HaskellTypes.HIDING);
-            //noinspection SuspiciousArrayCast
-            final String[] nameList = getTexts(collectNamedElementsInImporttList(impdecl.getImporttList()));
-            importedPrelude = importedPrelude || module.equals("Prelude");
-            if (alias != null) {
-                result.add(Import.qualifiedAs(module, alias, nameList, hasHiding));
-                // If we have an alias but we didn't import qualified, we are also importing it globally.
-                if (!isQualified) { result.add(Import.global(module, nameList, hasHiding)); }
+            final String[] nameList;
+            // Check if we have an empty import list.
+            if (impdecl.getImpempty() != null) {
+                nameList = ArrayUtils.EMPTY_STRING_ARRAY;
+            // Otherwise, if we have a left paren, we have an import list.
+            } else if (impdecl.getLparen() != null) {
+                nameList = getTexts(collectNamedElementsInImporttList(impdecl.getImporttList()));
+            // At this point, we must not have an import list at all.
             } else {
-                result.add(isQualified ? Import.qualified(module, nameList, hasHiding) : Import.global(module, nameList, hasHiding));
+                nameList = null;
             }
+            importedPrelude = importedPrelude || module.equals("Prelude");
+            //noinspection ObjectAllocationInLoop
+            result.add(new Import(isQualified, module, alias, hasHiding, nameList));
         }
         // TODO: Eventually we'll want to get fancy and check the cabal file and pragmas for NoImplicitPrelude.
         if (!importedPrelude) { result.add(prelude); }
@@ -118,37 +123,28 @@ public class HaskellPsiUtil {
     }
 
     public static class Import {
+        public final boolean isQualified;
         public @NotNull final String module;
         public @Nullable final String alias;
-        public @NotNull final String[] names;
-        public @NotNull final String[] hiding;
+        public final boolean isHiding;
+        private @Nullable final String[] explicitNames;
 
-        private Import(@NotNull String module, @Nullable String alias, @NotNull String[] names, boolean hasHiding) {
+        public Import(boolean isQualified, @NotNull String module, @Nullable String alias, boolean isHiding, @Nullable String[] explicitNames) {
+            this.isQualified = isQualified;
             this.module = module;
             this.alias = alias;
-            if (hasHiding) {
-                this.names = new String[0];
-                this.hiding = names;
-            } else {
-                this.names = names;
-                this.hiding = new String[0];
-            }
+            this.isHiding = isHiding;
+            this.explicitNames = explicitNames;
         }
 
-        public static Import global(@NotNull String module, @NotNull String[] names, boolean hasHiding) {
-            return new Import(module, null, names, hasHiding);
+        @Nullable
+        public String[] getImportedNames() {
+            return isHiding ? null : explicitNames;
         }
 
-        public static Import qualified(@NotNull String module, @NotNull String[] names, boolean hasHiding) {
-            return new Import(module, module, names, hasHiding);
-        }
-
-        public static Import qualifiedAs(@NotNull String module, @NotNull String alias, @NotNull String[] names, boolean hasHiding) {
-            return new Import(module, alias, names, hasHiding);
-        }
-
-        public boolean isQualified() {
-            return alias != null;
+        @Nullable
+        public String[] getHidingNames() {
+            return isHiding ? explicitNames : null;
         }
 
         @Override

@@ -107,15 +107,17 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
                 "import qualified Control.Monad\n" +
                 "import Data.Maybe\n" +
                 "import Control.Applicative (liftA, liftA2, pure)\n" +
-                "import Prelude hiding (Maybe(Just, Nothing))");
+                "import Prelude hiding (Maybe(Just, Nothing))\n" +
+                "import Control.Arrow ()");
         List<HaskellPsiUtil.Import> actuals = HaskellPsiUtil.parseImports(psiFile);
         List<HaskellPsiUtil.Import> expecteds = Arrays.asList(
-                HaskellPsiUtil.Import.qualifiedAs("Data.ByteString.Char8", "C", new String[]{}, false),
-                HaskellPsiUtil.Import.qualified("Control.Monad", new String[]{}, false),
-                HaskellPsiUtil.Import.global("Data.Maybe", new String[]{}, false),
-                HaskellPsiUtil.Import.global("Control.Applicative", new String[]{"liftA", "liftA2", "pure"}, false),
-                HaskellPsiUtil.Import.global("Prelude", new String[]{"Maybe", "Just", "Nothing"}, true));
-        Assert.assertArrayEquals(actuals.toArray(), expecteds.toArray());
+                new HaskellPsiUtil.Import(true, "Data.ByteString.Char8", "C", false, null),
+                new HaskellPsiUtil.Import(true, "Control.Monad", null, false, null),
+                new HaskellPsiUtil.Import(false, "Data.Maybe", null, false, null),
+                new HaskellPsiUtil.Import(false, "Control.Applicative", null, false, new String[]{"liftA", "liftA2", "pure"}),
+                new HaskellPsiUtil.Import(false, "Prelude", null, true, new String[]{"Maybe", "Just", "Nothing"}),
+                new HaskellPsiUtil.Import(false, "Control.Arrow", null, false, new String[]{}));
+        Assert.assertArrayEquals(expecteds.toArray(), actuals.toArray());
     }
 
     public void testQualifiedNames() throws Throwable {
