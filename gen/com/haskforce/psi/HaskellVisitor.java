@@ -119,6 +119,10 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitImpempty(@NotNull HaskellImpempty o) {
+    visitPsiElement(o);
+  }
+
   public void visitImportt(@NotNull HaskellImportt o) {
     visitPsiElement(o);
   }

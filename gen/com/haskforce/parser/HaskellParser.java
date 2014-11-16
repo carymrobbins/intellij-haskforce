@@ -104,6 +104,9 @@ public class HaskellParser implements PsiParser {
     else if (root_ == IMPDECL) {
       result_ = impdecl(builder_, 0);
     }
+    else if (root_ == IMPEMPTY) {
+      result_ = impempty(builder_, 0);
+    }
     else if (root_ == IMPORTT) {
       result_ = importt(builder_, 0);
     }
@@ -3404,6 +3407,17 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
+  // "()"
+  public static boolean impempty(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "impempty")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<impempty>");
+    result_ = consumeToken(builder_, "()");
+    exit_section_(builder_, level_, marker_, IMPEMPTY, result_, false, null);
+    return result_;
+  }
+
+  /* ********************************************************** */
   // '\"' "wrapper" '\"'
   //                  | '\"' "dynamic" '\"'
   //                  | pstringtoken
@@ -3523,31 +3537,42 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // [i "hiding"] '(' [<<sequence importt>>] ')'
+  // [i "hiding"] '(' [<<sequence importt>>] ')' | impempty
   static boolean impspec(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "impspec")) return false;
     boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = impspec_0(builder_, level_ + 1);
+    if (!result_) result_ = impempty(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  // [i "hiding"] '(' [<<sequence importt>>] ')'
+  private static boolean impspec_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "impspec_0")) return false;
+    boolean result_;
     boolean pinned_;
     Marker marker_ = enter_section_(builder_, level_, _NONE_, null);
-    result_ = impspec_0(builder_, level_ + 1);
+    result_ = impspec_0_0(builder_, level_ + 1);
     result_ = result_ && consumeToken(builder_, LPAREN);
     pinned_ = result_; // pin = 2
-    result_ = result_ && report_error_(builder_, impspec_2(builder_, level_ + 1));
+    result_ = result_ && report_error_(builder_, impspec_0_2(builder_, level_ + 1));
     result_ = pinned_ && consumeToken(builder_, RPAREN) && result_;
     exit_section_(builder_, level_, marker_, null, result_, pinned_, null);
     return result_ || pinned_;
   }
 
   // [i "hiding"]
-  private static boolean impspec_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "impspec_0")) return false;
-    impspec_0_0(builder_, level_ + 1);
+  private static boolean impspec_0_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "impspec_0_0")) return false;
+    impspec_0_0_0(builder_, level_ + 1);
     return true;
   }
 
   // i "hiding"
-  private static boolean impspec_0_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "impspec_0_0")) return false;
+  private static boolean impspec_0_0_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "impspec_0_0_0")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
     result_ = i(builder_, level_ + 1);
@@ -3557,8 +3582,8 @@ public class HaskellParser implements PsiParser {
   }
 
   // [<<sequence importt>>]
-  private static boolean impspec_2(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "impspec_2")) return false;
+  private static boolean impspec_0_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "impspec_0_2")) return false;
     sequence(builder_, level_ + 1, importt_parser_);
     return true;
   }

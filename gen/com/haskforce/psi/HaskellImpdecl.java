@@ -7,6 +7,9 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellImpdecl extends PsiElement {
 
+  @Nullable
+  HaskellImpempty getImpempty();
+
   @NotNull
   List<HaskellImportt> getImporttList();
 

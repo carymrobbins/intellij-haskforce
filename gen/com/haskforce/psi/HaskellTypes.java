@@ -36,6 +36,7 @@ public interface HaskellTypes {
   IElementType GUARD = new HaskellElementType("GUARD");
   IElementType IDECL = new HaskellElementType("IDECL");
   IElementType IMPDECL = new HaskellElementType("IMPDECL");
+  IElementType IMPEMPTY = new HaskellElementType("IMPEMPTY");
   IElementType IMPORTT = new HaskellElementType("IMPORTT");
   IElementType INSTANCEDECL = new HaskellElementType("INSTANCEDECL");
   IElementType KIND = new HaskellElementType("KIND");
@@ -277,6 +278,9 @@ public interface HaskellTypes {
       }
       else if (type == IMPDECL) {
         return new HaskellImpdeclImpl(node);
+      }
+      else if (type == IMPEMPTY) {
+        return new HaskellImpemptyImpl(node);
       }
       else if (type == IMPORTT) {
         return new HaskellImporttImpl(node);
