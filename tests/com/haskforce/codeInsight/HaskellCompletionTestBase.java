@@ -19,7 +19,6 @@ package com.haskforce.codeInsight;
 // Imported from Erlang repository on 24 July 2014.
 
 import com.haskforce.HaskellLightPlatformCodeInsightFixtureTestCase;
-import com.haskforce.utils.LogicUtil;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.openapi.util.Key;
@@ -27,6 +26,8 @@ import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiFile;
 import com.intellij.testFramework.UsefulTestCase;
 import com.intellij.util.Function;
+import com.intellij.util.containers.ContainerUtil;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -107,8 +108,8 @@ abstract public class HaskellCompletionTestBase extends HaskellLightPlatformCode
         });
     }
 
-    protected void loadCache(final Key<List<LookupElement>> key, final String[] value) {
-        loadCache(key, LogicUtil.map(HaskellCompletionContributor.stringToLookupElement, value));
+    protected void loadCache(final Key<List<LookupElement>> key, final @NotNull String[] value) {
+        loadCache(key, ContainerUtil.map(value, HaskellCompletionContributor.stringToLookupElement));
     }
 
     protected void clearCache() {

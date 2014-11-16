@@ -1,12 +1,13 @@
 package com.haskforce.codeInsight;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.haskforce.HaskellIcons;
 import com.haskforce.HaskellLanguage;
 import com.haskforce.highlighting.annotation.external.GhcMod;
 import com.haskforce.highlighting.annotation.external.GhcModi;
 import com.haskforce.psi.*;
 import com.haskforce.utils.ExecUtil;
-import com.haskforce.utils.LogicUtil;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -26,6 +27,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.Function;
 import com.intellij.util.ProcessingContext;
+import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -118,7 +120,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
 
         // Pragma types.
         if (prevSibling != null && "{-#".equals(prevSibling.getText())) {
-            addAllElements(result, LogicUtil.map(stringToLookupElement, PRAGMA_TYPES));
+            addAllElements(result, ContainerUtil.map(PRAGMA_TYPES, stringToLookupElement));
         }
 
         final PsiElement openPragma = getPrevSiblingWhere(new Function<PsiElement, Boolean>() {
@@ -147,15 +149,17 @@ public class HaskellCompletionContributor extends CompletionContributor {
             // TODO: Workaround since completion autocompletes after the "-", so without this
             // we may end up completing -foo with --foo (inserting a "-").
             final String[] flags = cacheHolder.getUserData(FLAG_CACHE_KEY);
-            if (position.getText().startsWith("-")) {
-                addAllElements(result, LogicUtil.map(new Function<String, LookupElement>() {
-                    @Override
-                    public LookupElement fun(String s) {
-                        return stringToLookupElement.fun(s.startsWith("-") ? s.substring(1) : s);
-                    }
-                }, flags));
-            } else {
-                addAllElements(result, LogicUtil.map(stringToLookupElement, flags));
+            if (flags != null) {
+                if (position.getText().startsWith("-")) {
+                    addAllElements(result, ContainerUtil.map(flags, new Function<String, LookupElement>() {
+                        @Override
+                        public LookupElement fun(String s) {
+                            return stringToLookupElement.fun(s.startsWith("-") ? s.substring(1) : s);
+                        }
+                    }));
+                } else {
+                    addAllElements(result, ContainerUtil.map(flags, stringToLookupElement));
+                }
             }
         }
         return true;
@@ -201,7 +205,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
                     newLines.add(newLine);
                 }
             }
-            addAllElements(result, LogicUtil.map(stringToLookupElement, newLines));
+            addAllElements(result, ContainerUtil.map(newLines, stringToLookupElement));
         }
         return true;
     }
@@ -260,14 +264,15 @@ public class HaskellCompletionContributor extends CompletionContributor {
         // Pull user-qualified names from cache.
         final Map<String, List<LookupElement>> browseCache = cacheHolder.getUserData(BROWSE_CACHE_KEY);
         if (browseCache != null) {
-            final HaskellPsiUtil.Import moduleAlias = LogicUtil.first(new Function<HaskellPsiUtil.Import, Boolean>() {
+            final Iterable<HaskellPsiUtil.Import> filteredImports = Iterables.filter(imports, new Predicate<HaskellPsiUtil.Import>() {
                 @Override
-                public Boolean fun(HaskellPsiUtil.Import x) {
-                    return x != null && alias.equals(x.alias);
+                public boolean apply(HaskellPsiUtil.Import anImport) {
+                    return anImport != null && alias.equals(anImport.alias);
                 }
-            }, imports);
-            if (moduleAlias != null) {
-                addAllElements(result, browseCache.get(moduleAlias.module));
+            });
+            final HaskellPsiUtil.Import anImport = Iterables.getFirst(filteredImports, null);
+            if (anImport != null) {
+                addAllElements(result, browseCache.get(anImport.module));
             }
         }
         return true;
@@ -328,7 +333,8 @@ public class HaskellCompletionContributor extends CompletionContributor {
                 browseCache.put(x.module, cachedNames);
                 continue;
             }
-            final List<LookupElement> names = LogicUtil.map(browseItemToLookupElement, ghcModi.browse(x.module));
+            final GhcModi.BrowseItem[] browseItems = ghcModi.browse(x.module);
+            final List<LookupElement> names = browseItems == null ? null : ContainerUtil.map(browseItems, browseItemToLookupElement);
             browseCache.put(x.module, names);
         }
         return browseCache;
@@ -351,7 +357,8 @@ public class HaskellCompletionContributor extends CompletionContributor {
                 final Project project = file.getProject();
                 final String workDir = ExecUtil.guessWorkDir(file);
                 if (force || cache.getUserData(LANGUAGE_CACHE_KEY) == null) {
-                    cache.putUserData(LANGUAGE_CACHE_KEY, LogicUtil.map(stringToLookupElement, GhcMod.lang(project, workDir)));
+                    final String[] langs = GhcMod.lang(project, workDir);
+                    cache.putUserData(LANGUAGE_CACHE_KEY, langs == null ? null : ContainerUtil.map(langs, stringToLookupElement));
                 }
                 if (force || cache.getUserData(FLAG_CACHE_KEY) == null) {
                     cache.putUserData(FLAG_CACHE_KEY, GhcMod.flag(project, workDir));

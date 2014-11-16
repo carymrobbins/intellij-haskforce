@@ -2,10 +2,11 @@ package com.haskforce.codeInsight;
 
 import com.haskforce.psi.HaskellPsiUtil;
 import com.haskforce.psi.impl.HaskellElementFactory;
-import com.haskforce.utils.LogicUtil;
+
 import static com.haskforce.codeInsight.HaskellCompletionContributor.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.util.containers.ContainerUtil;
 import org.junit.Assert;
 
 import java.util.Arrays;
@@ -214,7 +215,7 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
         }
 
         public List<LookupElement> put(String key, List<String> value) {
-            List<LookupElement> result = super.put(key, LogicUtil.map(stringToLookupElement, value));
+            List<LookupElement> result = super.put(key, ContainerUtil.map(value, stringToLookupElement));
             //noinspection SuspiciousArrayCast
             nameMap.put(key, (String[])(value.toArray()));
             return result;
