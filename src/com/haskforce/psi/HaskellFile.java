@@ -33,6 +33,9 @@ public class HaskellFile extends PsiFileBase {
         return HaskellIcons.FILE;
     }
 
+    /**
+     * Returns the module name defined in the file or null if it doesn't exist.
+     */
     @Nullable
     public String getModuleName() {
         final HaskellModuledecl moduledecl = findChildByClass(HaskellModuledecl.class);
@@ -42,6 +45,9 @@ public class HaskellFile extends PsiFileBase {
         return qconid.getText();
     }
 
+    /**
+     * Returns the module name if it exists, otherwise returns the file name.
+     */
     @NotNull
     public String getModuleOrFileName() {
         final String moduleName = getModuleName();
