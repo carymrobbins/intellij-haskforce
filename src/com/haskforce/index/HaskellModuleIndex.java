@@ -35,7 +35,7 @@ public class HaskellModuleIndex extends ScalarIndexExtension<String> {
     @NotNull
     public static List<HaskellFile> getFilesByModuleName(@NotNull Project project, @NotNull String moduleName, @NotNull GlobalSearchScope searchScope) {
         final PsiManager psiManager = PsiManager.getInstance(project);
-        Collection<VirtualFile> virtualFiles = getVirtualFilesByModuleName(project, moduleName, searchScope);
+        Collection<VirtualFile> virtualFiles = getVirtualFilesByModuleName(moduleName, searchScope);
         return ContainerUtil.mapNotNull(virtualFiles, new Function<VirtualFile, HaskellFile>() {
             @Override
             public HaskellFile fun(VirtualFile virtualFile) {
@@ -46,7 +46,7 @@ public class HaskellModuleIndex extends ScalarIndexExtension<String> {
     }
 
     @NotNull
-    public static Collection<VirtualFile> getVirtualFilesByModuleName(@NotNull Project project, @NotNull String moduleName, @NotNull GlobalSearchScope searchScope) {
+    public static Collection<VirtualFile> getVirtualFilesByModuleName(@NotNull String moduleName, @NotNull GlobalSearchScope searchScope) {
         return FileBasedIndex.getInstance().getContainingFiles(HASKELL_MODULE_INDEX, moduleName, searchScope);
     }
 
