@@ -291,20 +291,15 @@ public class HaskellCompletionContributor extends CompletionContributor {
         }
         for (HaskellPsiUtil.Import anImport : imports) {
             for (LookupElement cachedName : cachedNames.get(anImport.module)) {
-                if (anImport.getImportedNames() != null) {
-                    if (ArrayUtil.contains(cachedName.getLookupString(), anImport.getImportedNames())) {
-                        result.addElement(cachedName);
-                    }
-                    continue;
+                String[] importedNames = anImport.getImportedNames();
+                String[] hidingNames = anImport.getHidingNames();
+                String lookupString = cachedName.getLookupString();
+                boolean noExplicitNames = importedNames == null && hidingNames == null;
+                boolean isImportedName = importedNames != null && ArrayUtil.contains(lookupString, importedNames);
+                boolean isHidingName = hidingNames != null && ArrayUtil.contains(lookupString, hidingNames);
+                if ((noExplicitNames || isImportedName) && !isHidingName) {
+                    result.addElement(cachedName);
                 }
-                if (anImport.getHidingNames() != null) {
-                    if (!ArrayUtil.contains(cachedName.getLookupString(), anImport.getHidingNames())) {
-                        result.addElement(cachedName);
-                    }
-                    continue;
-                }
-                // If no explicit or hiding names, just import everything.
-                result.addElement(cachedName);
             }
         }
         return true;
