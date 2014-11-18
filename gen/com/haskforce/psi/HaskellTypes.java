@@ -28,6 +28,7 @@ public interface HaskellTypes {
   IElementType EXP = new HaskellElementType("EXP");
   IElementType EXPORT = new HaskellElementType("EXPORT");
   IElementType EXPORTS = new HaskellElementType("EXPORTS");
+  IElementType EXPORTSEMPTY = new HaskellElementType("EXPORTSEMPTY");
   IElementType FIXITY = new HaskellElementType("FIXITY");
   IElementType FOREIGNDECL = new HaskellElementType("FOREIGNDECL");
   IElementType FUNORPATDECL = new HaskellElementType("FUNORPATDECL");
@@ -254,6 +255,9 @@ public interface HaskellTypes {
       }
       else if (type == EXPORTS) {
         return new HaskellExportsImpl(node);
+      }
+      else if (type == EXPORTSEMPTY) {
+        return new HaskellExportsemptyImpl(node);
       }
       else if (type == FIXITY) {
         return new HaskellFixityImpl(node);

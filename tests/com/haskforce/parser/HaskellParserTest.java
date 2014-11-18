@@ -93,6 +93,7 @@ public class HaskellParserTest extends HaskellParserTestBase {
     public void testComment00006()      { doTest(true, true); }
     public void testComment00007()      { doTest(true, true); }
     public void testLambda00001()       { doTest(true, true); }
+    public void testModule00001()       { doTest(true, true); }
     public void testRecord00001()       { doTest(true, true); }
     public void testRecord00002()       { doTest(true, true); }
     public void testPragma00001()       { doTest(true, true); }

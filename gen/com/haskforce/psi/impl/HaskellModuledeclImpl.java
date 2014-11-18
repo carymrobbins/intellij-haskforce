@@ -30,6 +30,12 @@ public class HaskellModuledeclImpl extends ASTWrapperPsiElement implements Haske
 
   @Override
   @Nullable
+  public HaskellExportsempty getExportsempty() {
+    return findChildByClass(HaskellExportsempty.class);
+  }
+
+  @Override
+  @Nullable
   public HaskellPpragma getPpragma() {
     return findChildByClass(HaskellPpragma.class);
   }

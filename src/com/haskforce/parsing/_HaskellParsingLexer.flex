@@ -84,7 +84,7 @@ CONID=([A-Z][a-zA-Z_0-9']*)|(\(\))
 CHARTOKEN='(\\.|[^'])'
 INTEGERTOKEN=(0(o|O)[0-7]+|0(x|X)[0-9a-fA-F]+|[0-9]+)
 FLOATTOKEN=([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))
-COMMENT=--([^\^\r\n][^\r\n]*\n|[\r\n])
+COMMENT=--[^\^\r\n][^\r\n]*
 HADDOCK=--\^[^\r\n]*
 CPPIF=#if ([^\r\n]*){EOL}
 CPPIFDEF=#ifdef ([^\r\n]*){EOL}
@@ -431,9 +431,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         yybegin(INCOMMENT);
                         return OPENCOM;
                     }
-   "--"[^\r\n]*     {   // DO NOT REMOVE.
-                        // Workaround for {COMMENT} not affecting this rule.
-                        // See Comment00004.hs for test case.
+   {COMMENT}        {
                         indent = 0;
                         return COMMENT;
                     }
@@ -495,6 +493,10 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         int lastNum = openBraces.peek().getSecond();
                         openBraces.push(Pair.create(Pair.create(yyline,yycolumn), ++lastNum));
                         return WHITESPACELBRACETOK;
+                    }
+   {COMMENT}        {
+                        indent = 0;
+                        return COMMENT;
                     }
     [^]             {
                         yypushback(1);

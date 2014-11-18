@@ -80,6 +80,9 @@ public class HaskellParser implements PsiParser {
     else if (root_ == EXPORTS) {
       result_ = exports(builder_, 0);
     }
+    else if (root_ == EXPORTSEMPTY) {
+      result_ = exportsempty(builder_, 0);
+    }
     else if (root_ == FIXITY) {
       result_ = fixity(builder_, 0);
     }
@@ -2460,6 +2463,29 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
+  // "()" | '(' ')'
+  public static boolean exportsempty(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "exportsempty")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_, level_, _NONE_, "<exportsempty>");
+    result_ = consumeToken(builder_, "()");
+    if (!result_) result_ = exportsempty_1(builder_, level_ + 1);
+    exit_section_(builder_, level_, marker_, EXPORTSEMPTY, result_, false, null);
+    return result_;
+  }
+
+  // '(' ')'
+  private static boolean exportsempty_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "exportsempty_1")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = consumeToken(builder_, LPAREN);
+    result_ = result_ && consumeToken(builder_, RPAREN);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
+  }
+
+  /* ********************************************************** */
   // qtycon atype*
   static boolean fatype(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "fatype")) return false;
@@ -4386,7 +4412,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // "module" qconid [ppragma] [exports] "where"
+  // "module" qconid [ppragma] [exportsempty|exports] "where"
   public static boolean moduledecl(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "moduledecl")) return false;
     if (!nextTokenIs(builder_, MODULETOKEN)) return false;
@@ -4410,11 +4436,22 @@ public class HaskellParser implements PsiParser {
     return true;
   }
 
-  // [exports]
+  // [exportsempty|exports]
   private static boolean moduledecl_3(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "moduledecl_3")) return false;
-    exports(builder_, level_ + 1);
+    moduledecl_3_0(builder_, level_ + 1);
     return true;
+  }
+
+  // exportsempty|exports
+  private static boolean moduledecl_3_0(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "moduledecl_3_0")) return false;
+    boolean result_;
+    Marker marker_ = enter_section_(builder_);
+    result_ = exportsempty(builder_, level_ + 1);
+    if (!result_) result_ = exports(builder_, level_ + 1);
+    exit_section_(builder_, marker_, null, result_);
+    return result_;
   }
 
   /* ********************************************************** */

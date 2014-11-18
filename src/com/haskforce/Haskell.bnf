@@ -193,7 +193,9 @@ module ::= shebang? ppragma* [moduledecl] body
 
 shebang ::= SHEBANGSTART SHEBANGPATH?
 
-moduledecl ::= "module" qconid [ppragma] [exports] "where" {pin=1}
+moduledecl ::= "module" qconid [ppragma] [exportsempty|exports] "where" {pin=1}
+
+exportsempty ::= "()" | '(' ')'
 
 exports ::= <<commaSeparate2 export>>
 export ::= "module" qconid

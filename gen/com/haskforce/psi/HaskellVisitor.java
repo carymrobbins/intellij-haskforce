@@ -87,6 +87,10 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitPsiElement(o);
   }
 
+  public void visitExportsempty(@NotNull HaskellExportsempty o) {
+    visitPsiElement(o);
+  }
+
   public void visitFixity(@NotNull HaskellFixity o) {
     visitPsiElement(o);
   }
