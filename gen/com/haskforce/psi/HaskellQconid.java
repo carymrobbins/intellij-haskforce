@@ -10,4 +10,7 @@ public interface HaskellQconid extends PsiElement {
   @NotNull
   List<HaskellConid> getConidList();
 
+  @Nullable
+  PsiElement getHash();
+
 }

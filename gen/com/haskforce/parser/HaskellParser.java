@@ -4197,83 +4197,33 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // (floattoken | integertoken) ['#'|'##']
-  //                   | (chartoken | pstringtoken) ['#']
+  // floattoken | integertoken | chartoken | pstringtoken ['#']
   static boolean literal(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "literal")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = literal_0(builder_, level_ + 1);
-    if (!result_) result_ = literal_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // (floattoken | integertoken) ['#'|'##']
-  private static boolean literal_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "literal_0")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = literal_0_0(builder_, level_ + 1);
-    result_ = result_ && literal_0_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // floattoken | integertoken
-  private static boolean literal_0_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "literal_0_0")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
     result_ = consumeToken(builder_, FLOATTOKEN);
     if (!result_) result_ = consumeToken(builder_, INTEGERTOKEN);
+    if (!result_) result_ = consumeToken(builder_, CHARTOKEN);
+    if (!result_) result_ = literal_3(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
-  // ['#'|'##']
-  private static boolean literal_0_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "literal_0_1")) return false;
-    literal_0_1_0(builder_, level_ + 1);
-    return true;
-  }
-
-  // '#'|'##'
-  private static boolean literal_0_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "literal_0_1_0")) return false;
+  // pstringtoken ['#']
+  private static boolean literal_3(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "literal_3")) return false;
     boolean result_;
     Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, HASH);
-    if (!result_) result_ = consumeToken(builder_, DOUBLEHASH);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // (chartoken | pstringtoken) ['#']
-  private static boolean literal_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "literal_1")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = literal_1_0(builder_, level_ + 1);
-    result_ = result_ && literal_1_1(builder_, level_ + 1);
-    exit_section_(builder_, marker_, null, result_);
-    return result_;
-  }
-
-  // chartoken | pstringtoken
-  private static boolean literal_1_0(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "literal_1_0")) return false;
-    boolean result_;
-    Marker marker_ = enter_section_(builder_);
-    result_ = consumeToken(builder_, CHARTOKEN);
-    if (!result_) result_ = pstringtoken(builder_, level_ + 1);
+    result_ = pstringtoken(builder_, level_ + 1);
+    result_ = result_ && literal_3_1(builder_, level_ + 1);
     exit_section_(builder_, marker_, null, result_);
     return result_;
   }
 
   // ['#']
-  private static boolean literal_1_1(PsiBuilder builder_, int level_) {
-    if (!recursion_guard_(builder_, level_, "literal_1_1")) return false;
+  private static boolean literal_3_1(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "literal_3_1")) return false;
     consumeToken(builder_, HASH);
     return true;
   }
@@ -4984,7 +4934,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // [modulePrefix] conid
+  // [modulePrefix] conid ['#']
   public static boolean qconid(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qconid")) return false;
     if (!nextTokenIs(builder_, CONIDREGEXP)) return false;
@@ -4992,6 +4942,7 @@ public class HaskellParser implements PsiParser {
     Marker marker_ = enter_section_(builder_);
     result_ = qconid_0(builder_, level_ + 1);
     result_ = result_ && conid(builder_, level_ + 1);
+    result_ = result_ && qconid_2(builder_, level_ + 1);
     exit_section_(builder_, marker_, QCONID, result_);
     return result_;
   }
@@ -5000,6 +4951,13 @@ public class HaskellParser implements PsiParser {
   private static boolean qconid_0(PsiBuilder builder_, int level_) {
     if (!recursion_guard_(builder_, level_, "qconid_0")) return false;
     modulePrefix(builder_, level_ + 1);
+    return true;
+  }
+
+  // ['#']
+  private static boolean qconid_2(PsiBuilder builder_, int level_) {
+    if (!recursion_guard_(builder_, level_, "qconid_2")) return false;
+    consumeToken(builder_, HASH);
     return true;
   }
 

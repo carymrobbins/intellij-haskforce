@@ -81,19 +81,21 @@ LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 VARIDREGEXP=([a-z_][a-zA-Z_0-9']+)|[a-z]
 CONID=([A-Z][a-zA-Z_0-9']*)|(\(\))
-CHARTOKEN='(\\.|[^'])'
-INTEGERTOKEN=(0(o|O)[0-7]+|0(x|X)[0-9a-fA-F]+|[0-9]+)
-FLOATTOKEN=([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))
+CHARTOKEN='(\\.|[^'])'#?
+INTEGERTOKEN=(0(o|O)[0-7]+|0(x|X)[0-9a-fA-F]+|[0-9]+)#?#?
+FLOATTOKEN=([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))#?#?
 COMMENT=--([^\^\r\n][^\r\n]*\n?|[\r\n])
 HADDOCK=--\^[^\r\n]*
-CPPIF=#if ([^\r\n]*){EOL}
-CPPIFDEF=#ifdef ([^\r\n]*){EOL}
-CPPELIF=#elif ([^\r\n]*){EOL}
-CPPDEFINE=#define ([^\r\n]*){EOL}
-CPPUNDEF=#undef ([^\r\n]*){EOL}
-CPPINCLUDE=#include ([^\r\n]*){EOL}
-CPPLINE=#line ([^\r\n]*){EOL}
-CPPPRAGMA=#pragma ([^\r\n]*){EOL}
+CPPIF=#if[^\r\n]*
+CPPIFDEF=#ifdef[^\r\n]*
+CPPELIF=#elif[^\r\n]*
+CPPELSE=#else[^\r\n]*
+CPPENDIF=#endif[^\r\n]*
+CPPDEFINE=#define[^\r\n]*
+CPPUNDEF=#undef[^\r\n]*
+CPPINCLUDE=#include[^\r\n]*
+CPPLINE=#line[^\r\n]*
+CPPPRAGMA=#pragma[^\r\n]*
 // Unicode syntax also supported: https://www.haskell.org/ghc/docs/7.2.1/html/users_guide/syntax-extns.html
 ASCSYMBOL=[\!\#\$\%\&\*\+\.\/\<\=\>\?\@\\\^\|\-\~\:↢↣⤛⤜★]
 MAYBEQVARID=({CONID}\.)*{VARIDREGEXP}
@@ -125,8 +127,8 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
     {CPPIFDEF}      { indent = 0; return CPPIFDEF; }
     {CPPIF}         { indent = 0; return CPPIF; }
     {CPPELIF}       { indent = 0; return CPPELIF; }
-    "#else"         { indent = 0; return CPPELSE; }
-    "#endif"        { indent = 0; return CPPENDIF; }
+    {CPPELSE}       { indent = 0; return CPPELSE; }
+    {CPPENDIF}      { indent = 0; return CPPENDIF; }
     {CPPDEFINE}     { indent = 0; return CPPDEFINE; }
     {CPPUNDEF}      { indent = 0; return CPPUNDEF; }
     {CPPINCLUDE}    { indent = 0; return CPPINCLUDE; }
@@ -190,19 +192,20 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         indent = 0;
                         return com.intellij.psi.TokenType.WHITE_SPACE;
                       }
-    [\ \f]          {
-                        indent++;
-                        return com.intellij.psi.TokenType.WHITE_SPACE;
-                    }
-    [\t]            {
-                        indent = indent + (indent + 8) % 8;
-                        return com.intellij.psi.TokenType.WHITE_SPACE;
-                    }
-    {COMMENT}       { indent = 0; yybegin(ININDENTATION); return COMMENT; }
-    {HADDOCK}       { indent = 0; yybegin(ININDENTATION); return HADDOCK; }
-    {CPPIF}         { indent = 0; yybegin(ININDENTATION); return CPPIF; }
-    "#else"         { indent = 0; yybegin(ININDENTATION); return CPPELSE; }
-    "#endif"        { indent = 0; yybegin(ININDENTATION); return CPPENDIF; }
+  [\ \f]              {
+                          indent++;
+                          return com.intellij.psi.TokenType.WHITE_SPACE;
+                      }
+  [\t]                {
+                          indent = indent + (indent + 8) % 8;
+                          return com.intellij.psi.TokenType.WHITE_SPACE;
+                      }
+  {COMMENT}           { indent = 0; yybegin(ININDENTATION); return COMMENT; }
+  {HADDOCK}           { indent = 0; yybegin(ININDENTATION); return HADDOCK; }
+  {CPPIF}             { indent = 0; yybegin(ININDENTATION); return CPPIF; }
+  {CPPELIF}           { indent = 0; yybegin(ININDENTATION); return CPPELIF; }
+  {CPPELSE}           { indent = 0; yybegin(ININDENTATION); return CPPELSE; }
+  {CPPENDIF}          { indent = 0; yybegin(ININDENTATION); return CPPENDIF; }
   "class"             { return CLASSTOKEN; }
   "data"              { return DATA; }
   "default"           { return DEFAULT; }
@@ -449,7 +452,8 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         // "where" clauses can be equally indented with do blocks.  If this happens, we should close out
                         // the previous do block with a synthetic rbrace, essentially the same as a dedent.
                         // See https://github.com/carymrobbins/intellij-haskforce/issues/81
-                        } else if (isDedent || (isWhere && equalIndent)) {
+                        }
+                        if (isDedent || (isWhere && equalIndent)) {
                             indentationStack.pop();
                             yypushback(yylength());
                             int lastNum = openBraces.peek().getSecond();

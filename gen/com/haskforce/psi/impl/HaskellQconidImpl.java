@@ -28,4 +28,10 @@ public class HaskellQconidImpl extends ASTWrapperPsiElement implements HaskellQc
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellConid.class);
   }
 
+  @Override
+  @Nullable
+  public PsiElement getHash() {
+    return findChildByType(HASH);
+  }
+
 }

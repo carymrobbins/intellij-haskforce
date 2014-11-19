@@ -514,8 +514,7 @@ private pkind ::= qtycon
 
 private comma_kinds1 ::= kind  [',' comma_kinds1]
 
-private literal ::= (floattoken | integertoken) ['#'|'##']
-                  | (chartoken | pstringtoken) ['#']
+private literal ::= floattoken | integertoken | chartoken | pstringtoken ['#']
 
 ppragma ::= openpragma PRAGMA+ closepragma {pin(".*")=3}
 
@@ -553,7 +552,7 @@ tycls ::= conid
 private modulePrefix ::= (conid '.')+
 
 qvarid ::= [modulePrefix] varid
-qconid ::= [modulePrefix] conid
+qconid ::= [modulePrefix] conid ['#']
 qtycon ::= [modulePrefix] tycon
 qtycls ::= [modulePrefix] tycls
 qvarsym ::= [modulePrefix] varsym
