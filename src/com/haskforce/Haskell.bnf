@@ -53,7 +53,8 @@
   parserClass="com.haskforce.parser.HaskellParser"
   parserUtilClass="com.haskforce.psi.HaskellParserUtilBase"
 
-  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+  implements="com.haskforce.psi.HaskellCompositeElement"
+  extends="com.haskforce.psi.impl.HaskellCompositeElementImpl"
 
   psiClassPrefix="Haskell"
   psiImplClassSuffix="Impl"
@@ -67,6 +68,9 @@
   psiImplUtilClass="com.haskforce.psi.impl.HaskellPsiImplUtil"
 
   implements("varid|conid")="com.haskforce.psi.HaskellNamedElement"
+  extends("varid|conid")="com.haskforce.psi.impl.HaskellNamedStubbedPsiElementBase<?>"
+
+  generate=[tokenAccessors="yes"]
 
   tokens=[
     lparen='('
@@ -525,9 +529,11 @@ private symbol1 ::= '!' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '>' | 
          | '\' | '^' | '-' | '~' | ':'
 varid ::= (varidRegexp | "as" | "rec" | "qualified") {
         methods=[getName getNameIdentifier getReference setName getPresentation]
+        stubClass="com.haskforce.stubs.HaskellVaridStub"
     }
 conid ::= conidRegexp {
         methods=[getName getNameIdentifier getReference setName getPresentation]
+        stubClass="com.haskforce.stubs.HaskellConidStub"
     }
 
 varsym ::= VARSYMTOK | symbol1
