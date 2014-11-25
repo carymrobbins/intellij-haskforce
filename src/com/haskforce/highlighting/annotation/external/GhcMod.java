@@ -120,7 +120,8 @@ public class GhcMod {
         ParametersList parametersList = commandLine.getParametersList();
         parametersList.addParametersString(ghcModFlags);
         parametersList.addAll(params);
-        commandLine.withWorkDirectory(workingDirectory);
+        // setWorkDirectory is deprecated but is needed to work with IntelliJ 13 which does not have withWorkDirectory.
+        commandLine.setWorkDirectory(workingDirectory);
         // Make sure we can actually see the errors.
         commandLine.setRedirectErrorStream(true);
         return ExecUtil.readCommandLine(commandLine);

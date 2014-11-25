@@ -166,7 +166,8 @@ public class GhcModi implements ModuleComponent {
             GeneralCommandLine commandLine = new GeneralCommandLine(path);
             ParametersList parametersList = commandLine.getParametersList();
             parametersList.addParametersString(flags);
-            commandLine.withWorkDirectory(workingDirectory);
+            // setWorkDirectory is deprecated but is needed to work with IntelliJ 13 which does not have withWorkDirectory.
+            commandLine.setWorkDirectory(workingDirectory);
             // Make sure we can actually see the errors.
             commandLine.setRedirectErrorStream(true);
             try {
