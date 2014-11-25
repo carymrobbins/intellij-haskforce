@@ -117,6 +117,9 @@ public class HaskellParserTest extends HaskellParserTestBase {
     public void testVar00001()          { doTest(true, true); }
     public void testQuote00001()        { doTest(true, true); }
     // public void testParseMonad()        { doTest(true, true); }
-    // TODO: Change to doTest(true, true) after bugfixes.
-    public void testInternalLexer()     { doTest(true, false); }
+
+    // TODO: Change to doTest(true, true) after bug fixes.
+    // Note that testInternalLexer seems to output different parse trees between IntelliJ 13 and 14.
+    // This is probably due to the excessive DUMMY_BLOCKs throughout the parse result.
+    // public void testInternalLexer()     { doTest(true, false); }
 }
