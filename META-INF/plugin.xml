@@ -16,6 +16,15 @@
       <a href="https://github.com/carymrobbins/intellij-haskforce/issues">bug tracker</a>.
     </p>
     <p>
+      <b>v0.3-beta.11</b>
+      <ul>
+        <li>Fixed duplicate error messages from ghc-modi.</li>
+        <li>Improved performance of jump to declaration.</li>
+        <li>Added UnicodeSyntax support.</li>
+        <li>Added MagicHash syntax support.</li>
+        <li>Added tab settings under Code Style settings.</li>
+        <li>Run configurations now verify cabal version.</li>
+      </ul>
       <b>v0.3-beta.10</b>
       <ul>
         <li>Added support for jumping to data and newtype constructor definitions.</li>
