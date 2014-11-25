@@ -7,13 +7,11 @@ import com.haskforce.highlighting.annotation.HaskellAnnotationHolder;
 import com.haskforce.highlighting.annotation.HaskellProblem;
 import com.haskforce.highlighting.annotation.Problems;
 import com.haskforce.utils.ExecUtil;
-import com.haskforce.utils.HaskellToolsNotificationListener;
+import com.haskforce.utils.NotificationUtil;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
 import com.intellij.lang.annotation.Annotation;
-import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
-import com.intellij.notification.Notifications;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
@@ -32,6 +30,7 @@ import java.util.regex.Pattern;
  * Interface + encapsulation of details concerning ghc-mod communication and annotation.
  */
 public class GhcMod {
+    @SuppressWarnings("UnusedDeclaration")
     private static final Logger LOG = Logger.getInstance(GhcMod.class);
 
     // Map of project -> errorMessage.  Useful to ensure we don't output the same error multiple times.
@@ -50,20 +49,20 @@ public class GhcMod {
     @Nullable
     public static Problems check(@NotNull Project project, @NotNull String workingDirectory, @NotNull String file) {
         final String stdout = simpleExec(project, workingDirectory, getFlags(project), "check", file);
-        return stdout == null ? new Problems() : handleCheck(project, stdout, "ghc-mod");
+        return stdout == null ? new Problems() : handleCheck(project, stdout);
     }
 
     @Nullable
-    public static Problems handleCheck(@NotNull Project project, @NotNull String stdout, @NotNull String toolName) {
+    public static Problems handleCheck(@NotNull Project project, @NotNull String stdout) {
         final Problems problems = parseProblems(new Scanner(stdout));
         if (problems == null) {
             // parseProblems should have returned something, so let's just dump the output to the user.
-            displayError(project, stdout.replace("\n", "<br/>"), toolName);
+            displayError(project, stdout);
             return null;
         } else if (problems.size() == 1) {
             final Problem problem = (Problem)problems.get(0);
             if (problem.startLine == 0 && problem.startColumn == 0) {
-                displayError(project, problem.message, toolName);
+                displayError(project, problem.message);
                 return null;
             }
         }
@@ -87,13 +86,10 @@ public class GhcMod {
         return simpleExecToLines(project, workingDirectory, "", "flag");
     }
 
-    public static void displayError(@NotNull Project project, @NotNull String message, @NotNull String toolName) {
+    public static void displayError(@NotNull Project project, @NotNull String message) {
         if (!message.equals(errorState.get(project))) {
             errorState.put(project, message);
-            Notifications.Bus.notify(new Notification(
-                    toolName + " error", toolName + " error",
-                    message + "<br/><a href='configureHaskellTools'>Configure</a>",
-                    NotificationType.ERROR, new HaskellToolsNotificationListener(project)), project);
+            NotificationUtil.displayToolsNotification(NotificationType.ERROR, project, "ghc-mod error", message);
         }
     }
 
@@ -124,7 +120,7 @@ public class GhcMod {
         ParametersList parametersList = commandLine.getParametersList();
         parametersList.addParametersString(ghcModFlags);
         parametersList.addAll(params);
-        commandLine.setWorkDirectory(workingDirectory);
+        commandLine.withWorkDirectory(workingDirectory);
         // Make sure we can actually see the errors.
         commandLine.setRedirectErrorStream(true);
         return ExecUtil.readCommandLine(commandLine);

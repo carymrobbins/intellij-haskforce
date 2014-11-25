@@ -2,9 +2,11 @@ package com.haskforce.highlighting.annotation.external;
 
 import com.haskforce.highlighting.annotation.Problems;
 import com.haskforce.utils.ExecUtil;
+import com.haskforce.utils.NotificationUtil;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
@@ -14,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
@@ -21,7 +24,7 @@ import java.util.regex.Pattern;
  */
 public class GhcModi implements ModuleComponent {
     @SuppressWarnings("UnusedDeclaration")
-    private static final Logger LOG = Logger.getInstance(GhcMod.class);
+    private static final Logger LOG = Logger.getInstance(GhcModi.class);
 
     public @NotNull final Module module;
     public @NotNull String workingDirectory;
@@ -30,6 +33,8 @@ public class GhcModi implements ModuleComponent {
     private @Nullable Process process;
     private @Nullable BufferedReader input;
     private @Nullable BufferedWriter output;
+    // Keep track of error messages so we don't output the same ones multiple times.
+    private @NotNull Set<String> errorMessages = new HashSet<String>(0);
     public static final Pattern TYPE_SPLIT_REGEX = Pattern.compile(" :: ");
 
     /**
@@ -59,21 +64,32 @@ public class GhcModi implements ModuleComponent {
     }
 
     /**
-     * Helper when ghc-modi encounters an error; kill it and display the error to the user.
-     */
-    private synchronized void killAndDisplayError(String command, String error) {
-        kill();
-        final String message = "Command: " + command + "<br/>Error: " + error;
-        GhcMod.displayError(module.getProject(), message, "ghc-modi");
-    }
-
-    /**
      * Checks the module with ghc-modi and returns Problems to be annotated in the source.
      */
     @Nullable
-    public Problems check(@NotNull String file) {
-        final String stdout = simpleExec("check " + file);
-        return stdout == null ? new Problems() : GhcMod.handleCheck(module.getProject(), stdout, "ghc-modi");
+    public Problems check(final @NotNull String file) {
+        return handleErrors(new GhcModiCallable<Problems>() {
+            @Override
+            public Problems call() throws GhcModiError {
+                final String stdout = simpleExec("check " + file);
+                return stdout == null ? new Problems() : handleCheck(file, stdout);
+            }
+        });
+    }
+
+    @Nullable
+    private static Problems handleCheck(@NotNull String file, @NotNull String stdout) throws GhcModiError {
+        final Problems problems = GhcMod.parseProblems(new Scanner(stdout));
+        if (problems == null) {
+            // parseProblems should have returned something, so let's just dump the output to the user.
+            throw new CheckParseError(stdout);
+        } else if (problems.size() == 1) {
+            final GhcMod.Problem problem = (GhcMod.Problem)problems.get(0);
+            if (problem.startLine == 0 && problem.startColumn == 0) {
+                throw new CheckError(file, problem.message);
+            }
+        }
+        return problems;
     }
 
     /**
@@ -81,17 +97,22 @@ public class GhcModi implements ModuleComponent {
      */
     @Nullable
     public BrowseItem[] browse(@NotNull final String module) {
-        String[] lines = simpleExecToLines("browse -d " + module);
-        if (lines == null) {
-            return null;
-        }
-        BrowseItem[] result = new BrowseItem[lines.length];
-        for (int i = 0; i < lines.length; ++i) {
-            final String[] parts = TYPE_SPLIT_REGEX.split(lines[i], 2);
-            //noinspection ObjectAllocationInLoop
-            result[i] = new BrowseItem(parts[0], module, parts.length == 2 ? parts[1] : "");
-        }
-        return result;
+        return handleErrors(new GhcModiCallable<BrowseItem[]>() {
+            @Override
+            public BrowseItem[] call() throws GhcModiError {
+                String[] lines = simpleExecToLines("browse -d " + module);
+                if (lines == null) {
+                    return null;
+                }
+                BrowseItem[] result = new BrowseItem[lines.length];
+                for (int i = 0; i < lines.length; ++i) {
+                    final String[] parts = TYPE_SPLIT_REGEX.split(lines[i], 2);
+                    //noinspection ObjectAllocationInLoop
+                    result[i] = new BrowseItem(parts[0], module, parts.length == 2 ? parts[1] : "");
+                }
+                return result;
+            }
+        });
     }
 
     /**
@@ -114,7 +135,7 @@ public class GhcModi implements ModuleComponent {
      * A wrapper to exec that checks stdout and returns null if there was no output.
      */
     @Nullable
-    public String simpleExec(@NotNull String command) {
+    public String simpleExec(@NotNull String command) throws GhcModiError {
         final String stdout = exec(command);
         if (stdout == null || stdout.length() == 0) {
             return null;
@@ -126,7 +147,7 @@ public class GhcModi implements ModuleComponent {
      * Same as simpleExec, except returns an array of Strings for each line in the output.
      */
     @Nullable
-    public String[] simpleExecToLines(@NotNull String command) {
+    public String[] simpleExecToLines(@NotNull String command) throws GhcModiError {
         final String result = simpleExec(command);
         return result == null ? null : StringUtil.splitByLines(result);
     }
@@ -136,7 +157,7 @@ public class GhcModi implements ModuleComponent {
      * the error to the user.  If the path to ghc-modi is not set, this simply returns null with no error message.
      */
     @Nullable
-    public synchronized String exec(@NotNull String command) {
+    public synchronized String exec(@NotNull String command) throws GhcModiError {
         ensureConsistent();
         if (path == null) {
             return null;
@@ -145,27 +166,25 @@ public class GhcModi implements ModuleComponent {
             GeneralCommandLine commandLine = new GeneralCommandLine(path);
             ParametersList parametersList = commandLine.getParametersList();
             parametersList.addParametersString(flags);
-            commandLine.setWorkDirectory(workingDirectory);
+            commandLine.withWorkDirectory(workingDirectory);
             // Make sure we can actually see the errors.
             commandLine.setRedirectErrorStream(true);
             try {
                 process = commandLine.createProcess();
             } catch (ExecutionException e) {
-                killAndDisplayError(command, e.toString());
-                return null;
+                throw new InitError(e.toString());
             }
             input = new BufferedReader(new InputStreamReader(process.getInputStream()));
             output = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
         }
+        if (output == null) { throw new InitError("Output stream was unexpectedly null."); }
+        if (input == null) { throw new InitError("Input stream was unexpectedly null."); }
+        return interact(command, input, output);
+    }
+
+    @Nullable
+    private static String interact(@NotNull String command, @NotNull BufferedReader input, @NotNull BufferedWriter output) throws GhcModiError {
         try {
-            if (output == null) {
-                killAndDisplayError(command, "Output stream was unexpectedly null.");
-                return null;
-            }
-            if (input == null) {
-                killAndDisplayError(command, "Input stream was unexpectedly null.");
-                return null;
-            }
             output.write(command + System.getProperty("line.separator"));
             output.flush();
             StringBuilder builder = new StringBuilder(0);
@@ -176,13 +195,71 @@ public class GhcModi implements ModuleComponent {
                 line = input.readLine();
             }
             if (line != null && line.startsWith("NG")) {
-                killAndDisplayError(command, line);
-                return null;
+                throw new ExecError(command, line);
             }
             return builder.toString();
         } catch (IOException e) {
-            killAndDisplayError(command, e.toString());
+            throw new ExecError(command, e.toString());
+        }
+    }
+
+    @Nullable
+    private <T> T handleErrors(GhcModiCallable<T> callable) {
+        final T result;
+        try {
+            result = callable.call();
+        } catch (GhcModiError e) {
+            kill();
+            // If we've already displayed the error, don't display it again.
+            if (!errorMessages.contains(e.error)) {
+                errorMessages.add(e.error);
+                displayError(e.message);
+            }
             return null;
+        }
+        return result;
+    }
+
+    private void displayError(@NotNull String message) {
+        NotificationUtil.displayToolsNotification(NotificationType.ERROR, module.getProject(), "ghc-modi error", message);
+    }
+
+    static interface GhcModiCallable<V> {
+        V call() throws GhcModiError;
+    }
+
+    static class GhcModiError extends Throwable {
+        // Using error to index errors since message might have extra information.
+        final @NotNull String error;
+        final @NotNull String message;
+
+        GhcModiError(@NotNull String error, @NotNull String message) {
+            this.error = error;
+            this.message = message;
+        }
+    }
+
+    static class InitError extends GhcModiError {
+        InitError(@NotNull String error) {
+            super(error, "Initializing ghc-modi failed with error: " + error);
+        }
+    }
+
+    static class ExecError extends GhcModiError {
+        ExecError(@NotNull String command, @NotNull String error) {
+            super(error, "Executing ghc-modi command '" + command + "' failed with error: " + error);
+        }
+    }
+
+    static class CheckParseError extends GhcModiError {
+        CheckParseError(@NotNull String stdout) {
+            super(stdout, "Unable to parse problems from ghc-modi: " + stdout);
+        }
+    }
+
+    static class CheckError extends GhcModiError {
+        CheckError(@NotNull String file, @NotNull String error) {
+            super(error, "Error checking file '" + file + "' with ghc-modi: " + error);
         }
     }
 
