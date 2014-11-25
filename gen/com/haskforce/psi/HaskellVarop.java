@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellVarop extends PsiElement {
+public interface HaskellVarop extends HaskellCompositeElement {
 
   @Nullable
   HaskellVarid getVarid();

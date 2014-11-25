@@ -5,10 +5,13 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellDefaultdecl extends PsiElement {
+public interface HaskellDefaultdecl extends HaskellCompositeElement {
 
-  @Nullable
-  HaskellTypee getTypee();
+  @NotNull
+  List<HaskellTypee> getTypeeList();
+
+  @NotNull
+  PsiElement getDefault();
 
   @Nullable
   PsiElement getLparen();

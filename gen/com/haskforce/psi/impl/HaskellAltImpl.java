@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellAltImpl extends ASTWrapperPsiElement implements HaskellAlt {
+public class HaskellAltImpl extends HaskellCompositeElementImpl implements HaskellAlt {
 
   public HaskellAltImpl(ASTNode node) {
     super(node);
@@ -23,21 +22,21 @@ public class HaskellAltImpl extends ASTWrapperPsiElement implements HaskellAlt {
   }
 
   @Override
-  @Nullable
-  public HaskellExp getExp() {
-    return findChildByClass(HaskellExp.class);
+  @NotNull
+  public List<HaskellExp> getExpList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellExp.class);
   }
 
   @Override
-  @Nullable
-  public HaskellFunorpatdecl getFunorpatdecl() {
-    return findChildByClass(HaskellFunorpatdecl.class);
+  @NotNull
+  public List<HaskellFunorpatdecl> getFunorpatdeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellFunorpatdecl.class);
   }
 
   @Override
-  @Nullable
-  public HaskellGendecl getGendecl() {
-    return findChildByClass(HaskellGendecl.class);
+  @NotNull
+  public List<HaskellGendecl> getGendeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellGendecl.class);
   }
 
   @Override
@@ -60,32 +59,32 @@ public class HaskellAltImpl extends ASTWrapperPsiElement implements HaskellAlt {
 
   @Override
   @Nullable
+  public PsiElement getWhere() {
+    return findChildByType(WHERE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getWhitespacelbracetok() {
+    return findChildByType(WHITESPACELBRACETOK);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getWhitespacerbracetok() {
+    return findChildByType(WHITESPACERBRACETOK);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getLbrace() {
     return findChildByType(LBRACE);
   }
 
   @Override
   @Nullable
-  public PsiElement getPipe() {
-    return findChildByType(PIPE);
-  }
-
-  @Override
-  @Nullable
   public PsiElement getRbrace() {
     return findChildByType(RBRACE);
-  }
-
-  @Override
-  @NotNull
-  public PsiElement getRightarrow() {
-    return findNotNullChildByType(RIGHTARROW);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getSemicolon() {
-    return findChildByType(SEMICOLON);
   }
 
 }

@@ -5,43 +5,43 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellBody extends PsiElement {
+public interface HaskellBody extends HaskellCompositeElement {
 
   @NotNull
   List<HaskellAlt> getAltList();
 
-  @Nullable
-  HaskellClassdecl getClassdecl();
+  @NotNull
+  List<HaskellClassdecl> getClassdeclList();
 
-  @Nullable
-  HaskellDatadecl getDatadecl();
+  @NotNull
+  List<HaskellDatadecl> getDatadeclList();
 
-  @Nullable
-  HaskellDefaultdecl getDefaultdecl();
+  @NotNull
+  List<HaskellDefaultdecl> getDefaultdeclList();
 
-  @Nullable
-  HaskellDerivingdecl getDerivingdecl();
+  @NotNull
+  List<HaskellDerivingdecl> getDerivingdeclList();
 
   @NotNull
   List<HaskellExp> getExpList();
 
-  @Nullable
-  HaskellForeigndecl getForeigndecl();
+  @NotNull
+  List<HaskellForeigndecl> getForeigndeclList();
 
-  @Nullable
-  HaskellFunorpatdecl getFunorpatdecl();
+  @NotNull
+  List<HaskellFunorpatdecl> getFunorpatdeclList();
 
-  @Nullable
-  HaskellGendecl getGendecl();
+  @NotNull
+  List<HaskellGendecl> getGendeclList();
 
   @NotNull
   List<HaskellImpdecl> getImpdeclList();
 
-  @Nullable
-  HaskellInstancedecl getInstancedecl();
+  @NotNull
+  List<HaskellInstancedecl> getInstancedeclList();
 
-  @Nullable
-  HaskellNewtypedecl getNewtypedecl();
+  @NotNull
+  List<HaskellNewtypedecl> getNewtypedeclList();
 
   @NotNull
   List<HaskellPat> getPatList();
@@ -64,40 +64,16 @@ public interface HaskellBody extends PsiElement {
   @NotNull
   List<HaskellQvarid> getQvaridList();
 
-  @Nullable
-  HaskellStmts getStmts();
+  @NotNull
+  List<HaskellStmts> getStmtsList();
 
-  @Nullable
-  HaskellTypedecl getTypedecl();
+  @NotNull
+  List<HaskellTypedecl> getTypedeclList();
 
   @NotNull
   List<HaskellVarid> getVaridList();
 
   @NotNull
   List<HaskellVarsym> getVarsymList();
-
-  @Nullable
-  PsiElement getBackslash();
-
-  @Nullable
-  PsiElement getDoubleperiod();
-
-  @Nullable
-  PsiElement getIdsplice();
-
-  @Nullable
-  PsiElement getLunboxparen();
-
-  @Nullable
-  PsiElement getParensplice();
-
-  @Nullable
-  PsiElement getRunboxparen();
-
-  @Nullable
-  PsiElement getSinglequote();
-
-  @Nullable
-  PsiElement getThquote();
 
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellExp extends PsiElement {
+public interface HaskellExp extends HaskellCompositeElement {
 
   @NotNull
   List<HaskellAlt> getAltList();
@@ -16,11 +16,11 @@ public interface HaskellExp extends PsiElement {
   @NotNull
   List<HaskellExp> getExpList();
 
-  @Nullable
-  HaskellFunorpatdecl getFunorpatdecl();
+  @NotNull
+  List<HaskellFunorpatdecl> getFunorpatdeclList();
 
-  @Nullable
-  HaskellGendecl getGendecl();
+  @NotNull
+  List<HaskellGendecl> getGendeclList();
 
   @NotNull
   List<HaskellPat> getPatList();
@@ -43,8 +43,8 @@ public interface HaskellExp extends PsiElement {
   @NotNull
   List<HaskellQvarid> getQvaridList();
 
-  @Nullable
-  HaskellStmts getStmts();
+  @NotNull
+  List<HaskellStmts> getStmtsList();
 
   @Nullable
   HaskellTypee getTypee();
@@ -56,39 +56,9 @@ public interface HaskellExp extends PsiElement {
   List<HaskellVarsym> getVarsymList();
 
   @Nullable
-  PsiElement getBackslash();
-
-  @Nullable
   PsiElement getDoublearrow();
 
   @Nullable
   PsiElement getDoublecolon();
-
-  @Nullable
-  PsiElement getDoubleperiod();
-
-  @Nullable
-  PsiElement getIdsplice();
-
-  @Nullable
-  PsiElement getLbrace();
-
-  @Nullable
-  PsiElement getLunboxparen();
-
-  @Nullable
-  PsiElement getParensplice();
-
-  @Nullable
-  PsiElement getRbrace();
-
-  @Nullable
-  PsiElement getRunboxparen();
-
-  @Nullable
-  PsiElement getSinglequote();
-
-  @Nullable
-  PsiElement getThquote();
 
 }

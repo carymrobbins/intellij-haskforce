@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellTyconsym extends PsiElement {
+public interface HaskellTyconsym extends HaskellCompositeElement {
 
   @Nullable
   HaskellConsym getConsym();

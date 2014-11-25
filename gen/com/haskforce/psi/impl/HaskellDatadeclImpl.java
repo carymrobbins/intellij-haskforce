@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellDatadeclImpl extends ASTWrapperPsiElement implements HaskellDatadecl {
+public class HaskellDatadeclImpl extends HaskellCompositeElementImpl implements HaskellDatadecl {
 
   public HaskellDatadeclImpl(ASTNode node) {
     super(node);
@@ -23,9 +22,9 @@ public class HaskellDatadeclImpl extends ASTWrapperPsiElement implements Haskell
   }
 
   @Override
-  @Nullable
-  public HaskellAtype getAtype() {
-    return findChildByClass(HaskellAtype.class);
+  @NotNull
+  public List<HaskellAtype> getAtypeList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellAtype.class);
   }
 
   @Override
@@ -65,9 +64,9 @@ public class HaskellDatadeclImpl extends ASTWrapperPsiElement implements Haskell
   }
 
   @Override
-  @Nullable
-  public HaskellQtycls getQtycls() {
-    return findChildByClass(HaskellQtycls.class);
+  @NotNull
+  public List<HaskellQtycls> getQtyclsList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQtycls.class);
   }
 
   @Override
@@ -83,21 +82,57 @@ public class HaskellDatadeclImpl extends ASTWrapperPsiElement implements Haskell
   }
 
   @Override
+  @NotNull
+  public List<HaskellVars> getVarsList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVars.class);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement getData() {
+    return findNotNullChildByType(DATA);
+  }
+
+  @Override
   @Nullable
-  public HaskellVars getVars() {
-    return findChildByClass(HaskellVars.class);
+  public PsiElement getDeriving() {
+    return findChildByType(DERIVING);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getInstance() {
+    return findChildByType(INSTANCE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getWhere() {
+    return findChildByType(WHERE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getWhitespacelbracetok() {
+    return findChildByType(WHITESPACELBRACETOK);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getWhitespacerbracetok() {
+    return findChildByType(WHITESPACERBRACETOK);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getWhitespacesemitok() {
+    return findChildByType(WHITESPACESEMITOK);
   }
 
   @Override
   @Nullable
   public PsiElement getEquals() {
     return findChildByType(EQUALS);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getExclamation() {
-    return findChildByType(EXCLAMATION);
   }
 
   @Override

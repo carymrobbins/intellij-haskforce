@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellBkind extends PsiElement {
+public interface HaskellBkind extends HaskellCompositeElement {
 
   @NotNull
   HaskellAkind getAkind();

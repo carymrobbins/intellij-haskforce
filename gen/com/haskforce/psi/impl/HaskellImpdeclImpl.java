@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellImpdeclImpl extends ASTWrapperPsiElement implements HaskellImpdecl {
+public class HaskellImpdeclImpl extends HaskellCompositeElementImpl implements HaskellImpdecl {
 
   public HaskellImpdeclImpl(ASTNode node) {
     super(node);
@@ -38,6 +37,30 @@ public class HaskellImpdeclImpl extends ASTWrapperPsiElement implements HaskellI
   @NotNull
   public List<HaskellQconid> getQconidList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQconid.class);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getAs() {
+    return findChildByType(AS);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getHiding() {
+    return findChildByType(HIDING);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement getImport() {
+    return findNotNullChildByType(IMPORT);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getQualified() {
+    return findChildByType(QUALIFIED);
   }
 
   @Override

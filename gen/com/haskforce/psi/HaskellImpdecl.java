@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellImpdecl extends PsiElement {
+public interface HaskellImpdecl extends HaskellCompositeElement {
 
   @Nullable
   HaskellImpempty getImpempty();
@@ -15,6 +15,18 @@ public interface HaskellImpdecl extends PsiElement {
 
   @NotNull
   List<HaskellQconid> getQconidList();
+
+  @Nullable
+  PsiElement getAs();
+
+  @Nullable
+  PsiElement getHiding();
+
+  @NotNull
+  PsiElement getImport();
+
+  @Nullable
+  PsiElement getQualified();
 
   @Nullable
   PsiElement getLparen();

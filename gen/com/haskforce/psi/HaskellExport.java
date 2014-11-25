@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellExport extends PsiElement {
+public interface HaskellExport extends HaskellCompositeElement {
 
   @NotNull
   List<HaskellCon> getConList();
@@ -27,6 +27,9 @@ public interface HaskellExport extends PsiElement {
 
   @NotNull
   List<HaskellVarsym> getVarsymList();
+
+  @Nullable
+  PsiElement getModuletoken();
 
   @Nullable
   PsiElement getDoubleperiod();

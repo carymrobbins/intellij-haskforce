@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellFunorpatdeclImpl extends ASTWrapperPsiElement implements HaskellFunorpatdecl {
+public class HaskellFunorpatdeclImpl extends HaskellCompositeElementImpl implements HaskellFunorpatdecl {
 
   public HaskellFunorpatdeclImpl(ASTNode node) {
     super(node);

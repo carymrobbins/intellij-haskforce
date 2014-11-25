@@ -8,15 +8,20 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.haskforce.stubs.HaskellConidStub;
 import com.haskforce.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.stubs.IStubElementType;
 
-public class HaskellConidImpl extends ASTWrapperPsiElement implements HaskellConid {
+public class HaskellConidImpl extends HaskellNamedStubbedPsiElementBase<HaskellConidStub> implements HaskellConid {
 
   public HaskellConidImpl(ASTNode node) {
     super(node);
+  }
+
+  public HaskellConidImpl(HaskellConidStub stub, IStubElementType nodeType) {
+    super(stub, nodeType);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -30,7 +35,7 @@ public class HaskellConidImpl extends ASTWrapperPsiElement implements HaskellCon
     return findNotNullChildByType(CONIDREGEXP);
   }
 
-  @Nullable
+  @NotNull
   public String getName() {
     return HaskellPsiImplUtil.getName(this);
   }

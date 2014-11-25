@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellOp extends PsiElement {
+public interface HaskellOp extends HaskellCompositeElement {
 
   @Nullable
   HaskellConop getConop();

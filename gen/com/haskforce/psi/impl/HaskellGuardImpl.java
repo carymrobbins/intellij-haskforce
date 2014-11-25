@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellGuardImpl extends ASTWrapperPsiElement implements HaskellGuard {
+public class HaskellGuardImpl extends HaskellCompositeElementImpl implements HaskellGuard {
 
   public HaskellGuardImpl(ASTNode node) {
     super(node);
@@ -35,15 +34,15 @@ public class HaskellGuardImpl extends ASTWrapperPsiElement implements HaskellGua
   }
 
   @Override
-  @Nullable
-  public HaskellFunorpatdecl getFunorpatdecl() {
-    return findChildByClass(HaskellFunorpatdecl.class);
+  @NotNull
+  public List<HaskellFunorpatdecl> getFunorpatdeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellFunorpatdecl.class);
   }
 
   @Override
-  @Nullable
-  public HaskellGendecl getGendecl() {
-    return findChildByClass(HaskellGendecl.class);
+  @NotNull
+  public List<HaskellGendecl> getGendeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellGendecl.class);
   }
 
   @Override
@@ -89,9 +88,9 @@ public class HaskellGuardImpl extends ASTWrapperPsiElement implements HaskellGua
   }
 
   @Override
-  @Nullable
-  public HaskellStmts getStmts() {
-    return findChildByClass(HaskellStmts.class);
+  @NotNull
+  public List<HaskellStmts> getStmtsList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellStmts.class);
   }
 
   @Override
@@ -108,20 +107,20 @@ public class HaskellGuardImpl extends ASTWrapperPsiElement implements HaskellGua
 
   @Override
   @Nullable
-  public PsiElement getBackslash() {
-    return findChildByType(BACKSLASH);
+  public PsiElement getLet() {
+    return findChildByType(LET);
   }
 
   @Override
   @Nullable
-  public PsiElement getDoubleperiod() {
-    return findChildByType(DOUBLEPERIOD);
+  public PsiElement getWhitespacelbracetok() {
+    return findChildByType(WHITESPACELBRACETOK);
   }
 
   @Override
   @Nullable
-  public PsiElement getIdsplice() {
-    return findChildByType(IDSPLICE);
+  public PsiElement getWhitespacerbracetok() {
+    return findChildByType(WHITESPACERBRACETOK);
   }
 
   @Override
@@ -138,44 +137,8 @@ public class HaskellGuardImpl extends ASTWrapperPsiElement implements HaskellGua
 
   @Override
   @Nullable
-  public PsiElement getLunboxparen() {
-    return findChildByType(LUNBOXPAREN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getParensplice() {
-    return findChildByType(PARENSPLICE);
-  }
-
-  @Override
-  @Nullable
   public PsiElement getRbrace() {
     return findChildByType(RBRACE);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getRunboxparen() {
-    return findChildByType(RUNBOXPAREN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getSemicolon() {
-    return findChildByType(SEMICOLON);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getSinglequote() {
-    return findChildByType(SINGLEQUOTE);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getThquote() {
-    return findChildByType(THQUOTE);
   }
 
 }

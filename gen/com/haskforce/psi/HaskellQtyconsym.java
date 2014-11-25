@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellQtyconsym extends PsiElement {
+public interface HaskellQtyconsym extends HaskellCompositeElement {
 
   @Nullable
   HaskellQconsym getQconsym();

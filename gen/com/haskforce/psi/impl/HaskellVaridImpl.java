@@ -8,20 +8,43 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
+import com.haskforce.stubs.HaskellVaridStub;
 import com.haskforce.psi.*;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.stubs.IStubElementType;
 
-public class HaskellVaridImpl extends ASTWrapperPsiElement implements HaskellVarid {
+public class HaskellVaridImpl extends HaskellNamedStubbedPsiElementBase<HaskellVaridStub> implements HaskellVarid {
 
   public HaskellVaridImpl(ASTNode node) {
     super(node);
   }
 
+  public HaskellVaridImpl(HaskellVaridStub stub, IStubElementType nodeType) {
+    super(stub, nodeType);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitVarid(this);
     else super.accept(visitor);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getAs() {
+    return findChildByType(AS);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getQualified() {
+    return findChildByType(QUALIFIED);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRectok() {
+    return findChildByType(RECTOK);
   }
 
   @Override

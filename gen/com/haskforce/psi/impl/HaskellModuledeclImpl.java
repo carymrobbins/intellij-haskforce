@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellModuledeclImpl extends ASTWrapperPsiElement implements HaskellModuledecl {
+public class HaskellModuledeclImpl extends HaskellCompositeElementImpl implements HaskellModuledecl {
 
   public HaskellModuledeclImpl(ASTNode node) {
     super(node);
@@ -44,6 +43,18 @@ public class HaskellModuledeclImpl extends ASTWrapperPsiElement implements Haske
   @Nullable
   public HaskellQconid getQconid() {
     return findChildByClass(HaskellQconid.class);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement getModuletoken() {
+    return findNotNullChildByType(MODULETOKEN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getWhere() {
+    return findChildByType(WHERE);
   }
 
 }

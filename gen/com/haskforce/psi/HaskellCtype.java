@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellCtype extends PsiElement {
+public interface HaskellCtype extends HaskellCompositeElement {
 
   @Nullable
   HaskellContext getContext();
@@ -18,6 +18,9 @@ public interface HaskellCtype extends PsiElement {
 
   @Nullable
   HaskellTypee getTypee();
+
+  @Nullable
+  PsiElement getForalltoken();
 
   @Nullable
   PsiElement getDoublearrow();

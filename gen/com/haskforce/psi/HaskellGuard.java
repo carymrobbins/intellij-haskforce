@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellGuard extends PsiElement {
+public interface HaskellGuard extends HaskellCompositeElement {
 
   @NotNull
   List<HaskellAlt> getAltList();
@@ -13,11 +13,11 @@ public interface HaskellGuard extends PsiElement {
   @Nullable
   HaskellExp getExp();
 
-  @Nullable
-  HaskellFunorpatdecl getFunorpatdecl();
+  @NotNull
+  List<HaskellFunorpatdecl> getFunorpatdeclList();
 
-  @Nullable
-  HaskellGendecl getGendecl();
+  @NotNull
+  List<HaskellGendecl> getGendeclList();
 
   @Nullable
   HaskellPat getPat();
@@ -40,8 +40,8 @@ public interface HaskellGuard extends PsiElement {
   @NotNull
   List<HaskellQvarid> getQvaridList();
 
-  @Nullable
-  HaskellStmts getStmts();
+  @NotNull
+  List<HaskellStmts> getStmtsList();
 
   @NotNull
   List<HaskellVarid> getVaridList();
@@ -50,13 +50,13 @@ public interface HaskellGuard extends PsiElement {
   List<HaskellVarsym> getVarsymList();
 
   @Nullable
-  PsiElement getBackslash();
+  PsiElement getLet();
 
   @Nullable
-  PsiElement getDoubleperiod();
+  PsiElement getWhitespacelbracetok();
 
   @Nullable
-  PsiElement getIdsplice();
+  PsiElement getWhitespacerbracetok();
 
   @Nullable
   PsiElement getLbrace();
@@ -65,24 +65,6 @@ public interface HaskellGuard extends PsiElement {
   PsiElement getLeftarrow();
 
   @Nullable
-  PsiElement getLunboxparen();
-
-  @Nullable
-  PsiElement getParensplice();
-
-  @Nullable
   PsiElement getRbrace();
-
-  @Nullable
-  PsiElement getRunboxparen();
-
-  @Nullable
-  PsiElement getSemicolon();
-
-  @Nullable
-  PsiElement getSinglequote();
-
-  @Nullable
-  PsiElement getThquote();
 
 }

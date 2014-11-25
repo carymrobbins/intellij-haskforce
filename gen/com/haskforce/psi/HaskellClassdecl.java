@@ -5,13 +5,22 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellClassdecl extends PsiElement {
+public interface HaskellClassdecl extends HaskellCompositeElement {
 
-  @Nullable
-  HaskellCdecl getCdecl();
+  @NotNull
+  List<HaskellCdecl> getCdeclList();
 
   @Nullable
   HaskellCtype getCtype();
+
+  @Nullable
+  PsiElement getWhere();
+
+  @Nullable
+  PsiElement getWhitespacelbracetok();
+
+  @Nullable
+  PsiElement getWhitespacerbracetok();
 
   @NotNull
   PsiElement getClasstoken();
@@ -21,8 +30,5 @@ public interface HaskellClassdecl extends PsiElement {
 
   @Nullable
   PsiElement getRbrace();
-
-  @Nullable
-  PsiElement getSemicolon();
 
 }

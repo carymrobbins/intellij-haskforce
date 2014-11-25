@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellModuledecl extends PsiElement {
+public interface HaskellModuledecl extends HaskellCompositeElement {
 
   @Nullable
   HaskellExports getExports();
@@ -18,5 +18,11 @@ public interface HaskellModuledecl extends PsiElement {
 
   @Nullable
   HaskellQconid getQconid();
+
+  @NotNull
+  PsiElement getModuletoken();
+
+  @Nullable
+  PsiElement getWhere();
 
 }

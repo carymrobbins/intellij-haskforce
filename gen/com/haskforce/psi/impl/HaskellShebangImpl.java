@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellShebangImpl extends ASTWrapperPsiElement implements HaskellShebang {
+public class HaskellShebangImpl extends HaskellCompositeElementImpl implements HaskellShebang {
 
   public HaskellShebangImpl(ASTNode node) {
     super(node);
@@ -20,6 +19,18 @@ public class HaskellShebangImpl extends ASTWrapperPsiElement implements HaskellS
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitShebang(this);
     else super.accept(visitor);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getShebangpath() {
+    return findChildByType(SHEBANGPATH);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement getShebangstart() {
+    return findNotNullChildByType(SHEBANGSTART);
   }
 
 }

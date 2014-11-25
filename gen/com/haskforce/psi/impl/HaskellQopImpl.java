@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellQopImpl extends ASTWrapperPsiElement implements HaskellQop {
+public class HaskellQopImpl extends HaskellCompositeElementImpl implements HaskellQop {
 
   public HaskellQopImpl(ASTNode node) {
     super(node);

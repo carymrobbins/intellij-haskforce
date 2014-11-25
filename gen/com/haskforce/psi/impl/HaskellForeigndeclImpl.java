@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellForeigndeclImpl extends ASTWrapperPsiElement implements HaskellForeigndecl {
+public class HaskellForeigndeclImpl extends HaskellCompositeElementImpl implements HaskellForeigndecl {
 
   public HaskellForeigndeclImpl(ASTNode node) {
     super(node);
@@ -50,6 +49,24 @@ public class HaskellForeigndeclImpl extends ASTWrapperPsiElement implements Hask
   @Nullable
   public HaskellVarsym getVarsym() {
     return findChildByClass(HaskellVarsym.class);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getExporttoken() {
+    return findChildByType(EXPORTTOKEN);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement getForeign() {
+    return findNotNullChildByType(FOREIGN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getImport() {
+    return findChildByType(IMPORT);
   }
 
   @Override

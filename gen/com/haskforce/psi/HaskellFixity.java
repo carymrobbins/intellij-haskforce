@@ -5,6 +5,15 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellFixity extends PsiElement {
+public interface HaskellFixity extends HaskellCompositeElement {
+
+  @Nullable
+  PsiElement getInfix();
+
+  @Nullable
+  PsiElement getInfixl();
+
+  @Nullable
+  PsiElement getInfixr();
 
 }

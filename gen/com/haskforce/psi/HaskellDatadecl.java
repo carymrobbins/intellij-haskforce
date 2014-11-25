@@ -5,10 +5,10 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellDatadecl extends PsiElement {
+public interface HaskellDatadecl extends HaskellCompositeElement {
 
-  @Nullable
-  HaskellAtype getAtype();
+  @NotNull
+  List<HaskellAtype> getAtypeList();
 
   @NotNull
   List<HaskellCon> getConList();
@@ -28,8 +28,8 @@ public interface HaskellDatadecl extends PsiElement {
   @Nullable
   HaskellOqtycon getOqtycon();
 
-  @Nullable
-  HaskellQtycls getQtycls();
+  @NotNull
+  List<HaskellQtycls> getQtyclsList();
 
   @NotNull
   List<HaskellTypee> getTypeeList();
@@ -37,14 +37,32 @@ public interface HaskellDatadecl extends PsiElement {
   @NotNull
   List<HaskellTyvar> getTyvarList();
 
+  @NotNull
+  List<HaskellVars> getVarsList();
+
+  @NotNull
+  PsiElement getData();
+
   @Nullable
-  HaskellVars getVars();
+  PsiElement getDeriving();
+
+  @Nullable
+  PsiElement getInstance();
+
+  @Nullable
+  PsiElement getWhere();
+
+  @Nullable
+  PsiElement getWhitespacelbracetok();
+
+  @Nullable
+  PsiElement getWhitespacerbracetok();
+
+  @Nullable
+  PsiElement getWhitespacesemitok();
 
   @Nullable
   PsiElement getEquals();
-
-  @Nullable
-  PsiElement getExclamation();
 
   @Nullable
   PsiElement getLparen();

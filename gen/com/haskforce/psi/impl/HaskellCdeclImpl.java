@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellCdeclImpl extends ASTWrapperPsiElement implements HaskellCdecl {
+public class HaskellCdeclImpl extends HaskellCompositeElementImpl implements HaskellCdecl {
 
   public HaskellCdeclImpl(ASTNode node) {
     super(node);
@@ -98,6 +97,24 @@ public class HaskellCdeclImpl extends ASTWrapperPsiElement implements HaskellCde
   @NotNull
   public List<HaskellVarsym> getVarsymList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVarsym.class);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getData() {
+    return findChildByType(DATA);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getInstance() {
+    return findChildByType(INSTANCE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getType() {
+    return findChildByType(TYPE);
   }
 
   @Override

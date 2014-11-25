@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellNewtypedecl extends PsiElement {
+public interface HaskellNewtypedecl extends HaskellCompositeElement {
 
   @Nullable
   HaskellContext getContext();
@@ -13,14 +13,20 @@ public interface HaskellNewtypedecl extends PsiElement {
   @Nullable
   HaskellNewconstr getNewconstr();
 
-  @Nullable
-  HaskellQtycls getQtycls();
+  @NotNull
+  List<HaskellQtycls> getQtyclsList();
 
   @Nullable
   HaskellTycon getTycon();
 
   @NotNull
   List<HaskellTyvar> getTyvarList();
+
+  @Nullable
+  PsiElement getDeriving();
+
+  @NotNull
+  PsiElement getNewtype();
 
   @Nullable
   PsiElement getDoublearrow();

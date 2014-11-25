@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellNewtypedeclImpl extends ASTWrapperPsiElement implements HaskellNewtypedecl {
+public class HaskellNewtypedeclImpl extends HaskellCompositeElementImpl implements HaskellNewtypedecl {
 
   public HaskellNewtypedeclImpl(ASTNode node) {
     super(node);
@@ -35,9 +34,9 @@ public class HaskellNewtypedeclImpl extends ASTWrapperPsiElement implements Hask
   }
 
   @Override
-  @Nullable
-  public HaskellQtycls getQtycls() {
-    return findChildByClass(HaskellQtycls.class);
+  @NotNull
+  public List<HaskellQtycls> getQtyclsList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQtycls.class);
   }
 
   @Override
@@ -50,6 +49,18 @@ public class HaskellNewtypedeclImpl extends ASTWrapperPsiElement implements Hask
   @NotNull
   public List<HaskellTyvar> getTyvarList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTyvar.class);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getDeriving() {
+    return findChildByType(DERIVING);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement getNewtype() {
+    return findNotNullChildByType(NEWTYPE);
   }
 
   @Override

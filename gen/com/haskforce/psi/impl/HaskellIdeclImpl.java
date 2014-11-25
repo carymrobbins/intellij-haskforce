@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellIdeclImpl extends ASTWrapperPsiElement implements HaskellIdecl {
+public class HaskellIdeclImpl extends HaskellCompositeElementImpl implements HaskellIdecl {
 
   public HaskellIdeclImpl(ASTNode node) {
     super(node);
@@ -23,9 +22,9 @@ public class HaskellIdeclImpl extends ASTWrapperPsiElement implements HaskellIde
   }
 
   @Override
-  @Nullable
-  public HaskellAtype getAtype() {
-    return findChildByClass(HaskellAtype.class);
+  @NotNull
+  public List<HaskellAtype> getAtypeList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellAtype.class);
   }
 
   @Override
@@ -71,15 +70,15 @@ public class HaskellIdeclImpl extends ASTWrapperPsiElement implements HaskellIde
   }
 
   @Override
-  @Nullable
-  public HaskellQtycls getQtycls() {
-    return findChildByClass(HaskellQtycls.class);
+  @NotNull
+  public List<HaskellQtycls> getQtyclsList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQtycls.class);
   }
 
   @Override
-  @Nullable
-  public HaskellTypee getTypee() {
-    return findChildByClass(HaskellTypee.class);
+  @NotNull
+  public List<HaskellTypee> getTypeeList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTypee.class);
   }
 
   @Override
@@ -89,9 +88,51 @@ public class HaskellIdeclImpl extends ASTWrapperPsiElement implements HaskellIde
   }
 
   @Override
+  @NotNull
+  public List<HaskellVars> getVarsList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVars.class);
+  }
+
+  @Override
   @Nullable
-  public HaskellVars getVars() {
-    return findChildByClass(HaskellVars.class);
+  public PsiElement getData() {
+    return findChildByType(DATA);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getDeriving() {
+    return findChildByType(DERIVING);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getNewtype() {
+    return findChildByType(NEWTYPE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getType() {
+    return findChildByType(TYPE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getWhitespacelbracetok() {
+    return findChildByType(WHITESPACELBRACETOK);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getWhitespacerbracetok() {
+    return findChildByType(WHITESPACERBRACETOK);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getWhitespacesemitok() {
+    return findChildByType(WHITESPACESEMITOK);
   }
 
   @Override
@@ -104,12 +145,6 @@ public class HaskellIdeclImpl extends ASTWrapperPsiElement implements HaskellIde
   @Nullable
   public PsiElement getEquals() {
     return findChildByType(EQUALS);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getExclamation() {
-    return findChildByType(EXCLAMATION);
   }
 
   @Override

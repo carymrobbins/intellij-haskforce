@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellBodyImpl extends ASTWrapperPsiElement implements HaskellBody {
+public class HaskellBodyImpl extends HaskellCompositeElementImpl implements HaskellBody {
 
   public HaskellBodyImpl(ASTNode node) {
     super(node);
@@ -29,27 +28,27 @@ public class HaskellBodyImpl extends ASTWrapperPsiElement implements HaskellBody
   }
 
   @Override
-  @Nullable
-  public HaskellClassdecl getClassdecl() {
-    return findChildByClass(HaskellClassdecl.class);
+  @NotNull
+  public List<HaskellClassdecl> getClassdeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellClassdecl.class);
   }
 
   @Override
-  @Nullable
-  public HaskellDatadecl getDatadecl() {
-    return findChildByClass(HaskellDatadecl.class);
+  @NotNull
+  public List<HaskellDatadecl> getDatadeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellDatadecl.class);
   }
 
   @Override
-  @Nullable
-  public HaskellDefaultdecl getDefaultdecl() {
-    return findChildByClass(HaskellDefaultdecl.class);
+  @NotNull
+  public List<HaskellDefaultdecl> getDefaultdeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellDefaultdecl.class);
   }
 
   @Override
-  @Nullable
-  public HaskellDerivingdecl getDerivingdecl() {
-    return findChildByClass(HaskellDerivingdecl.class);
+  @NotNull
+  public List<HaskellDerivingdecl> getDerivingdeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellDerivingdecl.class);
   }
 
   @Override
@@ -59,21 +58,21 @@ public class HaskellBodyImpl extends ASTWrapperPsiElement implements HaskellBody
   }
 
   @Override
-  @Nullable
-  public HaskellForeigndecl getForeigndecl() {
-    return findChildByClass(HaskellForeigndecl.class);
+  @NotNull
+  public List<HaskellForeigndecl> getForeigndeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellForeigndecl.class);
   }
 
   @Override
-  @Nullable
-  public HaskellFunorpatdecl getFunorpatdecl() {
-    return findChildByClass(HaskellFunorpatdecl.class);
+  @NotNull
+  public List<HaskellFunorpatdecl> getFunorpatdeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellFunorpatdecl.class);
   }
 
   @Override
-  @Nullable
-  public HaskellGendecl getGendecl() {
-    return findChildByClass(HaskellGendecl.class);
+  @NotNull
+  public List<HaskellGendecl> getGendeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellGendecl.class);
   }
 
   @Override
@@ -83,15 +82,15 @@ public class HaskellBodyImpl extends ASTWrapperPsiElement implements HaskellBody
   }
 
   @Override
-  @Nullable
-  public HaskellInstancedecl getInstancedecl() {
-    return findChildByClass(HaskellInstancedecl.class);
+  @NotNull
+  public List<HaskellInstancedecl> getInstancedeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellInstancedecl.class);
   }
 
   @Override
-  @Nullable
-  public HaskellNewtypedecl getNewtypedecl() {
-    return findChildByClass(HaskellNewtypedecl.class);
+  @NotNull
+  public List<HaskellNewtypedecl> getNewtypedeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellNewtypedecl.class);
   }
 
   @Override
@@ -137,15 +136,15 @@ public class HaskellBodyImpl extends ASTWrapperPsiElement implements HaskellBody
   }
 
   @Override
-  @Nullable
-  public HaskellStmts getStmts() {
-    return findChildByClass(HaskellStmts.class);
+  @NotNull
+  public List<HaskellStmts> getStmtsList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellStmts.class);
   }
 
   @Override
-  @Nullable
-  public HaskellTypedecl getTypedecl() {
-    return findChildByClass(HaskellTypedecl.class);
+  @NotNull
+  public List<HaskellTypedecl> getTypedeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTypedecl.class);
   }
 
   @Override
@@ -158,54 +157,6 @@ public class HaskellBodyImpl extends ASTWrapperPsiElement implements HaskellBody
   @NotNull
   public List<HaskellVarsym> getVarsymList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVarsym.class);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getBackslash() {
-    return findChildByType(BACKSLASH);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getDoubleperiod() {
-    return findChildByType(DOUBLEPERIOD);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getIdsplice() {
-    return findChildByType(IDSPLICE);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getLunboxparen() {
-    return findChildByType(LUNBOXPAREN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getParensplice() {
-    return findChildByType(PARENSPLICE);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getRunboxparen() {
-    return findChildByType(RUNBOXPAREN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getSinglequote() {
-    return findChildByType(SINGLEQUOTE);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getThquote() {
-    return findChildByType(THQUOTE);
   }
 
 }

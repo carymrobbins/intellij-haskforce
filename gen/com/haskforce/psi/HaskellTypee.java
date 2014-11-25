@@ -5,10 +5,10 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellTypee extends PsiElement {
+public interface HaskellTypee extends HaskellCompositeElement {
 
   @NotNull
-  HaskellAtype getAtype();
+  List<HaskellAtype> getAtypeList();
 
   @Nullable
   HaskellQconop getQconop();

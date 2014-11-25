@@ -5,16 +5,16 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellRhs extends PsiElement {
+public interface HaskellRhs extends HaskellCompositeElement {
 
   @NotNull
   List<HaskellExp> getExpList();
 
-  @Nullable
-  HaskellFunorpatdecl getFunorpatdecl();
+  @NotNull
+  List<HaskellFunorpatdecl> getFunorpatdeclList();
 
-  @Nullable
-  HaskellGendecl getGendecl();
+  @NotNull
+  List<HaskellGendecl> getGendeclList();
 
   @NotNull
   List<HaskellGuard> getGuardList();
@@ -23,12 +23,18 @@ public interface HaskellRhs extends PsiElement {
   List<HaskellPpragma> getPpragmaList();
 
   @Nullable
+  PsiElement getWhere();
+
+  @Nullable
+  PsiElement getWhitespacelbracetok();
+
+  @Nullable
+  PsiElement getWhitespacerbracetok();
+
+  @Nullable
   PsiElement getLbrace();
 
   @Nullable
   PsiElement getRbrace();
-
-  @Nullable
-  PsiElement getSemicolon();
 
 }

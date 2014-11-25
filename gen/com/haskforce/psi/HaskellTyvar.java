@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellTyvar extends PsiElement {
+public interface HaskellTyvar extends HaskellCompositeElement {
 
   @NotNull
   HaskellVarid getVarid();

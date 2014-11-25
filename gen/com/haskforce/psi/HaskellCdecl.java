@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellCdecl extends PsiElement {
+public interface HaskellCdecl extends HaskellCompositeElement {
 
   @NotNull
   List<HaskellCtype> getCtypeList();
@@ -45,6 +45,15 @@ public interface HaskellCdecl extends PsiElement {
 
   @NotNull
   List<HaskellVarsym> getVarsymList();
+
+  @Nullable
+  PsiElement getData();
+
+  @Nullable
+  PsiElement getInstance();
+
+  @Nullable
+  PsiElement getType();
 
   @Nullable
   PsiElement getDoublecolon();

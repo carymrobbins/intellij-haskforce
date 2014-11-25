@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellQconsymImpl extends ASTWrapperPsiElement implements HaskellQconsym {
+public class HaskellQconsymImpl extends HaskellCompositeElementImpl implements HaskellQconsym {
 
   public HaskellQconsymImpl(ASTNode node) {
     super(node);

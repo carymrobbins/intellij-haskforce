@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellInstancedeclImpl extends ASTWrapperPsiElement implements HaskellInstancedecl {
+public class HaskellInstancedeclImpl extends HaskellCompositeElementImpl implements HaskellInstancedecl {
 
   public HaskellInstancedeclImpl(ASTNode node) {
     super(node);
@@ -29,15 +28,39 @@ public class HaskellInstancedeclImpl extends ASTWrapperPsiElement implements Has
   }
 
   @Override
-  @Nullable
-  public HaskellIdecl getIdecl() {
-    return findChildByClass(HaskellIdecl.class);
+  @NotNull
+  public List<HaskellIdecl> getIdeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellIdecl.class);
   }
 
   @Override
   @NotNull
   public List<HaskellPpragma> getPpragmaList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPpragma.class);
+  }
+
+  @Override
+  @NotNull
+  public PsiElement getInstance() {
+    return findNotNullChildByType(INSTANCE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getWhere() {
+    return findChildByType(WHERE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getWhitespacelbracetok() {
+    return findChildByType(WHITESPACELBRACETOK);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getWhitespacerbracetok() {
+    return findChildByType(WHITESPACERBRACETOK);
   }
 
   @Override
@@ -50,12 +73,6 @@ public class HaskellInstancedeclImpl extends ASTWrapperPsiElement implements Has
   @Nullable
   public PsiElement getRbrace() {
     return findChildByType(RBRACE);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getSemicolon() {
-    return findChildByType(SEMICOLON);
   }
 
 }

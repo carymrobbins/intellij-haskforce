@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellGendecl extends PsiElement {
+public interface HaskellGendecl extends HaskellCompositeElement {
 
   @Nullable
   HaskellCtype getCtype();

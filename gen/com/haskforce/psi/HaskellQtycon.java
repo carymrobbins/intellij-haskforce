@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellQtycon extends PsiElement {
+public interface HaskellQtycon extends HaskellCompositeElement {
 
   @NotNull
   List<HaskellConid> getConidList();

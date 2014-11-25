@@ -3,40 +3,39 @@ package com.haskforce.psi;
 
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiElement;
 
 public class HaskellVisitor extends PsiElementVisitor {
 
   public void visitAkind(@NotNull HaskellAkind o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitAlt(@NotNull HaskellAlt o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitAtype(@NotNull HaskellAtype o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitBkind(@NotNull HaskellBkind o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitBody(@NotNull HaskellBody o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitCdecl(@NotNull HaskellCdecl o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitClassdecl(@NotNull HaskellClassdecl o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitCon(@NotNull HaskellCon o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitConid(@NotNull HaskellConid o) {
@@ -44,227 +43,227 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitConop(@NotNull HaskellConop o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitConstr(@NotNull HaskellConstr o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitConsym(@NotNull HaskellConsym o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitContext(@NotNull HaskellContext o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitCtype(@NotNull HaskellCtype o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitDatadecl(@NotNull HaskellDatadecl o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitDefaultdecl(@NotNull HaskellDefaultdecl o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitDerivingdecl(@NotNull HaskellDerivingdecl o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitExp(@NotNull HaskellExp o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitExport(@NotNull HaskellExport o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitExports(@NotNull HaskellExports o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitExportsempty(@NotNull HaskellExportsempty o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitFixity(@NotNull HaskellFixity o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitForeigndecl(@NotNull HaskellForeigndecl o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitFunorpatdecl(@NotNull HaskellFunorpatdecl o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitGconsym(@NotNull HaskellGconsym o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitGendecl(@NotNull HaskellGendecl o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitGuard(@NotNull HaskellGuard o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitIdecl(@NotNull HaskellIdecl o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitImpdecl(@NotNull HaskellImpdecl o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitImpempty(@NotNull HaskellImpempty o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitImportt(@NotNull HaskellImportt o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitInstancedecl(@NotNull HaskellInstancedecl o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitKind(@NotNull HaskellKind o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitModuledecl(@NotNull HaskellModuledecl o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitNewconstr(@NotNull HaskellNewconstr o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitNewtypedecl(@NotNull HaskellNewtypedecl o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitOp(@NotNull HaskellOp o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitOqtycon(@NotNull HaskellOqtycon o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitPat(@NotNull HaskellPat o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitPpragma(@NotNull HaskellPpragma o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitPstringtoken(@NotNull HaskellPstringtoken o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitQcon(@NotNull HaskellQcon o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitQconid(@NotNull HaskellQconid o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitQconop(@NotNull HaskellQconop o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitQconsym(@NotNull HaskellQconsym o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitQop(@NotNull HaskellQop o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitQtycls(@NotNull HaskellQtycls o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitQtycon(@NotNull HaskellQtycon o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitQtyconop(@NotNull HaskellQtyconop o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitQtyconsym(@NotNull HaskellQtyconsym o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitQvar(@NotNull HaskellQvar o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitQvarid(@NotNull HaskellQvarid o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitQvarop(@NotNull HaskellQvarop o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitQvars(@NotNull HaskellQvars o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitQvarsym(@NotNull HaskellQvarsym o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitRhs(@NotNull HaskellRhs o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitShebang(@NotNull HaskellShebang o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitStmts(@NotNull HaskellStmts o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitTvBndr(@NotNull HaskellTvBndr o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitTycls(@NotNull HaskellTycls o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitTycon(@NotNull HaskellTycon o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitTyconsym(@NotNull HaskellTyconsym o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitTypedecl(@NotNull HaskellTypedecl o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitTypee(@NotNull HaskellTypee o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitTyvar(@NotNull HaskellTyvar o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitVarid(@NotNull HaskellVarid o) {
@@ -272,22 +271,22 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitVarop(@NotNull HaskellVarop o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitVars(@NotNull HaskellVars o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitVarsym(@NotNull HaskellVarsym o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitNamedElement(@NotNull HaskellNamedElement o) {
-    visitPsiElement(o);
+    visitCompositeElement(o);
   }
 
-  public void visitPsiElement(@NotNull PsiElement o) {
+  public void visitCompositeElement(@NotNull HaskellCompositeElement o) {
     visitElement(o);
   }
 

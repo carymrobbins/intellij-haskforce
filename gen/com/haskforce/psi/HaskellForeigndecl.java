@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellForeigndecl extends PsiElement {
+public interface HaskellForeigndecl extends HaskellCompositeElement {
 
   @NotNull
   List<HaskellAtype> getAtypeList();
@@ -21,6 +21,15 @@ public interface HaskellForeigndecl extends PsiElement {
 
   @Nullable
   HaskellVarsym getVarsym();
+
+  @Nullable
+  PsiElement getExporttoken();
+
+  @NotNull
+  PsiElement getForeign();
+
+  @Nullable
+  PsiElement getImport();
 
   @Nullable
   PsiElement getDoublecolon();

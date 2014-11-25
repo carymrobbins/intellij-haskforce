@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellExportsemptyImpl extends ASTWrapperPsiElement implements HaskellExportsempty {
+public class HaskellExportsemptyImpl extends HaskellCompositeElementImpl implements HaskellExportsempty {
 
   public HaskellExportsemptyImpl(ASTNode node) {
     super(node);

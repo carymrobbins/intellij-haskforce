@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellFunorpatdecl extends PsiElement {
+public interface HaskellFunorpatdecl extends HaskellCompositeElement {
 
   @NotNull
   List<HaskellExp> getExpList();

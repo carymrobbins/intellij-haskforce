@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellQconidImpl extends ASTWrapperPsiElement implements HaskellQconid {
+public class HaskellQconidImpl extends HaskellCompositeElementImpl implements HaskellQconid {
 
   public HaskellQconidImpl(ASTNode node) {
     super(node);

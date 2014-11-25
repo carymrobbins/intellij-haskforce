@@ -5,10 +5,10 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellAtype extends PsiElement {
+public interface HaskellAtype extends HaskellCompositeElement {
 
-  @Nullable
-  HaskellAtype getAtype();
+  @NotNull
+  List<HaskellAtype> getAtypeList();
 
   @NotNull
   List<HaskellCtype> getCtypeList();
@@ -22,23 +22,17 @@ public interface HaskellAtype extends PsiElement {
   @Nullable
   HaskellPstringtoken getPstringtoken();
 
-  @Nullable
-  HaskellTypee getTypee();
+  @NotNull
+  List<HaskellTypee> getTypeeList();
 
   @Nullable
   HaskellTyvar getTyvar();
 
-  @Nullable
-  HaskellVars getVars();
-
-  @Nullable
-  PsiElement getDoublecolon();
+  @NotNull
+  List<HaskellVars> getVarsList();
 
   @Nullable
   PsiElement getDoublehash();
-
-  @Nullable
-  PsiElement getExclamation();
 
   @Nullable
   PsiElement getHash();

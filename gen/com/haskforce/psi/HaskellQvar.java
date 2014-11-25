@@ -5,7 +5,7 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellQvar extends PsiElement {
+public interface HaskellQvar extends HaskellCompositeElement {
 
   @Nullable
   HaskellQvarid getQvarid();

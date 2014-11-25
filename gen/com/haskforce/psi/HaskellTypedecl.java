@@ -5,10 +5,19 @@ import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 
-public interface HaskellTypedecl extends PsiElement {
+public interface HaskellTypedecl extends HaskellCompositeElement {
 
   @NotNull
   List<HaskellTypee> getTypeeList();
+
+  @Nullable
+  PsiElement getFamilytoken();
+
+  @Nullable
+  PsiElement getInstance();
+
+  @NotNull
+  PsiElement getType();
 
   @Nullable
   PsiElement getEquals();

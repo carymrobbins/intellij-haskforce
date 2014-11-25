@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellTypeeImpl extends ASTWrapperPsiElement implements HaskellTypee {
+public class HaskellTypeeImpl extends HaskellCompositeElementImpl implements HaskellTypee {
 
   public HaskellTypeeImpl(ASTNode node) {
     super(node);
@@ -24,8 +23,8 @@ public class HaskellTypeeImpl extends ASTWrapperPsiElement implements HaskellTyp
 
   @Override
   @NotNull
-  public HaskellAtype getAtype() {
-    return findNotNullChildByClass(HaskellAtype.class);
+  public List<HaskellAtype> getAtypeList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellAtype.class);
   }
 
   @Override

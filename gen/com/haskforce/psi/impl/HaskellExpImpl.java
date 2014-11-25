@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellExpImpl extends ASTWrapperPsiElement implements HaskellExp {
+public class HaskellExpImpl extends HaskellCompositeElementImpl implements HaskellExp {
 
   public HaskellExpImpl(ASTNode node) {
     super(node);
@@ -41,15 +40,15 @@ public class HaskellExpImpl extends ASTWrapperPsiElement implements HaskellExp {
   }
 
   @Override
-  @Nullable
-  public HaskellFunorpatdecl getFunorpatdecl() {
-    return findChildByClass(HaskellFunorpatdecl.class);
+  @NotNull
+  public List<HaskellFunorpatdecl> getFunorpatdeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellFunorpatdecl.class);
   }
 
   @Override
-  @Nullable
-  public HaskellGendecl getGendecl() {
-    return findChildByClass(HaskellGendecl.class);
+  @NotNull
+  public List<HaskellGendecl> getGendeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellGendecl.class);
   }
 
   @Override
@@ -95,9 +94,9 @@ public class HaskellExpImpl extends ASTWrapperPsiElement implements HaskellExp {
   }
 
   @Override
-  @Nullable
-  public HaskellStmts getStmts() {
-    return findChildByClass(HaskellStmts.class);
+  @NotNull
+  public List<HaskellStmts> getStmtsList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellStmts.class);
   }
 
   @Override
@@ -120,12 +119,6 @@ public class HaskellExpImpl extends ASTWrapperPsiElement implements HaskellExp {
 
   @Override
   @Nullable
-  public PsiElement getBackslash() {
-    return findChildByType(BACKSLASH);
-  }
-
-  @Override
-  @Nullable
   public PsiElement getDoublearrow() {
     return findChildByType(DOUBLEARROW);
   }
@@ -134,60 +127,6 @@ public class HaskellExpImpl extends ASTWrapperPsiElement implements HaskellExp {
   @Nullable
   public PsiElement getDoublecolon() {
     return findChildByType(DOUBLECOLON);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getDoubleperiod() {
-    return findChildByType(DOUBLEPERIOD);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getIdsplice() {
-    return findChildByType(IDSPLICE);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getLbrace() {
-    return findChildByType(LBRACE);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getLunboxparen() {
-    return findChildByType(LUNBOXPAREN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getParensplice() {
-    return findChildByType(PARENSPLICE);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getRbrace() {
-    return findChildByType(RBRACE);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getRunboxparen() {
-    return findChildByType(RUNBOXPAREN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getSinglequote() {
-    return findChildByType(SINGLEQUOTE);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getThquote() {
-    return findChildByType(THQUOTE);
   }
 
 }

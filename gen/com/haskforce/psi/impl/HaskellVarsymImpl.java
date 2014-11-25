@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellVarsymImpl extends ASTWrapperPsiElement implements HaskellVarsym {
+public class HaskellVarsymImpl extends HaskellCompositeElementImpl implements HaskellVarsym {
 
   public HaskellVarsymImpl(ASTNode node) {
     super(node);
@@ -20,6 +19,12 @@ public class HaskellVarsymImpl extends ASTWrapperPsiElement implements HaskellVa
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitVarsym(this);
     else super.accept(visitor);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getVarsymtok() {
+    return findChildByType(VARSYMTOK);
   }
 
   @Override

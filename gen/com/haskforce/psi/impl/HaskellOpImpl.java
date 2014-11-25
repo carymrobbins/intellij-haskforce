@@ -8,10 +8,9 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.haskforce.psi.*;
 
-public class HaskellOpImpl extends ASTWrapperPsiElement implements HaskellOp {
+public class HaskellOpImpl extends HaskellCompositeElementImpl implements HaskellOp {
 
   public HaskellOpImpl(ASTNode node) {
     super(node);
