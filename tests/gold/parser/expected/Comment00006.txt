@@ -10,11 +10,11 @@ Haskell File
   PsiComment(HaskellTokenType.commenttext)('-}')
   PsiComment(HaskellTokenType.commenttext)('\n')
   PsiComment(HaskellTokenType.-})('-}')
-  HaskellModuledeclImpl(MODULEDECL)
+  MODULEDECL
     PsiElement(HaskellTokenType.module)('module')
-    HaskellQconidImpl(QCONID)
-      HaskellConidImpl(CONID)
+    QCONID
+      CONID
         PsiElement(HaskellTokenType.conidRegexp)('Comment00006')
     PsiElement(HaskellTokenType.where)('where')
-  HaskellBodyImpl(BODY)
+  BODY
     <empty list>

@@ -1,59 +1,59 @@
 Haskell File
-  HaskellModuledeclImpl(MODULEDECL)
+  MODULEDECL
     PsiElement(HaskellTokenType.module)('module')
-    HaskellQconidImpl(QCONID)
-      HaskellConidImpl(CONID)
+    QCONID
+      CONID
         PsiElement(HaskellTokenType.conidRegexp)('Layout00021')
     PsiElement(HaskellTokenType.where)('where')
-  HaskellBodyImpl(BODY)
-    HaskellFunorpatdeclImpl(FUNORPATDECL)
-      HaskellVaridImpl(VARID)
+  BODY
+    FUNORPATDECL
+      VARID
         PsiElement(HaskellTokenType.varidRegexp)('runGhcModT')
-      HaskellVaridImpl(VARID)
+      VARID
         PsiElement(HaskellTokenType.varidRegexp)('opt')
-      HaskellVaridImpl(VARID)
+      VARID
         PsiElement(HaskellTokenType.varidRegexp)('action')
-      HaskellRhsImpl(RHS)
+      RHS
         PsiElement(HaskellTokenType.=)('=')
-        HaskellExpImpl(EXP)
+        EXP
           PsiElement(HaskellTokenType.do)('do')
-          HaskellStmtsImpl(STMTS)
-            HaskellExpImpl(EXP)
+          STMTS
+            EXP
               PsiElement(HaskellTokenType.()('(')
-              HaskellExpImpl(EXP)
-                HaskellQvarImpl(QVAR)
-                  HaskellQvaridImpl(QVARID)
-                    HaskellVaridImpl(VARID)
+              EXP
+                QVAR
+                  QVARID
+                    VARID
                       PsiElement(HaskellTokenType.varidRegexp)('f')
-                HaskellQopImpl(QOP)
-                  HaskellQvaropImpl(QVAROP)
-                    HaskellQvarsymImpl(QVARSYM)
-                      HaskellVarsymImpl(VARSYM)
+                QOP
+                  QVAROP
+                    QVARSYM
+                      VARSYM
                         PsiElement(HaskellTokenType.$)('$')
                 PsiElement(HaskellTokenType.do)('do')
-                HaskellStmtsImpl(STMTS)
-                  HaskellExpImpl(EXP)
-                    HaskellQvarImpl(QVAR)
-                      HaskellQvaridImpl(QVARID)
-                        HaskellVaridImpl(VARID)
+                STMTS
+                  EXP
+                    QVAR
+                      QVARID
+                        VARID
                           PsiElement(HaskellTokenType.varidRegexp)('action')
               PsiElement(HaskellTokenType.))(')')
-    HaskellFunorpatdeclImpl(FUNORPATDECL)
-      HaskellVaridImpl(VARID)
+    FUNORPATDECL
+      VARID
         PsiElement(HaskellTokenType.varidRegexp)('runGhcModT'')
-      HaskellVaridImpl(VARID)
+      VARID
         PsiElement(HaskellTokenType.varidRegexp)('a')
-      HaskellRhsImpl(RHS)
+      RHS
         PsiElement(HaskellTokenType.=)('=')
-        HaskellExpImpl(EXP)
+        EXP
           PsiElement(HaskellTokenType.do)('do')
-          HaskellStmtsImpl(STMTS)
-            HaskellExpImpl(EXP)
-              HaskellQvarImpl(QVAR)
-                HaskellQvaridImpl(QVARID)
-                  HaskellVaridImpl(VARID)
+          STMTS
+            EXP
+              QVAR
+                QVARID
+                  VARID
                     PsiElement(HaskellTokenType.varidRegexp)('return')
-              HaskellQvarImpl(QVAR)
-                HaskellQvaridImpl(QVARID)
-                  HaskellVaridImpl(VARID)
+              QVAR
+                QVARID
+                  VARID
                     PsiElement(HaskellTokenType.varidRegexp)('res')

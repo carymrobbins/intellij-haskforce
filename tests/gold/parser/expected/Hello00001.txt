@@ -1,17 +1,17 @@
 Haskell File
-  HaskellBodyImpl(BODY)
-    HaskellFunorpatdeclImpl(FUNORPATDECL)
-      HaskellPatImpl(PAT)
-        HaskellVaridImpl(VARID)
+  BODY
+    FUNORPATDECL
+      PAT
+        VARID
           PsiElement(HaskellTokenType.varidRegexp)('main')
-      HaskellRhsImpl(RHS)
+      RHS
         PsiElement(HaskellTokenType.=)('=')
-        HaskellExpImpl(EXP)
-          HaskellQvarImpl(QVAR)
-            HaskellQvaridImpl(QVARID)
-              HaskellVaridImpl(VARID)
+        EXP
+          QVAR
+            QVARID
+              VARID
                 PsiElement(HaskellTokenType.varidRegexp)('print')
-          HaskellPstringtokenImpl(PSTRINGTOKEN)
+          PSTRINGTOKEN
             PsiElement(HaskellTokenType.")('"')
             PsiElement(HaskellTokenType.STRINGTOKEN)('Hello, World!')
             PsiElement(HaskellTokenType.")('"')

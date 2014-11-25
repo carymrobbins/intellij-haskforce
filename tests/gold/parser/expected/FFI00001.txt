@@ -1,73 +1,73 @@
 Haskell File
-  HaskellModuledeclImpl(MODULEDECL)
+  MODULEDECL
     PsiElement(HaskellTokenType.module)('module')
-    HaskellQconidImpl(QCONID)
-      HaskellConidImpl(CONID)
+    QCONID
+      CONID
         PsiElement(HaskellTokenType.conidRegexp)('FFI00001')
     PsiElement(HaskellTokenType.where)('where')
-  HaskellBodyImpl(BODY)
-    HaskellForeigndeclImpl(FOREIGNDECL)
+  BODY
+    FOREIGNDECL
       PsiElement(HaskellTokenType.foreign)('foreign')
       PsiElement(HaskellTokenType.import)('import')
       PsiElement(HaskellTokenType.varidRegexp)('ccall')
       PsiElement(HaskellTokenType.varidRegexp)('unsafe')
-      HaskellPstringtokenImpl(PSTRINGTOKEN)
+      PSTRINGTOKEN
         PsiElement(HaskellTokenType.")('"')
         PsiElement(HaskellTokenType.STRINGTOKEN)('wool-common.h wool_init')
         PsiElement(HaskellTokenType.")('"')
-      HaskellVaridImpl(VARID)
+      VARID
         PsiElement(HaskellTokenType.varidRegexp)('initWool')
       PsiElement(HaskellTokenType.::)('::')
-      HaskellQtyconImpl(QTYCON)
-        HaskellTyconImpl(TYCON)
-          HaskellConidImpl(CONID)
+      QTYCON
+        TYCON
+          CONID
             PsiElement(HaskellTokenType.conidRegexp)('CInt')
       PsiElement(HaskellTokenType.->)('->')
-      HaskellQtyconImpl(QTYCON)
-        HaskellTyconImpl(TYCON)
-          HaskellConidImpl(CONID)
+      QTYCON
+        TYCON
+          CONID
             PsiElement(HaskellTokenType.conidRegexp)('Ptr')
-      HaskellAtypeImpl(ATYPE)
-        HaskellOqtyconImpl(OQTYCON)
-          HaskellQtyconImpl(QTYCON)
-            HaskellTyconImpl(TYCON)
-              HaskellConidImpl(CONID)
+      ATYPE
+        OQTYCON
+          QTYCON
+            TYCON
+              CONID
                 PsiElement(HaskellTokenType.conidRegexp)('CString')
       PsiElement(HaskellTokenType.->)('->')
-      HaskellQtyconImpl(QTYCON)
-        HaskellTyconImpl(TYCON)
-          HaskellConidImpl(CONID)
+      QTYCON
+        TYCON
+          CONID
             PsiElement(HaskellTokenType.conidRegexp)('IO')
-      HaskellAtypeImpl(ATYPE)
-        HaskellOqtyconImpl(OQTYCON)
-          HaskellQtyconImpl(QTYCON)
-            HaskellTyconImpl(TYCON)
-              HaskellConidImpl(CONID)
+      ATYPE
+        OQTYCON
+          QTYCON
+            TYCON
+              CONID
                 PsiElement(HaskellTokenType.conidRegexp)('CInt')
-    HaskellForeigndeclImpl(FOREIGNDECL)
+    FOREIGNDECL
       PsiElement(HaskellTokenType.foreign)('foreign')
       PsiElement(HaskellTokenType.export)('export')
       PsiElement(HaskellTokenType.varidRegexp)('ccall')
-      HaskellVaridImpl(VARID)
+      VARID
         PsiElement(HaskellTokenType.varidRegexp)('id')
       PsiElement(HaskellTokenType.::)('::')
-      HaskellQtyconImpl(QTYCON)
-        HaskellTyconImpl(TYCON)
-          HaskellConidImpl(CONID)
+      QTYCON
+        TYCON
+          CONID
             PsiElement(HaskellTokenType.conidRegexp)('Int')
       PsiElement(HaskellTokenType.->)('->')
-      HaskellQtyconImpl(QTYCON)
-        HaskellTyconImpl(TYCON)
-          HaskellConidImpl(CONID)
+      QTYCON
+        TYCON
+          CONID
             PsiElement(HaskellTokenType.conidRegexp)('Int')
       PsiElement(HaskellTokenType.->)('->')
-      HaskellQtyconImpl(QTYCON)
-        HaskellTyconImpl(TYCON)
-          HaskellConidImpl(CONID)
+      QTYCON
+        TYCON
+          CONID
             PsiElement(HaskellTokenType.conidRegexp)('IO')
-      HaskellAtypeImpl(ATYPE)
-        HaskellOqtyconImpl(OQTYCON)
-          HaskellQtyconImpl(QTYCON)
-            HaskellTyconImpl(TYCON)
-              HaskellConidImpl(CONID)
+      ATYPE
+        OQTYCON
+          QTYCON
+            TYCON
+              CONID
                 PsiElement(HaskellTokenType.conidRegexp)('CString')

@@ -1,35 +1,35 @@
 Haskell File
-  HaskellModuledeclImpl(MODULEDECL)
+  MODULEDECL
     PsiElement(HaskellTokenType.module)('module')
-    HaskellQconidImpl(QCONID)
-      HaskellConidImpl(CONID)
+    QCONID
+      CONID
         PsiElement(HaskellTokenType.conidRegexp)('Layout00022')
     PsiElement(HaskellTokenType.where)('where')
   PsiComment(HaskellTokenType.comment)('-- We don't want to parse the following as a shebang.\n')
-  HaskellBodyImpl(BODY)
-    HaskellFunorpatdeclImpl(FUNORPATDECL)
-      HaskellPatImpl(PAT)
-        HaskellVaridImpl(VARID)
+  BODY
+    FUNORPATDECL
+      PAT
+        VARID
           PsiElement(HaskellTokenType.varidRegexp)('x')
-      HaskellVaropImpl(VAROP)
-        HaskellVarsymImpl(VARSYM)
+      VAROP
+        VARSYM
           PsiElement(HaskellTokenType.Varsym)('#!')
-      HaskellPatImpl(PAT)
-        HaskellVaridImpl(VARID)
+      PAT
+        VARID
           PsiElement(HaskellTokenType.varidRegexp)('y')
-      HaskellRhsImpl(RHS)
+      RHS
         PsiElement(HaskellTokenType.=)('=')
-        HaskellExpImpl(EXP)
-          HaskellQvarImpl(QVAR)
-            HaskellQvaridImpl(QVARID)
-              HaskellVaridImpl(VARID)
+        EXP
+          QVAR
+            QVARID
+              VARID
                 PsiElement(HaskellTokenType.varidRegexp)('x')
-          HaskellQopImpl(QOP)
-            HaskellQvaropImpl(QVAROP)
-              HaskellQvarsymImpl(QVARSYM)
-                HaskellVarsymImpl(VARSYM)
+          QOP
+            QVAROP
+              QVARSYM
+                VARSYM
                   PsiElement(HaskellTokenType.*)('*')
-          HaskellQvarImpl(QVAR)
-            HaskellQvaridImpl(QVARID)
-              HaskellVaridImpl(VARID)
+          QVAR
+            QVARID
+              VARID
                 PsiElement(HaskellTokenType.varidRegexp)('y')

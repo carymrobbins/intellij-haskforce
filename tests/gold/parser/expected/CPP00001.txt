@@ -1,18 +1,18 @@
 Haskell File
-  HaskellPpragmaImpl(PPRAGMA)
+  PPRAGMA
     PsiElement(HaskellTokenType.{-#)('{-#')
     PsiElement(HaskellTokenType.PRAGMA)('LANGUAGE')
     PsiElement(HaskellTokenType.PRAGMA)('CPP')
     PsiElement(HaskellTokenType.#-})('#-}')
-  HaskellModuledeclImpl(MODULEDECL)
+  MODULEDECL
     PsiElement(HaskellTokenType.module)('module')
-    HaskellQconidImpl(QCONID)
-      HaskellConidImpl(CONID)
+    QCONID
+      CONID
         PsiElement(HaskellTokenType.conidRegexp)('CPP00001')
     PsiElement(HaskellTokenType.where)('where')
   PsiComment(HaskellTokenType.CPPIF)('#if __GLASGOW_HASKELL__ < 708')
   PsiComment(HaskellTokenType.CPPDEFINE)('#define DIFFERENT_MONADIO 1')
   PsiComment(HaskellTokenType.CPPDEFINE)('#define MONADIO_INSTANCES 1')
   PsiComment(HaskellTokenType.#endif)('#endif')
-  HaskellBodyImpl(BODY)
+  BODY
     <empty list>

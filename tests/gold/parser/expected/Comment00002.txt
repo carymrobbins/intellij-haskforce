@@ -1,12 +1,12 @@
 Haskell File
-  HaskellModuledeclImpl(MODULEDECL)
+  MODULEDECL
     PsiElement(HaskellTokenType.module)('module')
-    HaskellQconidImpl(QCONID)
-      HaskellConidImpl(CONID)
+    QCONID
+      CONID
         PsiElement(HaskellTokenType.conidRegexp)('Comment00002')
     PsiElement(HaskellTokenType.where)('where')
   PsiComment(HaskellTokenType.{-)('{-')
   PsiComment(HaskellTokenType.commenttext)(' NOTES:\n\nThe trick of doing a copy at the end, i.e. `tellProg [copyProg loc\ne]`, when compiling WithArray is important.\n')
   PsiComment(HaskellTokenType.-})('-}')
-  HaskellBodyImpl(BODY)
+  BODY
     <empty list>

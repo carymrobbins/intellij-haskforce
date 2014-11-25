@@ -1,56 +1,56 @@
 Haskell File
-  HaskellModuledeclImpl(MODULEDECL)
+  MODULEDECL
     PsiElement(HaskellTokenType.module)('module')
-    HaskellQconidImpl(QCONID)
-      HaskellConidImpl(CONID)
+    QCONID
+      CONID
         PsiElement(HaskellTokenType.conidRegexp)('Layout00004')
     PsiElement(HaskellTokenType.where)('where')
-  HaskellBodyImpl(BODY)
-    HaskellFunorpatdeclImpl(FUNORPATDECL)
-      HaskellVaridImpl(VARID)
+  BODY
+    FUNORPATDECL
+      VARID
         PsiElement(HaskellTokenType.varidRegexp)('f')
-      HaskellVaridImpl(VARID)
+      VARID
         PsiElement(HaskellTokenType.varidRegexp)('x')
-      HaskellRhsImpl(RHS)
+      RHS
         PsiElement(HaskellTokenType.=)('=')
-        HaskellExpImpl(EXP)
-          HaskellQvarImpl(QVAR)
-            HaskellQvaridImpl(QVARID)
-              HaskellVaridImpl(VARID)
+        EXP
+          QVAR
+            QVARID
+              VARID
                 PsiElement(HaskellTokenType.varidRegexp)('x')
         PsiElement(HaskellTokenType.where)('where')
-        HaskellFunorpatdeclImpl(FUNORPATDECL)
-          HaskellPatImpl(PAT)
-            HaskellVaridImpl(VARID)
+        FUNORPATDECL
+          PAT
+            VARID
               PsiElement(HaskellTokenType.varidRegexp)('start')
-          HaskellRhsImpl(RHS)
+          RHS
             PsiElement(HaskellTokenType.=)('=')
-            HaskellExpImpl(EXP)
-              HaskellQconImpl(QCON)
-                HaskellQconidImpl(QCONID)
-                  HaskellConidImpl(CONID)
+            EXP
+              QCON
+                QCONID
+                  CONID
                     PsiElement(HaskellTokenType.conidRegexp)('SrcLoc')
               PsiElement(HaskellTokenType.{)('{')
-              HaskellQvarImpl(QVAR)
-                HaskellQvaridImpl(QVARID)
-                  HaskellVaridImpl(VARID)
+              QVAR
+                QVARID
+                  VARID
                     PsiElement(HaskellTokenType.varidRegexp)('srcFilename')
               PsiElement(HaskellTokenType.=)('=')
-              HaskellExpImpl(EXP)
-                HaskellQvarImpl(QVAR)
-                  HaskellQvaridImpl(QVARID)
-                    HaskellVaridImpl(VARID)
+              EXP
+                QVAR
+                  QVARID
+                    VARID
                       PsiElement(HaskellTokenType.varidRegexp)('parseFilename')
-                HaskellQvarImpl(QVAR)
-                  HaskellQvaridImpl(QVARID)
-                    HaskellVaridImpl(VARID)
+                QVAR
+                  QVARID
+                    VARID
                       PsiElement(HaskellTokenType.varidRegexp)('mode')
               PsiElement(HaskellTokenType.,)(',')
-              HaskellQvarImpl(QVAR)
-                HaskellQvaridImpl(QVARID)
-                  HaskellVaridImpl(VARID)
+              QVAR
+                QVARID
+                  VARID
                     PsiElement(HaskellTokenType.varidRegexp)('srcLine')
               PsiElement(HaskellTokenType.=)('=')
-              HaskellExpImpl(EXP)
+              EXP
                 PsiElement(HaskellTokenType.integertoken)('1')
               PsiElement(HaskellTokenType.})('}')

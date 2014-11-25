@@ -1,69 +1,69 @@
 Haskell File
-  HaskellModuledeclImpl(MODULEDECL)
+  MODULEDECL
     PsiElement(HaskellTokenType.module)('module')
-    HaskellQconidImpl(QCONID)
-      HaskellConidImpl(CONID)
+    QCONID
+      CONID
         PsiElement(HaskellTokenType.conidRegexp)('Import1')
     PsiElement(HaskellTokenType.where)('where')
-  HaskellBodyImpl(BODY)
-    HaskellImpdeclImpl(IMPDECL)
+  BODY
+    IMPDECL
       PsiElement(HaskellTokenType.import)('import')
       PsiElement(HaskellTokenType.qualified)('qualified')
-      HaskellQconidImpl(QCONID)
-        HaskellConidImpl(CONID)
+      QCONID
+        CONID
           PsiElement(HaskellTokenType.conidRegexp)('Prelude')
       PsiElement(HaskellTokenType.hiding)('hiding')
       PsiElement(HaskellTokenType.()('(')
-      HaskellImporttImpl(IMPORTT)
-        HaskellVaridImpl(VARID)
+      IMPORTT
+        VARID
           PsiElement(HaskellTokenType.varidRegexp)('zipWith')
       PsiElement(HaskellTokenType.,)(',')
-      HaskellImporttImpl(IMPORTT)
-        HaskellVaridImpl(VARID)
+      IMPORTT
+        VARID
           PsiElement(HaskellTokenType.varidRegexp)('head')
       PsiElement(HaskellTokenType.))(')')
-    HaskellImpdeclImpl(IMPDECL)
+    IMPDECL
       PsiElement(HaskellTokenType.import)('import')
-      HaskellQconidImpl(QCONID)
-        HaskellConidImpl(CONID)
+      QCONID
+        CONID
           PsiElement(HaskellTokenType.conidRegexp)('Data')
         PsiElement(HaskellTokenType..)('.')
-        HaskellConidImpl(CONID)
+        CONID
           PsiElement(HaskellTokenType.conidRegexp)('Maybe')
       PsiElement(HaskellTokenType.()('(')
-      HaskellImporttImpl(IMPORTT)
-        HaskellVaridImpl(VARID)
+      IMPORTT
+        VARID
           PsiElement(HaskellTokenType.varidRegexp)('fromMaybe')
       PsiElement(HaskellTokenType.,)(',')
-      HaskellImporttImpl(IMPORTT)
-        HaskellVaridImpl(VARID)
+      IMPORTT
+        VARID
           PsiElement(HaskellTokenType.varidRegexp)('isJust')
       PsiElement(HaskellTokenType.))(')')
-    HaskellImpdeclImpl(IMPDECL)
+    IMPDECL
       PsiElement(HaskellTokenType.import)('import')
       PsiElement(HaskellTokenType.qualified)('qualified')
-      HaskellQconidImpl(QCONID)
-        HaskellConidImpl(CONID)
+      QCONID
+        CONID
           PsiElement(HaskellTokenType.conidRegexp)('Data')
         PsiElement(HaskellTokenType..)('.')
-        HaskellConidImpl(CONID)
+        CONID
           PsiElement(HaskellTokenType.conidRegexp)('Maybe')
       PsiElement(HaskellTokenType.()('(')
-      HaskellImporttImpl(IMPORTT)
-        HaskellTyconImpl(TYCON)
-          HaskellConidImpl(CONID)
+      IMPORTT
+        TYCON
+          CONID
             PsiElement(HaskellTokenType.conidRegexp)('Maybe')
         PsiElement(HaskellTokenType.()('(')
         PsiElement(HaskellTokenType...)('..')
         PsiElement(HaskellTokenType.))(')')
       PsiElement(HaskellTokenType.))(')')
-    HaskellImpdeclImpl(IMPDECL)
+    IMPDECL
       PsiElement(HaskellTokenType.import)('import')
       PsiElement(HaskellTokenType.qualified)('qualified')
-      HaskellQconidImpl(QCONID)
-        HaskellConidImpl(CONID)
+      QCONID
+        CONID
           PsiElement(HaskellTokenType.conidRegexp)('Prelude')
       PsiElement(HaskellTokenType.as)('as')
-      HaskellQconidImpl(QCONID)
-        HaskellConidImpl(CONID)
+      QCONID
+        CONID
           PsiElement(HaskellTokenType.conidRegexp)('P')

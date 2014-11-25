@@ -1,65 +1,65 @@
 Haskell File
-  HaskellModuledeclImpl(MODULEDECL)
+  MODULEDECL
     PsiElement(HaskellTokenType.module)('module')
-    HaskellQconidImpl(QCONID)
-      HaskellConidImpl(CONID)
+    QCONID
+      CONID
         PsiElement(HaskellTokenType.conidRegexp)('TempHask00001')
     PsiElement(HaskellTokenType.where)('where')
-  HaskellBodyImpl(BODY)
-    HaskellGendeclImpl(GENDECL)
-      HaskellVarsImpl(VARS)
-        HaskellVaridImpl(VARID)
+  BODY
+    GENDECL
+      VARS
+        VARID
           PsiElement(HaskellTokenType.varidRegexp)('rewriteType')
       PsiElement(HaskellTokenType.::)('::')
-      HaskellCtypeImpl(CTYPE)
-        HaskellTypeeImpl(TYPEE)
-          HaskellAtypeImpl(ATYPE)
-            HaskellOqtyconImpl(OQTYCON)
-              HaskellQtyconImpl(QTYCON)
-                HaskellTyconImpl(TYCON)
-                  HaskellConidImpl(CONID)
+      CTYPE
+        TYPEE
+          ATYPE
+            OQTYCON
+              QTYCON
+                TYCON
+                  CONID
                     PsiElement(HaskellTokenType.conidRegexp)('Type')
           PsiElement(HaskellTokenType.->)('->')
-          HaskellTypeeImpl(TYPEE)
-            HaskellAtypeImpl(ATYPE)
-              HaskellOqtyconImpl(OQTYCON)
-                HaskellQtyconImpl(QTYCON)
-                  HaskellTyconImpl(TYCON)
-                    HaskellConidImpl(CONID)
+          TYPEE
+            ATYPE
+              OQTYCON
+                QTYCON
+                  TYCON
+                    CONID
                       PsiElement(HaskellTokenType.conidRegexp)('Q')
-            HaskellAtypeImpl(ATYPE)
-              HaskellOqtyconImpl(OQTYCON)
-                HaskellQtyconImpl(QTYCON)
-                  HaskellTyconImpl(TYCON)
-                    HaskellConidImpl(CONID)
+            ATYPE
+              OQTYCON
+                QTYCON
+                  TYCON
+                    CONID
                       PsiElement(HaskellTokenType.conidRegexp)('Type')
-    HaskellFunorpatdeclImpl(FUNORPATDECL)
-      HaskellVaridImpl(VARID)
+    FUNORPATDECL
+      VARID
         PsiElement(HaskellTokenType.varidRegexp)('rewriteType')
-      HaskellVaridImpl(VARID)
+      VARID
         PsiElement(HaskellTokenType.varidRegexp)('t')
-      HaskellRhsImpl(RHS)
+      RHS
         PsiElement(HaskellTokenType.=)('=')
-        HaskellExpImpl(EXP)
-          HaskellQvarImpl(QVAR)
-            HaskellQvaridImpl(QVARID)
-              HaskellVaridImpl(VARID)
+        EXP
+          QVAR
+            QVARID
+              VARID
                 PsiElement(HaskellTokenType.varidRegexp)('applyTF')
           PsiElement(HaskellTokenType.'')('''')
-          HaskellQconImpl(QCON)
-            HaskellQconidImpl(QCONID)
-              HaskellConidImpl(CONID)
+          QCON
+            QCONID
+              CONID
                 PsiElement(HaskellTokenType.conidRegexp)('Internal')
-          HaskellQvarImpl(QVAR)
-            HaskellQvaridImpl(QVARID)
-              HaskellVaridImpl(VARID)
+          QVAR
+            QVARID
+              VARID
                 PsiElement(HaskellTokenType.varidRegexp)('t')
-          HaskellQopImpl(QOP)
-            HaskellQvaropImpl(QVAROP)
-              HaskellQvarsymImpl(QVARSYM)
-                HaskellVarsymImpl(VARSYM)
+          QOP
+            QVAROP
+              QVARSYM
+                VARSYM
                   PsiElement(HaskellTokenType.Varsym)('>>=')
-          HaskellQvarImpl(QVAR)
-            HaskellQvaridImpl(QVARID)
-              HaskellVaridImpl(VARID)
+          QVAR
+            QVARID
+              VARID
                 PsiElement(HaskellTokenType.varidRegexp)('expandTF')

@@ -1,10 +1,10 @@
 Haskell File
-  HaskellModuledeclImpl(MODULEDECL)
+  MODULEDECL
     PsiElement(HaskellTokenType.module)('module')
-    HaskellQconidImpl(QCONID)
-      HaskellConidImpl(CONID)
+    QCONID
+      CONID
         PsiElement(HaskellTokenType.conidRegexp)('Pragma00004')
-    HaskellPpragmaImpl(PPRAGMA)
+    PPRAGMA
       PsiElement(HaskellTokenType.{-#)('{-#')
       PsiElement(HaskellTokenType.PRAGMA)('WARNING')
       PsiElement(HaskellTokenType.PRAGMA)('"This')
@@ -14,5 +14,5 @@ Haskell File
       PsiElement(HaskellTokenType.PRAGMA)('interface."')
       PsiElement(HaskellTokenType.#-})('#-}')
     PsiElement(HaskellTokenType.where)('where')
-  HaskellBodyImpl(BODY)
+  BODY
     <empty list>

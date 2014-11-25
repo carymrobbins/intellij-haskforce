@@ -1,19 +1,19 @@
 Haskell File
-  HaskellModuledeclImpl(MODULEDECL)
+  MODULEDECL
     PsiElement(HaskellTokenType.module)('module')
-    HaskellQconidImpl(QCONID)
-      HaskellConidImpl(CONID)
+    QCONID
+      CONID
         PsiElement(HaskellTokenType.conidRegexp)('String00002')
     PsiElement(HaskellTokenType.where)('where')
-  HaskellBodyImpl(BODY)
-    HaskellFunorpatdeclImpl(FUNORPATDECL)
-      HaskellPatImpl(PAT)
-        HaskellVaridImpl(VARID)
+  BODY
+    FUNORPATDECL
+      PAT
+        VARID
           PsiElement(HaskellTokenType.varidRegexp)('s')
-      HaskellRhsImpl(RHS)
+      RHS
         PsiElement(HaskellTokenType.=)('=')
-        HaskellExpImpl(EXP)
-          HaskellPstringtokenImpl(PSTRINGTOKEN)
+        EXP
+          PSTRINGTOKEN
             PsiElement(HaskellTokenType.")('"')
             PsiElement(HaskellTokenType.STRINGTOKEN)('\\n    \Remove any backslash (except the first one) and put it back.\\n    \The syntax highlighting will break!\\n    \To fix, modify the first line of this string literal.\\n\')
             PsiElement(HaskellTokenType.")('"')

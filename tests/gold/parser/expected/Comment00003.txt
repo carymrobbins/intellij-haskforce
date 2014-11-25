@@ -1,8 +1,8 @@
 Haskell File
-  HaskellModuledeclImpl(MODULEDECL)
+  MODULEDECL
     PsiElement(HaskellTokenType.module)('module')
-    HaskellQconidImpl(QCONID)
-      HaskellConidImpl(CONID)
+    QCONID
+      CONID
         PsiElement(HaskellTokenType.conidRegexp)('Comment00003')
     PsiElement(HaskellTokenType.where)('where')
   PsiComment(HaskellTokenType.{-)('{-')
@@ -20,5 +20,5 @@ Haskell File
   PsiComment(HaskellTokenType.commenttext)('-')
   PsiComment(HaskellTokenType.commenttext)('\n\nWe should parse this as a comment.\n\n')
   PsiComment(HaskellTokenType.-})('-}')
-  HaskellBodyImpl(BODY)
+  BODY
     <empty list>

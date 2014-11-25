@@ -1,56 +1,56 @@
 Haskell File
-  HaskellModuledeclImpl(MODULEDECL)
+  MODULEDECL
     PsiElement(HaskellTokenType.module)('module')
-    HaskellQconidImpl(QCONID)
-      HaskellConidImpl(CONID)
+    QCONID
+      CONID
         PsiElement(HaskellTokenType.conidRegexp)('Import00003')
     PsiElement(HaskellTokenType.where)('where')
   PsiComment(HaskellTokenType.CPPIF)('#if defined(__GLASGOW_HASKELL__) && __GLASGOW_HASKELL__ >= 708')
-  HaskellBodyImpl(BODY)
-    HaskellImpdeclImpl(IMPDECL)
+  BODY
+    IMPDECL
       PsiElement(HaskellTokenType.import)('import')
-      HaskellQconidImpl(QCONID)
-        HaskellConidImpl(CONID)
+      QCONID
+        CONID
           PsiElement(HaskellTokenType.conidRegexp)('Data')
         PsiElement(HaskellTokenType..)('.')
-        HaskellConidImpl(CONID)
+        CONID
           PsiElement(HaskellTokenType.conidRegexp)('Typeable')
       PsiElement(HaskellTokenType.()('(')
-      HaskellImporttImpl(IMPORTT)
-        HaskellTyconImpl(TYCON)
-          HaskellConidImpl(CONID)
+      IMPORTT
+        TYCON
+          CONID
             PsiElement(HaskellTokenType.conidRegexp)('Typeable')
       PsiElement(HaskellTokenType.))(')')
     PsiComment(HaskellTokenType.#else)('#else')
-    HaskellImpdeclImpl(IMPDECL)
+    IMPDECL
       PsiElement(HaskellTokenType.import)('import')
-      HaskellQconidImpl(QCONID)
-        HaskellConidImpl(CONID)
+      QCONID
+        CONID
           PsiElement(HaskellTokenType.conidRegexp)('Data')
         PsiElement(HaskellTokenType..)('.')
-        HaskellConidImpl(CONID)
+        CONID
           PsiElement(HaskellTokenType.conidRegexp)('Typeable')
       PsiElement(HaskellTokenType.()('(')
-      HaskellImporttImpl(IMPORTT)
-        HaskellTyconImpl(TYCON)
-          HaskellConidImpl(CONID)
+      IMPORTT
+        TYCON
+          CONID
             PsiElement(HaskellTokenType.conidRegexp)('Typeable')
       PsiElement(HaskellTokenType.,)(',')
-      HaskellImporttImpl(IMPORTT)
-        HaskellTyconImpl(TYCON)
-          HaskellConidImpl(CONID)
+      IMPORTT
+        TYCON
+          CONID
             PsiElement(HaskellTokenType.conidRegexp)('Typeable1')
       PsiElement(HaskellTokenType.,)(',')
-      HaskellImporttImpl(IMPORTT)
-        HaskellVaridImpl(VARID)
+      IMPORTT
+        VARID
           PsiElement(HaskellTokenType.varidRegexp)('mkTyCon3')
       PsiElement(HaskellTokenType.,)(',')
-      HaskellImporttImpl(IMPORTT)
-        HaskellVaridImpl(VARID)
+      IMPORTT
+        VARID
           PsiElement(HaskellTokenType.varidRegexp)('mkTyConApp')
       PsiElement(HaskellTokenType.,)(',')
-      HaskellImporttImpl(IMPORTT)
-        HaskellVaridImpl(VARID)
+      IMPORTT
+        VARID
           PsiElement(HaskellTokenType.varidRegexp)('typeOf')
       PsiElement(HaskellTokenType.))(')')
     PsiComment(HaskellTokenType.#endif)('#endif')

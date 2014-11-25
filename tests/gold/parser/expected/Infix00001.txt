@@ -1,36 +1,36 @@
 Haskell File
-  HaskellModuledeclImpl(MODULEDECL)
+  MODULEDECL
     PsiElement(HaskellTokenType.module)('module')
-    HaskellQconidImpl(QCONID)
-      HaskellConidImpl(CONID)
+    QCONID
+      CONID
         PsiElement(HaskellTokenType.conidRegexp)('Infix00001')
     PsiElement(HaskellTokenType.where)('where')
-  HaskellBodyImpl(BODY)
-    HaskellFunorpatdeclImpl(FUNORPATDECL)
-      HaskellPatImpl(PAT)
-        HaskellVaridImpl(VARID)
+  BODY
+    FUNORPATDECL
+      PAT
+        VARID
           PsiElement(HaskellTokenType.varidRegexp)('val')
-      HaskellRhsImpl(RHS)
+      RHS
         PsiElement(HaskellTokenType.=)('=')
-        HaskellExpImpl(EXP)
+        EXP
           PsiElement(HaskellTokenType.integertoken)('1')
-          HaskellQopImpl(QOP)
-            HaskellQvaropImpl(QVAROP)
+          QOP
+            QVAROP
               PsiElement(HaskellTokenType.`)('`')
-              HaskellQvaridImpl(QVARID)
-                HaskellConidImpl(CONID)
+              QVARID
+                CONID
                   PsiElement(HaskellTokenType.conidRegexp)('Prelude')
                 PsiElement(HaskellTokenType..)('.')
-                HaskellVaridImpl(VARID)
+                VARID
                   PsiElement(HaskellTokenType.varidRegexp)('elem')
               PsiElement(HaskellTokenType.`)('`')
           PsiElement(HaskellTokenType.[)('[')
-          HaskellExpImpl(EXP)
+          EXP
             PsiElement(HaskellTokenType.integertoken)('1')
           PsiElement(HaskellTokenType.,)(',')
-          HaskellExpImpl(EXP)
+          EXP
             PsiElement(HaskellTokenType.integertoken)('2')
           PsiElement(HaskellTokenType.,)(',')
-          HaskellExpImpl(EXP)
+          EXP
             PsiElement(HaskellTokenType.integertoken)('3')
           PsiElement(HaskellTokenType.])(']')

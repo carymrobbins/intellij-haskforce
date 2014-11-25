@@ -1,313 +1,313 @@
 Haskell File
-  HaskellModuledeclImpl(MODULEDECL)
+  MODULEDECL
     PsiElement(HaskellTokenType.module)('module')
-    HaskellQconidImpl(QCONID)
-      HaskellConidImpl(CONID)
+    QCONID
+      CONID
         PsiElement(HaskellTokenType.conidRegexp)('Fun00006')
     PsiElement(HaskellTokenType.where)('where')
-  HaskellBodyImpl(BODY)
-    HaskellImpdeclImpl(IMPDECL)
+  BODY
+    IMPDECL
       PsiElement(HaskellTokenType.import)('import')
-      HaskellQconidImpl(QCONID)
-        HaskellConidImpl(CONID)
+      QCONID
+        CONID
           PsiElement(HaskellTokenType.conidRegexp)('Prelude')
       PsiElement(HaskellTokenType.hiding)('hiding')
       PsiElement(HaskellTokenType.()('(')
-      HaskellImporttImpl(IMPORTT)
+      IMPORTT
         PsiElement(HaskellTokenType.()('(')
-        HaskellVarsymImpl(VARSYM)
+        VARSYM
           PsiElement(HaskellTokenType.Varsym)('++')
         PsiElement(HaskellTokenType.))(')')
       PsiElement(HaskellTokenType.,)(',')
-      HaskellImporttImpl(IMPORTT)
+      IMPORTT
         PsiElement(HaskellTokenType.()('(')
-        HaskellVarsymImpl(VARSYM)
+        VARSYM
           PsiElement(HaskellTokenType..)('.')
         PsiElement(HaskellTokenType.))(')')
       PsiElement(HaskellTokenType.))(')')
-    HaskellGendeclImpl(GENDECL)
-      HaskellVarsImpl(VARS)
-        HaskellVaridImpl(VARID)
+    GENDECL
+      VARS
+        VARID
           PsiElement(HaskellTokenType.varidRegexp)('rev')
       PsiElement(HaskellTokenType.::)('::')
-      HaskellCtypeImpl(CTYPE)
-        HaskellTypeeImpl(TYPEE)
-          HaskellAtypeImpl(ATYPE)
+      CTYPE
+        TYPEE
+          ATYPE
             PsiElement(HaskellTokenType.[)('[')
-            HaskellCtypeImpl(CTYPE)
-              HaskellTypeeImpl(TYPEE)
-                HaskellAtypeImpl(ATYPE)
-                  HaskellTyvarImpl(TYVAR)
-                    HaskellVaridImpl(VARID)
+            CTYPE
+              TYPEE
+                ATYPE
+                  TYVAR
+                    VARID
                       PsiElement(HaskellTokenType.varidRegexp)('a')
             PsiElement(HaskellTokenType.])(']')
           PsiElement(HaskellTokenType.->)('->')
-          HaskellTypeeImpl(TYPEE)
-            HaskellAtypeImpl(ATYPE)
+          TYPEE
+            ATYPE
               PsiElement(HaskellTokenType.[)('[')
-              HaskellCtypeImpl(CTYPE)
-                HaskellTypeeImpl(TYPEE)
-                  HaskellAtypeImpl(ATYPE)
-                    HaskellTyvarImpl(TYVAR)
-                      HaskellVaridImpl(VARID)
+              CTYPE
+                TYPEE
+                  ATYPE
+                    TYVAR
+                      VARID
                         PsiElement(HaskellTokenType.varidRegexp)('a')
               PsiElement(HaskellTokenType.])(']')
-    HaskellFunorpatdeclImpl(FUNORPATDECL)
-      HaskellVaridImpl(VARID)
+    FUNORPATDECL
+      VARID
         PsiElement(HaskellTokenType.varidRegexp)('rev')
-      HaskellVaridImpl(VARID)
+      VARID
         PsiElement(HaskellTokenType.varidRegexp)('xs')
-      HaskellRhsImpl(RHS)
+      RHS
         PsiElement(HaskellTokenType.=)('=')
-        HaskellExpImpl(EXP)
-          HaskellQvarImpl(QVAR)
-            HaskellQvaridImpl(QVARID)
-              HaskellVaridImpl(VARID)
+        EXP
+          QVAR
+            QVARID
+              VARID
                 PsiElement(HaskellTokenType.varidRegexp)('go')
           PsiElement(HaskellTokenType.[)('[')
           PsiElement(HaskellTokenType.])(']')
-          HaskellQvarImpl(QVAR)
-            HaskellQvaridImpl(QVARID)
-              HaskellVaridImpl(VARID)
+          QVAR
+            QVARID
+              VARID
                 PsiElement(HaskellTokenType.varidRegexp)('xs')
         PsiElement(HaskellTokenType.where)('where')
-        HaskellFunorpatdeclImpl(FUNORPATDECL)
-          HaskellVaridImpl(VARID)
+        FUNORPATDECL
+          VARID
             PsiElement(HaskellTokenType.varidRegexp)('go')
-          HaskellVaridImpl(VARID)
+          VARID
             PsiElement(HaskellTokenType.varidRegexp)('acc')
           PsiElement(HaskellTokenType.[)('[')
           PsiElement(HaskellTokenType.])(']')
-          HaskellRhsImpl(RHS)
+          RHS
             PsiElement(HaskellTokenType.=)('=')
-            HaskellExpImpl(EXP)
-              HaskellQvarImpl(QVAR)
-                HaskellQvaridImpl(QVARID)
-                  HaskellVaridImpl(VARID)
+            EXP
+              QVAR
+                QVARID
+                  VARID
                     PsiElement(HaskellTokenType.varidRegexp)('acc')
-        HaskellFunorpatdeclImpl(FUNORPATDECL)
-          HaskellVaridImpl(VARID)
+        FUNORPATDECL
+          VARID
             PsiElement(HaskellTokenType.varidRegexp)('go')
-          HaskellVaridImpl(VARID)
+          VARID
             PsiElement(HaskellTokenType.varidRegexp)('acc')
           PsiElement(HaskellTokenType.()('(')
-          HaskellPatImpl(PAT)
-            HaskellVaridImpl(VARID)
+          PAT
+            VARID
               PsiElement(HaskellTokenType.varidRegexp)('x')
-            HaskellQconopImpl(QCONOP)
-              HaskellGconsymImpl(GCONSYM)
+            QCONOP
+              GCONSYM
                 PsiElement(HaskellTokenType.:)(':')
-            HaskellPatImpl(PAT)
-              HaskellVaridImpl(VARID)
+            PAT
+              VARID
                 PsiElement(HaskellTokenType.varidRegexp)('xs')
           PsiElement(HaskellTokenType.))(')')
-          HaskellRhsImpl(RHS)
+          RHS
             PsiElement(HaskellTokenType.=)('=')
-            HaskellExpImpl(EXP)
-              HaskellQvarImpl(QVAR)
-                HaskellQvaridImpl(QVARID)
-                  HaskellVaridImpl(VARID)
+            EXP
+              QVAR
+                QVARID
+                  VARID
                     PsiElement(HaskellTokenType.varidRegexp)('go')
               PsiElement(HaskellTokenType.()('(')
-              HaskellExpImpl(EXP)
-                HaskellQvarImpl(QVAR)
-                  HaskellQvaridImpl(QVARID)
-                    HaskellVaridImpl(VARID)
+              EXP
+                QVAR
+                  QVARID
+                    VARID
                       PsiElement(HaskellTokenType.varidRegexp)('x')
-                HaskellQopImpl(QOP)
-                  HaskellQvaropImpl(QVAROP)
-                    HaskellQvarsymImpl(QVARSYM)
-                      HaskellVarsymImpl(VARSYM)
+                QOP
+                  QVAROP
+                    QVARSYM
+                      VARSYM
                         PsiElement(HaskellTokenType.:)(':')
-                HaskellQvarImpl(QVAR)
-                  HaskellQvaridImpl(QVARID)
-                    HaskellVaridImpl(VARID)
+                QVAR
+                  QVARID
+                    VARID
                       PsiElement(HaskellTokenType.varidRegexp)('acc')
               PsiElement(HaskellTokenType.))(')')
-              HaskellQvarImpl(QVAR)
-                HaskellQvaridImpl(QVARID)
-                  HaskellVaridImpl(VARID)
+              QVAR
+                QVARID
+                  VARID
                     PsiElement(HaskellTokenType.varidRegexp)('xs')
-    HaskellGendeclImpl(GENDECL)
-      HaskellVarsImpl(VARS)
+    GENDECL
+      VARS
         PsiElement(HaskellTokenType.()('(')
-        HaskellVarsymImpl(VARSYM)
+        VARSYM
           PsiElement(HaskellTokenType.Varsym)('++')
         PsiElement(HaskellTokenType.))(')')
       PsiElement(HaskellTokenType.::)('::')
-      HaskellCtypeImpl(CTYPE)
-        HaskellTypeeImpl(TYPEE)
-          HaskellAtypeImpl(ATYPE)
+      CTYPE
+        TYPEE
+          ATYPE
             PsiElement(HaskellTokenType.[)('[')
-            HaskellCtypeImpl(CTYPE)
-              HaskellTypeeImpl(TYPEE)
-                HaskellAtypeImpl(ATYPE)
-                  HaskellTyvarImpl(TYVAR)
-                    HaskellVaridImpl(VARID)
+            CTYPE
+              TYPEE
+                ATYPE
+                  TYVAR
+                    VARID
                       PsiElement(HaskellTokenType.varidRegexp)('a')
             PsiElement(HaskellTokenType.])(']')
           PsiElement(HaskellTokenType.->)('->')
-          HaskellTypeeImpl(TYPEE)
-            HaskellAtypeImpl(ATYPE)
+          TYPEE
+            ATYPE
               PsiElement(HaskellTokenType.[)('[')
-              HaskellCtypeImpl(CTYPE)
-                HaskellTypeeImpl(TYPEE)
-                  HaskellAtypeImpl(ATYPE)
-                    HaskellTyvarImpl(TYVAR)
-                      HaskellVaridImpl(VARID)
+              CTYPE
+                TYPEE
+                  ATYPE
+                    TYVAR
+                      VARID
                         PsiElement(HaskellTokenType.varidRegexp)('a')
               PsiElement(HaskellTokenType.])(']')
             PsiElement(HaskellTokenType.->)('->')
-            HaskellTypeeImpl(TYPEE)
-              HaskellAtypeImpl(ATYPE)
+            TYPEE
+              ATYPE
                 PsiElement(HaskellTokenType.[)('[')
-                HaskellCtypeImpl(CTYPE)
-                  HaskellTypeeImpl(TYPEE)
-                    HaskellAtypeImpl(ATYPE)
-                      HaskellTyvarImpl(TYVAR)
-                        HaskellVaridImpl(VARID)
+                CTYPE
+                  TYPEE
+                    ATYPE
+                      TYVAR
+                        VARID
                           PsiElement(HaskellTokenType.varidRegexp)('a')
                 PsiElement(HaskellTokenType.])(']')
-    HaskellFunorpatdeclImpl(FUNORPATDECL)
-      HaskellPatImpl(PAT)
+    FUNORPATDECL
+      PAT
         PsiElement(HaskellTokenType.[)('[')
         PsiElement(HaskellTokenType.])(']')
-      HaskellVaropImpl(VAROP)
-        HaskellVarsymImpl(VARSYM)
+      VAROP
+        VARSYM
           PsiElement(HaskellTokenType.Varsym)('++')
-      HaskellPatImpl(PAT)
-        HaskellVaridImpl(VARID)
+      PAT
+        VARID
           PsiElement(HaskellTokenType.varidRegexp)('ys')
-      HaskellRhsImpl(RHS)
+      RHS
         PsiElement(HaskellTokenType.=)('=')
-        HaskellExpImpl(EXP)
-          HaskellQvarImpl(QVAR)
-            HaskellQvaridImpl(QVARID)
-              HaskellVaridImpl(VARID)
+        EXP
+          QVAR
+            QVARID
+              VARID
                 PsiElement(HaskellTokenType.varidRegexp)('ys')
-    HaskellFunorpatdeclImpl(FUNORPATDECL)
-      HaskellPatImpl(PAT)
+    FUNORPATDECL
+      PAT
         PsiElement(HaskellTokenType.()('(')
-        HaskellPatImpl(PAT)
-          HaskellVaridImpl(VARID)
+        PAT
+          VARID
             PsiElement(HaskellTokenType.varidRegexp)('x')
-          HaskellQconopImpl(QCONOP)
-            HaskellGconsymImpl(GCONSYM)
+          QCONOP
+            GCONSYM
               PsiElement(HaskellTokenType.:)(':')
-          HaskellPatImpl(PAT)
-            HaskellVaridImpl(VARID)
+          PAT
+            VARID
               PsiElement(HaskellTokenType.varidRegexp)('xs')
         PsiElement(HaskellTokenType.))(')')
-      HaskellVaropImpl(VAROP)
-        HaskellVarsymImpl(VARSYM)
+      VAROP
+        VARSYM
           PsiElement(HaskellTokenType.Varsym)('++')
-      HaskellPatImpl(PAT)
-        HaskellVaridImpl(VARID)
+      PAT
+        VARID
           PsiElement(HaskellTokenType.varidRegexp)('ys')
-      HaskellRhsImpl(RHS)
+      RHS
         PsiElement(HaskellTokenType.=)('=')
-        HaskellExpImpl(EXP)
-          HaskellQvarImpl(QVAR)
-            HaskellQvaridImpl(QVARID)
-              HaskellVaridImpl(VARID)
+        EXP
+          QVAR
+            QVARID
+              VARID
                 PsiElement(HaskellTokenType.varidRegexp)('x')
-          HaskellQopImpl(QOP)
-            HaskellQvaropImpl(QVAROP)
-              HaskellQvarsymImpl(QVARSYM)
-                HaskellVarsymImpl(VARSYM)
+          QOP
+            QVAROP
+              QVARSYM
+                VARSYM
                   PsiElement(HaskellTokenType.:)(':')
           PsiElement(HaskellTokenType.()('(')
-          HaskellExpImpl(EXP)
-            HaskellQvarImpl(QVAR)
-              HaskellQvaridImpl(QVARID)
-                HaskellVaridImpl(VARID)
+          EXP
+            QVAR
+              QVARID
+                VARID
                   PsiElement(HaskellTokenType.varidRegexp)('xs')
-            HaskellQopImpl(QOP)
-              HaskellQvaropImpl(QVAROP)
-                HaskellQvarsymImpl(QVARSYM)
-                  HaskellVarsymImpl(VARSYM)
+            QOP
+              QVAROP
+                QVARSYM
+                  VARSYM
                     PsiElement(HaskellTokenType.Varsym)('++')
-            HaskellQvarImpl(QVAR)
-              HaskellQvaridImpl(QVARID)
-                HaskellVaridImpl(VARID)
+            QVAR
+              QVARID
+                VARID
                   PsiElement(HaskellTokenType.varidRegexp)('ys')
           PsiElement(HaskellTokenType.))(')')
-    HaskellFunorpatdeclImpl(FUNORPATDECL)
-      HaskellPatImpl(PAT)
+    FUNORPATDECL
+      PAT
         PsiElement(HaskellTokenType.()('(')
-        HaskellVarsymImpl(VARSYM)
+        VARSYM
           PsiElement(HaskellTokenType.Varsym)('+++')
         PsiElement(HaskellTokenType.))(')')
-      HaskellRhsImpl(RHS)
+      RHS
         PsiElement(HaskellTokenType.=)('=')
-        HaskellExpImpl(EXP)
-          HaskellQvarImpl(QVAR)
+        EXP
+          QVAR
             PsiElement(HaskellTokenType.()('(')
-            HaskellQvarsymImpl(QVARSYM)
-              HaskellVarsymImpl(VARSYM)
+            QVARSYM
+              VARSYM
                 PsiElement(HaskellTokenType.Varsym)('++')
             PsiElement(HaskellTokenType.))(')')
-    HaskellFunorpatdeclImpl(FUNORPATDECL)
+    FUNORPATDECL
       PsiElement(HaskellTokenType.()('(')
-      HaskellPatImpl(PAT)
-        HaskellVaridImpl(VARID)
+      PAT
+        VARID
           PsiElement(HaskellTokenType.varidRegexp)('f')
-      HaskellVaropImpl(VAROP)
-        HaskellVarsymImpl(VARSYM)
+      VAROP
+        VARSYM
           PsiElement(HaskellTokenType..)('.')
-      HaskellPatImpl(PAT)
-        HaskellVaridImpl(VARID)
+      PAT
+        VARID
           PsiElement(HaskellTokenType.varidRegexp)('g')
       PsiElement(HaskellTokenType.))(')')
-      HaskellVaridImpl(VARID)
+      VARID
         PsiElement(HaskellTokenType.varidRegexp)('x')
-      HaskellRhsImpl(RHS)
+      RHS
         PsiElement(HaskellTokenType.=)('=')
-        HaskellExpImpl(EXP)
-          HaskellQvarImpl(QVAR)
-            HaskellQvaridImpl(QVARID)
-              HaskellVaridImpl(VARID)
+        EXP
+          QVAR
+            QVARID
+              VARID
                 PsiElement(HaskellTokenType.varidRegexp)('f')
           PsiElement(HaskellTokenType.()('(')
-          HaskellExpImpl(EXP)
-            HaskellQvarImpl(QVAR)
-              HaskellQvaridImpl(QVARID)
-                HaskellVaridImpl(VARID)
+          EXP
+            QVAR
+              QVARID
+                VARID
                   PsiElement(HaskellTokenType.varidRegexp)('g')
-            HaskellQvarImpl(QVAR)
-              HaskellQvaridImpl(QVARID)
-                HaskellVaridImpl(VARID)
+            QVAR
+              QVARID
+                VARID
                   PsiElement(HaskellTokenType.varidRegexp)('x')
           PsiElement(HaskellTokenType.))(')')
-    HaskellGendeclImpl(GENDECL)
-      HaskellFixityImpl(FIXITY)
+    GENDECL
+      FIXITY
         PsiElement(HaskellTokenType.infixr)('infixr')
       PsiElement(HaskellTokenType.integertoken)('5')
-      HaskellOpImpl(OP)
-        HaskellVaropImpl(VAROP)
-          HaskellVarsymImpl(VARSYM)
+      OP
+        VAROP
+          VARSYM
             PsiElement(HaskellTokenType.Varsym)('++')
-    HaskellGendeclImpl(GENDECL)
-      HaskellFixityImpl(FIXITY)
+    GENDECL
+      FIXITY
         PsiElement(HaskellTokenType.infix)('infix')
       PsiElement(HaskellTokenType.integertoken)('7')
-      HaskellOpImpl(OP)
-        HaskellConopImpl(CONOP)
-          HaskellConsymImpl(CONSYM)
+      OP
+        CONOP
+          CONSYM
             PsiElement(HaskellTokenType.Consym)(':+')
-    HaskellGendeclImpl(GENDECL)
-      HaskellFixityImpl(FIXITY)
+    GENDECL
+      FIXITY
         PsiElement(HaskellTokenType.infixl)('infixl')
       PsiElement(HaskellTokenType.integertoken)('9')
-      HaskellOpImpl(OP)
-        HaskellVaropImpl(VAROP)
-          HaskellVarsymImpl(VARSYM)
+      OP
+        VAROP
+          VARSYM
             PsiElement(HaskellTokenType.Varsym)('+++')
-    HaskellGendeclImpl(GENDECL)
-      HaskellFixityImpl(FIXITY)
+    GENDECL
+      FIXITY
         PsiElement(HaskellTokenType.infix)('infix')
       PsiElement(HaskellTokenType.integertoken)('3')
-      HaskellOpImpl(OP)
-        HaskellVaropImpl(VAROP)
-          HaskellVarsymImpl(VARSYM)
+      OP
+        VAROP
+          VARSYM
             PsiElement(HaskellTokenType..)('.')

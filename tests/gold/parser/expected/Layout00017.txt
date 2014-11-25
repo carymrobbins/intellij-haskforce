@@ -1,44 +1,44 @@
 Haskell File
-  HaskellModuledeclImpl(MODULEDECL)
+  MODULEDECL
     PsiElement(HaskellTokenType.module)('module')
-    HaskellQconidImpl(QCONID)
-      HaskellConidImpl(CONID)
+    QCONID
+      CONID
         PsiElement(HaskellTokenType.conidRegexp)('Layout00017')
     PsiElement(HaskellTokenType.where)('where')
-  HaskellBodyImpl(BODY)
-    HaskellFunorpatdeclImpl(FUNORPATDECL)
-      HaskellPatImpl(PAT)
-        HaskellVaridImpl(VARID)
+  BODY
+    FUNORPATDECL
+      PAT
+        VARID
           PsiElement(HaskellTokenType.varidRegexp)('foo')
-      HaskellRhsImpl(RHS)
+      RHS
         PsiElement(HaskellTokenType.=)('=')
-        HaskellExpImpl(EXP)
+        EXP
           PsiElement(HaskellTokenType.do)('do')
-          HaskellStmtsImpl(STMTS)
-            HaskellExpImpl(EXP)
+          STMTS
+            EXP
               PsiElement(HaskellTokenType.if)('if')
-              HaskellExpImpl(EXP)
-                HaskellQconImpl(QCON)
-                  HaskellQconidImpl(QCONID)
-                    HaskellConidImpl(CONID)
+              EXP
+                QCON
+                  QCONID
+                    CONID
                       PsiElement(HaskellTokenType.conidRegexp)('True')
               PsiElement(HaskellTokenType.then)('then')
-              HaskellExpImpl(EXP)
-                HaskellQvarImpl(QVAR)
-                  HaskellQvaridImpl(QVARID)
-                    HaskellVaridImpl(VARID)
+              EXP
+                QVAR
+                  QVARID
+                    VARID
                       PsiElement(HaskellTokenType.varidRegexp)('putStrLn')
-                HaskellPstringtokenImpl(PSTRINGTOKEN)
+                PSTRINGTOKEN
                   PsiElement(HaskellTokenType.")('"')
                   PsiElement(HaskellTokenType.STRINGTOKEN)('yep')
                   PsiElement(HaskellTokenType.")('"')
               PsiElement(HaskellTokenType.else)('else')
-              HaskellExpImpl(EXP)
-                HaskellQvarImpl(QVAR)
-                  HaskellQvaridImpl(QVARID)
-                    HaskellVaridImpl(VARID)
+              EXP
+                QVAR
+                  QVARID
+                    VARID
                       PsiElement(HaskellTokenType.varidRegexp)('putStrLn')
-                HaskellPstringtokenImpl(PSTRINGTOKEN)
+                PSTRINGTOKEN
                   PsiElement(HaskellTokenType.")('"')
                   PsiElement(HaskellTokenType.STRINGTOKEN)('nope')
                   PsiElement(HaskellTokenType.")('"')

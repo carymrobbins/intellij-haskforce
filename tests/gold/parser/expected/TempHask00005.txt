@@ -1,111 +1,111 @@
 Haskell File
-  HaskellPpragmaImpl(PPRAGMA)
+  PPRAGMA
     PsiElement(HaskellTokenType.{-#)('{-#')
     PsiElement(HaskellTokenType.PRAGMA)('LANGUAGE')
     PsiElement(HaskellTokenType.PRAGMA)('QuasiQuotes')
     PsiElement(HaskellTokenType.#-})('#-}')
-  HaskellModuledeclImpl(MODULEDECL)
+  MODULEDECL
     PsiElement(HaskellTokenType.module)('module')
-    HaskellQconidImpl(QCONID)
-      HaskellConidImpl(CONID)
+    QCONID
+      CONID
         PsiElement(HaskellTokenType.conidRegexp)('TempHask00005')
     PsiElement(HaskellTokenType.where)('where')
-  HaskellBodyImpl(BODY)
-    HaskellInstancedeclImpl(INSTANCEDECL)
+  BODY
+    INSTANCEDECL
       PsiElement(HaskellTokenType.instance)('instance')
-      HaskellCtypeImpl(CTYPE)
-        HaskellTypeeImpl(TYPEE)
-          HaskellAtypeImpl(ATYPE)
-            HaskellOqtyconImpl(OQTYCON)
-              HaskellQtyconImpl(QTYCON)
-                HaskellTyconImpl(TYCON)
-                  HaskellConidImpl(CONID)
+      CTYPE
+        TYPEE
+          ATYPE
+            OQTYCON
+              QTYCON
+                TYCON
+                  CONID
                     PsiElement(HaskellTokenType.conidRegexp)('Yesod')
-          HaskellAtypeImpl(ATYPE)
-            HaskellOqtyconImpl(OQTYCON)
-              HaskellQtyconImpl(QTYCON)
-                HaskellTyconImpl(TYCON)
-                  HaskellConidImpl(CONID)
+          ATYPE
+            OQTYCON
+              QTYCON
+                TYCON
+                  CONID
                     PsiElement(HaskellTokenType.conidRegexp)('App')
       PsiElement(HaskellTokenType.where)('where')
-      HaskellIdeclImpl(IDECL)
-        HaskellFunorpatdeclImpl(FUNORPATDECL)
-          HaskellVaridImpl(VARID)
+      IDECL
+        FUNORPATDECL
+          VARID
             PsiElement(HaskellTokenType.varidRegexp)('defaultLayout')
-          HaskellVaridImpl(VARID)
+          VARID
             PsiElement(HaskellTokenType.varidRegexp)('widget')
-          HaskellRhsImpl(RHS)
+          RHS
             PsiElement(HaskellTokenType.=)('=')
-            HaskellExpImpl(EXP)
+            EXP
               PsiElement(HaskellTokenType.do)('do')
               PsiComment(HaskellTokenType.comment)('-- Parse names starting with a single quote in splices.\n')
-              HaskellStmtsImpl(STMTS)
-                HaskellPatImpl(PAT)
-                  HaskellVaridImpl(VARID)
+              STMTS
+                PAT
+                  VARID
                     PsiElement(HaskellTokenType.varidRegexp)('pc')
                 PsiElement(HaskellTokenType.<-)('<-')
-                HaskellExpImpl(EXP)
-                  HaskellQvarImpl(QVAR)
-                    HaskellQvaridImpl(QVARID)
-                      HaskellVaridImpl(VARID)
+                EXP
+                  QVAR
+                    QVARID
+                      VARID
                         PsiElement(HaskellTokenType.varidRegexp)('widgetToPageContent')
-                  HaskellQopImpl(QOP)
-                    HaskellQvaropImpl(QVAROP)
-                      HaskellQvarsymImpl(QVARSYM)
-                        HaskellVarsymImpl(VARSYM)
+                  QOP
+                    QVAROP
+                      QVARSYM
+                        VARSYM
                           PsiElement(HaskellTokenType.$)('$')
                   PsiElement(HaskellTokenType.do)('do')
-                  HaskellStmtsImpl(STMTS)
-                    HaskellExpImpl(EXP)
+                  STMTS
+                    EXP
                       PsiElement(HaskellTokenType.$()('$(')
-                      HaskellExpImpl(EXP)
-                        HaskellQvarImpl(QVAR)
-                          HaskellQvaridImpl(QVARID)
-                            HaskellVaridImpl(VARID)
+                      EXP
+                        QVAR
+                          QVARID
+                            VARID
                               PsiElement(HaskellTokenType.varidRegexp)('combineStylesheets')
                         PsiElement(HaskellTokenType.')(''')
-                        HaskellQconImpl(QCON)
-                          HaskellQconidImpl(QCONID)
-                            HaskellConidImpl(CONID)
+                        QCON
+                          QCONID
+                            CONID
                               PsiElement(HaskellTokenType.conidRegexp)('StaticR')
                         PsiElement(HaskellTokenType.[)('[')
-                        HaskellExpImpl(EXP)
-                          HaskellQvarImpl(QVAR)
-                            HaskellQvaridImpl(QVARID)
-                              HaskellVaridImpl(VARID)
+                        EXP
+                          QVAR
+                            QVARID
+                              VARID
                                 PsiElement(HaskellTokenType.varidRegexp)('css_normalize_css')
                         PsiElement(HaskellTokenType.,)(',')
-                        HaskellExpImpl(EXP)
-                          HaskellQvarImpl(QVAR)
-                            HaskellQvaridImpl(QVARID)
-                              HaskellVaridImpl(VARID)
+                        EXP
+                          QVAR
+                            QVARID
+                              VARID
                                 PsiElement(HaskellTokenType.varidRegexp)('css_bootstrap_css')
                         PsiElement(HaskellTokenType.])(']')
                       PsiElement(HaskellTokenType.))(')')
-                    HaskellExpImpl(EXP)
+                    EXP
                       PsiElement(HaskellTokenType.$()('$(')
-                      HaskellExpImpl(EXP)
-                        HaskellQvarImpl(QVAR)
-                          HaskellQvaridImpl(QVARID)
-                            HaskellVaridImpl(VARID)
+                      EXP
+                        QVAR
+                          QVARID
+                            VARID
                               PsiElement(HaskellTokenType.varidRegexp)('widgetFile')
-                        HaskellPstringtokenImpl(PSTRINGTOKEN)
+                        PSTRINGTOKEN
                           PsiElement(HaskellTokenType.")('"')
                           PsiElement(HaskellTokenType.STRINGTOKEN)('default-layout')
                           PsiElement(HaskellTokenType.")('"')
                       PsiElement(HaskellTokenType.))(')')
-                HaskellExpImpl(EXP)
-                  HaskellQvarImpl(QVAR)
-                    HaskellQvaridImpl(QVARID)
-                      HaskellVaridImpl(VARID)
+                EXP
+                  QVAR
+                    QVARID
+                      VARID
                         PsiElement(HaskellTokenType.varidRegexp)('giveUrlRenderer')
                   PsiElement(HaskellTokenType.$()('$(')
-                  HaskellExpImpl(EXP)
-                    HaskellQvarImpl(QVAR)
-                      HaskellQvaridImpl(QVARID)
-                        HaskellVaridImpl(VARID)
+                  EXP
+                    QVAR
+                      QVARID
+                        VARID
                           PsiElement(HaskellTokenType.varidRegexp)('hamletFile')
-                    HaskellPstringtokenImpl(PSTRINGTOKEN)
+                    PSTRINGTOKEN
                       PsiElement(HaskellTokenType.")('"')
                       PsiElement(HaskellTokenType.STRINGTOKEN)('templates/default-layout-wrapper.hamlet')
                       PsiElement(HaskellTokenType.")('"')

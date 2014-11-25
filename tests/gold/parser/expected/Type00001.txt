@@ -1,83 +1,83 @@
 Haskell File
-  HaskellModuledeclImpl(MODULEDECL)
+  MODULEDECL
     PsiElement(HaskellTokenType.module)('module')
-    HaskellQconidImpl(QCONID)
-      HaskellConidImpl(CONID)
+    QCONID
+      CONID
         PsiElement(HaskellTokenType.conidRegexp)('Type00001')
     PsiElement(HaskellTokenType.where)('where')
-  HaskellBodyImpl(BODY)
-    HaskellTypedeclImpl(TYPEDECL)
+  BODY
+    TYPEDECL
       PsiElement(HaskellTokenType.type)('type')
-      HaskellTypeeImpl(TYPEE)
-        HaskellAtypeImpl(ATYPE)
-          HaskellOqtyconImpl(OQTYCON)
-            HaskellQtyconImpl(QTYCON)
-              HaskellTyconImpl(TYCON)
-                HaskellConidImpl(CONID)
+      TYPEE
+        ATYPE
+          OQTYCON
+            QTYCON
+              TYCON
+                CONID
                   PsiElement(HaskellTokenType.conidRegexp)('FeldSymbols')
       PsiElement(HaskellTokenType.=)('=')
-      HaskellTypeeImpl(TYPEE)
-        HaskellAtypeImpl(ATYPE)
+      TYPEE
+        ATYPE
           PsiElement(HaskellTokenType.()('(')
-          HaskellCtypeImpl(CTYPE)
-            HaskellTypeeImpl(TYPEE)
-              HaskellAtypeImpl(ATYPE)
-                HaskellOqtyconImpl(OQTYCON)
-                  HaskellQtyconImpl(QTYCON)
-                    HaskellTyconImpl(TYCON)
-                      HaskellConidImpl(CONID)
+          CTYPE
+            TYPEE
+              ATYPE
+                OQTYCON
+                  QTYCON
+                    TYCON
+                      CONID
                         PsiElement(HaskellTokenType.conidRegexp)('Decor')
-              HaskellAtypeImpl(ATYPE)
-                HaskellOqtyconImpl(OQTYCON)
-                  HaskellQtyconImpl(QTYCON)
-                    HaskellTyconImpl(TYCON)
-                      HaskellConidImpl(CONID)
+              ATYPE
+                OQTYCON
+                  QTYCON
+                    TYCON
+                      CONID
                         PsiElement(HaskellTokenType.conidRegexp)('SourceInfo1')
-              HaskellAtypeImpl(ATYPE)
-                HaskellOqtyconImpl(OQTYCON)
-                  HaskellQtyconImpl(QTYCON)
-                    HaskellTyconImpl(TYCON)
-                      HaskellConidImpl(CONID)
+              ATYPE
+                OQTYCON
+                  QTYCON
+                    TYCON
+                      CONID
                         PsiElement(HaskellTokenType.conidRegexp)('Identity')
-              HaskellQtyconopImpl(QTYCONOP)
-                HaskellQtyconsymImpl(QTYCONSYM)
-                  HaskellQconsymImpl(QCONSYM)
-                    HaskellConsymImpl(CONSYM)
+              QTYCONOP
+                QTYCONSYM
+                  QCONSYM
+                    CONSYM
                       PsiElement(HaskellTokenType.Consym)(':||')
-              HaskellTypeeImpl(TYPEE)
-                HaskellAtypeImpl(ATYPE)
-                  HaskellOqtyconImpl(OQTYCON)
-                    HaskellQtyconImpl(QTYCON)
-                      HaskellTyconImpl(TYCON)
-                        HaskellConidImpl(CONID)
+              TYPEE
+                ATYPE
+                  OQTYCON
+                    QTYCON
+                      TYCON
+                        CONID
                           PsiElement(HaskellTokenType.conidRegexp)('Type')
           PsiElement(HaskellTokenType.))(')')
-        HaskellQtyconopImpl(QTYCONOP)
-          HaskellQtyconsymImpl(QTYCONSYM)
-            HaskellQconsymImpl(QCONSYM)
-              HaskellConsymImpl(CONSYM)
+        QTYCONOP
+          QTYCONSYM
+            QCONSYM
+              CONSYM
                 PsiElement(HaskellTokenType.Consym)(':+:')
-        HaskellTypeeImpl(TYPEE)
-          HaskellAtypeImpl(ATYPE)
+        TYPEE
+          ATYPE
             PsiElement(HaskellTokenType.()('(')
-            HaskellCtypeImpl(CTYPE)
-              HaskellTypeeImpl(TYPEE)
-                HaskellAtypeImpl(ATYPE)
-                  HaskellOqtyconImpl(OQTYCON)
-                    HaskellQtyconImpl(QTYCON)
-                      HaskellTyconImpl(TYCON)
-                        HaskellConidImpl(CONID)
+            CTYPE
+              TYPEE
+                ATYPE
+                  OQTYCON
+                    QTYCON
+                      TYCON
+                        CONID
                           PsiElement(HaskellTokenType.conidRegexp)('Condition')
-                HaskellQtyconopImpl(QTYCONOP)
-                  HaskellQtyconsymImpl(QTYCONSYM)
-                    HaskellQconsymImpl(QCONSYM)
-                      HaskellConsymImpl(CONSYM)
+                QTYCONOP
+                  QTYCONSYM
+                    QCONSYM
+                      CONSYM
                         PsiElement(HaskellTokenType.Consym)(':||')
-                HaskellTypeeImpl(TYPEE)
-                  HaskellAtypeImpl(ATYPE)
-                    HaskellOqtyconImpl(OQTYCON)
-                      HaskellQtyconImpl(QTYCON)
-                        HaskellTyconImpl(TYCON)
-                          HaskellConidImpl(CONID)
+                TYPEE
+                  ATYPE
+                    OQTYCON
+                      QTYCON
+                        TYCON
+                          CONID
                             PsiElement(HaskellTokenType.conidRegexp)('Type')
             PsiElement(HaskellTokenType.))(')')

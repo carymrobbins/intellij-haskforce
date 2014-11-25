@@ -1,27 +1,27 @@
 Haskell File
-  HaskellPpragmaImpl(PPRAGMA)
+  PPRAGMA
     PsiElement(HaskellTokenType.{-#)('{-#')
     PsiElement(HaskellTokenType.PRAGMA)('LANGUAGE')
     PsiElement(HaskellTokenType.PRAGMA)('QuasiQuotes')
     PsiElement(HaskellTokenType.#-})('#-}')
-  HaskellModuledeclImpl(MODULEDECL)
+  MODULEDECL
     PsiElement(HaskellTokenType.module)('module')
-    HaskellQconidImpl(QCONID)
-      HaskellConidImpl(CONID)
+    QCONID
+      CONID
         PsiElement(HaskellTokenType.conidRegexp)('TempHask00004')
     PsiElement(HaskellTokenType.where)('where')
-  HaskellBodyImpl(BODY)
-    HaskellQvarImpl(QVAR)
-      HaskellQvaridImpl(QVARID)
-        HaskellVaridImpl(VARID)
+  BODY
+    QVAR
+      QVARID
+        VARID
           PsiElement(HaskellTokenType.varidRegexp)('mkYesod')
-    HaskellPstringtokenImpl(PSTRINGTOKEN)
+    PSTRINGTOKEN
       PsiElement(HaskellTokenType.")('"')
       PsiElement(HaskellTokenType.STRINGTOKEN)('HelloWorld')
       PsiElement(HaskellTokenType.")('"')
     PsiElement(HaskellTokenType.Quasi-[)('[')
-    HaskellQvaridImpl(QVARID)
-      HaskellVaridImpl(VARID)
+    QVARID
+      VARID
         PsiElement(HaskellTokenType.varidRegexp)('parseRoutes')
     PsiElement(HaskellTokenType.|)('|')
     PsiElement(HaskellTokenType.Quasi-stuff)('\n/ HomeR GET\n')
