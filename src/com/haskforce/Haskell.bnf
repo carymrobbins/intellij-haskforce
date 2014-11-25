@@ -69,6 +69,7 @@
 
   implements("varid|conid")="com.haskforce.psi.HaskellNamedElement"
   extends("varid|conid")="com.haskforce.psi.impl.HaskellNamedStubbedPsiElementBase<?>"
+  elementTypeFactory("varid|conid")="com.haskforce.psi.impl.HaskellElementTypeFactory.factory"
 
   generate=[tokenAccessors="yes"]
 

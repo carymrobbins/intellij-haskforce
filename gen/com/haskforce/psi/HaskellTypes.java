@@ -4,6 +4,7 @@ package com.haskforce.psi;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.PsiElement;
 import com.intellij.lang.ASTNode;
+import com.haskforce.psi.impl.HaskellElementTypeFactory;
 import com.haskforce.psi.impl.*;
 
 public interface HaskellTypes {
@@ -16,7 +17,7 @@ public interface HaskellTypes {
   IElementType CDECL = new HaskellElementType("CDECL");
   IElementType CLASSDECL = new HaskellElementType("CLASSDECL");
   IElementType CON = new HaskellElementType("CON");
-  IElementType CONID = new HaskellElementType("CONID");
+  IElementType CONID = HaskellElementTypeFactory.factory("CONID");
   IElementType CONOP = new HaskellElementType("CONOP");
   IElementType CONSTR = new HaskellElementType("CONSTR");
   IElementType CONSYM = new HaskellElementType("CONSYM");
@@ -73,7 +74,7 @@ public interface HaskellTypes {
   IElementType TYPEDECL = new HaskellElementType("TYPEDECL");
   IElementType TYPEE = new HaskellElementType("TYPEE");
   IElementType TYVAR = new HaskellElementType("TYVAR");
-  IElementType VARID = new HaskellElementType("VARID");
+  IElementType VARID = HaskellElementTypeFactory.factory("VARID");
   IElementType VAROP = new HaskellElementType("VAROP");
   IElementType VARS = new HaskellElementType("VARS");
   IElementType VARSYM = new HaskellElementType("VARSYM");

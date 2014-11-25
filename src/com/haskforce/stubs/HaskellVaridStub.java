@@ -7,11 +7,11 @@ import com.intellij.psi.stubs.StubElement;
 import com.intellij.util.io.StringRef;
 
 public class HaskellVaridStub extends NamedStubBase<HaskellVarid> {
-    protected HaskellVaridStub(StubElement parent, IStubElementType elementType, StringRef name) {
+    public HaskellVaridStub(StubElement parent, IStubElementType elementType, StringRef name) {
         super(parent, elementType, name);
     }
 
-    protected HaskellVaridStub(StubElement parent, IStubElementType elementType, String name) {
+    public HaskellVaridStub(StubElement parent, IStubElementType elementType, String name) {
         super(parent, elementType, name);
     }
 }

@@ -14,4 +14,9 @@ public abstract class HaskellStubbedPsiElementBase<T extends StubElement<?>> ext
     public HaskellStubbedPsiElementBase(ASTNode node) {
         super(node);
     }
+
+    @Override
+    public String toString() {
+        return getElementType().toString();
+    }
 }
