@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class HaskellPsiUtil {
     @NotNull
@@ -125,8 +126,8 @@ public class HaskellPsiUtil {
     }
 
     @NotNull
-    public static List<String> getImportModuleNames(@NotNull List<Import> imports) {
-        return ContainerUtil.map(imports, new Function<Import, String>() {
+    public static Set<String> getImportModuleNames(@NotNull List<Import> imports) {
+        return ContainerUtil.map2Set(imports, new Function<Import, String>() {
             @Override
             public String fun(Import anImport) {
                 return anImport.module;

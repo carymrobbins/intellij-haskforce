@@ -12,10 +12,7 @@ import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * General util class. Provides methods for finding named nodes in the Psi tree.
@@ -28,8 +25,8 @@ public class HaskellUtil {
     @NotNull
     public static List<PsiNamedElement> findDefinitionNode(@NotNull Project project, @Nullable String name, @Nullable PsiNamedElement e) {
         // Guess where the name could be defined by lookup up potential modules.
-        final List<String> potentialModules =
-                e == null ? Collections.EMPTY_LIST
+        final Set<String> potentialModules =
+                e == null ? Collections.EMPTY_SET
                           : getPotentialDefinitionModuleNames(e, HaskellPsiUtil.parseImports(e.getContainingFile()));
         List<PsiNamedElement> result = ContainerUtil.newArrayList();
         final String qPrefix = e == null ? null : getQualifiedPrefix(e);
@@ -141,10 +138,10 @@ public class HaskellUtil {
     }
 
     @NotNull
-    public static List<String> getPotentialDefinitionModuleNames(@NotNull PsiElement e, @NotNull List<HaskellPsiUtil.Import> imports) {
+    public static Set<String> getPotentialDefinitionModuleNames(@NotNull PsiElement e, @NotNull List<HaskellPsiUtil.Import> imports) {
         final String qPrefix = getQualifiedPrefix(e);
         if (qPrefix == null) { return HaskellPsiUtil.getImportModuleNames(imports); }
-        List<String> result = new ArrayList<String>(2);
+        Set<String> result = new HashSet<String>(2);
         for (HaskellPsiUtil.Import anImport : imports) {
             if (qPrefix.equals(anImport.module) || qPrefix.equals(anImport.alias)) {
                 result.add(anImport.module);
