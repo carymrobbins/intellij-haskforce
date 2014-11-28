@@ -6,6 +6,7 @@ import com.haskforce.parsing.HaskellTypes2;
 import com.haskforce.psi.HaskellModuledecl;
 import com.haskforce.psi.HaskellParserWrapper;
 import com.haskforce.psi.HaskellTypes;
+import com.haskforce.stubs.types.HaskellFileStubElementType;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.ParserDefinition;
@@ -38,7 +39,7 @@ public class HaskellParserDefinition implements ParserDefinition {
             );
     public static final TokenSet STRINGS = TokenSet.create(HaskellTypes.STRINGTOKEN);
 
-    public static final IFileElementType FILE = new IFileElementType(Language.<HaskellLanguage>findInstance(HaskellLanguage.class));
+//    public static final IFileElementType FILE = new IFileElementType(Language.<HaskellLanguage>findInstance(HaskellLanguage.class));
 
     @NotNull
     @Override
@@ -78,9 +79,12 @@ public class HaskellParserDefinition implements ParserDefinition {
         return new HaskellParserWrapper();
     }
 
+    /**
+     * Use a the file stub element type so the contents of these files will be indexed.
+     */
     @Override
     public IFileElementType getFileNodeType() {
-        return FILE;
+        return HaskellFileStubElementType.INSTANCE;
     }
 
     public PsiFile createFile(FileViewProvider viewProvider) {

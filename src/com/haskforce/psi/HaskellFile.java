@@ -1,9 +1,11 @@
 package com.haskforce.psi;
 
 import com.haskforce.HaskellIcons;
+import com.haskforce.stubs.HaskellFileStub;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
+import com.intellij.psi.stubs.StubElement;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -52,5 +54,16 @@ public class HaskellFile extends PsiFileBase {
     public String getModuleOrFileName() {
         final String moduleName = getModuleName();
         return moduleName == null ? getName() : moduleName;
+    }
+
+    /**
+     * Generates a stub for the current file, particularly so we can index names.
+     */
+    @Nullable
+    @Override
+    public HaskellFileStub getStub() {
+        final StubElement stub = super.getStub();
+        if (stub == null) return null;
+        return (HaskellFileStub)stub;
     }
 }

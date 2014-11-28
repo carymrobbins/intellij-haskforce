@@ -5,9 +5,12 @@ import com.haskforce.psi.HaskellFile;
 import com.haskforce.psi.references.HaskellReference;
 import com.haskforce.psi.HaskellConid;
 import com.haskforce.psi.HaskellVarid;
+import com.haskforce.stubs.HaskellConidStub;
+import com.haskforce.stubs.HaskellVaridStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
@@ -21,15 +24,18 @@ import javax.swing.*;
  */
 public class HaskellPsiImplUtil {
 
-    @Nullable
+    @NotNull
     public static String getName(@NotNull HaskellVarid o) {
-        PsiElement n = o.getVaridRegexp();
-        return n == null ? null : n.getText();
+        HaskellVaridStub stub = o.getStub();
+        if (stub != null) return StringUtil.notNullize(stub.getName());
+        return o.getText();
     }
 
     @NotNull
     public static String getName(@NotNull HaskellConid o) {
-        return o.getConidRegexp().getText();
+        HaskellConidStub stub = o.getStub();
+        if (stub != null) return StringUtil.notNullize(stub.getName());
+        return o.getText();
     }
 
     @Nullable

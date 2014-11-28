@@ -3,6 +3,8 @@ package com.haskforce.stubs.types;
 import com.haskforce.psi.HaskellConid;
 import com.haskforce.psi.impl.HaskellConidImpl;
 import com.haskforce.stubs.HaskellConidStub;
+import com.haskforce.utils.HaskellUtil;
+import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
@@ -10,6 +12,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 
+/**
+ * Defines how and when to create stubs for conid elements for stub indexing.
+ */
 public class HaskellConidStubElementType extends HaskellNamedStubElementType<HaskellConidStub, HaskellConid> {
     public HaskellConidStubElementType(String debugName) {
         super(debugName);
@@ -18,6 +23,11 @@ public class HaskellConidStubElementType extends HaskellNamedStubElementType<Has
     @Override
     public HaskellConid createPsi(@NotNull HaskellConidStub stub) {
         return new HaskellConidImpl(stub, this);
+    }
+
+    @Override
+    public boolean shouldCreateStub(ASTNode node) {
+        return HaskellUtil.definitionNode(node);
     }
 
     @Override

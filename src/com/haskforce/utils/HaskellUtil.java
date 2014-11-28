@@ -2,6 +2,7 @@ package com.haskforce.utils;
 
 import com.haskforce.index.HaskellModuleIndex;
 import com.haskforce.psi.*;
+import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
@@ -125,6 +126,14 @@ public class HaskellUtil {
             return e.equals(conid);
         }
         return false;
+    }
+
+    /**
+     * Tells whether a node is a definition node based on its context.
+     */
+    public static boolean definitionNode(@NotNull ASTNode node) {
+        final PsiElement element = node.getPsi();
+        return element instanceof PsiNamedElement && definitionNode((PsiNamedElement)element);
     }
 
     @Nullable

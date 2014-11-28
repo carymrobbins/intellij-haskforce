@@ -3,6 +3,9 @@ package com.haskforce.stubs.types;
 import com.haskforce.psi.HaskellVarid;
 import com.haskforce.psi.impl.HaskellVaridImpl;
 import com.haskforce.stubs.HaskellVaridStub;
+import com.haskforce.utils.HaskellUtil;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;
 import com.intellij.psi.stubs.StubOutputStream;
@@ -18,6 +21,11 @@ public class HaskellVaridStubElementType extends HaskellNamedStubElementType<Has
     @Override
     public HaskellVarid createPsi(@NotNull HaskellVaridStub stub) {
         return new HaskellVaridImpl(stub, this);
+    }
+
+    @Override
+    public boolean shouldCreateStub(ASTNode node) {
+        return HaskellUtil.definitionNode(node);
     }
 
     @Override
