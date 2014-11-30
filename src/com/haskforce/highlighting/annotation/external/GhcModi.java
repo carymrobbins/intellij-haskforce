@@ -12,6 +12,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
+import org.apache.commons.lang.SystemUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -210,7 +211,7 @@ public class GhcModi implements ModuleComponent {
         String line = input.readLine();
         while (input.ready() && line != null && !line.equals("OK") && !line.startsWith("NG")) {
             builder.append(line);
-            builder.append(System.getProperty("line.separator"));
+            builder.append(SystemUtils.LINE_SEPARATOR);
             line = input.readLine();
         }
         if (line != null && line.startsWith("NG")) {

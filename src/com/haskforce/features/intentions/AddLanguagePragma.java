@@ -38,7 +38,7 @@ public class AddLanguagePragma extends BaseIntentionAction {
     public void invoke(@NotNull final Project project, Editor editor, final PsiFile file) throws IncorrectOperationException {
         FileUtil.updateFileText(project, file, new Function<String, String>() {
             public String fun(String text) {
-                return "{-# LANGUAGE " + languageName + " #-}" + System.getProperty("line.separator") + text;
+                return "{-# LANGUAGE " + languageName + " #-}\n" + text;
             }
         });
     }

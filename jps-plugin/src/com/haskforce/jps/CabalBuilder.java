@@ -24,6 +24,7 @@ import com.haskforce.jps.model.HaskellBuildOptions;
 import com.haskforce.jps.model.JpsHaskellBuildOptionsExtension;
 import com.haskforce.jps.model.JpsHaskellModuleType;
 import com.intellij.execution.ExecutionException;
+import org.apache.commons.lang.SystemUtils;
 import org.jetbrains.jps.incremental.BuilderCategory;
 import org.jetbrains.jps.incremental.ModuleLevelBuilder;
 import com.intellij.openapi.diagnostic.Logger;
@@ -247,13 +248,13 @@ public class CabalBuilder extends ModuleLevelBuilder {
             Matcher progressMatcher = progressPattern.matcher(line);
             if (line.startsWith(warningPrefix)) {
                 // Cabal warnings.
-                String text = line.substring(warningPrefix.length()) + System.getProperty("line.separator") + processOut.next();
+                String text = line.substring(warningPrefix.length()) + SystemUtils.LINE_SEPARATOR + processOut.next();
                 //noinspection ObjectAllocationInLoop
                 context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.WARNING, text));
             } else if (line.startsWith(cabalPrefix)) {
                 // Unknown cabal messages. Exit code will tell if they were
                 // errors. Just forward to user.
-                String text = line.substring(cabalPrefix.length()) + System.getProperty("line.separator") + processOut.next();
+                String text = line.substring(cabalPrefix.length()) + SystemUtils.LINE_SEPARATOR + processOut.next();
                 //noinspection ObjectAllocationInLoop
                 context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.WARNING, text));
             } else if (matcher.find()) {
@@ -278,7 +279,7 @@ public class CabalBuilder extends ModuleLevelBuilder {
                         oneBehind = true;
                         break;
                     }
-                    msg.append(line).append(System.getProperty("line.separator"));
+                    msg.append(line).append(SystemUtils.LINE_SEPARATOR);
                 }
 
                 // RootPath necessary for reasonable error messages by Intellij.

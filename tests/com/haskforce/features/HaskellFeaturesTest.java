@@ -4,6 +4,7 @@ import com.haskforce.HaskellFileType;
 import com.intellij.codeInsight.generation.actions.CommentByBlockCommentAction;
 import com.intellij.codeInsight.generation.actions.CommentByLineCommentAction;
 import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
+import org.apache.commons.lang.SystemUtils;
 
 /**
  * Features test driver. Add new feature testcases here.
@@ -24,12 +25,12 @@ public class HaskellFeaturesTest extends LightPlatformCodeInsightFixtureTestCase
 
     public void testCommenter00002() {
         myFixture.configureByText(HaskellFileType.INSTANCE, "f acc [] = acc" +
-                System.getProperty("line.separator") + "<selection>f acc (x:xs) = f (x:acc) xs</selection>" +
-                System.getProperty("line.separator") + "<caret>f _ _ = error \"impossible!\"");
+                SystemUtils.LINE_SEPARATOR + "<selection>f acc (x:xs) = f (x:acc) xs</selection>" +
+                SystemUtils.LINE_SEPARATOR + "<caret>f _ _ = error \"impossible!\"");
         CommentByBlockCommentAction commentAction = new CommentByBlockCommentAction();
         commentAction.actionPerformedImpl(getProject(), myFixture.getEditor());
-        myFixture.checkResult("f acc [] = acc" + System.getProperty("line.separator") +
-                "{-f acc (x:xs) = f (x:acc) xs-}" + System.getProperty("line.separator") +
+        myFixture.checkResult("f acc [] = acc" + SystemUtils.LINE_SEPARATOR +
+                "{-f acc (x:xs) = f (x:acc) xs-}" + SystemUtils.LINE_SEPARATOR +
                 "f _ _ = error \"impossible!\"");
     }
 }
