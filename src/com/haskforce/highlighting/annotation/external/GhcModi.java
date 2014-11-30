@@ -286,9 +286,24 @@ public class GhcModi implements ModuleComponent {
     private GhcModi(@NotNull Module module) {
         final Project project = module.getProject();
         this.module = module;
-        this.path = ExecUtil.GHC_MODI_KEY.getPath(project);
-        this.flags = ExecUtil.GHC_MODI_KEY.getFlags(project);
-        this.workingDirectory = ExecUtil.guessWorkDir(module);
+        this.path = lookupPath();
+        this.flags = lookupFlags();
+        this.workingDirectory = lookupWorkingDirectory();
+    }
+
+    @Nullable
+    private String lookupPath() {
+        return ExecUtil.GHC_MODI_KEY.getPath(module.getProject());
+    }
+
+    @NotNull
+    private String lookupFlags() {
+        return ExecUtil.GHC_MODI_KEY.getFlags(module.getProject());
+    }
+
+    @NotNull
+    private String lookupWorkingDirectory() {
+        return ExecUtil.guessWorkDir(module);
     }
 
     /**
@@ -297,16 +312,17 @@ public class GhcModi implements ModuleComponent {
      */
     private void ensureConsistent() {
         // Just used for equality checks.
-        GhcModi check = new GhcModi(module);
+        final String newPath = lookupPath();
+        final String newFlags = lookupFlags();
+        final String newWorkingDirectory = lookupWorkingDirectory();
         // Ensure that nothing has changed; if so, kill the existing process and re-spawn.
-        if (check.path == null
-                || !check.path.equals(path)
-                || !check.flags.equals(flags)
-                || !check.workingDirectory.equals(workingDirectory)) {
+        if (!StringUtil.equals(newPath, path)
+                || !newFlags.equals(flags)
+                || !newWorkingDirectory.equals(workingDirectory)) {
             kill();
-            path = check.path;
-            flags = check.flags;
-            workingDirectory = check.workingDirectory;
+            path = newPath;
+            flags = newFlags;
+            workingDirectory = newWorkingDirectory;
         }
     }
 
