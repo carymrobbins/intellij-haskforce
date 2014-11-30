@@ -187,6 +187,11 @@ public class GhcModi implements ModuleComponent {
     @Nullable
     private static String interact(@NotNull String command, @NotNull BufferedReader input, @NotNull BufferedWriter output) throws GhcModiError {
         try {
+            // FIXME: A bit of a hack, but ensure that we don't accidentally read results from an unrelated command.
+            if (input.ready()) {
+                final String unread = read(command, input);
+                if (unread != null) { LOG.warn("Unread content found from ghc-modi, ignoring: " + unread); }
+            }
             output.write(command);
             output.newLine();
             output.flush();
@@ -207,17 +212,33 @@ public class GhcModi implements ModuleComponent {
     @Nullable
     private static String read(@NotNull String command, @NotNull BufferedReader input) throws IOException, GhcModiError {
         StringBuilder builder = new StringBuilder(0);
-        if (!input.ready()) { return null; }
-        String line = input.readLine();
-        while (input.ready() && line != null && !line.equals("OK") && !line.startsWith("NG")) {
-            builder.append(line);
-            builder.append(SystemUtils.LINE_SEPARATOR);
+        wait(command, input);
+        String line;
+        for (;;) {
+            if (!input.ready()) { break; }
             line = input.readLine();
-        }
-        if (line != null && line.startsWith("NG")) {
-            throw new ExecError(command, line);
+            if (line == null || line.equals("OK")) { break; }
+            if (line.startsWith("NG")) { throw new ExecError(command, line); }
+            builder.append(line).append(SystemUtils.LINE_SEPARATOR);
         }
         return builder.toString();
+    }
+
+    private static final int READ_TIMEOUT = 3000;
+    private static final int READ_INTERVAL = 50;
+    private static final int READ_MAX_TRIES = READ_TIMEOUT / READ_INTERVAL;
+
+    private static void wait(@NotNull String command, @NotNull BufferedReader input) throws IOException, GhcModiError {
+        int tries = 0;
+        if (!input.ready()) {
+            ++tries;
+            if (tries > READ_MAX_TRIES) { throw new ExecError(command, "ghc-modi took to long to respond."); }
+            try {
+                Thread.sleep(READ_INTERVAL);
+            } catch (InterruptedException e) {
+                throw new ExecError(command, "ghc-modi sleep thread interrupted: " + e.toString());
+            }
+        }
     }
 
     @Nullable
