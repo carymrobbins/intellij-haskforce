@@ -267,7 +267,7 @@ public class GhcMod {
             }
             // Since we don't have ending regions from ghc-mod, highlight until the first whitespace.
             Matcher matcher = WHITESPACE_REGEX.matcher(text.substring(offsetStart));
-            final int offsetEnd = matcher.find() ? offsetStart + matcher.start() : text.length() - 1;
+            final int offsetEnd = matcher.find() ? offsetStart + matcher.start() : text.length();
             final TextRange range = TextRange.create(offsetStart, offsetEnd);
             final Annotation annotation;
             if (isError) {
