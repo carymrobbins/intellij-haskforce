@@ -212,8 +212,7 @@ public class GhcModi implements ModuleComponent {
         } catch (GhcModiError e) {
             kill();
             // If we've already displayed the error, don't display it again.
-            if (!errorMessages.contains(e.error)) {
-                errorMessages.add(e.error);
+            if (!errorMessages.add(e.error)) {
                 displayError(e.message);
             }
             return null;
