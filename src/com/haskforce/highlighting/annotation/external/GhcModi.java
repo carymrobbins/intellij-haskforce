@@ -186,22 +186,37 @@ public class GhcModi implements ModuleComponent {
     @Nullable
     private static String interact(@NotNull String command, @NotNull BufferedReader input, @NotNull BufferedWriter output) throws GhcModiError {
         try {
-            output.write(command + System.getProperty("line.separator"));
+            output.write(command);
+            output.newLine();
             output.flush();
-            StringBuilder builder = new StringBuilder(0);
-            String line = input.readLine();
-            while (line != null && !line.startsWith("OK") && !line.startsWith("NG")) {
-                builder.append(line);
-                builder.append(System.getProperty("line.separator"));
-                line = input.readLine();
-            }
-            if (line != null && line.startsWith("NG")) {
-                throw new ExecError(command, line);
-            }
-            return builder.toString();
+            return read(command, input);
         } catch (IOException e) {
+            try {
+                // Attempt to grab an error message from ghc-modi.  It may throw its own NG bug error.
+                final String error = read(command, input);
+                if (error != null) { throw new ExecError(command, error); }
+            } catch (IOException _) {
+                // Ignored.
+            }
+            // If we couldn't get an error message, dump the java error to the user.
             throw new ExecError(command, e.toString());
         }
+    }
+
+    @Nullable
+    private static String read(@NotNull String command, @NotNull BufferedReader input) throws IOException, GhcModiError {
+        StringBuilder builder = new StringBuilder(0);
+        if (!input.ready()) { return null; }
+        String line = input.readLine();
+        while (input.ready() && line != null && !line.equals("OK") && !line.startsWith("NG")) {
+            builder.append(line);
+            builder.append(System.getProperty("line.separator"));
+            line = input.readLine();
+        }
+        if (line != null && line.startsWith("NG")) {
+            throw new ExecError(command, line);
+        }
+        return builder.toString();
     }
 
     @Nullable
@@ -212,7 +227,7 @@ public class GhcModi implements ModuleComponent {
         } catch (GhcModiError e) {
             kill();
             // If we've already displayed the error, don't display it again.
-            if (!errorMessages.add(e.error)) {
+            if (errorMessages.add(e.error)) {
                 displayError(e.message);
             }
             return null;
@@ -228,7 +243,7 @@ public class GhcModi implements ModuleComponent {
         V call() throws GhcModiError;
     }
 
-    static class GhcModiError extends Throwable {
+    static abstract class GhcModiError extends Throwable {
         // Using error to index errors since message might have extra information.
         final @NotNull String error;
         final @NotNull String message;
