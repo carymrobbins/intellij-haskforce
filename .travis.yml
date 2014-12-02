@@ -1,7 +1,7 @@
 language: java
 jdk:
   - openjdk6
-  - oraclejdk7
+  - oraclejdk8
 install:
   - IDEA_VERSION=13.1.6
   - IDEA_TAR=ideaIC-${IDEA_VERSION}.tar.gz
