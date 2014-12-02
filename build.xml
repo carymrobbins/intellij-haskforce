@@ -27,16 +27,16 @@
     </not>
   </condition>
   <!-- Uncomment the following property if no tests compilation is needed -->
-  <!-- 
+  <!--
   <property name="skip.tests" value="true"/>
    -->
-  
+
   <!-- Compiler options -->
-  
+
   <property name="compiler.debug" value="on"/>
   <property name="compiler.generate.no.warnings" value="off"/>
   <property name="compiler.args" value=""/>
-  <property name="compiler.max.memory" value="128m"/>
+  <property name="compiler.max.memory" value="500m"/>
   <patternset id="ignored.files">
     <exclude name="**/CVS/**"/>
     <exclude name="**/SCCS/**"/>
@@ -78,9 +78,9 @@
     <exclude name="**/?*.kt"/>
     <exclude name="**/?*.clj"/>
   </patternset>
-  
+
   <!-- JDK definitions -->
-  
+
   <property name="jdk.bin" value="${jdk.home}/bin"/>
   <path id="jdk.classpath">
     <fileset dir="${jdk.home}">
@@ -116,12 +116,12 @@
       <exclude name="lib/ant/lib/**"/>
     </fileset>
   </path>
-  
+
   <property name="project.jdk.home" value="${jdk.home}"/>
   <property name="project.jdk.bin" value="${jdk.bin}"/>
   <property name="project.jdk.classpath" value="jdk.classpath"/>
-  
-  
+
+
   <!-- Global Libraries -->
   <!-- Register Custom Compiler Taskdefs -->
   <property name="javac2.home" value="${idea.home}/lib"/>
@@ -135,7 +135,7 @@
     <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
     <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="javac2.classpath"/>
   </target>
-  
+
   <!-- Modules -->
 
 
@@ -222,53 +222,53 @@
     <delete dir="${jps-shared.output.dir}"/>
     <delete dir="${jps-shared.testoutput.dir}"/>
   </target>
-  
+
   <!-- Module HaskForce -->
 
   <dirname property="module.haskforce.basedir" file="${ant.file}"/>
 
-  
+
   <property name="module.jdk.home.haskforce" value="${project.jdk.home}"/>
   <property name="module.jdk.bin.haskforce" value="${project.jdk.bin}"/>
   <property name="module.jdk.classpath.haskforce" value="${project.jdk.classpath}"/>
-  
+
   <property name="compiler.args.haskforce" value="-encoding UTF-8 ${compiler.args}"/>
-  
+
   <property name="haskforce.output.dir" value="${module.haskforce.basedir}/out/production/HaskForce"/>
   <property name="haskforce.testoutput.dir" value="${module.haskforce.basedir}/out/test/HaskForce"/>
-  
+
   <path id="haskforce.module.bootclasspath">
     <!-- Paths to be included in compilation bootclasspath -->
   </path>
-  
+
   <path id="haskforce.module.production.classpath">
     <path refid="${module.jdk.classpath.haskforce}"/>
     <pathelement path="${jps-shared.output.dir}"/>
   </path>
-  
+
   <path id="haskforce.runtime.production.module.classpath">
     <pathelement location="${haskforce.output.dir}"/>
   </path>
-  
+
   <path id="haskforce.module.classpath">
     <path refid="${module.jdk.classpath.haskforce}"/>
     <pathelement location="${haskforce.output.dir}"/>
   </path>
-  
+
   <path id="haskforce.runtime.module.classpath">
     <pathelement location="${haskforce.testoutput.dir}"/>
     <pathelement location="${haskforce.output.dir}"/>
   </path>
-  
-  
+
+
   <patternset id="excluded.from.module.haskforce">
     <patternset refid="ignored.files"/>
   </patternset>
-  
+
   <patternset id="excluded.from.compilation.haskforce">
     <patternset refid="excluded.from.module.haskforce"/>
   </patternset>
-  
+
   <path id="haskforce.module.sourcepath">
     <dirset dir="${module.haskforce.basedir}">
       <include name="src"/>
@@ -276,16 +276,16 @@
       <include name="resources"/>
     </dirset>
   </path>
-  
+
   <path id="haskforce.module.test.sourcepath">
     <dirset dir="${module.haskforce.basedir}">
       <include name="tests"/>
     </dirset>
   </path>
-  
-  
+
+
   <target name="compile.module.haskforce" depends="compile.module.haskforce.production,compile.module.haskforce.tests" description="Compile module HaskForce"/>
-  
+
   <target name="compile.module.haskforce.production" depends="register.custom.compilers" description="Compile module HaskForce; production classes">
     <mkdir dir="${haskforce.output.dir}"/>
     <javac2 source="1.6" target="1.6" destdir="${haskforce.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.haskforce}/javac">
@@ -295,7 +295,7 @@
       <src refid="haskforce.module.sourcepath"/>
       <patternset refid="excluded.from.compilation.haskforce"/>
     </javac2>
-    
+
     <copy todir="${haskforce.output.dir}">
       <fileset dir="${module.haskforce.basedir}/src">
         <patternset refid="compiler.resources"/>
@@ -311,7 +311,7 @@
       </fileset>
     </copy>
   </target>
-  
+
   <target name="compile.module.haskforce.tests" depends="register.custom.compilers,compile.module.haskforce.production" description="compile module HaskForce; test classes" unless="skip.tests">
     <mkdir dir="${haskforce.testoutput.dir}"/>
     <javac2 source="1.6" target="1.6" destdir="${haskforce.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.haskforce}/javac">
@@ -321,7 +321,7 @@
       <src refid="haskforce.module.test.sourcepath"/>
       <patternset refid="excluded.from.compilation.haskforce"/>
     </javac2>
-    
+
     <copy todir="${haskforce.testoutput.dir}">
       <fileset dir="${module.haskforce.basedir}/tests">
         <patternset refid="compiler.resources"/>
@@ -329,14 +329,14 @@
       </fileset>
     </copy>
   </target>
-  
+
   <target name="clean.module.haskforce" description="cleanup module">
     <delete dir="${haskforce.output.dir}"/>
     <delete dir="${haskforce.testoutput.dir}"/>
   </target>
-  
+
   <property name="haskforce.plugin.path.jar" value="${module.haskforce.basedir}/HaskForce.jar"/>
-  
+
   <!-- Build archive for plugin 'HaskForce' -->
   <target name="plugin.build.jar.haskforce" depends="compile.module.haskforce" description="Build plugin archive for module &#39;HaskForce&#39;">
     <jar destfile="${haskforce.plugin.path.jar}" duplicate="preserve">
@@ -348,64 +348,64 @@
       </manifest>
     </jar>
   </target>
-  
-  
+
+
   <!-- Module jps-plugin -->
-  
+
   <dirname property="module.jps-plugin.basedir" file="${ant.file}"/>
-  
-  
+
+
   <property name="module.jdk.home.jps-plugin" value="${project.jdk.home}"/>
   <property name="module.jdk.bin.jps-plugin" value="${project.jdk.bin}"/>
   <property name="module.jdk.classpath.jps-plugin" value="${project.jdk.classpath}"/>
-  
+
   <property name="compiler.args.jps-plugin" value="-encoding UTF-8 ${compiler.args}"/>
-  
+
   <property name="jps-plugin.output.dir" value="${module.jps-plugin.basedir}/out/production/jps-plugin"/>
   <property name="jps-plugin.testoutput.dir" value="${module.jps-plugin.basedir}/out/test/jps-plugin"/>
-  
+
   <path id="jps-plugin.module.bootclasspath">
     <!-- Paths to be included in compilation bootclasspath -->
   </path>
-  
+
   <path id="jps-plugin.module.production.classpath">
     <path refid="${module.jdk.classpath.jps-plugin}"/>
     <pathelement path="${jps-shared.output.dir}"/>
   </path>
-  
+
   <path id="jps-plugin.runtime.production.module.classpath">
     <pathelement location="${jps-plugin.output.dir}"/>
   </path>
-  
+
   <path id="jps-plugin.module.classpath">
     <path refid="${module.jdk.classpath.jps-plugin}"/>
     <pathelement location="${jps-plugin.output.dir}"/>
   </path>
-  
+
   <path id="jps-plugin.runtime.module.classpath">
     <pathelement location="${jps-plugin.testoutput.dir}"/>
     <pathelement location="${jps-plugin.output.dir}"/>
   </path>
-  
-  
+
+
   <patternset id="excluded.from.module.jps-plugin">
     <patternset refid="ignored.files"/>
   </patternset>
-  
+
   <patternset id="excluded.from.compilation.jps-plugin">
     <patternset refid="excluded.from.module.jps-plugin"/>
   </patternset>
-  
+
   <path id="jps-plugin.module.sourcepath">
     <dirset dir="${module.jps-plugin.basedir}/jps-plugin">
       <include name="src"/>
       <include name="resources"/>
     </dirset>
   </path>
-  
-  
+
+
   <target name="compile.module.jps-plugin" depends="compile.module.jps-plugin.production,compile.module.jps-plugin.tests" description="Compile module jps-plugin"/>
-  
+
   <target name="compile.module.jps-plugin.production" depends="register.custom.compilers" description="Compile module jps-plugin; production classes">
     <mkdir dir="${jps-plugin.output.dir}"/>
     <javac2 source="1.6" target="1.6" destdir="${jps-plugin.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jps-plugin}/javac">
@@ -415,7 +415,7 @@
       <src refid="jps-plugin.module.sourcepath"/>
       <patternset refid="excluded.from.compilation.jps-plugin"/>
     </javac2>
-    
+
     <copy todir="${jps-plugin.output.dir}">
       <fileset dir="${module.jps-plugin.basedir}/jps-plugin/src">
         <patternset refid="compiler.resources"/>
@@ -427,9 +427,9 @@
       </fileset>
     </copy>
   </target>
-  
+
   <target name="compile.module.jps-plugin.tests" depends="register.custom.compilers,compile.module.jps-plugin.production" description="compile module jps-plugin; test classes" unless="skip.tests"/>
-  
+
   <target name="clean.module.jps-plugin" description="cleanup module">
     <delete dir="${jps-plugin.output.dir}"/>
     <delete dir="${jps-plugin.testoutput.dir}"/>
