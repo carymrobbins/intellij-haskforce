@@ -79,6 +79,10 @@
         <add-to-group group-id="CodeMenu" anchor="last"/>
         <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl SPACE"/>
       </action>
+    <action id="com.haskforce.actions.RestartGhcModi" class="com.haskforce.actions.RestartGhcModi"
+            text="Restart ghc-modi" description="Restarts a disabled ghc-modi process">
+      <add-to-group group-id="ToolsMenu" anchor="last"/>
+    </action>
   </actions>
 
   <extensions defaultExtensionNs="com.intellij">

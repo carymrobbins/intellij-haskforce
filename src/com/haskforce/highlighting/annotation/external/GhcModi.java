@@ -1,5 +1,6 @@
 package com.haskforce.highlighting.annotation.external;
 
+import com.haskforce.actions.RestartGhcModi;
 import com.haskforce.highlighting.annotation.Problems;
 import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.NotificationUtil;
@@ -12,6 +13,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.xml.util.XmlUtil;
 import org.apache.commons.lang.SystemUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -34,8 +36,8 @@ public class GhcModi implements ModuleComponent {
     private @Nullable Process process;
     private @Nullable BufferedReader input;
     private @Nullable BufferedWriter output;
+    private boolean enabled = true;
     // Keep track of error messages so we don't output the same ones multiple times.
-    private @NotNull Set<String> errorMessages = new HashSet<String>(0);
     public static final Pattern TYPE_SPLIT_REGEX = Pattern.compile(" :: ");
 
     /**
@@ -159,47 +161,46 @@ public class GhcModi implements ModuleComponent {
      */
     @Nullable
     public synchronized String exec(@NotNull String command) throws GhcModiError {
+        if (!enabled) { return null; }
         ensureConsistent();
-        if (path == null) {
-            return null;
-        }
-        if (process == null) {
-            GeneralCommandLine commandLine = new GeneralCommandLine(path);
-            ParametersList parametersList = commandLine.getParametersList();
-            parametersList.addParametersString(flags);
-            // setWorkDirectory is deprecated but is needed to work with IntelliJ 13 which does not have withWorkDirectory.
-            commandLine.setWorkDirectory(workingDirectory);
-            // Make sure we can actually see the errors.
-            commandLine.setRedirectErrorStream(true);
-            try {
-                process = commandLine.createProcess();
-            } catch (ExecutionException e) {
-                throw new InitError(e.toString());
-            }
-            input = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            output = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
-        }
+        if (path == null) { return null; }
+        if (process == null) { spawnProcess(); }
         if (output == null) { throw new InitError("Output stream was unexpectedly null."); }
         if (input == null) { throw new InitError("Input stream was unexpectedly null."); }
         return interact(command, input, output);
+    }
+
+    private void spawnProcess() throws GhcModiError {
+        GeneralCommandLine commandLine = new GeneralCommandLine(path);
+        ParametersList parametersList = commandLine.getParametersList();
+        parametersList.addParametersString(flags);
+        // setWorkDirectory is deprecated but is needed to work with IntelliJ 13 which does not have withWorkDirectory.
+        commandLine.setWorkDirectory(workingDirectory);
+        // Make sure we can actually see the errors.
+        commandLine.setRedirectErrorStream(true);
+        try {
+            process = commandLine.createProcess();
+        } catch (ExecutionException e) {
+            throw new InitError(e.toString());
+        }
+        input = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        output = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
     }
 
     @Nullable
     private static String interact(@NotNull String command, @NotNull BufferedReader input, @NotNull BufferedWriter output) throws GhcModiError {
         try {
             // FIXME: A bit of a hack, but ensure that we don't accidentally read results from an unrelated command.
-            if (input.ready()) {
-                final String unread = read(command, input);
-                if (unread != null) { LOG.warn("Unread content found from ghc-modi, ignoring: " + unread); }
-            }
+            final String unread = read(command, input, false);
+            if (unread != null) { LOG.warn("Unread content found from ghc-modi, ignoring: " + unread); }
             output.write(command);
             output.newLine();
             output.flush();
-            return read(command, input);
+            return read(command, input, true);
         } catch (IOException e) {
             try {
                 // Attempt to grab an error message from ghc-modi.  It may throw its own NG bug error.
-                final String error = read(command, input);
+                final String error = read(command, input, false);
                 if (error != null) { throw new ExecError(command, error); }
             } catch (IOException _) {
                 // Ignored.
@@ -210,9 +211,13 @@ public class GhcModi implements ModuleComponent {
     }
 
     @Nullable
-    private static String read(@NotNull String command, @NotNull BufferedReader input) throws IOException, GhcModiError {
+    private static String read(@NotNull String command, @NotNull BufferedReader input, boolean waitForInput) throws IOException, GhcModiError {
         StringBuilder builder = new StringBuilder(0);
-        wait(command, input);
+        if (waitForInput) {
+            wait(command, input);
+        } else if (!input.ready()) {
+            return null;
+        }
         String line;
         for (;;) {
             if (!input.ready()) { break; }
@@ -241,17 +246,29 @@ public class GhcModi implements ModuleComponent {
         }
     }
 
+    /**
+     * Restarts the ghc-modi process and runs the check command on file to ensure the process starts successfully.
+     */
+    public synchronized void restartAndCheck(@NotNull String file) {
+        setEnabled(true);
+        check(file);
+    }
+
+    private void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
+
     @Nullable
-    private <T> T handleErrors(GhcModiCallable<T> callable) {
+    private synchronized <T> T handleErrors(GhcModiCallable<T> callable) {
         final T result;
         try {
             result = callable.call();
         } catch (GhcModiError e) {
             kill();
-            // If we've already displayed the error, don't display it again.
-            if (errorMessages.add(e.error)) {
-                displayError(e.message);
-            }
+            setEnabled(false);
+            displayError("Killing ghc-modi due to process failure.<br/><br/>" +
+                         "You can restart it using <b>" + XmlUtil.escape(RestartGhcModi.MENU_PATH) + "</b><br/><br/>" +
+                         e.message);
             return null;
         }
         return result;
