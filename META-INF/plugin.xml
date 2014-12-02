@@ -1,7 +1,7 @@
 <idea-plugin version="2" use-idea-classloader="true">
   <id>com.haskforce</id>
   <name>HaskForce</name>
-  <version>0.3-beta.11</version>
+  <version>0.3-beta.12</version>
   <vendor url="https://github.com/carymrobbins/intellij-haskforce">HaskForce on GitHub</vendor>
 
   <description>Plugin for Haskell language support.</description>
@@ -16,6 +16,13 @@
       <a href="https://github.com/carymrobbins/intellij-haskforce/issues">bug tracker</a>.
     </p>
     <p>
+      <b>v0.3-beta.12</b>
+      <ul>
+        <li>Improved "Go to symbol" by indexing declarations.</li>
+        <li>Resolved bug with ghc-modi blocking. (#91)</li>
+        <li>Prevent ghc-modi from restarting when it terminates unexpectedly.</li>
+        <li>Added a "Restart ghc-modi" action to give the user control over when to restart ghc-modi.</li>
+      </ul>
       <b>v0.3-beta.11</b>
       <ul>
         <li>Fixed duplicate error messages from ghc-modi.</li>
