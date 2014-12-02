@@ -202,9 +202,7 @@ public class GhcModi implements ModuleComponent {
                 // Attempt to grab an error message from ghc-modi.  It may throw its own NG bug error.
                 final String error = read(command, input, false);
                 if (error != null) { throw new ExecError(command, error); }
-            } catch (IOException _) {
-                // Ignored.
-            }
+            } catch (IOException ignored) {}
             // If we couldn't get an error message, dump the java error to the user.
             throw new ExecError(command, e.toString());
         }
