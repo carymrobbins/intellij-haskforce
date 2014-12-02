@@ -16,6 +16,9 @@ public interface HaskellStmts extends HaskellCompositeElement {
   @NotNull
   List<HaskellGendecl> getGendeclList();
 
+  @Nullable
+  HaskellLetexp getLetexp();
+
   @NotNull
   List<HaskellPat> getPatList();
 

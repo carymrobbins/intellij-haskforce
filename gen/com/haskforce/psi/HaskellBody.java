@@ -41,6 +41,9 @@ public interface HaskellBody extends HaskellCompositeElement {
   List<HaskellInstancedecl> getInstancedeclList();
 
   @NotNull
+  List<HaskellLetexp> getLetexpList();
+
+  @NotNull
   List<HaskellNewtypedecl> getNewtypedeclList();
 
   @NotNull

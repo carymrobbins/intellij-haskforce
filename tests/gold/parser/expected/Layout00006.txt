@@ -15,7 +15,7 @@ Haskell File
         EXP
           PsiElement(HaskellTokenType.do)('do')
           STMTS
-            EXP
+            LETEXP
               PsiElement(HaskellTokenType.let)('let')
               FUNORPATDECL
                 PAT

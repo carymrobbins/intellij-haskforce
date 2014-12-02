@@ -42,6 +42,7 @@ public interface HaskellTypes {
   IElementType IMPORTT = new HaskellElementType("IMPORTT");
   IElementType INSTANCEDECL = new HaskellElementType("INSTANCEDECL");
   IElementType KIND = new HaskellElementType("KIND");
+  IElementType LETEXP = new HaskellElementType("LETEXP");
   IElementType MODULEDECL = new HaskellElementType("MODULEDECL");
   IElementType NEWCONSTR = new HaskellElementType("NEWCONSTR");
   IElementType NEWTYPEDECL = new HaskellElementType("NEWTYPEDECL");
@@ -295,6 +296,9 @@ public interface HaskellTypes {
       }
       else if (type == KIND) {
         return new HaskellKindImpl(node);
+      }
+      else if (type == LETEXP) {
+        return new HaskellLetexpImpl(node);
       }
       else if (type == MODULEDECL) {
         return new HaskellModuledeclImpl(node);

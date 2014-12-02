@@ -89,6 +89,12 @@ public class HaskellBodyImpl extends HaskellCompositeElementImpl implements Hask
 
   @Override
   @NotNull
+  public List<HaskellLetexp> getLetexpList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellLetexp.class);
+  }
+
+  @Override
+  @NotNull
   public List<HaskellNewtypedecl> getNewtypedeclList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellNewtypedecl.class);
   }

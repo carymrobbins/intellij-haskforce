@@ -79,29 +79,30 @@ Haskell File
       RHS
         PsiElement(HaskellTokenType.=)('=')
         EXP
-          PsiElement(HaskellTokenType.let)('let')
-          FUNORPATDECL
-            PAT
-              VARID
-                PsiElement(HaskellTokenType.varidRegexp)('xs')
-            RHS
-              PsiElement(HaskellTokenType.=)('=')
-              EXP
-                PPRAGMA
-                  PsiElement(HaskellTokenType.{-#)('{-#')
-                  PsiElement(HaskellTokenType.PRAGMA)('SCC')
-                  PsiElement(HaskellTokenType.PRAGMA)('"X"')
-                  PsiElement(HaskellTokenType.#-})('#-}')
-                PsiElement(HaskellTokenType.[)('[')
-                EXP
-                  PsiElement(HaskellTokenType.integertoken)('1')
-                PsiElement(HaskellTokenType...)('..')
-                EXP
-                  PsiElement(HaskellTokenType.integertoken)('1000000')
-                PsiElement(HaskellTokenType.])(']')
-          PsiElement(HaskellTokenType.in)('in')
-          EXP
-            QVAR
-              QVARID
+          LETEXP
+            PsiElement(HaskellTokenType.let)('let')
+            FUNORPATDECL
+              PAT
                 VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('x')
+                  PsiElement(HaskellTokenType.varidRegexp)('xs')
+              RHS
+                PsiElement(HaskellTokenType.=)('=')
+                EXP
+                  PPRAGMA
+                    PsiElement(HaskellTokenType.{-#)('{-#')
+                    PsiElement(HaskellTokenType.PRAGMA)('SCC')
+                    PsiElement(HaskellTokenType.PRAGMA)('"X"')
+                    PsiElement(HaskellTokenType.#-})('#-}')
+                  PsiElement(HaskellTokenType.[)('[')
+                  EXP
+                    PsiElement(HaskellTokenType.integertoken)('1')
+                  PsiElement(HaskellTokenType...)('..')
+                  EXP
+                    PsiElement(HaskellTokenType.integertoken)('1000000')
+                  PsiElement(HaskellTokenType.])(']')
+            PsiElement(HaskellTokenType.in)('in')
+            EXP
+              QVAR
+                QVARID
+                  VARID
+                    PsiElement(HaskellTokenType.varidRegexp)('x')

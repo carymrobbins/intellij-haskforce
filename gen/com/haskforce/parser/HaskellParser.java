@@ -121,6 +121,9 @@ public class HaskellParser implements PsiParser {
     else if (t == KIND) {
       r = kind(b, 0);
     }
+    else if (t == LETEXP) {
+      r = letexp(b, 0);
+    }
     else if (t == MODULEDECL) {
       r = moduledecl(b, 0);
     }
@@ -3158,16 +3161,27 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // open alt (semi alt)* close?
+  // open (alt|exp) (semi alt)* close?
   static boolean iAlts(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "iAlts")) return false;
     if (!nextTokenIs(b, "", LBRACE, WHITESPACELBRACETOK)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = open(b, l + 1);
-    r = r && alt(b, l + 1);
+    r = r && iAlts_1(b, l + 1);
     r = r && iAlts_2(b, l + 1);
     r = r && iAlts_3(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // alt|exp
+  private static boolean iAlts_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "iAlts_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = alt(b, l + 1);
+    if (!r) r = exp(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -3803,11 +3817,26 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
+  // "let" decls "in" exp
+  public static boolean letexp(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "letexp")) return false;
+    if (!nextTokenIs(b, LET)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LET);
+    r = r && decls(b, l + 1);
+    r = r && consumeToken(b, IN);
+    r = r && exp(b, l + 1);
+    exit_section_(b, m, LETEXP, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // "\\case" altslist
   //                | '\' (apat | thaexp)+ "->" exp
-  //                | "let" decls "in" exp
+  //                | letexp
   //                | "if" exp [semi] "then" exp [semi] "else" exp
-  //                | "case" exp "of" altslist
+  //                | "case" exp "of" e altslist
   //                | "do" open stmts close
   //                | "mdo" open stmts close
   //                | "proc" aexp "->" exp
@@ -3818,7 +3847,7 @@ public class HaskellParser implements PsiParser {
     Marker m = enter_section_(b);
     r = lexp_0(b, l + 1);
     if (!r) r = lexp_1(b, l + 1);
-    if (!r) r = lexp_2(b, l + 1);
+    if (!r) r = letexp(b, l + 1);
     if (!r) r = lexp_3(b, l + 1);
     if (!r) r = lexp_4(b, l + 1);
     if (!r) r = lexp_5(b, l + 1);
@@ -3881,20 +3910,6 @@ public class HaskellParser implements PsiParser {
     return r;
   }
 
-  // "let" decls "in" exp
-  private static boolean lexp_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "lexp_2")) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, null);
-    r = consumeToken(b, LET);
-    r = r && decls(b, l + 1);
-    p = r; // pin = 2
-    r = r && report_error_(b, consumeToken(b, IN));
-    r = p && exp(b, l + 1) && r;
-    exit_section_(b, l, m, null, r, p, null);
-    return r || p;
-  }
-
   // "if" exp [semi] "then" exp [semi] "else" exp
   private static boolean lexp_3(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "lexp_3")) return false;
@@ -3927,7 +3942,7 @@ public class HaskellParser implements PsiParser {
     return true;
   }
 
-  // "case" exp "of" altslist
+  // "case" exp "of" e altslist
   private static boolean lexp_4(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "lexp_4")) return false;
     boolean r, p;
@@ -3936,6 +3951,7 @@ public class HaskellParser implements PsiParser {
     r = r && exp(b, l + 1);
     p = r; // pin = 2
     r = r && report_error_(b, consumeToken(b, OF));
+    r = p && report_error_(b, e(b, l + 1)) && r;
     r = p && altslist(b, l + 1) && r;
     exit_section_(b, l, m, null, r, p, null);
     return r || p;
@@ -4670,6 +4686,67 @@ public class HaskellParser implements PsiParser {
     Marker m = enter_section_(b);
     r = qop(b, l + 1);
     r = r && infixexp(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // ["rec"] "let" decls
+  //                       | [pat '<-'] exp
+  static boolean partialstmt(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "partialstmt")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = partialstmt_0(b, l + 1);
+    if (!r) r = partialstmt_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // ["rec"] "let" decls
+  private static boolean partialstmt_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "partialstmt_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = partialstmt_0_0(b, l + 1);
+    r = r && consumeToken(b, LET);
+    r = r && decls(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // ["rec"]
+  private static boolean partialstmt_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "partialstmt_0_0")) return false;
+    consumeToken(b, RECTOK);
+    return true;
+  }
+
+  // [pat '<-'] exp
+  private static boolean partialstmt_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "partialstmt_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = partialstmt_1_0(b, l + 1);
+    r = r && exp(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // [pat '<-']
+  private static boolean partialstmt_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "partialstmt_1_0")) return false;
+    partialstmt_1_0_0(b, l + 1);
+    return true;
+  }
+
+  // pat '<-'
+  private static boolean partialstmt_1_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "partialstmt_1_0_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = pat(b, l + 1);
+    r = r && consumeToken(b, LEFTARROW);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -5429,76 +5506,25 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // ["rec"] "let" decls semi
-  //                | [pat '<-'] exp semi
+  // partialstmt semi
   static boolean stmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "stmt")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = stmt_0(b, l + 1);
-    if (!r) r = stmt_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // ["rec"] "let" decls semi
-  private static boolean stmt_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "stmt_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = stmt_0_0(b, l + 1);
-    r = r && consumeToken(b, LET);
-    r = r && decls(b, l + 1);
+    r = partialstmt(b, l + 1);
     r = r && semi(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // ["rec"]
-  private static boolean stmt_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "stmt_0_0")) return false;
-    consumeToken(b, RECTOK);
-    return true;
-  }
-
-  // [pat '<-'] exp semi
-  private static boolean stmt_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "stmt_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = stmt_1_0(b, l + 1);
-    r = r && exp(b, l + 1);
-    r = r && semi(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // [pat '<-']
-  private static boolean stmt_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "stmt_1_0")) return false;
-    stmt_1_0_0(b, l + 1);
-    return true;
-  }
-
-  // pat '<-'
-  private static boolean stmt_1_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "stmt_1_0_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = pat(b, l + 1);
-    r = r && consumeToken(b, LEFTARROW);
     exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // stmt* exp
+  // stmt* (letexp | partialstmt | exp)
   public static boolean stmts(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "stmts")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, "<stmts>");
     r = stmts_0(b, l + 1);
-    r = r && exp(b, l + 1);
+    r = r && stmts_1(b, l + 1);
     exit_section_(b, l, m, STMTS, r, false, null);
     return r;
   }
@@ -5513,6 +5539,18 @@ public class HaskellParser implements PsiParser {
       c = current_position_(b);
     }
     return true;
+  }
+
+  // letexp | partialstmt | exp
+  private static boolean stmts_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "stmts_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = letexp(b, l + 1);
+    if (!r) r = partialstmt(b, l + 1);
+    if (!r) r = exp(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */

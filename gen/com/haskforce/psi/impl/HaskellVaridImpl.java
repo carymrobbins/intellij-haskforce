@@ -53,7 +53,7 @@ public class HaskellVaridImpl extends HaskellNamedStubbedPsiElementBase<HaskellV
     return findChildByType(VARIDREGEXP);
   }
 
-  @Nullable
+  @NotNull
   public String getName() {
     return HaskellPsiImplUtil.getName(this);
   }

@@ -392,9 +392,11 @@ exp ::= ppragma* infixexp ["::" [context "=>"] typee]
 
 private infixexp ::= '-'* lexp [qop infixexp]
 
+letexp ::= "let" decls "in" exp
+
 private lexp ::= "\\case" altslist
                | '\' (apat | thaexp)+ "->" exp
-               | "let" decls "in" exp
+               | letexp
                | "if" exp [semi] "then" exp [semi] "else" exp
                | "case" exp "of" altslist
                | "do" open stmts close
@@ -447,7 +449,7 @@ private recordlikeparen ::= exp
 private altslist ::= '{' alt (semi alt)* '}'
                    | iAlts
 
-private iAlts ::= open alt (semi alt)* close?
+private iAlts ::= open (alt|exp) (semi alt)* close?
 
 alt ::= pat i ('->' exp | gdpat) [wheredecls] {pin=3}
 
@@ -462,10 +464,12 @@ private qual ::= pat '<-' exp
               | "let" decls
               | exp
 
-stmts ::= stmt* exp
+stmts ::= stmt* (letexp | partialstmt | exp)
 
-private stmt ::= ["rec"] "let" decls semi
-               | [pat '<-'] exp semi
+private stmt ::= partialstmt semi
+
+private partialstmt ::= ["rec"] "let" decls
+                      | [pat '<-'] exp
 
 private fbind ::= qvar '=' exp {pin=2}
 

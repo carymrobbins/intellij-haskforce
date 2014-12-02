@@ -23,6 +23,9 @@ public interface HaskellExp extends HaskellCompositeElement {
   List<HaskellGendecl> getGendeclList();
 
   @NotNull
+  List<HaskellLetexp> getLetexpList();
+
+  @NotNull
   List<HaskellPat> getPatList();
 
   @NotNull

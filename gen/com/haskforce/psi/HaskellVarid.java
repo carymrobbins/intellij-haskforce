@@ -23,7 +23,7 @@ public interface HaskellVarid extends HaskellNamedElement, StubBasedPsiElement<H
   @Nullable
   PsiElement getVaridRegexp();
 
-  @Nullable
+  @NotNull
   String getName();
 
   @Nullable

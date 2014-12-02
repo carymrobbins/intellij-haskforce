@@ -312,77 +312,78 @@ Haskell File
                     PsiElement(HaskellTokenType.varidRegexp)('a')
                   PsiElement(HaskellTokenType.->)('→')
                   EXP
-                    PsiElement(HaskellTokenType.let)('let')
-                    FUNORPATDECL
-                      PAT
-                        PsiElement(HaskellTokenType.()('(')
+                    LETEXP
+                      PsiElement(HaskellTokenType.let)('let')
+                      FUNORPATDECL
                         PAT
-                          VARID
-                            PsiElement(HaskellTokenType.varidRegexp)('cir1'')
-                        PsiElement(HaskellTokenType.,)(',')
-                        PAT
-                          VARID
-                            PsiElement(HaskellTokenType.varidRegexp)('b')
-                        PsiElement(HaskellTokenType.))(')')
-                      RHS
-                        PsiElement(HaskellTokenType.=)('=')
-                        EXP
-                          QVAR
-                            QVARID
-                              VARID
-                                PsiElement(HaskellTokenType.varidRegexp)('cir1')
-                          QVAR
-                            QVARID
-                              VARID
-                                PsiElement(HaskellTokenType.varidRegexp)('a')
-                    FUNORPATDECL
-                      PAT
-                        PsiElement(HaskellTokenType.()('(')
-                        PAT
-                          VARID
-                            PsiElement(HaskellTokenType.varidRegexp)('cir2'')
-                        PsiElement(HaskellTokenType.,)(',')
-                        PAT
-                          VARID
-                            PsiElement(HaskellTokenType.varidRegexp)('c')
-                        PsiElement(HaskellTokenType.))(')')
-                      RHS
-                        PsiElement(HaskellTokenType.=)('=')
-                        EXP
-                          QVAR
-                            QVARID
-                              VARID
-                                PsiElement(HaskellTokenType.varidRegexp)('cir2')
-                          QVAR
-                            QVARID
-                              VARID
-                                PsiElement(HaskellTokenType.varidRegexp)('b')
-                    PsiElement(HaskellTokenType.in)('in')
-                    EXP
-                      PsiElement(HaskellTokenType.()('(')
-                      EXP
-                        QVAR
-                          QVARID
-                            VARID
-                              PsiElement(HaskellTokenType.varidRegexp)('cir2'')
-                        QOP
-                          QVAROP
-                            PsiElement(HaskellTokenType.`)('`')
-                            QVARID
-                              VARID
-                                PsiElement(HaskellTokenType.varidRegexp)('dot')
-                            PsiElement(HaskellTokenType.`)('`')
-                        QVAR
-                          QVARID
+                          PsiElement(HaskellTokenType.()('(')
+                          PAT
                             VARID
                               PsiElement(HaskellTokenType.varidRegexp)('cir1'')
-                      PsiElement(HaskellTokenType.,)(',')
-                      EXP
-                        QVAR
-                          QVARID
+                          PsiElement(HaskellTokenType.,)(',')
+                          PAT
+                            VARID
+                              PsiElement(HaskellTokenType.varidRegexp)('b')
+                          PsiElement(HaskellTokenType.))(')')
+                        RHS
+                          PsiElement(HaskellTokenType.=)('=')
+                          EXP
+                            QVAR
+                              QVARID
+                                VARID
+                                  PsiElement(HaskellTokenType.varidRegexp)('cir1')
+                            QVAR
+                              QVARID
+                                VARID
+                                  PsiElement(HaskellTokenType.varidRegexp)('a')
+                      FUNORPATDECL
+                        PAT
+                          PsiElement(HaskellTokenType.()('(')
+                          PAT
+                            VARID
+                              PsiElement(HaskellTokenType.varidRegexp)('cir2'')
+                          PsiElement(HaskellTokenType.,)(',')
+                          PAT
                             VARID
                               PsiElement(HaskellTokenType.varidRegexp)('c')
-                      PsiElement(HaskellTokenType.))(')')
+                          PsiElement(HaskellTokenType.))(')')
+                        RHS
+                          PsiElement(HaskellTokenType.=)('=')
+                          EXP
+                            QVAR
+                              QVARID
+                                VARID
+                                  PsiElement(HaskellTokenType.varidRegexp)('cir2')
+                            QVAR
+                              QVARID
+                                VARID
+                                  PsiElement(HaskellTokenType.varidRegexp)('b')
+                      PsiElement(HaskellTokenType.in)('in')
+                      EXP
+                        PsiElement(HaskellTokenType.()('(')
+                        EXP
+                          QVAR
+                            QVARID
+                              VARID
+                                PsiElement(HaskellTokenType.varidRegexp)('cir2'')
+                          QOP
+                            QVAROP
+                              PsiElement(HaskellTokenType.`)('`')
+                              QVARID
+                                VARID
+                                  PsiElement(HaskellTokenType.varidRegexp)('dot')
+                              PsiElement(HaskellTokenType.`)('`')
+                          QVAR
+                            QVARID
+                              VARID
+                                PsiElement(HaskellTokenType.varidRegexp)('cir1'')
+                        PsiElement(HaskellTokenType.,)(',')
+                        EXP
+                          QVAR
+                            QVARID
+                              VARID
+                                PsiElement(HaskellTokenType.varidRegexp)('c')
+                        PsiElement(HaskellTokenType.))(')')
     INSTANCEDECL
       PsiElement(HaskellTokenType.instance)('instance')
       CTYPE
@@ -481,57 +482,58 @@ Haskell File
               PsiElement(HaskellTokenType.))(')')
               PsiElement(HaskellTokenType.->)('→')
               EXP
-                PsiElement(HaskellTokenType.let)('let')
-                FUNORPATDECL
-                  PAT
-                    PsiElement(HaskellTokenType.()('(')
+                LETEXP
+                  PsiElement(HaskellTokenType.let)('let')
+                  FUNORPATDECL
                     PAT
-                      VARID
-                        PsiElement(HaskellTokenType.varidRegexp)('cir'')
-                    PsiElement(HaskellTokenType.,)(',')
-                    PAT
-                      VARID
-                        PsiElement(HaskellTokenType.varidRegexp)('c')
-                    PsiElement(HaskellTokenType.))(')')
-                  RHS
-                    PsiElement(HaskellTokenType.=)('=')
-                    EXP
-                      QVAR
-                        QVARID
-                          VARID
-                            PsiElement(HaskellTokenType.varidRegexp)('cir')
-                      QVAR
-                        QVARID
-                          VARID
-                            PsiElement(HaskellTokenType.varidRegexp)('b')
-                PsiElement(HaskellTokenType.in)('in')
-                EXP
-                  PsiElement(HaskellTokenType.()('(')
-                  EXP
-                    QVAR
-                      QVARID
-                        VARID
-                          PsiElement(HaskellTokenType.varidRegexp)('first')
-                    QVAR
-                      QVARID
+                      PsiElement(HaskellTokenType.()('(')
+                      PAT
                         VARID
                           PsiElement(HaskellTokenType.varidRegexp)('cir'')
-                  PsiElement(HaskellTokenType.,)(',')
+                      PsiElement(HaskellTokenType.,)(',')
+                      PAT
+                        VARID
+                          PsiElement(HaskellTokenType.varidRegexp)('c')
+                      PsiElement(HaskellTokenType.))(')')
+                    RHS
+                      PsiElement(HaskellTokenType.=)('=')
+                      EXP
+                        QVAR
+                          QVARID
+                            VARID
+                              PsiElement(HaskellTokenType.varidRegexp)('cir')
+                        QVAR
+                          QVARID
+                            VARID
+                              PsiElement(HaskellTokenType.varidRegexp)('b')
+                  PsiElement(HaskellTokenType.in)('in')
                   EXP
                     PsiElement(HaskellTokenType.()('(')
                     EXP
                       QVAR
                         QVARID
                           VARID
-                            PsiElement(HaskellTokenType.varidRegexp)('c')
-                    PsiElement(HaskellTokenType.,)(',')
-                    EXP
+                            PsiElement(HaskellTokenType.varidRegexp)('first')
                       QVAR
                         QVARID
                           VARID
-                            PsiElement(HaskellTokenType.varidRegexp)('d')
+                            PsiElement(HaskellTokenType.varidRegexp)('cir'')
+                    PsiElement(HaskellTokenType.,)(',')
+                    EXP
+                      PsiElement(HaskellTokenType.()('(')
+                      EXP
+                        QVAR
+                          QVARID
+                            VARID
+                              PsiElement(HaskellTokenType.varidRegexp)('c')
+                      PsiElement(HaskellTokenType.,)(',')
+                      EXP
+                        QVAR
+                          QVARID
+                            VARID
+                              PsiElement(HaskellTokenType.varidRegexp)('d')
+                      PsiElement(HaskellTokenType.))(')')
                     PsiElement(HaskellTokenType.))(')')
-                  PsiElement(HaskellTokenType.))(')')
     GENDECL
       VARS
         VARID
@@ -605,56 +607,57 @@ Haskell File
       RHS
         PsiElement(HaskellTokenType.=)('=')
         EXP
-          PsiElement(HaskellTokenType.let)('let')
-          FUNORPATDECL
-            PAT
-              PsiElement(HaskellTokenType.()('(')
+          LETEXP
+            PsiElement(HaskellTokenType.let)('let')
+            FUNORPATDECL
               PAT
-                VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('cir'')
-              PsiElement(HaskellTokenType.,)(',')
-              PAT
-                VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('x'')
-              PsiElement(HaskellTokenType.))(')')
-            RHS
-              PsiElement(HaskellTokenType.=)('=')
-              EXP
-                QVAR
-                  QVARID
-                    VARID
-                      PsiElement(HaskellTokenType.varidRegexp)('unCircuit')
-                QVAR
-                  QVARID
-                    VARID
-                      PsiElement(HaskellTokenType.varidRegexp)('cir')
-                QVAR
-                  QVARID
-                    VARID
-                      PsiElement(HaskellTokenType.varidRegexp)('x')
-          PsiElement(HaskellTokenType.in)('in')
-          EXP
-            QVAR
-              QVARID
-                VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('x'')
-            QOP
-              QVAROP
-                QVARSYM
-                  VARSYM
-                    PsiElement(HaskellTokenType.:)(':')
-            QVAR
-              QVARID
-                VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('runCircuit')
-            QVAR
-              QVARID
-                VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('cir'')
-            QVAR
-              QVARID
-                VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('xs')
+                PsiElement(HaskellTokenType.()('(')
+                PAT
+                  VARID
+                    PsiElement(HaskellTokenType.varidRegexp)('cir'')
+                PsiElement(HaskellTokenType.,)(',')
+                PAT
+                  VARID
+                    PsiElement(HaskellTokenType.varidRegexp)('x'')
+                PsiElement(HaskellTokenType.))(')')
+              RHS
+                PsiElement(HaskellTokenType.=)('=')
+                EXP
+                  QVAR
+                    QVARID
+                      VARID
+                        PsiElement(HaskellTokenType.varidRegexp)('unCircuit')
+                  QVAR
+                    QVARID
+                      VARID
+                        PsiElement(HaskellTokenType.varidRegexp)('cir')
+                  QVAR
+                    QVARID
+                      VARID
+                        PsiElement(HaskellTokenType.varidRegexp)('x')
+            PsiElement(HaskellTokenType.in)('in')
+            EXP
+              QVAR
+                QVARID
+                  VARID
+                    PsiElement(HaskellTokenType.varidRegexp)('x'')
+              QOP
+                QVAROP
+                  QVARSYM
+                    VARSYM
+                      PsiElement(HaskellTokenType.:)(':')
+              QVAR
+                QVARID
+                  VARID
+                    PsiElement(HaskellTokenType.varidRegexp)('runCircuit')
+              QVAR
+                QVARID
+                  VARID
+                    PsiElement(HaskellTokenType.varidRegexp)('cir'')
+              QVAR
+                QVARID
+                  VARID
+                    PsiElement(HaskellTokenType.varidRegexp)('xs')
     GENDECL
       VARS
         VARID
@@ -916,59 +919,60 @@ Haskell File
             PsiElement(HaskellTokenType.varidRegexp)('input')
           PsiElement(HaskellTokenType.->)('→')
           EXP
-            PsiElement(HaskellTokenType.let)('let')
-            FUNORPATDECL
-              PAT
+            LETEXP
+              PsiElement(HaskellTokenType.let)('let')
+              FUNORPATDECL
+                PAT
+                  PsiElement(HaskellTokenType.()('(')
+                  PAT
+                    VARID
+                      PsiElement(HaskellTokenType.varidRegexp)('output')
+                  PsiElement(HaskellTokenType.,)(',')
+                  PAT
+                    VARID
+                      PsiElement(HaskellTokenType.varidRegexp)('acc'')
+                  PsiElement(HaskellTokenType.))(')')
+                RHS
+                  PsiElement(HaskellTokenType.=)('=')
+                  EXP
+                    QVAR
+                      QVARID
+                        VARID
+                          PsiElement(HaskellTokenType.varidRegexp)('input')
+                    QOP
+                      QVAROP
+                        PsiElement(HaskellTokenType.`)('`')
+                        QVARID
+                          VARID
+                            PsiElement(HaskellTokenType.varidRegexp)('f')
+                        PsiElement(HaskellTokenType.`)('`')
+                    QVAR
+                      QVARID
+                        VARID
+                          PsiElement(HaskellTokenType.varidRegexp)('acc')
+              PsiElement(HaskellTokenType.in)('in')
+              EXP
                 PsiElement(HaskellTokenType.()('(')
-                PAT
-                  VARID
-                    PsiElement(HaskellTokenType.varidRegexp)('output')
-                PsiElement(HaskellTokenType.,)(',')
-                PAT
-                  VARID
-                    PsiElement(HaskellTokenType.varidRegexp)('acc'')
-                PsiElement(HaskellTokenType.))(')')
-              RHS
-                PsiElement(HaskellTokenType.=)('=')
                 EXP
                   QVAR
                     QVARID
                       VARID
-                        PsiElement(HaskellTokenType.varidRegexp)('input')
-                  QOP
-                    QVAROP
-                      PsiElement(HaskellTokenType.`)('`')
-                      QVARID
-                        VARID
-                          PsiElement(HaskellTokenType.varidRegexp)('f')
-                      PsiElement(HaskellTokenType.`)('`')
+                        PsiElement(HaskellTokenType.varidRegexp)('accum')
                   QVAR
                     QVARID
                       VARID
-                        PsiElement(HaskellTokenType.varidRegexp)('acc')
-            PsiElement(HaskellTokenType.in)('in')
-            EXP
-              PsiElement(HaskellTokenType.()('(')
-              EXP
-                QVAR
-                  QVARID
-                    VARID
-                      PsiElement(HaskellTokenType.varidRegexp)('accum')
-                QVAR
-                  QVARID
-                    VARID
-                      PsiElement(HaskellTokenType.varidRegexp)('acc'')
-                QVAR
-                  QVARID
-                    VARID
-                      PsiElement(HaskellTokenType.varidRegexp)('f')
-              PsiElement(HaskellTokenType.,)(',')
-              EXP
-                QVAR
-                  QVARID
-                    VARID
-                      PsiElement(HaskellTokenType.varidRegexp)('output')
-              PsiElement(HaskellTokenType.))(')')
+                        PsiElement(HaskellTokenType.varidRegexp)('acc'')
+                  QVAR
+                    QVARID
+                      VARID
+                        PsiElement(HaskellTokenType.varidRegexp)('f')
+                PsiElement(HaskellTokenType.,)(',')
+                EXP
+                  QVAR
+                    QVARID
+                      VARID
+                        PsiElement(HaskellTokenType.varidRegexp)('output')
+                PsiElement(HaskellTokenType.))(')')
     PsiComment(HaskellTokenType.comment)('-- | Accumulator that outputs the accumulator value.\n')
     GENDECL
       VARS
@@ -1047,44 +1051,45 @@ Haskell File
               PsiElement(HaskellTokenType.varidRegexp)('b')
             PsiElement(HaskellTokenType.->)('→')
             EXP
-              PsiElement(HaskellTokenType.let)('let')
-              FUNORPATDECL
-                PAT
-                  VARID
-                    PsiElement(HaskellTokenType.varidRegexp)('b'')
-                RHS
-                  PsiElement(HaskellTokenType.=)('=')
+              LETEXP
+                PsiElement(HaskellTokenType.let)('let')
+                FUNORPATDECL
+                  PAT
+                    VARID
+                      PsiElement(HaskellTokenType.varidRegexp)('b'')
+                  RHS
+                    PsiElement(HaskellTokenType.=)('=')
+                    EXP
+                      QVAR
+                        QVARID
+                          VARID
+                            PsiElement(HaskellTokenType.varidRegexp)('a')
+                      QOP
+                        QVAROP
+                          PsiElement(HaskellTokenType.`)('`')
+                          QVARID
+                            VARID
+                              PsiElement(HaskellTokenType.varidRegexp)('f')
+                          PsiElement(HaskellTokenType.`)('`')
+                      QVAR
+                        QVARID
+                          VARID
+                            PsiElement(HaskellTokenType.varidRegexp)('b')
+                PsiElement(HaskellTokenType.in)('in')
+                EXP
+                  PsiElement(HaskellTokenType.()('(')
                   EXP
                     QVAR
                       QVARID
                         VARID
-                          PsiElement(HaskellTokenType.varidRegexp)('a')
-                    QOP
-                      QVAROP
-                        PsiElement(HaskellTokenType.`)('`')
-                        QVARID
-                          VARID
-                            PsiElement(HaskellTokenType.varidRegexp)('f')
-                        PsiElement(HaskellTokenType.`)('`')
+                          PsiElement(HaskellTokenType.varidRegexp)('b'')
+                  PsiElement(HaskellTokenType.,)(',')
+                  EXP
                     QVAR
                       QVARID
                         VARID
-                          PsiElement(HaskellTokenType.varidRegexp)('b')
-              PsiElement(HaskellTokenType.in)('in')
-              EXP
-                PsiElement(HaskellTokenType.()('(')
-                EXP
-                  QVAR
-                    QVARID
-                      VARID
-                        PsiElement(HaskellTokenType.varidRegexp)('b'')
-                PsiElement(HaskellTokenType.,)(',')
-                EXP
-                  QVAR
-                    QVARID
-                      VARID
-                        PsiElement(HaskellTokenType.varidRegexp)('b'')
-                PsiElement(HaskellTokenType.))(')')
+                          PsiElement(HaskellTokenType.varidRegexp)('b'')
+                  PsiElement(HaskellTokenType.))(')')
           PsiElement(HaskellTokenType.))(')')
     GENDECL
       VARS

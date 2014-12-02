@@ -40,6 +40,12 @@ public class HaskellStmtsImpl extends HaskellCompositeElementImpl implements Has
   }
 
   @Override
+  @Nullable
+  public HaskellLetexp getLetexp() {
+    return findChildByClass(HaskellLetexp.class);
+  }
+
+  @Override
   @NotNull
   public List<HaskellPat> getPatList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPat.class);

@@ -46,6 +46,12 @@ public class HaskellGuardImpl extends HaskellCompositeElementImpl implements Has
   }
 
   @Override
+  @NotNull
+  public List<HaskellLetexp> getLetexpList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellLetexp.class);
+  }
+
+  @Override
   @Nullable
   public HaskellPat getPat() {
     return findChildByClass(HaskellPat.class);
