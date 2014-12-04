@@ -252,11 +252,14 @@ typedecl ::= "type" ["family" | "instance"] typee ['=' (typee|foralltype)] {pin=
 // the two is between typee and [deriving].
 datadecl ::= "data" ["instance"] [context "=>"] typee ['=' constrs| [kindsig] ["where" gadtconstrs]] [deriving] {pin=1}
 newtypedecl ::= "newtype" [context "=>"] simpletype '=' newconstr [deriving] {pin=1}
-classdecl ::= "class" ctype ["where" cdecls] {pin=1}
+classdecl ::= "class" ctype [fundeps] ["where" cdecls] {pin=1}
 instancedecl ::= "instance" ctype ["where" idecls] {pin=1}
 defaultdecl ::= "default" <<commaSeparate typee>> {pin=1}
 foreigndecl ::= "foreign" fdecl {pin=1}
 derivingdecl ::= "deriving" "instance" [ppragma] ctype {pin=1}
+
+private fundeps ::= '|' <<sequence fundep>> {pin=1}
+private fundep ::= tyvar+ "->" tyvar+ {pin=2}
 
 private cdecls ::= open [cdecls1] close {pin=1}
 
