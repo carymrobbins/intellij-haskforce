@@ -22,7 +22,7 @@ Building the plugin
 1. Install and enable additional plugins.
   * PsiViewer 3.28.73
   * JFlex Support 1.5.1 (optional, for generating lexers)
-  * Grammar Kit 1.1.9 (optional, for generating parsers - [donwload it from here](https://github.com/JetBrains/Grammar-Kit/releases/tag/1.1.9))
+  * Grammar Kit 1.2.0.2 (optional, for generating parsers - [download it from here](https://github.com/JetBrains/Grammar-Kit/releases/tag/1.2.0.2))
 1. Configure SDK and source files.
   * Create a new **IntelliJ Platform Plugin** project from existing sources (pointed to your cloned HaskForce directory).
   * Go to File > Project Structure.  Add SDKs for JDK and IDEA Plugins.  For the IDEA Plugins, add sources
