@@ -247,7 +247,7 @@ private topdecl1 ::= typedecl
                   | impdecl // From #ifdefs
                   | infixexp // TH-extension.
 
-typedecl ::= "type" ["family" | "instance"] typee ['=' typee] {pin=1}
+typedecl ::= "type" ["family" | "instance"] typee ['=' (typee|foralltype)] {pin=1}
 // Both data declaration and gadt declaration. The syntactic difference between
 // the two is between typee and [deriving].
 datadecl ::= "data" ["instance"] [context "=>"] typee ['=' constrs| [kindsig] ["where" gadtconstrs]] [deriving] {pin=1}
