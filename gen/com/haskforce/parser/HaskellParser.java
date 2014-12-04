@@ -3836,7 +3836,7 @@ public class HaskellParser implements PsiParser {
   //                | '\' (apat | thaexp)+ "->" exp
   //                | letexp
   //                | "if" exp [semi] "then" exp [semi] "else" exp
-  //                | "case" exp "of" e altslist
+  //                | "case" exp "of" altslist
   //                | "do" open stmts close
   //                | "mdo" open stmts close
   //                | "proc" aexp "->" exp
@@ -3942,7 +3942,7 @@ public class HaskellParser implements PsiParser {
     return true;
   }
 
-  // "case" exp "of" e altslist
+  // "case" exp "of" altslist
   private static boolean lexp_4(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "lexp_4")) return false;
     boolean r, p;
@@ -3951,7 +3951,6 @@ public class HaskellParser implements PsiParser {
     r = r && exp(b, l + 1);
     p = r; // pin = 2
     r = r && report_error_(b, consumeToken(b, OF));
-    r = p && report_error_(b, e(b, l + 1)) && r;
     r = p && altslist(b, l + 1) && r;
     exit_section_(b, l, m, null, r, p, null);
     return r || p;
@@ -5913,7 +5912,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // "type" ["family" | "instance"] typee ['=' typee]
+  // "type" ["family" | "instance"] typee ['=' (typee|foralltype)]
   public static boolean typedecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "typedecl")) return false;
     if (!nextTokenIs(b, TYPE)) return false;
@@ -5946,20 +5945,31 @@ public class HaskellParser implements PsiParser {
     return r;
   }
 
-  // ['=' typee]
+  // ['=' (typee|foralltype)]
   private static boolean typedecl_3(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "typedecl_3")) return false;
     typedecl_3_0(b, l + 1);
     return true;
   }
 
-  // '=' typee
+  // '=' (typee|foralltype)
   private static boolean typedecl_3_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "typedecl_3_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, EQUALS);
-    r = r && typee(b, l + 1);
+    r = r && typedecl_3_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // typee|foralltype
+  private static boolean typedecl_3_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "typedecl_3_0_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = typee(b, l + 1);
+    if (!r) r = foralltype(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }

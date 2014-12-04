@@ -22,6 +22,18 @@ public class HaskellTypedeclImpl extends HaskellCompositeElementImpl implements 
   }
 
   @Override
+  @Nullable
+  public HaskellCtype getCtype() {
+    return findChildByClass(HaskellCtype.class);
+  }
+
+  @Override
+  @NotNull
+  public List<HaskellTvBndr> getTvBndrList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTvBndr.class);
+  }
+
+  @Override
   @NotNull
   public List<HaskellTypee> getTypeeList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTypee.class);
@@ -31,6 +43,12 @@ public class HaskellTypedeclImpl extends HaskellCompositeElementImpl implements 
   @Nullable
   public PsiElement getFamilytoken() {
     return findChildByType(FAMILYTOKEN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getForalltoken() {
+    return findChildByType(FORALLTOKEN);
   }
 
   @Override
@@ -49,6 +67,12 @@ public class HaskellTypedeclImpl extends HaskellCompositeElementImpl implements 
   @Nullable
   public PsiElement getEquals() {
     return findChildByType(EQUALS);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getPeriod() {
+    return findChildByType(PERIOD);
   }
 
 }
