@@ -34,6 +34,12 @@ public class HaskellClassdeclImpl extends HaskellCompositeElementImpl implements
   }
 
   @Override
+  @NotNull
+  public List<HaskellTyvar> getTyvarList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTyvar.class);
+  }
+
+  @Override
   @Nullable
   public PsiElement getWhere() {
     return findChildByType(WHERE);
@@ -61,6 +67,12 @@ public class HaskellClassdeclImpl extends HaskellCompositeElementImpl implements
   @Nullable
   public PsiElement getLbrace() {
     return findChildByType(LBRACE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getPipe() {
+    return findChildByType(PIPE);
   }
 
   @Override
