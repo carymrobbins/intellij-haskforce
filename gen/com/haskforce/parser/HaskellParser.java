@@ -1374,7 +1374,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // "class" ctype ["where" cdecls]
+  // "class" ctype [fundeps] ["where" cdecls]
   public static boolean classdecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "classdecl")) return false;
     if (!nextTokenIs(b, CLASSTOKEN)) return false;
@@ -1383,21 +1383,29 @@ public class HaskellParser implements PsiParser {
     r = consumeToken(b, CLASSTOKEN);
     p = r; // pin = 1
     r = r && report_error_(b, ctype(b, l + 1));
-    r = p && classdecl_2(b, l + 1) && r;
+    r = p && report_error_(b, classdecl_2(b, l + 1)) && r;
+    r = p && classdecl_3(b, l + 1) && r;
     exit_section_(b, l, m, CLASSDECL, r, p, null);
     return r || p;
   }
 
-  // ["where" cdecls]
+  // [fundeps]
   private static boolean classdecl_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "classdecl_2")) return false;
-    classdecl_2_0(b, l + 1);
+    fundeps(b, l + 1);
+    return true;
+  }
+
+  // ["where" cdecls]
+  private static boolean classdecl_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "classdecl_3")) return false;
+    classdecl_3_0(b, l + 1);
     return true;
   }
 
   // "where" cdecls
-  private static boolean classdecl_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "classdecl_2_0")) return false;
+  private static boolean classdecl_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "classdecl_3_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, WHERE);
@@ -2743,6 +2751,66 @@ public class HaskellParser implements PsiParser {
     r = r && ftype(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  /* ********************************************************** */
+  // tyvar+ "->" tyvar+
+  static boolean fundep(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "fundep")) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, null);
+    r = fundep_0(b, l + 1);
+    r = r && consumeToken(b, RIGHTARROW);
+    p = r; // pin = 2
+    r = r && fundep_2(b, l + 1);
+    exit_section_(b, l, m, null, r, p, null);
+    return r || p;
+  }
+
+  // tyvar+
+  private static boolean fundep_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "fundep_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = tyvar(b, l + 1);
+    int c = current_position_(b);
+    while (r) {
+      if (!tyvar(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "fundep_0", c)) break;
+      c = current_position_(b);
+    }
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // tyvar+
+  private static boolean fundep_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "fundep_2")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = tyvar(b, l + 1);
+    int c = current_position_(b);
+    while (r) {
+      if (!tyvar(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "fundep_2", c)) break;
+      c = current_position_(b);
+    }
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // '|' <<sequence fundep>>
+  static boolean fundeps(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "fundeps")) return false;
+    if (!nextTokenIs(b, PIPE)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, null);
+    r = consumeToken(b, PIPE);
+    p = r; // pin = 1
+    r = r && sequence(b, l + 1, fundep_parser_);
+    exit_section_(b, l, m, null, r, p, null);
+    return r || p;
   }
 
   /* ********************************************************** */
@@ -6198,6 +6266,11 @@ public class HaskellParser implements PsiParser {
   final static Parser export_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return export(b, l + 1);
+    }
+  };
+  final static Parser fundep_parser_ = new Parser() {
+    public boolean parse(PsiBuilder b, int l) {
+      return fundep(b, l + 1);
     }
   };
   final static Parser importt_parser_ = new Parser() {

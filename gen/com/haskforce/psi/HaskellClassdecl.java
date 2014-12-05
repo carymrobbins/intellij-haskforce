@@ -13,6 +13,9 @@ public interface HaskellClassdecl extends HaskellCompositeElement {
   @Nullable
   HaskellCtype getCtype();
 
+  @NotNull
+  List<HaskellTyvar> getTyvarList();
+
   @Nullable
   PsiElement getWhere();
 
@@ -27,6 +30,9 @@ public interface HaskellClassdecl extends HaskellCompositeElement {
 
   @Nullable
   PsiElement getLbrace();
+
+  @Nullable
+  PsiElement getPipe();
 
   @Nullable
   PsiElement getRbrace();
