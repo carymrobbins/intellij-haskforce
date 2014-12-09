@@ -318,6 +318,7 @@
       <compilerarg line="${compiler.args.haskforce}"/>
       <bootclasspath refid="haskforce.module.bootclasspath"/>
       <classpath refid="haskforce.module.classpath"/>
+      <classpath refid="jps-shared.module.classpath"/>
       <src refid="haskforce.module.test.sourcepath"/>
       <patternset refid="excluded.from.compilation.haskforce"/>
     </javac2>
