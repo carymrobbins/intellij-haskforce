@@ -567,6 +567,7 @@
         </fileset>
         <fileset dir="${java.home}/../lib" includes="**/*.jar" />
         <path refid="haskforce.module.classpath"/>
+        <path refid="haskforce.module.tests.classpath"/>
         <pathelement location="${haskforce.testoutput.dir}"/>
       </classpath>
       <formatter type="brief" usefile="false"/>
