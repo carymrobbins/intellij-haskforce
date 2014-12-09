@@ -20,6 +20,13 @@
   <property name="jflex.hamletHighlight.input.file" value="${jflex.hamletHighlight.target.base}.flex"/>
   <property name="jflex.hamletHighlight.output.file" value="${jflex.hamletHighlight.target.base}.java"/>
 
+  <dirname property="module.haskforce.basedir" file="${ant.file}"/>
+  <property name="plugin.zip.path.output" value="${module.haskforce.basedir}/out/intellij-haskforce.zip"/>
+  <property name="plugin.zip.path" value="${module.haskforce.basedir}/out/zip"/>
+  <property name="haskforce.plugin.path.jar" value="${plugin.zip.path}/lib/intellij-haskforce.jar"/>
+  <property name="jps-plugin.plugin.path.jar" value="${plugin.zip.path}/lib/jps/jps-plugin.jar"/>
+  <property name="jps-shared.plugin.path.jar" value="${plugin.zip.path}/lib/jps-shared.jar"/>
+
   <!-- Set jdk.home if not specified in build.properties. -->
   <condition property="jdk.home" value="${java.home}/..">
     <not>
@@ -225,9 +232,6 @@
 
   <!-- Module HaskForce -->
 
-  <dirname property="module.haskforce.basedir" file="${ant.file}"/>
-
-
   <property name="module.jdk.home.haskforce" value="${project.jdk.home}"/>
   <property name="module.jdk.bin.haskforce" value="${project.jdk.bin}"/>
   <property name="module.jdk.classpath.haskforce" value="${project.jdk.classpath}"/>
@@ -312,13 +316,19 @@
     </copy>
   </target>
 
-  <target name="compile.module.haskforce.tests" depends="register.custom.compilers,compile.module.haskforce.production" description="compile module HaskForce; test classes" unless="skip.tests">
+  <path id="haskforce.module.tests.classpath">
+    <fileset dir="${plugin.zip.path}">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+
+  <target name="compile.module.haskforce.tests" depends="register.custom.compilers,compile.module.haskforce.production,plugin.build.jar.jps-shared" description="compile module HaskForce; test classes" unless="skip.tests">
     <mkdir dir="${haskforce.testoutput.dir}"/>
     <javac2 source="1.6" target="1.6" destdir="${haskforce.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.haskforce}/javac">
       <compilerarg line="${compiler.args.haskforce}"/>
       <bootclasspath refid="haskforce.module.bootclasspath"/>
       <classpath refid="haskforce.module.classpath"/>
-      <classpath refid="jps-shared.module.classpath"/>
+      <classpath refid="haskforce.module.tests.classpath"/>
       <src refid="haskforce.module.test.sourcepath"/>
       <patternset refid="excluded.from.compilation.haskforce"/>
     </javac2>
@@ -336,8 +346,6 @@
     <delete dir="${haskforce.testoutput.dir}"/>
   </target>
 
-  <property name="haskforce.plugin.path.jar" value="${module.haskforce.basedir}/HaskForce.jar"/>
-
   <!-- Build archive for plugin 'HaskForce' -->
   <target name="plugin.build.jar.haskforce" depends="compile.module.haskforce" description="Build plugin archive for module &#39;HaskForce&#39;">
     <jar destfile="${haskforce.plugin.path.jar}" duplicate="preserve">
@@ -350,11 +358,36 @@
     </jar>
   </target>
 
+  <!-- Build archive for plugin 'jps-plugin' -->
+  <target name="plugin.build.jar.jps-plugin" depends="compile.module.jps-plugin" description="Build plugin archive for module &#39;jps-plugin&#39;">
+    <jar destfile="${jps-plugin.plugin.path.jar}" duplicate="preserve">
+      <zipfileset dir="${jps-plugin.output.dir}"/>
+      <manifest>
+        <attribute name="Created-By" value="IntelliJ IDEA"/>
+        <attribute name="Manifest-Version" value="1.0"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <!-- Build archive for plugin 'jps-shared' -->
+  <target name="plugin.build.jar.jps-shared" depends="compile.module.jps-shared" description="Build plugin archive for module &#39;jps-shared&#39;">
+    <jar destfile="${jps-shared.plugin.path.jar}" duplicate="preserve">
+      <zipfileset dir="${jps-shared.output.dir}"/>
+      <manifest>
+        <attribute name="Created-By" value="IntelliJ IDEA"/>
+        <attribute name="Manifest-Version" value="1.0"/>
+      </manifest>
+    </jar>
+  </target>
+
+  <!-- Build the plugin zip archive -->
+  <target name="build.zip" depends="plugin.build.jar.jps-plugin, plugin.build.jar.jps-shared, plugin.build.jar.haskforce">
+    <zip basedir="${plugin.zip.path}" destfile="${plugin.zip.path.output}"/>
+  </target>
 
   <!-- Module jps-plugin -->
 
   <dirname property="module.jps-plugin.basedir" file="${ant.file}"/>
-
 
   <property name="module.jdk.home.jps-plugin" value="${project.jdk.home}"/>
   <property name="module.jdk.bin.jps-plugin" value="${project.jdk.bin}"/>
@@ -547,7 +580,7 @@
 
   <target name="clean" depends="clean.module.haskforce, clean.module.jps-plugin, clean.module.jps-shared" description="cleanup all"/>
 
-  <target name="build.modules" depends="init, generate.sources, clean, compile.module.jps-shared, compile.module.jps-plugin, plugin.build.jar.haskforce" description="build all modules"/>
+  <target name="build.modules" depends="init, generate.sources, clean, compile.module.jps-shared, compile.module.jps-plugin, build.zip" description="build all modules"/>
 
   <target name="all" depends="check.test" description="build all"/>
 </project>
