@@ -4,6 +4,7 @@ import com.haskforce.actions.RestartGhcModi;
 import com.haskforce.highlighting.annotation.Problems;
 import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.NotificationUtil;
+import com.haskforce.utils.SystemUtil;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
@@ -14,7 +15,6 @@ import com.intellij.openapi.module.ModuleComponent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.xml.util.XmlUtil;
-import org.apache.commons.lang.SystemUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -222,7 +222,7 @@ public class GhcModi implements ModuleComponent {
             line = input.readLine();
             if (line == null || line.equals("OK")) { break; }
             if (line.startsWith("NG")) { throw new ExecError(command, line); }
-            builder.append(line).append(SystemUtils.LINE_SEPARATOR);
+            builder.append(line).append(SystemUtil.LINE_SEPARATOR);
         }
         return builder.toString();
     }

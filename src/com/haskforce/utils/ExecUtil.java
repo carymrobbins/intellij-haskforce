@@ -1,6 +1,5 @@
 package com.haskforce.utils;
 
-import com.haskforce.HaskellSdkType;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.CapturingProcessHandler;
@@ -30,7 +29,7 @@ import java.util.List;
  */
 public class ExecUtil {
     // Messages go to the log available in Help -> Show log in finder.
-    private final static Logger LOG = Logger.getInstance(HaskellSdkType.class);
+    private final static Logger LOG = Logger.getInstance(ExecUtil.class);
 
     /**
      * Execute a command using the default shell.
