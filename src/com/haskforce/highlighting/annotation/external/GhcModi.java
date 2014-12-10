@@ -2,6 +2,9 @@ package com.haskforce.highlighting.annotation.external;
 
 import com.haskforce.actions.RestartGhcModi;
 import com.haskforce.highlighting.annotation.Problems;
+import com.haskforce.settings.SettingsChangeNotifier;
+import com.haskforce.settings.ToolKey;
+import com.haskforce.settings.ToolSettings;
 import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.NotificationUtil;
 import com.haskforce.utils.SystemUtil;
@@ -9,6 +12,7 @@ import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
 import com.intellij.notification.NotificationType;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
@@ -20,12 +24,13 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.regex.Pattern;
 
 /**
  * Process wrapper for GhcModi.  Implements ModuleComponent so destruction of processes coincides with closing projects.
  */
-public class GhcModi implements ModuleComponent {
+public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     @SuppressWarnings("UnusedDeclaration")
     private static final Logger LOG = Logger.getInstance(GhcModi.class);
 
@@ -36,41 +41,42 @@ public class GhcModi implements ModuleComponent {
     private @Nullable Process process;
     private @Nullable BufferedReader input;
     private @Nullable BufferedWriter output;
+    private ExecutorService executorService = Executors.newSingleThreadExecutor();
     private boolean enabled = true;
     // Keep track of error messages so we don't output the same ones multiple times.
     public static final Pattern TYPE_SPLIT_REGEX = Pattern.compile(" :: ");
 
-    /**
-     * Kills the existing process and closes input and output if they exist.
-     */
-    private synchronized void kill() {
-        if (process != null) {
-            process.destroy();
-            process = null;
-        }
+    public static Problems getFutureProblems(@NotNull Project project, @NotNull Future<Problems> problemsFuture) {
+        return getFuture(project, problemsFuture);
+    }
+
+    public static BrowseItem[] getFutureBrowseItems(@NotNull Project project, @NotNull Future<BrowseItem[]> browseItemsFuture) {
+        return getFuture(project, browseItemsFuture);
+    }
+
+    @Nullable
+    private static <T> T getFuture(@NotNull Project project, @NotNull Future<T> future) {
+        long timeout = ToolKey.getGhcModiTimeout(project);
         try {
-            if (input != null) {
-                input.close();
-                input = null;
-            }
-        } catch (IOException e) {
-            // Ignored.
+            return future.get(timeout, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            LOG.warn(e);
+            displayError(project, "ghc-modi was interrupted: " + e);
+        } catch (java.util.concurrent.ExecutionException e) {
+            LOG.warn(e);
+            displayError(project, "ghc-modi execution was aborted: " + e);
+        } catch (TimeoutException e) {
+            LOG.warn("ghc-modi took too long to respond (waited " + timeout + " milliseconds): " + e);
+            e.printStackTrace();
         }
-        try {
-            if (output != null) {
-                output.close();
-                output = null;
-            }
-        } catch (IOException e) {
-            // Ignored.
-        }
+        return null;
     }
 
     /**
      * Checks the module with ghc-modi and returns Problems to be annotated in the source.
      */
     @Nullable
-    public Problems check(final @NotNull String file) {
+    public Future<Problems> check(final @NotNull String file) {
         return handleErrors(new GhcModiCallable<Problems>() {
             @Override
             public Problems call() throws GhcModiError {
@@ -99,7 +105,7 @@ public class GhcModi implements ModuleComponent {
      * Returns an array of browse information for a given module.
      */
     @Nullable
-    public BrowseItem[] browse(@NotNull final String module) {
+    public Future<BrowseItem[]> browse(@NotNull final String module) {
         return handleErrors(new GhcModiCallable<BrowseItem[]>() {
             @Override
             public BrowseItem[] call() throws GhcModiError {
@@ -162,8 +168,8 @@ public class GhcModi implements ModuleComponent {
     @Nullable
     public synchronized String exec(@NotNull String command) throws GhcModiError {
         if (!enabled) { return null; }
-        ensureConsistent();
         if (path == null) { return null; }
+        if (process == null) { spawnProcess(); }
         if (process == null) { spawnProcess(); }
         if (output == null) { throw new InitError("Output stream was unexpectedly null."); }
         if (input == null) { throw new InitError("Input stream was unexpectedly null."); }
@@ -187,61 +193,62 @@ public class GhcModi implements ModuleComponent {
         output = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
     }
 
+    /**
+     * Kills the existing process and closes input and output if they exist.
+     */
+    private synchronized void kill() {
+        if (process != null) process.destroy();
+        process = null;
+        try { if (input != null) input.close(); } catch (IOException e) { /* Ignored */ }
+        input = null;
+        try { if (output != null) output.close(); } catch (IOException e) { /* Ignored */ }
+        output = null;
+    }
+
     @Nullable
     private static String interact(@NotNull String command, @NotNull BufferedReader input, @NotNull BufferedWriter output) throws GhcModiError {
+        write(command, input, output);
         try {
-            // FIXME: A bit of a hack, but ensure that we don't accidentally read results from an unrelated command.
-            final String unread = read(command, input, false);
-            if (unread != null) { LOG.warn("Unread content found from ghc-modi, ignoring: " + unread); }
-            output.write(command);
-            output.newLine();
-            output.flush();
-            return read(command, input, true);
+            return read(command, input);
+        } catch (InterruptedException e) {
+            throw new ExecError(command, e.toString());
         } catch (IOException e) {
-            try {
-                // Attempt to grab an error message from ghc-modi.  It may throw its own NG bug error.
-                final String error = read(command, input, false);
-                if (error != null) { throw new ExecError(command, error); }
-            } catch (IOException ignored) {}
-            // If we couldn't get an error message, dump the java error to the user.
             throw new ExecError(command, e.toString());
         }
     }
 
-    @Nullable
-    private static String read(@NotNull String command, @NotNull BufferedReader input, boolean waitForInput) throws IOException, GhcModiError {
-        StringBuilder builder = new StringBuilder(0);
-        if (waitForInput) {
-            wait(command, input);
-        } else if (!input.ready()) {
-            return null;
+    private static void write(@NotNull String command, @NotNull BufferedReader input, @NotNull BufferedWriter output) throws GhcModiError {
+        try {
+            output.write(command);
+            output.newLine();
+            output.flush();
+        } catch (IOException e) {
+            final String messagePrefix = "Failed to write command to ghc-modi: ";
+            String message = null;
+            try {
+                // Attempt to read error from ghc-modi.
+                message = read(command, input);
+            } catch (IOException ignored) {
+                // Ignored
+            } catch (InterruptedException ignored) {
+                // Ignored
+            }
+            if (message == null) message = e.toString();
+            throw new ExecError(command, messagePrefix + message);
         }
+    }
+
+    @Nullable
+    private static String read(@NotNull String command, @NotNull BufferedReader input) throws GhcModiError, IOException, InterruptedException {
+        StringBuilder builder = new StringBuilder(0);
         String line;
         for (;;) {
-            if (!input.ready()) { break; }
             line = input.readLine();
             if (line == null || line.equals("OK")) { break; }
             if (line.startsWith("NG")) { throw new ExecError(command, line); }
             builder.append(line).append(SystemUtil.LINE_SEPARATOR);
         }
         return builder.toString();
-    }
-
-    private static final int READ_TIMEOUT = 3000;
-    private static final int READ_INTERVAL = 50;
-    private static final int READ_MAX_TRIES = READ_TIMEOUT / READ_INTERVAL;
-
-    private static void wait(@NotNull String command, @NotNull BufferedReader input) throws IOException, GhcModiError {
-        int tries = 0;
-        if (!input.ready()) {
-            ++tries;
-            if (tries > READ_MAX_TRIES) { throw new ExecError(command, "ghc-modi took to long to respond."); }
-            try {
-                Thread.sleep(READ_INTERVAL);
-            } catch (InterruptedException e) {
-                throw new ExecError(command, "ghc-modi sleep thread interrupted: " + e.toString());
-            }
-        }
     }
 
     /**
@@ -257,109 +264,120 @@ public class GhcModi implements ModuleComponent {
     }
 
     @Nullable
-    private synchronized <T> T handleErrors(GhcModiCallable<T> callable) {
-        final T result;
-        try {
-            result = callable.call();
-        } catch (GhcModiError e) {
-            kill();
-            setEnabled(false);
-            displayError("Killing ghc-modi due to process failure.<br/><br/>" +
-                         "You can restart it using <b>" + XmlUtil.escape(RestartGhcModi.MENU_PATH) + "</b><br/><br/>" +
-                         e.message);
-            return null;
-        }
-        return result;
+    private synchronized <T> Future<T> handleErrors(final GhcModiCallable<T> callable) {
+        return executorService.submit(new Callable<T>() {
+            @Override
+            public T call() {
+                try {
+                    return callable.call();
+                } catch (final GhcModiError e) {
+                    final String messagePrefix;
+                    if (e.killProcess) {
+                        kill();
+                        setEnabled(false);
+                        messagePrefix = "Killing ghc-modi due to process failure.<br/><br/>You can restart it using " +
+                                "<b>" + XmlUtil.escape(RestartGhcModi.MENU_PATH) + "</b><br/><br/>";
+                    } else {
+                        messagePrefix = "";
+                    }
+                    ApplicationManager.getApplication().invokeLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            displayError(messagePrefix + e.message);
+                        }
+                    });
+                    return null;
+                }
+            }
+        });
     }
 
     private void displayError(@NotNull String message) {
-        NotificationUtil.displayToolsNotification(NotificationType.ERROR, module.getProject(), "ghc-modi error", message);
+        displayError(module.getProject(), message);
     }
 
-    static interface GhcModiCallable<V> {
+    private static void displayError(@NotNull Project project, @NotNull String message) {
+        NotificationUtil.displayToolsNotification(NotificationType.ERROR, project, "ghc-modi error", message);
+    }
+
+    static interface GhcModiCallable<V> extends Callable<V> {
         V call() throws GhcModiError;
     }
 
-    static abstract class GhcModiError extends Throwable {
+    static abstract class GhcModiError extends Exception {
         // Using error to index errors since message might have extra information.
         final @NotNull String error;
         final @NotNull String message;
+        final boolean killProcess;
 
-        GhcModiError(@NotNull String error, @NotNull String message) {
+        GhcModiError(@NotNull String error, @NotNull String message, boolean killProcess) {
             this.error = error;
             this.message = message;
+            this.killProcess = killProcess;
         }
     }
 
     static class InitError extends GhcModiError {
         InitError(@NotNull String error) {
-            super(error, "Initializing ghc-modi failed with error: " + error);
+            super(error, "Initializing ghc-modi failed with error: " + error, true);
         }
     }
 
     static class ExecError extends GhcModiError {
         ExecError(@NotNull String command, @NotNull String error) {
-            super(error, "Executing ghc-modi command '" + command + "' failed with error: " + error);
+            super(error, "Executing ghc-modi command '" + command + "' failed with error: " + error, true);
         }
     }
 
     static class CheckParseError extends GhcModiError {
         CheckParseError(@NotNull String stdout) {
-            super(stdout, "Unable to parse problems from ghc-modi: " + stdout);
+            super(stdout, "Unable to parse problems from ghc-modi: " + stdout, false);
         }
     }
 
     static class CheckError extends GhcModiError {
         CheckError(@NotNull String file, @NotNull String error) {
-            super(error, "Error checking file '" + file + "' with ghc-modi: " + error);
+            super(error, "Error checking file '" + file + "' with ghc-modi: " + error, false);
         }
     }
 
     /**
      * Private constructor used during module component initialization.
      */
-    @SuppressWarnings("UnusedDeclaration")
-    private GhcModi(@NotNull Module module) {
-        final Project project = module.getProject();
+    public GhcModi(@NotNull Module module) {
         this.module = module;
         this.path = lookupPath();
         this.flags = lookupFlags();
         this.workingDirectory = lookupWorkingDirectory();
+        // Ensure that we are notified of changes to the settings.
+        module.getProject().getMessageBus().connect().subscribe(SettingsChangeNotifier.GHC_MODI_TOPIC, this);
+    }
+
+    @Override
+    public void onSettingsChanged(@NotNull ToolSettings settings) {
+        this.path = settings.getPath();
+        this.flags = settings.getFlags();
+        kill();
+        try {
+            spawnProcess();
+        } catch (GhcModiError e) {
+            displayError(e.message);
+        }
     }
 
     @Nullable
     private String lookupPath() {
-        return ExecUtil.GHC_MODI_KEY.getPath(module.getProject());
+        return ToolKey.GHC_MODI_KEY.getPath(module.getProject());
     }
 
     @NotNull
     private String lookupFlags() {
-        return ExecUtil.GHC_MODI_KEY.getFlags(module.getProject());
+        return ToolKey.GHC_MODI_KEY.getFlags(module.getProject());
     }
 
     @NotNull
     private String lookupWorkingDirectory() {
         return ExecUtil.guessWorkDir(module);
-    }
-
-    /**
-     * Checks that all ghc-modi metadata is consistent with the current instance (path, flags, etc.).  If something
-     * has changed, updates the instance accordingly.
-     */
-    private void ensureConsistent() {
-        // Just used for equality checks.
-        final String newPath = lookupPath();
-        final String newFlags = lookupFlags();
-        final String newWorkingDirectory = lookupWorkingDirectory();
-        // Ensure that nothing has changed; if so, kill the existing process and re-spawn.
-        if (!StringUtil.equals(newPath, path)
-                || !newFlags.equals(flags)
-                || !newWorkingDirectory.equals(workingDirectory)) {
-            kill();
-            path = newPath;
-            flags = newFlags;
-            workingDirectory = newWorkingDirectory;
-        }
     }
 
     // Implemented methods for ModuleComponent.
@@ -371,7 +389,6 @@ public class GhcModi implements ModuleComponent {
 
     @Override
     public void projectClosed() {
-        kill();
     }
 
     @Override
@@ -386,6 +403,7 @@ public class GhcModi implements ModuleComponent {
 
     @Override
     public void disposeComponent() {
+        executorService.shutdownNow();
         kill();
     }
 

@@ -1,10 +1,10 @@
 package com.haskforce.utils;
 
+import com.haskforce.settings.ToolKey;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.CapturingProcessHandler;
 import com.intellij.execution.process.ProcessOutput;
-import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
@@ -206,37 +206,5 @@ public class ExecUtil {
     @Nullable
     public static String readCommandLine(@Nullable String workingDirectory, @NotNull String command, @NotNull String... params) {
         return readCommandLine(workingDirectory, command, params, null);
-    }
-
-    public static final ToolKey PARSER_HELPER_KEY = new ToolKey("parserHelper");
-    public static final ToolKey STYLISH_HASKELL_KEY = new ToolKey("stylishHaskell");
-    public static final ToolKey HLINT_KEY = new ToolKey("hlint");
-    public static final ToolKey GHC_MOD_KEY = new ToolKey("ghcMod");
-    public static final ToolKey GHC_MODI_KEY = new ToolKey("ghcModi");
-
-    /**
-     * String wrapper to ensure that we don't accidentally pass an invalid key to the PropertiesComponent.
-     * These are set as property keys in HaskellToolsConfigurable.
-     */
-    public static class ToolKey {
-        public final String pathKey;
-        public final String flagsKey;
-
-        ToolKey(String name) {
-            this.pathKey = name + "Path";
-            this.flagsKey = name + "Flags";
-        }
-
-        @Nullable
-        public String getPath(@NotNull Project project) {
-            final String path = PropertiesComponent.getInstance(project).getValue(pathKey);
-            return path == null || path.isEmpty() ? null : path;
-        }
-
-        @NotNull
-        public String getFlags(@NotNull Project project) {
-            final String flags = PropertiesComponent.getInstance(project).getValue(flagsKey);
-            return flags == null ? "" : flags;
-        }
     }
 }

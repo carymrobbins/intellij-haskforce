@@ -6,6 +6,7 @@ import com.haskforce.features.intentions.RemoveForall;
 import com.haskforce.highlighting.annotation.HaskellAnnotationHolder;
 import com.haskforce.highlighting.annotation.HaskellProblem;
 import com.haskforce.highlighting.annotation.Problems;
+import com.haskforce.settings.ToolKey;
 import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.NotificationUtil;
 import com.intellij.execution.configurations.GeneralCommandLine;
@@ -38,12 +39,12 @@ public class GhcMod {
 
     @Nullable
     public static String getPath(@NotNull Project project) {
-        return ExecUtil.GHC_MOD_KEY.getPath(project);
+        return ToolKey.GHC_MOD_KEY.getPath(project);
     }
 
     @NotNull
     public static String getFlags(@NotNull Project project) {
-        return ExecUtil.GHC_MOD_KEY.getFlags(project);
+        return ToolKey.GHC_MOD_KEY.getFlags(project);
     }
 
     @Nullable

@@ -4,6 +4,7 @@ import com.haskforce.codeInsight.HaskellCompletionContributor;
 import com.haskforce.highlighting.annotation.HaskellAnnotationHolder;
 import com.haskforce.highlighting.annotation.HaskellProblem;
 import com.haskforce.highlighting.annotation.Problems;
+import com.haskforce.settings.ToolKey;
 import com.haskforce.utils.ExecUtil;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.ExternalAnnotator;
@@ -19,10 +20,12 @@ import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.concurrent.Future;
+
 /**
  * Single annotator that calls all external tools used for annotations.
  */
-public class HaskellExternalAnnotator extends ExternalAnnotator<PsiFile, Problems> {
+public class HaskellExternalAnnotator extends ExternalAnnotator<PsiFile, HaskellExternalAnnotator.State> {
     @SuppressWarnings("UnusedDeclaration")
     private static final Logger LOG = Logger.getInstance(HaskellExternalAnnotator.class);
 
@@ -43,7 +46,7 @@ public class HaskellExternalAnnotator extends ExternalAnnotator<PsiFile, Problem
 
     @Nullable
     @Override
-    public Problems doAnnotate(@NotNull PsiFile file) {
+    public State doAnnotate(@NotNull PsiFile file) {
         final String canonicalPath = file.getVirtualFile().getCanonicalPath();
         if (canonicalPath == null) {
             return null;
@@ -62,37 +65,55 @@ public class HaskellExternalAnnotator extends ExternalAnnotator<PsiFile, Problem
         final Project project = file.getProject();
         final String workDir = ExecUtil.guessWorkDir(file);
         HaskellCompletionContributor.loadCacheData(file);
-        Problems problems = new Problems();
-        if (ExecUtil.GHC_MODI_KEY.getPath(project) != null) {
+        State state = new State();
+        if (ToolKey.GHC_MODI_KEY.getPath(project) != null) {
             final Module module = ModuleUtilCore.findModuleForPsiElement(file);
             if (module != null) {
                 GhcModi ghcModi = module.getComponent(GhcModi.class);
                 if (ghcModi != null) {
-                    problems.addAllNotNull(ghcModi.check(canonicalPath));
+                    state.ghcModiProblems = ghcModi.check(canonicalPath);
                 }
             }
         } else {
-            problems.addAllNotNull(GhcMod.check(project, workDir, canonicalPath));
+            state.ghcModProblems = GhcMod.check(project, workDir, canonicalPath);
         }
-        problems.addAllNotNull(HLint.lint(project, workDir, canonicalPath));
-        return problems;
+        state.hlintProblems = HLint.lint(project, workDir, canonicalPath);
+        return state;
     }
 
     /**
      * Wrapper to simplify adding annotations to an AnnotationHolder.
      */
     @Override
-    public void apply(@NotNull PsiFile file, Problems annotationResult, @NotNull AnnotationHolder holder) {
-        apply(file, annotationResult, new HaskellAnnotationHolder(holder));
+    public void apply(@NotNull PsiFile file, State state, @NotNull AnnotationHolder holder) {
+        apply(file, state, new HaskellAnnotationHolder(holder));
     }
 
-    public static void apply(@NotNull PsiFile file, Problems problems, @NotNull HaskellAnnotationHolder holder) {
-        if (problems == null || problems.isEmpty() || !file.isValid()) {
-            return;
-        }
+    public static void apply(@NotNull PsiFile file, State state, @NotNull HaskellAnnotationHolder holder) {
+        createAnnotations(file, state.hlintProblems, holder);
+        createAnnotations(file, state.ghcModProblems, holder);
+        createAnnotations(file, state.ghcModiProblems, holder);
+    }
+
+    public static void createAnnotations(@NotNull PsiFile file, @Nullable Problems problems,
+                                         @NotNull HaskellAnnotationHolder holder) {
+        if (problems == null || problems.isEmpty() || !file.isValid()) return;
         for (HaskellProblem problem : problems) {
             problem.createAnnotations(file, holder);
         }
     }
 
+    public static void createAnnotations(@NotNull PsiFile file, @Nullable Future<Problems> problemsFuture,
+                                         @NotNull HaskellAnnotationHolder holder) {
+        if (problemsFuture == null) return;
+        final Problems problems = GhcModi.getFutureProblems(file.getProject(), problemsFuture);
+        if (problems == null) return;
+        createAnnotations(file, problems, holder);
+    }
+
+    public static class State {
+        Problems hlintProblems;
+        Problems ghcModProblems;
+        Future<Problems> ghcModiProblems;
+    }
 }

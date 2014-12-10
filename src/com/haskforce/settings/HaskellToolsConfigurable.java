@@ -1,5 +1,6 @@
 package com.haskforce.settings;
 
+import com.haskforce.ui.JTextAccessorField;
 import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.GuiUtil;
 import com.intellij.ide.util.PropertiesComponent;
@@ -7,13 +8,16 @@ import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.intellij.ui.JBColor;
 import com.intellij.ui.RawCommandLineEditor;
 import com.intellij.ui.TextAccessor;
+import com.intellij.util.messages.Topic;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,41 +47,107 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     private JButton ghcModiAutoFind;
     private JTextField ghcModiVersion;
     private RawCommandLineEditor ghcModiFlags;
+    private JTextAccessorField ghcModiTimeout;
 
-    private Tool[] tools;
+    private List<Property> properties;
 
     public HaskellToolsConfigurable(@NotNull Project project) {
         this.propertiesComponent = PropertiesComponent.getInstance(project);
-        tools = new Tool[]{
-                new Tool(project, "stylish-haskell", ExecUtil.STYLISH_HASKELL_KEY, stylishPath, stylishFlags,
-                         stylishAutoFind, stylishVersion),
-                new Tool(project, "hlint", ExecUtil.HLINT_KEY, hlintPath, hlintFlags,
+        properties = Arrays.asList(
+                new Tool(project, "stylish-haskell", ToolKey.STYLISH_HASKELL_KEY, stylishPath, stylishFlags,
+                        stylishAutoFind, stylishVersion),
+                new Tool(project, "hlint", ToolKey.HLINT_KEY, hlintPath, hlintFlags,
                          hlintAutoFind, hlintVersion),
-                new Tool(project, "ghc-mod", ExecUtil.GHC_MOD_KEY, ghcModPath, ghcModFlags,
+                new Tool(project, "ghc-mod", ToolKey.GHC_MOD_KEY, ghcModPath, ghcModFlags,
                          ghcModAutoFind, ghcModVersion, "version"),
-                new Tool(project, "ghc-modi", ExecUtil.GHC_MODI_KEY, ghcModiPath, ghcModiFlags,
-                         ghcModiAutoFind, ghcModiVersion, "version")
-        };
+                new Tool(project, "ghc-modi", ToolKey.GHC_MODI_KEY, ghcModiPath, ghcModiFlags,
+                         ghcModiAutoFind, ghcModiVersion, "version", SettingsChangeNotifier.GHC_MODI_TOPIC),
+                new PropertyField(ToolKey.GHC_MODI_TIMEOUT_KEY, ghcModiTimeout, Long.toString(ToolKey.getGhcModiTimeout(project)))
+        );
+        // Validate that we can only enter numbers in the timeout field.
+        final Color originalBackground = ghcModiTimeout.getBackground();
+        ghcModiTimeout.setInputVerifier(new InputVerifier() {
+            @Override
+            public boolean verify(JComponent input) {
+                JTextAccessorField field = (JTextAccessorField)input;
+                try {
+                    //noinspection ResultOfMethodCallIgnored
+                    Long.parseLong(field.getText());
+                } catch (NumberFormatException e) {
+                    field.setBackground(JBColor.RED);
+                    return false;
+                }
+                field.setBackground(originalBackground);
+                return true;
+            }
+        });
     }
 
-    class Tool {
+    interface Property {
+        public boolean isModified();
+        public void saveState();
+        public void restoreState();
+    }
+
+    interface Versioned {
+        public void updateVersion();
+    }
+
+    class PropertyField implements Property {
+        public String oldValue;
+        public String propertyKey;
+        public final TextAccessor field;
+
+        PropertyField(@NotNull String propertyKey, @NotNull TextAccessor field) {
+            this(propertyKey, field, "");
+        }
+
+        PropertyField(@NotNull String propertyKey, @NotNull TextAccessor field, @NotNull String defaultValue) {
+            this.propertyKey = propertyKey;
+            this.field = field;
+            this.oldValue = propertiesComponent.getValue(propertyKey, defaultValue);
+            field.setText(oldValue);
+        }
+
+        public boolean isModified() {
+            return !field.getText().equals(oldValue);
+        }
+
+        public void saveState() {
+            propertiesComponent.setValue(propertyKey, oldValue = field.getText());
+        }
+
+        public void restoreState() {
+            field.setText(oldValue);
+        }
+    }
+
+    class Tool implements Property, Versioned {
         public final Project project;
         public final String command;
-        public final ExecUtil.ToolKey key;
+        public final ToolKey key;
         public final TextFieldWithBrowseButton pathField;
         public final RawCommandLineEditor flagsField;
         public final JTextField versionField;
         public final String versionParam;
         public final JButton autoFindButton;
         public final List<PropertyField> propertyFields;
+        public final @Nullable Topic<SettingsChangeNotifier> topic;
+        private final @Nullable SettingsChangeNotifier publisher;
 
-        Tool(Project project, String command, ExecUtil.ToolKey key, TextFieldWithBrowseButton pathField,
+        Tool(Project project, String command, ToolKey key, TextFieldWithBrowseButton pathField,
              RawCommandLineEditor flagsField, JButton autoFindButton, JTextField versionField) {
             this(project, command, key, pathField, flagsField, autoFindButton, versionField, "--version");
         }
 
-        Tool(Project project, String command, ExecUtil.ToolKey key, TextFieldWithBrowseButton pathField,
+        Tool(Project project, String command, ToolKey key, TextFieldWithBrowseButton pathField,
              RawCommandLineEditor flagsField, JButton autoFindButton, JTextField versionField, String versionParam) {
+            this(project, command, key, pathField, flagsField, autoFindButton, versionField, versionParam, null);
+        }
+
+        Tool(Project project, String command, ToolKey key, TextFieldWithBrowseButton pathField,
+             RawCommandLineEditor flagsField, JButton autoFindButton, JTextField versionField, String versionParam,
+             @Nullable Topic<SettingsChangeNotifier> topic) {
             this.project = project;
             this.command = command;
             this.key = key;
@@ -86,6 +156,8 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
             this.versionField = versionField;
             this.versionParam = versionParam;
             this.autoFindButton = autoFindButton;
+            this.topic = topic;
+            this.publisher = topic == null ? null : project.getMessageBus().syncPublisher(topic);
 
             this.propertyFields = Arrays.asList(
                     new PropertyField(key.pathKey, pathField),
@@ -114,43 +186,19 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
             return false;
         }
 
-        protected void saveState() {
+        public void saveState() {
+            if (isModified() && publisher != null) {
+                publisher.onSettingsChanged(new ToolSettings(pathField.getText(), flagsField.getText()));
+            }
             for (PropertyField propertyField : propertyFields) {
                 propertyField.saveState();
             }
         }
 
-        protected void restoreState() {
+        public void restoreState() {
             for (PropertyField propertyField : propertyFields) {
                 propertyField.restoreState();
             }
-        }
-    }
-
-    class PropertyField {
-        public String oldValue;
-        public String propertyKey;
-        public final TextAccessor field;
-
-        PropertyField(@NotNull String propertyKey, @NotNull TextAccessor field) {
-            this.propertyKey = propertyKey;
-            this.field = field;
-            this.oldValue = propertiesComponent.getValue(propertyKey, "");
-            if (!oldValue.isEmpty()) {
-                field.setText(oldValue);
-            }
-        }
-
-        public boolean isModified() {
-            return !field.getText().equals(oldValue);
-        }
-
-        public void saveState() {
-            propertiesComponent.setValue(propertyKey, oldValue = field.getText());
-        }
-
-        public void restoreState() {
-            field.setText(oldValue);
         }
     }
 
@@ -190,8 +238,8 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
      */
     @Override
     public boolean isModified() {
-        for (Tool tool : tools) {
-            if (tool.isModified()) {
+        for (Property property : properties) {
+            if (property.isModified()) {
                 return true;
             }
         }
@@ -232,8 +280,10 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
      * Updates the version info fields for all files configured.
      */
     private void updateVersionInfoFields() {
-        for (Tool tool : tools) {
-            tool.updateVersion();
+        for (Property property : properties) {
+            if (property instanceof Versioned) {
+                ((Versioned)property).updateVersion();
+            }
         }
     }
 
@@ -241,8 +291,8 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
      * Persistent save of the current state.
      */
     private void saveState() {
-        for (Tool tool : tools) {
-            tool.saveState();
+        for (Property property : properties) {
+            property.saveState();
         }
     }
 
@@ -250,8 +300,8 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
      * Restore components to the initial state.
      */
     private void restoreState() {
-        for (Tool tool : tools) {
-            tool.restoreState();
+        for (Property property : properties) {
+            property.restoreState();
         }
     }
 }

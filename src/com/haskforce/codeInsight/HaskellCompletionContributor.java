@@ -12,6 +12,7 @@ import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
@@ -32,11 +33,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.Future;
 
 /**
  * Fills the list of completions available on ctrl-space.
  */
 public class HaskellCompletionContributor extends CompletionContributor {
+    @SuppressWarnings("UnusedDeclaration")
+    private static final Logger LOG = Logger.getInstance(HaskellCompletionContributor.class);
+
     public static final Key<String[]> MODULE_CACHE_KEY = new Key("MODULE_CACHE");
     public static final Key<List<LookupElement>> LANGUAGE_CACHE_KEY = new Key("LANGUAGE_CACHE");
     public static final Key<String[]> FLAG_CACHE_KEY = new Key("FLAG_CACHE");
@@ -290,7 +295,9 @@ public class HaskellCompletionContributor extends CompletionContributor {
             return false;
         }
         for (HaskellPsiUtil.Import anImport : imports) {
-            for (LookupElement cachedName : cachedNames.get(anImport.module)) {
+            List<LookupElement> names = cachedNames.get(anImport.module);
+            if (names == null) continue;
+            for (LookupElement cachedName : names) {
                 String[] importedNames = anImport.getImportedNames();
                 String[] hidingNames = anImport.getHidingNames();
                 String lookupString = cachedName.getLookupString();
@@ -309,6 +316,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
     public static Map<String, List<LookupElement>> getBrowseCache(@NotNull final UserDataHolder holder,
                                                                   @NotNull final PsiFile file,
                                                                   final boolean force) {
+        final Project project = file.getProject();
         final Module module = ModuleUtilCore.findModuleForPsiElement(file);
         if (module == null) {
             return null;
@@ -328,9 +336,12 @@ public class HaskellCompletionContributor extends CompletionContributor {
                 browseCache.put(x.module, cachedNames);
                 continue;
             }
-            final GhcModi.BrowseItem[] browseItems = ghcModi.browse(x.module);
-            final List<LookupElement> names = browseItems == null ? null : ContainerUtil.map(browseItems, browseItemToLookupElement);
-            browseCache.put(x.module, names);
+            final Future<GhcModi.BrowseItem[]> futureBrowseItems = ghcModi.browse(x.module);
+            if (futureBrowseItems != null) {
+                final GhcModi.BrowseItem[] browseItems = GhcModi.getFutureBrowseItems(project, futureBrowseItems);
+                final List<LookupElement> names = browseItems == null ? null : ContainerUtil.map(browseItems, browseItemToLookupElement);
+                browseCache.put(x.module, names);
+            }
         }
         return browseCache;
     }

@@ -3,6 +3,7 @@ package com.haskforce.parsing.jsonParser;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.haskforce.parsing.srcExtsDatatypes.*;
+import com.haskforce.settings.ToolKey;
 import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.HaskellToolsNotificationListener;
 import com.intellij.ide.util.PropertiesComponent;
@@ -49,8 +50,8 @@ public class JsonParser {
         TopPair tp = new TopPair();
         PropertiesComponent prop = PropertiesComponent.getInstance(myProject);
         String parserHelperPath = prop == null ? ExecUtil.locateExecutableByGuessing("parser-helper")
-                                               : prop.getValue(ExecUtil.PARSER_HELPER_KEY.pathKey, "");
-        String parserHelperFlags = prop == null ? "" : prop.getValue(ExecUtil.PARSER_HELPER_KEY.flagsKey, "");
+                                               : prop.getValue(ToolKey.PARSER_HELPER_KEY.pathKey, "");
+        String parserHelperFlags = prop == null ? "" : prop.getValue(ToolKey.PARSER_HELPER_KEY.flagsKey, "");
 
         if (parserHelperPath == null || parserHelperPath.isEmpty()) {
             if (!haveGivenPathWarning) {

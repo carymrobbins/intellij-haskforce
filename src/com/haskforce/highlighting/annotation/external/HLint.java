@@ -6,6 +6,7 @@ import com.haskforce.features.intentions.IgnoreHLint;
 import com.haskforce.highlighting.annotation.HaskellAnnotationHolder;
 import com.haskforce.highlighting.annotation.HaskellProblem;
 import com.haskforce.highlighting.annotation.Problems;
+import com.haskforce.settings.ToolKey;
 import com.haskforce.utils.ExecUtil;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
@@ -34,8 +35,8 @@ public class HLint {
 
     @NotNull
     public static Problems lint(@NotNull Project project, @NotNull String workingDirectory, @NotNull String file) {
-        final String hlintPath = ExecUtil.HLINT_KEY.getPath(project);
-        final String hlintFlags = ExecUtil.HLINT_KEY.getFlags(project);
+        final String hlintPath = ToolKey.HLINT_KEY.getPath(project);
+        final String hlintFlags = ToolKey.HLINT_KEY.getFlags(project);
         if (hlintPath == null) return new Problems();
 
         return parseProblems(workingDirectory, hlintPath, hlintFlags, file);
