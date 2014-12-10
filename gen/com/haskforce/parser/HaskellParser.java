@@ -3871,6 +3871,62 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
+  // typee (typee | '(' tyvar kindsig ')')* [kindsig]
+  static boolean kindedvars(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "kindedvars")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = typee(b, l + 1);
+    r = r && kindedvars_1(b, l + 1);
+    r = r && kindedvars_2(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (typee | '(' tyvar kindsig ')')*
+  private static boolean kindedvars_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "kindedvars_1")) return false;
+    int c = current_position_(b);
+    while (true) {
+      if (!kindedvars_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "kindedvars_1", c)) break;
+      c = current_position_(b);
+    }
+    return true;
+  }
+
+  // typee | '(' tyvar kindsig ')'
+  private static boolean kindedvars_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "kindedvars_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = typee(b, l + 1);
+    if (!r) r = kindedvars_1_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // '(' tyvar kindsig ')'
+  private static boolean kindedvars_1_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "kindedvars_1_0_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LPAREN);
+    r = r && tyvar(b, l + 1);
+    r = r && kindsig(b, l + 1);
+    r = r && consumeToken(b, RPAREN);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // [kindsig]
+  private static boolean kindedvars_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "kindedvars_2")) return false;
+    kindsig(b, l + 1);
+    return true;
+  }
+
+  /* ********************************************************** */
   // "::" kind
   static boolean kindsig(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "kindsig")) return false;
@@ -5980,7 +6036,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // "type" ["family" | "instance"] typee ['=' (typee|foralltype)]
+  // "type" (typedeclclosedfamily | typedeclnorm)
   public static boolean typedecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "typedecl")) return false;
     if (!nextTokenIs(b, TYPE)) return false;
@@ -5988,23 +6044,61 @@ public class HaskellParser implements PsiParser {
     Marker m = enter_section_(b, l, _NONE_, null);
     r = consumeToken(b, TYPE);
     p = r; // pin = 1
-    r = r && report_error_(b, typedecl_1(b, l + 1));
-    r = p && report_error_(b, typee(b, l + 1)) && r;
-    r = p && typedecl_3(b, l + 1) && r;
+    r = r && typedecl_1(b, l + 1);
     exit_section_(b, l, m, TYPEDECL, r, p, null);
     return r || p;
   }
 
-  // ["family" | "instance"]
+  // typedeclclosedfamily | typedeclnorm
   private static boolean typedecl_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "typedecl_1")) return false;
-    typedecl_1_0(b, l + 1);
+    boolean r;
+    Marker m = enter_section_(b);
+    r = typedeclclosedfamily(b, l + 1);
+    if (!r) r = typedeclnorm(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // "family" kindedvars 'where' decls
+  static boolean typedeclclosedfamily(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "typedeclclosedfamily")) return false;
+    if (!nextTokenIs(b, FAMILYTOKEN)) return false;
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_, null);
+    r = consumeToken(b, FAMILYTOKEN);
+    r = r && kindedvars(b, l + 1);
+    r = r && consumeToken(b, WHERE);
+    p = r; // pin = 3
+    r = r && decls(b, l + 1);
+    exit_section_(b, l, m, null, r, p, null);
+    return r || p;
+  }
+
+  /* ********************************************************** */
+  // ["family" | "instance"] typee ['=' (typee|foralltype)]
+  static boolean typedeclnorm(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "typedeclnorm")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = typedeclnorm_0(b, l + 1);
+    r = r && typee(b, l + 1);
+    r = r && typedeclnorm_2(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // ["family" | "instance"]
+  private static boolean typedeclnorm_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "typedeclnorm_0")) return false;
+    typedeclnorm_0_0(b, l + 1);
     return true;
   }
 
   // "family" | "instance"
-  private static boolean typedecl_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "typedecl_1_0")) return false;
+  private static boolean typedeclnorm_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "typedeclnorm_0_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, FAMILYTOKEN);
@@ -6014,26 +6108,26 @@ public class HaskellParser implements PsiParser {
   }
 
   // ['=' (typee|foralltype)]
-  private static boolean typedecl_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "typedecl_3")) return false;
-    typedecl_3_0(b, l + 1);
+  private static boolean typedeclnorm_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "typedeclnorm_2")) return false;
+    typedeclnorm_2_0(b, l + 1);
     return true;
   }
 
   // '=' (typee|foralltype)
-  private static boolean typedecl_3_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "typedecl_3_0")) return false;
+  private static boolean typedeclnorm_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "typedeclnorm_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, EQUALS);
-    r = r && typedecl_3_0_1(b, l + 1);
+    r = r && typedeclnorm_2_0_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // typee|foralltype
-  private static boolean typedecl_3_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "typedecl_3_0_1")) return false;
+  private static boolean typedeclnorm_2_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "typedeclnorm_2_0_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = typee(b, l + 1);

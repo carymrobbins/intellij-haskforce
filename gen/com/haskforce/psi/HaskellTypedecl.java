@@ -11,10 +11,25 @@ public interface HaskellTypedecl extends HaskellCompositeElement {
   HaskellCtype getCtype();
 
   @NotNull
+  List<HaskellFunorpatdecl> getFunorpatdeclList();
+
+  @NotNull
+  List<HaskellGendecl> getGendeclList();
+
+  @NotNull
+  List<HaskellKind> getKindList();
+
+  @NotNull
+  List<HaskellPpragma> getPpragmaList();
+
+  @NotNull
   List<HaskellTvBndr> getTvBndrList();
 
   @NotNull
   List<HaskellTypee> getTypeeList();
+
+  @NotNull
+  List<HaskellTyvar> getTyvarList();
 
   @Nullable
   PsiElement getFamilytoken();
@@ -29,9 +44,24 @@ public interface HaskellTypedecl extends HaskellCompositeElement {
   PsiElement getType();
 
   @Nullable
+  PsiElement getWhere();
+
+  @Nullable
+  PsiElement getWhitespacelbracetok();
+
+  @Nullable
+  PsiElement getWhitespacerbracetok();
+
+  @Nullable
   PsiElement getEquals();
 
   @Nullable
+  PsiElement getLbrace();
+
+  @Nullable
   PsiElement getPeriod();
+
+  @Nullable
+  PsiElement getRbrace();
 
 }

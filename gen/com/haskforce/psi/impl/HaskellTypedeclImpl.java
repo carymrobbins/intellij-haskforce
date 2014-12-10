@@ -29,6 +29,30 @@ public class HaskellTypedeclImpl extends HaskellCompositeElementImpl implements 
 
   @Override
   @NotNull
+  public List<HaskellFunorpatdecl> getFunorpatdeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellFunorpatdecl.class);
+  }
+
+  @Override
+  @NotNull
+  public List<HaskellGendecl> getGendeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellGendecl.class);
+  }
+
+  @Override
+  @NotNull
+  public List<HaskellKind> getKindList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellKind.class);
+  }
+
+  @Override
+  @NotNull
+  public List<HaskellPpragma> getPpragmaList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPpragma.class);
+  }
+
+  @Override
+  @NotNull
   public List<HaskellTvBndr> getTvBndrList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTvBndr.class);
   }
@@ -37,6 +61,12 @@ public class HaskellTypedeclImpl extends HaskellCompositeElementImpl implements 
   @NotNull
   public List<HaskellTypee> getTypeeList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTypee.class);
+  }
+
+  @Override
+  @NotNull
+  public List<HaskellTyvar> getTyvarList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTyvar.class);
   }
 
   @Override
@@ -65,14 +95,44 @@ public class HaskellTypedeclImpl extends HaskellCompositeElementImpl implements 
 
   @Override
   @Nullable
+  public PsiElement getWhere() {
+    return findChildByType(WHERE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getWhitespacelbracetok() {
+    return findChildByType(WHITESPACELBRACETOK);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getWhitespacerbracetok() {
+    return findChildByType(WHITESPACERBRACETOK);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getEquals() {
     return findChildByType(EQUALS);
   }
 
   @Override
   @Nullable
+  public PsiElement getLbrace() {
+    return findChildByType(LBRACE);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getPeriod() {
     return findChildByType(PERIOD);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRbrace() {
+    return findChildByType(RBRACE);
   }
 
 }
