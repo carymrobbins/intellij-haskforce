@@ -1,7 +1,7 @@
 <idea-plugin version="2" use-idea-classloader="true">
   <id>com.haskforce</id>
   <name>HaskForce</name>
-  <version>0.3-beta.15</version>
+  <version>0.3-beta.16</version>
   <vendor url="https://github.com/carymrobbins/intellij-haskforce">HaskForce on GitHub</vendor>
 
   <description>Plugin for Haskell language support.</description>
@@ -16,6 +16,10 @@
       <a href="https://github.com/carymrobbins/intellij-haskforce/issues">bug tracker</a>.
     </p>
     <p>
+      <b>v0.3-beta.16</b>
+      <ul>
+        <li>Improved ghc-modi integration.</li>
+      </ul>
       <b>v0.3-beta.15</b>
       <ul>
         <li>Implemented FunctionalDependencies.</li>
