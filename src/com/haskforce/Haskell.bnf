@@ -247,7 +247,11 @@ private topdecl1 ::= typedecl
                   | impdecl // From #ifdefs
                   | infixexp // TH-extension.
 
-typedecl ::= "type" ["family" | "instance"] typee ['=' (typee|foralltype)] {pin=1}
+typedecl ::= "type" (typedeclclosedfamily | typedeclnorm) {pin=1}
+private typedeclclosedfamily ::= "family" kindedvars 'where' decls {pin=3}
+private kindedvars ::= typee (typee | '(' tyvar kindsig ')')* [kindsig]
+private typedeclnorm ::= ["family" | "instance"] typee ['=' (typee|foralltype)]
+
 // Both data declaration and gadt declaration. The syntactic difference between
 // the two is between typee and [deriving].
 datadecl ::= "data" ["instance"] [context "=>"] typee ['=' constrs| [kindsig] ["where" gadtconstrs]] [deriving] {pin=1}
