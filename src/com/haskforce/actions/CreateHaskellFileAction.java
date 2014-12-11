@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
  */
 public class CreateHaskellFileAction extends CreateFileFromTemplateAction implements DumbAware {
     private static final String NEW_HASKELL_FILE = "New Haskell File";
-    private static final Pattern VALID_MODULE_NAME_REGEX = Pattern.compile("^[A-Z][A-Za-z0-9]*(\\.hs)?$");
+    private static final Pattern VALID_MODULE_NAME_REGEX = Pattern.compile("^([A-Z][A-Za-z0-9]*)(\\.[A-Z][A-Za-z0-9]*)*(.hs)?$");
 
     public CreateHaskellFileAction() {
         super(NEW_HASKELL_FILE, "", HaskellIcons.FILE);
@@ -75,7 +75,14 @@ public class CreateHaskellFileAction extends CreateFileFromTemplateAction implem
         if (name.endsWith(".hs")) {
             name = name.substring(0, name.lastIndexOf('.'));
         }
-        return createFileFromTemplate(name, template, dir, getDefaultTemplateProperty());
+        List<String> pathParts = StringUtil.split(name, ".");
+        // Create any intermediate subdirectories.
+        PsiDirectory subDir = dir;
+        for (int i = 0; i < pathParts.size() - 1; ++i) {
+            subDir = subDir.createSubdirectory(pathParts.get(i));
+        }
+        String moduleName = pathParts.get(pathParts.size() - 1);
+        return createFileFromTemplate(moduleName, template, subDir, getDefaultTemplateProperty());
     }
 
     @SuppressWarnings("DialogTitleCapitalization")
