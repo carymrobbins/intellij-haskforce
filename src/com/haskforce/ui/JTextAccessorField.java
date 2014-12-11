@@ -5,6 +5,9 @@ import com.intellij.ui.TextAccessor;
 import javax.swing.*;
 import javax.swing.text.Document;
 
+/**
+ * Helper field to make JTextField a TextAccessor.  See HaskellToolsConfigurable.PropertyField
+ */
 public class JTextAccessorField extends JTextField implements TextAccessor {
     public JTextAccessorField() {
         super();

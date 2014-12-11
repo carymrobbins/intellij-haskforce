@@ -93,6 +93,9 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
         public void updateVersion();
     }
 
+    /**
+     * Manages the state of a PropertyComponent and its respective field.
+     */
     class PropertyField implements Property {
         public String oldValue;
         public String propertyKey;
@@ -122,6 +125,9 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
         }
     }
 
+    /**
+     * Manages the group of fields which reside to a particular tool.
+     */
     class Tool implements Property, Versioned {
         public final Project project;
         public final String command;
