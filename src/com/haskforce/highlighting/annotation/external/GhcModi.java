@@ -254,9 +254,9 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     /**
      * Restarts the ghc-modi process and runs the check command on file to ensure the process starts successfully.
      */
-    public synchronized void restartAndCheck(@NotNull String file) {
+    public synchronized void restart() {
+        kill();
         setEnabled(true);
-        check(file);
     }
 
     private void setEnabled(boolean enabled) {

@@ -22,11 +22,11 @@ public class RestartGhcModi extends AnAction implements DumbAware {
     public static final String MENU_PATH = "Tools > Restart ghc-modi";
 
     @Override
-    public void update(AnActionEvent e) {
+    public void update(@NotNull AnActionEvent e) {
         e.getPresentation().setEnabled(enabled(e));
     }
 
-    private static boolean enabled(AnActionEvent e) {
+    private static boolean enabled(@NotNull AnActionEvent e) {
         final Project project = getEventProject(e);
         if (project == null) { return false; }
         final String ghcModiPath = ToolKey.GHC_MODI_KEY.getPath(project);
@@ -34,19 +34,17 @@ public class RestartGhcModi extends AnAction implements DumbAware {
     }
 
     @Override
-    public void actionPerformed(AnActionEvent e) {
+    public void actionPerformed(@NotNull AnActionEvent e) {
         final PsiFile file = e.getData(CommonDataKeys.PSI_FILE);
         if (file == null) { displayError(e, "Please open a Haskell file before restarting ghc-modi."); return; }
         final Module module = ModuleUtilCore.findModuleForPsiElement(file);
         if (module == null) { displayError(e, "Could not find IntelliJ module for current file."); return; }
         GhcModi ghcModi = module.getComponent(GhcModi.class);
         if (ghcModi == null) { displayError(e, "Could not find module component for ghc-modi."); return; }
-        final String canonicalPath = file.getVirtualFile().getCanonicalPath();
-        if (canonicalPath == null) { displayError(e, "Could not find canonical path for current file."); return; }
-        ghcModi.restartAndCheck(canonicalPath);
+        ghcModi.restart();
     }
 
-    private static void displayError(AnActionEvent e, @NotNull String message) {
+    private static void displayError(@NotNull AnActionEvent e, @NotNull String message) {
         final String groupId = e.getPresentation().getText();
         Notifications.Bus.notify(new Notification(
                 groupId, "Restart ghc-modi", message, NotificationType.ERROR), getEventProject(e));
