@@ -1,7 +1,7 @@
 <idea-plugin version="2" use-idea-classloader="true">
   <id>com.haskforce</id>
   <name>HaskForce</name>
-  <version>0.3-beta.16</version>
+  <version>0.3-beta.17</version>
   <vendor url="https://github.com/carymrobbins/intellij-haskforce">HaskForce on GitHub</vendor>
 
   <description>Plugin for Haskell language support.</description>
@@ -16,6 +16,12 @@
       <a href="https://github.com/carymrobbins/intellij-haskforce/issues">bug tracker</a>.
     </p>
     <p>
+      <b>v0.3-beta.17</b>
+      <ul>
+        <li>Implemented closed type families.</li>
+        <li>Implemented jump to function/variable declarations without type signatures.</li>
+        <li>Added module path creation when creating a new file as `Path.To.Module`.</li>
+      </ul>
       <b>v0.3-beta.16</b>
       <ul>
         <li>Improved ghc-modi integration.</li>
