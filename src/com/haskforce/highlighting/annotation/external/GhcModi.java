@@ -170,7 +170,6 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         if (!enabled) { return null; }
         if (path == null) { return null; }
         if (process == null) { spawnProcess(); }
-        if (process == null) { spawnProcess(); }
         if (output == null) { throw new InitError("Output stream was unexpectedly null."); }
         if (input == null) { throw new InitError("Input stream was unexpectedly null."); }
         return interact(command, input, output);
