@@ -56,7 +56,7 @@ public abstract class HaskellResolveTestCase extends HaskellLightPlatformCodeIns
         if (succeed && referencedElement == null) { fail("Could not find reference at caret."); }
         if (succeed && resolvedElement == null) { fail("Could not find resolved element."); }
         if (succeed) {
-            assertEquals("Could not resolve expected reference.", referencedElement.resolve(), resolvedElement);
+            assertEquals("Could not resolve expected reference.", resolvedElement, referencedElement.resolve());
         } else {
             assertFalse("Resolved unexpected reference.", resolvedElement.equals(referencedElement.resolve()));
         }
