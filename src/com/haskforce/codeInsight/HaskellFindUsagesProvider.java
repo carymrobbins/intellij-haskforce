@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
  * "Find usages" in right-click on top of an identifier.
  */
 public class HaskellFindUsagesProvider implements FindUsagesProvider {
+    @SuppressWarnings("UnusedDeclaration")
     private final static Logger LOG = Logger.getInstance(HaskellFindUsagesProvider.class);
     // Second parameter is nodes that are PsiNamedElements in practice.
     private final static WordsScanner SCANNER =

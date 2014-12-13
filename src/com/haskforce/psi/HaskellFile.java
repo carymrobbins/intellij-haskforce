@@ -6,6 +6,7 @@ import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.FileViewProvider;
 import com.intellij.psi.stubs.StubElement;
+import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -54,6 +55,11 @@ public class HaskellFile extends PsiFileBase {
     public String getModuleOrFileName() {
         final String moduleName = getModuleName();
         return moduleName == null ? getName() : moduleName;
+    }
+
+    @Nullable
+    public HaskellBody getBody() {
+        return PsiTreeUtil.getChildOfType(this, HaskellBody.class);
     }
 
     /**

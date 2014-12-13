@@ -28,6 +28,7 @@ public class HaskellFindUsagesTest extends HaskellLightPlatformCodeInsightFixtur
 
     public void testFunctionUsagesInSingleFile00001()    { doTest(3); }
     public void testFunctionUsagesInMultipleFiles00001() { doTest(3, "FunctionUsagesInSingleFile00001.hs");}
+    public void testFunctionUsagesInSingleFile00002()    { doTest(2); }
 
     private void doTest(int expectedResult, String ... extraFiles) {
         String[] files = new String[1 + extraFiles.length];

@@ -131,32 +131,44 @@ public class HaskellUtil {
         if (parent == null) return false;
         // If we are in a variable declaration (which has a type signature), return true.
         if (HaskellPsiUtil.isType(parent, HaskellTypes.VARS)) return true;
-        // If the parent is not a top-level declaration (Funorpatdecl), then it must be a varop (infix declaration)
-        // and the next parent up must be a top-level declaration.
-        if (!(parent instanceof HaskellFunorpatdecl)) {
-            if (!(parent instanceof HaskellVarop && parent.getParent() instanceof HaskellFunorpatdecl)) {
-                return false;
-            }
-        }
         // Now we have to figure out if the current varid, e, is the first top-level declaration in the file.
         // Check each top-level declaration.  When we find the first one that matches our element's name we'll return
         // true if the elements are equal, false otherwise.
         final String name = e.getName();
-        for (HaskellFunorpatdecl f : PsiTreeUtil.findChildrenOfType(e.getContainingFile(), HaskellFunorpatdecl.class)) {
-            final HaskellVarop varop = f.getVarop();
-            // Check if the function is defined as infix.
-            if (varop != null) {
-                final HaskellVarid varid = varop.getVarid();
-                if (varid != null && name.equals(varid.getName())) {
-                    return e.equals(varid);
+        final PsiFile file = e.getContainingFile();
+        if (!(file instanceof HaskellFile)) return false;
+        final HaskellBody body = ((HaskellFile)file).getBody();
+        if (body == null) return false;
+        for (PsiElement child  : body.getChildren()) {
+            // If we hit a declaration with a type signature, this shouldn't match our element's name.
+            if (child instanceof HaskellGendecl) {
+                final HaskellVars vars = ((HaskellGendecl)child).getVars();
+                if (vars == null) continue;
+                // If it matches our elements name, return false.
+                for (HaskellVarid varid : vars.getVaridList()) {
+                    if (name.equals(varid.getName())) return false;
                 }
-            } else {
-                // There can be multiple varids in a declaration, so we'll need to grab the first one.
-                List<HaskellVarid> varids = f.getVaridList();
-                if (varids.size() > 0) {
-                    final HaskellVarid varid = varids.get(0);
-                    if (name.equals(varid.getName())) {
+            } else if (child instanceof HaskellFunorpatdecl) {
+                final HaskellFunorpatdecl f = (HaskellFunorpatdecl)child;
+                final HaskellVarop varop = f.getVarop();
+                // Check if the function is defined as infix.
+                if (varop != null) {
+                    final HaskellVarid varid = varop.getVarid();
+                    if (varid != null && name.equals(varid.getName())) {
                         return e.equals(varid);
+                    }
+                } else {
+                    // If there is a pat in the declaration then there should only be one since the only case of having
+                    // more than one is when using a varop, which was already accounted for above.
+                    List<HaskellPat> pats = f.getPatList();
+                    if (pats.size() == 1 && pats.get(0).getVaridList().contains(e)) return true;
+                    // There can be multiple varids in a declaration, so we'll need to grab the first one.
+                    List<HaskellVarid> varids = f.getVaridList();
+                    if (varids.size() > 0) {
+                        final HaskellVarid varid = varids.get(0);
+                        if (name.equals(varid.getName())) {
+                            return e.equals(varid);
+                        }
                     }
                 }
             }
