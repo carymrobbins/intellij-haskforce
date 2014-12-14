@@ -218,33 +218,15 @@ public class HaskellCompletionContributor extends CompletionContributor {
     public static boolean completeNameImport(@NotNull final PsiElement position,
                                              @NotNull final UserDataHolder cacheHolder,
                                              @NotNull final CompletionResultSet result) {
-        PsiElement el = position.getParent();
-        if (el == null) {
-            return false;
-        }
-        el = el.getParent();
-        if (!(el instanceof HaskellImportt)) {
-            if (el != null) {
-                el = el.getParent();
-                if (!(el instanceof HaskellImportt)) {
-                    return false;
-                }
-            }
-        }
-        el = getPrevSiblingWhere(new Function<PsiElement, Boolean>() {
-            @Override
-            public Boolean fun(PsiElement psiElement) {
-                return psiElement instanceof HaskellQconid;
-            }
-        }, el);
-        if (el == null) {
-            return false;
-        }
-        final String module = el.getText();
+        // Ensure we are in an import name element.
+        if (PsiTreeUtil.getParentOfType(position, HaskellImportt.class) == null) return false;
+        HaskellImpdecl impdecl = PsiTreeUtil.getParentOfType(position, HaskellImpdecl.class);
+        if (impdecl == null) return true;
+        HaskellQconid qconid = PsiTreeUtil.findChildOfType(impdecl, HaskellQconid.class);
+        if (qconid == null) return true;
+        final String module = qconid.getText();
         final Map<String, List<LookupElement>> cachedNames = cacheHolder.getUserData(BROWSE_CACHE_KEY);
-        if (cachedNames != null) {
-            addAllElements(result, cachedNames.get(module));
-        }
+        if (cachedNames != null) addAllElements(result, cachedNames.get(module));
         return true;
     }
 

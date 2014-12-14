@@ -100,6 +100,7 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
         doTestInclude("import Data.Ord (<caret>)", fakeBrowseCache.get("Data.Ord"));
         doTestInclude("import Data.Ord (c<caret>)", "compare", "comparing");
         doTestInclude("import Data.Ord (Or<caret>)", "Ord", "Ordering");
+        doTestInclude("import Data.Ord as Foo (Or<caret>)", "Ord", "Ordering");
     }
 
     public void testImportParsing() throws Throwable {
