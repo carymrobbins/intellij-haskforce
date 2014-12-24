@@ -123,6 +123,7 @@
       <fileTypeFactory implementation="com.haskforce.HaskellFileTypeFactory"/>
       <lang.syntaxHighlighterFactory key="Haskell" implementationClass="com.haskforce.highlighting.HaskellSyntaxHighlighterFactory"/>
       <lang.parserDefinition language="Haskell" implementationClass="com.haskforce.HaskellParserDefinition"/>
+      <lang.documentationProvider language="Haskell" implementationClass="com.haskforce.highlighting.annotation.HaskellDocumentationProvider"/>
       <annotator language="Haskell" implementationClass="com.haskforce.highlighting.HaskellAnnotator" />
       <externalAnnotator language="Haskell" implementationClass="com.haskforce.highlighting.annotation.external.HaskellExternalAnnotator"/>
       <configurationType implementation="com.haskforce.run.HaskellApplicationConfigurationType"/>

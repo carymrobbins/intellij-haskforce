@@ -14,6 +14,8 @@ import com.intellij.execution.configurations.ParametersList;
 import com.intellij.lang.annotation.Annotation;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.editor.LogicalPosition;
+import com.intellij.openapi.editor.VisualPosition;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
@@ -180,6 +182,17 @@ public class GhcMod {
         file = file.trim();
         return new Problem(file, startLine, startColumn, message);
     }
+
+
+    @Nullable
+    public static String type(@NotNull Project project, @NotNull String workDir, @NotNull String canonicalPath,
+                              VisualPosition startPosition, @NotNull VisualPosition stopPosition) {
+        final String stdout = simpleExec(project, workDir, getFlags(project), "type" , canonicalPath,
+                String.valueOf(startPosition.line), String.valueOf(startPosition.column));
+        return stdout == null ? "Type info not found" :
+                GhcUtil.handleTypeInfo (startPosition,stopPosition, stdout);
+    }
+
 
     public static class Problem extends HaskellProblem {
         public String file;
