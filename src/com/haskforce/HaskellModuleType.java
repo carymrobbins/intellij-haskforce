@@ -1,14 +1,14 @@
 package com.haskforce;
 
-import com.intellij.ide.util.projectWizard.ModuleWizardStep;
-import com.intellij.ide.util.projectWizard.ProjectJdkForModuleStep;
-import com.intellij.ide.util.projectWizard.WizardContext;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleType;
 import com.intellij.openapi.module.ModuleTypeManager;
-import com.intellij.openapi.roots.ui.configuration.ModulesProvider;
+import com.intellij.openapi.module.ModuleUtil;
+import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.util.Collection;
 
 public class HaskellModuleType extends ModuleType<HaskellModuleBuilder> {
     public static final String MODULE_TYPE_ID = "HASKELL_MODULE";
@@ -19,6 +19,10 @@ public class HaskellModuleType extends ModuleType<HaskellModuleBuilder> {
 
     public static HaskellModuleType getInstance() {
         return (HaskellModuleType) ModuleTypeManager.getInstance().findByID(MODULE_TYPE_ID);
+    }
+
+    public static Collection<Module> findModules(@NotNull Project project) {
+        return ModuleUtil.getModulesOfType(project, HaskellModuleType.getInstance());
     }
 
     @NotNull
