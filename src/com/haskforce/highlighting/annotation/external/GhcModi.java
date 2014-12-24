@@ -14,6 +14,8 @@ import com.intellij.execution.configurations.ParametersList;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.editor.LogicalPosition;
+import com.intellij.openapi.editor.VisualPosition;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
 import com.intellij.openapi.project.Project;
@@ -54,6 +56,11 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         return getFuture(project, browseItemsFuture);
     }
 
+    public static String getFutureType(@NotNull Project project, @NotNull Future<String> typeFuture) {
+        return getFuture(project, typeFuture);
+    }
+
+
     @Nullable
     private static <T> T getFuture(@NotNull Project project, @NotNull Future<T> future) {
         long timeout = ToolKey.getGhcModiTimeout(project);
@@ -77,7 +84,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
      */
     @Nullable
     public Future<Problems> check(final @NotNull String file) {
-        return handleErrors(new GhcModiCallable<Problems>() {
+        return handleGhcModiCall(new GhcModiCallable<Problems>() {
             @Override
             public Problems call() throws GhcModiError {
                 final String stdout = simpleExec("check " + file);
@@ -85,6 +92,43 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
             }
         });
     }
+
+    public Future<String> type(final @NotNull String canonicalPath,
+                               @NotNull final VisualPosition startPosition,
+                               @NotNull final VisualPosition  stopPosition) {
+        return handleGhcModiCall(new GhcModiCallable<String>(){
+            @Override
+            public String call() throws GhcModiError {
+                final String stdout = simpleExec("type "+canonicalPath+' '+startPosition.line+' '+startPosition.column);
+                return stdout == null ? "Type info not found" : GhcUtil.handleTypeInfo (startPosition,stopPosition, stdout);
+            }
+        });
+    }
+
+
+    /**
+     * Maybe start using the compare function of logicalposition instead of
+     * this home brew thingy.
+     */
+    private static boolean selectionStopWithinBoundaries(int endRow, int endCol, VisualPosition selectionStopPosition) {
+        if(endRow > selectionStopPosition.line || (endRow == selectionStopPosition.line
+                && endCol >= selectionStopPosition.column)) {
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean selectionStartWithinBoundaries(int startRow, int startCol,
+                                                          VisualPosition selectionStartPosition
+                                                          ) {
+        if (startRow < selectionStartPosition.line ||
+                (startRow == selectionStartPosition.line
+                        && startCol <= selectionStartPosition.column)) {
+            return true;
+        }
+        return false;
+    }
+
 
     @Nullable
     private static Problems handleCheck(@NotNull String file, @NotNull String stdout) throws GhcModiError {
@@ -106,7 +150,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
      */
     @Nullable
     public Future<BrowseItem[]> browse(@NotNull final String module) {
-        return handleErrors(new GhcModiCallable<BrowseItem[]>() {
+        return handleGhcModiCall(new GhcModiCallable<BrowseItem[]>() {
             @Override
             public BrowseItem[] call() throws GhcModiError {
                 String[] lines = simpleExecToLines("browse -d " + module);
@@ -123,6 +167,8 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
             }
         });
     }
+
+
 
     /**
      * Wrapper class for the output of `ghc-modi browse` command.
@@ -263,7 +309,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     }
 
     @Nullable
-    private synchronized <T> Future<T> handleErrors(final GhcModiCallable<T> callable) {
+    private synchronized <T> Future<T> handleGhcModiCall(final GhcModiCallable<T> callable) {
         return executorService.submit(new Callable<T>() {
             @Override
             public T call() {
