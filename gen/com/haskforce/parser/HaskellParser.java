@@ -3963,7 +3963,7 @@ public class HaskellParser implements PsiParser {
   //                | "case" exp "of" altslist
   //                | "do" open stmts close
   //                | "mdo" open stmts close
-  //                | "proc" aexp "->" exp
+  //                | "proc" (aexp "->" exp | aexp*)
   //                | aexp+
   static boolean lexp(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "lexp")) return false;
@@ -4108,18 +4108,51 @@ public class HaskellParser implements PsiParser {
     return r || p;
   }
 
-  // "proc" aexp "->" exp
+  // "proc" (aexp "->" exp | aexp*)
   private static boolean lexp_7(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "lexp_7")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, "proc");
+    r = r && lexp_7_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // aexp "->" exp | aexp*
+  private static boolean lexp_7_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "lexp_7_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = lexp_7_1_0(b, l + 1);
+    if (!r) r = lexp_7_1_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // aexp "->" exp
+  private static boolean lexp_7_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "lexp_7_1_0")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, null);
-    r = consumeToken(b, "proc");
-    r = r && aexp(b, l + 1);
+    r = aexp(b, l + 1);
+    r = r && consumeToken(b, RIGHTARROW);
     p = r; // pin = 2
-    r = r && report_error_(b, consumeToken(b, RIGHTARROW));
-    r = p && exp(b, l + 1) && r;
+    r = r && exp(b, l + 1);
     exit_section_(b, l, m, null, r, p, null);
     return r || p;
+  }
+
+  // aexp*
+  private static boolean lexp_7_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "lexp_7_1_1")) return false;
+    int c = current_position_(b);
+    while (true) {
+      if (!aexp(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "lexp_7_1_1", c)) break;
+      c = current_position_(b);
+    }
+    return true;
   }
 
   // aexp+

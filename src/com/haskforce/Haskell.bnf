@@ -408,7 +408,8 @@ private lexp ::= "\\case" altslist
                | "case" exp "of" altslist
                | "do" open stmts close
                | "mdo" open stmts close
-               | "proc" aexp "->" exp
+               // proc might just be a variable name.
+               | "proc" (aexp "->" exp | aexp*)
                | aexp+ {pin(".*")=2}
 
 private aexp ::= parensplice exp i ')'
