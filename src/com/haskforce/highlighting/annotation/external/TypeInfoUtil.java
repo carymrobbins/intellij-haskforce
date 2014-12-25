@@ -72,6 +72,6 @@ public class TypeInfoUtil {
         if (pos0Based == null){
             return null;
         }
-        return new VisualPosition(pos0Based.line+1,pos0Based.column);
+        return new VisualPosition(pos0Based.line+1,pos0Based.column+1);
     }
 }
