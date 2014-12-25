@@ -113,6 +113,10 @@
             text="Restart ghc-modi" description="Restarts a disabled ghc-modi process">
       <add-to-group group-id="ToolsMenu" anchor="last"/>
     </action>
+      <action id="TypeInfo" class="com.haskforce.highlighting.annotation.external.TypeInfoAction" text="Type Info">
+          <add-to-group group-id="ViewMenu" anchor="first"/>
+          <keyboard-shortcut first-keystroke="alt EQUALS" keymap="$default"/>
+      </action>
   </actions>
 
   <extensions defaultExtensionNs="com.intellij">
