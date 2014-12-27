@@ -11,8 +11,8 @@ public class GhcUtil {
                                  VisualPosition selectionStopPosition,
                                  @NotNull String stdout) {
         Scanner typeInfosScanner = new Scanner(stdout);
-        //noinspection Since15
-        typeInfosScanner.useDelimiter(System.lineSeparator());
+        String lineSeparator = System.getProperty("line.separator");
+        typeInfosScanner.useDelimiter(lineSeparator);
         while (typeInfosScanner.hasNext()){
             Scanner typeInfoScanner = new Scanner(typeInfosScanner.next());
             typeInfoScanner.useDelimiter("\"");
