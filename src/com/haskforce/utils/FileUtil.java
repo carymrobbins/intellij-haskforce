@@ -7,9 +7,11 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.Function;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -82,5 +84,10 @@ public class FileUtil {
             }
         }
         return null;
+    }
+
+    public static PsiDirectory findOrCreateSubdirectory(@NotNull PsiDirectory dir, @NotNull String name) {
+        PsiDirectory result = dir.findSubdirectory(name);
+        return result == null ? dir.createSubdirectory(name) : result;
     }
 }

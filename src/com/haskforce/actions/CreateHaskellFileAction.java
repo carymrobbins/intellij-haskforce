@@ -79,7 +79,7 @@ public class CreateHaskellFileAction extends CreateFileFromTemplateAction implem
         // Create any intermediate subdirectories.
         PsiDirectory subDir = dir;
         for (int i = 0; i < pathParts.size() - 1; ++i) {
-            subDir = subDir.createSubdirectory(pathParts.get(i));
+            subDir = FileUtil.findOrCreateSubdirectory(subDir, pathParts.get(i));
         }
         String moduleName = pathParts.get(pathParts.size() - 1);
         return createFileFromTemplate(moduleName, template, subDir, getDefaultTemplateProperty());
