@@ -1,25 +1,22 @@
 package com.haskforce.highlighting.annotation.external;
 
-import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.editor.VisualPosition;
+import com.intellij.testFramework.UsefulTestCase;
 import org.junit.Assert;
-import org.junit.Test;
 
 /**
- * Created by kasper on 12/24/14.
+ * Test class for GhcUtil, which should contain the actions common to GhcMod and GhcModi
  */
-public class GhcUtilTest {
+public class GhcUtilTest extends UsefulTestCase {
 
-    @Test
-    public void canHandleSimpleOutput (){
+    public void testCanHandleSimpleOutput() {
         String ghcModTypeInfo = "24 31 24 45 \"Player\"\n" +
                 "24 1 25 52 \"Player -> [Player] -> [Player]\"";
         String typeInfo = GhcUtil.handleTypeInfo(new VisualPosition (24, 33), new VisualPosition (24, 33), ghcModTypeInfo);
         Assert.assertEquals("Player", typeInfo);
     }
 
-    @Test
-    public void canHandleTypeWithSpacesOutput (){
+    public void testCanHandleTypeWithSpacesOutput() {
         String ghcModTypeInfo =
                 "24 48 24 59 \"(Player -> Bool) -> [Player] -> [Player]\"\n" +
                 "24 48 24 109 \"[Player] -> [Player]\"\n" +
@@ -28,8 +25,7 @@ public class GhcUtilTest {
         Assert.assertEquals("(Player -> Bool) -> [Player] -> [Player]", typeInfo);
     }
 
-    @Test
-    public void canHandleMultipleLines (){
+    public void testCanHandleMultipleLines() {
         String ghcModTypeInfo =
                 "24 48 24 59 \"(Player -> Bool) -> [Player] -> [Player]\"\n" +
                 "24 48 24 109 \"[Player] -> [Player]\"\n" +
@@ -38,8 +34,7 @@ public class GhcUtilTest {
         Assert.assertEquals("[Player] -> [Player]", typeInfo);
     }
 
-    @Test
-    public void canUseSelection(){
+    public void testCanUseSelection() {
         String ghcModTypeInfo =
                 "24 48 24 59 \"(Player -> Bool) -> [Player] -> [Player]\"\n" +
                 "24 48 24 109 \"[Player] -> [Player]\"\n" +

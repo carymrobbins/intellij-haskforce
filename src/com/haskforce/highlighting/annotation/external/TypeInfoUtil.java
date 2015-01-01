@@ -12,7 +12,16 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiUtilBase;
 
-
+/**
+ * This class will return the type info of the type under cursor or the selection. It seems to be necessary
+ * to correct the positions under cursor. IntelliJ treats the 'origin' position of a file as (0,0). GhcMod treats
+ * files as (1,1) based.
+ * Effectively, this means that if IntelliJ reports the selection as being (2,1), for GhcMod
+ * it should be corrected to (3,2).
+ * <p/>
+ * Next to this offset correction, this class just calls GhcMod and returns the type info. In case no type info can be found
+ * it will report the error encountered instead of the type info.
+ */
 public class TypeInfoUtil {
     public static String getTypeInfo(Project project) {
         FileEditorManager fileEditorManager = FileEditorManager.getInstance(
@@ -20,9 +29,9 @@ public class TypeInfoUtil {
         if (fileEditorManager == null){
             return null;
         }
-        /*
-        This call always generates a rather large stacktrace, but succeeds nevertheless.
-        Best find out why.
+        /**
+         * This call always generates a rather large stacktrace,when called from  but succeeds nevertheless.
+         * No clue why right now, but best find out.
          */
         Editor textEditor = fileEditorManager.getSelectedTextEditor();
         if (textEditor == null){
