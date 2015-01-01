@@ -2,8 +2,11 @@ package com.haskforce.highlighting.annotation;
 
 import com.haskforce.highlighting.annotation.external.TypeInfoUtil;
 import com.intellij.lang.documentation.AbstractDocumentationProvider;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiManager;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -12,11 +15,11 @@ import org.jetbrains.annotations.Nullable;
  */
 
 public class HaskellDocumentationProvider extends AbstractDocumentationProvider {
-    @Nullable
     @Override
-    public String getQuickNavigateInfo(PsiElement element, PsiElement originalElement) {
+    public String generateDoc(PsiElement element, @Nullable PsiElement originalElement) {
         Project project = element.getProject();
         return TypeInfoUtil.getTypeInfo(project);
     }
 
 }
+
