@@ -971,6 +971,7 @@ public class HaskellParser implements PsiParser {
   //         | [singlequote] ('(' [<<sequence ctype>>] ')' | '[' <<sequence ctype>> ']')
   //         | integertoken
   //         | pstringtoken
+  //         | foralltype
   public static boolean atype(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "atype")) return false;
     boolean r;
@@ -983,6 +984,7 @@ public class HaskellParser implements PsiParser {
     if (!r) r = atype_5(b, l + 1);
     if (!r) r = consumeToken(b, INTEGERTOKEN);
     if (!r) r = pstringtoken(b, l + 1);
+    if (!r) r = foralltype(b, l + 1);
     exit_section_(b, l, m, ATYPE, r, false, null);
     return r;
   }

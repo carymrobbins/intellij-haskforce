@@ -53,6 +53,12 @@ public class HaskellAtypeImpl extends HaskellCompositeElementImpl implements Has
 
   @Override
   @NotNull
+  public List<HaskellTvBndr> getTvBndrList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTvBndr.class);
+  }
+
+  @Override
+  @NotNull
   public List<HaskellTypee> getTypeeList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTypee.class);
   }
@@ -67,6 +73,12 @@ public class HaskellAtypeImpl extends HaskellCompositeElementImpl implements Has
   @NotNull
   public List<HaskellVars> getVarsList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVars.class);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getForalltoken() {
+    return findChildByType(FORALLTOKEN);
   }
 
   @Override
@@ -109,6 +121,12 @@ public class HaskellAtypeImpl extends HaskellCompositeElementImpl implements Has
   @Nullable
   public PsiElement getLunboxparen() {
     return findChildByType(LUNBOXPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getPeriod() {
+    return findChildByType(PERIOD);
   }
 
   @Override

@@ -23,6 +23,9 @@ public interface HaskellAtype extends HaskellCompositeElement {
   HaskellPstringtoken getPstringtoken();
 
   @NotNull
+  List<HaskellTvBndr> getTvBndrList();
+
+  @NotNull
   List<HaskellTypee> getTypeeList();
 
   @Nullable
@@ -30,6 +33,9 @@ public interface HaskellAtype extends HaskellCompositeElement {
 
   @NotNull
   List<HaskellVars> getVarsList();
+
+  @Nullable
+  PsiElement getForalltoken();
 
   @Nullable
   PsiElement getDoublehash();
@@ -51,6 +57,9 @@ public interface HaskellAtype extends HaskellCompositeElement {
 
   @Nullable
   PsiElement getLunboxparen();
+
+  @Nullable
+  PsiElement getPeriod();
 
   @Nullable
   PsiElement getQuestion();
