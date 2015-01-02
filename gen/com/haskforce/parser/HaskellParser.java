@@ -3963,6 +3963,7 @@ public class HaskellParser implements PsiParser {
   //                | "case" exp "of" altslist
   //                | "do" open stmts close
   //                | "mdo" open stmts close
+  //                // proc might just be a variable name.
   //                | "proc" (aexp "->" exp | aexp*)
   //                | aexp+
   static boolean lexp(PsiBuilder b, int l) {
@@ -5710,13 +5711,14 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // '!' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '>' | '?' | '@'
+  // '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '>' | '?' | '@'
   //          | '\' | '^' | '-' | '~' | ':'
   static boolean symbol1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "symbol1")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, EXCLAMATION);
+    if (!r) r = consumeToken(b, HASH);
     if (!r) r = consumeToken(b, DOLLAR);
     if (!r) r = consumeToken(b, PERCENT);
     if (!r) r = consumeToken(b, AMPERSAND);

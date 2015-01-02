@@ -83,6 +83,12 @@ public class HaskellVarsymImpl extends HaskellCompositeElementImpl implements Ha
 
   @Override
   @Nullable
+  public PsiElement getHash() {
+    return findChildByType(HASH);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getLessthan() {
     return findChildByType(LESSTHAN);
   }

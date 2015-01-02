@@ -38,6 +38,9 @@ public interface HaskellVarsym extends HaskellCompositeElement {
   PsiElement getGreaterthan();
 
   @Nullable
+  PsiElement getHash();
+
+  @Nullable
   PsiElement getLessthan();
 
   @Nullable
