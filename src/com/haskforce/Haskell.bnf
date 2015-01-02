@@ -321,6 +321,7 @@ atype ::= [singlequote] ntgtycon ['##'|'#']
         | [singlequote] ('(' [<<sequence ctype>>] ')' | '[' <<sequence ctype>> ']')
         | integertoken
         | pstringtoken
+        | foralltype
 
 private ntgtycon ::=  '(#' commas '#)'
                    | '(' ('->' | commas) ')'
