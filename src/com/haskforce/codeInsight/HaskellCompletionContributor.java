@@ -17,6 +17,7 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.patterns.PlatformPatterns;
@@ -82,28 +83,19 @@ public class HaskellCompletionContributor extends CompletionContributor {
     }
 
     public static void completeKeywordImport(@NotNull final PsiElement position, @NotNull final CompletionResultSet result) {
-        PsiElement el = position;
-        while (el != null) {
-            PsiElement parent = el.getParent();
-            if (parent instanceof HaskellImpdecl) {
-                // We shouldn't completion "import" if we're already in an import.
-                return;
-            }
-            if (parent instanceof HaskellBody) {
-                break;
-            }
-            el = parent;
+        if (HaskellPsiUtil.findFirstParent(position, HaskellImpdecl.class) != null) return;
+        HaskellBody body = HaskellPsiUtil.findFirstParent(position, HaskellBody.class);
+        PsiElement root = body == null ? position.getContainingFile() : body;
+        PsiElement topLevel = PsiTreeUtil.findPrevParent(root, position);
+        // If we have spaces, then we are into an expression, definition, etc. and shouldn't provide completion.
+        if (topLevel.getText().contains(" ")) return;
+        for (PsiElement child : root.getChildren()) {
+            if (PsiTreeUtil.instanceOf(child,
+                    HaskellPpragma.class, HaskellImpdecl.class, PsiWhiteSpace.class, PsiComment.class)) continue;
+            // If something else other than the allowed elements appear before our element, don't provide completion.
+            if (!child.equals(topLevel)) return;
         }
-        PsiElement prev = getPrevSiblingWhere(new Function<PsiElement, Boolean>() {
-            @Override
-            public Boolean fun(PsiElement psiElement) {
-                return !PsiTreeUtil.instanceOf(psiElement, HaskellPpragma.class, PsiWhiteSpace.class, PsiComment.class);
-            }
-        }, el);
-        // Check if previous sibling is an import or does not exist (first import).
-        if (prev == null || prev instanceof HaskellImpdecl) {
-            result.addElement(stringToLookupElement.fun("import "));
-        }
+        result.addElement(stringToLookupElement.fun("import "));
     }
 
     public static void completeKeywordQualified(@NotNull final PsiElement position, @NotNull final CompletionResultSet result) {

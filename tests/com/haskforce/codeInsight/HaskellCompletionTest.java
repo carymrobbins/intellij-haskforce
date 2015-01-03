@@ -34,7 +34,7 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
         // After an appropriate pragma.
         doTestInclude(
                 "import Foo\n" +
-                "{-# ANN module \"foo\" -#}\n" +
+                "{-# ANN module \"foo\" #-}\n" +
                 "<caret>",
                     "import ");
         // After a CPP.
@@ -55,6 +55,11 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
                 "foo = 1\n" +
                 "{-# ANN module \"foo\" #-}\n" +
                 "<caret>",
+                    "import ");
+        // Not in an expression.
+        doTestExclude(
+                "import Foo\n" +
+                "foo = <caret>",
                     "import ");
     }
 
