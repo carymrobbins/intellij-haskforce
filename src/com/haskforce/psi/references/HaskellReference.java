@@ -4,17 +4,26 @@ import com.google.common.collect.Iterables;
 import com.haskforce.codeInsight.HaskellCompletionContributor;
 import com.haskforce.psi.*;
 import com.haskforce.psi.impl.HaskellPsiImplUtil;
+import com.haskforce.stubs.index.HaskellAllNameIndex;
 import com.haskforce.utils.HaskellUtil;
 import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.roots.FileIndexUtil;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
+import com.intellij.psi.impl.search.PsiSearchHelperImpl;
+import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.search.PsiSearchHelper;
+import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -49,14 +58,62 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
             if (!myElement.equals(Iterables.getLast(qconid.getConidList()))) { return EMPTY_RESOLVE_RESULT; }
         }
         Project project = myElement.getProject();
-        final List<PsiNamedElement> namedElements = HaskellUtil.findDefinitionNode(project, name, myElement);
+
+
+        /**
+         * This will only resolve the 'non-local' references. The local references need to be done through walking the
+         * psi tree unfortunately.
+         */
+        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
+        Collection<HaskellNamedElement> namedElements = StubIndex.getElements(HaskellAllNameIndex.KEY, name, project, scope, HaskellNamedElement.class);
+
         // Guess 20 variants tops most of the time in any real code base.
         List<ResolveResult> results = new ArrayList<ResolveResult>(20);
         for (PsiNamedElement property : namedElements) {
             //noinspection ObjectAllocationInLoop
             results.add(new PsiElementResolveResult(property));
         }
+        PsiElement localElement = walkPsiTree();
+        if(localElement != null){
+            results.add(new PsiElementResolveResult(localElement));
+        }
         return results.toArray(new ResolveResult[results.size()]);
+    }
+
+    public PsiElement walkPsiTree(){
+        PsiElement funOrPatDecl = lookForEnclosingFunOrPatDecl ();
+
+        if(funOrPatDecl == null){
+            return null;
+        }
+        PsiElement[] children = funOrPatDecl.getChildren();
+        for (PsiElement child : children) {
+            if (child instanceof HaskellVarid) {
+                HaskellVarid haskellVarid = (HaskellVarid) child;
+                if (name.equals(haskellVarid.getName())){
+                    return child;
+                }
+            }
+            /**
+             * The other case should be when the child is RHS
+             */
+        }
+
+
+        return null;
+    }
+
+    @Nullable
+    private PsiElement lookForEnclosingFunOrPatDecl() {
+        PsiElement parent = myElement;
+        do {
+            parent = parent.getParent();
+        } while (! (parent instanceof HaskellFunorpatdecl) && ! (parent instanceof  PsiFile));
+        if (parent instanceof  HaskellFunorpatdecl){
+            return parent;
+        } else {
+            return null;
+        }
     }
 
     /**
