@@ -1,24 +1,20 @@
 package com.haskforce.psi.references;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.haskforce.codeInsight.HaskellCompletionContributor;
 import com.haskforce.psi.*;
 import com.haskforce.psi.impl.HaskellPsiImplUtil;
 import com.haskforce.stubs.index.HaskellAllNameIndex;
 import com.haskforce.utils.HaskellUtil;
 import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.lang.PsiBuilder;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.FileIndexUtil;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
-import com.intellij.psi.impl.search.PsiSearchHelperImpl;
 import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.search.PsiSearchHelper;
 import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -73,7 +69,7 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
             //noinspection ObjectAllocationInLoop
             results.add(new PsiElementResolveResult(property));
         }
-        PsiElement localElement = walkPsiTree();
+        PsiElement localElement = walkPsiTreeTakeTwo();
         if(localElement != null){
             results.add(new PsiElementResolveResult(localElement));
         }
@@ -81,40 +77,120 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
     }
 
     public PsiElement walkPsiTree(){
-        PsiElement funOrPatDecl = lookForEnclosingFunOrPatDecl ();
-
-        if(funOrPatDecl == null){
-            return null;
-        }
-        PsiElement[] children = funOrPatDecl.getChildren();
-        for (PsiElement child : children) {
-            if (child instanceof HaskellVarid) {
-                HaskellVarid haskellVarid = (HaskellVarid) child;
-                if (name.equals(haskellVarid.getName())){
-                    return child;
+        PsiElement parent = myElement;
+        do {
+            parent = parent.getParent();
+            PsiElement psiElement = lookForFunOrPatDeclWithCorrectName(parent);
+            if(psiElement != null){
+                return psiElement;
+            }
+            PsiElement[] allSiblingsOfOriginal = parent.getChildren();
+            for (PsiElement sibling : allSiblingsOfOriginal) {
+                PsiElement possibleMatch = lookForFunOrPatDeclWithCorrectName(sibling);
+                if(possibleMatch != null){
+                    return possibleMatch;
                 }
             }
-            /**
-             * The other case should be when the child is RHS
-             */
-        }
 
+        } while (! (parent instanceof  PsiFile));
+        return null;
+    }
+
+    public PsiElement walkPsiTreeTakeTwo(){
+        PsiElement parent = myElement;
+        do {
+
+            PsiElement prevSibling = parent.getPrevSibling();
+            while (prevSibling != null) {
+                PsiElement possibleMatch = lookForFunOrPatDeclWithCorrectName(prevSibling);
+                if (possibleMatch != null) {
+                    return possibleMatch;
+                }
+                if (prevSibling instanceof HaskellPat) {
+                    List<HaskellVarid> varIds = Lists.newArrayList();
+                    extractAllHaskellVarids(varIds, (HaskellPat) prevSibling);
+                    for (HaskellVarid varId : varIds) {
+                        if (name.equals(varId.getName())) {
+                            return varId;
+                        }
+                    }
+                }
+                if (prevSibling instanceof HaskellVarid){
+                    HaskellVarid varId = (HaskellVarid) prevSibling;
+                    if (name.equals(varId.getName())){
+                        return varId;
+                    }
+                }
+                prevSibling = prevSibling.getPrevSibling();
+            }
+            parent = parent.getParent();
+            PsiElement psiElement = lookForFunOrPatDeclWithCorrectName(parent);
+            if (psiElement != null) {
+                return psiElement;
+            }
+        } while(! (parent instanceof  PsiFile));
 
         return null;
     }
 
-    @Nullable
-    private PsiElement lookForEnclosingFunOrPatDecl() {
-        PsiElement parent = myElement;
-        do {
-            parent = parent.getParent();
-        } while (! (parent instanceof HaskellFunorpatdecl) && ! (parent instanceof  PsiFile));
-        if (parent instanceof  HaskellFunorpatdecl){
-            return parent;
+    private @Nullable PsiElement lookForFunOrPatDeclWithCorrectName(PsiElement element){
+        /**
+         * Not just look when we have a funorpatdecl. Best would be to alwyys check for HaskellPat
+         * and HaskellVarId, and when it's a funorpatdecl, check the children recursively
+         */
+
+        if (element instanceof  HaskellFunorpatdecl) {
+            PsiElement[] children = element.getChildren();
+            for (PsiElement child : children) {
+                if (child instanceof HaskellVarid) {
+                    PsiElement psiElement = checkForMatchingVariable(child);
+                    if (psiElement != null){
+                        return psiElement;
+                    }
+                }
+                if (child instanceof HaskellPat){
+                    HaskellPat pat = (HaskellPat)child;
+                    List<HaskellVarid> varIds = Lists.newArrayList();
+                    extractAllHaskellVarids(varIds,pat);
+                    for (HaskellVarid varId : varIds) {
+                        if (name.equals(varId.getName())){
+                            return varId;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+
+    private void extractAllHaskellVarids(List<HaskellVarid> varIds, HaskellPat pat) {
+        /**
+         * TODO
+         * Best check whether this will work with the open jdk version. And Java 6.
+         * Might very well not be the case.
+         */
+        PsiElement[] children = pat.getChildren();
+        for (PsiElement child : children) {
+            if (child instanceof HaskellVarid){
+                varIds.add((HaskellVarid)child);
+            }
+            if (child instanceof HaskellPat){
+                extractAllHaskellVarids(varIds, (HaskellPat)child);
+            }
+
+        }
+    }
+
+    private PsiElement checkForMatchingVariable(PsiElement child) {
+        HaskellVarid haskellVarid = (HaskellVarid) child;
+        if (name.equals(haskellVarid.getName())) {
+            return child;
         } else {
             return null;
         }
     }
+
 
     /**
      * Resolves references to a single result, or fails.
