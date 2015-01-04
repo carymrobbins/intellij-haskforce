@@ -28,7 +28,7 @@ public class HaskellFoldingBuilderTest extends HaskellLightPlatformCodeInsightFi
      * I had little luck when following the tutorial verbatim.
      */
     private void doTest(String collapsedText) {
-        myFixture.configureByFile(getTestDataPath() + File.separator + getTestName(false) + ".hs");
+        myFixture.configureByFile(getTestDataPath(getTestName(false) + ".hs"));
         myFixture.performEditorAction("CollapseAllRegions");
         FoldRegion[] all = myFixture.getEditor().getFoldingModel().getAllFoldRegions();
         for (FoldRegion region : all) {

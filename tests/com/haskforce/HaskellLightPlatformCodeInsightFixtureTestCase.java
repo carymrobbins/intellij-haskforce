@@ -19,7 +19,7 @@ import java.io.File;
 import java.io.IOException;
 
 /**
- * Lightweight test case base.
+ * Lightweight test case base.  Note that file paths must use '/' instead of `File.separatorChar`.
  */
 public abstract class HaskellLightPlatformCodeInsightFixtureTestCase extends LightPlatformCodeInsightFixtureTestCase {
     private String srcPath;
@@ -32,8 +32,8 @@ public abstract class HaskellLightPlatformCodeInsightFixtureTestCase extends Lig
      */
     protected HaskellLightPlatformCodeInsightFixtureTestCase(String srcName, String expectName) {
         super();
-        srcPath = getDirPath() + File.separator + srcName;
-        expectPath = getDirPath() + File.separator + expectName;
+        srcPath = getDirPath() + '/' + srcName;
+        expectPath = getDirPath() + '/' + expectName;
     }
 
     @Override
@@ -51,11 +51,15 @@ public abstract class HaskellLightPlatformCodeInsightFixtureTestCase extends Lig
         return srcPath;
     }
 
+    protected String getTestDataPath(String... names) {
+        return srcPath + '/' + StringUtil.join(names, "/");
+    }
+
     /**
      * Base path to the test files.
      */
     protected static String getDirPath() {
-        return "tests" + File.separator + "gold";
+        return "tests/gold";
     }
 
     /**
