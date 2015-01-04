@@ -24,13 +24,13 @@ public class HaskellFeaturesTest extends LightPlatformCodeInsightFixtureTestCase
     }
 
     public void testCommenter00002() {
-        myFixture.configureByText(HaskellFileType.INSTANCE, "f acc [] = acc" +
-                SystemUtil.LINE_SEPARATOR + "<selection>f acc (x:xs) = f (x:acc) xs</selection>" +
-                SystemUtil.LINE_SEPARATOR + "<caret>f _ _ = error \"impossible!\"");
+        myFixture.configureByText(HaskellFileType.INSTANCE, "f acc [] = acc\n" +
+                "<selection>f acc (x:xs) = f (x:acc) xs</selection>\n" +
+                "<caret>f _ _ = error \"impossible!\"");
         CommentByBlockCommentAction commentAction = new CommentByBlockCommentAction();
         commentAction.actionPerformedImpl(getProject(), myFixture.getEditor());
-        myFixture.checkResult("f acc [] = acc" + SystemUtil.LINE_SEPARATOR +
-                "{-f acc (x:xs) = f (x:acc) xs-}" + SystemUtil.LINE_SEPARATOR +
+        myFixture.checkResult("f acc [] = acc\n" +
+                "{-f acc (x:xs) = f (x:acc) xs-}\n" +
                 "f _ _ = error \"impossible!\"");
     }
 }
