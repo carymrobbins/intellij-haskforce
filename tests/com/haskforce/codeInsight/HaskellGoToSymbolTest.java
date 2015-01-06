@@ -88,7 +88,7 @@ public class HaskellGoToSymbolTest extends HaskellLightPlatformCodeInsightFixtur
         PsiReference reference = varId.getReference();
         HaskellVarid referencedElement = (HaskellVarid)reference.resolve();
         assertNotSame(psiElement, referencedElement);
-        assertEquals(expectedStartOffset,referencedElement.getTextRange().getStartOffset());
+        assertEquals(expectedStartOffset, referencedElement.getTextRange().getStartOffset());
     }
 
     public void testGoToSymbolFunction_CaretOnFunctionDeclaration(){
@@ -125,6 +125,31 @@ public class HaskellGoToSymbolTest extends HaskellLightPlatformCodeInsightFixtur
         String textOfFile = file.getText();
         int expectedStartOffset= textOfFile.indexOf("test 1 =");
         PsiElement psiElement = file
+                .findElementAt(myFixture.getCaretOffset()).getParent();
+        HaskellVarid varId = (HaskellVarid) psiElement;
+        PsiReference reference = varId.getReference();
+        HaskellVarid referencedElement = (HaskellVarid)reference.resolve();
+        assertNotSame(psiElement, referencedElement);
+        assertEquals(expectedStartOffset,referencedElement.getTextRange().getStartOffset());
+    }
+
+
+    public void testGoToSymbolFunction_TotalProject(){
+        PsiFile[] psiFiles = myFixture.configureByFiles(
+                "TotalProject/DungeonMaster/Fight.hs",
+                "TotalProject/Game/GameState.hs",
+                "TotalProject/Board/Adventure/Adventure.hs",
+                "TotalProject/Board/Follower/Follower.hs",
+                "TotalProject/Board/Object/Object.hs",
+                "TotalProject/Board/Space/Space.hs",
+                "TotalProject/Character/Character.hs",
+                "TotalProject/DungeonMaster/DungeonMaster.hs",
+                "TotalProject/DungeonMaster/Movement.hs");
+        PsiFile dungeonMasterFight = psiFiles[0];
+        PsiFile gameGamestate = psiFiles[1];
+        String textOfFile = gameGamestate.getText();
+        int expectedStartOffset= textOfFile.indexOf("updatePlayer ::");
+        PsiElement psiElement = dungeonMasterFight
                 .findElementAt(myFixture.getCaretOffset()).getParent();
         HaskellVarid varId = (HaskellVarid) psiElement;
         PsiReference reference = varId.getReference();
