@@ -36,6 +36,19 @@ public class ExecUtil {
      */
     @Nullable
     public static String exec(@NotNull final String command) {
+        List<String> lines = execMultiLine(command);
+        StringBuilder sb = new StringBuilder(100*lines.size());
+        for (String line : lines) {
+            sb.append(line);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Execute a command using the default shell.
+     */
+    @Nullable
+    public static List<String> execMultiLine(@NotNull final String command) {
         // Find some valid working directory, doesn't matter which one.
         ProjectManager pm = ProjectManager.getInstance();
         Project[] projects = pm == null ? null : pm.getOpenProjects();
@@ -48,14 +61,14 @@ public class ExecUtil {
         } else {
             workDir = projects[0].getBaseDir().getCanonicalPath();
         }
-        return exec(workDir == null ? defaultWorkDir : workDir, command);
+        return execMultiLine(workDir == null ? defaultWorkDir : workDir, command);
     }
 
     /**
      * Execute a command using the default shell in a given work directory.
      */
     @Nullable
-    public static String exec(@NotNull final String workDir, @NotNull final String command) {
+    public static List<String> execMultiLine(@NotNull final String workDir, @NotNull final String command) {
         // Setup shell and the GeneralCommandLine.
         //
         // Getting the right PATH among other things is apparently tricky,
@@ -93,12 +106,7 @@ public class ExecUtil {
             return null;
         }
 
-        List<String> lines = output.getStdoutLines();
-        StringBuilder sb = new StringBuilder(100*lines.size());
-        for (String line : lines) {
-            sb.append(line);
-        }
-        return sb.toString();
+        return output.getStdoutLines();
     }
 
     /**
@@ -107,11 +115,11 @@ public class ExecUtil {
     @Nullable
     public static String locateExecutable(@NotNull final String command) {
         String whereCmd = (SystemInfo.isWindows ? "where" : "which") + ' ' + command;
-        String res = exec(whereCmd);
+        String res = execMultiLine(whereCmd).get(0);
         if (res != null && res.isEmpty()) {
             LOG.info("Could not find " + command);
         }
-        return res;
+        return res == null ? "" : res;
     }
 
     /**
