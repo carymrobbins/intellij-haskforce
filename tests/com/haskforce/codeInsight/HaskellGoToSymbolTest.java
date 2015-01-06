@@ -74,8 +74,7 @@ public class HaskellGoToSymbolTest extends HaskellLightPlatformCodeInsightFixtur
         PsiElement psiElement = file
                 .findElementAt(myFixture.getCaretOffset()).getParent();
         PsiReference reference = psiElement.getReference();
-        PsiElement referencedElement = reference.resolve();
-        assertSame(psiElement, referencedElement);
+        assertNull(reference);
     }
 
     public void testGoToSymbolFunction_CaretOnFunctionInstance(){

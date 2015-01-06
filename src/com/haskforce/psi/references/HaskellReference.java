@@ -96,7 +96,7 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
         return null;
     }
 
-    public PsiElement walkPsiTreeTakeTwo(){
+    public @Nullable PsiElement walkPsiTreeTakeTwo(){
         PsiElement parent = myElement;
         do {
 
@@ -128,18 +128,22 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
             if (psiElement != null) {
                 return psiElement;
             }
+
         } while(! (parent instanceof  PsiFile));
 
         return null;
     }
 
-    private @Nullable PsiElement lookForFunOrPatDeclWithCorrectName(PsiElement element){
+
+    private @Nullable PsiElement lookForFunOrPatDeclWithCorrectName(@NotNull PsiElement element){
         /**
-         * Not just look when we have a funorpatdecl. Best would be to alwyys check for HaskellPat
-         * and HaskellVarId, and when it's a funorpatdecl, check the children recursively
+         * A FunOrPatDecl with as parent haskellbody is one of the 'leftmost' function declarations.
+         * Those should not be taken into account, the definition will already be found from the stub.
+         * It will cause problems if we also start taking those into account over here.
          */
 
-        if (element instanceof  HaskellFunorpatdecl) {
+        if (element instanceof  HaskellFunorpatdecl &&
+                ! (element.getParent() instanceof HaskellBody)) {
             PsiElement[] children = element.getChildren();
             for (PsiElement child : children) {
                 if (child instanceof HaskellVarid) {
