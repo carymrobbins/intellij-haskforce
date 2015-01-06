@@ -11,6 +11,8 @@ public class HaskellResolveTest extends HaskellResolveTestCase {
     public void testData00001() { doTest(); }
     public void testData00002() { doTest(false); }
     public void testData00003() { doTest(false); }
+    public void testData00004() { doTest(false); }
+    public void testData00005() { doTest(false); }
     public void testFunctionWithoutSignature00001() { doTest(); }
     public void testFunctionWithoutSignature00002() { doTest(); }
     public void testFunctionWithSignature00001() { doTest(); }

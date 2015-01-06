@@ -66,10 +66,10 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
 
         // Guess 20 variants tops most of the time in any real code base.
         List<ResolveResult> results = new ArrayList<ResolveResult>(20);
-        HaskellConid ownModuleName = getModuleName(myElement);
+        String ownModuleName = getModuleName(myElement);
         List<HaskellImpdecl> importDeclarations = getImportDeclarations(myElement);
         for (PsiNamedElement property : namedElements) {
-            HaskellConid moduleName = getModuleName(property);
+            String moduleName = getModuleName(property);
             if (importPresent (moduleName, importDeclarations) || ownModuleName.equals(moduleName)) {
             //noinspection ObjectAllocationInLoop
             results.add(new PsiElementResolveResult(property));
@@ -87,13 +87,13 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
      * of imported modules, going to make the look up a bit more cpu friendly.
      * For now this works.
      */
-    private boolean importPresent(HaskellConid moduleName, List<HaskellImpdecl> importDeclarations) {
+    private boolean importPresent(@NotNull String moduleName, @NotNull List<HaskellImpdecl> importDeclarations) {
         for (HaskellImpdecl importDeclaration : importDeclarations) {
             List<HaskellQconid> qconidList = importDeclaration.getQconidList();
             for (HaskellQconid haskellQconid : qconidList) {
                 List<HaskellConid> conidList = haskellQconid.getConidList();
                 for (HaskellConid haskellConid : conidList) {
-                    if (moduleName.getName().equals(haskellConid.getName())){
+                    if (moduleName.equals(haskellConid.getName())){
                         return true;
                     }
                 }
@@ -102,7 +102,7 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
         return false;
     }
 
-    private List<HaskellImpdecl> getImportDeclarations(PsiNamedElement myElement) {
+    private @Nullable List<HaskellImpdecl> getImportDeclarations(@NotNull PsiNamedElement myElement) {
         PsiElement[] children = myElement.getContainingFile().getChildren();
         for (PsiElement child : children) {
             if (child instanceof HaskellBody){
@@ -113,21 +113,24 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
         return null;
     }
 
-    private HaskellConid getModuleName(PsiNamedElement namedElement) {
-        PsiElement[] children = namedElement.getContainingFile().getChildren();
+    private String getModuleName(@NotNull PsiNamedElement namedElement) {
+        PsiFile containingFile = namedElement.getContainingFile();
+        if (containingFile == null){
+            return "";
+        }
+        PsiElement[] children = containingFile.getChildren();
         for (PsiElement child : children) {
             if (child instanceof HaskellModuledecl){
                 HaskellModuledecl haskellModuledecl = (HaskellModuledecl) child;
                 List<HaskellConid> conidList = haskellModuledecl.getQconid().getConidList();
-                if (conidList.size() != 1){
-                    //panic
-                    return null;
-                } else {
-                    return conidList.get(0);
+                StringBuilder moduleNameBuilder = new StringBuilder();
+                for (HaskellConid haskellConid : conidList) {
+                    moduleNameBuilder.append(haskellConid.getName());
                 }
+                return moduleNameBuilder.toString();
             }
         }
-        return null;
+        return "";
     }
 
     public PsiElement walkPsiTree(){

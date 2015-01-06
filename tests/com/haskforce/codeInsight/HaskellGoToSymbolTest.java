@@ -118,4 +118,18 @@ public class HaskellGoToSymbolTest extends HaskellLightPlatformCodeInsightFixtur
         assertNotSame(psiElement, referencedElement);
         assertEquals(expectedStartOffset,referencedElement.getTextRange().getStartOffset());
     }
+
+    public void testGoToSymbolFunction_ReferenceLeftMostFunctionWithoutTypeSig(){
+        myFixture.configureByFile(getTestName(false)+".hs");
+        PsiFile file = myFixture.getFile();
+        String textOfFile = file.getText();
+        int expectedStartOffset= textOfFile.indexOf("test 1 =");
+        PsiElement psiElement = file
+                .findElementAt(myFixture.getCaretOffset()).getParent();
+        HaskellVarid varId = (HaskellVarid) psiElement;
+        PsiReference reference = varId.getReference();
+        HaskellVarid referencedElement = (HaskellVarid)reference.resolve();
+        assertNotSame(psiElement, referencedElement);
+        assertEquals(expectedStartOffset,referencedElement.getTextRange().getStartOffset());
+    }
 }
