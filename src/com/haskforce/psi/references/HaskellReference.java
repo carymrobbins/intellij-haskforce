@@ -4,6 +4,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.haskforce.codeInsight.HaskellCompletionContributor;
 import com.haskforce.psi.*;
+import com.haskforce.psi.impl.HaskellConImpl;
 import com.haskforce.psi.impl.HaskellPsiImplUtil;
 import com.haskforce.stubs.index.HaskellAllNameIndex;
 import com.haskforce.utils.HaskellUtil;
@@ -65,15 +66,68 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
 
         // Guess 20 variants tops most of the time in any real code base.
         List<ResolveResult> results = new ArrayList<ResolveResult>(20);
+        HaskellConid ownModuleName = getModuleName(myElement);
+        List<HaskellImpdecl> importDeclarations = getImportDeclarations(myElement);
         for (PsiNamedElement property : namedElements) {
+            HaskellConid moduleName = getModuleName(property);
+            if (importPresent (moduleName, importDeclarations) || ownModuleName.equals(moduleName)) {
             //noinspection ObjectAllocationInLoop
             results.add(new PsiElementResolveResult(property));
+            }
         }
         PsiElement localElement = walkPsiTreeTakeTwo();
         if(localElement != null){
             results.add(new PsiElementResolveResult(localElement));
         }
         return results.toArray(new ResolveResult[results.size()]);
+    }
+
+    /**
+     * Not going to do it like this, going to this once and create a map of or so
+     * of imported modules, going to make the look up a bit more cpu friendly.
+     * For now this works.
+     */
+    private boolean importPresent(HaskellConid moduleName, List<HaskellImpdecl> importDeclarations) {
+        for (HaskellImpdecl importDeclaration : importDeclarations) {
+            List<HaskellQconid> qconidList = importDeclaration.getQconidList();
+            for (HaskellQconid haskellQconid : qconidList) {
+                List<HaskellConid> conidList = haskellQconid.getConidList();
+                for (HaskellConid haskellConid : conidList) {
+                    if (moduleName.getName().equals(haskellConid.getName())){
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    private List<HaskellImpdecl> getImportDeclarations(PsiNamedElement myElement) {
+        PsiElement[] children = myElement.getContainingFile().getChildren();
+        for (PsiElement child : children) {
+            if (child instanceof HaskellBody){
+                HaskellBody haskellBody = (HaskellBody) child;
+                return haskellBody.getImpdeclList();
+            }
+        }
+        return null;
+    }
+
+    private HaskellConid getModuleName(PsiNamedElement namedElement) {
+        PsiElement[] children = namedElement.getContainingFile().getChildren();
+        for (PsiElement child : children) {
+            if (child instanceof HaskellModuledecl){
+                HaskellModuledecl haskellModuledecl = (HaskellModuledecl) child;
+                List<HaskellConid> conidList = haskellModuledecl.getQconid().getConidList();
+                if (conidList.size() != 1){
+                    //panic
+                    return null;
+                } else {
+                    return conidList.get(0);
+                }
+            }
+        }
+        return null;
     }
 
     public PsiElement walkPsiTree(){
