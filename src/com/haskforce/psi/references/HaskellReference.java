@@ -72,7 +72,7 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
             String moduleName = getModuleName(property);
             if (importPresent (moduleName, importDeclarations) || ownModuleName.equals(moduleName)) {
             //noinspection ObjectAllocationInLoop
-            results.add(new PsiElementResolveResult(property));
+               results.add(new PsiElementResolveResult(property));
             }
         }
         PsiElement localElement = walkPsiTreeTakeTwo();
@@ -114,23 +114,11 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
     }
 
     private String getModuleName(@NotNull PsiNamedElement namedElement) {
-        PsiFile containingFile = namedElement.getContainingFile();
+        HaskellFile containingFile = (HaskellFile)namedElement.getContainingFile();
         if (containingFile == null){
             return "";
         }
-        PsiElement[] children = containingFile.getChildren();
-        for (PsiElement child : children) {
-            if (child instanceof HaskellModuledecl){
-                HaskellModuledecl haskellModuledecl = (HaskellModuledecl) child;
-                List<HaskellConid> conidList = haskellModuledecl.getQconid().getConidList();
-                StringBuilder moduleNameBuilder = new StringBuilder();
-                for (HaskellConid haskellConid : conidList) {
-                    moduleNameBuilder.append(haskellConid.getName());
-                }
-                return moduleNameBuilder.toString();
-            }
-        }
-        return "";
+        return containingFile.getModuleName();
     }
 
     public PsiElement walkPsiTree(){
