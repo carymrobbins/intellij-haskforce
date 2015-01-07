@@ -92,10 +92,14 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
             List<HaskellQconid> qconidList = importDeclaration.getQconidList();
             for (HaskellQconid haskellQconid : qconidList) {
                 List<HaskellConid> conidList = haskellQconid.getConidList();
+                StringBuilder moduleNameBuilder = new StringBuilder();
                 for (HaskellConid haskellConid : conidList) {
-                    if (moduleName.equals(haskellConid.getName())){
-                        return true;
-                    }
+                    moduleNameBuilder.append(haskellConid.getName());
+                    moduleNameBuilder.append('.');
+                }
+                moduleNameBuilder.deleteCharAt(moduleNameBuilder.length()-1);
+                if (moduleName.equals(moduleNameBuilder.toString())){
+                    return true;
                 }
             }
         }
