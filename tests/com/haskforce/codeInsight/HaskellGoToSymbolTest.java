@@ -139,7 +139,7 @@ public class HaskellGoToSymbolTest extends HaskellLightPlatformCodeInsightFixtur
         myFixture.configureByFile(getTestName(false)+".hs");
         PsiFile file = myFixture.getFile();
         String textOfFile = file.getText();
-        int expectedStartOffset= textOfFile.indexOf("seven + 1");
+        int expectedStartOffset= textOfFile.indexOf("where seven") + 6;
         PsiElement psiElement = file
                 .findElementAt(myFixture.getCaretOffset()).getParent();
         HaskellVarid varId = (HaskellVarid) psiElement;
