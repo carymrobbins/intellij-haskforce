@@ -1,26 +1,20 @@
 package com.haskforce.psi.references;
 
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.haskforce.codeInsight.HaskellCompletionContributor;
 import com.haskforce.psi.*;
-import com.haskforce.psi.impl.HaskellConImpl;
 import com.haskforce.psi.impl.HaskellPsiImplUtil;
-import com.haskforce.stubs.index.HaskellAllNameIndex;
 import com.haskforce.utils.HaskellUtil;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
-import com.intellij.psi.search.GlobalSearchScope;
-import com.intellij.psi.stubs.StubIndex;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -58,28 +52,125 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
 
 
         /**
-         * This will only resolve the 'non-local' references. The local references need to be done through walking the
-         * psi tree unfortunately.
+         * TODO
+         * Would like to use this StubIndex, but using it here creates problems when performing go to symbol,
+         * ends up in a neverending recursive call and a nice stackoverflow error. Don't know why.
          */
-        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
-        Collection<HaskellNamedElement> namedElements = StubIndex.getElements(HaskellAllNameIndex.KEY, name, project, scope, HaskellNamedElement.class);
+//        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
+//        Collection<HaskellNamedElement> namedElements = StubIndex.getElements(HaskellAllNameIndex.KEY, name, project, scope, HaskellNamedElement.class);
 
         // Guess 20 variants tops most of the time in any real code base.
+        final List<PsiNamedElement> namedElements = HaskellUtil.findDefinitionNode(project, name, myElement);
         List<ResolveResult> results = new ArrayList<ResolveResult>(20);
         String ownModuleName = getModuleName(myElement);
         List<HaskellImpdecl> importDeclarations = getImportDeclarations(myElement);
+
+        /*
+        If the element is a qualified import we need to handle the results a little differently.
+        TODO caveat this only works with simple import statements like A.f . If we also want to
+        handle A.B.f, more work be necessary
+         */
+        String qualifiedCallName = extractQualifiedCallName();
+
         for (PsiNamedElement property : namedElements) {
-            String moduleName = getModuleName(property);
-            if (importPresent (moduleName, importDeclarations) || ownModuleName.equals(moduleName)) {
+           String moduleName = getModuleName(property);
+           if (qualifiedCallName.isEmpty() &&
+                   (importPresent (moduleName, importDeclarations) || ownModuleName.equals(moduleName))) {
             //noinspection ObjectAllocationInLoop
                results.add(new PsiElementResolveResult(property));
             }
+            if (! qualifiedCallName.isEmpty() ){
+                HaskellImpdecl correspondingImportDeclaration = findCorrespondingImportDeclaration(qualifiedCallName, importDeclarations);
+                if(correspondingImportDeclaration != null &&
+                    namedElementDefinedInCorrespondingModule(correspondingImportDeclaration,moduleName)){
+                  results.add(new PsiElementResolveResult(property));
+
+                }
+
+            }
         }
-        PsiElement localElement = walkPsiTreeTakeTwo();
-        if(localElement != null){
-            results.add(new PsiElementResolveResult(localElement));
+        if (qualifiedCallName.isEmpty()) {
+            PsiElement localElement = checkLocalDefinitions();
+            if (localElement != null) {
+                results.add(new PsiElementResolveResult(localElement));
+            }
         }
         return results.toArray(new ResolveResult[results.size()]);
+    }
+
+    private String extractQualifiedCallName() {
+        if (myElement instanceof HaskellVarid) {
+            HaskellVarid haskellVarid = (HaskellVarid) myElement;
+            PsiElement parent = haskellVarid.getParent();
+            if (parent instanceof  HaskellQvarid){
+                HaskellQvarid haskellQvarid = (HaskellQvarid) parent;
+                List<HaskellConid> conidList = haskellQvarid.getConidList();
+                StringBuilder qualifiedCallName = new StringBuilder();
+                for (HaskellConid haskellConid : conidList) {
+                    qualifiedCallName.append((haskellConid.getName()));
+                    qualifiedCallName.append('.');
+                }
+                if (qualifiedCallName.length() >0) {
+                    qualifiedCallName.deleteCharAt(qualifiedCallName.length() - 1);
+                    return qualifiedCallName.toString();
+                } else {
+                    return "";
+                }
+
+            }
+        }
+//        if (myElement instanceof HaskellVarid) {
+//            HaskellVarid varId = (HaskellVarid) myElement;
+//            PsiElement prevSibling = varId.getPrevSibling();
+//            if (prevSibling != null && ".".equals(prevSibling.getText())){
+//                HaskellConid shouldBeHaskellConid = (HaskellConid)prevSibling.getPrevSibling();
+//                return shouldBeHaskellConid.getName();
+//            }
+//        }
+        return "";
+    }
+
+    private boolean namedElementDefinedInCorrespondingModule(HaskellImpdecl correspondingImportDeclaration, String moduleName) {
+        HaskellQconid haskellQconid = correspondingImportDeclaration.getQconidList().get(0);
+        StringBuilder definitionModuleNameBuilder = new StringBuilder();
+
+        for (HaskellConid haskellConid : haskellQconid.getConidList()) {
+            definitionModuleNameBuilder.append(haskellConid.getName());
+            definitionModuleNameBuilder.append('.');
+        }
+
+        definitionModuleNameBuilder.deleteCharAt(definitionModuleNameBuilder.length() - 1);
+        String definitionModuleName = definitionModuleNameBuilder.toString();
+        return definitionModuleName.equals(moduleName);
+
+    }
+
+    private HaskellImpdecl findCorrespondingImportDeclaration(String qualifiedCallName, List<HaskellImpdecl> importDeclarations) {
+        for (HaskellImpdecl importDeclaration : importDeclarations) {
+            List<HaskellQconid> qconidList = importDeclaration.getQconidList();
+            if (qconidList.size() == 2){
+                /**
+                 * TODO : this '2' is a guess currently. Seems to be 1 qconlist if
+                 * there is only import A.B.C, two qconlist if there is
+                 * import A.B.C as D.E.F
+                 */
+                HaskellQconid haskellQconid = qconidList.get(1);
+                StringBuilder qualifiedImportBuilder = new StringBuilder();
+
+                for (HaskellConid haskellConid : haskellQconid.getConidList()) {
+                    qualifiedImportBuilder.append(haskellConid.getName());
+                    qualifiedImportBuilder.append('.');
+                }
+
+                qualifiedImportBuilder.deleteCharAt(qualifiedImportBuilder.length() - 1);
+                String qualifiedImportName = qualifiedImportBuilder.toString();
+                if (qualifiedCallName.equals(qualifiedImportName)){
+                    return importDeclaration;
+                }
+
+            }
+        }
+        return null;
     }
 
     /**
@@ -89,6 +180,7 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
      */
     private boolean importPresent(@NotNull String moduleName, @NotNull List<HaskellImpdecl> importDeclarations) {
         for (HaskellImpdecl importDeclaration : importDeclarations) {
+
             List<HaskellQconid> qconidList = importDeclaration.getQconidList();
             for (HaskellQconid haskellQconid : qconidList) {
                 List<HaskellConid> conidList = haskellQconid.getConidList();
@@ -145,7 +237,7 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
         return null;
     }
 
-    public @Nullable PsiElement walkPsiTreeTakeTwo(){
+    public @Nullable PsiElement checkLocalDefinitions(){
         PsiElement parent = myElement;
         do {
 
@@ -156,8 +248,7 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
                     return possibleMatch;
                 }
                 if (prevSibling instanceof HaskellPat) {
-                    List<HaskellVarid> varIds = Lists.newArrayList();
-                    extractAllHaskellVarids(varIds, (HaskellPat) prevSibling);
+                    List<HaskellVarid> varIds = extractAllHaskellVarids((HaskellPat) prevSibling);
                     for (HaskellVarid varId : varIds) {
                         if (name.equals(varId.getName())) {
                             return varId;
@@ -172,15 +263,30 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
                 }
                 prevSibling = prevSibling.getPrevSibling();
             }
+            checkForWhereClauseDeclarations(parent);
             parent = parent.getParent();
-            PsiElement psiElement = lookForFunOrPatDeclWithCorrectName(parent);
-            if (psiElement != null) {
-                return psiElement;
-            }
+            /**This is only necessary to put the caret on the declaration when Go to symbol is called
+             * when the caret is on the declaration. instead of saying that it didn't find a declaration.
+             * Might be that this is not that necessary (and it's once more over the tree). If it's necessary,
+             * a saner implementation will be to just first check whether the caret is on a declaration and leave it there.
+             */
+//            PsiElement psiElement = lookForFunOrPatDeclWithCorrectName(parent);
+//            if (psiElement != null) {
+//                return psiElement;
+//            }
 
         } while(! (parent instanceof  PsiFile));
 
         return null;
+    }
+
+    private void checkForWhereClauseDeclarations(PsiElement parent) {
+        PsiElement nextSibling = parent.getNextSibling();
+        while (nextSibling != null){
+//            if (nextSibling.)
+            nextSibling = nextSibling.getNextSibling();
+        }
+
     }
 
 
@@ -203,8 +309,7 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
                 }
                 if (child instanceof HaskellPat){
                     HaskellPat pat = (HaskellPat)child;
-                    List<HaskellVarid> varIds = Lists.newArrayList();
-                    extractAllHaskellVarids(varIds,pat);
+                    List<HaskellVarid> varIds = extractAllHaskellVarids(pat);
                     for (HaskellVarid varId : varIds) {
                         if (name.equals(varId.getName())){
                             return varId;
@@ -217,23 +322,15 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
     }
 
 
-    private void extractAllHaskellVarids(List<HaskellVarid> varIds, HaskellPat pat) {
-        /**
-         * TODO
-         * Best check whether this will work with the open jdk version. And Java 6.
-         * Might very well not be the case.
-         */
-        PsiElement[] children = pat.getChildren();
-        for (PsiElement child : children) {
-            if (child instanceof HaskellVarid){
-                varIds.add((HaskellVarid)child);
-            }
-            if (child instanceof HaskellPat){
-                extractAllHaskellVarids(varIds, (HaskellPat)child);
-            }
-
+    private List<HaskellVarid> extractAllHaskellVarids(HaskellPat pat) {
+        List<HaskellVarid> varidList = pat.getVaridList();
+        List<HaskellPat> patList = pat.getPatList();
+        for (HaskellPat haskellPat : patList) {
+            varidList.addAll(haskellPat.getVaridList());
         }
+        return varidList;
     }
+
 
     private PsiElement checkForMatchingVariable(PsiElement child) {
         HaskellVarid haskellVarid = (HaskellVarid) child;
