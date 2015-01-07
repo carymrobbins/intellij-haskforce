@@ -65,11 +65,6 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
         String ownModuleName = getModuleName(myElement);
         List<HaskellImpdecl> importDeclarations = getImportDeclarations(myElement);
 
-        /*
-        If the element is a qualified import we need to handle the results a little differently.
-        TODO caveat this only works with simple import statements like A.f . If we also want to
-        handle A.B.f, more work be necessary
-         */
         String qualifiedCallName = extractQualifiedCallName();
 
         for (PsiNamedElement property : namedElements) {
@@ -84,9 +79,7 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
                 if(correspondingImportDeclaration != null &&
                     namedElementDefinedInCorrespondingModule(correspondingImportDeclaration,moduleName)){
                   results.add(new PsiElementResolveResult(property));
-
                 }
-
             }
         }
         if (qualifiedCallName.isEmpty()) {
@@ -94,8 +87,47 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
             if (localElement != null) {
                 results.add(new PsiElementResolveResult(localElement));
             }
+            PsiElement psiElement = checkForWhereClauses(myElement);
+            if (psiElement != null){
+                results.add(new PsiElementResolveResult(psiElement));
+            }
         }
         return results.toArray(new ResolveResult[results.size()]);
+    }
+
+    private PsiElement checkForWhereClauses(PsiNamedElement myElement) {
+        PsiElement parent = myElement.getParent();
+        do {
+            if (parent instanceof HaskellRhs) {
+                HaskellRhs rhs = (HaskellRhs) parent;
+                PsiElement where = rhs.getWhere();
+                if (where == null) {
+                    return null;
+                } else {
+                    PsiElement psiElement = checkWhereClause(where);
+                    if (psiElement != null) {
+                        return psiElement;
+                    }
+                }
+            }
+            parent = parent.getParent();
+        } while (! (parent instanceof  HaskellBody));
+
+        return null;
+    }
+
+    private @Nullable PsiElement checkWhereClause(@NotNull PsiElement where) {
+        PsiElement nextSibling = where.getNextSibling();
+        while(nextSibling != null){
+            if(nextSibling instanceof HaskellFunorpatdecl) {
+                PsiElement psiElement = HaskellUtil.lookForFunOrPatDeclWithCorrectName(nextSibling, name);
+                if (psiElement != null){
+                    return psiElement;
+                }
+            }
+            nextSibling = nextSibling.getNextSibling();
+        }
+        return null;
     }
 
     private String extractQualifiedCallName() {
@@ -113,20 +145,11 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
                 if (qualifiedCallName.length() >0) {
                     qualifiedCallName.deleteCharAt(qualifiedCallName.length() - 1);
                     return qualifiedCallName.toString();
-                } else {
-                    return "";
                 }
 
             }
         }
-//        if (myElement instanceof HaskellVarid) {
-//            HaskellVarid varId = (HaskellVarid) myElement;
-//            PsiElement prevSibling = varId.getPrevSibling();
-//            if (prevSibling != null && ".".equals(prevSibling.getText())){
-//                HaskellConid shouldBeHaskellConid = (HaskellConid)prevSibling.getPrevSibling();
-//                return shouldBeHaskellConid.getName();
-//            }
-//        }
+
         return "";
     }
 
@@ -217,38 +240,18 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
         return containingFile.getModuleName();
     }
 
-    public PsiElement walkPsiTree(){
-        PsiElement parent = myElement;
-        do {
-            parent = parent.getParent();
-            PsiElement psiElement = lookForFunOrPatDeclWithCorrectName(parent);
-            if(psiElement != null){
-                return psiElement;
-            }
-            PsiElement[] allSiblingsOfOriginal = parent.getChildren();
-            for (PsiElement sibling : allSiblingsOfOriginal) {
-                PsiElement possibleMatch = lookForFunOrPatDeclWithCorrectName(sibling);
-                if(possibleMatch != null){
-                    return possibleMatch;
-                }
-            }
-
-        } while (! (parent instanceof  PsiFile));
-        return null;
-    }
-
     public @Nullable PsiElement checkLocalDefinitions(){
         PsiElement parent = myElement;
         do {
 
             PsiElement prevSibling = parent.getPrevSibling();
             while (prevSibling != null) {
-                PsiElement possibleMatch = lookForFunOrPatDeclWithCorrectName(prevSibling);
+                PsiElement possibleMatch = HaskellUtil.lookForFunOrPatDeclWithCorrectName(prevSibling, name);
                 if (possibleMatch != null) {
                     return possibleMatch;
                 }
                 if (prevSibling instanceof HaskellPat) {
-                    List<HaskellVarid> varIds = extractAllHaskellVarids((HaskellPat) prevSibling);
+                    List<HaskellVarid> varIds = HaskellUtil.extractAllHaskellVarids((HaskellPat) prevSibling);
                     for (HaskellVarid varId : varIds) {
                         if (name.equals(varId.getName())) {
                             return varId;
@@ -263,7 +266,6 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
                 }
                 prevSibling = prevSibling.getPrevSibling();
             }
-            checkForWhereClauseDeclarations(parent);
             parent = parent.getParent();
             /**This is only necessary to put the caret on the declaration when Go to symbol is called
              * when the caret is on the declaration. instead of saying that it didn't find a declaration.
@@ -279,68 +281,6 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
 
         return null;
     }
-
-    private void checkForWhereClauseDeclarations(PsiElement parent) {
-        PsiElement nextSibling = parent.getNextSibling();
-        while (nextSibling != null){
-//            if (nextSibling.)
-            nextSibling = nextSibling.getNextSibling();
-        }
-
-    }
-
-
-    private @Nullable PsiElement lookForFunOrPatDeclWithCorrectName(@NotNull PsiElement element){
-        /**
-         * A FunOrPatDecl with as parent haskellbody is one of the 'leftmost' function declarations.
-         * Those should not be taken into account, the definition will already be found from the stub.
-         * It will cause problems if we also start taking those into account over here.
-         */
-
-        if (element instanceof  HaskellFunorpatdecl &&
-                ! (element.getParent() instanceof HaskellBody)) {
-            PsiElement[] children = element.getChildren();
-            for (PsiElement child : children) {
-                if (child instanceof HaskellVarid) {
-                    PsiElement psiElement = checkForMatchingVariable(child);
-                    if (psiElement != null){
-                        return psiElement;
-                    }
-                }
-                if (child instanceof HaskellPat){
-                    HaskellPat pat = (HaskellPat)child;
-                    List<HaskellVarid> varIds = extractAllHaskellVarids(pat);
-                    for (HaskellVarid varId : varIds) {
-                        if (name.equals(varId.getName())){
-                            return varId;
-                        }
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-
-    private List<HaskellVarid> extractAllHaskellVarids(HaskellPat pat) {
-        List<HaskellVarid> varidList = pat.getVaridList();
-        List<HaskellPat> patList = pat.getPatList();
-        for (HaskellPat haskellPat : patList) {
-            varidList.addAll(haskellPat.getVaridList());
-        }
-        return varidList;
-    }
-
-
-    private PsiElement checkForMatchingVariable(PsiElement child) {
-        HaskellVarid haskellVarid = (HaskellVarid) child;
-        if (name.equals(haskellVarid.getName())) {
-            return child;
-        } else {
-            return null;
-        }
-    }
-
 
     /**
      * Resolves references to a single result, or fails.

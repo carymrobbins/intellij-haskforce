@@ -206,4 +206,56 @@ public class HaskellUtil {
         }
         return result;
     }
+
+
+    public static @Nullable PsiElement lookForFunOrPatDeclWithCorrectName(
+            @NotNull PsiElement element,
+            @NotNull String name){
+        /**
+         * A FunOrPatDecl with as parent haskellbody is one of the 'leftmost' function declarations.
+         * Those should not be taken into account, the definition will already be found from the stub.
+         * It will cause problems if we also start taking those into account over here.
+         */
+
+        if (element instanceof  HaskellFunorpatdecl &&
+                ! (element.getParent() instanceof HaskellBody)) {
+            PsiElement[] children = element.getChildren();
+            for (PsiElement child : children) {
+                if (child instanceof HaskellVarid) {
+                    PsiElement psiElement = checkForMatchingVariable(child,name);
+                    if (psiElement != null){
+                        return psiElement;
+                    }
+                }
+                if (child instanceof HaskellPat){
+                    HaskellPat pat = (HaskellPat)child;
+                    List<HaskellVarid> varIds = extractAllHaskellVarids(pat);
+                    for (HaskellVarid varId : varIds) {
+                        if (name.equals(varId.getName())){
+                            return varId;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public static List<HaskellVarid> extractAllHaskellVarids(HaskellPat pat) {
+        List<HaskellVarid> varidList = pat.getVaridList();
+        List<HaskellPat> patList = pat.getPatList();
+        for (HaskellPat haskellPat : patList) {
+            varidList.addAll(haskellPat.getVaridList());
+        }
+        return varidList;
+    }
+
+    private static PsiElement checkForMatchingVariable(PsiElement child, String name) {
+        HaskellVarid haskellVarid = (HaskellVarid) child;
+        if (name.equals(haskellVarid.getName())) {
+            return child;
+        } else {
+            return null;
+        }
+    }
 }
