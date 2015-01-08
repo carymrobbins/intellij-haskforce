@@ -196,6 +196,24 @@ public class HaskellGoToSymbolTest extends HaskellLightPlatformCodeInsightFixtur
         assertEquals(expectedStartOffset, referencedElement.getTextRange().getStartOffset());
     }
 
+    public void testGoToSymbolFunction_QualifiedImportNoAs() {
+        PsiFile[] psiFiles = myFixture.configureByFiles(
+                "QualifiedImportNoAs/Usage.hs",
+                "QualifiedImportNoAs/Definition.hs"
+                );
+        PsiFile usage = psiFiles[0];
+        PsiFile definition = psiFiles[1];
+        String textOfFile = definition.getText();
+        int expectedStartOffset = textOfFile.indexOf("seven ::");
+        PsiElement psiElement = usage
+                .findElementAt(myFixture.getCaretOffset()).getParent();
+        HaskellVarid varId = (HaskellVarid) psiElement;
+        PsiReference reference = varId.getReference();
+        HaskellVarid referencedElement = (HaskellVarid) reference.resolve();
+        assertNotSame(psiElement, referencedElement);
+        assertEquals(expectedStartOffset, referencedElement.getTextRange().getStartOffset());
+    }
+
     public void testGoToSymbolFunction_QualifiedImportMultipleLevels() {
         PsiFile[] psiFiles = myFixture.configureByFiles(
                 "QualifiedImportMultipleLevels/Usage/Usage.hs",

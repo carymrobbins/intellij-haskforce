@@ -374,7 +374,7 @@ public class HaskellUtil {
         return results;
     }
 
-    public static @NotNull String extractQualifierPrefix(@NotNull PsiElement element) {
+/*    public static @NotNull String extractQualifierPrefix(@NotNull PsiElement element) {
         PsiElement parent = element.getParent();
         if (parent instanceof HaskellQvarid){
             HaskellQvarid haskellQvarid = (HaskellQvarid) parent;
@@ -390,7 +390,7 @@ public class HaskellUtil {
             }
         }
         return "";
-    }
+    }*/
 
     public static List<PsiElementResolveResult> matchGlobalNamesUnqualified(
             PsiElement psiElement,
@@ -481,29 +481,42 @@ public class HaskellUtil {
 
     }
 
+    /**
+     * This might have to move to the haskellImplDecl itself
+     * @param importDeclaration
+     */
+    private static @Nullable String getQualifiedImportName(HaskellImpdecl importDeclaration){
+        List<HaskellQconid> qconidList = importDeclaration.getQconidList();
+
+        PsiElement as = importDeclaration.getAs();
+        HaskellQconid haskellQconid = null;
+        if (as != null) {
+            if(qconidList.size()<2){
+                return null;
+            }
+            haskellQconid = qconidList.get(1);
+        } else {
+            if (qconidList.size()<1){
+                return null;
+            }
+            haskellQconid = qconidList.get(0);
+        }
+
+        StringBuilder qualifiedImportBuilder = new StringBuilder();
+             for (HaskellConid haskellConid : haskellQconid.getConidList()) {
+            qualifiedImportBuilder.append(haskellConid.getName());
+            qualifiedImportBuilder.append('.');
+        }
+        qualifiedImportBuilder.deleteCharAt(qualifiedImportBuilder.length() - 1);
+
+        return qualifiedImportBuilder.toString();
+    }
+
     private static HaskellImpdecl findCorrespondingImportDeclaration(String qualifiedCallName, List<HaskellImpdecl> importDeclarations) {
         for (HaskellImpdecl importDeclaration : importDeclarations) {
-            List<HaskellQconid> qconidList = importDeclaration.getQconidList();
-            if (qconidList.size() == 2){
-                /**
-                 * TODO : this '2' is a guess currently. Seems to be 1 qconlist if
-                 * there is only import A.B.C, two qconlist if there is
-                 * import A.B.C as D.E.F
-                 */
-                HaskellQconid haskellQconid = qconidList.get(1);
-                StringBuilder qualifiedImportBuilder = new StringBuilder();
-
-                for (HaskellConid haskellConid : haskellQconid.getConidList()) {
-                    qualifiedImportBuilder.append(haskellConid.getName());
-                    qualifiedImportBuilder.append('.');
-                }
-
-                qualifiedImportBuilder.deleteCharAt(qualifiedImportBuilder.length() - 1);
-                String qualifiedImportName = qualifiedImportBuilder.toString();
-                if (qualifiedCallName.equals(qualifiedImportName)){
-                    return importDeclaration;
-                }
-
+            String qualifiedImportName = getQualifiedImportName(importDeclaration);
+            if (qualifiedImportName != null && qualifiedCallName.equals(qualifiedImportName)){
+                return importDeclaration;
             }
         }
         return null;
