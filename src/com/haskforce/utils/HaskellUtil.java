@@ -1,10 +1,12 @@
 package com.haskforce.utils;
 
+import com.google.common.collect.Lists;
 import com.haskforce.index.HaskellModuleIndex;
 import com.haskforce.psi.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -257,5 +259,228 @@ public class HaskellUtil {
         } else {
             return null;
         }
+    }
+
+    public static boolean isInsideBody(@NotNull PsiElement position) {
+        PsiElement parent = position.getParent();
+        while(parent != null){
+            if (parent instanceof HaskellBody){
+                return true;
+            }
+            parent = parent.getParent();
+        }
+        return false;
+    }
+
+    public static PsiElement checkWhereClausesInScopeForVariableDeclaration(@NotNull PsiNamedElement myElement, String name) {
+        PsiElement parent = myElement.getParent();
+        do {
+            if (parent instanceof HaskellRhs) {
+                HaskellRhs rhs = (HaskellRhs) parent;
+                PsiElement where = rhs.getWhere();
+                if (where == null) {
+                    return null;
+                } else {
+                    PsiElement psiElement = checkWhereClause(where, name);
+                    if (psiElement != null) {
+                        return psiElement;
+                    }
+                }
+            }
+            parent = parent.getParent();
+        } while (! (parent instanceof  HaskellBody) && ! (parent == null));
+
+        return null;
+    }
+
+    private static @Nullable PsiElement checkWhereClause(@NotNull PsiElement where, String name) {
+        PsiElement nextSibling = where.getNextSibling();
+        while(nextSibling != null){
+            if(nextSibling instanceof HaskellFunorpatdecl) {
+                PsiElement psiElement = HaskellUtil.lookForFunOrPatDeclWithCorrectName(nextSibling, name);
+                if (psiElement != null){
+                    return psiElement;
+                }
+            }
+            nextSibling = nextSibling.getNextSibling();
+        }
+        return null;
+    }
+
+    public static @Nullable PsiElement checkLocalDefinitionsForVariableDeclarations(PsiElement element, String name){
+        PsiElement parent = element;
+        do {
+
+            PsiElement prevSibling = parent.getPrevSibling();
+            while (prevSibling != null) {
+                PsiElement possibleMatch = HaskellUtil.lookForFunOrPatDeclWithCorrectName(prevSibling, name);
+                if (possibleMatch != null) {
+                    return possibleMatch;
+                }
+                if (prevSibling instanceof HaskellPat) {
+                    List<HaskellVarid> varIds = HaskellUtil.extractAllHaskellVarids((HaskellPat) prevSibling);
+                    for (HaskellVarid varId : varIds) {
+                        if (name.equals(varId.getName())) {
+                            return varId;
+                        }
+                    }
+                }
+                if (prevSibling instanceof HaskellVarid){
+                    HaskellVarid varId = (HaskellVarid) prevSibling;
+                    if (name.equals(varId.getName())){
+                        return varId;
+                    }
+                }
+                prevSibling = prevSibling.getPrevSibling();
+            }
+            parent = parent.getParent();
+            /**This is only necessary to put the caret on the declaration when Go to symbol is called
+             * when the caret is on the declaration. instead of saying that it didn't find a declaration.
+             * Might be that this is not that necessary (and it's once more over the tree). If it's necessary,
+             * a saner implementation will be to just first check whether the caret is on a declaration and leave it there.
+             */
+//            PsiElement psiElement = lookForFunOrPatDeclWithCorrectName(parent);
+//            if (psiElement != null) {
+//                return psiElement;
+//            }
+
+        } while(! (parent instanceof  PsiFile));
+
+        return null;
+    }
+
+    public static @NotNull String extractQualifierPrefix(@NotNull PsiElement element) {
+        PsiElement parent = element.getParent();
+        if (parent instanceof HaskellQvarid){
+            HaskellQvarid haskellQvarid = (HaskellQvarid) parent;
+            List<HaskellConid> conidList = haskellQvarid.getConidList();
+            StringBuilder qualifiedCallName = new StringBuilder();
+            for (HaskellConid haskellConid : conidList) {
+                qualifiedCallName.append((haskellConid.getName()));
+                qualifiedCallName.append('.');
+            }
+            if (qualifiedCallName.length() >0) {
+                qualifiedCallName.deleteCharAt(qualifiedCallName.length() - 1);
+                return qualifiedCallName.toString();
+            }
+        }
+        return "";
+    }
+
+    public static List<PsiElementResolveResult> matchGlobalNamesUnqualified(
+            PsiElement psiElement,
+            List<PsiNamedElement> namedElements,
+            List<HaskellImpdecl> importDeclarations){
+
+        String ownModuleName = getModuleName(psiElement);
+        List<PsiElementResolveResult> results = Lists.newArrayList();
+        for (PsiNamedElement property : namedElements) {
+            String moduleName = getModuleName(property);
+            if (importPresent(moduleName, importDeclarations) || ownModuleName.equals(moduleName)) {
+                //noinspection ObjectAllocationInLoop
+                results.add(new PsiElementResolveResult(property));
+            }
+        }
+        return results;
+    }
+
+
+    public static List<PsiElementResolveResult> matchGlobalNamesQualified(
+            List<PsiNamedElement> namedElements, String qualifiedCallName,
+            List<HaskellImpdecl> importDeclarations){
+        List<PsiElementResolveResult> results = Lists.newArrayList();
+        for (PsiNamedElement property : namedElements) {
+            String moduleName = getModuleName(property);
+            HaskellImpdecl correspondingImportDeclaration =
+                    findCorrespondingImportDeclaration(qualifiedCallName, importDeclarations);
+            if(correspondingImportDeclaration != null &&
+                    namedElementDefinedInCorrespondingModule(correspondingImportDeclaration,moduleName)){
+                results.add(new PsiElementResolveResult(property));
+            }
+        }
+        return results;
+
+    }
+
+    public static @NotNull String getModuleName(@NotNull PsiElement element) {
+        HaskellFile containingFile = (HaskellFile)element.getContainingFile();
+        if (containingFile == null){
+            return "";
+        }
+        String moduleName = containingFile.getModuleName();
+        if(moduleName != null){
+            return moduleName;
+        } else {
+            return "";
+        }
+    }
+
+
+    /**
+     * Not going to do it like this, going to this once and create a map of or so
+     * of imported modules, going to make the look up a bit more cpu friendly.
+     * For now this works.
+     */
+    public static boolean importPresent(@NotNull String moduleName, @NotNull List<HaskellImpdecl> importDeclarations) {
+        for (HaskellImpdecl importDeclaration : importDeclarations) {
+
+            List<HaskellQconid> qconidList = importDeclaration.getQconidList();
+            for (HaskellQconid haskellQconid : qconidList) {
+                List<HaskellConid> conidList = haskellQconid.getConidList();
+                StringBuilder moduleNameBuilder = new StringBuilder();
+                for (HaskellConid haskellConid : conidList) {
+                    moduleNameBuilder.append(haskellConid.getName());
+                    moduleNameBuilder.append('.');
+                }
+                moduleNameBuilder.deleteCharAt(moduleNameBuilder.length()-1);
+                if (moduleName.equals(moduleNameBuilder.toString())){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    private static boolean namedElementDefinedInCorrespondingModule(HaskellImpdecl correspondingImportDeclaration, String moduleName) {
+        HaskellQconid haskellQconid = correspondingImportDeclaration.getQconidList().get(0);
+        StringBuilder definitionModuleNameBuilder = new StringBuilder();
+
+        for (HaskellConid haskellConid : haskellQconid.getConidList()) {
+            definitionModuleNameBuilder.append(haskellConid.getName());
+            definitionModuleNameBuilder.append('.');
+        }
+
+        definitionModuleNameBuilder.deleteCharAt(definitionModuleNameBuilder.length() - 1);
+        String definitionModuleName = definitionModuleNameBuilder.toString();
+        return definitionModuleName.equals(moduleName);
+
+    }
+
+    private static HaskellImpdecl findCorrespondingImportDeclaration(String qualifiedCallName, List<HaskellImpdecl> importDeclarations) {
+        for (HaskellImpdecl importDeclaration : importDeclarations) {
+            List<HaskellQconid> qconidList = importDeclaration.getQconidList();
+            if (qconidList.size() == 2){
+                /**
+                 * TODO : this '2' is a guess currently. Seems to be 1 qconlist if
+                 * there is only import A.B.C, two qconlist if there is
+                 * import A.B.C as D.E.F
+                 */
+                HaskellQconid haskellQconid = qconidList.get(1);
+                StringBuilder qualifiedImportBuilder = new StringBuilder();
+
+                for (HaskellConid haskellConid : haskellQconid.getConidList()) {
+                    qualifiedImportBuilder.append(haskellConid.getName());
+                    qualifiedImportBuilder.append('.');
+                }
+
+                qualifiedImportBuilder.deleteCharAt(qualifiedImportBuilder.length() - 1);
+                String qualifiedImportName = qualifiedImportBuilder.toString();
+                if (qualifiedCallName.equals(qualifiedImportName)){
+                    return importDeclaration;
+                }
+
+            }
+        }
+        return null;
     }
 }
