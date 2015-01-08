@@ -63,9 +63,9 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
         List<ResolveResult> results = new ArrayList<ResolveResult>(20);
         List<HaskellImpdecl> importDeclarations = getImportDeclarations(myElement);
 
-        String qualifiedCallName = HaskellUtil.extractQualifierPrefix(myElement);
+        String qualifiedCallName = HaskellUtil.getQualifiedPrefix(myElement);
 
-        if (qualifiedCallName.isEmpty()){
+        if (qualifiedCallName == null){
             results.addAll(HaskellUtil.matchGlobalNamesUnqualified(myElement,namedElements,importDeclarations));
 
             List<PsiElement> localVariables = HaskellUtil.matchLocalDefinitionsInScope(myElement, name);
