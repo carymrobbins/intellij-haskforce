@@ -67,25 +67,25 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
 
         if (qualifiedCallName.isEmpty()){
             results.addAll(HaskellUtil.matchGlobalNamesUnqualified(myElement,namedElements,importDeclarations));
-            PsiElement localElement = HaskellUtil.checkLocalDefinitionsForVariableDeclarations(myElement, name);
-            if (localElement != null) {
-                results.add(new PsiElementResolveResult(localElement));
-            }
-            PsiElement psiElement = HaskellUtil.checkWhereClausesInScopeForVariableDeclaration(myElement, name);
-            if (psiElement != null){
+
+            List<PsiElement> localVariables = HaskellUtil.matchLocalDefinitionsInScope(myElement, name);
+            for (PsiElement psiElement : localVariables) {
                 results.add(new PsiElementResolveResult(psiElement));
             }
+
+            /**
+             * TODO find out if we can or can not check the where clauses in case we found something higher up (a
+             * let clause or so). Not yet sure about the correct precedence.
+             */
+            List<PsiElement> localWhereDefinitions = HaskellUtil.matchWhereClausesInScope(myElement, name);
+            for (PsiElement element : localWhereDefinitions) {
+                results.add(new PsiElementResolveResult(element));
+            }
         } else {
-            results.addAll(HaskellUtil.matchGlobalNamesQualified(namedElements,qualifiedCallName,importDeclarations));
+            results.addAll(HaskellUtil.matchGlobalNamesQualified(namedElements, qualifiedCallName, importDeclarations));
         }
-
-
         return results.toArray(new ResolveResult[results.size()]);
     }
-
-
-
-
 
     private @Nullable List<HaskellImpdecl> getImportDeclarations(@NotNull PsiNamedElement myElement) {
         PsiElement[] children = myElement.getContainingFile().getChildren();
@@ -97,9 +97,6 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
         }
         return null;
     }
-
-
-
 
     /**
      * Resolves references to a single result, or fails.
