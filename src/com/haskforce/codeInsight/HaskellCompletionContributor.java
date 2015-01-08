@@ -8,6 +8,7 @@ import com.haskforce.highlighting.annotation.external.GhcMod;
 import com.haskforce.highlighting.annotation.external.GhcModi;
 import com.haskforce.psi.*;
 import com.haskforce.utils.ExecUtil;
+import com.haskforce.utils.HaskellUtil;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -70,6 +71,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
                         // whether or not we were in the appropriate context.  This is useful to determine if following
                         // completions should be added.
                         completeKeywordImport(position, result);
+                        completeHaskellKeywords(position, result);
                         completeKeywordQualified(position, result);
                         if (completePragma(position, cacheHolder, result)) return;
                         if (completeModuleImport(position, cacheHolder, result)) return;
@@ -79,6 +81,26 @@ public class HaskellCompletionContributor extends CompletionContributor {
                     }
                 }
         );
+    }
+
+    /**
+     * Will only propose the haskell keywords when inside a haskell body. Will not take into account the specific position
+     * yet, just make sure
+     */
+    public static void completeHaskellKeywords(@NotNull final PsiElement position, @NotNull final CompletionResultSet result) {
+        if (HaskellUtil.isInsideBody(position)){
+            result.addElement(LookupElementBuilder.create("do"));
+            result.addElement(LookupElementBuilder.create("of"));
+            result.addElement(LookupElementBuilder.create("let"));
+            result.addElement(LookupElementBuilder.create("where"));
+            result.addElement(LookupElementBuilder.create("<-"));
+            result.addElement(LookupElementBuilder.create("return"));
+            result.addElement(LookupElementBuilder.create("="));
+            result.addElement(LookupElementBuilder.create("instance"));
+            result.addElement(LookupElementBuilder.create("class"));
+        }
+
+
     }
 
     public static void completeKeywordImport(@NotNull final PsiElement position, @NotNull final CompletionResultSet result) {
