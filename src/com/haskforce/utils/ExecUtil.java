@@ -1,6 +1,5 @@
 package com.haskforce.utils;
 
-import com.haskforce.settings.ToolKey;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.CapturingProcessHandler;
@@ -37,7 +36,8 @@ public class ExecUtil {
     @Nullable
     public static String exec(@NotNull final String command) {
         List<String> lines = execMultiLine(command);
-        StringBuilder sb = new StringBuilder(100*lines.size());
+        if (lines == null) return null;
+        StringBuilder sb = new StringBuilder(100 * lines.size());
         for (String line : lines) {
             sb.append(line);
         }
@@ -115,11 +115,12 @@ public class ExecUtil {
     @Nullable
     public static String locateExecutable(@NotNull final String command) {
         String whereCmd = (SystemInfo.isWindows ? "where" : "which") + ' ' + command;
-        String res = execMultiLine(whereCmd).get(0);
-        if (res != null && res.isEmpty()) {
-            LOG.info("Could not find " + command);
-        }
-        return res == null ? "" : res;
+        List<String> lines = execMultiLine(whereCmd);
+        if (lines == null || lines.isEmpty()) return null;
+        String res = lines.get(0);
+        if (res == null) return null;
+        if (res.isEmpty()) LOG.info("Could not find '" + command + "' with ExecUtil.locateExecutable()");
+        return res;
     }
 
     /**
