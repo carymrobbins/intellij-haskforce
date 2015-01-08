@@ -212,7 +212,7 @@ public class HaskellUtil {
 
     public static @Nullable PsiElement lookForFunOrPatDeclWithCorrectName(
             @NotNull PsiElement element,
-            @NotNull String name){
+            @NotNull String matcher){
         /**
          * A FunOrPatDecl with as parent haskellbody is one of the 'leftmost' function declarations.
          * Those should not be taken into account, the definition will already be found from the stub.
@@ -224,7 +224,7 @@ public class HaskellUtil {
             PsiElement[] children = element.getChildren();
             for (PsiElement child : children) {
                 if (child instanceof HaskellVarid) {
-                    PsiElement psiElement = checkForMatchingVariable(child,name);
+                    PsiElement psiElement = checkForMatchingVariable(child,matcher);
                     if (psiElement != null){
                         return psiElement;
                     }
@@ -233,9 +233,9 @@ public class HaskellUtil {
                     HaskellPat pat = (HaskellPat)child;
                     List<HaskellVarid> varIds = extractAllHaskellVarids(pat);
                     for (HaskellVarid varId : varIds) {
-                        if (name.equals(varId.getName())){
+                        if (varId.getName().matches(matcher)){
                             return varId;
-                        }
+                        };
                     }
                 }
             }
@@ -252,9 +252,9 @@ public class HaskellUtil {
         return varidList;
     }
 
-    private static PsiElement checkForMatchingVariable(PsiElement child, String name) {
+    private static PsiElement checkForMatchingVariable(PsiElement child, String matcher) {
         HaskellVarid haskellVarid = (HaskellVarid) child;
-        if (name.equals(haskellVarid.getName())) {
+        if (haskellVarid.getName().matches(matcher)) {
             return child;
         } else {
             return null;
@@ -272,32 +272,47 @@ public class HaskellUtil {
         return false;
     }
 
-    public static PsiElement checkWhereClausesInScopeForVariableDeclaration(@NotNull PsiNamedElement myElement, String name) {
+    public static @NotNull List<PsiElement> matchWhereClausesInScope(
+            @NotNull PsiNamedElement myElement,
+            String name) {
+        return checkWhereClausesInScopeForVariableDeclaration(myElement, name);
+    }
+
+    public static @NotNull List<PsiElement> getAllDefinitionsInWhereClausesInScope(
+            @NotNull PsiElement myElement) {
+        return checkWhereClausesInScopeForVariableDeclaration(myElement, ".+");
+    }
+
+    private static @NotNull List<PsiElement> checkWhereClausesInScopeForVariableDeclaration(
+                @NotNull PsiElement myElement,
+                String matcher) {
+        List<PsiElement>  results = Lists.newArrayList();
         PsiElement parent = myElement.getParent();
         do {
             if (parent instanceof HaskellRhs) {
                 HaskellRhs rhs = (HaskellRhs) parent;
                 PsiElement where = rhs.getWhere();
                 if (where == null) {
-                    return null;
+                    parent = parent.getParent();
+                    continue;
                 } else {
-                    PsiElement psiElement = checkWhereClause(where, name);
+                    PsiElement psiElement = checkWhereClause(where, matcher);
                     if (psiElement != null) {
-                        return psiElement;
+                        results.add(psiElement);
                     }
                 }
             }
             parent = parent.getParent();
         } while (! (parent instanceof  HaskellBody) && ! (parent == null));
 
-        return null;
+        return results;
     }
 
-    private static @Nullable PsiElement checkWhereClause(@NotNull PsiElement where, String name) {
+    private static @Nullable PsiElement checkWhereClause(@NotNull PsiElement where, String matcher) {
         PsiElement nextSibling = where.getNextSibling();
         while(nextSibling != null){
             if(nextSibling instanceof HaskellFunorpatdecl) {
-                PsiElement psiElement = HaskellUtil.lookForFunOrPatDeclWithCorrectName(nextSibling, name);
+                PsiElement psiElement = HaskellUtil.lookForFunOrPatDeclWithCorrectName(nextSibling, matcher);
                 if (psiElement != null){
                     return psiElement;
                 }
@@ -307,28 +322,37 @@ public class HaskellUtil {
         return null;
     }
 
-    public static @Nullable PsiElement checkLocalDefinitionsForVariableDeclarations(PsiElement element, String name){
+    public static @NotNull List<PsiElement> matchLocalDefinitionsInScope(PsiElement element, String name){
+        return checkLocalDefinitionsForVariableDeclarations(element,name);
+    }
+
+    public static @NotNull List<PsiElement> getAllDefinitionsInScope(PsiElement element){
+        return checkLocalDefinitionsForVariableDeclarations(element,".+");
+    }
+
+    private static @NotNull List<PsiElement> checkLocalDefinitionsForVariableDeclarations(PsiElement element, String matcher){
+        List<PsiElement> results = Lists.newArrayList();
         PsiElement parent = element;
         do {
 
             PsiElement prevSibling = parent.getPrevSibling();
             while (prevSibling != null) {
-                PsiElement possibleMatch = HaskellUtil.lookForFunOrPatDeclWithCorrectName(prevSibling, name);
+                PsiElement possibleMatch = HaskellUtil.lookForFunOrPatDeclWithCorrectName(prevSibling, matcher);
                 if (possibleMatch != null) {
-                    return possibleMatch;
+                    results.add(possibleMatch);
                 }
                 if (prevSibling instanceof HaskellPat) {
                     List<HaskellVarid> varIds = HaskellUtil.extractAllHaskellVarids((HaskellPat) prevSibling);
                     for (HaskellVarid varId : varIds) {
-                        if (name.equals(varId.getName())) {
-                            return varId;
+                        if (varId.getName().matches(matcher)) {
+                            results.add(varId);
                         }
                     }
                 }
                 if (prevSibling instanceof HaskellVarid){
                     HaskellVarid varId = (HaskellVarid) prevSibling;
-                    if (name.equals(varId.getName())){
-                        return varId;
+                    if (varId.getName().matches(matcher)){
+                        results.add(varId);
                     }
                 }
                 prevSibling = prevSibling.getPrevSibling();
@@ -338,6 +362,7 @@ public class HaskellUtil {
              * when the caret is on the declaration. instead of saying that it didn't find a declaration.
              * Might be that this is not that necessary (and it's once more over the tree). If it's necessary,
              * a saner implementation will be to just first check whether the caret is on a declaration and leave it there.
+             * But don't yet know whether this is necessary or not.
              */
 //            PsiElement psiElement = lookForFunOrPatDeclWithCorrectName(parent);
 //            if (psiElement != null) {
@@ -346,7 +371,7 @@ public class HaskellUtil {
 
         } while(! (parent instanceof  PsiFile));
 
-        return null;
+        return results;
     }
 
     public static @NotNull String extractQualifierPrefix(@NotNull PsiElement element) {
