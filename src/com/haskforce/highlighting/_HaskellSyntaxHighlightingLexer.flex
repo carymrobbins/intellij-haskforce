@@ -221,7 +221,7 @@ MAYBEQVARID=({CONID}\.)*{VARIDREGEXP}
                                         yybegin(YYINITIAL);
                                         return DOUBLEQUOTE;
                                     }
-    (\\)+                           { return STRINGTOKEN; }
+    \\(\\|{EOL}|[a-z])              { return STRINGTOKEN; }
     ({STRINGGAP}|\\\"|[^\"\\\n])+   { return STRINGTOKEN; }
 
     [^]                             { return BADSTRINGTOKEN; }

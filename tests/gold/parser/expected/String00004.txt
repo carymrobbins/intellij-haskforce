@@ -12,11 +12,10 @@ Haskell File
           PsiElement(HaskellTokenType.varidRegexp)('s')
       RHS
         PsiElement(HaskellTokenType.=)('=')
-  PsiElement(HaskellTokenType.")('"')
-  PsiElement(HaskellTokenType.STRINGTOKEN)('\\n    \Strings should allow \"escaped double quotes\"\\n    \as well as multi-line strings.  Also, the closing')
-  PsiElement(HaskellTokenType.STRINGTOKEN)('\')
-  PsiErrorElement:HaskellTokenType." or HaskellTokenType.STRINGTOKEN expected, got '
-'
-    PsiElement(HaskellTokenType.badstringtoken)('\n')
-  PsiElement(HaskellTokenType.STRINGTOKEN)('    quote of this string can be preceded by a backslash\\n    \since the backslash indicates line continuation, not\\n    \quote escaping!\\n\')
-  PsiElement(HaskellTokenType.")('"')
+        EXP
+          PSTRINGTOKEN
+            PsiElement(HaskellTokenType.")('"')
+            PsiElement(HaskellTokenType.STRINGTOKEN)('\\n    \Strings should allow \"escaped double quotes\"\\n    \as well as multi-line strings.  Also, the closing')
+            PsiElement(HaskellTokenType.STRINGTOKEN)('\\n')
+            PsiElement(HaskellTokenType.STRINGTOKEN)('    quote of this string can be preceded by a backslash\\n    \since the backslash indicates line continuation, not\\n    \quote escaping!\\n\')
+            PsiElement(HaskellTokenType.")('"')

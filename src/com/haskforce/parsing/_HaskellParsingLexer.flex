@@ -394,7 +394,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                                         yybegin(REALLYYINITIAL);
                                         return DOUBLEQUOTE;
                                     }
-    (\\)+                           { return STRINGTOKEN; }
+    \\(\\|{EOL}|[a-z])              { return STRINGTOKEN; }
     ({STRINGGAP}|\\\"|[^\"\\\n])+   { return STRINGTOKEN; }
 
     [^]                             { return BADSTRINGTOKEN; }
