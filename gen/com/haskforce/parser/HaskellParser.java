@@ -163,6 +163,9 @@ public class HaskellParser implements PsiParser {
     else if (t == QOP) {
       r = qop(b, 0);
     }
+    else if (t == QQBLOB) {
+      r = qqblob(b, 0);
+    }
     else if (t == QTYCLS) {
       r = qtycls(b, 0);
     }
@@ -5205,6 +5208,24 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
+  // qqtext+
+  public static boolean qqblob(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "qqblob")) return false;
+    if (!nextTokenIs(b, QQTEXT)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, QQTEXT);
+    int c = current_position_(b);
+    while (r) {
+      if (!consumeToken(b, QQTEXT)) break;
+      if (!empty_element_parsed_guard_(b, "qqblob", c)) break;
+      c = current_position_(b);
+    }
+    exit_section_(b, m, QQBLOB, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // [modulePrefix] tycls
   public static boolean qtycls(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "qtycls")) return false;
@@ -5745,7 +5766,7 @@ public class HaskellParser implements PsiParser {
   // '[|' e (exp [semi])+ e '|]'
   //                  // TODO: Enable more precise TH parsing with t/p/d.
   // //                 | '[' ("t" '|' ctype | "p" '|' infixexp |  "d" '|' open topdecls close ) '|]'
-  //                  | qqopen i qvarid i '|' qqtext+ '|]'
+  //                  | qqopen i qvarid i '|' qqblob '|]'
   static boolean thaexp(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "thaexp")) return false;
     if (!nextTokenIs(b, "", LTHOPEN, QQOPEN)) return false;
@@ -5805,7 +5826,7 @@ public class HaskellParser implements PsiParser {
     return true;
   }
 
-  // qqopen i qvarid i '|' qqtext+ '|]'
+  // qqopen i qvarid i '|' qqblob '|]'
   private static boolean thaexp_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "thaexp_1")) return false;
     boolean r;
@@ -5815,24 +5836,8 @@ public class HaskellParser implements PsiParser {
     r = r && qvarid(b, l + 1);
     r = r && i(b, l + 1);
     r = r && consumeToken(b, PIPE);
-    r = r && thaexp_1_5(b, l + 1);
+    r = r && qqblob(b, l + 1);
     r = r && consumeToken(b, RTHCLOSE);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // qqtext+
-  private static boolean thaexp_1_5(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "thaexp_1_5")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, QQTEXT);
-    int c = current_position_(b);
-    while (r) {
-      if (!consumeToken(b, QQTEXT)) break;
-      if (!empty_element_parsed_guard_(b, "thaexp_1_5", c)) break;
-      c = current_position_(b);
-    }
     exit_section_(b, m, null, r);
     return r;
   }

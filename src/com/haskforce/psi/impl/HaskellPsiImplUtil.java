@@ -2,6 +2,7 @@ package com.haskforce.psi.impl;
 
 import com.haskforce.HaskellIcons;
 import com.haskforce.psi.HaskellFile;
+import com.haskforce.psi.HaskellQqblob;
 import com.haskforce.psi.references.HaskellReference;
 import com.haskforce.psi.HaskellConid;
 import com.haskforce.psi.HaskellVarid;
@@ -14,6 +15,8 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.impl.source.tree.LeafElement;
+import com.intellij.psi.impl.source.tree.injected.StringLiteralEscaper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -75,6 +78,22 @@ public class HaskellPsiImplUtil {
     @NotNull
     public static PsiReference getReference(@NotNull HaskellConid o) {
         return new HaskellReference(o, TextRange.from(0, getName(o).length()));
+    }
+
+    public static boolean isValidHost(@NotNull HaskellQqblob o) {
+        return true;
+    }
+
+    public static HaskellQqblob updateText(@NotNull HaskellQqblob o, @NotNull String s) {
+        final ASTNode valueNode = o.getNode().getFirstChildNode();
+        assert valueNode instanceof LeafElement;
+        ((LeafElement) valueNode).replaceWithText(s);
+        return o;
+    }
+
+    @NotNull
+    public static StringLiteralEscaper<HaskellQqblob> createLiteralTextEscaper(@NotNull HaskellQqblob o) {
+        return new StringLiteralEscaper<HaskellQqblob>(o);
     }
 
     // Used for go to symbol.

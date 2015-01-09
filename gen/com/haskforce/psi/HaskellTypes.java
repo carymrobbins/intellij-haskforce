@@ -56,6 +56,7 @@ public interface HaskellTypes {
   IElementType QCONOP = new HaskellElementType("QCONOP");
   IElementType QCONSYM = new HaskellElementType("QCONSYM");
   IElementType QOP = new HaskellElementType("QOP");
+  IElementType QQBLOB = new HaskellElementType("QQBLOB");
   IElementType QTYCLS = new HaskellElementType("QTYCLS");
   IElementType QTYCON = new HaskellElementType("QTYCON");
   IElementType QTYCONOP = new HaskellElementType("QTYCONOP");
@@ -338,6 +339,9 @@ public interface HaskellTypes {
       }
       else if (type == QOP) {
         return new HaskellQopImpl(node);
+      }
+      else if (type == QQBLOB) {
+        return new HaskellQqblobImpl(node);
       }
       else if (type == QTYCLS) {
         return new HaskellQtyclsImpl(node);

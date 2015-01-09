@@ -83,6 +83,12 @@ public class HaskellGuardImpl extends HaskellCompositeElementImpl implements Has
 
   @Override
   @NotNull
+  public List<HaskellQqblob> getQqblobList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQqblob.class);
+  }
+
+  @Override
+  @NotNull
   public List<HaskellQvar> getQvarList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQvar.class);
   }

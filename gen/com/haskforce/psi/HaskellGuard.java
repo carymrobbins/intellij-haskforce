@@ -38,6 +38,9 @@ public interface HaskellGuard extends HaskellCompositeElement {
   List<HaskellQop> getQopList();
 
   @NotNull
+  List<HaskellQqblob> getQqblobList();
+
+  @NotNull
   List<HaskellQvar> getQvarList();
 
   @NotNull
