@@ -24,5 +24,6 @@ Haskell File
       VARID
         PsiElement(HaskellTokenType.varidRegexp)('parseRoutes')
     PsiElement(HaskellTokenType.|)('|')
-    PsiElement(HaskellTokenType.Quasi-stuff)('\n/ HomeR GET\n')
+    QQBLOB
+      PsiElement(HaskellTokenType.Quasi-stuff)('\n/ HomeR GET\n')
     PsiElement(HaskellTokenType.|])('|]')

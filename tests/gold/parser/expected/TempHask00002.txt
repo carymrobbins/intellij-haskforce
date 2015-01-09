@@ -26,7 +26,8 @@ Haskell File
       VARID
         PsiElement(HaskellTokenType.varidRegexp)('undefined')
     PsiElement(HaskellTokenType.|)('|')
-    PsiElement(HaskellTokenType.Quasi-stuff)('\nsomething here "hello world"\n')
+    QQBLOB
+      PsiElement(HaskellTokenType.Quasi-stuff)('\nsomething here "hello world"\n')
     PsiElement(HaskellTokenType.|])('|]')
     PsiElement(HaskellTokenType.[|)('[|')
     EXP
@@ -37,21 +38,24 @@ Haskell File
       VARID
         PsiElement(HaskellTokenType.varidRegexp)('d')
     PsiElement(HaskellTokenType.|)('|')
-    PsiElement(HaskellTokenType.Quasi-stuff)(' 7 ')
+    QQBLOB
+      PsiElement(HaskellTokenType.Quasi-stuff)(' 7 ')
     PsiElement(HaskellTokenType.|])('|]')
     PsiElement(HaskellTokenType.Quasi-[)('[')
     QVARID
       VARID
         PsiElement(HaskellTokenType.varidRegexp)('t')
     PsiElement(HaskellTokenType.|)('|')
-    PsiElement(HaskellTokenType.Quasi-stuff)(' Int ')
+    QQBLOB
+      PsiElement(HaskellTokenType.Quasi-stuff)(' Int ')
     PsiElement(HaskellTokenType.|])('|]')
     PsiElement(HaskellTokenType.Quasi-[)('[')
     QVARID
       VARID
         PsiElement(HaskellTokenType.varidRegexp)('p')
     PsiElement(HaskellTokenType.|)('|')
-    PsiElement(HaskellTokenType.Quasi-stuff)(' 7 ')
+    QQBLOB
+      PsiElement(HaskellTokenType.Quasi-stuff)(' 7 ')
     PsiElement(HaskellTokenType.|])('|]')
     PsiElement(HaskellTokenType.$()('$(')
     EXP
@@ -92,7 +96,8 @@ Haskell File
             VARID
               PsiElement(HaskellTokenType.varidRegexp)('haskell')
           PsiElement(HaskellTokenType.|)('|')
-          PsiElement(HaskellTokenType.Quasi-stuff)('y')
+          QQBLOB
+            PsiElement(HaskellTokenType.Quasi-stuff)('y')
           PsiElement(HaskellTokenType.|])('|]')
           PsiElement(HaskellTokenType.->)('->')
           EXP

@@ -248,7 +248,8 @@ Haskell File
                       VARID
                         PsiElement(HaskellTokenType.varidRegexp)('stext')
                     PsiElement(HaskellTokenType.|)('|')
-                    PsiElement(HaskellTokenType.Quasi-stuff)('\n                Please confirm your email address by clicking on the link below.\n\n                #{verurl}\n\n                Thank you.\n              ')
+                    QQBLOB
+                      PsiElement(HaskellTokenType.Quasi-stuff)('\n                Please confirm your email address by clicking on the link below.\n\n                #{verurl}\n\n                Thank you.\n              ')
                     PsiElement(HaskellTokenType.|])('|]')
                   PsiElement(HaskellTokenType.})('}')
             FUNORPATDECL
@@ -289,6 +290,7 @@ Haskell File
                       VARID
                         PsiElement(HaskellTokenType.varidRegexp)('shamlet')
                     PsiElement(HaskellTokenType.|)('|')
-                    PsiElement(HaskellTokenType.Quasi-stuff)('\n                <p>Please confirm your email address by clicking the link below.\n                <p>\n                    <a href=#{verurl}>#{verurl}>\n                <p>Thank you\n              ')
+                    QQBLOB
+                      PsiElement(HaskellTokenType.Quasi-stuff)('\n                <p>Please confirm your email address by clicking the link below.\n                <p>\n                    <a href=#{verurl}>#{verurl}>\n                <p>Thank you\n              ')
                     PsiElement(HaskellTokenType.|])('|]')
                   PsiElement(HaskellTokenType.})('}')

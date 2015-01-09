@@ -36,5 +36,6 @@ Haskell File
             VARID
               PsiElement(HaskellTokenType.varidRegexp)('here')
           PsiElement(HaskellTokenType.|)('|')
-          PsiElement(HaskellTokenType.Quasi-stuff)('test\ntest\ntest test ')
+          QQBLOB
+            PsiElement(HaskellTokenType.Quasi-stuff)('test\ntest\ntest test ')
           PsiElement(HaskellTokenType.|])('|]')
