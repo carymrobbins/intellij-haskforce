@@ -7,7 +7,7 @@ import com.intellij.psi.tree.TokenSet;
 public class HamletSyntaxHighlightingLexer extends MergingLexerAdapter {
     public static final TokenSet mergeMe = TokenSet.create(HamletTypes.HASKELL_CODE);
 
-    HamletSyntaxHighlightingLexer() {
+    public HamletSyntaxHighlightingLexer() {
         super(new FlexAdapter(new _HamletSyntaxHighlightingLexer()), mergeMe);
     }
 }

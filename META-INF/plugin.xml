@@ -196,6 +196,7 @@
       <!-- Hamlet support -->
       <fileTypeFactory implementation="com.haskforce.yesod.shakespeare.hamlet.HamletFileTypeFactory"/>
       <lang.syntaxHighlighterFactory key="Hamlet" implementationClass="com.haskforce.yesod.shakespeare.hamlet.highlighting.HamletSyntaxHighlighterFactory"/>
+      <lang.parserDefinition language="Hamlet" implementationClass="com.haskforce.yesod.shakespeare.hamlet.HamletParserDefinition" />
 
       <!-- External builder support -->
       <!-- Note that the classpath is needed for plugin deployment to export a zip archive. -->
