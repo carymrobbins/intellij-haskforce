@@ -6,6 +6,7 @@ import com.haskforce.HaskellIcons;
 import com.haskforce.HaskellLanguage;
 import com.haskforce.highlighting.annotation.external.GhcMod;
 import com.haskforce.highlighting.annotation.external.GhcModi;
+import com.haskforce.language.HaskellNamesValidator;
 import com.haskforce.psi.*;
 import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.HaskellUtil;
@@ -26,11 +27,13 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.Function;
 import com.intellij.util.ProcessingContext;
-import com.intellij.util.containers.ContainerUtil;
+import com.intellij.util.containers.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.concurrent.Future;
 
 /**
@@ -83,19 +86,14 @@ public class HaskellCompletionContributor extends CompletionContributor {
 
     /**
      * Will only propose the haskell keywords when inside a haskell body. Will not take into account the specific position
-     * yet, just make sure
+     * yet, just make sure it's inside the body, so as to not propose keywords other than import in imports
      */
     public static void completeHaskellKeywords(@NotNull final PsiElement position, @NotNull final CompletionResultSet result) {
         if (HaskellUtil.isInsideBody(position)){
-            result.addElement(LookupElementBuilder.create("do"));
-            result.addElement(LookupElementBuilder.create("of"));
-            result.addElement(LookupElementBuilder.create("let"));
-            result.addElement(LookupElementBuilder.create("where"));
-            result.addElement(LookupElementBuilder.create("<-"));
-            result.addElement(LookupElementBuilder.create("return"));
-            result.addElement(LookupElementBuilder.create("="));
-            result.addElement(LookupElementBuilder.create("instance"));
-            result.addElement(LookupElementBuilder.create("class"));
+            Set<String> haskellKeywords = HaskellNamesValidator.HASKELL_KEYWORDS;
+            for (String haskellKeyword : haskellKeywords) {
+                result.addElement(LookupElementBuilder.create(haskellKeyword));
+            }
         }
 
 
