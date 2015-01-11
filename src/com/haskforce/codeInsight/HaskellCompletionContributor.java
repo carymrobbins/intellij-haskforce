@@ -96,14 +96,6 @@ public class HaskellCompletionContributor extends CompletionContributor {
                 result.addElement(LookupElementBuilder.create(haskellKeyword));
             }
         }
-
-
-    }
-
-            }
-        }
-
-
     }
 
     public static void completeKeywordImport(@NotNull final PsiElement position, @NotNull final CompletionResultSet result) {
