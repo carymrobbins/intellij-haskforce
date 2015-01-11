@@ -100,6 +100,12 @@ public class HaskellCompletionContributor extends CompletionContributor {
 
     }
 
+            }
+        }
+
+
+    }
+
     public static void completeKeywordImport(@NotNull final PsiElement position, @NotNull final CompletionResultSet result) {
         if (HaskellPsiUtil.findFirstParent(position, HaskellImpdecl.class) != null) return;
         HaskellBody body = HaskellPsiUtil.findFirstParent(position, HaskellBody.class);
