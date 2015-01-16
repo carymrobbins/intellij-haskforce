@@ -1,20 +1,30 @@
 package com.haskforce.psi.references;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.haskforce.HaskellModuleType;
 import com.haskforce.codeInsight.HaskellCompletionContributor;
+import com.haskforce.index.HaskellModuleIndex;
 import com.haskforce.psi.*;
 import com.haskforce.psi.impl.HaskellPsiImplUtil;
 import com.haskforce.utils.HaskellUtil;
+import com.haskforce.utils.SystemUtil;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.*;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.indexing.FileBasedIndex;
+import com.intellij.util.indexing.ID;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -44,12 +54,17 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
         // Make sure that we only complete the last conid in a qualified expression.
         if (myElement instanceof HaskellConid) {
             // Don't resolve a module import to a constructor.
-            if (PsiTreeUtil.getParentOfType(myElement, HaskellImpdecl.class) != null) { return EMPTY_RESOLVE_RESULT; }
             HaskellQconid qconid = PsiTreeUtil.getParentOfType(myElement, HaskellQconid.class);
             if (qconid == null) { return EMPTY_RESOLVE_RESULT; }
             if (!myElement.equals(Iterables.getLast(qconid.getConidList()))) { return EMPTY_RESOLVE_RESULT; }
         }
         Project project = myElement.getProject();
+
+        HaskellImpdecl haskellImpdecl = PsiTreeUtil.getParentOfType(myElement, HaskellImpdecl.class);
+        if (haskellImpdecl != null){
+            List<PsiElementResolveResult> results = handleImportReferences(haskellImpdecl, myElement);
+            return results.toArray(new ResolveResult[results.size()]);
+        }
 
         /**
          * TODO
@@ -90,15 +105,33 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
         return results.toArray(new ResolveResult[results.size()]);
     }
 
-    private @Nullable List<HaskellImpdecl> getImportDeclarations(@NotNull PsiNamedElement myElement) {
-        PsiElement[] children = myElement.getContainingFile().getChildren();
-        for (PsiElement child : children) {
-            if (child instanceof HaskellBody){
-                HaskellBody haskellBody = (HaskellBody) child;
-                return haskellBody.getImpdeclList();
+    private @NotNull List<PsiElementResolveResult> handleImportReferences(@NotNull HaskellImpdecl haskellImpdecl,
+                                                @NotNull PsiNamedElement myElement) {
+        /**
+         * Don't use the named element yet to determine which elemen we're
+         * talking about, not necessary yet
+         */
+        /**
+         * TODO this might not work in an older JRE
+         */
+        List<PsiElementResolveResult> modulesFound = Lists.newArrayList();
+        List<HaskellQconid> qconidList = haskellImpdecl.getQconidList();
+        if (qconidList.size() > 0){
+            String moduleName = qconidList.get(0).getText();
+            /**
+             * TODO serious line separator before PR
+             */
+            GlobalSearchScope globalSearchScope = GlobalSearchScope.projectScope(myElement.getProject());
+            List<HaskellFile> filesByModuleName = HaskellModuleIndex.getFilesByModuleName(myElement.getProject(), moduleName, globalSearchScope);
+            for (HaskellFile haskellFile : filesByModuleName) {
+                HaskellModuledecl[] moduleDecls = PsiTreeUtil.getChildrenOfType(haskellFile, HaskellModuledecl.class);
+                if (moduleDecls.length != 0){
+                    List<HaskellConid> conidList = moduleDecls[0].getQconid().getConidList();
+                    modulesFound.add(new PsiElementResolveResult(conidList.get(conidList.size() - 1)));
+                }
             }
         }
-        return null;
+        return modulesFound;
     }
 
     /**
