@@ -352,14 +352,81 @@ public class HaskellGoToSymbolTest extends HaskellLightPlatformCodeInsightFixtur
                 "QualifiedImport_QualifierResolves/Definition.hs"
                 );
         PsiFile usage = psiFiles[0];
-        PsiFile definition = psiFiles[1];
-        String textOfFile = definition.getText();
+        String textOfFile = usage.getText();
         int expectedStartOffset = textOfFile.indexOf("as Def") + 3;
         PsiElement psiElement = usage
                 .findElementAt(myFixture.getCaretOffset()).getParent();
         HaskellConid conId = (HaskellConid) psiElement;
         PsiReference reference = conId.getReference();
-        HaskellVarid referencedElement = (HaskellVarid) reference.resolve();
+        HaskellConid referencedElement = (HaskellConid) reference.resolve();
+        assertNotSame(psiElement, referencedElement);
+        assertEquals(expectedStartOffset, referencedElement.getTextRange().getStartOffset());
+    }
+
+    public void testGoToSymbolFunction_QualifiedImportQualifierresolvesMultipleCons_Cons1() {
+        PsiFile[] psiFiles = myFixture.configureByFiles(
+                "QualifiedImport_QualifierResolvesMultipleCons_Cons1/Usage.hs",
+                "QualifiedImport_QualifierResolvesMultipleCons_Cons1/Definition.hs"
+                );
+        PsiFile usage = psiFiles[0];
+        String textOfFile = usage.getText();
+        int expectedStartOffset = textOfFile.indexOf("as Def.Lef") + 3;
+        PsiElement psiElement = usage
+                .findElementAt(myFixture.getCaretOffset()).getParent();
+        HaskellConid conId = (HaskellConid) psiElement;
+        PsiReference reference = conId.getReference();
+        HaskellConid referencedElement = (HaskellConid) reference.resolve();
+        assertNotSame(psiElement, referencedElement);
+        assertEquals(expectedStartOffset, referencedElement.getTextRange().getStartOffset());
+    }
+
+    public void testGoToSymbolFunction_QualifiedImportQualifierresolvesMultipleCons_Cons2() {
+        PsiFile[] psiFiles = myFixture.configureByFiles(
+                "QualifiedImport_QualifierResolvesMultipleCons_Cons2/Usage.hs",
+                "QualifiedImport_QualifierResolvesMultipleCons_Cons2/Definition.hs"
+                );
+        PsiFile usage = psiFiles[0];
+        String textOfFile = usage.getText();
+        int expectedStartOffset = textOfFile.indexOf("as Def.Lef") + 7;
+        PsiElement psiElement = usage
+                .findElementAt(myFixture.getCaretOffset()).getParent();
+        HaskellConid conId = (HaskellConid) psiElement;
+        PsiReference reference = conId.getReference();
+        HaskellConid referencedElement = (HaskellConid) reference.resolve();
+        assertNotSame(psiElement, referencedElement);
+        assertEquals(expectedStartOffset, referencedElement.getTextRange().getStartOffset());
+    }
+
+    public void testGoToSymbolFunction_QualifiedImportQualifierresolvesMultipleCons_Cons1_NoAs() {
+        PsiFile[] psiFiles = myFixture.configureByFiles(
+                "QualifiedImport_QualifierResolvesMultipleCons_Cons1_NoAs/Usage.hs",
+                "QualifiedImport_QualifierResolvesMultipleCons_Cons1_NoAs/Definition.hs"
+                );
+        PsiFile usage = psiFiles[0];
+        String textOfFile = usage.getText();
+        int expectedStartOffset = textOfFile.indexOf("qualified Definition.Definition") + 10;
+        PsiElement psiElement = usage
+                .findElementAt(myFixture.getCaretOffset()).getParent();
+        HaskellConid conId = (HaskellConid) psiElement;
+        PsiReference reference = conId.getReference();
+        HaskellConid referencedElement = (HaskellConid) reference.resolve();
+        assertNotSame(psiElement, referencedElement);
+        assertEquals(expectedStartOffset, referencedElement.getTextRange().getStartOffset());
+    }
+
+    public void testGoToSymbolFunction_QualifiedImportQualifierresolvesMultipleCons_Cons2_NoAs() {
+        PsiFile[] psiFiles = myFixture.configureByFiles(
+                "QualifiedImport_QualifierResolvesMultipleCons_Cons2_NoAs/Usage.hs",
+                "QualifiedImport_QualifierResolvesMultipleCons_Cons2_NoAs/Definition.hs"
+                );
+        PsiFile usage = psiFiles[0];
+        String textOfFile = usage.getText();
+        int expectedStartOffset = textOfFile.indexOf("qualified Definition.Definition") + 21;
+        PsiElement psiElement = usage
+                .findElementAt(myFixture.getCaretOffset()).getParent();
+        HaskellConid conId = (HaskellConid) psiElement;
+        PsiReference reference = conId.getReference();
+        HaskellConid referencedElement = (HaskellConid) reference.resolve();
         assertNotSame(psiElement, referencedElement);
         assertEquals(expectedStartOffset, referencedElement.getTextRange().getStartOffset());
     }

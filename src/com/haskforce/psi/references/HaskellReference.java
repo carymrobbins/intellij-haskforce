@@ -21,6 +21,7 @@ import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.indexing.FileBasedIndex;
 import com.intellij.util.indexing.ID;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,7 +57,45 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
         if (myElement instanceof HaskellConid) {
             // Don't resolve a module import to a constructor.
             HaskellQconid qconid = PsiTreeUtil.getParentOfType(myElement, HaskellQconid.class);
-            if (qconid == null) { return EMPTY_RESOLVE_RESULT; }
+            if (qconid == null) {
+                /**
+                 * Are we in a qualified variable call?
+                 */
+                HaskellQvarid haskellQvarid = PsiTreeUtil.getParentOfType(myElement, HaskellQvarid.class);
+                if(haskellQvarid != null){
+                    String fullQualifierAndFunctionName = haskellQvarid.getText();
+                    int i1 = StringUtils.lastIndexOf(fullQualifierAndFunctionName, '.');
+                    String fullQualifierName = StringUtils.substring(fullQualifierAndFunctionName, 0, i1);
+
+                    List<HaskellConid> conidList = haskellQvarid.getConidList();
+                    int i = 0;
+                    for (; i < conidList.size(); i++) {
+                        if (conidList.get(i).equals(myElement)){
+                            break;
+                        }
+                    }
+
+                    /**
+                     * TODO still take care of the situation where you import
+                     * A.B as AB as well as A.C as AB. Only point to one of both
+                     */
+
+                    HaskellFile containingFile = (HaskellFile)myElement.getContainingFile();
+                    List<HaskellImpdecl> importDeclarations = containingFile.getBody().getImpdeclList();
+                    for (HaskellImpdecl importDeclaration : importDeclarations) {
+                        List<HaskellQconid> qconidList = importDeclaration.getQconidList();
+                        if (importDeclaration.getQualified() != null){
+                            HaskellQconid last = Iterables.getLast(qconidList);
+                            if (fullQualifierName.equals(last.getText())){
+                                HaskellConid haskellConid = last.getConidList().get(i);
+                                return new ResolveResult[]{new PsiElementResolveResult(haskellConid)};
+                            }
+                        }
+
+                    }
+
+                }
+            }
 
         }
         if(PsiTreeUtil.getParentOfType(myElement, HaskellModuledecl.class) != null){
@@ -71,11 +110,6 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
 
         HaskellImpdecl haskellImpdecl = PsiTreeUtil.getParentOfType(myElement, HaskellImpdecl.class);
         if (haskellImpdecl != null){
-            /**
-             * Do not go looking for module matches when the element is not the last constructor of an import declaration
-             * This can be found by checking whether the nextsibling of myelement is null, and myElement's parent is the
-             * first qconId in the impDecl. Pfffw...
-             */
             PsiElement parent = myElement.getParent();
             if (parent instanceof  HaskellQconid) {
                 HaskellQconid haskellQconid = (HaskellQconid) parent;
@@ -90,13 +124,6 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
                 }
 
                 return EMPTY_RESOLVE_RESULT;
-
-                /*if (myElement.getNextSibling() == null ) {
-                    if (haskellImpdecl.getQconidList().get(0).equals(haskellQconid)) {
-                        List<PsiElementResolveResult> results = handleImportReferences(haskellImpdecl, myElement);
-                        return results.toArray(new ResolveResult[results.size()]);
-                    }
-                }*/
             }
         }
 
