@@ -1,10 +1,12 @@
 package com.haskforce.utils;
 
+import com.google.common.collect.Lists;
 import com.haskforce.index.HaskellModuleIndex;
 import com.haskforce.psi.*;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementResolveResult;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -205,5 +207,224 @@ public class HaskellUtil {
             }
         }
         return result;
+    }
+
+
+    public static @Nullable PsiElement lookForFunOrPatDeclWithCorrectName(
+            @NotNull PsiElement element,
+            @NotNull String matcher){
+        /**
+         * A FunOrPatDecl with as parent haskellbody is one of the 'leftmost' function declarations.
+         * Those should not be taken into account, the definition will already be found from the stub.
+         * It will cause problems if we also start taking those into account over here.
+         */
+
+        if (element instanceof  HaskellFunorpatdecl &&
+                ! (element.getParent() instanceof HaskellBody)) {
+            PsiElement[] children = element.getChildren();
+            for (PsiElement child : children) {
+                if (child instanceof HaskellVarid) {
+                    PsiElement psiElement = checkForMatchingVariable(child,matcher);
+                    if (psiElement != null){
+                        return psiElement;
+                    }
+                }
+                if (child instanceof HaskellPat){
+                    HaskellPat pat = (HaskellPat)child;
+                    List<HaskellVarid> varIds = extractAllHaskellVarids(pat);
+                    for (HaskellVarid varId : varIds) {
+                        if (varId.getName().matches(matcher)){
+                            return varId;
+                        };
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public static List<HaskellVarid> extractAllHaskellVarids(HaskellPat pat) {
+        List<HaskellVarid> varidList = pat.getVaridList();
+        List<HaskellPat> patList = pat.getPatList();
+        for (HaskellPat haskellPat : patList) {
+            varidList.addAll(haskellPat.getVaridList());
+        }
+        return varidList;
+    }
+
+    private static PsiElement checkForMatchingVariable(PsiElement child, String matcher) {
+        HaskellVarid haskellVarid = (HaskellVarid) child;
+        if (haskellVarid.getName().matches(matcher)) {
+            return child;
+        } else {
+            return null;
+        }
+    }
+
+    public static boolean isInsideBody(@NotNull PsiElement position) {
+        HaskellGendecl haskellGendecl = PsiTreeUtil.getParentOfType(position, HaskellGendecl.class);
+        return haskellGendecl != null;
+    }
+
+    public static @NotNull List<PsiElement> matchWhereClausesInScope(
+            @NotNull PsiNamedElement myElement,
+            String name) {
+        return checkWhereClausesInScopeForVariableDeclaration(myElement, name);
+    }
+
+    public static @NotNull List<PsiElement> getAllDefinitionsInWhereClausesInScope(
+            @NotNull PsiElement myElement) {
+        return checkWhereClausesInScopeForVariableDeclaration(myElement, ".+");
+    }
+
+    private static @NotNull List<PsiElement> checkWhereClausesInScopeForVariableDeclaration(
+                @NotNull PsiElement myElement,
+                String matcher) {
+        List<PsiElement>  results = Lists.newArrayList();
+        PsiElement parent = myElement.getParent();
+        do {
+            if (parent instanceof HaskellRhs) {
+                HaskellRhs rhs = (HaskellRhs) parent;
+                PsiElement where = rhs.getWhere();
+                if (where == null) {
+                    parent = parent.getParent();
+                    continue;
+                } else {
+                    PsiElement psiElement = checkWhereClause(where, matcher);
+                    if (psiElement != null) {
+                        results.add(psiElement);
+                    }
+                }
+            }
+            parent = parent.getParent();
+        } while (! (parent instanceof  HaskellBody) && ! (parent == null));
+
+        return results;
+    }
+
+    private static @Nullable PsiElement checkWhereClause(@NotNull PsiElement where, String matcher) {
+        PsiElement nextSibling = where.getNextSibling();
+        while(nextSibling != null){
+            if(nextSibling instanceof HaskellFunorpatdecl) {
+                PsiElement psiElement = HaskellUtil.lookForFunOrPatDeclWithCorrectName(nextSibling, matcher);
+                if (psiElement != null){
+                    return psiElement;
+                }
+            }
+            nextSibling = nextSibling.getNextSibling();
+        }
+        return null;
+    }
+
+    public static @NotNull List<PsiElement> matchLocalDefinitionsInScope(PsiElement element, String name){
+        return checkLocalDefinitionsForVariableDeclarations(element,name);
+    }
+
+    public static @NotNull List<PsiElement> getAllDefinitionsInScope(PsiElement element){
+        return checkLocalDefinitionsForVariableDeclarations(element,".+");
+    }
+
+    private static @NotNull List<PsiElement> checkLocalDefinitionsForVariableDeclarations(PsiElement element, String matcher){
+        List<PsiElement> results = Lists.newArrayList();
+        PsiElement parent = element;
+        do {
+
+            PsiElement prevSibling = parent.getPrevSibling();
+            while (prevSibling != null) {
+                PsiElement possibleMatch = HaskellUtil.lookForFunOrPatDeclWithCorrectName(prevSibling, matcher);
+                if (possibleMatch != null) {
+                    results.add(possibleMatch);
+                }
+                if (prevSibling instanceof HaskellPat) {
+                    List<HaskellVarid> varIds = HaskellUtil.extractAllHaskellVarids((HaskellPat) prevSibling);
+                    for (HaskellVarid varId : varIds) {
+                        if (varId.getName().matches(matcher)) {
+                            results.add(varId);
+                        }
+                    }
+                }
+                if (prevSibling instanceof HaskellVarid){
+                    HaskellVarid varId = (HaskellVarid) prevSibling;
+                    if (varId.getName().matches(matcher)){
+                        results.add(varId);
+                    }
+                }
+                prevSibling = prevSibling.getPrevSibling();
+            }
+            parent = parent.getParent();
+
+        } while(! (parent instanceof  PsiFile));
+
+        return results;
+    }
+
+
+    public static List<PsiElementResolveResult> matchGlobalNamesUnqualified(
+            PsiElement psiElement,
+            List<PsiNamedElement> namedElements,
+            List<HaskellPsiUtil.Import> importDeclarations){
+
+        String ownModuleName = getModuleName(psiElement);
+        List<PsiElementResolveResult> results = Lists.newArrayList();
+        for (PsiNamedElement possibleReferences : namedElements) {
+            String moduleNameOfPossibleReference = getModuleName(possibleReferences);
+            if (importPresent(moduleNameOfPossibleReference, importDeclarations) || ownModuleName.equals(moduleNameOfPossibleReference)) {
+                //noinspection ObjectAllocationInLoop
+                results.add(new PsiElementResolveResult(possibleReferences));
+            }
+        }
+        return results;
+    }
+
+
+    public static List<PsiElementResolveResult> matchGlobalNamesQualified(
+            List<PsiNamedElement> namedElements, String qualifiedCallName,
+            List<HaskellPsiUtil.Import> importDeclarations){
+        List<PsiElementResolveResult> results = Lists.newArrayList();
+        for (PsiNamedElement possibleReference : namedElements) {
+            String moduleNameOfPossibleReference = getModuleName(possibleReference);
+            HaskellPsiUtil.Import correspondingImportDeclaration =
+                    findCorrespondingImportDeclaration(qualifiedCallName, importDeclarations);
+            if(correspondingImportDeclaration != null
+                    && moduleNameOfPossibleReference.equals(correspondingImportDeclaration.module)){
+                results.add(new PsiElementResolveResult(possibleReference));
+            }
+        }
+        return results;
+
+    }
+
+    public static @NotNull String getModuleName(@NotNull PsiElement element) {
+        HaskellFile containingFile = (HaskellFile)element.getContainingFile();
+        if (containingFile == null){
+            return "";
+        }
+        String moduleName = containingFile.getModuleName();
+        if(moduleName != null){
+            return moduleName;
+        } else {
+            return "";
+        }
+    }
+
+    public static boolean importPresent(@NotNull String moduleName,
+                                        @NotNull List<HaskellPsiUtil.Import> importDeclarations) {
+        for (HaskellPsiUtil.Import importDeclaration : importDeclarations) {
+            if (moduleName.equals(importDeclaration.module)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    private static HaskellPsiUtil.Import findCorrespondingImportDeclaration(String qualifiedCallName, List<HaskellPsiUtil.Import> importDeclarations) {
+        for (HaskellPsiUtil.Import importDeclaration : importDeclarations) {
+            String alias = importDeclaration.alias;
+            if (alias != null && qualifiedCallName.equals(alias)){
+                return importDeclaration;
+            }
+        }
+        return null;
     }
 }

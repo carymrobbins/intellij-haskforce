@@ -16,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Resolves references to elements.
@@ -49,14 +50,55 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
             if (!myElement.equals(Iterables.getLast(qconid.getConidList()))) { return EMPTY_RESOLVE_RESULT; }
         }
         Project project = myElement.getProject();
-        final List<PsiNamedElement> namedElements = HaskellUtil.findDefinitionNode(project, name, myElement);
+
+        /**
+         * TODO
+         * Would like to use this StubIndex, but using it here creates problems when performing go to symbol,
+         * ends up in a neverending recursive call and a nice stackoverflow error. Don't know why.
+         *
+         * https://devnet.jetbrains.com/thread/459789
+         */
+//        GlobalSearchScope scope = GlobalSearchScope.allScope(project);
+//        Collection<HaskellNamedElement> namedElements = StubIndex.getElements(HaskellAllNameIndex.KEY, name, project, scope, HaskellNamedElement.class);
+
         // Guess 20 variants tops most of the time in any real code base.
+        final List<PsiNamedElement> namedElements = HaskellUtil.findDefinitionNode(project, name, myElement);
         List<ResolveResult> results = new ArrayList<ResolveResult>(20);
-        for (PsiNamedElement property : namedElements) {
-            //noinspection ObjectAllocationInLoop
-            results.add(new PsiElementResolveResult(property));
+        List<HaskellPsiUtil.Import> imports = HaskellPsiUtil.parseImports(myElement.getContainingFile());
+
+        String qualifiedCallName = HaskellUtil.getQualifiedPrefix(myElement);
+
+        if (qualifiedCallName == null){
+            results.addAll(HaskellUtil.matchGlobalNamesUnqualified(myElement,namedElements,imports));
+
+            List<PsiElement> localVariables = HaskellUtil.matchLocalDefinitionsInScope(myElement, name);
+            for (PsiElement psiElement : localVariables) {
+                results.add(new PsiElementResolveResult(psiElement));
+            }
+
+            /**
+             * TODO find out if we can or can not check the where clauses in case we found something higher up (a
+             * let clause or so). Not yet sure about the correct precedence.
+             */
+            List<PsiElement> localWhereDefinitions = HaskellUtil.matchWhereClausesInScope(myElement, name);
+            for (PsiElement element : localWhereDefinitions) {
+                results.add(new PsiElementResolveResult(element));
+            }
+        } else {
+            results.addAll(HaskellUtil.matchGlobalNamesQualified(namedElements, qualifiedCallName, imports));
         }
         return results.toArray(new ResolveResult[results.size()]);
+    }
+
+    private @Nullable List<HaskellImpdecl> getImportDeclarations(@NotNull PsiNamedElement myElement) {
+        PsiElement[] children = myElement.getContainingFile().getChildren();
+        for (PsiElement child : children) {
+            if (child instanceof HaskellBody){
+                HaskellBody haskellBody = (HaskellBody) child;
+                return haskellBody.getImpdeclList();
+            }
+        }
+        return null;
     }
 
     /**
