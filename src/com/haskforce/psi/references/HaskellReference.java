@@ -15,6 +15,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.*;
+import com.intellij.psi.impl.file.PsiDirectoryFactory;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
@@ -56,18 +57,16 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
             // Don't resolve a module import to a constructor.
             HaskellQconid qconid = PsiTreeUtil.getParentOfType(myElement, HaskellQconid.class);
             if (qconid == null) { return EMPTY_RESOLVE_RESULT; }
-            if (!myElement.equals(Iterables.getLast(qconid.getConidList()))) { return EMPTY_RESOLVE_RESULT; }
-            /**
-             * Maybe we're trying to find the references to the qualifier name of a qualified import. In that
-             * case, the next sibling of the conId has to be a '.'
-             *  .
-             */
-            PsiElement dotSibling = myElement.getNextSibling();
-            if (".".equals(dotSibling.getText())){
-
-            }
 
         }
+        if(PsiTreeUtil.getParentOfType(myElement, HaskellModuledecl.class) != null){
+            return EMPTY_RESOLVE_RESULT;
+        }
+
+
+        /**
+         * Do not resolve module to constructor. In fact, do not resolve module as it's a declaration itself.
+         */
         Project project = myElement.getProject();
 
         HaskellImpdecl haskellImpdecl = PsiTreeUtil.getParentOfType(myElement, HaskellImpdecl.class);
@@ -80,12 +79,24 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
             PsiElement parent = myElement.getParent();
             if (parent instanceof  HaskellQconid) {
                 HaskellQconid haskellQconid = (HaskellQconid) parent;
-                if (myElement.getNextSibling() == null ) {
+                if (haskellImpdecl.getQconidList().get(0).equals(haskellQconid)) {
+                    List<HaskellConid> conidList = haskellQconid.getConidList();
+                    for (int i = 0; i < conidList.size(); i++) {
+                        if(myElement.equals(conidList.get(i))){
+                            List<PsiElementResolveResult> results = handleImportReferences(haskellImpdecl, Iterables.getLast(conidList), i);
+                            return results.toArray(new ResolveResult[results.size()]);
+                        }
+                    }
+                }
+
+                return EMPTY_RESOLVE_RESULT;
+
+                /*if (myElement.getNextSibling() == null ) {
                     if (haskellImpdecl.getQconidList().get(0).equals(haskellQconid)) {
                         List<PsiElementResolveResult> results = handleImportReferences(haskellImpdecl, myElement);
                         return results.toArray(new ResolveResult[results.size()]);
                     }
-                }
+                }*/
             }
         }
 
@@ -131,28 +142,23 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
     }
 
     private @NotNull List<PsiElementResolveResult> handleImportReferences(@NotNull HaskellImpdecl haskellImpdecl,
-                                                @NotNull PsiNamedElement myElement) {
+                                                                          @NotNull PsiNamedElement myElement, int i) {
         /**
          * Don't use the named element yet to determine which elemen we're
          * talking about, not necessary yet
          */
-        /**
-         * TODO this might not work in an older JRE
-         */
-        List<PsiElementResolveResult> modulesFound = Lists.newArrayList();
+        List<PsiElementResolveResult> modulesFound = new ArrayList<PsiElementResolveResult>();
         List<HaskellQconid> qconidList = haskellImpdecl.getQconidList();
         if (qconidList.size() > 0){
             String moduleName = qconidList.get(0).getText();
-            /**
-             * TODO serious line separator before PR
-             */
+
             GlobalSearchScope globalSearchScope = GlobalSearchScope.projectScope(myElement.getProject());
             List<HaskellFile> filesByModuleName = HaskellModuleIndex.getFilesByModuleName(myElement.getProject(), moduleName, globalSearchScope);
             for (HaskellFile haskellFile : filesByModuleName) {
                 HaskellModuledecl[] moduleDecls = PsiTreeUtil.getChildrenOfType(haskellFile, HaskellModuledecl.class);
                 if (moduleDecls.length != 0){
                     List<HaskellConid> conidList = moduleDecls[0].getQconid().getConidList();
-                    modulesFound.add(new PsiElementResolveResult(conidList.get(conidList.size() - 1)));
+                    modulesFound.add(new PsiElementResolveResult(conidList.get(i)));
                 }
             }
         }
