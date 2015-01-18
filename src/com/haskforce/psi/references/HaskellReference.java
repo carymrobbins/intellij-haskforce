@@ -57,14 +57,39 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
             HaskellQconid qconid = PsiTreeUtil.getParentOfType(myElement, HaskellQconid.class);
             if (qconid == null) { return EMPTY_RESOLVE_RESULT; }
             if (!myElement.equals(Iterables.getLast(qconid.getConidList()))) { return EMPTY_RESOLVE_RESULT; }
+            /**
+             * Maybe we're trying to find the references to the qualifier name of a qualified import. In that
+             * case, the next sibling of the conId has to be a '.'
+             *  .
+             */
+            PsiElement dotSibling = myElement.getNextSibling();
+            if (".".equals(dotSibling.getText())){
+
+            }
+
         }
         Project project = myElement.getProject();
 
         HaskellImpdecl haskellImpdecl = PsiTreeUtil.getParentOfType(myElement, HaskellImpdecl.class);
         if (haskellImpdecl != null){
-            List<PsiElementResolveResult> results = handleImportReferences(haskellImpdecl, myElement);
-            return results.toArray(new ResolveResult[results.size()]);
+            /**
+             * Do not go looking for module matches when the element is not the last constructor of an import declaration
+             * This can be found by checking whether the nextsibling of myelement is null, and myElement's parent is the
+             * first qconId in the impDecl. Pfffw...
+             */
+            PsiElement parent = myElement.getParent();
+            if (parent instanceof  HaskellQconid) {
+                HaskellQconid haskellQconid = (HaskellQconid) parent;
+                if (myElement.getNextSibling() == null ) {
+                    if (haskellImpdecl.getQconidList().get(0).equals(haskellQconid)) {
+                        List<PsiElementResolveResult> results = handleImportReferences(haskellImpdecl, myElement);
+                        return results.toArray(new ResolveResult[results.size()]);
+                    }
+                }
+            }
         }
+
+
 
         /**
          * TODO

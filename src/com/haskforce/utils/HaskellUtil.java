@@ -368,7 +368,7 @@ public class HaskellUtil {
         List<PsiElementResolveResult> results = Lists.newArrayList();
         for (PsiNamedElement possibleReferences : namedElements) {
             String moduleNameOfPossibleReference = getModuleName(possibleReferences);
-            if (importPresent(moduleNameOfPossibleReference, importDeclarations) || ownModuleName.equals(moduleNameOfPossibleReference)) {
+            if (importPresentAndUnqualifiedImport(moduleNameOfPossibleReference, importDeclarations) || ownModuleName.equals(moduleNameOfPossibleReference)) {
                 //noinspection ObjectAllocationInLoop
                 results.add(new PsiElementResolveResult(possibleReferences));
             }
@@ -407,10 +407,10 @@ public class HaskellUtil {
         }
     }
 
-    public static boolean importPresent(@NotNull String moduleName,
-                                        @NotNull List<HaskellPsiUtil.Import> importDeclarations) {
+    public static boolean importPresentAndUnqualifiedImport(@NotNull String moduleName,
+                                                            @NotNull List<HaskellPsiUtil.Import> importDeclarations) {
         for (HaskellPsiUtil.Import importDeclaration : importDeclarations) {
-            if (moduleName.equals(importDeclaration.module)){
+            if (moduleName.equals(importDeclaration.module) && ! importDeclaration.isQualified){
                 return true;
             }
         }
