@@ -98,14 +98,15 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
             }
 
         }
+
+        /**
+         * Do not resolve module to constructor. In fact, do not resolve module as it's a declaration itself.
+         */
         if(PsiTreeUtil.getParentOfType(myElement, HaskellModuledecl.class) != null){
             return EMPTY_RESOLVE_RESULT;
         }
 
 
-        /**
-         * Do not resolve module to constructor. In fact, do not resolve module as it's a declaration itself.
-         */
         Project project = myElement.getProject();
 
         HaskellImpdecl haskellImpdecl = PsiTreeUtil.getParentOfType(myElement, HaskellImpdecl.class);
