@@ -66,6 +66,7 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
                     String fullQualifierAndFunctionName = haskellQvarid.getText();
                     int i1 = StringUtils.lastIndexOf(fullQualifierAndFunctionName, '.');
                     String fullQualifierName = StringUtils.substring(fullQualifierAndFunctionName, 0, i1);
+                    String functionName = StringUtils.substring(fullQualifierAndFunctionName,i1+1);
 
                     List<HaskellConid> conidList = haskellQvarid.getConidList();
                     int i = 0;
@@ -85,10 +86,17 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
                     for (HaskellImpdecl importDeclaration : importDeclarations) {
                         List<HaskellQconid> qconidList = importDeclaration.getQconidList();
                         if (importDeclaration.getQualified() != null){
+                            HaskellQconid moduleName = Iterables.getFirst(qconidList, null);
                             HaskellQconid last = Iterables.getLast(qconidList);
                             if (fullQualifierName.equals(last.getText())){
-                                HaskellConid haskellConid = last.getConidList().get(i);
-                                return new ResolveResult[]{new PsiElementResolveResult(haskellConid)};
+                                List<HaskellFile> filesByModuleName = HaskellModuleIndex.getFilesByModuleName(myElement.getProject(), moduleName.getText(), GlobalSearchScope.projectScope(myElement.getProject()));
+                                List<PsiNamedElement> definitionNodes = HaskellUtil.findDefinitionNodes(filesByModuleName.get(0), functionName);
+                                for (PsiNamedElement definitionNode : definitionNodes) {
+                                    if (definitionNode.getName().equals(functionName)){
+                                        HaskellConid haskellConid = last.getConidList().get(i);
+                                        return new ResolveResult[]{new PsiElementResolveResult(haskellConid)};
+                                    }
+                                }
                             }
                         }
 
@@ -172,7 +180,7 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
     private @NotNull List<PsiElementResolveResult> handleImportReferences(@NotNull HaskellImpdecl haskellImpdecl,
                                                                           @NotNull PsiNamedElement myElement, int i) {
         /**
-         * Don't use the named element yet to determine which elemen we're
+         * Don't use the named element yet to determine which element we're
          * talking about, not necessary yet
          */
         List<PsiElementResolveResult> modulesFound = new ArrayList<PsiElementResolveResult>();

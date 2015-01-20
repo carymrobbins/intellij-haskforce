@@ -431,5 +431,40 @@ public class HaskellGoToSymbolTest extends HaskellLightPlatformCodeInsightFixtur
         assertEquals(expectedStartOffset, referencedElement.getTextRange().getStartOffset());
     }
 
+    public void testGoToSymbolFunction_QualifiedImport_MultipleImportSameQualifiedName1() {
+        PsiFile[] psiFiles = myFixture.configureByFiles(
+                "QualifiedImport_MultipleImportSameQualifiedName1/Usage/Usage.hs",
+                "QualifiedImport_MultipleImportSameQualifiedName1/Definition/Definition.hs",
+                "QualifiedImport_MultipleImportSameQualifiedName1/Other/Definition.hs"
+                );
+        PsiFile usage = psiFiles[0];
+        String textOfFile = usage.getText();
+        int expectedStartOffset = textOfFile.indexOf("qualified Definition.Definition as Definition") + 35;
+        PsiElement psiElement = usage
+                .findElementAt(myFixture.getCaretOffset()).getParent();
+        HaskellConid conId = (HaskellConid) psiElement;
+        PsiReference reference = conId.getReference();
+        HaskellConid referencedElement = (HaskellConid) reference.resolve();
+        assertNotSame(psiElement, referencedElement);
+        assertEquals(expectedStartOffset, referencedElement.getTextRange().getStartOffset());
+    }
+
+    public void testGoToSymbolFunction_QualifiedImport_MultipleImportSameQualifiedName2() {
+        PsiFile[] psiFiles = myFixture.configureByFiles(
+                "QualifiedImport_MultipleImportSameQualifiedName2/Usage/Usage.hs",
+                "QualifiedImport_MultipleImportSameQualifiedName2/Definition/Definition.hs",
+                "QualifiedImport_MultipleImportSameQualifiedName2/Other/Definition.hs"
+                );
+        PsiFile usage = psiFiles[0];
+        String textOfFile = usage.getText();
+        int expectedStartOffset = textOfFile.indexOf("qualified Other.Definition as Definition") + 30;
+        PsiElement psiElement = usage
+                .findElementAt(myFixture.getCaretOffset()).getParent();
+        HaskellConid conId = (HaskellConid) psiElement;
+        PsiReference reference = conId.getReference();
+        HaskellConid referencedElement = (HaskellConid) reference.resolve();
+        assertNotSame(psiElement, referencedElement);
+        assertEquals(expectedStartOffset, referencedElement.getTextRange().getStartOffset());
+    }
 
 }
