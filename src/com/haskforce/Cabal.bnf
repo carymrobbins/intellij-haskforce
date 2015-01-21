@@ -1,0 +1,33 @@
+{
+  parserClass="com.haskforce.cabal.CabalParser"
+  elementTypeHolderClass="com.haskforce.cabal.psi.CabalTypes"
+  psiClassPrefix="Cabal"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.haskforce.cabal.psi"
+  psiImplPackage="com.haskforce.cabal.psi.impl"
+  tokens=[
+    comment='regexp:--([^\^\r\n][^\r\n]*|[\r\n])'
+    varidRegexp="regexp:[a-zA-Z_0-9.']*"
+    crlf='regexp:([\r\n])'
+  ]
+}
+
+cabal ::= [simplekey* | config*]
+
+conditional ::= "if"
+
+library ::= "library" crlf [simplekey]
+
+executable ::= "executable" varid crlf [simplekey]
+
+flag ::= "flag" varid crlf [simplekey]
+
+config ::= (library | executable | flag )
+
+simplekeyname ::= ("name" | "version" | "synopsis" | "author" | "maintainer" | "category" | "build-type" | "cabal-version")
+
+varid ::= varidRegexp
+
+colon ::= ":"
+
+simplekey ::= simplekeyname colon varid crlf
