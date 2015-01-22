@@ -44,9 +44,9 @@ public class CabalSyntaxHighlighter extends SyntaxHighlighterBase {
         if (tokenType == CabalTypes.COMMENT) {
             return COMMENT_KEYS;
         }
-        if (tokenType == CabalTypes.KEY) {
-            return KEY_KEYS;
-        }
+//        if (tokenType == CabalTypes.KEY) {
+//            return KEY_KEYS;
+//        }
         if (tokenType == CabalTypes.CONFIG) {
             return CONFIG_KEYS;
         }

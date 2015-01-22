@@ -52,7 +52,7 @@ public class CabalParserDefinition implements ParserDefinition {
     @NotNull
     @Override
     public TokenSet getStringLiteralElements() {
-        return TokenSet.create(CabalTypes.VALUE_CHAR);
+        return TokenSet.create(CabalTypes.VARID);
     }
 
     @NotNull

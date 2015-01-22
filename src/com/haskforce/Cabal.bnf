@@ -12,15 +12,15 @@
   ]
 }
 
-cabal ::= [simplekey* | config*]
+cabal ::= simplekey*
 
 conditional ::= "if"
 
-library ::= "library" crlf [simplekey]
+library ::= "library" [simplekey]
 
-executable ::= "executable" varid crlf [simplekey]
+executable ::= "executable" varid [simplekey]
 
-flag ::= "flag" varid crlf [simplekey]
+flag ::= "flag" varid [simplekey]
 
 config ::= (library | executable | flag )
 
@@ -30,4 +30,4 @@ varid ::= varidRegexp
 
 colon ::= ":"
 
-simplekey ::= simplekeyname colon varid crlf
+simplekey ::= simplekeyname colon varid

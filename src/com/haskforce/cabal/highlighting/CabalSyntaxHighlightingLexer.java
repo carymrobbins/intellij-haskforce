@@ -7,6 +7,6 @@ import com.intellij.lexer.FlexAdapter;
  */
 public class CabalSyntaxHighlightingLexer extends FlexAdapter {
     public CabalSyntaxHighlightingLexer() {
-        super(new _CabalSyntaxHighlightingLexer());
+        super(new _CabalLexer());
     }
 }
