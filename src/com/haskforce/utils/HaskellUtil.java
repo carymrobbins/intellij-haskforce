@@ -359,18 +359,18 @@ public class HaskellUtil {
     }
 
 
-    public static List<PsiElementResolveResult> matchGlobalNamesUnqualified(
+    public static List<PsiElement> matchGlobalNamesUnqualified(
             PsiElement psiElement,
             List<PsiNamedElement> namedElements,
             List<HaskellPsiUtil.Import> importDeclarations){
 
         String ownModuleName = getModuleName(psiElement);
-        List<PsiElementResolveResult> results = Lists.newArrayList();
+        List<PsiElement> results = Lists.newArrayList();
         for (PsiNamedElement possibleReferences : namedElements) {
             String moduleNameOfPossibleReference = getModuleName(possibleReferences);
             if (importPresentAndUnqualifiedImport(moduleNameOfPossibleReference, importDeclarations) || ownModuleName.equals(moduleNameOfPossibleReference)) {
                 //noinspection ObjectAllocationInLoop
-                results.add(new PsiElementResolveResult(possibleReferences));
+                results.add(possibleReferences);
             }
         }
         return results;
