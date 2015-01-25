@@ -12,7 +12,7 @@
   ]
 }
 
-cabal ::= simplekey*
+cabal ::= keyOrConfig*
 
 conditional ::= "if"
 
@@ -24,10 +24,20 @@ flag ::= "flag" varid [simplekey]
 
 config ::= (library | executable | flag )
 
+keyOrConfig ::= key | config
+
+key ::= simplekey | complexkey
+
 simplekeyname ::= ("name" | "version" | "synopsis" | "author" | "maintainer" | "category" | "build-type" | "cabal-version")
+
+complexkeyname ::= ("extra-source-files" | "build-depends" | "exposed-modules" | "other-extensions" | "other-modules" )
 
 varid ::= varidRegexp
 
 colon ::= ":"
 
 simplekey ::= simplekeyname colon varid
+
+complexkey ::= complexkeyname colon <<commaSeparate varid>>
+
+private meta commaSeparate ::= <<p>> (',' <<p>>)* {pin(".*")=1}
