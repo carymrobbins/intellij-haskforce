@@ -62,7 +62,6 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(HaskellRenameTest.class);
         suite.addTestSuite(HaskellResolveTest.class);
         suite.addTestSuite(GhcUtilTest.class);
-        suite.addTestSuite(HaskellMoveTest.class);
         return suite;
     }
 }
