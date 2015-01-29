@@ -149,6 +149,52 @@ public class HaskellGoToSymbolTest extends HaskellLightPlatformCodeInsightFixtur
         assertNull(referencedElement);
     }
 
+    public void testGoToSymbolFunction_Records(){
+        myFixture.configureByFile(getTestName(false)+".hs");
+        PsiFile file = myFixture.getFile();
+        String textOfFile = file.getText();
+        int expectedStartOffset= textOfFile.indexOf("Pool maybeA") + 5;
+        PsiElement psiElement = file
+                .findElementAt(myFixture.getCaretOffset()).getParent();
+        HaskellVarid varId = (HaskellVarid) psiElement;
+        PsiReference reference = varId.getReference();
+        HaskellVarid referencedElement = (HaskellVarid)reference.resolve();
+        assertNotSame(psiElement, referencedElement);
+        assertEquals(expectedStartOffset,referencedElement.getTextRange().getStartOffset());
+    }
+
+    /**
+     * TODO
+     * Can only make this test work if findDefinitionNode returns the type declaration as well
+     */
+    public void ignoreTestGoToSymbolFunction_RecordsType(){
+        myFixture.configureByFile(getTestName(false)+".hs");
+        PsiFile file = myFixture.getFile();
+        String textOfFile = file.getText();
+        int expectedStartOffset= textOfFile.indexOf("data Pool") + 5;
+        PsiElement psiElement = file
+                .findElementAt(myFixture.getCaretOffset()).getParent();
+        HaskellConid conId = (HaskellConid) psiElement;
+        PsiReference reference = conId.getReference();
+        HaskellConid referencedElement = (HaskellConid)reference.resolve();
+        assertNotSame(psiElement, referencedElement);
+        assertEquals(expectedStartOffset,referencedElement.getTextRange().getStartOffset());
+    }
+
+    public void testGoToSymbolFunction_RecordsConstructor(){
+        myFixture.configureByFile(getTestName(false)+".hs");
+        PsiFile file = myFixture.getFile();
+        String textOfFile = file.getText();
+        int expectedStartOffset= textOfFile.indexOf("Pool (Maybe a)");
+        PsiElement psiElement = file
+                .findElementAt(myFixture.getCaretOffset()).getParent();
+        HaskellConid conId = (HaskellConid) psiElement;
+        PsiReference reference = conId.getReference();
+        HaskellConid referencedElement = (HaskellConid)reference.resolve();
+        assertNotSame(psiElement, referencedElement);
+        assertEquals(expectedStartOffset,referencedElement.getTextRange().getStartOffset());
+    }
+
 
 
     /**
