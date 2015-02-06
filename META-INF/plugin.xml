@@ -140,6 +140,7 @@
       <fileTypeFactory implementation="com.haskforce.HaskellFileTypeFactory"/>
       <lang.syntaxHighlighterFactory key="Haskell" implementationClass="com.haskforce.highlighting.HaskellSyntaxHighlighterFactory"/>
       <lang.parserDefinition language="Haskell" implementationClass="com.haskforce.HaskellParserDefinition"/>
+      <lang.parserDefinition language="Cabal" implementationClass="com.haskforce.cabal.CabalParserDefinition"/>
       <lang.documentationProvider language="Haskell" implementationClass="com.haskforce.highlighting.annotation.HaskellDocumentationProvider"/>
       <annotator language="Haskell" implementationClass="com.haskforce.highlighting.HaskellAnnotator" />
       <externalAnnotator language="Haskell" implementationClass="com.haskforce.highlighting.annotation.external.HaskellExternalAnnotator"/>
@@ -203,7 +204,6 @@
       <fileTypeFactory implementation="com.haskforce.cabal.CabalFileTypeFactory"/>
       <lang.commenter language="Cabal" implementationClass="com.haskforce.cabal.CabalCommenter"/>
       <lang.syntaxHighlighterFactory key="Cabal" implementationClass="com.haskforce.cabal.highlighting.CabalSyntaxHighlighterFactory"/>
-      <lang.parserDefinition language="Cabal" implementationClass="com.haskforce.cabal.CabalParserDefinition"/>
       <annotator language="Cabal" implementationClass="com.haskforce.cabal.highlighting.CabalAnnotator" />
 
       <!-- Hamlet support -->

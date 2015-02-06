@@ -8,4 +8,9 @@ public class CabalLanguage extends Language {
     private CabalLanguage() {
         super("Cabal");
     }
+
+    @Override
+    public boolean isCaseSensitive() {
+        return false;
+    }
 }

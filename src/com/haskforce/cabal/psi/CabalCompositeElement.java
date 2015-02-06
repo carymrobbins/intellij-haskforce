@@ -1,7 +1,6 @@
 package com.haskforce.cabal.psi;
 
-/**
- * Created by kasper on 3/02/15.
- */
-public class CabalCompositeElement {
+import com.intellij.psi.PsiElement;
+
+public interface CabalCompositeElement extends PsiElement {
 }

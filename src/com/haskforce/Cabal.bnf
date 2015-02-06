@@ -1,14 +1,21 @@
 {
   parserClass="com.haskforce.cabal.CabalParser"
+  implements="com.haskforce.cabal.psi.CabalCompositeElement"
+  extends="com.haskforce.cabal.psi.impl.CabalCompositeElementImpl"
   elementTypeHolderClass="com.haskforce.cabal.psi.CabalTypes"
+  elementTypeClass="com.haskforce.cabal.psi.CabalElementType"
+  tokenTypeClass="com.haskforce.cabal.psi.CabalTokenType"
   psiClassPrefix="Cabal"
   psiImplClassSuffix="Impl"
   psiPackage="com.haskforce.cabal.psi"
   psiImplPackage="com.haskforce.cabal.psi.impl"
   tokens=[
+    colon= ':'
     comment='regexp:--([^\^\r\n][^\r\n]*|[\r\n])'
     varidRegexp="regexp:[a-zA-Z_0-9.']*"
     crlf='regexp:([\r\n])'
+    WHITESPACELBRACETOK="Synthetic leftbrace"
+    WHITESPACERBRACETOK="Synthetic rightbrace"
   ]
 }
 
@@ -16,11 +23,11 @@ cabal ::= keyOrConfig*
 
 conditional ::= "if"
 
-library ::= "library" [simplekey]
+library ::= "library" open [simplekey] close
 
-executable ::= "executable" varid [simplekey]
+executable ::= "executable" varid open [simplekey] close
 
-flag ::= "flag" varid [simplekey]
+flag ::= "flag" varid open [simplekey] close
 
 config ::= (library | executable | flag )
 
@@ -34,10 +41,13 @@ complexkeyname ::= ("extra-source-files" | "build-depends" | "exposed-modules" |
 
 varid ::= varidRegexp
 
-colon ::= ":"
-
 simplekey ::= simplekeyname colon varid
 
 complexkey ::= complexkeyname colon <<commaSeparate varid>>
 
 private meta commaSeparate ::= <<p>> (',' <<p>>)* {pin(".*")=1}
+
+
+private open ::= WHITESPACELBRACETOK
+
+private close ::= WHITESPACERBRACETOK

@@ -6,8 +6,11 @@ import static com.haskforce.cabal.psi.CabalTypes.*;
 %%
 
 %{
+  private int indent;
+  private Stack<Pair<Integer,Integer>> indentationStack;
   public _CabalLexer() {
     this((java.io.Reader)null);
+    indentationStack = ContainerUtil.newStack();
   }
 %}
 
@@ -26,11 +29,29 @@ COMMENT=--([^\^\r\n][^\r\n]*|[\r\n])
 VARIDREGEXP=[a-zA-Z_0-9.']*
 CRLF=([\r\n])
 
+%state REALLYYINITIAL
+
 %%
 <YYINITIAL> {
+  [\ \f]          {
+                     indent++;
+                     return com.intellij.psi.TokenType.WHITE_SPACE;
+                  }
+  [\t]            {
+                      indent = indent + (indent + 8) % 8;
+                      return com.intellij.psi.TokenType.WHITE_SPACE;
+                  }
+  [^]             {
+                      indentationStack.push(Pair.create(yyline, yycolumn));
+                      yybegin(REALLYYINITIAL);
+                      yypushback(1);
+                      return WHITESPACELBRACETOK;
+                  }
+}
+
+<REALLYYINITAL> {
   {WHITE_SPACE}      { return com.intellij.psi.TokenType.WHITE_SPACE; }
-
-
+  ":"                { return COLON; }
   {COMMENT}          { return COMMENT; }
   {VARIDREGEXP}      { return VARIDREGEXP; }
   {CRLF}             { return CRLF; }

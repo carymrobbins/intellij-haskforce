@@ -22,10 +22,11 @@
 
 package com.haskforce.parser;
 
+import com.haskforce.cabal.CabalLanguage;
 import com.haskforce.parsing.jsonParser.JsonParser;
 import com.intellij.lang.ParserDefinition;
-import com.intellij.testFramework.ParsingTestCase;
 import com.intellij.psi.PsiFile;
+import com.intellij.testFramework.ParsingTestCase;
 import com.intellij.testFramework.TestDataFile;
 import org.jetbrains.annotations.NonNls;
 
@@ -37,6 +38,14 @@ public abstract class CabalParserTestBase extends ParsingTestCase {
 
     public CabalParserTestBase(String dataPath, String fileExt, ParserDefinition... definitions) {
         super(dataPath, fileExt, definitions);
+        /**
+         * Refer to cabal instance to make sure that the language is known
+         * to the environment before the test is initialized. It seems to be
+         * a bit dodgy that this is necessary, but if I do no do this
+         * the test will always fail because it doesn't find the cabal language, unless I
+         * start 'breaking' through the code, then it works. Meh..
+         */
+        CabalLanguage instance = CabalLanguage.INSTANCE;
     }
 
     @Override
