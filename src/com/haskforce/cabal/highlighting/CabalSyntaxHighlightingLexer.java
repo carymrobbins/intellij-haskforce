@@ -1,5 +1,6 @@
 package com.haskforce.cabal.highlighting;
 
+import com.haskforce.cabal.psi._CabalLexer;
 import com.intellij.lexer.FlexAdapter;
 
 /**
