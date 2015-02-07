@@ -12,6 +12,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="jps-shared" />
     <orderEntry type="module" module-name="jps-plugin" />
+    <orderEntry type="library" name="intellij-community" level="project" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">
@@ -210,4 +211,3 @@
     </option>
   </component>
 </module>
-

@@ -10,14 +10,19 @@
   psiPackage="com.haskforce.cabal.psi"
   psiImplPackage="com.haskforce.cabal.psi.impl"
   tokens=[
+    comma = ','
     colon= ':'
+    dot = "."
     comment='regexp:--([^\^\r\n][^\r\n]*|[\r\n])'
-    varidRegexp="regexp:[a-zA-Z_0-9.']*"
+    varidRegexp="regexp:[a-zA-Z_\-0-9']*"
+    numberRegexp="regexp:[0-9]+"
     crlf='regexp:([\r\n])'
     WHITESPACELBRACETOK="Synthetic leftbrace"
     WHITESPACERBRACETOK="Synthetic rightbrace"
   ]
 }
+
+
 
 cabal ::= keyOrConfig*
 
@@ -35,18 +40,31 @@ keyOrConfig ::= key | config
 
 key ::= simplekey | complexkey
 
-simplekeyname ::= ("name" | "version" | "synopsis" | "author" | "maintainer" | "category" | "build-type" | "cabal-version")
+simplekeyname ::= ("name" | "synopsis" | "author" | "maintainer" | "category" | "build-type" | "cabal-version" | "default-language")
 
-complexkeyname ::= ("extra-source-files" | "build-depends" | "exposed-modules" | "other-extensions" | "other-modules" )
+complexkeyname ::= ("extra-source-files" | "build-depends" | "other-extensions" | "other-modules" )
 
 varid ::= varidRegexp
 
-simplekey ::= simplekeyname colon varid
+dependencyName ::= varidRegexp
 
-complexkey ::= complexkeyname colon <<commaSeparate varid>>
+simplekey ::= simplekeyname colon varid | "version" colon version
+
+complexkey ::= complexkeyname colon <<commaSeparate varid>> | "exposed-modules" colon <<commaSeparate  module >>
 
 private meta commaSeparate ::= <<p>> (',' <<p>>)* {pin(".*")=1}
 
+private meta dotSeparate ::= <<p>> ('.' <<p>>)* {pin(".*")=1}
+
+module ::= <<dotSeparate varid>>
+
+number ::= numberRegexp
+
+version ::= <<dotSeparate number>>
+
+versionConstraint ::= "==" | "<=" | ">=" | "<" | ">"
+
+dependency ::= dependencyName | dependencyName versionConstraint version
 
 private open ::= WHITESPACELBRACETOK
 

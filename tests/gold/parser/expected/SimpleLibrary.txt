@@ -1,0 +1,11 @@
+Cabal File
+  KEY_OR_CONFIG
+    CONFIG
+      LIBRARY
+        PsiElement(LIBRARY)('library')
+        SIMPLEKEY
+          SIMPLEKEYNAME
+            PsiElement(CabalTokenType.varidRegexp)('default-language')
+          PsiElement(CabalTokenType.:)(':')
+          VARID
+            PsiElement(CabalTokenType.varidRegexp)('Haskell2010')

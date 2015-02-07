@@ -31,6 +31,10 @@ public class CabalParserTest extends CabalParserTestBase {
 
     // See comment in HaskellLexerTest.java.
     public void testSimpleKey()       { doTest(true, true); }
+    public void testComplexKey()       { doTest(true, true); }
+    public void testTwoSimpleKeys()       { doTest(true, true); }
+    public void testSimpleLibrary()       { doTest(true, true); }
+    public void testSimpleKeyAfterSimpleLibrary()       { doTest(true, true); }
 
 
 }
