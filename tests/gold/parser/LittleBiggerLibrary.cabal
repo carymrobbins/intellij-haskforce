@@ -1,0 +1,4 @@
+library
+  default-language:  Haskell2010
+  name:  koekoek
+  

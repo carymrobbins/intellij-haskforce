@@ -28,11 +28,11 @@ cabal ::= keyOrConfig*
 
 conditional ::= "if"
 
-library ::= "library" open [simplekey] close
+library ::= "library" open key+ close
 
-executable ::= "executable" varid open [simplekey] close
+executable ::= "executable" varid open key+ close
 
-flag ::= "flag" varid open [simplekey] close
+flag ::= "flag" varid open key+ close
 
 config ::= (library | executable | flag )
 
@@ -40,7 +40,8 @@ keyOrConfig ::= key | config
 
 key ::= simplekey | complexkey
 
-simplekeyname ::= ("name" | "synopsis" | "author" | "maintainer" | "category" | "build-type" | "cabal-version" | "default-language")
+//simplekeyname ::= ("name" | "synopsis" | "author" | "maintainer" | "category" | "build-type" | "cabal-version" | "default-language")
+simplekeyname ::= varidRegexp
 
 complexkeyname ::= ("extra-source-files" | "build-depends" | "other-extensions" | "other-modules" )
 
@@ -64,6 +65,7 @@ version ::= <<dotSeparate number>>
 
 versionConstraint ::= "==" | "<=" | ">=" | "<" | ">"
 
+//start using [] as optional identifier for this
 dependency ::= dependencyName | dependencyName versionConstraint version
 
 private open ::= WHITESPACELBRACETOK

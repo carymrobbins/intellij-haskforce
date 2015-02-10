@@ -3,12 +3,13 @@ Cabal File
     CONFIG
       LIBRARY
         PsiElement(LIBRARY)('library')
-        SIMPLEKEY
-          SIMPLEKEYNAME
-            PsiElement(CabalTokenType.varidRegexp)('default-language')
-          PsiElement(CabalTokenType.:)(':')
-          VARID
-            PsiElement(CabalTokenType.varidRegexp)('Haskell2010')
+        KEY
+          SIMPLEKEY
+            SIMPLEKEYNAME
+              PsiElement(CabalTokenType.varidRegexp)('default-language')
+            PsiElement(CabalTokenType.:)(':')
+            VARID
+              PsiElement(CabalTokenType.varidRegexp)('Haskell2010')
   KEY_OR_CONFIG
     KEY
       SIMPLEKEY

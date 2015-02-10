@@ -35,6 +35,7 @@ public class CabalParserTest extends CabalParserTestBase {
     public void testTwoSimpleKeys()       { doTest(true, true); }
     public void testSimpleLibrary()       { doTest(true, true); }
     public void testSimpleKeyAfterSimpleLibrary()       { doTest(true, true); }
+    public void testLittleBiggerLibrary()       { doTest(true, true); }
 
 
 }
