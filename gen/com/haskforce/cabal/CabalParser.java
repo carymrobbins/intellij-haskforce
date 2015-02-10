@@ -22,7 +22,10 @@ public class CabalParser implements PsiParser {
     boolean r;
     b = adapt_builder_(t, b, this, null);
     Marker m = enter_section_(b, 0, _COLLAPSE_, null);
-    if (t == COMPLEXKEY) {
+    if (t == BUILD_TYPE) {
+      r = buildType(b, 0);
+    }
+    else if (t == COMPLEXKEY) {
       r = complexkey(b, 0);
     }
     else if (t == CONDITIONAL) {
@@ -78,6 +81,20 @@ public class CabalParser implements PsiParser {
 
   protected boolean parse_root_(IElementType t, PsiBuilder b, int l) {
     return cabal(b, l + 1);
+  }
+
+  /* ********************************************************** */
+  // "simple" | "configure" | "make" | "custom"
+  public static boolean buildType(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "buildType")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, "<build type>");
+    r = consumeToken(b, "simple");
+    if (!r) r = consumeToken(b, "configure");
+    if (!r) r = consumeToken(b, "make");
+    if (!r) r = consumeToken(b, "custom");
+    exit_section_(b, l, m, BUILD_TYPE, r, false, null);
+    return r;
   }
 
   /* ********************************************************** */
@@ -483,11 +500,12 @@ public class CabalParser implements PsiParser {
   /* ********************************************************** */
   // nameKey colon varid |
   //               synopsisKey colon varid |
+  //               licenseKey colon varid |
   //               authorKey colon varid |
   //               maintainerKey colon varid |
   //               categoryKey colon varid |
-  //               buildTypeKey colon varid |
-  //               cabalVersionKey colon versionConstraint version |
+  //               buildTypeKey colon buildType |
+  //               cabalVersionKey colon gtEq version |
   //               defaultLanguageKey colon varid |
   //               versionKey colon version
   public static boolean simplekey(PsiBuilder b, int l) {
@@ -503,6 +521,7 @@ public class CabalParser implements PsiParser {
     if (!r) r = simplekey_6(b, l + 1);
     if (!r) r = simplekey_7(b, l + 1);
     if (!r) r = simplekey_8(b, l + 1);
+    if (!r) r = simplekey_9(b, l + 1);
     exit_section_(b, l, m, SIMPLEKEY, r, false, null);
     return r;
   }
@@ -529,9 +548,20 @@ public class CabalParser implements PsiParser {
     return r;
   }
 
-  // authorKey colon varid
+  // licenseKey colon varid
   private static boolean simplekey_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "simplekey_2")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, LICENSEKEY, COLON);
+    r = r && varid(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // authorKey colon varid
+  private static boolean simplekey_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "simplekey_3")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokens(b, 0, AUTHORKEY, COLON);
@@ -541,8 +571,8 @@ public class CabalParser implements PsiParser {
   }
 
   // maintainerKey colon varid
-  private static boolean simplekey_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "simplekey_3")) return false;
+  private static boolean simplekey_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "simplekey_4")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokens(b, 0, MAINTAINERKEY, COLON);
@@ -552,8 +582,8 @@ public class CabalParser implements PsiParser {
   }
 
   // categoryKey colon varid
-  private static boolean simplekey_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "simplekey_4")) return false;
+  private static boolean simplekey_5(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "simplekey_5")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokens(b, 0, CATEGORYKEY, COLON);
@@ -562,32 +592,31 @@ public class CabalParser implements PsiParser {
     return r;
   }
 
-  // buildTypeKey colon varid
-  private static boolean simplekey_5(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "simplekey_5")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, BUILDTYPEKEY, COLON);
-    r = r && varid(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // cabalVersionKey colon versionConstraint version
+  // buildTypeKey colon buildType
   private static boolean simplekey_6(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "simplekey_6")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeTokens(b, 0, CABALVERSIONKEY, COLON);
-    r = r && versionConstraint(b, l + 1);
+    r = consumeTokens(b, 0, BUILDTYPEKEY, COLON);
+    r = r && buildType(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // cabalVersionKey colon gtEq version
+  private static boolean simplekey_7(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "simplekey_7")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, CABALVERSIONKEY, COLON, GTEQ);
     r = r && version(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // defaultLanguageKey colon varid
-  private static boolean simplekey_7(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "simplekey_7")) return false;
+  private static boolean simplekey_8(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "simplekey_8")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokens(b, 0, DEFAULTLANGUAGEKEY, COLON);
@@ -597,8 +626,8 @@ public class CabalParser implements PsiParser {
   }
 
   // versionKey colon version
-  private static boolean simplekey_8(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "simplekey_8")) return false;
+  private static boolean simplekey_9(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "simplekey_9")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokens(b, 0, VERSIONKEY, COLON);

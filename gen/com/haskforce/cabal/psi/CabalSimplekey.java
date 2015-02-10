@@ -8,12 +8,12 @@ import com.intellij.psi.PsiElement;
 public interface CabalSimplekey extends CabalCompositeElement {
 
   @Nullable
+  CabalBuildType getBuildType();
+
+  @Nullable
   CabalVarid getVarid();
 
   @Nullable
   CabalVersion getVersion();
-
-  @Nullable
-  CabalVersionConstraint getVersionConstraint();
 
 }

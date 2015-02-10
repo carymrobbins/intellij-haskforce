@@ -8,6 +8,7 @@ import com.haskforce.cabal.psi.impl.*;
 
 public interface CabalTypes {
 
+  IElementType BUILD_TYPE = new CabalElementType("BUILD_TYPE");
   IElementType COMPLEXKEY = new CabalElementType("COMPLEXKEY");
   IElementType CONDITIONAL = new CabalElementType("CONDITIONAL");
   IElementType CONFIG = new CabalElementType("CONFIG");
@@ -41,6 +42,7 @@ public interface CabalTypes {
   IElementType EXTRASOURCEFILESKEY = new CabalTokenType("extra-source-files");
   IElementType GT = new CabalTokenType(">");
   IElementType GTEQ = new CabalTokenType(">=");
+  IElementType LICENSEKEY = new CabalTokenType("license");
   IElementType LT = new CabalTokenType("<");
   IElementType LTEQ = new CabalTokenType("<=");
   IElementType MAINTAINERKEY = new CabalTokenType("maintainer");
@@ -57,7 +59,10 @@ public interface CabalTypes {
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
-       if (type == COMPLEXKEY) {
+       if (type == BUILD_TYPE) {
+        return new CabalBuildTypeImpl(node);
+      }
+      else if (type == COMPLEXKEY) {
         return new CabalComplexkeyImpl(node);
       }
       else if (type == CONDITIONAL) {

@@ -22,13 +22,28 @@
     nameKey = "name"
     versionKey = "version"
     synopsisKey = "synopsis"
+    licenseKey = "license"
     authorKey = "author"
     maintainerKey = "maintainer"
     categoryKey = "category"
     buildTypeKey = "build-type"
+    licenseFileKey ="license-file"
+    homepageKey ="homepage"
+    bugReportsKey ="bug-reports"
+    packageKey ="package"
+    licenseFilesKey ="license-files"
+    stabilityKey ="stability"
+    dataDirKey ="data-dir"
+    copyrightKey ="copyright"
+    authorKey ="author"
+    dataFilesKey ="data-files"
+    testedWithKey ="tested-with"
+    maintainerKey ="maintainer"
     cabalVersionKey = "cabal-version"
     defaultLanguageKey = "default-language"
     extraSourceFilesKey = "extra-source-files"
+    extraDocFilesKey = "extra-doc-files"
+    extraTmpFilesKey = "extra-tmp-files"
     buildDependsKey = "build-depends"
     otherExtensionsKey = "other-extensions"
     otherModulesKey = "other-modules"
@@ -64,18 +79,44 @@ varid ::= varidRegexp
 
 dependencyName ::= varidRegexp
 
+buildType ::= "simple" | "configure" | "make" | "custom"
+
+fileName ::= varidRegexp
+
+address ::= varidRegexp
+
+url ::= varidRegexp
+
+directory ::= varidRegexp
+
+compiler ::= varidRegexp
+
 simplekey ::= nameKey colon varid |
               synopsisKey colon varid |
+              licenseKey colon varid |
               authorKey colon varid |
               maintainerKey colon varid |
               categoryKey colon varid |
-              buildTypeKey colon varid |
-              cabalVersionKey colon versionConstraint version |
+              copyrightKey colon varid |
+              maintainerKey colon address |
+              buildTypeKey colon buildType |
+              stabilityKey colon varid |
+              homepageKey colon url |
+              bugReportsKey colon url |
+              packageKey colon url |
+              cabalVersionKey colon gtEq version |
               defaultLanguageKey colon varid |
+              licenseFileKey colon fileName |
+              dataDirKey colon directory |
               versionKey colon version
 
 complexkey ::= extraSourceFilesKey colon <<commaSeparate varid>> |
+               extraDocFilesKey colon <<commaSeparate varid>> |
+               extraTmpFilesKey colon <<commaSeparate varid>> |
                otherExtensionsKey colon <<commaSeparate varid>> |
+               testedWithKey colon <<commaSeparate compiler>> |
+               dataFilesKey colon <<commaSeparate fileName>> |
+               licenseFilesKey colon <<commaSeparate fileName>> |
                buildDependsKey colon <<commaSeparate dependency>> |
                exposedModulesKey colon <<commaSeparate  module >> |
                otherModulesKey colon <<commaSeparate  module >>

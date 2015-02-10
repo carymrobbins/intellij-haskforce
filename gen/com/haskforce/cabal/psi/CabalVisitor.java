@@ -6,6 +6,10 @@ import com.intellij.psi.PsiElementVisitor;
 
 public class CabalVisitor extends PsiElementVisitor {
 
+  public void visitBuildType(@NotNull CabalBuildType o) {
+    visitCompositeElement(o);
+  }
+
   public void visitComplexkey(@NotNull CabalComplexkey o) {
     visitCompositeElement(o);
   }

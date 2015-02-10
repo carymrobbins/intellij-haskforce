@@ -11,8 +11,7 @@ Cabal File
       SIMPLEKEY
         PsiElement(CabalTokenType.cabal-version)('cabal-version')
         PsiElement(CabalTokenType.:)(':')
-        VERSION_CONSTRAINT
-          PsiElement(CabalTokenType.>=)('>=')
+        PsiElement(CabalTokenType.>=)('>=')
         VERSION
           NUMBER
             PsiElement(CabalTokenType.numberRegexp)('1')
@@ -22,3 +21,10 @@ Cabal File
           PsiElement(CabalTokenType..)('.')
           NUMBER
             PsiElement(CabalTokenType.numberRegexp)('12')
+  KEY_OR_CONFIG
+    KEY
+      SIMPLEKEY
+        PsiElement(CabalTokenType.build-type)('build-type')
+        PsiElement(CabalTokenType.:)(':')
+        BUILD_TYPE
+          PsiElement(CabalTokenType.varidRegexp)('Simple')

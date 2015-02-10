@@ -23,6 +23,12 @@ public class CabalSimplekeyImpl extends CabalCompositeElementImpl implements Cab
 
   @Override
   @Nullable
+  public CabalBuildType getBuildType() {
+    return findChildByClass(CabalBuildType.class);
+  }
+
+  @Override
+  @Nullable
   public CabalVarid getVarid() {
     return findChildByClass(CabalVarid.class);
   }
@@ -31,12 +37,6 @@ public class CabalSimplekeyImpl extends CabalCompositeElementImpl implements Cab
   @Nullable
   public CabalVersion getVersion() {
     return findChildByClass(CabalVersion.class);
-  }
-
-  @Override
-  @Nullable
-  public CabalVersionConstraint getVersionConstraint() {
-    return findChildByClass(CabalVersionConstraint.class);
   }
 
 }
