@@ -1,0 +1,3 @@
+build-depends:      base >= 4.0 && < 5.0,
+                    koekoek == 0.0.5,
+                    merel == 0.1.5

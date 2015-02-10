@@ -53,6 +53,12 @@ CRLF=([\r\n])
   ":"                { return COLON; }
   ","                { return COMMA; }
   "."                { return DOT; }
+  "=="            { return EQ;}
+  ">="            { return GTEQ;}
+  "<="            { return LTEQ;}
+  ">"             { return GT;}
+  "<"             { return LT;}
+  "&&"            { return AND;}
   "name"          { return NAMEKEY; }
   "version"       { return VERSIONKEY; }
   "cabal-version" { return CABALVERSIONKEY; }
@@ -94,6 +100,12 @@ CRLF=([\r\n])
                           indent = indent + (indent + 8) % 8;
                           return com.intellij.psi.TokenType.WHITE_SPACE;
                       }
+      "=="            { return EQ;}
+      ">="            { return GTEQ;}
+      "<="            { return LTEQ;}
+      ">"             { return GT;}
+      "<"             { return LT;}
+      "&&"            { return AND;}
       ":"             { return COLON; }
       "name"          { return NAMEKEY; }
       "version"       { return VERSIONKEY; }

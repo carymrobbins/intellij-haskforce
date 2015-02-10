@@ -23,6 +23,12 @@ public class CabalComplexkeyImpl extends CabalCompositeElementImpl implements Ca
 
   @Override
   @NotNull
+  public List<CabalDependency> getDependencyList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, CabalDependency.class);
+  }
+
+  @Override
+  @NotNull
   public List<CabalModule> getModuleList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, CabalModule.class);
   }

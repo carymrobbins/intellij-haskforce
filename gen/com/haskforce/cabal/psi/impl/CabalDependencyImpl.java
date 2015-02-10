@@ -28,15 +28,15 @@ public class CabalDependencyImpl extends CabalCompositeElementImpl implements Ca
   }
 
   @Override
-  @Nullable
-  public CabalVersion getVersion() {
-    return findChildByClass(CabalVersion.class);
+  @NotNull
+  public List<CabalVersion> getVersionList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, CabalVersion.class);
   }
 
   @Override
-  @Nullable
-  public CabalVersionConstraint getVersionConstraint() {
-    return findChildByClass(CabalVersionConstraint.class);
+  @NotNull
+  public List<CabalVersionConstraint> getVersionConstraintList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, CabalVersionConstraint.class);
   }
 
 }

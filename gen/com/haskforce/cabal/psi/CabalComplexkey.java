@@ -8,6 +8,9 @@ import com.intellij.psi.PsiElement;
 public interface CabalComplexkey extends CabalCompositeElement {
 
   @NotNull
+  List<CabalDependency> getDependencyList();
+
+  @NotNull
   List<CabalModule> getModuleList();
 
   @NotNull

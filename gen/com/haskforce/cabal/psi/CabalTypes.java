@@ -25,6 +25,7 @@ public interface CabalTypes {
   IElementType VERSION = new CabalElementType("VERSION");
   IElementType VERSION_CONSTRAINT = new CabalElementType("VERSION_CONSTRAINT");
 
+  IElementType AND = new CabalTokenType("&&");
   IElementType AUTHORKEY = new CabalTokenType("author");
   IElementType BUILDDEPENDSKEY = new CabalTokenType("build-depends");
   IElementType BUILDTYPEKEY = new CabalTokenType("build-type");
@@ -35,8 +36,13 @@ public interface CabalTypes {
   IElementType COMMENT = new CabalTokenType("comment");
   IElementType DEFAULTLANGUAGEKEY = new CabalTokenType("default-language");
   IElementType DOT = new CabalTokenType(".");
+  IElementType EQ = new CabalTokenType("==");
   IElementType EXPOSEDMODULESKEY = new CabalTokenType("exposed-modules");
   IElementType EXTRASOURCEFILESKEY = new CabalTokenType("extra-source-files");
+  IElementType GT = new CabalTokenType(">");
+  IElementType GTEQ = new CabalTokenType(">=");
+  IElementType LT = new CabalTokenType("<");
+  IElementType LTEQ = new CabalTokenType("<=");
   IElementType MAINTAINERKEY = new CabalTokenType("maintainer");
   IElementType NAMEKEY = new CabalTokenType("name");
   IElementType NUMBERREGEXP = new CabalTokenType("numberRegexp");

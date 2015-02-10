@@ -10,10 +10,10 @@ public interface CabalDependency extends CabalCompositeElement {
   @NotNull
   CabalDependencyName getDependencyName();
 
-  @Nullable
-  CabalVersion getVersion();
+  @NotNull
+  List<CabalVersion> getVersionList();
 
-  @Nullable
-  CabalVersionConstraint getVersionConstraint();
+  @NotNull
+  List<CabalVersionConstraint> getVersionConstraintList();
 
 }

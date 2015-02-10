@@ -139,7 +139,7 @@ public class CabalParser implements PsiParser {
   /* ********************************************************** */
   // extraSourceFilesKey colon <<commaSeparate varid>> |
   //                otherExtensionsKey colon <<commaSeparate varid>> |
-  //                buildDependsKey colon <<commaSeparate varid>> |
+  //                buildDependsKey colon <<commaSeparate dependency>> |
   //                exposedModulesKey colon <<commaSeparate  module >> |
   //                otherModulesKey colon <<commaSeparate  module >>
   public static boolean complexkey(PsiBuilder b, int l) {
@@ -177,13 +177,13 @@ public class CabalParser implements PsiParser {
     return r;
   }
 
-  // buildDependsKey colon <<commaSeparate varid>>
+  // buildDependsKey colon <<commaSeparate dependency>>
   private static boolean complexkey_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "complexkey_2")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokens(b, 0, BUILDDEPENDSKEY, COLON);
-    r = r && commaSeparate(b, l + 1, varid_parser_);
+    r = r && commaSeparate(b, l + 1, dependency_parser_);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -235,24 +235,50 @@ public class CabalParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // dependencyName | dependencyName versionConstraint version
+  // dependencyName [versionConstraint version [and versionConstraint version]]
   public static boolean dependency(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dependency")) return false;
     if (!nextTokenIs(b, VARIDREGEXP)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = dependencyName(b, l + 1);
-    if (!r) r = dependency_1(b, l + 1);
+    r = r && dependency_1(b, l + 1);
     exit_section_(b, m, DEPENDENCY, r);
     return r;
   }
 
-  // dependencyName versionConstraint version
+  // [versionConstraint version [and versionConstraint version]]
   private static boolean dependency_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dependency_1")) return false;
+    dependency_1_0(b, l + 1);
+    return true;
+  }
+
+  // versionConstraint version [and versionConstraint version]
+  private static boolean dependency_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "dependency_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = dependencyName(b, l + 1);
+    r = versionConstraint(b, l + 1);
+    r = r && version(b, l + 1);
+    r = r && dependency_1_0_2(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // [and versionConstraint version]
+  private static boolean dependency_1_0_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "dependency_1_0_2")) return false;
+    dependency_1_0_2_0(b, l + 1);
+    return true;
+  }
+
+  // and versionConstraint version
+  private static boolean dependency_1_0_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "dependency_1_0_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, AND);
     r = r && versionConstraint(b, l + 1);
     r = r && version(b, l + 1);
     exit_section_(b, m, null, r);
@@ -605,20 +631,25 @@ public class CabalParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // "==" | "<=" | ">=" | "<" | ">"
+  // eq | gt | lt | gtEq | ltEq
   public static boolean versionConstraint(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "versionConstraint")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, "<version constraint>");
-    r = consumeToken(b, "==");
-    if (!r) r = consumeToken(b, "<=");
-    if (!r) r = consumeToken(b, ">=");
-    if (!r) r = consumeToken(b, "<");
-    if (!r) r = consumeToken(b, ">");
+    r = consumeToken(b, EQ);
+    if (!r) r = consumeToken(b, GT);
+    if (!r) r = consumeToken(b, LT);
+    if (!r) r = consumeToken(b, GTEQ);
+    if (!r) r = consumeToken(b, LTEQ);
     exit_section_(b, l, m, VERSION_CONSTRAINT, r, false, null);
     return r;
   }
 
+  final static Parser dependency_parser_ = new Parser() {
+    public boolean parse(PsiBuilder b, int l) {
+      return dependency(b, l + 1);
+    }
+  };
   final static Parser module_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return module(b, l + 1);

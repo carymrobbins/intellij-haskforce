@@ -1,0 +1,15 @@
+Cabal File
+  KEY_OR_CONFIG
+    KEY
+      SIMPLEKEY
+        PsiElement(CabalTokenType.version)('version')
+        PsiElement(CabalTokenType.:)(':')
+        VERSION
+          NUMBER
+            PsiElement(CabalTokenType.numberRegexp)('1')
+          PsiElement(CabalTokenType..)('.')
+          NUMBER
+            PsiElement(CabalTokenType.numberRegexp)('7')
+          PsiElement(CabalTokenType..)('.')
+          NUMBER
+            PsiElement(CabalTokenType.numberRegexp)('8')

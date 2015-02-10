@@ -13,6 +13,12 @@
     comma = ','
     colon= ':'
     dot = "."
+    eq = "=="
+    gt = ">"
+    lt = "<"
+    gtEq = ">="
+    ltEq = "<="
+    and = "&&"
     nameKey = "name"
     versionKey = "version"
     synopsisKey = "synopsis"
@@ -35,7 +41,6 @@
     WHITESPACERBRACETOK="Synthetic rightbrace"
   ]
 }
-
 
 
 
@@ -71,7 +76,7 @@ simplekey ::= nameKey colon varid |
 
 complexkey ::= extraSourceFilesKey colon <<commaSeparate varid>> |
                otherExtensionsKey colon <<commaSeparate varid>> |
-               buildDependsKey colon <<commaSeparate varid>> |
+               buildDependsKey colon <<commaSeparate dependency>> |
                exposedModulesKey colon <<commaSeparate  module >> |
                otherModulesKey colon <<commaSeparate  module >>
 
@@ -85,10 +90,9 @@ number ::= numberRegexp
 
 version ::= <<dotSeparate number>>
 
-versionConstraint ::= "==" | "<=" | ">=" | "<" | ">"
+versionConstraint ::= eq | gt | lt | gtEq | ltEq
 
-//start using [] as optional identifier for this
-dependency ::= dependencyName | dependencyName versionConstraint version
+dependency ::= dependencyName [versionConstraint version [and versionConstraint version]]
 
 private open ::= WHITESPACELBRACETOK
 
