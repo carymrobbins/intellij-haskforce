@@ -1,0 +1,13 @@
+Cabal File
+  KEY_OR_CONFIG
+    CONFIG
+      EXECUTABLE
+        PsiElement(EXECUTABLE)('executable')
+        VARID
+          PsiElement(CabalTokenType.varidRegexp)('voernekeeruit')
+        KEY
+          SIMPLEKEY
+            PsiElement(CabalTokenType.default-language)('default-language')
+            PsiElement(CabalTokenType.:)(':')
+            VARID
+              PsiElement(CabalTokenType.varidRegexp)('Haskell2010')

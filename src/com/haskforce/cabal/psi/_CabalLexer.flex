@@ -10,6 +10,7 @@ import com.intellij.util.containers.Stack;
 
 %{
   private int indent;
+  private boolean inIndentation = false;
   private int yycolumn;
   private Stack<Integer> indentationStack;
   public _CabalLexer() {
@@ -32,17 +33,41 @@ WHITE_SPACE=({LINE_WS}|{EOL})+
 COMMENT=--([^\^\r\n][^\r\n]*|[\r\n])
 VARIDREGEXP=[a-zA-Z_\-0-9']*
 NUMBERREGEXP=[0-9]+
+PATHREGEXP=[a-zA-Z_/\\\-0-9.]*
+ADDRESSREGEXP=[a-zA-Z_\-0-9@]*
 CRLF=([\r\n])
 
-%state FINDINDENTATIONCONTEXT, ININDENTATION, CONFIGNAME
+%state FINDINDENTATIONCONTEXT, CONFIGNAME
 
 %%
 <YYINITIAL> {
-    [\ \f]          {
-                        return com.intellij.psi.TokenType.WHITE_SPACE;
-                    }
-    [\t]            {
-                        return com.intellij.psi.TokenType.WHITE_SPACE;
+     <<EOF>>         {
+                          if (inIndentation){
+                            inIndentation = false;
+                            if (! indentationStack.isEmpty ()){
+                              return WHITESPACERBRACETOK;
+                            }
+                          }
+                          return null;
+                     }
+      [\ \f]          {
+                          if (inIndentation){
+                            indent++;
+                          }
+                          return com.intellij.psi.TokenType.WHITE_SPACE;
+                      }
+      [\t]            {
+                          if (inIndentation){
+                            indent = indent + (indent + 8) % 8;
+                          }
+                          return com.intellij.psi.TokenType.WHITE_SPACE;
+                      }
+    {EOL}           {
+                         if (inIndentation){
+                           yybegin(FINDINDENTATIONCONTEXT);
+                           indent = 0;
+                         }
+                         return com.intellij.psi.TokenType.WHITE_SPACE;
                     }
   "library"          {
                          yybegin(FINDINDENTATIONCONTEXT);
@@ -57,7 +82,6 @@ CRLF=([\r\n])
                            yybegin(CONFIGNAME);
                            return FLAG;
                      }
-  {WHITE_SPACE}      { return com.intellij.psi.TokenType.WHITE_SPACE; }
   ":"                { return COLON; }
   ","                { return COMMA; }
   "."                { return DOT; }
@@ -96,52 +120,6 @@ CRLF=([\r\n])
                   }
 }
 
-<ININDENTATION> {
-     <<EOF>>          {
-                          yybegin(YYINITIAL);
-                          if (! indentationStack.isEmpty ()){
-                             return WHITESPACERBRACETOK;
-                          }
-
-                      }
-      {EOL}           {
-                        yybegin(FINDINDENTATIONCONTEXT);
-                        indent = 0;
-                        return com.intellij.psi.TokenType.WHITE_SPACE;
-                      }
-      [\ \f]          {
-                          indent++;
-                          return com.intellij.psi.TokenType.WHITE_SPACE;
-                      }
-      [\t]            {
-                          indent = indent + (indent + 8) % 8;
-                          return com.intellij.psi.TokenType.WHITE_SPACE;
-                      }
-      "=="            { return EQ;}
-      ">="            { return GTEQ;}
-      "<="            { return LTEQ;}
-      ">"             { return GT;}
-      "<"             { return LT;}
-      "&&"            { return AND;}
-      ":"             { return COLON; }
-      "name"          { return NAMEKEY; }
-      "version"       { return VERSIONKEY; }
-      "cabal-version" { return CABALVERSIONKEY; }
-      "synopsis"      { return SYNOPSISKEY; }
-      "author"        { return AUTHORKEY; }
-      "maintainer"    { return MAINTAINERKEY; }
-      "category"      { return CATEGORYKEY; }
-      "build-type"      { return BUILDTYPEKEY; }
-      "default-language"      { return DEFAULTLANGUAGEKEY; }
-      "extra-source-files"      { return EXTRASOURCEFILESKEY; }
-      "build-depends"      { return BUILDDEPENDSKEY; }
-      "other-extensions"      { return OTHEREXTENSIONSKEY; }
-      "other-modules"      { return OTHERMODULESKEY; }
-      "exposed-modules"      { return EXPOSEDMODULESKEY; }
-      {NUMBERREGEXP}     { return NUMBERREGEXP; }
-      {VARIDREGEXP}   { return VARIDREGEXP; }
-}
-
 <FINDINDENTATIONCONTEXT> {
       [\ \f]          {
                           indent++;
@@ -157,24 +135,26 @@ CRLF=([\r\n])
                       }
       [^]             {
                           yypushback(1);
+                          yybegin(YYINITIAL);
                           if (indentationStack.isEmpty()){
                              indentationStack.push(indent);
-                             yybegin(ININDENTATION);
+                             inIndentation = true;
                              return WHITESPACELBRACETOK;
                           }  else {
                              if(indent == indentationStack.peek()){
-                               yybegin(ININDENTATION);
+                               inIndentation = true;
                              } else {
                                    if(indent < indentationStack.peek()){
                                       indentationStack.pop();
                                       if (indentationStack.isEmpty()){
-                                        yybegin(YYINITIAL);
+                                        inIndentation = false;
+
                                       } else {
-                                        yybegin(ININDENTATION);
+                                        inIndentation = true;
                                       }
                                       return WHITESPACERBRACETOK;
                                    } else {
-                                      yybegin(ININDENTATION);
+                                      inIndentation = true;
                                       return WHITESPACELBRACETOK;
                                    }
                              }

@@ -81,6 +81,7 @@ dependencyName ::= varidRegexp
 
 buildType ::= "simple" | "configure" | "make" | "custom"
 
+// Should we get these regexes finer grained? Now they match nearly anything I guess.
 fileName ::= varidRegexp
 
 address ::= varidRegexp
