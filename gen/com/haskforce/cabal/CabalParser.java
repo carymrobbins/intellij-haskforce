@@ -487,7 +487,7 @@ public class CabalParser implements PsiParser {
   //               maintainerKey colon varid |
   //               categoryKey colon varid |
   //               buildTypeKey colon varid |
-  //               cabalVersionKey colon varid |
+  //               cabalVersionKey colon versionConstraint version |
   //               defaultLanguageKey colon varid |
   //               versionKey colon version
   public static boolean simplekey(PsiBuilder b, int l) {
@@ -573,13 +573,14 @@ public class CabalParser implements PsiParser {
     return r;
   }
 
-  // cabalVersionKey colon varid
+  // cabalVersionKey colon versionConstraint version
   private static boolean simplekey_6(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "simplekey_6")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeTokens(b, 0, CABALVERSIONKEY, COLON);
-    r = r && varid(b, l + 1);
+    r = r && versionConstraint(b, l + 1);
+    r = r && version(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }

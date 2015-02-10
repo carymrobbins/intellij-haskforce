@@ -1,0 +1,3 @@
+executable voernekeeruit
+  default-language:  Haskell2010
+

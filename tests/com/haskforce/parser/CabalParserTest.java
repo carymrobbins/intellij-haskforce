@@ -38,4 +38,5 @@ public class CabalParserTest extends CabalParserTestBase {
     public void testLittleBiggerLibrary()       { doTest(true, true); }
     public void testVersionKey()       { doTest(true, true); }
     public void testBuildDepends()       { doTest(true, true); }
+    public void testSimpleExecutable()       { doTest(true, true); }
 }

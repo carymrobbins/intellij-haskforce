@@ -33,4 +33,10 @@ public class CabalSimplekeyImpl extends CabalCompositeElementImpl implements Cab
     return findChildByClass(CabalVersion.class);
   }
 
+  @Override
+  @Nullable
+  public CabalVersionConstraint getVersionConstraint() {
+    return findChildByClass(CabalVersionConstraint.class);
+  }
+
 }

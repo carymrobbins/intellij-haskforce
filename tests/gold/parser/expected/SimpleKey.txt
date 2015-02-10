@@ -6,3 +6,19 @@ Cabal File
         PsiElement(CabalTokenType.:)(':')
         VARID
           PsiElement(CabalTokenType.varidRegexp)('koekoek')
+  KEY_OR_CONFIG
+    KEY
+      SIMPLEKEY
+        PsiElement(CabalTokenType.cabal-version)('cabal-version')
+        PsiElement(CabalTokenType.:)(':')
+        VERSION_CONSTRAINT
+          PsiElement(CabalTokenType.>=)('>=')
+        VERSION
+          NUMBER
+            PsiElement(CabalTokenType.numberRegexp)('1')
+          PsiElement(CabalTokenType..)('.')
+          NUMBER
+            PsiElement(CabalTokenType.numberRegexp)('187')
+          PsiElement(CabalTokenType..)('.')
+          NUMBER
+            PsiElement(CabalTokenType.numberRegexp)('12')

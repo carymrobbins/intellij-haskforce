@@ -13,4 +13,7 @@ public interface CabalSimplekey extends CabalCompositeElement {
   @Nullable
   CabalVersion getVersion();
 
+  @Nullable
+  CabalVersionConstraint getVersionConstraint();
+
 }

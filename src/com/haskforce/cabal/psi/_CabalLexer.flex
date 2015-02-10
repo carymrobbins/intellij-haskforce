@@ -34,7 +34,7 @@ VARIDREGEXP=[a-zA-Z_\-0-9']*
 NUMBERREGEXP=[0-9]+
 CRLF=([\r\n])
 
-%state FINDINDENTATIONCONTEXT, ININDENTATION
+%state FINDINDENTATIONCONTEXT, ININDENTATION, CONFIGNAME
 
 %%
 <YYINITIAL> {
@@ -48,6 +48,14 @@ CRLF=([\r\n])
                          yybegin(FINDINDENTATIONCONTEXT);
                          indent = yycolumn;
                          return LIBRARY;
+                     }
+  "executable"       {
+                           yybegin(CONFIGNAME);
+                           return EXECUTABLE;
+                     }
+  "flag"             {
+                           yybegin(CONFIGNAME);
+                           return FLAG;
                      }
   {WHITE_SPACE}      { return com.intellij.psi.TokenType.WHITE_SPACE; }
   ":"                { return COLON; }
@@ -77,6 +85,15 @@ CRLF=([\r\n])
   {NUMBERREGEXP}     { return NUMBERREGEXP; }
 
   {VARIDREGEXP}      { return VARIDREGEXP; }
+}
+
+<CONFIGNAME> {
+  [\ ]            {return com.intellij.psi.TokenType.WHITE_SPACE;}
+  {VARIDREGEXP}   {
+                     yybegin(FINDINDENTATIONCONTEXT);
+                     indent = yycolumn;
+                     return VARIDREGEXP;
+                  }
 }
 
 <ININDENTATION> {

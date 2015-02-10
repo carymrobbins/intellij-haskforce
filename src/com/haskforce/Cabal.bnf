@@ -70,7 +70,7 @@ simplekey ::= nameKey colon varid |
               maintainerKey colon varid |
               categoryKey colon varid |
               buildTypeKey colon varid |
-              cabalVersionKey colon varid |
+              cabalVersionKey colon versionConstraint version |
               defaultLanguageKey colon varid |
               versionKey colon version
 
