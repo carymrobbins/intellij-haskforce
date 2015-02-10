@@ -3,9 +3,8 @@ Cabal File
     CONFIG
       LIBRARY
         PsiElement(LIBRARY)('library')
-        KEY
-          SIMPLEKEY
-            PsiElement(CabalTokenType.default-language)('default-language')
-            PsiElement(CabalTokenType.:)(':')
-            VARID
-              PsiElement(CabalTokenType.varidRegexp)('Haskell2010')
+        BUILD_INFORMATION
+          PsiElement(CabalTokenType.ld-options)('ld-options')
+          PsiElement(CabalTokenType.:)(':')
+          VARID
+            PsiElement(CabalTokenType.varidRegexp)('duif')

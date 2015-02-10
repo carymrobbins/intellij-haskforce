@@ -15,7 +15,7 @@ public class CabalAnnotator implements Annotator {
         if (element instanceof LeafPsiElement) {
             LeafPsiElement leaf = (LeafPsiElement)element;
             // Fix highlighting of keys where jflex falls short.
-            if (leaf.getElementType() == CabalTypes.SIMPLEKEY) {
+            if (leaf.getElementType() == CabalTypes.KEY) {
                 setHighlighting(element, holder, CabalSyntaxHighlighter.KEY);
             }
         }

@@ -6,8 +6,7 @@ Cabal File
         VARID
           PsiElement(CabalTokenType.varidRegexp)('voernekeeruit')
         KEY
-          SIMPLEKEY
-            PsiElement(CabalTokenType.default-language)('default-language')
-            PsiElement(CabalTokenType.:)(':')
-            VARID
-              PsiElement(CabalTokenType.varidRegexp)('Haskell2010')
+          PsiElement(CabalTokenType.default-language)('default-language')
+          PsiElement(CabalTokenType.:)(':')
+          VARID
+            PsiElement(CabalTokenType.varidRegexp)('Haskell2010')

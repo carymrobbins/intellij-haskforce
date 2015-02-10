@@ -3,16 +3,17 @@ Cabal File
     CONFIG
       LIBRARY
         PsiElement(LIBRARY)('library')
-        KEY
-          SIMPLEKEY
-            PsiElement(CabalTokenType.default-language)('default-language')
-            PsiElement(CabalTokenType.:)(':')
-            VARID
-              PsiElement(CabalTokenType.varidRegexp)('Haskell2010')
+        BUILD_INFORMATION
+          PsiElement(CabalTokenType.js-sources)('js-sources')
+          PsiElement(CabalTokenType.:)(':')
+          FILE_NAME
+            PsiElement(CabalTokenType.varidRegexp)('onejs')
+          PsiElement(CabalTokenType.,)(',')
+          FILE_NAME
+            PsiElement(CabalTokenType.varidRegexp)('twojs')
   KEY_OR_CONFIG
     KEY
-      SIMPLEKEY
-        PsiElement(CabalTokenType.name)('name')
-        PsiElement(CabalTokenType.:)(':')
-        VARID
-          PsiElement(CabalTokenType.varidRegexp)('koekoek')
+      PsiElement(CabalTokenType.name)('name')
+      PsiElement(CabalTokenType.:)(':')
+      VARID
+        PsiElement(CabalTokenType.varidRegexp)('koekoek')

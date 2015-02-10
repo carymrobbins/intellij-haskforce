@@ -19,6 +19,8 @@
     gtEq = ">="
     ltEq = "<="
     and = "&&"
+    true = "true"
+    false = "false"
     nameKey = "name"
     versionKey = "version"
     synopsisKey = "synopsis"
@@ -29,6 +31,7 @@
     buildTypeKey = "build-type"
     licenseFileKey ="license-file"
     homepageKey ="homepage"
+    buildableKey = "buildable"
     bugReportsKey ="bug-reports"
     packageKey ="package"
     licenseFilesKey ="license-files"
@@ -48,8 +51,27 @@
     otherExtensionsKey = "other-extensions"
     otherModulesKey = "other-modules"
     exposedModulesKey = "exposed-modules"
+    hsSourceDirsKey = "hs-source-dirs"
+    extensionsKey = "extensions"
+    ghcOptionsKey = "ghc-options"
+    ghcProfOptionsKey = "ghc-prof-options"
+    ghcSharedOptionsKey = "ghc-shared-options"
+    buildToolsKey = "build-tools"
+    includesKey = "includes"
+    installIncludesKey = "install-includes"
+    includeDirsKey = "include-dirs"
+    cSourcesKey = "c-sources"
+    jsSourcesKey = "js-sources"
+    extraLibrariesKey = "extra-libraries"
+    extraGhciLibrariesKey = "extra-ghci-libraries"
+    extraLibDirsKey = "extra-lib-dirs"
+    ccOptionsKey = "cc-options"
+    ldOptionsKey = "ld-options"
+    pkgConfigDependsKey = "pkg-config-depends"
+    frameworksKey = "frameworks"
     comment='regexp:--([^\^\r\n][^\r\n]*|[\r\n])'
     varidRegexp="regexp:[a-zA-Z_\-0-9']*"
+    filenameRegexp="regexp:[a-zA-Z_\-0-9.]*"
     numberRegexp="regexp:[0-9]+"
     crlf='regexp:([\r\n])'
     WHITESPACELBRACETOK="Synthetic leftbrace"
@@ -63,7 +85,7 @@ cabal ::= keyOrConfig*
 
 conditional ::= "if"
 
-library ::= "library" open key+ close
+library ::= "library" open buildInformation+ close
 
 executable ::= "executable" varid open key+ close
 
@@ -72,8 +94,6 @@ flag ::= "flag" varid open key+ close
 config ::= (library | executable | flag )
 
 keyOrConfig ::= key | config
-
-key ::= simplekey | complexkey
 
 varid ::= varidRegexp
 
@@ -92,7 +112,9 @@ directory ::= varidRegexp
 
 compiler ::= varidRegexp
 
-simplekey ::= nameKey colon varid |
+bool ::= true | false
+
+key ::= nameKey colon varid |
               synopsisKey colon varid |
               licenseKey colon varid |
               authorKey colon varid |
@@ -109,22 +131,44 @@ simplekey ::= nameKey colon varid |
               defaultLanguageKey colon varid |
               licenseFileKey colon fileName |
               dataDirKey colon directory |
-              versionKey colon version
+              versionKey colon version |
+              extraSourceFilesKey colon <<commaSeparate varid>> |
+              extraDocFilesKey colon <<commaSeparate varid>> |
+              extraTmpFilesKey colon <<commaSeparate varid>> |
+              otherExtensionsKey colon <<commaSeparate varid>> |
+              testedWithKey colon <<commaSeparate compiler>> |
+              dataFilesKey colon <<commaSeparate fileName>> |
+              licenseFilesKey colon <<commaSeparate fileName>> |
+              exposedModulesKey colon <<commaSeparate  module >>
 
-complexkey ::= extraSourceFilesKey colon <<commaSeparate varid>> |
-               extraDocFilesKey colon <<commaSeparate varid>> |
-               extraTmpFilesKey colon <<commaSeparate varid>> |
-               otherExtensionsKey colon <<commaSeparate varid>> |
-               testedWithKey colon <<commaSeparate compiler>> |
-               dataFilesKey colon <<commaSeparate fileName>> |
-               licenseFilesKey colon <<commaSeparate fileName>> |
-               buildDependsKey colon <<commaSeparate dependency>> |
-               exposedModulesKey colon <<commaSeparate  module >> |
-               otherModulesKey colon <<commaSeparate  module >>
+
+buildInformation ::= buildDependsKey colon <<commaSeparate dependency>> |
+                     otherModulesKey colon <<commaSeparate  module >> |
+                     hsSourceDirsKey colon <<commaSeparate directory>> |
+                     extensionsKey colon <<commaSeparate varid>> |
+                     buildToolsKey colon <<commaSeparate dependency>> |
+                     buildableKey colon bool |
+                     ghcOptionsKey colon <<dashSeparate varid>> |
+                     ghcProfOptionsKey colon <<dashSeparate varid>> |
+                     ghcSharedOptionsKey colon <<dashSeparate varid>> |
+                     includesKey colon <<commaSeparate fileName>> |
+                     installIncludesKey colon <<commaSeparate fileName>> |
+                     includeDirsKey colon <<commaSeparate directory>> |
+                     cSourcesKey colon <<commaSeparate fileName>> |
+                     jsSourcesKey colon <<commaSeparate fileName>> |
+                     extraLibrariesKey colon <<commaSeparate varid>> |
+                     extraGhciLibrariesKey colon <<commaSeparate varid>> |
+                     extraLibDirsKey colon <<commaSeparate directory>> |
+                     ccOptionsKey colon <<commaSeparate varid>> |
+                     ldOptionsKey colon <<commaSeparate varid>> |
+                     pkgConfigDependsKey colon <<commaSeparate dependency>> |
+                     frameworksKey colon <<commaSeparate varid>>
 
 private meta commaSeparate ::= <<p>> (',' <<p>>)* {pin(".*")=1}
 
 private meta dotSeparate ::= <<p>> ('.' <<p>>)* {pin(".*")=1}
+
+private meta dashSeparate ::= <<p>> ('-' <<p>>)* {pin(".*")=1}
 
 module ::= <<dotSeparate varid>>
 

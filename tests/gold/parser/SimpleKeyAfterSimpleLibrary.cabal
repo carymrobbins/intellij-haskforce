@@ -1,4 +1,4 @@
 library
-    default-language:  Haskell2010
+    js-sources:  onejs, twojs
 
 name: koekoek
