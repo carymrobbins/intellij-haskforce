@@ -22,12 +22,6 @@ public class CabalComplexkeyImpl extends CabalCompositeElementImpl implements Ca
   }
 
   @Override
-  @Nullable
-  public CabalComplexkeyname getComplexkeyname() {
-    return findChildByClass(CabalComplexkeyname.class);
-  }
-
-  @Override
   @NotNull
   public List<CabalModule> getModuleList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, CabalModule.class);

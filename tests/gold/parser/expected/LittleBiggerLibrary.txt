@@ -5,15 +5,13 @@ Cabal File
         PsiElement(LIBRARY)('library')
         KEY
           SIMPLEKEY
-            SIMPLEKEYNAME
-              PsiElement(CabalTokenType.varidRegexp)('default-language')
+            PsiElement(CabalTokenType.default-language)('default-language')
             PsiElement(CabalTokenType.:)(':')
             VARID
               PsiElement(CabalTokenType.varidRegexp)('Haskell2010')
         KEY
           SIMPLEKEY
-            SIMPLEKEYNAME
-              PsiElement(CabalTokenType.varidRegexp)('name')
+            PsiElement(CabalTokenType.name)('name')
             PsiElement(CabalTokenType.:)(':')
             VARID
               PsiElement(CabalTokenType.varidRegexp)('koekoek')

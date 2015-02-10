@@ -2,8 +2,7 @@ Cabal File
   KEY_OR_CONFIG
     KEY
       SIMPLEKEY
-        SIMPLEKEYNAME
-          PsiElement(CabalTokenType.varidRegexp)('name')
+        PsiElement(CabalTokenType.name)('name')
         PsiElement(CabalTokenType.:)(':')
         VARID
           PsiElement(CabalTokenType.varidRegexp)('koekoek')

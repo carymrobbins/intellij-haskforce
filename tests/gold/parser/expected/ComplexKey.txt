@@ -2,7 +2,7 @@ Cabal File
   KEY_OR_CONFIG
     KEY
       COMPLEXKEY
-        PsiElement(CabalTokenType.varidRegexp)('exposed-modules')
+        PsiElement(CabalTokenType.exposed-modules)('exposed-modules')
         PsiElement(CabalTokenType.:)(':')
         MODULE
           VARID

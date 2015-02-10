@@ -9,7 +9,6 @@ import com.haskforce.cabal.psi.impl.*;
 public interface CabalTypes {
 
   IElementType COMPLEXKEY = new CabalElementType("COMPLEXKEY");
-  IElementType COMPLEXKEYNAME = new CabalElementType("COMPLEXKEYNAME");
   IElementType CONDITIONAL = new CabalElementType("CONDITIONAL");
   IElementType CONFIG = new CabalElementType("CONFIG");
   IElementType DEPENDENCY = new CabalElementType("DEPENDENCY");
@@ -22,17 +21,30 @@ public interface CabalTypes {
   IElementType MODULE = new CabalElementType("MODULE");
   IElementType NUMBER = new CabalElementType("NUMBER");
   IElementType SIMPLEKEY = new CabalElementType("SIMPLEKEY");
-  IElementType SIMPLEKEYNAME = new CabalElementType("SIMPLEKEYNAME");
   IElementType VARID = new CabalElementType("VARID");
   IElementType VERSION = new CabalElementType("VERSION");
   IElementType VERSION_CONSTRAINT = new CabalElementType("VERSION_CONSTRAINT");
 
+  IElementType AUTHORKEY = new CabalTokenType("author");
+  IElementType BUILDDEPENDSKEY = new CabalTokenType("build-depends");
+  IElementType BUILDTYPEKEY = new CabalTokenType("build-type");
+  IElementType CABALVERSIONKEY = new CabalTokenType("cabal-version");
+  IElementType CATEGORYKEY = new CabalTokenType("category");
   IElementType COLON = new CabalTokenType(":");
   IElementType COMMA = new CabalTokenType(",");
   IElementType COMMENT = new CabalTokenType("comment");
+  IElementType DEFAULTLANGUAGEKEY = new CabalTokenType("default-language");
   IElementType DOT = new CabalTokenType(".");
+  IElementType EXPOSEDMODULESKEY = new CabalTokenType("exposed-modules");
+  IElementType EXTRASOURCEFILESKEY = new CabalTokenType("extra-source-files");
+  IElementType MAINTAINERKEY = new CabalTokenType("maintainer");
+  IElementType NAMEKEY = new CabalTokenType("name");
   IElementType NUMBERREGEXP = new CabalTokenType("numberRegexp");
+  IElementType OTHEREXTENSIONSKEY = new CabalTokenType("other-extensions");
+  IElementType OTHERMODULESKEY = new CabalTokenType("other-modules");
+  IElementType SYNOPSISKEY = new CabalTokenType("synopsis");
   IElementType VARIDREGEXP = new CabalTokenType("varidRegexp");
+  IElementType VERSIONKEY = new CabalTokenType("version");
   IElementType WHITESPACELBRACETOK = new CabalTokenType("Synthetic leftbrace");
   IElementType WHITESPACERBRACETOK = new CabalTokenType("Synthetic rightbrace");
 
@@ -41,9 +53,6 @@ public interface CabalTypes {
       IElementType type = node.getElementType();
        if (type == COMPLEXKEY) {
         return new CabalComplexkeyImpl(node);
-      }
-      else if (type == COMPLEXKEYNAME) {
-        return new CabalComplexkeynameImpl(node);
       }
       else if (type == CONDITIONAL) {
         return new CabalConditionalImpl(node);
@@ -80,9 +89,6 @@ public interface CabalTypes {
       }
       else if (type == SIMPLEKEY) {
         return new CabalSimplekeyImpl(node);
-      }
-      else if (type == SIMPLEKEYNAME) {
-        return new CabalSimplekeynameImpl(node);
       }
       else if (type == VARID) {
         return new CabalVaridImpl(node);

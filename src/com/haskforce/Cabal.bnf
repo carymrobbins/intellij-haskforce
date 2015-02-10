@@ -13,6 +13,20 @@
     comma = ','
     colon= ':'
     dot = "."
+    nameKey = "name"
+    versionKey = "version"
+    synopsisKey = "synopsis"
+    authorKey = "author"
+    maintainerKey = "maintainer"
+    categoryKey = "category"
+    buildTypeKey = "build-type"
+    cabalVersionKey = "cabal-version"
+    defaultLanguageKey = "default-language"
+    extraSourceFilesKey = "extra-source-files"
+    buildDependsKey = "build-depends"
+    otherExtensionsKey = "other-extensions"
+    otherModulesKey = "other-modules"
+    exposedModulesKey = "exposed-modules"
     comment='regexp:--([^\^\r\n][^\r\n]*|[\r\n])'
     varidRegexp="regexp:[a-zA-Z_\-0-9']*"
     numberRegexp="regexp:[0-9]+"
@@ -21,6 +35,7 @@
     WHITESPACERBRACETOK="Synthetic rightbrace"
   ]
 }
+
 
 
 
@@ -40,18 +55,25 @@ keyOrConfig ::= key | config
 
 key ::= simplekey | complexkey
 
-//simplekeyname ::= ("name" | "synopsis" | "author" | "maintainer" | "category" | "build-type" | "cabal-version" | "default-language")
-simplekeyname ::= varidRegexp
-
-complexkeyname ::= ("extra-source-files" | "build-depends" | "other-extensions" | "other-modules" )
-
 varid ::= varidRegexp
 
 dependencyName ::= varidRegexp
 
-simplekey ::= simplekeyname colon varid | "version" colon version
+simplekey ::= nameKey colon varid |
+              synopsisKey colon varid |
+              authorKey colon varid |
+              maintainerKey colon varid |
+              categoryKey colon varid |
+              buildTypeKey colon varid |
+              cabalVersionKey colon varid |
+              defaultLanguageKey colon varid |
+              versionKey colon version
 
-complexkey ::= complexkeyname colon <<commaSeparate varid>> | "exposed-modules" colon <<commaSeparate  module >>
+complexkey ::= extraSourceFilesKey colon <<commaSeparate varid>> |
+               otherExtensionsKey colon <<commaSeparate varid>> |
+               buildDependsKey colon <<commaSeparate varid>> |
+               exposedModulesKey colon <<commaSeparate  module >> |
+               otherModulesKey colon <<commaSeparate  module >>
 
 private meta commaSeparate ::= <<p>> (',' <<p>>)* {pin(".*")=1}
 

@@ -23,12 +23,6 @@ public class CabalSimplekeyImpl extends CabalCompositeElementImpl implements Cab
 
   @Override
   @Nullable
-  public CabalSimplekeyname getSimplekeyname() {
-    return findChildByClass(CabalSimplekeyname.class);
-  }
-
-  @Override
-  @Nullable
   public CabalVarid getVarid() {
     return findChildByClass(CabalVarid.class);
   }

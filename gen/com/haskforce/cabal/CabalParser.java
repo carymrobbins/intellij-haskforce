@@ -25,9 +25,6 @@ public class CabalParser implements PsiParser {
     if (t == COMPLEXKEY) {
       r = complexkey(b, 0);
     }
-    else if (t == COMPLEXKEYNAME) {
-      r = complexkeyname(b, 0);
-    }
     else if (t == CONDITIONAL) {
       r = conditional(b, 0);
     }
@@ -63,9 +60,6 @@ public class CabalParser implements PsiParser {
     }
     else if (t == SIMPLEKEY) {
       r = simplekey(b, 0);
-    }
-    else if (t == SIMPLEKEYNAME) {
-      r = simplekeyname(b, 0);
     }
     else if (t == VARID) {
       r = varid(b, 0);
@@ -143,52 +137,76 @@ public class CabalParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // complexkeyname colon <<commaSeparate varid>> | "exposed-modules" colon <<commaSeparate  module >>
+  // extraSourceFilesKey colon <<commaSeparate varid>> |
+  //                otherExtensionsKey colon <<commaSeparate varid>> |
+  //                buildDependsKey colon <<commaSeparate varid>> |
+  //                exposedModulesKey colon <<commaSeparate  module >> |
+  //                otherModulesKey colon <<commaSeparate  module >>
   public static boolean complexkey(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "complexkey")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, "<complexkey>");
     r = complexkey_0(b, l + 1);
     if (!r) r = complexkey_1(b, l + 1);
+    if (!r) r = complexkey_2(b, l + 1);
+    if (!r) r = complexkey_3(b, l + 1);
+    if (!r) r = complexkey_4(b, l + 1);
     exit_section_(b, l, m, COMPLEXKEY, r, false, null);
     return r;
   }
 
-  // complexkeyname colon <<commaSeparate varid>>
+  // extraSourceFilesKey colon <<commaSeparate varid>>
   private static boolean complexkey_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "complexkey_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = complexkeyname(b, l + 1);
-    r = r && consumeToken(b, COLON);
+    r = consumeTokens(b, 0, EXTRASOURCEFILESKEY, COLON);
     r = r && commaSeparate(b, l + 1, varid_parser_);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // "exposed-modules" colon <<commaSeparate  module >>
+  // otherExtensionsKey colon <<commaSeparate varid>>
   private static boolean complexkey_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "complexkey_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "exposed-modules");
-    r = r && consumeToken(b, COLON);
+    r = consumeTokens(b, 0, OTHEREXTENSIONSKEY, COLON);
+    r = r && commaSeparate(b, l + 1, varid_parser_);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // buildDependsKey colon <<commaSeparate varid>>
+  private static boolean complexkey_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "complexkey_2")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, BUILDDEPENDSKEY, COLON);
+    r = r && commaSeparate(b, l + 1, varid_parser_);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // exposedModulesKey colon <<commaSeparate  module >>
+  private static boolean complexkey_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "complexkey_3")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, EXPOSEDMODULESKEY, COLON);
     r = r && commaSeparate(b, l + 1, module_parser_);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  /* ********************************************************** */
-  // "extra-source-files" | "build-depends" | "other-extensions" | "other-modules"
-  public static boolean complexkeyname(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "complexkeyname")) return false;
+  // otherModulesKey colon <<commaSeparate  module >>
+  private static boolean complexkey_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "complexkey_4")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, "<complexkeyname>");
-    r = consumeToken(b, "extra-source-files");
-    if (!r) r = consumeToken(b, "build-depends");
-    if (!r) r = consumeToken(b, "other-extensions");
-    if (!r) r = consumeToken(b, "other-modules");
-    exit_section_(b, l, m, COMPLEXKEYNAME, r, false, null);
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, OTHERMODULESKEY, COLON);
+    r = r && commaSeparate(b, l + 1, module_parser_);
+    exit_section_(b, m, null, r);
     return r;
   }
 
@@ -437,50 +455,128 @@ public class CabalParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // simplekeyname colon varid | "version" colon version
+  // nameKey colon varid |
+  //               synopsisKey colon varid |
+  //               authorKey colon varid |
+  //               maintainerKey colon varid |
+  //               categoryKey colon varid |
+  //               buildTypeKey colon varid |
+  //               cabalVersionKey colon varid |
+  //               defaultLanguageKey colon varid |
+  //               versionKey colon version
   public static boolean simplekey(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "simplekey")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, "<simplekey>");
     r = simplekey_0(b, l + 1);
     if (!r) r = simplekey_1(b, l + 1);
+    if (!r) r = simplekey_2(b, l + 1);
+    if (!r) r = simplekey_3(b, l + 1);
+    if (!r) r = simplekey_4(b, l + 1);
+    if (!r) r = simplekey_5(b, l + 1);
+    if (!r) r = simplekey_6(b, l + 1);
+    if (!r) r = simplekey_7(b, l + 1);
+    if (!r) r = simplekey_8(b, l + 1);
     exit_section_(b, l, m, SIMPLEKEY, r, false, null);
     return r;
   }
 
-  // simplekeyname colon varid
+  // nameKey colon varid
   private static boolean simplekey_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "simplekey_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = simplekeyname(b, l + 1);
-    r = r && consumeToken(b, COLON);
+    r = consumeTokens(b, 0, NAMEKEY, COLON);
     r = r && varid(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // "version" colon version
+  // synopsisKey colon varid
   private static boolean simplekey_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "simplekey_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, "version");
-    r = r && consumeToken(b, COLON);
-    r = r && version(b, l + 1);
+    r = consumeTokens(b, 0, SYNOPSISKEY, COLON);
+    r = r && varid(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  /* ********************************************************** */
-  // varidRegexp
-  public static boolean simplekeyname(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "simplekeyname")) return false;
-    if (!nextTokenIs(b, VARIDREGEXP)) return false;
+  // authorKey colon varid
+  private static boolean simplekey_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "simplekey_2")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, VARIDREGEXP);
-    exit_section_(b, m, SIMPLEKEYNAME, r);
+    r = consumeTokens(b, 0, AUTHORKEY, COLON);
+    r = r && varid(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // maintainerKey colon varid
+  private static boolean simplekey_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "simplekey_3")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, MAINTAINERKEY, COLON);
+    r = r && varid(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // categoryKey colon varid
+  private static boolean simplekey_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "simplekey_4")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, CATEGORYKEY, COLON);
+    r = r && varid(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // buildTypeKey colon varid
+  private static boolean simplekey_5(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "simplekey_5")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, BUILDTYPEKEY, COLON);
+    r = r && varid(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // cabalVersionKey colon varid
+  private static boolean simplekey_6(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "simplekey_6")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, CABALVERSIONKEY, COLON);
+    r = r && varid(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // defaultLanguageKey colon varid
+  private static boolean simplekey_7(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "simplekey_7")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, DEFAULTLANGUAGEKEY, COLON);
+    r = r && varid(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // versionKey colon version
+  private static boolean simplekey_8(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "simplekey_8")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeTokens(b, 0, VERSIONKEY, COLON);
+    r = r && version(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 

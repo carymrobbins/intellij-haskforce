@@ -53,6 +53,20 @@ CRLF=([\r\n])
   ":"                { return COLON; }
   ","                { return COMMA; }
   "."                { return DOT; }
+  "name"          { return NAMEKEY; }
+  "version"       { return VERSIONKEY; }
+  "cabal-version" { return CABALVERSIONKEY; }
+  "synopsis"      { return SYNOPSISKEY; }
+  "author"        { return AUTHORKEY; }
+  "maintainer"    { return MAINTAINERKEY; }
+  "category"      { return CATEGORYKEY; }
+  "build-type"      { return BUILDTYPEKEY; }
+  "default-language"      { return DEFAULTLANGUAGEKEY; }
+  "extra-source-files"      { return EXTRASOURCEFILESKEY; }
+  "build-depends"      { return BUILDDEPENDSKEY; }
+  "other-extensions"      { return OTHEREXTENSIONSKEY; }
+  "other-modules"      { return OTHERMODULESKEY; }
+  "exposed-modules"      { return EXPOSEDMODULESKEY; }
   {COMMENT}          { return COMMENT; }
   {NUMBERREGEXP}     { return NUMBERREGEXP; }
 
@@ -81,6 +95,20 @@ CRLF=([\r\n])
                           return com.intellij.psi.TokenType.WHITE_SPACE;
                       }
       ":"             { return COLON; }
+      "name"          { return NAMEKEY; }
+      "version"       { return VERSIONKEY; }
+      "cabal-version" { return CABALVERSIONKEY; }
+      "synopsis"      { return SYNOPSISKEY; }
+      "author"        { return AUTHORKEY; }
+      "maintainer"    { return MAINTAINERKEY; }
+      "category"      { return CATEGORYKEY; }
+      "build-type"      { return BUILDTYPEKEY; }
+      "default-language"      { return DEFAULTLANGUAGEKEY; }
+      "extra-source-files"      { return EXTRASOURCEFILESKEY; }
+      "build-depends"      { return BUILDDEPENDSKEY; }
+      "other-extensions"      { return OTHEREXTENSIONSKEY; }
+      "other-modules"      { return OTHERMODULESKEY; }
+      "exposed-modules"      { return EXPOSEDMODULESKEY; }
       {NUMBERREGEXP}     { return NUMBERREGEXP; }
       {VARIDREGEXP}   { return VARIDREGEXP; }
 }

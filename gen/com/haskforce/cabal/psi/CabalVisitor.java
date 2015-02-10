@@ -10,10 +10,6 @@ public class CabalVisitor extends PsiElementVisitor {
     visitCompositeElement(o);
   }
 
-  public void visitComplexkeyname(@NotNull CabalComplexkeyname o) {
-    visitCompositeElement(o);
-  }
-
   public void visitConditional(@NotNull CabalConditional o) {
     visitCompositeElement(o);
   }
@@ -59,10 +55,6 @@ public class CabalVisitor extends PsiElementVisitor {
   }
 
   public void visitSimplekey(@NotNull CabalSimplekey o) {
-    visitCompositeElement(o);
-  }
-
-  public void visitSimplekeyname(@NotNull CabalSimplekeyname o) {
     visitCompositeElement(o);
   }
 

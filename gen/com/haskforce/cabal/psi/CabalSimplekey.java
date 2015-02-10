@@ -8,9 +8,6 @@ import com.intellij.psi.PsiElement;
 public interface CabalSimplekey extends CabalCompositeElement {
 
   @Nullable
-  CabalSimplekeyname getSimplekeyname();
-
-  @Nullable
   CabalVarid getVarid();
 
   @Nullable
