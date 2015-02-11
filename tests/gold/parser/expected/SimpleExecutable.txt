@@ -5,8 +5,9 @@ Cabal File
         PsiElement(EXECUTABLE)('executable')
         VARID
           PsiElement(CabalTokenType.varidRegexp)('voernekeeruit')
-        KEY
-          PsiElement(CabalTokenType.default-language)('default-language')
-          PsiElement(CabalTokenType.:)(':')
-          VARID
-            PsiElement(CabalTokenType.varidRegexp)('Haskell2010')
+        EXECUTABLE_KEYS
+          EXECUTABLE_SPECIFIC_KEYS
+            PsiElement(CabalTokenType.main-is)('main-is')
+            PsiElement(CabalTokenType.:)(':')
+            FILE_NAME
+              PsiElement(CabalTokenType.varidRegexp)('srcmainKoekoekhs')

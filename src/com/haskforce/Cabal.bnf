@@ -34,6 +34,8 @@
     buildableKey = "buildable"
     bugReportsKey ="bug-reports"
     packageKey ="package"
+    typeKey = "type"
+    testModuleKey = "test-module"
     licenseFilesKey ="license-files"
     stabilityKey ="stability"
     dataDirKey ="data-dir"
@@ -51,6 +53,7 @@
     otherExtensionsKey = "other-extensions"
     otherModulesKey = "other-modules"
     exposedModulesKey = "exposed-modules"
+    exposedKey = "exposed"
     hsSourceDirsKey = "hs-source-dirs"
     extensionsKey = "extensions"
     ghcOptionsKey = "ghc-options"
@@ -58,6 +61,7 @@
     ghcSharedOptionsKey = "ghc-shared-options"
     buildToolsKey = "build-tools"
     includesKey = "includes"
+    mainIsKey = "main-is"
     installIncludesKey = "install-includes"
     includeDirsKey = "include-dirs"
     cSourcesKey = "c-sources"
@@ -85,13 +89,25 @@ cabal ::= keyOrConfig*
 
 conditional ::= "if"
 
-library ::= "library" open buildInformation+ close
+library ::= "library" open libraryKeys+ close
 
-executable ::= "executable" varid open key+ close
+libraryKeys ::= librarySpecificKeys | buildInformation
 
-flag ::= "flag" varid open key+ close
+executableSpecificKeys ::= mainIsKey colon fileName
 
-config ::= (library | executable | flag )
+executableKeys ::= executableSpecificKeys | buildInformation
+
+librarySpecificKeys ::= exposedModulesKey colon <<commaSeparate  module >> |
+                        exposedKey colon bool
+
+executable ::= "executable" varid open executableKeys+ close
+
+testSuite ::= "test-suite" varid open testSuiteKeys+ close
+
+testSuiteKeys ::= typeKey colon testInterface | mainIsKey colon fileName | testModuleKey colon varid
+
+
+config ::= (library | executable | testSuite )
 
 keyOrConfig ::= key | config
 
@@ -100,6 +116,8 @@ varid ::= varidRegexp
 dependencyName ::= varidRegexp
 
 buildType ::= "simple" | "configure" | "make" | "custom"
+
+testInterface ::= "exitcode-stdio-1.0" | "detailed-0.9"
 
 // Should we get these regexes finer grained? Now they match nearly anything I guess.
 fileName ::= varidRegexp
@@ -139,7 +157,7 @@ key ::= nameKey colon varid |
               testedWithKey colon <<commaSeparate compiler>> |
               dataFilesKey colon <<commaSeparate fileName>> |
               licenseFilesKey colon <<commaSeparate fileName>> |
-              exposedModulesKey colon <<commaSeparate  module >>
+
 
 
 buildInformation ::= buildDependsKey colon <<commaSeparate dependency>> |

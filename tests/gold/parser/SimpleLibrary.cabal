@@ -1,3 +1,7 @@
 library
-  ld-options:  duif
+  exposed: true
+  exposed-modules: koekoek.duif,
+                   merel.koekoek,
+                   vink.meeuw
+
 

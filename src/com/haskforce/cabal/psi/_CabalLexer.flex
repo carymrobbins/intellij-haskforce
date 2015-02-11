@@ -78,10 +78,15 @@ CRLF=([\r\n])
                            yybegin(CONFIGNAME);
                            return EXECUTABLE;
                      }
-  "flag"             {
+  "test-suite"       {
                            yybegin(CONFIGNAME);
-                           return FLAG;
+                           return TEST_SUITE;
                      }
+  "type"             { return TYPEKEY; }
+  "test-module"      {return TESTMODULEKEY;}
+  "main-is"      {return MAINISKEY;}
+  "true"             {return TRUE;}
+  "false"             {return FALSE;}
   ":"                { return COLON; }
   ","                { return COMMA; }
   "."                { return DOT; }
@@ -105,6 +110,7 @@ CRLF=([\r\n])
   "other-extensions"      { return OTHEREXTENSIONSKEY; }
   "other-modules"      { return OTHERMODULESKEY; }
   "exposed-modules"      { return EXPOSEDMODULESKEY; }
+  "exposed"         { return EXPOSEDKEY; }
   "license-file"       { return LICENSEFILEKEY;}
   "homepage"        { return HOMEPAGEKEY;}
   "bugReports"      { return BUGREPORTSKEY;}

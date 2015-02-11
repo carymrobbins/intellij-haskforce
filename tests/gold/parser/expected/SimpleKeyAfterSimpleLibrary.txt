@@ -3,14 +3,15 @@ Cabal File
     CONFIG
       LIBRARY
         PsiElement(LIBRARY)('library')
-        BUILD_INFORMATION
-          PsiElement(CabalTokenType.js-sources)('js-sources')
-          PsiElement(CabalTokenType.:)(':')
-          FILE_NAME
-            PsiElement(CabalTokenType.varidRegexp)('onejs')
-          PsiElement(CabalTokenType.,)(',')
-          FILE_NAME
-            PsiElement(CabalTokenType.varidRegexp)('twojs')
+        LIBRARY_KEYS
+          BUILD_INFORMATION
+            PsiElement(CabalTokenType.js-sources)('js-sources')
+            PsiElement(CabalTokenType.:)(':')
+            FILE_NAME
+              PsiElement(CabalTokenType.varidRegexp)('onejs')
+            PsiElement(CabalTokenType.,)(',')
+            FILE_NAME
+              PsiElement(CabalTokenType.varidRegexp)('twojs')
   KEY_OR_CONFIG
     KEY
       PsiElement(CabalTokenType.name)('name')

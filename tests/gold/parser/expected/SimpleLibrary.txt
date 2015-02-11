@@ -3,8 +3,33 @@ Cabal File
     CONFIG
       LIBRARY
         PsiElement(LIBRARY)('library')
-        BUILD_INFORMATION
-          PsiElement(CabalTokenType.ld-options)('ld-options')
-          PsiElement(CabalTokenType.:)(':')
-          VARID
-            PsiElement(CabalTokenType.varidRegexp)('duif')
+        LIBRARY_KEYS
+          LIBRARY_SPECIFIC_KEYS
+            PsiElement(CabalTokenType.exposed)('exposed')
+            PsiElement(CabalTokenType.:)(':')
+            BOOL
+              PsiElement(CabalTokenType.true)('true')
+        LIBRARY_KEYS
+          LIBRARY_SPECIFIC_KEYS
+            PsiElement(CabalTokenType.exposed-modules)('exposed-modules')
+            PsiElement(CabalTokenType.:)(':')
+            MODULE
+              VARID
+                PsiElement(CabalTokenType.varidRegexp)('koekoek')
+              PsiElement(CabalTokenType..)('.')
+              VARID
+                PsiElement(CabalTokenType.varidRegexp)('duif')
+            PsiElement(CabalTokenType.,)(',')
+            MODULE
+              VARID
+                PsiElement(CabalTokenType.varidRegexp)('merel')
+              PsiElement(CabalTokenType..)('.')
+              VARID
+                PsiElement(CabalTokenType.varidRegexp)('koekoek')
+            PsiElement(CabalTokenType.,)(',')
+            MODULE
+              VARID
+                PsiElement(CabalTokenType.varidRegexp)('vink')
+              PsiElement(CabalTokenType..)('.')
+              VARID
+                PsiElement(CabalTokenType.varidRegexp)('meeuw')
