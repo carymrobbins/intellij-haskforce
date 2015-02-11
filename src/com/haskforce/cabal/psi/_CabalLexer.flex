@@ -191,10 +191,13 @@ CRLF=([\r\n])
                                         inIndentation = true;
                                       }
                                       return WHITESPACERBRACETOK;
-                                   } else {
+                                   } /*else {
+                                      Do not take multiple indentations into account
+                                      not necessary for cabal and just gets us in trouble
+
                                       inIndentation = true;
                                       return WHITESPACELBRACETOK;
-                                   }
+                                   }*/
                              }
                           }
                       }

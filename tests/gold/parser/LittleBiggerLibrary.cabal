@@ -1,4 +1,4 @@
 library
-  buildable:  true
-  extra-ghc-libraries:  koekoek, merel
+  extra-ghci-libraries:  koekoek,
+                         merel
   
