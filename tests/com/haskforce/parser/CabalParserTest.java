@@ -26,7 +26,7 @@ import com.haskforce.cabal.CabalParserDefinition;
 
 public class CabalParserTest extends CabalParserTestBase {
     public CabalParserTest() {
-        super("parser", "cabal", new CabalParserDefinition());
+        super("cabal/parser", "cabal", new CabalParserDefinition());
     }
 
     // See comment in HaskellLexerTest.java.
@@ -39,4 +39,6 @@ public class CabalParserTest extends CabalParserTestBase {
     public void testVersionKey()       { doTest(true, true); }
     public void testBuildDepends()       { doTest(true, true); }
     public void testSimpleExecutable()       { doTest(true, true); }
+    public void testDataDir()       { doTest(true, true); }
+    public void testHomepage()       { doTest(true, true); }
 }

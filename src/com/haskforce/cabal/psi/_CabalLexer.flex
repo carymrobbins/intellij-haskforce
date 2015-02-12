@@ -32,12 +32,12 @@ WHITE_SPACE=({LINE_WS}|{EOL})+
 
 COMMENT=--([^\^\r\n][^\r\n]*|[\r\n])
 VARIDREGEXP=[a-zA-Z_\-0-9']*
+URLREGEXP = [a-zA-Z_\-0-9./:]*
+ADDRESSREGEXP = [a-zA-Z_\-0-9.@]*
 NUMBERREGEXP=[0-9]+
-PATHREGEXP=[a-zA-Z_/\\\-0-9.]*
-ADDRESSREGEXP=[a-zA-Z_\-0-9@]*
 CRLF=([\r\n])
 
-%state FINDINDENTATIONCONTEXT, CONFIGNAME
+%state FINDINDENTATIONCONTEXT, CONFIGNAME, URL, ADDRESS
 
 %%
 <YYINITIAL> {
@@ -90,6 +90,8 @@ CRLF=([\r\n])
   ":"                { return COLON; }
   ","                { return COMMA; }
   "."                { return DOT; }
+  "/"                { return SLASH; }
+  "@"             {return AT;}
   "=="            { return EQ;}
   ">="            { return GTEQ;}
   "<="            { return LTEQ;}
@@ -101,7 +103,10 @@ CRLF=([\r\n])
   "cabal-version" { return CABALVERSIONKEY; }
   "synopsis"      { return SYNOPSISKEY; }
   "author"        { return AUTHORKEY; }
-  "maintainer"    { return MAINTAINERKEY; }
+  "maintainer"    {
+                    yybegin(ADDRESS);
+                    return MAINTAINERKEY;
+                  }
   "category"      { return CATEGORYKEY; }
   "build-type"      { return BUILDTYPEKEY; }
   "default-language"      { return DEFAULTLANGUAGEKEY; }
@@ -112,9 +117,7 @@ CRLF=([\r\n])
   "exposed-modules"      { return EXPOSEDMODULESKEY; }
   "exposed"         { return EXPOSEDKEY; }
   "license-file"       { return LICENSEFILEKEY;}
-  "homepage"        { return HOMEPAGEKEY;}
-  "bugReports"      { return BUGREPORTSKEY;}
-  "package"         { return PACKAGEKEY;}
+
   "license-files"  { return LICENSEFILESKEY;}
   "data-dir"       {return DATADIRKEY;}
   "stability"      { return STABILITYKEY;}
@@ -122,7 +125,6 @@ CRLF=([\r\n])
   "author"         {return AUTHORKEY;}
   "data-files"     {return DATAFILESKEY;}
   "tested-with"    {return TESTEDWITHKEY;}
-  "maintainer"     {return MAINTAINERKEY;}
   "default-language" {return DEFAULTLANGUAGEKEY;}
   "extra-source-files" {return EXTRASOURCEFILESKEY;}
   "extra-doc-files"    {return EXTRADOCFILESKEY;}
@@ -150,6 +152,20 @@ CRLF=([\r\n])
   "pkg-config-depends" {return PKGCONFIGDEPENDSKEY;}
   "frameworks"        {return FRAMEWORKSKEY;}
   "buildable"        {return BUILDABLEKEY;}
+
+  "homepage"        {
+                       yybegin(URL);
+                       return HOMEPAGEKEY;
+                    }
+  "bug-reports"      {
+                       yybegin(URL);
+                       return BUGREPORTSKEY;
+                    }
+  "package"         {
+                       yybegin(URL);
+                       return PACKAGEKEY;
+                    }
+
   {COMMENT}          { return COMMENT; }
   {NUMBERREGEXP}     { return NUMBERREGEXP; }
   {VARIDREGEXP}      { return VARIDREGEXP; }
@@ -161,6 +177,23 @@ CRLF=([\r\n])
                      yybegin(FINDINDENTATIONCONTEXT);
                      indent = yycolumn;
                      return VARIDREGEXP;
+                  }
+}
+
+<URL> {
+  [\ ]            {return com.intellij.psi.TokenType.WHITE_SPACE;}
+  ":"             { return COLON; }
+  {URLREGEXP}     {
+                     yybegin(YYINITIAL);
+                     return URLREGEXP;
+                  }
+}
+<ADDRESS> {
+  [\ ]            {return com.intellij.psi.TokenType.WHITE_SPACE;}
+  ":"             { return COLON; }
+  {ADDRESSREGEXP}     {
+                     yybegin(YYINITIAL);
+                     return ADDRESSREGEXP;
                   }
 }
 

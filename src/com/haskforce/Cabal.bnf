@@ -13,6 +13,8 @@
     comma = ','
     colon= ':'
     dot = "."
+    slash ="/"
+    at ="@"
     eq = "=="
     gt = ">"
     lt = "<"
@@ -75,8 +77,9 @@
     frameworksKey = "frameworks"
     comment='regexp:--([^\^\r\n][^\r\n]*|[\r\n])'
     varidRegexp="regexp:[a-zA-Z_\-0-9']*"
-    filenameRegexp="regexp:[a-zA-Z_\-0-9.]*"
     numberRegexp="regexp:[0-9]+"
+    urlRegexp = "regexp:[a-zA-Z_\-0-9./]*"
+    addressRegexp="regexp:[a-zA-Z_\-0-9.@]*"
     crlf='regexp:([\r\n])'
     WHITESPACELBRACETOK="Synthetic leftbrace"
     WHITESPACERBRACETOK="Synthetic rightbrace"
@@ -120,43 +123,43 @@ buildType ::= "simple" | "configure" | "make" | "custom"
 testInterface ::= "exitcode-stdio-1.0" | "detailed-0.9"
 
 // Should we get these regexes finer grained? Now they match nearly anything I guess.
-fileName ::= varidRegexp
+fileName ::= varid "." varid
 
-address ::= varidRegexp
+address ::= addressRegexp
 
-url ::= varidRegexp
+url ::= urlRegexp
 
-directory ::= varidRegexp
+directory ::= <<slashSeparate varid>>
 
 compiler ::= varidRegexp
 
 bool ::= true | false
 
 key ::= nameKey colon varid |
-              synopsisKey colon varid |
-              licenseKey colon varid |
-              authorKey colon varid |
-              maintainerKey colon varid |
-              categoryKey colon varid |
-              copyrightKey colon varid |
-              maintainerKey colon address |
-              buildTypeKey colon buildType |
-              stabilityKey colon varid |
-              homepageKey colon url |
-              bugReportsKey colon url |
-              packageKey colon url |
-              cabalVersionKey colon gtEq version |
-              defaultLanguageKey colon varid |
-              licenseFileKey colon fileName |
-              dataDirKey colon directory |
-              versionKey colon version |
-              extraSourceFilesKey colon <<commaSeparate varid>> |
-              extraDocFilesKey colon <<commaSeparate varid>> |
-              extraTmpFilesKey colon <<commaSeparate varid>> |
-              otherExtensionsKey colon <<commaSeparate varid>> |
-              testedWithKey colon <<commaSeparate compiler>> |
-              dataFilesKey colon <<commaSeparate fileName>> |
-              licenseFilesKey colon <<commaSeparate fileName>> |
+        synopsisKey colon varid |
+        licenseKey colon varid |
+        authorKey colon varid |
+        maintainerKey colon varid |
+        categoryKey colon varid |
+        copyrightKey colon varid |
+        maintainerKey colon address |
+        buildTypeKey colon buildType |
+        stabilityKey colon varid |
+        homepageKey colon url |
+        bugReportsKey colon url |
+        packageKey colon url |
+        cabalVersionKey colon gtEq version |
+        defaultLanguageKey colon varid |
+        licenseFileKey colon fileName |
+        dataDirKey colon directory |
+        versionKey colon version |
+        extraSourceFilesKey colon <<commaSeparate varid>> |
+        extraDocFilesKey colon <<commaSeparate varid>> |
+        extraTmpFilesKey colon <<commaSeparate varid>> |
+        otherExtensionsKey colon <<commaSeparate varid>> |
+        testedWithKey colon <<commaSeparate compiler>> |
+        dataFilesKey colon <<commaSeparate fileName>> |
+        licenseFilesKey colon <<commaSeparate fileName>> |
 
 
 
@@ -187,6 +190,8 @@ private meta commaSeparate ::= <<p>> (',' <<p>>)* {pin(".*")=1}
 private meta dotSeparate ::= <<p>> ('.' <<p>>)* {pin(".*")=1}
 
 private meta dashSeparate ::= <<p>> ('-' <<p>>)* {pin(".*")=1}
+
+private meta slashSeparate ::= <<p>> ('/' <<p>>)* {pin(".*")=1}
 
 module ::= <<dotSeparate varid>>
 

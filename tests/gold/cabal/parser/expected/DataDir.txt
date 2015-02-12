@@ -1,0 +1,17 @@
+Cabal File
+  KEY_OR_CONFIG
+    KEY
+      PsiElement(CabalTokenType.data-dir)('data-dir')
+      PsiElement(CabalTokenType.:)(':')
+      DIRECTORY
+        VARID
+          PsiElement(CabalTokenType.varidRegexp)('src')
+        PsiElement(CabalTokenType./)('/')
+        VARID
+          PsiElement(CabalTokenType.varidRegexp)('main')
+        PsiElement(CabalTokenType./)('/')
+        VARID
+          PsiElement(CabalTokenType.varidRegexp)('Koekoek')
+        PsiElement(CabalTokenType./)('/')
+        VARID
+          PsiElement(CabalTokenType.varidRegexp)('Merel')

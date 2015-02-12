@@ -8,10 +8,18 @@ Cabal File
             PsiElement(CabalTokenType.js-sources)('js-sources')
             PsiElement(CabalTokenType.:)(':')
             FILE_NAME
-              PsiElement(CabalTokenType.varidRegexp)('onejs')
+              VARID
+                PsiElement(CabalTokenType.varidRegexp)('one')
+              PsiElement(CabalTokenType..)('.')
+              VARID
+                PsiElement(CabalTokenType.varidRegexp)('js')
             PsiElement(CabalTokenType.,)(',')
             FILE_NAME
-              PsiElement(CabalTokenType.varidRegexp)('twojs')
+              VARID
+                PsiElement(CabalTokenType.varidRegexp)('two')
+              PsiElement(CabalTokenType..)('.')
+              VARID
+                PsiElement(CabalTokenType.varidRegexp)('js')
   KEY_OR_CONFIG
     KEY
       PsiElement(CabalTokenType.name)('name')
