@@ -76,7 +76,7 @@
     pkgConfigDependsKey = "pkg-config-depends"
     frameworksKey = "frameworks"
     comment='regexp:--([^\^\r\n][^\r\n]*|[\r\n])'
-    varidRegexp="regexp:[a-zA-Z_\-0-9']*"
+    varidRegexp="regexp:[a-zA-Z_\-0-9'()]*"
     numberRegexp="regexp:[0-9]+"
     urlRegexp = "regexp:[a-zA-Z_\-0-9./]*"
     addressRegexp="regexp:[a-zA-Z_\-0-9.@]*"

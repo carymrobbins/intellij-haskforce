@@ -31,7 +31,7 @@ LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 
 COMMENT=--([^\^\r\n][^\r\n]*|[\r\n])
-VARIDREGEXP=[a-zA-Z_\-0-9']*
+VARIDREGEXP=[a-zA-Z_\-0-9'()]*
 URLREGEXP = [a-zA-Z_\-0-9./:]*
 ADDRESSREGEXP = [a-zA-Z_\-0-9.@]*
 NUMBERREGEXP=[0-9]+
