@@ -28,7 +28,6 @@
     synopsisKey = "synopsis"
     licenseKey = "license"
     authorKey = "author"
-    maintainerKey = "maintainer"
     categoryKey = "category"
     buildTypeKey = "build-type"
     licenseFileKey ="license-file"
@@ -78,15 +77,12 @@
     comment='regexp:--([^\^\r\n][^\r\n]*|[\r\n])'
     varidRegexp="regexp:[a-zA-Z_\-0-9'()]*"
     numberRegexp="regexp:[0-9]+"
-    urlRegexp = "regexp:[a-zA-Z_\-0-9./]*"
-    addressRegexp="regexp:[a-zA-Z_\-0-9.@]*"
+    freeformRegexp="regexp:[^]*"
     crlf='regexp:([\r\n])'
     WHITESPACELBRACETOK="Synthetic leftbrace"
     WHITESPACERBRACETOK="Synthetic rightbrace"
   ]
 }
-
-
 
 cabal ::= keyOrConfig*
 
@@ -109,7 +105,6 @@ testSuite ::= "test-suite" varid open testSuiteKeys+ close
 
 testSuiteKeys ::= typeKey colon testInterface | mainIsKey colon fileName | testModuleKey colon varid
 
-
 config ::= (library | executable | testSuite )
 
 keyOrConfig ::= key | config
@@ -125,9 +120,9 @@ testInterface ::= "exitcode-stdio-1.0" | "detailed-0.9"
 // Should we get these regexes finer grained? Now they match nearly anything I guess.
 fileName ::= varid "." varid
 
-address ::= addressRegexp
+address ::= freeformRegexp
 
-url ::= urlRegexp
+url ::= freeformRegexp
 
 directory ::= <<slashSeparate varid>>
 
@@ -139,14 +134,13 @@ key ::= nameKey colon varid |
         synopsisKey colon varid |
         licenseKey colon varid |
         authorKey colon varid |
-        maintainerKey colon varid |
         categoryKey colon varid |
         copyrightKey colon varid |
-        maintainerKey colon address |
+        maintainerKey colon open address close|
         buildTypeKey colon buildType |
         stabilityKey colon varid |
-        homepageKey colon url |
-        bugReportsKey colon url |
+        homepageKey colon open url close |
+        bugReportsKey colon open url close|
         packageKey colon url |
         cabalVersionKey colon gtEq version |
         defaultLanguageKey colon varid |

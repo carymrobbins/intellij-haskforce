@@ -13,9 +13,11 @@ import com.intellij.util.containers.Stack;
   private boolean inIndentation = false;
   private int yycolumn;
   private Stack<Integer> indentationStack;
+  private Stack<Integer> stateStack;
   public _CabalLexer() {
     this((java.io.Reader)null);
     indentationStack = ContainerUtil.newStack();
+    stateStack = ContainerUtil.newStack();
   }
 %}
 
@@ -32,12 +34,11 @@ WHITE_SPACE=({LINE_WS}|{EOL})+
 
 COMMENT=--([^\^\r\n][^\r\n]*|[\r\n])
 VARIDREGEXP=[a-zA-Z_\-0-9'()]*
-URLREGEXP = [a-zA-Z_\-0-9./:]*
-ADDRESSREGEXP = [a-zA-Z_\-0-9.@]*
+FREEFORMREGEXP=[^\r\n]*
 NUMBERREGEXP=[0-9]+
 CRLF=([\r\n])
 
-%state FINDINDENTATIONCONTEXT, CONFIGNAME, URL, ADDRESS
+%state FINDINDENTATIONCONTEXT, CONFIGNAME, FREEFORM, FINDCOLON
 
 %%
 <YYINITIAL> {
@@ -103,10 +104,7 @@ CRLF=([\r\n])
   "cabal-version" { return CABALVERSIONKEY; }
   "synopsis"      { return SYNOPSISKEY; }
   "author"        { return AUTHORKEY; }
-  "maintainer"    {
-                    yybegin(ADDRESS);
-                    return MAINTAINERKEY;
-                  }
+
   "category"      { return CATEGORYKEY; }
   "build-type"      { return BUILDTYPEKEY; }
   "default-language"      { return DEFAULTLANGUAGEKEY; }
@@ -153,22 +151,38 @@ CRLF=([\r\n])
   "frameworks"        {return FRAMEWORKSKEY;}
   "buildable"        {return BUILDABLEKEY;}
 
+  "maintainer"    {
+                    stateStack.push(FREEFORM);
+                    yybegin(FINDCOLON);
+                    return MAINTAINERKEY;
+                  }
   "homepage"        {
-                       yybegin(URL);
+                       stateStack.push(FREEFORM);
+                       yybegin(FINDCOLON);
                        return HOMEPAGEKEY;
                     }
   "bug-reports"      {
-                       yybegin(URL);
+                       stateStack.push(FREEFORM);
+                       yybegin(FINDCOLON);
                        return BUGREPORTSKEY;
                     }
   "package"         {
-                       yybegin(URL);
+                       stateStack.push(FREEFORM);
+                       yybegin(FINDCOLON);
                        return PACKAGEKEY;
                     }
 
   {COMMENT}          { return COMMENT; }
   {NUMBERREGEXP}     { return NUMBERREGEXP; }
   {VARIDREGEXP}      { return VARIDREGEXP; }
+}
+
+<FINDCOLON> {
+  {LINE_WS}       {return com.intellij.psi.TokenType.WHITE_SPACE;}
+  ":"             {
+                      yybegin(FINDINDENTATIONCONTEXT);
+                      return COLON;
+                  }
 }
 
 <CONFIGNAME> {
@@ -180,20 +194,11 @@ CRLF=([\r\n])
                   }
 }
 
-<URL> {
+<FREEFORM> {
   [\ ]            {return com.intellij.psi.TokenType.WHITE_SPACE;}
-  ":"             { return COLON; }
-  {URLREGEXP}     {
+  {FREEFORMREGEXP}     {
                      yybegin(YYINITIAL);
-                     return URLREGEXP;
-                  }
-}
-<ADDRESS> {
-  [\ ]            {return com.intellij.psi.TokenType.WHITE_SPACE;}
-  ":"             { return COLON; }
-  {ADDRESSREGEXP}     {
-                     yybegin(YYINITIAL);
-                     return ADDRESSREGEXP;
+                     return FREEFORMREGEXP;
                   }
 }
 
@@ -212,7 +217,11 @@ CRLF=([\r\n])
                       }
       [^]             {
                           yypushback(1);
-                          yybegin(YYINITIAL);
+                          if(stateStack.isEmpty()){
+                            yybegin(YYINITIAL);
+                          } else {
+                            yybegin(stateStack.pop());
+                          }
                           if (indentationStack.isEmpty()){
                              indentationStack.push(indent);
                              inIndentation = true;
