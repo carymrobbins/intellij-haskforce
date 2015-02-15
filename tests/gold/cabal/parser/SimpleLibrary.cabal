@@ -1,7 +1,6 @@
 library
   exposed: true
   exposed-modules: koekoek.duif,
-                   merel.koekoek,
                    vink.meeuw
 
 

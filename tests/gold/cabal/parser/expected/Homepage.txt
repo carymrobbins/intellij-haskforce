@@ -17,3 +17,4 @@ Cabal File
       PsiElement(CabalTokenType.:)(':')
       ADDRESS
         PsiElement(CabalTokenType.freeformRegexp)('koekoek.merel@nest.com')
+        PsiElement(CabalTokenType.freeformRegexp)('hier nog ewa meer')

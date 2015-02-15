@@ -22,13 +22,6 @@ Cabal File
             PsiElement(CabalTokenType.,)(',')
             MODULE
               VARID
-                PsiElement(CabalTokenType.varidRegexp)('merel')
-              PsiElement(CabalTokenType..)('.')
-              VARID
-                PsiElement(CabalTokenType.varidRegexp)('koekoek')
-            PsiElement(CabalTokenType.,)(',')
-            MODULE
-              VARID
                 PsiElement(CabalTokenType.varidRegexp)('vink')
               PsiElement(CabalTokenType..)('.')
               VARID

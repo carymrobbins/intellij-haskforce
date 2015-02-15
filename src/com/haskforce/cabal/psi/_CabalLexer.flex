@@ -9,8 +9,6 @@ import com.intellij.util.containers.Stack;
 %%
 
 %{
-  private int indent;
-  private boolean inIndentation = false;
   private int yycolumn;
   private Stack<Integer> indentationStack;
   private Stack<Integer> stateStack;
@@ -27,52 +25,47 @@ import com.intellij.util.containers.Stack;
 %function advance
 %type IElementType
 %unicode
+%column
+
 
 EOL="\r"|"\n"|"\r\n"
 LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 
 COMMENT=--([^\^\r\n][^\r\n]*|[\r\n])
-VARIDREGEXP=[a-zA-Z_\-0-9'()]*
+VARIDREGEXP=[a-zA-Z_\-0-9']*
+FILEPATHREGEXP=[a-zA-Z_\-0-9'.*/]*
 FREEFORMREGEXP=[^\r\n]*
 NUMBERREGEXP=[0-9]+
 CRLF=([\r\n])
 
-%state FINDINDENTATIONCONTEXT, CONFIGNAME, FREEFORM, FINDCOLON
+%state FINDINDENTATIONCONTEXT, CONFIGNAME, FREEFORM, FINDCOLON, VARID, FILEPATH
 
 %%
-<YYINITIAL> {
      <<EOF>>         {
-                          if (inIndentation){
-                            inIndentation = false;
-                            if (! indentationStack.isEmpty ()){
-                              return WHITESPACERBRACETOK;
-                            }
+                          if (! indentationStack.isEmpty ()){
+                            indentationStack.pop();
+                            return WHITESPACERBRACETOK;
                           }
                           return null;
                      }
+
+<YYINITIAL> {
+
       [\ \f]          {
-                          if (inIndentation){
-                            indent++;
-                          }
                           return com.intellij.psi.TokenType.WHITE_SPACE;
                       }
       [\t]            {
-                          if (inIndentation){
-                            indent = indent + (indent + 8) % 8;
-                          }
                           return com.intellij.psi.TokenType.WHITE_SPACE;
                       }
     {EOL}           {
-                         if (inIndentation){
+                         if (!indentationStack.isEmpty()){
                            yybegin(FINDINDENTATIONCONTEXT);
-                           indent = 0;
                          }
                          return com.intellij.psi.TokenType.WHITE_SPACE;
                     }
   "library"          {
                          yybegin(FINDINDENTATIONCONTEXT);
-                         indent = yycolumn;
                          return LIBRARY;
                      }
   "executable"       {
@@ -83,74 +76,246 @@ CRLF=([\r\n])
                            yybegin(CONFIGNAME);
                            return TEST_SUITE;
                      }
-  "type"             { return TYPEKEY; }
-  "test-module"      {return TESTMODULEKEY;}
-  "main-is"      {return MAINISKEY;}
-  "true"             {return TRUE;}
-  "false"             {return FALSE;}
-  ":"                { return COLON; }
-  ","                { return COMMA; }
-  "."                { return DOT; }
-  "/"                { return SLASH; }
-  "@"             {return AT;}
-  "=="            { return EQ;}
-  ">="            { return GTEQ;}
-  "<="            { return LTEQ;}
-  ">"             { return GT;}
-  "<"             { return LT;}
-  "&&"            { return AND;}
-  "name"          { return NAMEKEY; }
-  "version"       { return VERSIONKEY; }
-  "cabal-version" { return CABALVERSIONKEY; }
-  "synopsis"      { return SYNOPSISKEY; }
-  "author"        { return AUTHORKEY; }
+  "type"             {
+                       stateStack.push(VARID);
+                       yybegin(FINDCOLON);
+                       return TYPEKEY;
+                     }
+  "test-module"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return TESTMODULEKEY;
+                      }
+  "main-is"      {
+                     stateStack.push(VARID);
+                     yybegin(FINDCOLON);
+                     return MAINISKEY;
+                  }
 
-  "category"      { return CATEGORYKEY; }
-  "build-type"      { return BUILDTYPEKEY; }
-  "default-language"      { return DEFAULTLANGUAGEKEY; }
-  "extra-source-files"      { return EXTRASOURCEFILESKEY; }
-  "build-depends"      { return BUILDDEPENDSKEY; }
-  "other-extensions"      { return OTHEREXTENSIONSKEY; }
-  "other-modules"      { return OTHERMODULESKEY; }
-  "exposed-modules"      { return EXPOSEDMODULESKEY; }
-  "exposed"         { return EXPOSEDKEY; }
-  "license-file"       { return LICENSEFILEKEY;}
+  "name"          {
+                       stateStack.push(VARID);
+                       yybegin(FINDCOLON);
+                       return NAMEKEY;
+                    }
+  "version"          {
+                       stateStack.push(VARID);
+                       yybegin(FINDCOLON);
+                       return VERSIONKEY;
+                    }
+  "cabal-version"   {
+                       stateStack.push(VARID);
+                       yybegin(FINDCOLON);
+                       return CABALVERSIONKEY;
+                    }
+  "synopsis"   {
+                       stateStack.push(FREEFORM);
+                       yybegin(FINDCOLON);
+                       return SYNOPSISKEY;
+                    }
+  "description"   {
+                       stateStack.push(FREEFORM);
+                       yybegin(FINDCOLON);
+                       return DESCRIPTIONKEY;
+                    }
+  "author"   {
+                       stateStack.push(FREEFORM);
+                       yybegin(FINDCOLON);
+                       return AUTHORKEY;
+                    }
+  "category"   {
+                       stateStack.push(VARID);
+                       yybegin(FINDCOLON);
+                       return CATEGORYKEY;
+                    }
+  "build-type"   {
+                       stateStack.push(VARID);
+                       yybegin(FINDCOLON);
+                       return BUILDTYPEKEY;
+                    }
+  "exposed"   {
+                       stateStack.push(VARID);
+                       yybegin(FINDCOLON);
+                       return EXPOSEDKEY;
+                    }
+  "license"   {
+                       stateStack.push(VARID);
+                       yybegin(FINDCOLON);
+                       return LICENSEKEY;
+              }
+  "license-file"   {
+                       stateStack.push(FREEFORM);
+                       yybegin(FINDCOLON);
+                       return LICENSEFILEKEY;
+                    }
 
-  "license-files"  { return LICENSEFILESKEY;}
-  "data-dir"       {return DATADIRKEY;}
-  "stability"      { return STABILITYKEY;}
-  "copyright"      {return COPYRIGHTKEY;}
-  "author"         {return AUTHORKEY;}
-  "data-files"     {return DATAFILESKEY;}
-  "tested-with"    {return TESTEDWITHKEY;}
-  "default-language" {return DEFAULTLANGUAGEKEY;}
-  "extra-source-files" {return EXTRASOURCEFILESKEY;}
-  "extra-doc-files"    {return EXTRADOCFILESKEY;}
-  "extra-tmp-files"    {return EXTRATMPFILESKEY;}
-  "build-depends"      {return BUILDDEPENDSKEY;}
-  "other-extensions"   {return OTHEREXTENSIONSKEY;}
-  "other-modules"      {return OTHERMODULESKEY;}
-  "exposed-modules"    {return EXPOSEDMODULESKEY;}
-  "hs-source-dirs"     {return HSSOURCEDIRSKEY;}
-  "extensions"         {return EXTENSIONSKEY;}
-  "ghc-options"        {return GHCOPTIONSKEY;}
-  "ghc-prof-options"   {return GHCPROFOPTIONSKEY;}
-  "ghc-shared-options" {return GHCSHAREDOPTIONSKEY;}
-  "build-tools"        {return BUILDTOOLSKEY;}
-  "includes"           {return INCLUDESKEY;}
-  "install-includes"   {return INSTALLINCLUDESKEY;}
-  "include-dirs"       {return INCLUDEDIRSKEY;}
-  "c-sources"          {return CSOURCESKEY;}
-  "js-sources"         {return JSSOURCESKEY;}
-  "extra-libraries"    {return EXTRALIBRARIESKEY;}
-  "extra-ghci-libraries" {return EXTRAGHCILIBRARIESKEY;}
-  "extra-lib-dirs"     {return EXTRALIBDIRSKEY;}
-  "cc-options"         {return CCOPTIONSKEY;}
-  "ld-options"         {return LDOPTIONSKEY;}
-  "pkg-config-depends" {return PKGCONFIGDEPENDSKEY;}
-  "frameworks"        {return FRAMEWORKSKEY;}
-  "buildable"        {return BUILDABLEKEY;}
+  "license-files"   {
+                       stateStack.push(VARID);
+                       yybegin(FINDCOLON);
+                       return LICENSEFILESKEY;
+                    }
+  "data-dir"   {
+                       stateStack.push(VARID);
+                       yybegin(FINDCOLON);
+                       return DATADIRKEY;
+                    }
+  "stability"   {
+                       stateStack.push(VARID);
+                       yybegin(FINDCOLON);
+                       return STABILITYKEY;
+                    }
+  "copyright"   {
+                       stateStack.push(FREEFORM);
+                       yybegin(FINDCOLON);
+                       return COPYRIGHTKEY;
+                    }
 
+  "data-files"   {
+                       stateStack.push(VARID);
+                       yybegin(FINDCOLON);
+                       return DATAFILESKEY;
+                    }
+
+  "tested-with"   {
+                       stateStack.push(VARID);
+                       yybegin(FINDCOLON);
+                       return TESTEDWITHKEY;
+                    }
+  "default-language"   {
+                       stateStack.push(VARID);
+                       yybegin(FINDCOLON);
+                       return DEFAULTLANGUAGEKEY;
+                    }
+  "extra-source-files"   {
+                       stateStack.push(FILEPATH);
+                       yybegin(FINDCOLON);
+                       return EXTRASOURCEFILESKEY;
+                    }
+  "extra-doc-files"   {
+                       stateStack.push(VARID);
+                       yybegin(FINDCOLON);
+                       return EXTRADOCFILESKEY;
+                    }
+  "extra-tmp-files"   {
+                       stateStack.push(VARID);
+
+                       yybegin(FINDCOLON);
+                       return EXTRATMPFILESKEY;
+                    }
+  "build-depends"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return BUILDDEPENDSKEY;
+                       }
+  "other-extensions"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return OTHEREXTENSIONSKEY;
+                       }
+  "other-modules"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return OTHERMODULESKEY;
+                       }
+  "exposed-modules"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return EXPOSEDMODULESKEY;
+                       }
+  "hs-source-dirs"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return HSSOURCEDIRSKEY;
+                       }
+  "extensions"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return EXTENSIONSKEY;
+                       }
+  "ghc-options"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return GHCOPTIONSKEY;
+                       }
+  "ghc-prof-options"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return GHCPROFOPTIONSKEY;
+                       }
+  "ghc-shared-options"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return GHCSHAREDOPTIONSKEY;
+                       }
+  "build-tools"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return BUILDTOOLSKEY;
+                       }
+  "includes"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return INCLUDESKEY;
+                       }
+  "includes-includes"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return INSTALLINCLUDESKEY;
+                       }
+  "includes-dirs"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return INCLUDEDIRSKEY;
+                       }
+  "c-sources"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return CSOURCESKEY;
+                       }
+  "js-sources"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return JSSOURCESKEY;
+                       }
+  "extra-libraries"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return EXTRALIBRARIESKEY;
+                       }
+  "extra-ghci-libraries"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return EXTRAGHCILIBRARIESKEY;
+                       }
+  "extra-lib-dirs"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return EXTRALIBDIRSKEY;
+                       }
+  "cc-options"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return CCOPTIONSKEY;
+                       }
+  "ld-options"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return LDOPTIONSKEY;
+                       }
+  "pkg-config-depends"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return PKGCONFIGDEPENDSKEY;
+                       }
+  "frameworks"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return FRAMEWORKSKEY;
+                       }
+  "buildable"      {
+                         stateStack.push(VARID);
+                         yybegin(FINDCOLON);
+                         return BUILDABLEKEY;
+                       }
   "maintainer"    {
                     stateStack.push(FREEFORM);
                     yybegin(FINDCOLON);
@@ -167,14 +332,67 @@ CRLF=([\r\n])
                        return BUGREPORTSKEY;
                     }
   "package"         {
-                       stateStack.push(FREEFORM);
+                       stateStack.push(VARID);
                        yybegin(FINDCOLON);
                        return PACKAGEKEY;
                     }
 
   {COMMENT}          { return COMMENT; }
-  {NUMBERREGEXP}     { return NUMBERREGEXP; }
-  {VARIDREGEXP}      { return VARIDREGEXP; }
+
+}
+
+<VARID> {
+ [\ \f]          {
+                     return com.intellij.psi.TokenType.WHITE_SPACE;
+                 }
+ [\t]            {
+                     return com.intellij.psi.TokenType.WHITE_SPACE;
+                 }
+  "true"             {
+                       return TRUE;
+                      }
+  "false"             {
+                       return FALSE;
+                      }
+  ","             {
+                       return COMMA;
+                      }
+  "."             {
+                       return DOT;
+                      }
+  "/"             {
+                       return SLASH;
+                      }
+  "=="            {
+                    return EQ;
+                  }
+  ">="            {
+                    return GTEQ;
+                  }
+  "<="            {
+                    return LTEQ;
+                  }
+  ">"            {
+                    return GT;
+                  }
+  "<"            {
+                    return LT;
+                  }
+  "&&"            {
+                    return AND;
+                  }
+  {NUMBERREGEXP}     {
+                    return NUMBERREGEXP;
+                    }
+  {VARIDREGEXP}      {
+                     return VARIDREGEXP;
+                     }
+  {EOL}           {
+                       if (!indentationStack.isEmpty()){
+                         yybegin(FINDINDENTATIONCONTEXT);
+                       }
+                       return com.intellij.psi.TokenType.WHITE_SPACE;
+                  }
 }
 
 <FINDCOLON> {
@@ -189,7 +407,6 @@ CRLF=([\r\n])
   [\ ]            {return com.intellij.psi.TokenType.WHITE_SPACE;}
   {VARIDREGEXP}   {
                      yybegin(FINDINDENTATIONCONTEXT);
-                     indent = yycolumn;
                      return VARIDREGEXP;
                   }
 }
@@ -202,50 +419,52 @@ CRLF=([\r\n])
                   }
 }
 
+<FILEPATH> {
+  [\ ]            {return com.intellij.psi.TokenType.WHITE_SPACE;}
+  {FILEPATHREGEXP}     {
+                     yybegin(YYINITIAL);
+                     return FILEPATHREGEXP;
+                  }
+}
+
 <FINDINDENTATIONCONTEXT> {
       [\ \f]          {
-                          indent++;
                           return com.intellij.psi.TokenType.WHITE_SPACE;
                       }
       [\t]            {
-                          indent = indent + (indent + 8) % 8;
                           return com.intellij.psi.TokenType.WHITE_SPACE;
                       }
       [\n]            {
-                          indent = 0;
                           return com.intellij.psi.TokenType.WHITE_SPACE;
                       }
       [^]             {
                           yypushback(1);
-                          if(stateStack.isEmpty()){
-                            yybegin(YYINITIAL);
-                          } else {
-                            yybegin(stateStack.pop());
-                          }
                           if (indentationStack.isEmpty()){
-                             indentationStack.push(indent);
-                             inIndentation = true;
-                             return WHITESPACELBRACETOK;
-                          }  else {
-                             if(indent == indentationStack.peek()){
-                               inIndentation = true;
+                             if (yycolumn != 0) {
+                               indentationStack.push(yycolumn);
+                               yybegin(stateStack.isEmpty() ? YYINITIAL : stateStack.peek());
+                               return WHITESPACELBRACETOK;
                              } else {
-                                   if(indent < indentationStack.peek()){
-                                      indentationStack.pop();
-                                      if (indentationStack.isEmpty()){
-                                        inIndentation = false;
+                               yybegin(YYINITIAL);
+                             }
+                          }  else {
+                             if(yycolumn == indentationStack.peek()){
+                               yybegin(stateStack.isEmpty()?YYINITIAL:stateStack.peek());
 
-                                      } else {
-                                        inIndentation = true;
+                             } else {
+                                   if(yycolumn < indentationStack.peek()){
+                                      indentationStack.pop();
+                                      if(!stateStack.isEmpty()){
+                                        stateStack.pop();
+                                      }
+                                      if (!indentationStack.isEmpty() && yycolumn == indentationStack.peek()){
+                                         yybegin(stateStack.isEmpty()?YYINITIAL:stateStack.peek());
                                       }
                                       return WHITESPACERBRACETOK;
-                                   } /*else {
-                                      Do not take multiple indentations into account
-                                      not necessary for cabal and just gets us in trouble
-
-                                      inIndentation = true;
+                                   } else {
+                                      indentationStack.push(yycolumn);
                                       return WHITESPACELBRACETOK;
-                                   }*/
+                                   }
                              }
                           }
                       }
