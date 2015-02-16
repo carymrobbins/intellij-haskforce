@@ -1,0 +1,11 @@
+Cabal File
+  KEY_OR_CONFIG
+    KEY
+      PsiElement(CabalTokenType.copyright)('copyright')
+      PsiElement(CabalTokenType.:)(':')
+      FREEFORM
+        PsiElement(CabalTokenType.freeformRegexp)('Copyright (c) 2013 Emil Axelsson, Peter Jonsson,')
+        PsiElement(CabalTokenType.freeformRegexp)('Anders Persson, Josef Svenningsson')
+        PsiElement(CabalTokenType.freeformRegexp)('Copyright (c) 2012 Emil Axelsson, Gergely Dévai,')
+        PsiElement(CabalTokenType.freeformRegexp)('Anders Persson, Josef Svenningsson')
+        PsiElement(CabalTokenType.freeformRegexp)('Copyright (c) 2009-2011, ERICSSON AB')

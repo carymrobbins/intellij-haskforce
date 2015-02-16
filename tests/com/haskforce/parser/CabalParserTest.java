@@ -42,5 +42,6 @@ public class CabalParserTest extends CabalParserTestBase {
     public void testDataDir()       { doTest(true, true); }
     public void testHomepage()       { doTest(true, true); }
     public void testComments()       { doTest(true, true); }
+    public void testFreeFormWithIndent()       { doTest(true, true); }
     public void testFeldsparLanguage()       { doTest(true, true); }
 }

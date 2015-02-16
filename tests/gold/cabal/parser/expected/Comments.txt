@@ -1,0 +1,7 @@
+Cabal File
+  PsiComment(COMMENT)('-- TODO')
+  PsiComment(COMMENT)('-- test-suite tutorial')
+  PsiComment(COMMENT)('--   type: exitcode-stdio-1.0')
+  PsiComment(COMMENT)('--   hs-source-dirs: tests examples')
+  PsiComment(COMMENT)('--   main-is: TutorialTest.hs')
+  PsiComment(COMMENT)('--   default-language: Haskell2010')
