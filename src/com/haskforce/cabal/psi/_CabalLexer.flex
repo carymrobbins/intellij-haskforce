@@ -39,7 +39,7 @@ FREEFORMREGEXP=[^\r\n]*
 NUMBERREGEXP=[0-9]+
 CRLF=([\r\n])
 
-%state FINDINDENTATIONCONTEXT, CONFIGNAME, FREEFORM, FINDCOLON, VARID, FILEPATH
+%state FINDINDENTATIONCONTEXT, CONFIGNAME, FREEFORM, FINDCOLON, VARID, FILEPATH, ININDENTATIONCONTEXT
 
 %%
      <<EOF>>         {
@@ -60,7 +60,7 @@ CRLF=([\r\n])
                       }
     {EOL}           {
                          if (!indentationStack.isEmpty()){
-                           yybegin(FINDINDENTATIONCONTEXT);
+                           yybegin(ININDENTATIONCONTEXT);
                          }
                          return com.intellij.psi.TokenType.WHITE_SPACE;
                     }
@@ -389,7 +389,7 @@ CRLF=([\r\n])
                      }
   {EOL}           {
                        if (!indentationStack.isEmpty()){
-                         yybegin(FINDINDENTATIONCONTEXT);
+                         yybegin(ININDENTATIONCONTEXT);
                        }
                        return com.intellij.psi.TokenType.WHITE_SPACE;
                   }
@@ -427,6 +427,43 @@ CRLF=([\r\n])
                   }
 }
 
+<ININDENTATIONCONTEXT> {
+      [\ \f]          {
+                          return com.intellij.psi.TokenType.WHITE_SPACE;
+                      }
+      [\t]            {
+                          return com.intellij.psi.TokenType.WHITE_SPACE;
+                      }
+      [\n]            {
+                          return com.intellij.psi.TokenType.WHITE_SPACE;
+                      }
+      [^]             {
+                          yypushback(1);
+
+                          if(yycolumn == indentationStack.peek()){
+                            yybegin(stateStack.isEmpty()?YYINITIAL:stateStack.peek());
+                          } else {
+                                if(yycolumn < indentationStack.peek()){
+                                   indentationStack.pop();
+                                   if(!stateStack.isEmpty()){
+                                     stateStack.pop();
+                                   }
+                                   if (!indentationStack.isEmpty() && yycolumn == indentationStack.peek()){
+                                      yybegin(stateStack.isEmpty()?YYINITIAL:stateStack.peek());
+
+                                   }else {
+                                      yybegin(YYINITIAL);
+                                   }
+                                   return WHITESPACERBRACETOK;
+                                } else {
+                                  yybegin(stateStack.isEmpty()?YYINITIAL:stateStack.peek());
+                                }
+                          }
+
+                      }
+
+}
+
 <FINDINDENTATIONCONTEXT> {
       [\ \f]          {
                           return com.intellij.psi.TokenType.WHITE_SPACE;
@@ -447,25 +484,10 @@ CRLF=([\r\n])
                              } else {
                                yybegin(YYINITIAL);
                              }
-                          }  else {
-                             if(yycolumn == indentationStack.peek()){
-                               yybegin(stateStack.isEmpty()?YYINITIAL:stateStack.peek());
-
-                             } else {
-                                   if(yycolumn < indentationStack.peek()){
-                                      indentationStack.pop();
-                                      if(!stateStack.isEmpty()){
-                                        stateStack.pop();
-                                      }
-                                      if (!indentationStack.isEmpty() && yycolumn == indentationStack.peek()){
-                                         yybegin(stateStack.isEmpty()?YYINITIAL:stateStack.peek());
-                                      }
-                                      return WHITESPACERBRACETOK;
-                                   } else {
-                                      indentationStack.push(yycolumn);
-                                      return WHITESPACELBRACETOK;
-                                   }
-                             }
+                          } else {
+                               indentationStack.push(yycolumn);
+                               yybegin(stateStack.isEmpty() ? YYINITIAL : stateStack.peek());
+                               return WHITESPACELBRACETOK;
                           }
                       }
 
