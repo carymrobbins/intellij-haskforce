@@ -74,7 +74,7 @@
     ldOptionsKey = "ld-options"
     pkgConfigDependsKey = "pkg-config-depends"
     frameworksKey = "frameworks"
-    comment='regexp:--([^\^\r\n][^\r\n]*|[\r\n])'
+    commentRegexp='regexp:--([^\^\r\n][^\r\n]*|[\r\n])'
     varidRegexp="regexp:[a-zA-Z_\-0-9']*"
     filePathRegexp="regexp:[a-zA-Z_\-0-9*./']*"
     numberRegexp="regexp:[0-9]+"
@@ -85,7 +85,9 @@
   ]
 }
 
-cabal ::= keyOrConfig*
+cabal ::= keyOrConfig* | comment
+
+comment ::= commentRegexp
 
 conditional ::= "if"
 
@@ -97,15 +99,17 @@ executableSpecificKeys ::= mainIsKey colon open fileName close
 
 executableKeys ::= executableSpecificKeys | buildInformation
 
-librarySpecificKeys ::= exposedModulesKey colon open module* close |
-                        exposedModulesKey colon open <<commaSeparate  module >> close |
+librarySpecificKeys ::= exposedModulesKey colon open <<commaSeparate module >> close |
+                        exposedModulesKey colon open module* close |
                         exposedKey colon open bool close
 
 executable ::= "executable" varid open executableKeys+ close
 
 testSuite ::= "test-suite" varid open testSuiteKeys+ close
 
-testSuiteKeys ::= typeKey colon open testInterface close | mainIsKey colon open fileName close | testModuleKey colon open varid close
+testSuiteKeys ::= testSuiteSpecificKeys | buildInformation
+
+testSuiteSpecificKeys ::= typeKey colon open testInterface close | mainIsKey colon open fileName close | testModuleKey colon open varid close
 
 config ::= (library | executable | testSuite )
 
@@ -165,6 +169,7 @@ key ::= nameKey colon open varid close|
 
 buildInformation ::= buildDependsKey colon open <<commaSeparate dependency>> close |
                      otherModulesKey colon open <<commaSeparate  module >> close|
+                     otherModulesKey colon open module* close|
                      hsSourceDirsKey colon open <<commaSeparate directory>> close|
                      hsSourceDirsKey colon open directory* close|
                      extensionsKey colon open <<commaSeparate varid>> close |
