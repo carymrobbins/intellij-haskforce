@@ -451,7 +451,8 @@ CRLF=([\r\n])
                                    if (!indentationStack.isEmpty() && yycolumn == indentationStack.peek()){
                                       yybegin(stateStack.isEmpty()?YYINITIAL:stateStack.peek());
 
-                                   }else {
+                                   }
+                                   if (indentationStack.isEmpty()) {
                                       yybegin(YYINITIAL);
                                    }
                                    return WHITESPACERBRACETOK;

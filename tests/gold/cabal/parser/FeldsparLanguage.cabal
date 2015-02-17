@@ -7,9 +7,9 @@ description:    Feldspar (Functional Embedded Language for DSP and PARallelism)
                 interpreter.
 category:       Language
 copyright:      Copyright (c) 2013 Emil Axelsson, Peter Jonsson,
-                Anders Persson, Josef Svenningsson
+                                   Anders Persson, Josef Svenningsson
                 Copyright (c) 2012 Emil Axelsson, Gergely Dévai,
-                Anders Persson, Josef Svenningsson
+                                   Anders Persson, Josef Svenningsson
                 Copyright (c) 2009-2011, ERICSSON AB
 author:         Functional programming group at Chalmers University of Technology
 maintainer:     Emil Axelsson <emax@chalmers.se>,
