@@ -36,7 +36,7 @@ public class HaskellLanguage extends Language {
      */
     public static final HashSet<IElementType> RESERVED_IDS_TOKENS = new HashSet<IElementType>(
             Arrays.asList(AS, CASE, CLASSTOKEN, DATA, DEFAULT
-                    , DERIVING, DO, ELSE, FOREIGN, HIDING, IF, IMPORT, IN, INFIX
+                    , DERIVING, DO, ELSE, FORALLTOKEN, FOREIGN, HIDING, IF, IMPORT, IN, INFIX
                     , INFIXL, INFIXR, HaskellTypes.INSTANCE, LET, MDOTOK, MODULETOKEN
                     , NEWTYPE, OF, QUALIFIED, RECTOK, THEN, TYPE, WHERE));
 
