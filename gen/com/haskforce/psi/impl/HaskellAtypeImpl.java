@@ -22,9 +22,9 @@ public class HaskellAtypeImpl extends HaskellCompositeElementImpl implements Has
   }
 
   @Override
-  @NotNull
-  public List<HaskellAtype> getAtypeList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellAtype.class);
+  @Nullable
+  public HaskellAtype getAtype() {
+    return findChildByClass(HaskellAtype.class);
   }
 
   @Override
@@ -43,6 +43,12 @@ public class HaskellAtypeImpl extends HaskellCompositeElementImpl implements Has
   @Nullable
   public HaskellOqtycon getOqtycon() {
     return findChildByClass(HaskellOqtycon.class);
+  }
+
+  @Override
+  @Nullable
+  public HaskellPpragma getPpragma() {
+    return findChildByClass(HaskellPpragma.class);
   }
 
   @Override
@@ -85,6 +91,12 @@ public class HaskellAtypeImpl extends HaskellCompositeElementImpl implements Has
   @Nullable
   public PsiElement getDoublehash() {
     return findChildByType(DOUBLEHASH);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getExclamation() {
+    return findChildByType(EXCLAMATION);
   }
 
   @Override

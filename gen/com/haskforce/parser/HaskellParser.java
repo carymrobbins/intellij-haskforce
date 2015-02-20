@@ -968,6 +968,7 @@ public class HaskellParser implements PsiParser {
   /* ********************************************************** */
   // [singlequote] ntgtycon ['##'|'#']
   //         | tyvar
+  //         | strict_mark atype
   //         | '{' fielddecls '}'
   //         | '(#' <<sequence ctype>> '#)'
   //         | '(' ['?'] ctype "::" (kind | ctype)')'
@@ -985,6 +986,7 @@ public class HaskellParser implements PsiParser {
     if (!r) r = atype_3(b, l + 1);
     if (!r) r = atype_4(b, l + 1);
     if (!r) r = atype_5(b, l + 1);
+    if (!r) r = atype_6(b, l + 1);
     if (!r) r = consumeToken(b, INTEGERTOKEN);
     if (!r) r = pstringtoken(b, l + 1);
     if (!r) r = foralltype(b, l + 1);
@@ -1029,9 +1031,20 @@ public class HaskellParser implements PsiParser {
     return r;
   }
 
-  // '{' fielddecls '}'
+  // strict_mark atype
   private static boolean atype_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "atype_2")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = strict_mark(b, l + 1);
+    r = r && atype(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // '{' fielddecls '}'
+  private static boolean atype_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "atype_3")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, LBRACE);
@@ -1042,8 +1055,8 @@ public class HaskellParser implements PsiParser {
   }
 
   // '(#' <<sequence ctype>> '#)'
-  private static boolean atype_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "atype_3")) return false;
+  private static boolean atype_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "atype_4")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, LUNBOXPAREN);
@@ -1054,30 +1067,30 @@ public class HaskellParser implements PsiParser {
   }
 
   // '(' ['?'] ctype "::" (kind | ctype)')'
-  private static boolean atype_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "atype_4")) return false;
+  private static boolean atype_5(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "atype_5")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, LPAREN);
-    r = r && atype_4_1(b, l + 1);
+    r = r && atype_5_1(b, l + 1);
     r = r && ctype(b, l + 1);
     r = r && consumeToken(b, DOUBLECOLON);
-    r = r && atype_4_4(b, l + 1);
+    r = r && atype_5_4(b, l + 1);
     r = r && consumeToken(b, RPAREN);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // ['?']
-  private static boolean atype_4_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "atype_4_1")) return false;
+  private static boolean atype_5_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "atype_5_1")) return false;
     consumeToken(b, QUESTION);
     return true;
   }
 
   // kind | ctype
-  private static boolean atype_4_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "atype_4_4")) return false;
+  private static boolean atype_5_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "atype_5_4")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = kind(b, l + 1);
@@ -1087,56 +1100,56 @@ public class HaskellParser implements PsiParser {
   }
 
   // [singlequote] ('(' [<<sequence ctype>>] ')' | '[' <<sequence ctype>> ']')
-  private static boolean atype_5(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "atype_5")) return false;
+  private static boolean atype_6(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "atype_6")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = atype_5_0(b, l + 1);
-    r = r && atype_5_1(b, l + 1);
+    r = atype_6_0(b, l + 1);
+    r = r && atype_6_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // [singlequote]
-  private static boolean atype_5_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "atype_5_0")) return false;
+  private static boolean atype_6_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "atype_6_0")) return false;
     consumeToken(b, SINGLEQUOTE);
     return true;
   }
 
   // '(' [<<sequence ctype>>] ')' | '[' <<sequence ctype>> ']'
-  private static boolean atype_5_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "atype_5_1")) return false;
+  private static boolean atype_6_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "atype_6_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = atype_5_1_0(b, l + 1);
-    if (!r) r = atype_5_1_1(b, l + 1);
+    r = atype_6_1_0(b, l + 1);
+    if (!r) r = atype_6_1_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // '(' [<<sequence ctype>>] ')'
-  private static boolean atype_5_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "atype_5_1_0")) return false;
+  private static boolean atype_6_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "atype_6_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, LPAREN);
-    r = r && atype_5_1_0_1(b, l + 1);
+    r = r && atype_6_1_0_1(b, l + 1);
     r = r && consumeToken(b, RPAREN);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // [<<sequence ctype>>]
-  private static boolean atype_5_1_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "atype_5_1_0_1")) return false;
+  private static boolean atype_6_1_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "atype_6_1_0_1")) return false;
     sequence(b, l + 1, ctype_parser_);
     return true;
   }
 
   // '[' <<sequence ctype>> ']'
-  private static boolean atype_5_1_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "atype_5_1_1")) return false;
+  private static boolean atype_6_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "atype_6_1_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, LBRACKET);
@@ -1671,8 +1684,8 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // (btype | '!'atype) conop (btype | '!'atype)
-  //          | con ('{' [(fielddecl ',')* fielddecl] '}' | ([ppragma] ['!'] atype)*)
+  // btype conop btype
+  //          | con ('{' [(fielddecl ',')* fielddecl] '}' | btype*)
   public static boolean constr(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "constr")) return false;
     boolean r;
@@ -1683,63 +1696,19 @@ public class HaskellParser implements PsiParser {
     return r;
   }
 
-  // (btype | '!'atype) conop (btype | '!'atype)
+  // btype conop btype
   private static boolean constr_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "constr_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = constr_0_0(b, l + 1);
+    r = btype(b, l + 1);
     r = r && conop(b, l + 1);
-    r = r && constr_0_2(b, l + 1);
+    r = r && btype(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // btype | '!'atype
-  private static boolean constr_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "constr_0_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = btype(b, l + 1);
-    if (!r) r = constr_0_0_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // '!'atype
-  private static boolean constr_0_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "constr_0_0_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, EXCLAMATION);
-    r = r && atype(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // btype | '!'atype
-  private static boolean constr_0_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "constr_0_2")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = btype(b, l + 1);
-    if (!r) r = constr_0_2_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // '!'atype
-  private static boolean constr_0_2_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "constr_0_2_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, EXCLAMATION);
-    r = r && atype(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // con ('{' [(fielddecl ',')* fielddecl] '}' | ([ppragma] ['!'] atype)*)
+  // con ('{' [(fielddecl ',')* fielddecl] '}' | btype*)
   private static boolean constr_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "constr_1")) return false;
     boolean r;
@@ -1750,7 +1719,7 @@ public class HaskellParser implements PsiParser {
     return r;
   }
 
-  // '{' [(fielddecl ',')* fielddecl] '}' | ([ppragma] ['!'] atype)*
+  // '{' [(fielddecl ',')* fielddecl] '}' | btype*
   private static boolean constr_1_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "constr_1_1")) return false;
     boolean r;
@@ -1814,41 +1783,15 @@ public class HaskellParser implements PsiParser {
     return r;
   }
 
-  // ([ppragma] ['!'] atype)*
+  // btype*
   private static boolean constr_1_1_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "constr_1_1_1")) return false;
     int c = current_position_(b);
     while (true) {
-      if (!constr_1_1_1_0(b, l + 1)) break;
+      if (!btype(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "constr_1_1_1", c)) break;
       c = current_position_(b);
     }
-    return true;
-  }
-
-  // [ppragma] ['!'] atype
-  private static boolean constr_1_1_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "constr_1_1_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = constr_1_1_1_0_0(b, l + 1);
-    r = r && constr_1_1_1_0_1(b, l + 1);
-    r = r && atype(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // [ppragma]
-  private static boolean constr_1_1_1_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "constr_1_1_1_0_0")) return false;
-    ppragma(b, l + 1);
-    return true;
-  }
-
-  // ['!']
-  private static boolean constr_1_1_1_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "constr_1_1_1_0_1")) return false;
-    consumeToken(b, EXCLAMATION);
     return true;
   }
 
@@ -5763,6 +5706,26 @@ public class HaskellParser implements PsiParser {
     if (!r) r = exp(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  /* ********************************************************** */
+  // [ppragma] '!'
+  static boolean strict_mark(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "strict_mark")) return false;
+    if (!nextTokenIs(b, "", EXCLAMATION, OPENPRAGMA)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = strict_mark_0(b, l + 1);
+    r = r && consumeToken(b, EXCLAMATION);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // [ppragma]
+  private static boolean strict_mark_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "strict_mark_0")) return false;
+    ppragma(b, l + 1);
+    return true;
   }
 
   /* ********************************************************** */
