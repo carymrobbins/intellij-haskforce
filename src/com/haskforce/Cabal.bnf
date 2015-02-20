@@ -77,7 +77,7 @@
     commentRegexp='regexp:--([^\^\r\n][^\r\n]*|[\r\n])'
     varidRegexp="regexp:[a-zA-Z_\-0-9']*"
     filePathRegexp="regexp:[a-zA-Z_\-0-9*./']*"
-    numberRegexp="regexp:[0-9]+"
+    numberRegexp="regexp:[0-9*]+"
     freeformRegexp="regexp:[^]*"
     crlf='regexp:([\r\n])'
     WHITESPACELBRACETOK="Synthetic leftbrace"
@@ -173,9 +173,9 @@ buildInformation ::= buildDependsKey colon open <<commaSeparate dependency>> clo
                      extensionsKey colon open <<commaSeparate varid>> close |
                      buildToolsKey colon open <<commaSeparate dependency>> close|
                      buildableKey colon open bool close|
-                     ghcOptionsKey colon open <<dashSeparate varid>> close|
-                     ghcProfOptionsKey colon open <<dashSeparate varid>> close |
-                     ghcSharedOptionsKey colon open  <<dashSeparate varid>> close |
+                     ghcOptionsKey colon open varid* close|
+                     ghcProfOptionsKey colon open varid* close |
+                     ghcSharedOptionsKey colon open  varid* close |
                      includesKey colon open <<commaSeparate fileName>> close |
                      installIncludesKey colon open <<commaSeparate fileName>> close |
                      includeDirsKey colon open <<commaSeparate directory>> close |
@@ -197,8 +197,6 @@ private meta commaSeparate ::= <<p>> (',' <<p>>)* {pin(".*")=1}
 private meta cabalList ::= <<p>> (',' <<p>>)+ | <<p>>+
 
 private meta dotSeparate ::= <<p>> ('.' <<p>>)* {pin(".*")=1}
-
-private meta dashSeparate ::= <<p>> ('-' <<p>>)* {pin(".*")=1}
 
 private meta slashSeparate ::= <<p>> ('/' <<p>>)* {pin(".*")=1}
 

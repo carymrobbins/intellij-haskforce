@@ -1,21 +1,17 @@
 package com.haskforce.psi.references;
 
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.haskforce.HaskellModuleType;
 import com.haskforce.codeInsight.HaskellCompletionContributor;
 import com.haskforce.index.HaskellModuleIndex;
 import com.haskforce.psi.*;
 import com.haskforce.psi.impl.HaskellPsiImplUtil;
 import com.haskforce.utils.HaskellUtil;
-import com.haskforce.utils.SystemUtil;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.*;
-import com.intellij.psi.impl.file.PsiDirectoryFactory;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
@@ -26,9 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Resolves references to elements.
@@ -49,6 +43,7 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
     @NotNull
     @Override
     public ResolveResult[] multiResolve(boolean incompleteCode) {
+        FileBasedIndex.getInstance().getContainingFiles(ID.create("FilenameIndex"),"DungeonMaster.hs",GlobalSearchScope.allScope(myElement.getProject()));
         // We should only be resolving varids or conids.
         if (!(myElement instanceof HaskellVarid || myElement instanceof HaskellConid)) {
             return EMPTY_RESOLVE_RESULT;
