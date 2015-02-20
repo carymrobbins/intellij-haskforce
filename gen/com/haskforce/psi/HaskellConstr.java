@@ -17,9 +17,6 @@ public interface HaskellConstr extends HaskellCompositeElement {
   HaskellConop getConop();
 
   @NotNull
-  List<HaskellPpragma> getPpragmaList();
-
-  @NotNull
   List<HaskellTypee> getTypeeList();
 
   @NotNull

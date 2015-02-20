@@ -7,8 +7,8 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellAtype extends HaskellCompositeElement {
 
-  @NotNull
-  List<HaskellAtype> getAtypeList();
+  @Nullable
+  HaskellAtype getAtype();
 
   @NotNull
   List<HaskellCtype> getCtypeList();
@@ -18,6 +18,9 @@ public interface HaskellAtype extends HaskellCompositeElement {
 
   @Nullable
   HaskellOqtycon getOqtycon();
+
+  @Nullable
+  HaskellPpragma getPpragma();
 
   @Nullable
   HaskellPstringtoken getPstringtoken();
@@ -39,6 +42,9 @@ public interface HaskellAtype extends HaskellCompositeElement {
 
   @Nullable
   PsiElement getDoublehash();
+
+  @Nullable
+  PsiElement getExclamation();
 
   @Nullable
   PsiElement getHash();
