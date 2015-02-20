@@ -41,12 +41,6 @@ public class HaskellConstrImpl extends HaskellCompositeElementImpl implements Ha
 
   @Override
   @NotNull
-  public List<HaskellPpragma> getPpragmaList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPpragma.class);
-  }
-
-  @Override
-  @NotNull
   public List<HaskellTypee> getTypeeList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTypee.class);
   }

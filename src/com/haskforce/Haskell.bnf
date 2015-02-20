@@ -305,6 +305,8 @@ private typeeaux ::= (singlequote (qconop | varop) | qtyconop) typee
 
 private typeeopt ::= "->" typee {pin=1}
 
+private strict_mark ::= [ppragma] '!'
+
 ctype ::= foralltype
         | contexttype
         | typee
@@ -316,6 +318,7 @@ private btype ::= atype [btype]
 
 atype ::= [singlequote] ntgtycon ['##'|'#']
         | tyvar
+        | strict_mark atype
         | '{' fielddecls '}'
         | '(#' <<sequence ctype>> '#)'
         | '(' ['?'] ctype "::" (kind | ctype)')'
@@ -347,8 +350,8 @@ private gadtconstr ::= <<sequence con>> "::" ctype
 
 private constrs ::= [context "=>"] constr ('|' constr)*
 
-constr ::= (btype | '!'atype) conop (btype | '!'atype)
-         | con ('{' [(fielddecl ',')* fielddecl] '}' | ([ppragma] ['!'] atype)*)
+constr ::= btype conop btype
+         | con ('{' [(fielddecl ',')* fielddecl] '}' | btype*)
 
 newconstr ::= con (atype | '{' var '::' typee '}') {pin(".*")=1}
 

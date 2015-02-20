@@ -30,15 +30,16 @@ Haskell File
               TYCON
                 CONID
                   PsiElement(HaskellTokenType.conidRegexp)('DIM1')
-        PPRAGMA
-          PsiElement(HaskellTokenType.{-#)('{-#')
-          PsiElement(HaskellTokenType.PRAGMA)('UNPACK')
-          PsiElement(HaskellTokenType.#-})('#-}')
-        PsiElement(HaskellTokenType.!)('!')
         ATYPE
-          TYVAR
-            VARID
-              PsiElement(HaskellTokenType.varidRegexp)('a')
+          PPRAGMA
+            PsiElement(HaskellTokenType.{-#)('{-#')
+            PsiElement(HaskellTokenType.PRAGMA)('UNPACK')
+            PsiElement(HaskellTokenType.#-})('#-}')
+          PsiElement(HaskellTokenType.!)('!')
+          ATYPE
+            TYVAR
+              VARID
+                PsiElement(HaskellTokenType.varidRegexp)('a')
     FUNORPATDECL
       VARID
         PsiElement(HaskellTokenType.varidRegexp)('f')
