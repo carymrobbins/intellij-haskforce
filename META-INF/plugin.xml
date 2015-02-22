@@ -156,6 +156,7 @@
 
       <!-- Indexes -->
       <fileBasedIndex implementation="com.haskforce.index.HaskellModuleIndex"/>
+      <fileBasedIndex implementation="com.haskforce.cabal.index.CabalFileIndex"/>
       <stubIndex implementation="com.haskforce.stubs.index.HaskellAllNameIndex"/>
 
       <!-- Editing utils -->

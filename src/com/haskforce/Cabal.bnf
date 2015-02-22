@@ -140,7 +140,9 @@ compiler ::= varidRegexp versionConstraint version
 
 bool ::= true | false
 
-key ::= nameKey colon open varid close|
+projectName ::= nameKey colon open varid close
+
+key ::= projectName |
         synopsisKey colon open freeform close|
         licenseKey colon open varid close|
         authorKey colon open freeform close|
