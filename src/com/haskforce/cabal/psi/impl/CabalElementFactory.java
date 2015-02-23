@@ -7,12 +7,14 @@ import com.haskforce.cabal.psi.CabalFile;
 import com.haskforce.psi.HaskellFile;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiFileFactory;
+import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 
 public class CabalElementFactory {
     public static CabalDependency createCabalDependency(Project project, String packageName) {
-        CabalFile fileFromText = createFileFromText(project, "library\nbuild-depends:\n" + packageName);
-        return null;
+        String textToParse = "library\n  build-depends:\n    " + packageName;
+        CabalFile fileFromText = createFileFromText(project, textToParse);
+        return PsiTreeUtil.findChildOfType(fileFromText, CabalDependency.class);
     }
 
     /**

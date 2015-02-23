@@ -12,8 +12,10 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.openapi.vfs.VirtualFileSystem;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
@@ -43,14 +45,14 @@ public class AddBuildDepends extends BaseIntentionAction {
     public void invoke(@NotNull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException {
         CabalFile cabalFile = CabalFileIndex.getCabalFileByProjectName(project, GlobalSearchScope.allScope(project));
         if (cabalFile == null) return;
-        CabalLibrary library = cabalFile.findChildByClass(CabalLibrary.class);
+        CabalLibrary library = PsiTreeUtil.findChildOfType(cabalFile,CabalLibrary.class);
         List<CabalLibraryKeys> libraryKeysList = library.getLibraryKeysList();
         for (CabalLibraryKeys cabalLibraryKeys : libraryKeysList) {
             CabalBuildInformation buildInformation = cabalLibraryKeys.getBuildInformation();
             List<CabalDependency> dependencyList = buildInformation.getDependencyList();
             CabalDependency firstDependency = dependencyList.get(0);
             CabalDependency newDependency = CabalElementFactory.createCabalDependency(project, packageName);
-            firstDependency.addBefore(newDependency, firstDependency);
+            firstDependency.addAfter(newDependency, firstDependency);
         }
     }
 }
