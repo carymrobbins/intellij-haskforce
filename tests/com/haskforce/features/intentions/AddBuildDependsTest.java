@@ -26,10 +26,9 @@ public class AddBuildDependsTest extends HaskellLightPlatformCodeInsightFixtureT
         PsiElement firstChild = cabalFile.getFirstChild();
         Collection<CabalDependency> cabalDependencies = PsiTreeUtil.findChildrenOfType(cabalFile, CabalDependency.class);
         assertEquals(2, cabalDependencies.size());
-        for (CabalDependency cabalDependency : cabalDependencies) {
-            assertEquals(cabalDependency.getText(), "dingske");
-
-        }
+        Iterator<CabalDependency> cabalDependencyIterator = cabalDependencies.iterator();
+        assertEquals ("dongske", cabalDependencyIterator.next().getDependencyName().getText());
+        assertEquals ("dingske", cabalDependencyIterator.next().getDependencyName().getText());
 
     }
 }
