@@ -18,17 +18,16 @@ public class AddBuildDependsTest extends HaskellLightPlatformCodeInsightFixtureT
         super("features/intentions", "features/intentions");
     }
 
-    public void testInvoke() throws Exception {
-        PsiFile[] psiFiles = myFixture.configureByFiles("addbuilddepends.cabal");
+    public void testAddBuildDependsInvoke() throws Exception {
+        PsiFile[] psiFiles = myFixture.configureByFiles(getTestName(false)+".cabal");
         CabalFile cabalFile = (CabalFile)psiFiles[0];
         AddBuildDepends dingske = new AddBuildDepends("dingske");
         dingske.invoke(myFixture.getProject(),myFixture.getEditor(),null);
-        PsiElement firstChild = cabalFile.getFirstChild();
         Collection<CabalDependency> cabalDependencies = PsiTreeUtil.findChildrenOfType(cabalFile, CabalDependency.class);
         assertEquals(2, cabalDependencies.size());
         Iterator<CabalDependency> cabalDependencyIterator = cabalDependencies.iterator();
         assertEquals ("dongske", cabalDependencyIterator.next().getDependencyName().getText());
         assertEquals ("dingske", cabalDependencyIterator.next().getDependencyName().getText());
-
     }
+
 }

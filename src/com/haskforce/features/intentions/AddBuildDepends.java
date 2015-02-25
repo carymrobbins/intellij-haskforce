@@ -46,13 +46,26 @@ public class AddBuildDepends extends BaseIntentionAction {
         CabalFile cabalFile = CabalFileIndex.getCabalFileByProjectName(project, GlobalSearchScope.allScope(project));
         if (cabalFile == null) return;
         CabalLibrary library = PsiTreeUtil.findChildOfType(cabalFile,CabalLibrary.class);
-        List<CabalLibraryKeys> libraryKeysList = library.getLibraryKeysList();
+        List<CabalLibraryKeys> libraryKeysList = null;
+        if (library == null) {
+            return;
+        }
+        libraryKeysList = library.getLibraryKeysList();
         for (CabalLibraryKeys cabalLibraryKeys : libraryKeysList) {
             CabalBuildInformation buildInformation = cabalLibraryKeys.getBuildInformation();
-            List<CabalDependency> dependencyList = buildInformation.getDependencyList();
-            CabalDependency firstDependency = dependencyList.get(0);
-            CabalDependency newDependency = CabalElementFactory.createCabalDependency(project, packageName);
-            firstDependency.addAfter(newDependency, firstDependency);
+            List<CabalDependency> dependencyList = null;
+            if (buildInformation == null) {
+                CabalBuildInformation cabalBuildInformation = CabalElementFactory.createCabalBuildInformation(project, packageName);
+                library.addAfter(cabalBuildInformation,libraryKeysList.get(0));
+            } else {
+                dependencyList = buildInformation.getDependencyList();
+                //should always be good, cabal file will not compile without having at least
+                //one dependency. No compile of cabal file, no quickfix concerning adding something to the cabal file
+                //seems easiest and not a big deal to have the cabal file compiler
+                CabalDependency firstDependency = dependencyList.get(0);
+                CabalDependency newDependency = CabalElementFactory.createCabalDependency(project, packageName);
+                firstDependency.addAfter(newDependency, firstDependency);
+            }
         }
     }
 }
