@@ -1,10 +1,11 @@
 Cabal File
   KEY_OR_CONFIG
     KEY
-      PsiElement(CabalTokenType.name)('name')
-      PsiElement(CabalTokenType.:)(':')
-      VARID
-        PsiElement(CabalTokenType.varidRegexp)('feldspar-language')
+      PROJECT_NAME
+        PsiElement(CabalTokenType.name)('name')
+        PsiElement(CabalTokenType.:)(':')
+        VARID
+          PsiElement(CabalTokenType.varidRegexp)('feldspar-language')
   KEY_OR_CONFIG
     KEY
       PsiElement(CabalTokenType.version)('version')
@@ -23,10 +24,11 @@ Cabal File
           PsiElement(CabalTokenType.numberRegexp)('0')
   KEY_OR_CONFIG
     KEY
-      PsiElement(CabalTokenType.synopsis)('synopsis')
-      PsiElement(CabalTokenType.:)(':')
-      FREEFORM
-        PsiElement(CabalTokenType.freeformRegexp)('A functional embedded language for DSP and parallelism')
+      SYNOPSIS
+        PsiElement(CabalTokenType.synopsis)('synopsis')
+        PsiElement(CabalTokenType.:)(':')
+        FREEFORM
+          PsiElement(CabalTokenType.freeformRegexp)('A functional embedded language for DSP and parallelism')
   KEY_OR_CONFIG
     KEY
       PsiElement(CabalTokenType.description)('description')
@@ -38,10 +40,11 @@ Cabal File
         PsiElement(CabalTokenType.freeformRegexp)('interpreter.')
   KEY_OR_CONFIG
     KEY
-      PsiElement(CabalTokenType.category)('category')
-      PsiElement(CabalTokenType.:)(':')
-      VARID
-        PsiElement(CabalTokenType.varidRegexp)('Language')
+      CATEGORY
+        PsiElement(CabalTokenType.category)('category')
+        PsiElement(CabalTokenType.:)(':')
+        VARID
+          PsiElement(CabalTokenType.varidRegexp)('Language')
   KEY_OR_CONFIG
     KEY
       PsiElement(CabalTokenType.copyright)('copyright')
@@ -54,10 +57,11 @@ Cabal File
         PsiElement(CabalTokenType.freeformRegexp)('Copyright (c) 2009-2011, ERICSSON AB')
   KEY_OR_CONFIG
     KEY
-      PsiElement(CabalTokenType.author)('author')
-      PsiElement(CabalTokenType.:)(':')
-      FREEFORM
-        PsiElement(CabalTokenType.freeformRegexp)('Functional programming group at Chalmers University of Technology')
+      AUTHOR
+        PsiElement(CabalTokenType.author)('author')
+        PsiElement(CabalTokenType.:)(':')
+        FREEFORM
+          PsiElement(CabalTokenType.freeformRegexp)('Functional programming group at Chalmers University of Technology')
   KEY_OR_CONFIG
     KEY
       PsiElement(CabalTokenType.maintainer)('maintainer')
@@ -67,10 +71,11 @@ Cabal File
         PsiElement(CabalTokenType.freeformRegexp)('Anders Persson <anders.cj.persson@gmail.com>')
   KEY_OR_CONFIG
     KEY
-      PsiElement(CabalTokenType.license)('license')
-      PsiElement(CabalTokenType.:)(':')
-      VARID
-        PsiElement(CabalTokenType.varidRegexp)('BSD3')
+      LICENSE
+        PsiElement(CabalTokenType.license)('license')
+        PsiElement(CabalTokenType.:)(':')
+        VARID
+          PsiElement(CabalTokenType.varidRegexp)('BSD3')
   KEY_OR_CONFIG
     KEY
       PsiElement(CabalTokenType.license-file)('license-file')

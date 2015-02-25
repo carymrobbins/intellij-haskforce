@@ -142,11 +142,19 @@ bool ::= true | false
 
 projectName ::= nameKey colon open varid close
 
+synopsis ::= synopsisKey colon open freeform close
+
+license ::= licenseKey colon open varid close
+
+author ::= authorKey colon open freeform close
+
+category ::= categoryKey colon open varid close
+
 key ::= projectName |
-        synopsisKey colon open freeform close|
-        licenseKey colon open varid close|
-        authorKey colon open freeform close|
-        categoryKey colon open varid close|
+        synopsis |
+        license |
+        author |
+        category |
         copyrightKey colon open freeform close|
         maintainerKey colon open address close|
         buildTypeKey colon open buildType close|

@@ -22,7 +22,8 @@ Cabal File
                 PsiElement(CabalTokenType.varidRegexp)('js')
   KEY_OR_CONFIG
     KEY
-      PsiElement(CabalTokenType.name)('name')
-      PsiElement(CabalTokenType.:)(':')
-      VARID
-        PsiElement(CabalTokenType.varidRegexp)('koekoek')
+      PROJECT_NAME
+        PsiElement(CabalTokenType.name)('name')
+        PsiElement(CabalTokenType.:)(':')
+        VARID
+          PsiElement(CabalTokenType.varidRegexp)('koekoek')

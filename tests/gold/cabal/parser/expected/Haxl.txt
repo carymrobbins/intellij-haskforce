@@ -1,10 +1,11 @@
 Cabal File
   KEY_OR_CONFIG
     KEY
-      PsiElement(CabalTokenType.name)('name')
-      PsiElement(CabalTokenType.:)(':')
-      VARID
-        PsiElement(CabalTokenType.varidRegexp)('haxl')
+      PROJECT_NAME
+        PsiElement(CabalTokenType.name)('name')
+        PsiElement(CabalTokenType.:)(':')
+        VARID
+          PsiElement(CabalTokenType.varidRegexp)('haxl')
   KEY_OR_CONFIG
     KEY
       PsiElement(CabalTokenType.version)('version')
@@ -23,11 +24,12 @@ Cabal File
           PsiElement(CabalTokenType.numberRegexp)('0')
   KEY_OR_CONFIG
     KEY
-      PsiElement(CabalTokenType.synopsis)('synopsis')
-      PsiElement(CabalTokenType.:)(':')
-      FREEFORM
-        PsiElement(CabalTokenType.freeformRegexp)('A Haskell library for efficient, concurrent,')
-        PsiElement(CabalTokenType.freeformRegexp)('and concise data access.')
+      SYNOPSIS
+        PsiElement(CabalTokenType.synopsis)('synopsis')
+        PsiElement(CabalTokenType.:)(':')
+        FREEFORM
+          PsiElement(CabalTokenType.freeformRegexp)('A Haskell library for efficient, concurrent,')
+          PsiElement(CabalTokenType.freeformRegexp)('and concise data access.')
   KEY_OR_CONFIG
     KEY
       PsiElement(CabalTokenType.homepage)('homepage')
@@ -42,10 +44,11 @@ Cabal File
         PsiElement(CabalTokenType.freeformRegexp)('https://github.com/facebook/Haxl/issues')
   KEY_OR_CONFIG
     KEY
-      PsiElement(CabalTokenType.license)('license')
-      PsiElement(CabalTokenType.:)(':')
-      VARID
-        PsiElement(CabalTokenType.varidRegexp)('BSD3')
+      LICENSE
+        PsiElement(CabalTokenType.license)('license')
+        PsiElement(CabalTokenType.:)(':')
+        VARID
+          PsiElement(CabalTokenType.varidRegexp)('BSD3')
   KEY_OR_CONFIG
     KEY
       PsiElement(CabalTokenType.license-file)('license-file')
@@ -54,10 +57,11 @@ Cabal File
         PsiElement(CabalTokenType.freeformRegexp)('LICENSE')
   KEY_OR_CONFIG
     KEY
-      PsiElement(CabalTokenType.author)('author')
-      PsiElement(CabalTokenType.:)(':')
-      FREEFORM
-        PsiElement(CabalTokenType.freeformRegexp)('Facebook, Inc.')
+      AUTHOR
+        PsiElement(CabalTokenType.author)('author')
+        PsiElement(CabalTokenType.:)(':')
+        FREEFORM
+          PsiElement(CabalTokenType.freeformRegexp)('Facebook, Inc.')
   KEY_OR_CONFIG
     KEY
       PsiElement(CabalTokenType.maintainer)('maintainer')
@@ -72,10 +76,11 @@ Cabal File
         PsiElement(CabalTokenType.freeformRegexp)('2014 (C) 2014 Facebook, Inc.')
   KEY_OR_CONFIG
     KEY
-      PsiElement(CabalTokenType.category)('category')
-      PsiElement(CabalTokenType.:)(':')
-      VARID
-        PsiElement(CabalTokenType.varidRegexp)('Concurrency')
+      CATEGORY
+        PsiElement(CabalTokenType.category)('category')
+        PsiElement(CabalTokenType.:)(':')
+        VARID
+          PsiElement(CabalTokenType.varidRegexp)('Concurrency')
   KEY_OR_CONFIG
     KEY
       PsiElement(CabalTokenType.build-type)('build-type')

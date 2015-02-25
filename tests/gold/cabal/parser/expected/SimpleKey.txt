@@ -1,10 +1,11 @@
 Cabal File
   KEY_OR_CONFIG
     KEY
-      PsiElement(CabalTokenType.name)('name')
-      PsiElement(CabalTokenType.:)(':')
-      VARID
-        PsiElement(CabalTokenType.varidRegexp)('koekoek')
+      PROJECT_NAME
+        PsiElement(CabalTokenType.name)('name')
+        PsiElement(CabalTokenType.:)(':')
+        VARID
+          PsiElement(CabalTokenType.varidRegexp)('koekoek')
   KEY_OR_CONFIG
     KEY
       PsiElement(CabalTokenType.cabal-version)('cabal-version')
