@@ -335,7 +335,7 @@ public class HaskellUtil {
                 if (possibleMatch != null) {
                     results.add(possibleMatch);
                 }
-                if (prevSibling instanceof HaskellPat) {
+                if (prevSibling instanceof HaskellPat && parent instanceof HaskellExp) {
                     List<HaskellVarid> varIds = HaskellUtil.extractAllHaskellVarids((HaskellPat) prevSibling);
                     for (HaskellVarid varId : varIds) {
                         if (varId.getName().matches(matcher)) {
