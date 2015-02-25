@@ -5,21 +5,22 @@ Cabal File
         PsiElement(LIBRARY)('library')
         LIBRARY_KEYS
           BUILD_INFORMATION
-            PsiElement(CabalTokenType.js-sources)('js-sources')
-            PsiElement(CabalTokenType.:)(':')
-            FILE_NAME
-              VARID
-                PsiElement(CabalTokenType.varidRegexp)('one')
-              PsiElement(CabalTokenType..)('.')
-              VARID
-                PsiElement(CabalTokenType.varidRegexp)('js')
-            PsiElement(CabalTokenType.,)(',')
-            FILE_NAME
-              VARID
-                PsiElement(CabalTokenType.varidRegexp)('two')
-              PsiElement(CabalTokenType..)('.')
-              VARID
-                PsiElement(CabalTokenType.varidRegexp)('js')
+            JS_SOURCES
+              PsiElement(CabalTokenType.js-sources)('js-sources')
+              PsiElement(CabalTokenType.:)(':')
+              FILE_NAME
+                VARID
+                  PsiElement(CabalTokenType.varidRegexp)('one')
+                PsiElement(CabalTokenType..)('.')
+                VARID
+                  PsiElement(CabalTokenType.varidRegexp)('js')
+              PsiElement(CabalTokenType.,)(',')
+              FILE_NAME
+                VARID
+                  PsiElement(CabalTokenType.varidRegexp)('two')
+                PsiElement(CabalTokenType..)('.')
+                VARID
+                  PsiElement(CabalTokenType.varidRegexp)('js')
   KEY_OR_CONFIG
     KEY
       PROJECT_NAME

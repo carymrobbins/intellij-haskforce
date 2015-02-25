@@ -5,10 +5,11 @@ Cabal File
         PsiElement(LIBRARY)('library')
         LIBRARY_KEYS
           LIBRARY_SPECIFIC_KEYS
-            PsiElement(CabalTokenType.exposed)('exposed')
-            PsiElement(CabalTokenType.:)(':')
-            BOOL
-              PsiElement(CabalTokenType.true)('true')
+            EXPOSED
+              PsiElement(CabalTokenType.exposed)('exposed')
+              PsiElement(CabalTokenType.:)(':')
+              BOOL
+                PsiElement(CabalTokenType.true)('true')
         LIBRARY_KEYS
           LIBRARY_SPECIFIC_KEYS
             PsiElement(CabalTokenType.exposed-modules)('exposed-modules')

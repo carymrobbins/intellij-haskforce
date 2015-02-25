@@ -8,14 +8,15 @@ Cabal File
           PsiElement(CabalTokenType.varidRegexp)('koekoek')
   KEY_OR_CONFIG
     KEY
-      PsiElement(CabalTokenType.version)('version')
-      PsiElement(CabalTokenType.:)(':')
-      VERSION
-        NUMBER
-          PsiElement(CabalTokenType.numberRegexp)('0')
-        PsiElement(CabalTokenType..)('.')
-        NUMBER
-          PsiElement(CabalTokenType.numberRegexp)('0')
-        PsiElement(CabalTokenType..)('.')
-        NUMBER
-          PsiElement(CabalTokenType.numberRegexp)('1')
+      PACKAGE_VERSION
+        PsiElement(CabalTokenType.version)('version')
+        PsiElement(CabalTokenType.:)(':')
+        VERSION
+          NUMBER
+            PsiElement(CabalTokenType.numberRegexp)('0')
+          PsiElement(CabalTokenType..)('.')
+          NUMBER
+            PsiElement(CabalTokenType.numberRegexp)('0')
+          PsiElement(CabalTokenType..)('.')
+          NUMBER
+            PsiElement(CabalTokenType.numberRegexp)('1')

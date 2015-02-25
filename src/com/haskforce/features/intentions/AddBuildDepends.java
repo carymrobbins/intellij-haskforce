@@ -58,7 +58,7 @@ public class AddBuildDepends extends BaseIntentionAction {
                 CabalBuildInformation cabalBuildInformation = CabalElementFactory.createCabalBuildInformation(project, packageName);
                 library.addAfter(cabalBuildInformation,libraryKeysList.get(0));
             } else {
-                dependencyList = buildInformation.getDependencyList();
+                dependencyList = buildInformation.getBuildDepends().getDependencyList();
                 //should always be good, cabal file will not compile without having at least
                 //one dependency. No compile of cabal file, no quickfix concerning adding something to the cabal file
                 //seems easiest and not a big deal to have the cabal file compiler

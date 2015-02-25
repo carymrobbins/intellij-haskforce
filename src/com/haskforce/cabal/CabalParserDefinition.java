@@ -1,11 +1,8 @@
 package com.haskforce.cabal;
 
-import com.haskforce.cabal.highlighting.CabalSyntaxHighlightingLexer;
 import com.haskforce.cabal.psi.CabalFile;
-import com.haskforce.cabal.psi.CabalLexer;
+import com.haskforce.cabal.psi.CabalParsingLexer;
 import com.haskforce.cabal.psi.CabalTypes;
-import com.haskforce.cabal.psi._CabalLexer;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.ParserDefinition;
@@ -27,7 +24,7 @@ public class CabalParserDefinition implements ParserDefinition {
     @NotNull
     @Override
     public Lexer createLexer(Project project) {
-        return new CabalLexer();
+        return new CabalParsingLexer();
     }
 
     @Override
