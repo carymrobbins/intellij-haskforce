@@ -72,6 +72,8 @@
     ccOptionsKey = "cc-options"
     ldOptionsKey = "ld-options"
     pkgConfigDependsKey = "pkg-config-depends"
+    defaultFlagValueKey = "default"
+    manualKey = "manual"
     frameworksKey = "frameworks"
     crlf="regexp:[\r\n]"
     commentRegexp="regexp:--([^\^\r\n][^\r\n]*|[\r\n])"
@@ -94,8 +96,6 @@ library ::= "library" open libraryKeys+ close
 
 libraryKeys ::= librarySpecificKeys | buildInformation
 
-
-
 executableKeys ::= executableSpecificKeys | buildInformation
 
 executable ::= "executable" varid open executableKeys+ close
@@ -104,7 +104,11 @@ testSuite ::= "test-suite" varid open testSuiteKeys+ close
 
 testSuiteKeys ::= testSuiteSpecificKeys | buildInformation
 
-config ::= (library | executable | testSuite )
+config ::= (library | executable | testSuite | flag )
+
+flag ::= descriptionKey open freeform close |
+         defaultFlagValueKey open bool close |
+         manualKey open bool close
 
 keyOrConfig ::= key | config
 

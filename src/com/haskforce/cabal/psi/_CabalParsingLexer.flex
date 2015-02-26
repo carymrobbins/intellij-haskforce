@@ -12,7 +12,7 @@ import com.intellij.util.containers.Stack;
   private int yycolumn;
   private Stack<Integer> indentationStack;
   private Stack<Integer> stateStack;
-  public _CabalLexer() {
+  public _CabalParsingLexer() {
     this((java.io.Reader)null);
     indentationStack = ContainerUtil.newStack();
     stateStack = ContainerUtil.newStack();
@@ -20,7 +20,7 @@ import com.intellij.util.containers.Stack;
 %}
 
 %public
-%class _CabalLexer
+%class _CabalParsingLexer
 %implements FlexLexer
 %function advance
 %type IElementType
@@ -67,6 +67,10 @@ CRLF=([\r\n])
   "library"          {
                          yybegin(FINDINDENTATIONCONTEXT);
                          return LIBRARY;
+                     }
+  "flag"             {
+                         yybegin(CONFIGNAME);
+                         return FLAG;
                      }
   "executable"       {
                            yybegin(CONFIGNAME);
@@ -147,6 +151,16 @@ CRLF=([\r\n])
                        yybegin(FINDCOLON);
                        return LICENSEFILEKEY;
                     }
+  "default"      {
+                    stateStack.push(VARID);
+                    yybegin(FINDCOLON);
+                    return DEFAULTFLAGVALUEKEY;
+                 }
+  "manual"      {
+                    stateStack.push(VARID);
+                    yybegin(FINDCOLON);
+                    return MANUALKEY;
+                 }
 
   "license-files"   {
                        stateStack.push(VARID);
