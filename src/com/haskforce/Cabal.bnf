@@ -15,6 +15,7 @@
     dot = "."
     slash ="/"
     eq = "=="
+    assign = "="
     gt = ">"
     lt = "<"
     gtEq = ">="
@@ -35,6 +36,11 @@
     bugReportsKey ="bug-reports"
     packageKey ="package"
     typeKey = "type"
+    locationKey = "location"
+    moduleKey = "module"
+    branchKey = "branch"
+    tagKey = "tag"
+    subDirKey = "subdir"
     testModuleKey = "test-module"
     licenseFilesKey ="license-files"
     stabilityKey ="stability"
@@ -75,6 +81,7 @@
     pkgConfigDependsKey = "pkg-config-depends"
     defaultFlagValueKey = "default"
     manualKey = "manual"
+    sourceRepositoryKey = "source-repository"
     frameworksKey = "frameworks"
     crlf="regexp:[\r\n]"
     if="if"
@@ -96,6 +103,8 @@ comment ::= commentRegexp
 
 library ::= "library" open libraryKeys+ close
 
+benchmark ::= "benchmark" varid open benchmarkKeys+ close
+
 libraryKeys ::= librarySpecificKeys | conditional | buildInformation
 
 executableKeys ::= executableSpecificKeys | conditional | buildInformation
@@ -106,7 +115,16 @@ testSuite ::= "test-suite" varid open testSuiteKeys+ close
 
 testSuiteKeys ::= testSuiteSpecificKeys | buildInformation
 
-config ::= (library | executable | testSuite | flag )
+sourceRepoKeys ::= typeKey colon open varid close |
+                   locationKey colon open freeform close |
+                   moduleKey colon open varid close |
+                   branchKey colon open varid close |
+                   tagKey colon open varid close |
+                   subDirKey colon open varid close
+
+sourceRepository ::=  sourceRepositoryKey varid open sourceRepoKeys+ close
+
+config ::= (library | executable | testSuite | flag | sourceRepository | benchmark )
 
 flag ::= "flag" varid open flagKeys+ close
 
@@ -150,7 +168,7 @@ projectName ::= nameKey colon open varid close
 synopsis ::= synopsisKey colon open freeform close
 license ::= licenseKey colon open varid close
 author ::= authorKey colon open freeform close
-category ::= categoryKey colon open varid close
+category ::= categoryKey colon open freeform close
 copyright ::= copyrightKey colon open freeform close
 maintainer ::= maintainerKey colon open address close
 buildType ::= buildTypeKey colon open buildTypeEnum close
@@ -197,15 +215,17 @@ key ::= projectName |
         dataFiles |
         licenseFiles
 
+ghcOption ::= varid (assign (varid | number))*
+
 buildDepends ::= buildDependsKey colon open <<commaSeparate dependency>> close
 otherModules ::= otherModulesKey colon open <<cabalList module >> close
 hsSourceDirs ::= hsSourceDirsKey colon open <<cabalList directory>> close
 extensions ::= extensionsKey colon open <<commaSeparate varid>> close
 buildTools ::= buildToolsKey colon open <<commaSeparate dependency>> close
 buildable ::= buildableKey colon open bool close
-ghcOptions ::= ghcOptionsKey colon open varid* close
-ghcProfOptions ::= ghcProfOptionsKey colon open varid* close
-ghcSharedOptions ::= ghcSharedOptionsKey colon open  varid* close
+ghcOptions ::= ghcOptionsKey colon open ghcOption* close
+ghcProfOptions ::= ghcProfOptionsKey colon open ghcOption* close
+ghcSharedOptions ::= ghcSharedOptionsKey colon open  ghcOption* close
 includes ::= includesKey colon open <<commaSeparate fileName>> close
 installIncludes ::= installIncludesKey colon open <<commaSeparate fileName>> close
 includeDirs ::= includeDirsKey colon open <<commaSeparate directory>> close
@@ -260,7 +280,9 @@ librarySpecificKeys ::= exposedModulesKey colon open <<commaSeparate module >> c
                         exposedModulesKey colon open module* close |
                         exposed
 
-executableSpecificKeys ::= mainIsKey colon open fileName close
+executableSpecificKeys ::= mainIs
+
+benchmarkKeys ::= mainIs | testSuiteType | buildInformation
 
 private meta commaSeparate ::= <<p>> (',' <<p>>)* {pin(".*")=1}
 

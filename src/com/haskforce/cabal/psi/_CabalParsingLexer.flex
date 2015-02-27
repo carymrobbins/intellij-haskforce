@@ -26,6 +26,7 @@ import com.intellij.util.containers.Stack;
 %type IElementType
 %unicode
 %column
+%ignorecase
 
 
 EOL="\r"|"\n"|"\r\n"
@@ -85,6 +86,14 @@ CRLF=([\r\n])
                            yybegin(CONFIGNAME);
                            return EXECUTABLE;
                      }
+  "benchmark"       {
+                           yybegin(CONFIGNAME);
+                           return BENCHMARK;
+                     }
+  "source-repository" {
+                           yybegin(CONFIGNAME);
+                           return SOURCEREPOSITORYKEY;
+                     }
   "test-suite"       {
                            yybegin(CONFIGNAME);
                            return TEST_SUITE;
@@ -93,6 +102,31 @@ CRLF=([\r\n])
                        stateStack.push(VARID);
                        yybegin(FINDCOLON);
                        return TYPEKEY;
+                     }
+  "location"         {
+                       stateStack.push(FREEFORM);
+                       yybegin(FINDCOLON);
+                       return LOCATIONKEY;
+                     }
+   "module"             {
+                       stateStack.push(VARID);
+                       yybegin(FINDCOLON);
+                       return MODULEKEY;
+                     }
+   "branch"             {
+                       stateStack.push(VARID);
+                       yybegin(FINDCOLON);
+                       return BRANCHKEY;
+                     }
+   "tag"             {
+                       stateStack.push(VARID);
+                       yybegin(FINDCOLON);
+                       return TAGKEY;
+                     }
+   "subdir"             {
+                       stateStack.push(VARID);
+                       yybegin(FINDCOLON);
+                       return SUBDIRKEY;
                      }
   "test-module"      {
                          stateStack.push(VARID);
@@ -136,7 +170,7 @@ CRLF=([\r\n])
                        return AUTHORKEY;
                     }
   "category"   {
-                       stateStack.push(VARID);
+                       stateStack.push(FREEFORM);
                        yybegin(FINDCOLON);
                        return CATEGORYKEY;
                     }
@@ -394,6 +428,9 @@ CRLF=([\r\n])
                       }
   "=="            {
                     return EQ;
+                  }
+  "="            {
+                    return ASSIGN;
                   }
   ">="            {
                     return GTEQ;
