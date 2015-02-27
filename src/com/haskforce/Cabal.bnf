@@ -113,7 +113,7 @@ executable ::= "executable" varid open executableKeys+ close
 
 testSuite ::= "test-suite" varid open testSuiteKeys+ close
 
-testSuiteKeys ::= testSuiteSpecificKeys | buildInformation
+testSuiteKeys ::= testSuiteSpecificKeys | buildInformation | conditional
 
 sourceRepoKeys ::= typeKey colon open varid close |
                    locationKey colon open freeform close |
@@ -136,8 +136,10 @@ keyOrConfig ::= key | config
 
 condition ::= freeformRegexp
 
-conditional ::= if condition open (key | librarySpecificKeys | executableSpecificKeys | buildInformation) close
-  (else open (key | librarySpecificKeys | executableSpecificKeys | buildInformation) close)*
+condtionalKey ::= key | librarySpecificKeys | executableSpecificKeys | buildInformation
+
+conditional ::= if condition open condtionalKey+ close
+  (else open condtionalKey+ close)*
 
 varid ::= varidRegexp
 
@@ -282,7 +284,7 @@ librarySpecificKeys ::= exposedModulesKey colon open <<commaSeparate module >> c
 
 executableSpecificKeys ::= mainIs
 
-benchmarkKeys ::= mainIs | testSuiteType | buildInformation
+benchmarkKeys ::= mainIs | testSuiteType | buildInformation | conditional
 
 private meta commaSeparate ::= <<p>> (',' <<p>>)* {pin(".*")=1}
 
