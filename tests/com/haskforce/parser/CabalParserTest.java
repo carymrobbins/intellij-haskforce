@@ -47,4 +47,6 @@ public class CabalParserTest extends CabalParserTestBase {
     public void testFeldsparLanguage()       { doTest(true, true); }
     public void testHaxl()       { doTest(true, true); }
     public void testFlags()       { doTest(true, true); }
+    public void testIfStatement()       { doTest(true, true); }
+    public void testIfElseStatement()       { doTest(true, true); }
 }

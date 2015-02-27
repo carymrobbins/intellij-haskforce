@@ -20,8 +20,8 @@
     gtEq = ">="
     ltEq = "<="
     and = "&&"
-    true = "true"
-    false = "false"
+    true = "regexp:?itrue"
+    false = "regexp:?ifalse"
     nameKey = "name"
     versionKey = "version"
     synopsisKey = "synopsis"
@@ -70,14 +70,18 @@
     extraGhciLibrariesKey = "extra-ghci-libraries"
     extraLibDirsKey = "extra-lib-dirs"
     ccOptionsKey = "cc-options"
+    cppOptionsKey = "cpp-options"
     ldOptionsKey = "ld-options"
     pkgConfigDependsKey = "pkg-config-depends"
     defaultFlagValueKey = "default"
     manualKey = "manual"
     frameworksKey = "frameworks"
     crlf="regexp:[\r\n]"
+    if="if"
+    else="else"
     commentRegexp="regexp:--([^\^\r\n][^\r\n]*|[\r\n])"
     varidRegexp="regexp:[a-zA-Z_\-0-9']*"
+    conditionRegexp="regexp:[a-zA-Z_\-0-9'()<&>=!.]*"
     filePathRegexp="regexp:[a-zA-Z_\-0-9*./']*"
     numberRegexp="regexp:[0-9*]+"
     freeformRegexp="regexp:[^]*"
@@ -90,13 +94,11 @@ cabal ::= keyOrConfig* | comment
 
 comment ::= commentRegexp
 
-conditional ::= "if"
-
 library ::= "library" open libraryKeys+ close
 
-libraryKeys ::= librarySpecificKeys | buildInformation
+libraryKeys ::= librarySpecificKeys | conditional | buildInformation
 
-executableKeys ::= executableSpecificKeys | buildInformation
+executableKeys ::= executableSpecificKeys | conditional | buildInformation
 
 executable ::= "executable" varid open executableKeys+ close
 
@@ -106,11 +108,18 @@ testSuiteKeys ::= testSuiteSpecificKeys | buildInformation
 
 config ::= (library | executable | testSuite | flag )
 
-flag ::= descriptionKey open freeform close |
-         defaultFlagValueKey open bool close |
-         manualKey open bool close
+flag ::= "flag" varid open flagKeys+ close
+
+flagKeys ::= descriptionKey colon open freeform close |
+         defaultFlagValueKey colon open bool close |
+         manualKey colon open bool close
 
 keyOrConfig ::= key | config
+
+condition ::= freeformRegexp
+
+conditional ::= if condition open (key | librarySpecificKeys | executableSpecificKeys | buildInformation) close
+  (else open (key | librarySpecificKeys | executableSpecificKeys | buildInformation) close)*
 
 varid ::= varidRegexp
 
@@ -186,7 +195,7 @@ key ::= projectName |
         otherExtensions |
         testedWith |
         dataFiles |
-        licenseFiles |
+        licenseFiles
 
 buildDepends ::= buildDependsKey colon open <<commaSeparate dependency>> close
 otherModules ::= otherModulesKey colon open <<cabalList module >> close
@@ -206,6 +215,7 @@ extraLibraries ::= extraLibrariesKey colon open <<commaSeparate varid>> close
 extraGhciLibraries ::= extraGhciLibrariesKey colon open <<commaSeparate varid>> close
 extraLibDirs ::= extraLibDirsKey colon open <<commaSeparate directory>> close
 ccOptions ::= ccOptionsKey colon open <<commaSeparate varid>> close
+cppOptions ::= cppOptionsKey colon open freeform close
 ldOptions ::= ldOptionsKey colon open <<commaSeparate varid>> close
 pkgConfigDepends ::= pkgConfigDependsKey colon open <<commaSeparate dependency>> close
 frameworks ::= frameworksKey colon open <<commaSeparate varid>> close
@@ -229,10 +239,11 @@ buildInformation ::= buildDepends |
                      extraGhciLibraries |
                      extraLibDirs |
                      ccOptions |
+                     cppOptions |
                      ldOptions |
                      pkgConfigDepends |
                      frameworks |
-                     defaultLanguage|
+                     defaultLanguage
 
 
 testSuiteType ::= typeKey colon open testInterface close

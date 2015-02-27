@@ -1,1 +1,17 @@
 Cabal File
+  KEY_OR_CONFIG
+    CONFIG
+      FLAG
+        PsiElement(FLAG)('flag')
+        VARID
+          PsiElement(CabalTokenType.varidRegexp)('old-inline-pragmas')
+        FLAG_KEYS
+          PsiElement(CabalTokenType.default)('default')
+          PsiElement(CabalTokenType.:)(':')
+          BOOL
+            PsiElement(CabalTokenType.false)('False')
+        FLAG_KEYS
+          PsiElement(CabalTokenType.manual)('manual')
+          PsiElement(CabalTokenType.:)(':')
+          BOOL
+            PsiElement(CabalTokenType.true)('True')

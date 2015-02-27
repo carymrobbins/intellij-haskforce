@@ -34,12 +34,13 @@ WHITE_SPACE=({LINE_WS}|{EOL})+
 
 COMMENT=--([^\^\r\n][^\r\n]*|[\r\n])
 VARIDREGEXP=[a-zA-Z_\-0-9']*
+CONDITIONREGEXP=[a-zA-Z_\-0-9'()!.]*
 FILEPATHREGEXP=[a-zA-Z_\-0-9'.*/]*
 FREEFORMREGEXP=[^\r\n]*
 NUMBERREGEXP=[0-9*]+
 CRLF=([\r\n])
 
-%state FINDINDENTATIONCONTEXT, CONFIGNAME, FREEFORM, FINDCOLON, VARID, FILEPATH, ININDENTATIONCONTEXT
+%state FINDINDENTATIONCONTEXT, CONFIGNAME, FREEFORM, FINDCOLON, VARID, FILEPATH, ININDENTATIONCONTEXT, CONDITION
 
 %%
      <<EOF>>         {
@@ -67,6 +68,14 @@ CRLF=([\r\n])
   "library"          {
                          yybegin(FINDINDENTATIONCONTEXT);
                          return LIBRARY;
+                     }
+  "if"               {
+                        yybegin(CONDITION);
+                        return IF;
+                     }
+  "else"             {
+                        yybegin(FINDINDENTATIONCONTEXT);
+                        return ELSE;
                      }
   "flag"             {
                          yybegin(CONFIGNAME);
@@ -209,6 +218,7 @@ CRLF=([\r\n])
                        yybegin(FINDCOLON);
                        return EXTRADOCFILESKEY;
                     }
+
   "extra-tmp-files"   {
                        stateStack.push(VARID);
 
@@ -310,6 +320,11 @@ CRLF=([\r\n])
                          yybegin(FINDCOLON);
                          return CCOPTIONSKEY;
                        }
+  "cpp-options"      {
+                         stateStack.push(FREEFORM);
+                         yybegin(FINDCOLON);
+                         return CPPOPTIONSKEY;
+                       }
   "ld-options"      {
                          stateStack.push(VARID);
                          yybegin(FINDCOLON);
@@ -362,10 +377,10 @@ CRLF=([\r\n])
  [\t]            {
                      return com.intellij.psi.TokenType.WHITE_SPACE;
                  }
-  "true"             {
+  "true" | "True" {
                        return TRUE;
                       }
-  "false"             {
+  "false" | "False" {
                        return FALSE;
                       }
   ","             {
@@ -395,6 +410,7 @@ CRLF=([\r\n])
   "&&"            {
                     return AND;
                   }
+
   {NUMBERREGEXP}     {
                     return NUMBERREGEXP;
                     }
@@ -414,6 +430,14 @@ CRLF=([\r\n])
   ":"             {
                       yybegin(FINDINDENTATIONCONTEXT);
                       return COLON;
+                  }
+}
+
+<CONDITION> {
+ [\ ]            {return com.intellij.psi.TokenType.WHITE_SPACE;}
+  {FREEFORMREGEXP}   {
+                     yybegin(FINDINDENTATIONCONTEXT);
+                     return FREEFORMREGEXP;
                   }
 }
 
