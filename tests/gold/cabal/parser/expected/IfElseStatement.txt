@@ -1,0 +1,23 @@
+Cabal File
+  KEY_OR_CONFIG
+    CONFIG
+      LIBRARY
+        PsiElement(LIBRARY)('library')
+        LIBRARY_KEYS
+          CONDITIONAL
+            PsiElement(CabalTokenType.if)('if')
+            CONDITION
+              PsiElement(CabalTokenType.freeformRegexp)(' flag(old-inline-pragmas) && impl(ghc>=7.6.0.20120810)')
+            BUILD_INFORMATION
+              CPP_OPTIONS
+                PsiElement(CabalTokenType.cpp-options)('cpp-options')
+                PsiElement(CabalTokenType.:)(':')
+                FREEFORM
+                  PsiElement(CabalTokenType.freeformRegexp)('-DOLD_INLINE_PRAGMAS=1')
+            PsiElement(CabalTokenType.else)('else')
+            BUILD_INFORMATION
+              CPP_OPTIONS
+                PsiElement(CabalTokenType.cpp-options)('cpp-options')
+                PsiElement(CabalTokenType.:)(':')
+                FREEFORM
+                  PsiElement(CabalTokenType.freeformRegexp)('-DNEW_OUTLINE_STRICT=2')
