@@ -54,4 +54,5 @@ public class CabalParserTest extends CabalParserTestBase {
     public void testGhcOptions()       { doTest(true, true); }
     public void testSourceRepo()       { doTest(true, true); }
     public void testBenchmark()       { doTest(true, true); }
+    public void testTalismanRedux()       { doTest(true, true); }
 }
