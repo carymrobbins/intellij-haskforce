@@ -85,8 +85,8 @@ Cabal File
       CATEGORY
         PsiElement(CabalTokenType.category)('category')
         PsiElement(CabalTokenType.:)(':')
-        VARID
-          PsiElement(CabalTokenType.varidRegexp)('Concurrency')
+        FREEFORM
+          PsiElement(CabalTokenType.freeformRegexp)('Concurrency')
   KEY_OR_CONFIG
     KEY
       BUILD_TYPE
@@ -475,10 +475,12 @@ Cabal File
             GHC_OPTIONS
               PsiElement(CabalTokenType.ghc-options)('ghc-options')
               PsiElement(CabalTokenType.:)(':')
-              VARID
-                PsiElement(CabalTokenType.varidRegexp)('-Wall')
-              VARID
-                PsiElement(CabalTokenType.varidRegexp)('-fno-warn-name-shadowing')
+              GHC_OPTION
+                VARID
+                  PsiElement(CabalTokenType.varidRegexp)('-Wall')
+              GHC_OPTION
+                VARID
+                  PsiElement(CabalTokenType.varidRegexp)('-fno-warn-name-shadowing')
   KEY_OR_CONFIG
     CONFIG
       TEST_SUITE
@@ -538,12 +540,15 @@ Cabal File
             GHC_OPTIONS
               PsiElement(CabalTokenType.ghc-options)('ghc-options')
               PsiElement(CabalTokenType.:)(':')
-              VARID
-                PsiElement(CabalTokenType.varidRegexp)('-Wall')
-              VARID
-                PsiElement(CabalTokenType.varidRegexp)('-fno-warn-name-shadowing')
-              VARID
-                PsiElement(CabalTokenType.varidRegexp)('-fno-warn-missing-signatures')
+              GHC_OPTION
+                VARID
+                  PsiElement(CabalTokenType.varidRegexp)('-Wall')
+              GHC_OPTION
+                VARID
+                  PsiElement(CabalTokenType.varidRegexp)('-fno-warn-name-shadowing')
+              GHC_OPTION
+                VARID
+                  PsiElement(CabalTokenType.varidRegexp)('-fno-warn-missing-signatures')
         TEST_SUITE_KEYS
           BUILD_INFORMATION
             HS_SOURCE_DIRS

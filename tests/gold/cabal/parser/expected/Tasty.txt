@@ -88,8 +88,8 @@ Cabal File
       CATEGORY
         PsiElement(CabalTokenType.category)('category')
         PsiElement(CabalTokenType.:)(':')
-        VARID
-          PsiElement(CabalTokenType.varidRegexp)('Testing')
+        FREEFORM
+          PsiElement(CabalTokenType.freeformRegexp)('Testing')
   KEY_OR_CONFIG
     KEY
       BUILD_TYPE
@@ -502,13 +502,14 @@ Cabal File
             CONDITION
               PsiElement(CabalTokenType.freeformRegexp)(' impl(ghc < 7.6)')
             PsiComment(COMMENT)('-- for GHC.Generics')
-            BUILD_INFORMATION
-              BUILD_DEPENDS
-                PsiElement(CabalTokenType.build-depends)('build-depends')
-                PsiElement(CabalTokenType.:)(':')
-                DEPENDENCY
-                  DEPENDENCY_NAME
-                    PsiElement(CabalTokenType.varidRegexp)('ghc-prim')
+            CONDTIONAL_KEY
+              BUILD_INFORMATION
+                BUILD_DEPENDS
+                  PsiElement(CabalTokenType.build-depends)('build-depends')
+                  PsiElement(CabalTokenType.:)(':')
+                  DEPENDENCY
+                    DEPENDENCY_NAME
+                      PsiElement(CabalTokenType.varidRegexp)('ghc-prim')
         PsiComment(COMMENT)('-- hs-source-dirs:      ')
         LIBRARY_KEYS
           BUILD_INFORMATION
@@ -522,9 +523,12 @@ Cabal File
             GHC_OPTIONS
               PsiElement(CabalTokenType.ghc-options)('ghc-options')
               PsiElement(CabalTokenType.:)(':')
-              VARID
-                PsiElement(CabalTokenType.varidRegexp)('-Wall')
-              VARID
-                PsiElement(CabalTokenType.varidRegexp)('-fno-warn-unused-do-bind')
-              VARID
-                PsiElement(CabalTokenType.varidRegexp)('-fno-warn-name-shadowing')
+              GHC_OPTION
+                VARID
+                  PsiElement(CabalTokenType.varidRegexp)('-Wall')
+              GHC_OPTION
+                VARID
+                  PsiElement(CabalTokenType.varidRegexp)('-fno-warn-unused-do-bind')
+              GHC_OPTION
+                VARID
+                  PsiElement(CabalTokenType.varidRegexp)('-fno-warn-name-shadowing')

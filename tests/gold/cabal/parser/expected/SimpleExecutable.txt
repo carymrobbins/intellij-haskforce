@@ -7,11 +7,12 @@ Cabal File
           PsiElement(CabalTokenType.varidRegexp)('voernekeeruit')
         EXECUTABLE_KEYS
           EXECUTABLE_SPECIFIC_KEYS
-            PsiElement(CabalTokenType.main-is)('main-is')
-            PsiElement(CabalTokenType.:)(':')
-            FILE_NAME
-              VARID
-                PsiElement(CabalTokenType.varidRegexp)('Koekoek')
-              PsiElement(CabalTokenType..)('.')
-              VARID
-                PsiElement(CabalTokenType.varidRegexp)('hs')
+            MAIN_IS
+              PsiElement(CabalTokenType.main-is)('main-is')
+              PsiElement(CabalTokenType.:)(':')
+              FILE_NAME
+                VARID
+                  PsiElement(CabalTokenType.varidRegexp)('Koekoek')
+                PsiElement(CabalTokenType..)('.')
+                VARID
+                  PsiElement(CabalTokenType.varidRegexp)('hs')

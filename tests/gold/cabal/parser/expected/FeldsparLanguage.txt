@@ -45,8 +45,8 @@ Cabal File
       CATEGORY
         PsiElement(CabalTokenType.category)('category')
         PsiElement(CabalTokenType.:)(':')
-        VARID
-          PsiElement(CabalTokenType.varidRegexp)('Language')
+        FREEFORM
+          PsiElement(CabalTokenType.freeformRegexp)('Language')
   KEY_OR_CONFIG
     KEY
       COPYRIGHT
