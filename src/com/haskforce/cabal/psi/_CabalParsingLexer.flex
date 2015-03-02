@@ -402,6 +402,7 @@ CRLF=([\r\n])
 
   {COMMENT}          { return COMMENT; }
 
+  [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
 
 <VARID> {
@@ -460,6 +461,7 @@ CRLF=([\r\n])
                        }
                        return com.intellij.psi.TokenType.WHITE_SPACE;
                   }
+  [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
 
 <FINDCOLON> {
@@ -468,6 +470,7 @@ CRLF=([\r\n])
                       yybegin(FINDINDENTATIONCONTEXT);
                       return COLON;
                   }
+  [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
 
 <CONDITION> {
@@ -476,6 +479,7 @@ CRLF=([\r\n])
                      yybegin(FINDINDENTATIONCONTEXT);
                      return FREEFORMREGEXP;
                   }
+ [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
 
 <CONFIGNAME> {
@@ -484,6 +488,7 @@ CRLF=([\r\n])
                      yybegin(FINDINDENTATIONCONTEXT);
                      return VARIDREGEXP;
                   }
+  [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
 
 <FREEFORM> {
@@ -492,6 +497,7 @@ CRLF=([\r\n])
                      yybegin(YYINITIAL);
                      return FREEFORMREGEXP;
                   }
+  [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
 
 <FILEPATH> {
@@ -500,6 +506,7 @@ CRLF=([\r\n])
                      yybegin(YYINITIAL);
                      return FILEPATHREGEXP;
                   }
+  [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
 
 <ININDENTATIONCONTEXT> {
@@ -562,7 +569,9 @@ CRLF=([\r\n])
                              }
                           } else {
                                if(yycolumn == indentationStack.peek ()){
-                                 stateStack.pop();
+                                 if(!stateStack.isEmpty()){
+                                   stateStack.pop();
+                                 }
                                  yybegin(stateStack.isEmpty() ? YYINITIAL : stateStack.peek());
                                  return com.intellij.psi.TokenType.WHITE_SPACE;
                                } else {
