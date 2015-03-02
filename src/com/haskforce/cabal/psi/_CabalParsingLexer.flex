@@ -561,9 +561,16 @@ CRLF=([\r\n])
                                yybegin(YYINITIAL);
                              }
                           } else {
-                               indentationStack.push(yycolumn);
-                               yybegin(stateStack.isEmpty() ? YYINITIAL : stateStack.peek());
-                               return WHITESPACELBRACETOK;
+                               if(yycolumn == indentationStack.peek ()){
+                                 stateStack.pop();
+                                 yybegin(stateStack.isEmpty() ? YYINITIAL : stateStack.peek());
+                                 return com.intellij.psi.TokenType.WHITE_SPACE;
+                               } else {
+                                 indentationStack.push(yycolumn);
+                                 yybegin(stateStack.isEmpty() ? YYINITIAL : stateStack.peek());
+                                 return WHITESPACELBRACETOK;
+                               }
+
                           }
                       }
 

@@ -115,12 +115,12 @@ testSuite ::= "test-suite" varid open testSuiteKeys+ close
 
 testSuiteKeys ::= testSuiteSpecificKeys | buildInformation | conditional
 
-sourceRepoKeys ::= typeKey colon open varid close |
-                   locationKey colon open freeform close |
-                   moduleKey colon open varid close |
-                   branchKey colon open varid close |
-                   tagKey colon open varid close |
-                   subDirKey colon open varid close
+sourceRepoKeys ::= typeKey colon (open varid close)* |
+                   locationKey colon (open freeform close)* |
+                   moduleKey colon (open varid close)* |
+                   branchKey colon (open varid close)* |
+                   tagKey colon (open varid close)* |
+                   subDirKey colon (open varid close)*
 
 sourceRepository ::=  sourceRepositoryKey varid open sourceRepoKeys+ close
 
@@ -128,9 +128,9 @@ config ::= (library | executable | testSuite | flag | sourceRepository | benchma
 
 flag ::= "flag" varid open flagKeys+ close
 
-flagKeys ::= descriptionKey colon open freeform close |
-         defaultFlagValueKey colon open bool close |
-         manualKey colon open bool close
+flagKeys ::= descriptionKey colon (open freeform close)* |
+         defaultFlagValueKey colon (open bool close)* |
+         manualKey colon (open bool close)*
 
 keyOrConfig ::= key | config
 
@@ -166,30 +166,30 @@ compiler ::= varidRegexp versionConstraint version
 
 bool ::= true | false
 
-projectName ::= nameKey colon open varid close
-synopsis ::= synopsisKey colon open freeform close
-license ::= licenseKey colon open varid close
-author ::= authorKey colon open freeform close
-category ::= categoryKey colon open freeform close
-copyright ::= copyrightKey colon open freeform close
-maintainer ::= maintainerKey colon open address close
-buildType ::= buildTypeKey colon open buildTypeEnum close
-stability ::= stabilityKey colon open varid close
-homepage ::= homepageKey colon open url close
-bugReports ::= bugReportsKey colon open url close
-cabalPackage ::= packageKey colon open url close
-cabalVersion ::= cabalVersionKey colon open gtEq version close
-licenseFile ::= licenseFileKey colon open freeform close
-description ::= descriptionKey colon open freeform close
-dataDir ::= dataDirKey colon open directory close
-packageVersion ::= versionKey colon open version close
-extraSourceFiles ::= extraSourceFilesKey colon open (<<commaSeparate varid >> | filePath*) close
-extraDocFiles ::= extraDocFilesKey colon open <<commaSeparate varid>> close
-extraTmpFiles ::= extraTmpFilesKey colon open <<commaSeparate varid>> close
-otherExtensions ::= otherExtensionsKey colon open <<commaSeparate varid>> close
-testedWith ::= testedWithKey colon open <<commaSeparate compiler>> close
-dataFiles ::= dataFilesKey colon open <<commaSeparate fileName>> close
-licenseFiles ::= licenseFilesKey colon open <<commaSeparate fileName>> close
+projectName ::= nameKey colon (open varid close)*
+synopsis ::= synopsisKey colon (open freeform close)*
+license ::= licenseKey colon (open varid close)*
+author ::= authorKey colon (open freeform close)*
+category ::= categoryKey colon (open freeform close)*
+copyright ::= copyrightKey colon (open freeform close)*
+maintainer ::= maintainerKey colon (open address close)*
+buildType ::= buildTypeKey colon (open buildTypeEnum close)*
+stability ::= stabilityKey colon (open varid close)*
+homepage ::= homepageKey colon (open url close)*
+bugReports ::= bugReportsKey colon (open url close)*
+cabalPackage ::= packageKey colon (open url close)*
+cabalVersion ::= cabalVersionKey colon (open gtEq version close)*
+licenseFile ::= licenseFileKey colon (open freeform close)*
+description ::= descriptionKey colon (open freeform close)*
+dataDir ::= dataDirKey colon (open directory close)*
+packageVersion ::= versionKey colon (open version close)*
+extraSourceFiles ::= extraSourceFilesKey colon (open (<<commaSeparate varid >> | filePath*) close)*
+extraDocFiles ::= extraDocFilesKey colon (open <<commaSeparate varid>> close)*
+extraTmpFiles ::= extraTmpFilesKey colon (open <<commaSeparate varid>> close)*
+otherExtensions ::= otherExtensionsKey colon (open <<commaSeparate varid>> close)*
+testedWith ::= testedWithKey colon (open <<commaSeparate compiler>> close)*
+dataFiles ::= dataFilesKey colon (open <<commaSeparate fileName>> close)*
+licenseFiles ::= licenseFilesKey colon (open <<commaSeparate fileName>> close)*
 
 
 key ::= projectName |
@@ -219,29 +219,29 @@ key ::= projectName |
 
 ghcOption ::= varid (assign (varid | number))*
 
-buildDepends ::= buildDependsKey colon open <<commaSeparate dependency>> close
-otherModules ::= otherModulesKey colon open <<cabalList module >> close
-hsSourceDirs ::= hsSourceDirsKey colon open <<cabalList directory>> close
-extensions ::= extensionsKey colon open <<commaSeparate varid>> close
-buildTools ::= buildToolsKey colon open <<commaSeparate dependency>> close
-buildable ::= buildableKey colon open bool close
-ghcOptions ::= ghcOptionsKey colon open ghcOption* close
-ghcProfOptions ::= ghcProfOptionsKey colon open ghcOption* close
-ghcSharedOptions ::= ghcSharedOptionsKey colon open  ghcOption* close
-includes ::= includesKey colon open <<commaSeparate fileName>> close
-installIncludes ::= installIncludesKey colon open <<commaSeparate fileName>> close
-includeDirs ::= includeDirsKey colon open <<commaSeparate directory>> close
-cSources ::= cSourcesKey colon open <<commaSeparate fileName>> close
-jsSources ::= jsSourcesKey colon open <<commaSeparate fileName>> close
-extraLibraries ::= extraLibrariesKey colon open <<commaSeparate varid>> close
-extraGhciLibraries ::= extraGhciLibrariesKey colon open <<commaSeparate varid>> close
-extraLibDirs ::= extraLibDirsKey colon open <<commaSeparate directory>> close
-ccOptions ::= ccOptionsKey colon open <<commaSeparate varid>> close
-cppOptions ::= cppOptionsKey colon open freeform close
-ldOptions ::= ldOptionsKey colon open <<commaSeparate varid>> close
-pkgConfigDepends ::= pkgConfigDependsKey colon open <<commaSeparate dependency>> close
-frameworks ::= frameworksKey colon open <<commaSeparate varid>> close
-defaultLanguage ::= defaultLanguageKey colon open varid close
+buildDepends ::= buildDependsKey colon (open <<commaSeparate dependency>> close)*
+otherModules ::= otherModulesKey colon (open <<cabalList module >> close)*
+hsSourceDirs ::= hsSourceDirsKey colon (open <<cabalList directory>> close)*
+extensions ::= extensionsKey colon (open <<commaSeparate varid>> close)*
+buildTools ::= buildToolsKey colon (open <<commaSeparate dependency>> close)*
+buildable ::= buildableKey colon (open bool close)*
+ghcOptions ::= ghcOptionsKey colon (open ghcOption* close)*
+ghcProfOptions ::= ghcProfOptionsKey colon (open ghcOption* close)*
+ghcSharedOptions ::= ghcSharedOptionsKey colon (open  ghcOption* close)*
+includes ::= includesKey colon (open <<commaSeparate fileName>> close)*
+installIncludes ::= installIncludesKey colon (open <<commaSeparate fileName>> close)*
+includeDirs ::= includeDirsKey colon (open <<commaSeparate directory>> close)*
+cSources ::= cSourcesKey colon (open <<commaSeparate fileName>> close)*
+jsSources ::= jsSourcesKey colon (open <<commaSeparate fileName>> close)*
+extraLibraries ::= extraLibrariesKey colon (open <<commaSeparate varid>> close)*
+extraGhciLibraries ::= extraGhciLibrariesKey colon (open <<commaSeparate varid>> close)*
+extraLibDirs ::= extraLibDirsKey colon (open <<commaSeparate directory>> close)*
+ccOptions ::= ccOptionsKey colon (open <<commaSeparate varid>> close)*
+cppOptions ::= cppOptionsKey colon (open freeform close)*
+ldOptions ::= ldOptionsKey colon (open <<commaSeparate varid>> close)*
+pkgConfigDepends ::= pkgConfigDependsKey colon (open <<commaSeparate dependency>> close)*
+frameworks ::= frameworksKey colon (open <<commaSeparate varid>> close)*
+defaultLanguage ::= defaultLanguageKey colon (open varid close)*
 
 buildInformation ::= buildDepends |
                      otherModules |

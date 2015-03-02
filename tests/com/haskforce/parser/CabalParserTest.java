@@ -55,4 +55,5 @@ public class CabalParserTest extends CabalParserTestBase {
     public void testSourceRepo()       { doTest(true, true); }
     public void testBenchmark()       { doTest(true, true); }
     public void testTalismanRedux()       { doTest(true, true); }
+    public void testEmptyKeyShouldBeAllowed()       { doTest(true, true); }
 }
