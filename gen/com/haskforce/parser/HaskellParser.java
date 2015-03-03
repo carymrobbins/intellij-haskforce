@@ -1978,7 +1978,7 @@ public class HaskellParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // "data" ["instance"] [context "=>"] typee ['=' constrs| [kindsig] ["where" gadtconstrs]] [deriving]
+  // "data" ["instance"] [context "=>"] typee ['=' ["forall" tv_bndr* '.'] constrs| [kindsig] ["where" gadtconstrs]] [deriving]
   public static boolean datadecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "datadecl")) return false;
     if (!nextTokenIs(b, DATA)) return false;
@@ -2020,14 +2020,14 @@ public class HaskellParser implements PsiParser {
     return r;
   }
 
-  // ['=' constrs| [kindsig] ["where" gadtconstrs]]
+  // ['=' ["forall" tv_bndr* '.'] constrs| [kindsig] ["where" gadtconstrs]]
   private static boolean datadecl_4(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "datadecl_4")) return false;
     datadecl_4_0(b, l + 1);
     return true;
   }
 
-  // '=' constrs| [kindsig] ["where" gadtconstrs]
+  // '=' ["forall" tv_bndr* '.'] constrs| [kindsig] ["where" gadtconstrs]
   private static boolean datadecl_4_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "datadecl_4_0")) return false;
     boolean r;
@@ -2038,15 +2038,47 @@ public class HaskellParser implements PsiParser {
     return r;
   }
 
-  // '=' constrs
+  // '=' ["forall" tv_bndr* '.'] constrs
   private static boolean datadecl_4_0_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "datadecl_4_0_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, EQUALS);
+    r = r && datadecl_4_0_0_1(b, l + 1);
     r = r && constrs(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // ["forall" tv_bndr* '.']
+  private static boolean datadecl_4_0_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "datadecl_4_0_0_1")) return false;
+    datadecl_4_0_0_1_0(b, l + 1);
+    return true;
+  }
+
+  // "forall" tv_bndr* '.'
+  private static boolean datadecl_4_0_0_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "datadecl_4_0_0_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, FORALLTOKEN);
+    r = r && datadecl_4_0_0_1_0_1(b, l + 1);
+    r = r && consumeToken(b, PERIOD);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // tv_bndr*
+  private static boolean datadecl_4_0_0_1_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "datadecl_4_0_0_1_0_1")) return false;
+    int c = current_position_(b);
+    while (true) {
+      if (!tv_bndr(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "datadecl_4_0_0_1_0_1", c)) break;
+      c = current_position_(b);
+    }
+    return true;
   }
 
   // [kindsig] ["where" gadtconstrs]

@@ -124,6 +124,7 @@ public class HaskellParserTest extends HaskellParserTestBase {
     public void testType00006()         { doTest(true, true); }
     public void testVar00001()          { doTest(true, true); }
     public void testQuote00001()        { doTest(true, true); }
+    public void testForAll00001()        { doTest(true, true); }
 
     // TODO: Change to doTest(true, true) after bug fixes.
     // Note that testInternalLexer seems to output different parse trees between IntelliJ 13 and 14.

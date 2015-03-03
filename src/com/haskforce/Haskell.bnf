@@ -255,7 +255,7 @@ private typedeclnorm ::= ["family" | "instance"] typee ['=' (typee|foralltype)]
 
 // Both data declaration and gadt declaration. The syntactic difference between
 // the two is between typee and [deriving].
-datadecl ::= "data" ["instance"] [context "=>"] typee ['=' constrs| [kindsig] ["where" gadtconstrs]] [deriving] {pin=1}
+datadecl ::= "data" ["instance"] [context "=>"] typee ['=' ["forall" tv_bndr* '.'] constrs| [kindsig] ["where" gadtconstrs]] [deriving] {pin=1}
 newtypedecl ::= "newtype" [context "=>"] simpletype '=' newconstr [deriving] {pin=1}
 classdecl ::= "class" ctype [fundeps] ["where" cdecls] {pin=1}
 instancedecl ::= "instance" ctype ["where" idecls] {pin=1}
