@@ -99,7 +99,6 @@ public class CabalSyntaxHighlighter extends SyntaxHighlighterBase {
                 CabalTypes.TESTEDWITHKEY,
                 CabalTypes.TESTMODULEKEY,
                 CabalTypes.TYPEKEY,
-                CabalTypes.VARIDREGEXP,
                 CabalTypes.VERSIONKEY
         ), KEY);
     }

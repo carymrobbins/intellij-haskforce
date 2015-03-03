@@ -8,10 +8,8 @@ import com.haskforce.utils.FileUtil;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
-import com.intellij.openapi.vfs.VirtualFileSystem;
+import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.vfs.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.GlobalSearchScope;
@@ -58,10 +56,11 @@ public class AddBuildDepends extends BaseIntentionAction {
                 CabalBuildInformation cabalBuildInformation = CabalElementFactory.createCabalBuildInformation(project, packageName);
                 library.addAfter(cabalBuildInformation,libraryKeysList.get(0));
             } else {
-                dependencyList = buildInformation.getBuildDepends().getDependencyList();
-                //should always be good, cabal file will not compile without having at least
-                //one dependency. No compile of cabal file, no quickfix concerning adding something to the cabal file
-                //seems easiest and not a big deal to have the cabal file compiler
+                CabalBuildDepends buildDepends = buildInformation.getBuildDepends();
+                if (buildDepends == null){
+                    return;
+                }
+                dependencyList = buildDepends.getDependencyList();
                 CabalDependency firstDependency = dependencyList.get(0);
                 CabalDependency newDependency = CabalElementFactory.createCabalDependency(project, packageName);
                 firstDependency.addAfter(newDependency, firstDependency);
