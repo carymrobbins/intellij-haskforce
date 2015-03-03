@@ -32,6 +32,9 @@ public interface HaskellDatadecl extends HaskellCompositeElement {
   List<HaskellQtycls> getQtyclsList();
 
   @NotNull
+  List<HaskellTvBndr> getTvBndrList();
+
+  @NotNull
   List<HaskellTypee> getTypeeList();
 
   @NotNull
@@ -45,6 +48,9 @@ public interface HaskellDatadecl extends HaskellCompositeElement {
 
   @Nullable
   PsiElement getDeriving();
+
+  @Nullable
+  PsiElement getForalltoken();
 
   @Nullable
   PsiElement getInstance();
@@ -66,6 +72,9 @@ public interface HaskellDatadecl extends HaskellCompositeElement {
 
   @Nullable
   PsiElement getLparen();
+
+  @Nullable
+  PsiElement getPeriod();
 
   @Nullable
   PsiElement getRparen();
