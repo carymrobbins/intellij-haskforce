@@ -9,15 +9,19 @@ import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.openapi.vfs.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.ui.components.JBList;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
 
+import javax.swing.*;
+import java.util.Collection;
 import java.util.List;
 
 public class AddBuildDepends extends BaseIntentionAction {
@@ -43,28 +47,21 @@ public class AddBuildDepends extends BaseIntentionAction {
     public void invoke(@NotNull Project project, Editor editor, PsiFile psiFile) throws IncorrectOperationException {
         CabalFile cabalFile = CabalFileIndex.getCabalFileByProjectName(project, GlobalSearchScope.allScope(project));
         if (cabalFile == null) return;
-        CabalLibrary library = PsiTreeUtil.findChildOfType(cabalFile,CabalLibrary.class);
-        List<CabalLibraryKeys> libraryKeysList = null;
-        if (library == null) {
-            return;
-        }
-        libraryKeysList = library.getLibraryKeysList();
-        for (CabalLibraryKeys cabalLibraryKeys : libraryKeysList) {
-            CabalBuildInformation buildInformation = cabalLibraryKeys.getBuildInformation();
-            List<CabalDependency> dependencyList = null;
-            if (buildInformation == null) {
-                CabalBuildInformation cabalBuildInformation = CabalElementFactory.createCabalBuildInformation(project, packageName);
-                library.addAfter(cabalBuildInformation,libraryKeysList.get(0));
-            } else {
-                CabalBuildDepends buildDepends = buildInformation.getBuildDepends();
-                if (buildDepends == null){
-                    return;
-                }
-                dependencyList = buildDepends.getDependencyList();
-                CabalDependency firstDependency = dependencyList.get(0);
-                CabalDependency newDependency = CabalElementFactory.createCabalDependency(project, packageName);
-                firstDependency.addAfter(newDependency, firstDependency);
+        Collection<CabalBuildInformation> buildInformations = PsiTreeUtil.findChildrenOfType(cabalFile,
+                CabalBuildInformation
+                .class);
+        for (CabalBuildInformation buildInformation : buildInformations) {
+            CabalBuildDepends buildDepends = buildInformation.getBuildDepends();
+            if (buildDepends == null){
+                return;
             }
+            List<CabalDependency> dependencyList = buildDepends.getDependencyList();
+            if (dependencyList.size() == 0){
+                return;
+            }
+            CabalDependency firstDependency = dependencyList.get(0);
+            CabalDependency newDependency = CabalElementFactory.createCabalDependency(project, packageName);
+            firstDependency.addAfter(newDependency, firstDependency);
         }
     }
 }
