@@ -31,6 +31,7 @@ import com.haskforce.features.HaskellTypedHandlerTest;
 import com.haskforce.features.intentions.AddBuildDependsTest;
 import com.haskforce.highlighting.HaskellLexerTest;
 import com.haskforce.highlighting.annotation.external.GhcUtilTest;
+import com.haskforce.highlighting.annotation.external.ProblemTest;
 import com.haskforce.move.HaskellMoveTest;
 import com.haskforce.parser.CabalParserTest;
 import com.haskforce.parser.HaskellParserTest;
@@ -66,6 +67,7 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(HaskellResolveTest.class);
         suite.addTestSuite(GhcUtilTest.class);
         suite.addTestSuite(AddBuildDependsTest.class);
+        suite.addTestSuite(ProblemTest.class);
         return suite;
     }
 }

@@ -45,9 +45,9 @@ public class ProblemTest extends TestCase {
 
     public void testAddTastyBuildDependsFix() throws Exception {
         GhcMod.Problem illegalSymbolProblem
-                = new GhcMod.Problem("file.42", 0, 0, "Could not find module 'Test.Tasty'\n" +
-                "    It is a member of the hidden package 'tasty-0.10.1'.\n" +
-                "    Perhaps you need to add 'tasty' to the build-depends in your .cabal file.");
+                = new GhcMod.Problem("file.42", 0, 0, "Could not find module ‘Test.Tasty’\n" +
+                "    It is a member of the hidden package ‘tasty-0.10.1’.\n" +
+                "    Perhaps you need to add ‘tasty’ to the build-depends in your .cabal file.");
         Annotation dummyAnnotation = new Annotation(0,0, HighlightSeverity.ERROR,"","");
 
         illegalSymbolProblem.registerFix(dummyAnnotation);

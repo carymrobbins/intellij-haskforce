@@ -248,7 +248,7 @@ public class GhcMod {
                                     annotation.registerFix(new AddLanguagePragma(group));
                                 }
                             }),
-                    new Pair(Pattern.compile("Perhaps you need to add '(\\S+)' to the build-depends in your .cabal file."),
+                    new Pair(Pattern.compile("Perhaps you need to add ‘(\\S+)’ to the build-depends in your .cabal file."),
                             new RegisterFixHandler() {
                                 @Override
                                 public void apply(Matcher matcher, Annotation annotation, Problem problem) {
