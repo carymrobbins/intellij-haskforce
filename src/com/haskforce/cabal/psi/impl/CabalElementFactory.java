@@ -32,4 +32,7 @@ public class CabalElementFactory {
         return (CabalFile) PsiFileFactory.getInstance(project).createFileFromText("A.cabal", CabalLanguage.INSTANCE, text);
     }
 
+    public static PsiElement createComma(Project project) {
+        return null;
+    }
 }

@@ -4,6 +4,8 @@ package com.haskforce.features.intentions;
 import com.haskforce.cabal.index.CabalFileIndex;
 import com.haskforce.cabal.psi.*;
 import com.haskforce.cabal.psi.impl.CabalElementFactory;
+import com.haskforce.psi.HaskellPsiUtil;
+import com.haskforce.psi.impl.HaskellElementFactory;
 import com.haskforce.utils.FileUtil;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
@@ -38,6 +40,13 @@ public class AddBuildDepends extends BaseIntentionAction {
         return "Add build depends";
     }
 
+    @NotNull
+    @Override
+    public String getText() {
+        return "Add " + packageName + " to build depends";
+    }
+
+
     @Override
     public boolean isAvailable(@NotNull Project project, Editor editor, PsiFile psiFile) {
         return true;
@@ -53,15 +62,17 @@ public class AddBuildDepends extends BaseIntentionAction {
         for (CabalBuildInformation buildInformation : buildInformations) {
             CabalBuildDepends buildDepends = buildInformation.getBuildDepends();
             if (buildDepends == null){
-                return;
+                continue;
             }
             List<CabalDependency> dependencyList = buildDepends.getDependencyList();
             if (dependencyList.size() == 0){
-                return;
+                continue;
             }
             CabalDependency firstDependency = dependencyList.get(0);
             CabalDependency newDependency = CabalElementFactory.createCabalDependency(project, packageName);
+            firstDependency.addAfter(HaskellElementFactory.createNewLine(project), firstDependency);
             firstDependency.addAfter(newDependency, firstDependency);
+            firstDependency.addAfter(newDependency, CabalElementFactory.createComma(project));
         }
     }
 }
