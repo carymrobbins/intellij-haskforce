@@ -30,6 +30,21 @@ public class HaskellGoToSymbolTest extends HaskellLightPlatformCodeInsightFixtur
         assertEquals(expectedStartOffset, referencedElement.getTextRange().getStartOffset());
     }
 
+    public void testNewtypeParameter(){
+        myFixture.configureByFile(getTestName(false)+".hs");
+        PsiFile file = myFixture.getFile();
+        String textOfFile = file.getText();
+        int expectedStartOffset= textOfFile.indexOf("ResultVar param") +10;
+        PsiElement psiElement = file
+                .findElementAt(myFixture.getCaretOffset()).getParent();
+        HaskellVarid varId = (HaskellVarid) psiElement;
+        PsiReference reference = varId.getReference();
+        HaskellVarid referencedElement = (HaskellVarid)reference.resolve();
+        assertEquals(varId.getName(), referencedElement.getName());
+        assertNotSame(psiElement, referencedElement);
+        assertEquals(expectedStartOffset, referencedElement.getTextRange().getStartOffset());
+    }
+
     public void testGoToSymbolFunction_GADT(){
         myFixture.configureByFile(getTestName(false)+".hs");
         PsiFile file = myFixture.getFile();

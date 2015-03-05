@@ -328,7 +328,21 @@ public class HaskellUtil {
         List<PsiElement> results = Lists.newArrayList();
         PsiElement parent = element;
         do {
-
+            /**
+             * This whole function needs to be re-evaluated, it's getting too much if,if,if. The logic
+             * is getting extremely unclear. There should be tests for all (identified) cases so the refactor
+             * should be feasible.
+             */
+            if (parent instanceof HaskellNewtypedecl){
+                HaskellNewtypedecl haskellNewtypedecl = (HaskellNewtypedecl) parent;
+                List<HaskellTyvar> tyvarList = haskellNewtypedecl.getTyvarList();
+                for (HaskellTyvar haskellTyvar : tyvarList) {
+                    HaskellVarid varId = haskellTyvar.getVarid();
+                    if (varId.getName().matches(matcher)){
+                        results.add(varId);
+                    }
+                }
+            }
             PsiElement prevSibling = parent.getPrevSibling();
             while (prevSibling != null) {
                 PsiElement possibleMatch = HaskellUtil.lookForFunOrPatDeclWithCorrectName(prevSibling, matcher);
