@@ -2,24 +2,24 @@ package com.haskforce.features.intentions;
 
 
 import com.haskforce.cabal.index.CabalFileIndex;
-import com.haskforce.cabal.psi.*;
+import com.haskforce.cabal.psi.CabalBuildDepends;
+import com.haskforce.cabal.psi.CabalBuildInformation;
+import com.haskforce.cabal.psi.CabalDependency;
+import com.haskforce.cabal.psi.CabalFile;
 import com.haskforce.cabal.psi.impl.CabalElementFactory;
-import com.haskforce.psi.HaskellPsiUtil;
 import com.haskforce.psi.impl.HaskellElementFactory;
-import com.haskforce.utils.FileUtil;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.roots.ProjectRootManager;
+import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.intellij.openapi.vfs.*;
+import com.intellij.openapi.ui.popup.PopupChooserBuilder;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.ui.components.JBList;
 import com.intellij.util.IncorrectOperationException;
-import com.intellij.util.indexing.FileBasedIndex;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -68,11 +68,20 @@ public class AddBuildDepends extends BaseIntentionAction {
             if (dependencyList.size() == 0){
                 continue;
             }
+            JList lijstje = new JBList("een","twee","drie");
+            PopupChooserBuilder listPopupBuilder = JBPopupFactory.getInstance().createListPopupBuilder(lijstje);
+            JBPopup popup = listPopupBuilder.createPopup();
+            popup.showInFocusCenter();
+
             CabalDependency firstDependency = dependencyList.get(0);
-            CabalDependency newDependency = CabalElementFactory.createCabalDependency(project, packageName);
+            CabalBuildInformation cabalBuildInformation = CabalElementFactory.createCabalBuildInformation(project, packageName);
+            CabalDependency newDependency = cabalBuildInformation.getBuildDepends().getDependencyList().get(0);
+            PsiElement comma = newDependency.getNextSibling();
+
+
+            firstDependency.addAfter(comma, firstDependency);
             firstDependency.addAfter(HaskellElementFactory.createNewLine(project), firstDependency);
             firstDependency.addAfter(newDependency, firstDependency);
-            firstDependency.addAfter(newDependency, CabalElementFactory.createComma(project));
         }
     }
 }

@@ -1,0 +1,13 @@
+Cabal File
+  PsiElement(EXECUTABLE)('executable')
+  PsiElement(CabalTokenType.varidRegexp)('voernekeeruit')
+  PsiElement(CabalTokenType.main-is)('main-is')
+  PsiElement(CabalTokenType.:)(':')
+  PsiElement(CabalTokenType.varidRegexp)('hier')
+  PsiElement(CabalTokenType./)('/')
+  PsiElement(CabalTokenType.varidRegexp)('daar')
+  PsiElement(CabalTokenType./)('/')
+  PsiElement(CabalTokenType.varidRegexp)('Koekoek')
+  PsiErrorElement:CabalTokenType./ or CabalTokenType.varidRegexp expected, got '.'
+    PsiElement(CabalTokenType..)('.')
+  PsiElement(CabalTokenType.varidRegexp)('hs')

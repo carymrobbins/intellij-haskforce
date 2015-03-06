@@ -20,7 +20,7 @@ public class CabalElementFactory {
     }
 
     public static CabalBuildInformation createCabalBuildInformation(Project project, String packageName) {
-        String textToParse = "library\n  build-depends:\n    " + packageName;
+        String textToParse = "library\n  build-depends:\n    " + packageName+",\n    "+packageName;
         CabalFile fileFromText = createFileFromText(project, textToParse);
         return PsiTreeUtil.findChildOfType(fileFromText, CabalBuildInformation.class);
     }
@@ -32,7 +32,4 @@ public class CabalElementFactory {
         return (CabalFile) PsiFileFactory.getInstance(project).createFileFromText("A.cabal", CabalLanguage.INSTANCE, text);
     }
 
-    public static PsiElement createComma(Project project) {
-        return null;
-    }
 }
