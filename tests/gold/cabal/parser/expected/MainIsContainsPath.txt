@@ -1,13 +1,14 @@
 Cabal File
-  PsiElement(EXECUTABLE)('executable')
-  PsiElement(CabalTokenType.varidRegexp)('voernekeeruit')
-  PsiElement(CabalTokenType.main-is)('main-is')
-  PsiElement(CabalTokenType.:)(':')
-  PsiElement(CabalTokenType.varidRegexp)('hier')
-  PsiElement(CabalTokenType./)('/')
-  PsiElement(CabalTokenType.varidRegexp)('daar')
-  PsiElement(CabalTokenType./)('/')
-  PsiElement(CabalTokenType.varidRegexp)('Koekoek')
-  PsiErrorElement:CabalTokenType./ or CabalTokenType.varidRegexp expected, got '.'
-    PsiElement(CabalTokenType..)('.')
-  PsiElement(CabalTokenType.varidRegexp)('hs')
+  KEY_OR_CONFIG
+    CONFIG
+      EXECUTABLE
+        PsiElement(EXECUTABLE)('executable')
+        VARID
+          PsiElement(CabalTokenType.varidRegexp)('voernekeeruit')
+        EXECUTABLE_KEYS
+          EXECUTABLE_SPECIFIC_KEYS
+            MAIN_IS
+              PsiElement(CabalTokenType.main-is)('main-is')
+              PsiElement(CabalTokenType.:)(':')
+              FILE_PATH
+                PsiElement(CabalTokenType.filePathRegexp)('hier/daar/Koekoek.hs')

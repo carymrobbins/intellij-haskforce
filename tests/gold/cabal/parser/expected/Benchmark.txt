@@ -17,12 +17,8 @@ Cabal File
           MAIN_IS
             PsiElement(CabalTokenType.main-is)('main-is')
             PsiElement(CabalTokenType.:)(':')
-            FILE_NAME
-              VARID
-                PsiElement(CabalTokenType.varidRegexp)('zipper')
-              PsiElement(CabalTokenType..)('.')
-              VARID
-                PsiElement(CabalTokenType.varidRegexp)('hs')
+            FILE_PATH
+              PsiElement(CabalTokenType.filePathRegexp)('zipper.hs')
         BENCHMARK_KEYS
           BUILD_INFORMATION
             GHC_OPTIONS

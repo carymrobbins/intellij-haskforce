@@ -10,9 +10,5 @@ Cabal File
             MAIN_IS
               PsiElement(CabalTokenType.main-is)('main-is')
               PsiElement(CabalTokenType.:)(':')
-              FILE_NAME
-                VARID
-                  PsiElement(CabalTokenType.varidRegexp)('Koekoek')
-                PsiElement(CabalTokenType..)('.')
-                VARID
-                  PsiElement(CabalTokenType.varidRegexp)('hs')
+              FILE_PATH
+                PsiElement(CabalTokenType.filePathRegexp)('Koekoek.hs')

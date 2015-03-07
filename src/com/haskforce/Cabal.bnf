@@ -268,18 +268,17 @@ buildInformation ::= buildDepends |
                      defaultLanguage
 
 
-testSuiteType ::= typeKey colon open testInterface close
-mainIs ::= mainIsKey colon open fileName close
-testModules ::= testModuleKey colon open varid close
+testSuiteType ::= typeKey colon (open testInterface close)*
+mainIs ::= mainIsKey colon (open filePath close)*
+testModules ::= testModuleKey colon (open varid close)*
 
 testSuiteSpecificKeys ::= testSuiteType |
                           mainIs |
                           testModules
 
-exposed ::= exposedKey colon open bool close
+exposed ::= exposedKey colon (open bool close)*
 
-librarySpecificKeys ::= exposedModulesKey colon open <<commaSeparate module >> close |
-                        exposedModulesKey colon open module* close |
+librarySpecificKeys ::= exposedModulesKey colon (open <<cabalList module >> close)* |
                         exposed
 
 executableSpecificKeys ::= mainIs

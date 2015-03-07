@@ -134,7 +134,7 @@ CRLF=([\r\n])
                          return TESTMODULEKEY;
                       }
   "main-is"      {
-                     stateStack.push(VARID);
+                     stateStack.push(FILEPATH);
                      yybegin(FINDCOLON);
                      return MAINISKEY;
                   }
