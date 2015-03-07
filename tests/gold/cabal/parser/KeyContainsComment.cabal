@@ -1,0 +1,6 @@
+library
+  exposed-modules:
+    Board.Adventure.Adventure
+--    , Board.Object.Object
+    , Board.Space.Space
+

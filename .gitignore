@@ -1,5 +1,6 @@
 out
 build.properties
 *.swp
+*.orig
 .ackrc
 .dist-buildwrapper/

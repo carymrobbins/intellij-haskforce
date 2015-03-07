@@ -71,7 +71,7 @@ public class AddBuildDepends extends BaseIntentionAction {
             JList lijstje = new JBList("een","twee","drie");
             PopupChooserBuilder listPopupBuilder = JBPopupFactory.getInstance().createListPopupBuilder(lijstje);
             JBPopup popup = listPopupBuilder.createPopup();
-            popup.showInFocusCenter();
+//            popup.showInFocusCenter();
 
             CabalDependency firstDependency = dependencyList.get(0);
             CabalBuildInformation cabalBuildInformation = CabalElementFactory.createCabalBuildInformation(project, packageName);
@@ -79,9 +79,8 @@ public class AddBuildDepends extends BaseIntentionAction {
             PsiElement comma = newDependency.getNextSibling();
 
 
-            firstDependency.addAfter(comma, firstDependency);
-            firstDependency.addAfter(HaskellElementFactory.createNewLine(project), firstDependency);
             firstDependency.addAfter(newDependency, firstDependency);
+            firstDependency.addAfter(comma, firstDependency);
         }
     }
 }
