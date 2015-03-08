@@ -42,33 +42,23 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
     // Data container for settings.
     private final HaskellBuildSettings mySettings;
     // Improved settings if default values.
-    private String bestGhcPath;
-    private String bestCabalPath;
+    private String oldGhcPath;
+    private String oldCabalPath;
 
+    @SuppressWarnings("FieldCanBeLocal")
     private final Project myProject;
 
     public HaskellCompilerConfigurable(@NotNull Project inProject) {
         super(inProject);
         myProject = inProject;
         mySettings = HaskellBuildSettings.getInstance(myProject);
-        bestGhcPath = mySettings.getGhcPath();
-        bestCabalPath = mySettings.getCabalPath();
-        String sdkPath = HaskellSdkType.getHaskellSdkPath(myProject);
-        File sdkGhcPath = sdkPath == null ? null : HaskellSdkType.getExecutable(sdkPath);
-        String foundCabalPath = ExecUtil.locateExecutable(HaskellBuildOptions.DEFAULT_CABAL_PATH);
 
-        if (sdkGhcPath != null && bestGhcPath.equals(HaskellBuildOptions.DEFAULT_GHC_PATH)) {
-            bestGhcPath = sdkGhcPath.getAbsolutePath();
-        }
-        ghcPath.setText(bestGhcPath);
-
-        if (foundCabalPath != null && !foundCabalPath.isEmpty() &&
-                bestCabalPath.equals(HaskellBuildOptions.DEFAULT_CABAL_PATH)) {
-            bestCabalPath = foundCabalPath;
-        }
-        cabalPath.setText(bestCabalPath);
-
+        oldGhcPath = getGhcPath(myProject, mySettings);
+        ghcPath.setText(oldGhcPath);
         GuiUtil.addFolderListener(ghcPath, "ghc");
+
+        oldCabalPath = getCabalPath(mySettings);
+        cabalPath.setText(oldCabalPath);
         GuiUtil.addFolderListener(cabalPath, "cabal");
 
         cabalBuild.setSelected(mySettings.isCabalEnabled());
@@ -76,6 +66,24 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         installCabalDependencies.setSelected(mySettings.isInstallCabalDependenciesEnabled());
         enableTests.setSelected(mySettings.isEnableTestsEnabled());
         updateVersionInfoFields();
+    }
+
+    private static String getGhcPath(@NotNull Project project, @NotNull HaskellBuildSettings settings) {
+        String ghcPath = settings.getGhcPath();
+        if (ghcPath.equals(HaskellBuildOptions.DEFAULT_GHC_PATH)) {
+            File sdkGhcPath = HaskellSdkType.getExecutable(project);
+            if (sdkGhcPath != null) return sdkGhcPath.getAbsolutePath();
+        }
+        return ghcPath;
+    }
+
+    private static String getCabalPath(@NotNull HaskellBuildSettings settings) {
+        String cabalPath = settings.getCabalPath();
+        if (cabalPath.equals(HaskellBuildOptions.DEFAULT_CABAL_PATH)) {
+            String foundCabalPath = ExecUtil.locateExecutable(HaskellBuildOptions.DEFAULT_CABAL_PATH);
+            if (foundCabalPath != null && !foundCabalPath.isEmpty()) return foundCabalPath;
+        }
+        return cabalPath;
     }
 
     @NotNull
@@ -131,9 +139,9 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
      */
     private boolean ghcAndCabalUnchanged() {
         return (ghcPath.getText().equals(mySettings.getGhcPath()) ||
-                ghcPath.getText().equals(bestGhcPath)) &&
+                ghcPath.getText().equals(oldGhcPath)) &&
                 (cabalPath.getText().equals(mySettings.getCabalPath()) ||
-                        cabalPath.getText().equals(bestCabalPath));
+                        cabalPath.getText().equals(oldCabalPath));
     }
 
     /**
@@ -168,10 +176,10 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         mySettings.setUseCabalSandbox(cabalSandbox.isSelected());
         mySettings.setInstallCabalDependencies(installCabalDependencies.isSelected());
         mySettings.setEnableTests(enableTests.isSelected());
-        bestGhcPath = ghcPath.getText();
-        mySettings.setGhcPath(bestGhcPath);
-        bestCabalPath = cabalPath.getText();
-        mySettings.setCabalPath(bestCabalPath);
+        oldGhcPath = ghcPath.getText();
+        mySettings.setGhcPath(oldGhcPath);
+        oldCabalPath = cabalPath.getText();
+        mySettings.setCabalPath(oldCabalPath);
         mySettings.setCabalFlags(cabalFlags.getText());
     }
 
@@ -187,8 +195,8 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
      * Restore components to the initial state.
      */
     private void restoreState() {
-        ghcPath.setText(bestGhcPath);
-        cabalPath.setText(bestCabalPath);
+        ghcPath.setText(oldGhcPath);
+        cabalPath.setText(oldCabalPath);
         cabalFlags.setText(mySettings.getCabalFlags());
         profilingBuild.setSelected(mySettings.isProfilingEnabled());
         cabalBuild.setSelected(mySettings.isCabalEnabled());
