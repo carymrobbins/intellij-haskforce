@@ -1,6 +1,5 @@
-library
-  exposed-modules:
-    Board.Adventure.Adventure
+extra-doc-files:
+    dingske
 --    , Board.Object.Object
-    , Board.Space.Space
+    , dongske
 

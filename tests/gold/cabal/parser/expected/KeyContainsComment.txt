@@ -1,39 +1,10 @@
 Cabal File
   KEY_OR_CONFIG
-    CONFIG
-      LIBRARY
-        PsiElement(LIBRARY)('library')
-        LIBRARY_KEYS
-          LIBRARY_SPECIFIC_KEYS
-            PsiElement(CabalTokenType.exposed-modules)('exposed-modules')
-            PsiElement(CabalTokenType.:)(':')
+    KEY
+      EXTRA_DOC_FILES
+        PsiElement(CabalTokenType.extra-doc-files)('extra-doc-files')
+        PsiElement(CabalTokenType.:)(':')
             MODULE
-              VARID
-                PsiElement(CabalTokenType.varidRegexp)('Board')
-              PsiElement(CabalTokenType..)('.')
-              VARID
-                PsiElement(CabalTokenType.varidRegexp)('Adventure')
-              PsiElement(CabalTokenType..)('.')
-              VARID
-                PsiElement(CabalTokenType.varidRegexp)('Adventure')
+        VARID
+          PsiElement(CabalTokenType.varidRegexp)('dingske')
   PsiComment(COMMENT)('--    , Board.Object.Object')
-  PsiErrorElement:<key or config> expected, got ','
-    PsiElement(BAD_CHARACTER)(',')
-  PsiElement(DUMMY_BLOCK)
-    PsiElement(BAD_CHARACTER)('B')
-    PsiElement(BAD_CHARACTER)('o')
-    PsiElement(BAD_CHARACTER)('a')
-    PsiElement(BAD_CHARACTER)('r')
-    PsiElement(BAD_CHARACTER)('d')
-    PsiElement(BAD_CHARACTER)('.')
-    PsiElement(BAD_CHARACTER)('S')
-    PsiElement(BAD_CHARACTER)('p')
-    PsiElement(BAD_CHARACTER)('a')
-    PsiElement(BAD_CHARACTER)('c')
-  PsiElement(BAD_CHARACTER)('e')
-  PsiElement(BAD_CHARACTER)('.')
-  PsiElement(BAD_CHARACTER)('S')
-  PsiElement(BAD_CHARACTER)('p')
-  PsiElement(BAD_CHARACTER)('a')
-  PsiElement(BAD_CHARACTER)('c')
-  PsiElement(BAD_CHARACTER)('e')
