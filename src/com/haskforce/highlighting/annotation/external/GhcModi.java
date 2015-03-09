@@ -223,6 +223,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     private void spawnProcess() throws GhcModiError {
         GeneralCommandLine commandLine = new GeneralCommandLine(path);
+        GhcUtil.updateEnvironment(module.getProject(), commandLine.getEnvironment());
         ParametersList parametersList = commandLine.getParametersList();
         parametersList.addParametersString(flags);
         // setWorkDirectory is deprecated but is needed to work with IntelliJ 13 which does not have withWorkDirectory.

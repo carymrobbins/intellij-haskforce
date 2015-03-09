@@ -103,7 +103,7 @@ public class GhcMod {
         final String ghcModPath = getPath(project);
         final String stdout;
         if (ghcModPath == null
-                || (stdout = exec(workingDirectory, ghcModPath, command, ghcModFlags, params)) == null
+                || (stdout = exec(project, workingDirectory, ghcModPath, command, ghcModFlags, params)) == null
                 || stdout.length() == 0) {
             return null;
         }
@@ -118,9 +118,10 @@ public class GhcMod {
     }
 
     @Nullable
-    public static String exec(@NotNull String workingDirectory, @NotNull String ghcModPath,
+    public static String exec(@NotNull Project project, @NotNull String workingDirectory, @NotNull String ghcModPath,
                               @NotNull String command, @NotNull String ghcModFlags, String... params) {
         GeneralCommandLine commandLine = new GeneralCommandLine(ghcModPath, command);
+        GhcUtil.updateEnvironment(project, commandLine.getEnvironment());
         ParametersList parametersList = commandLine.getParametersList();
         parametersList.addParametersString(ghcModFlags);
         parametersList.addAll(params);

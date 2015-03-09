@@ -4,6 +4,7 @@ import com.intellij.openapi.diagnostic.Logger;
 
 public class SystemUtil {
     public static final String LINE_SEPARATOR = getSystemProperty("line.separator");
+    public static final String PATH_SEPARATOR = getSystemProperty("path.separator");
 
     private final static Logger LOG = Logger.getInstance(SystemUtil.class);
 
