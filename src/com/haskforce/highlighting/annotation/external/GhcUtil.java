@@ -1,9 +1,17 @@
 package com.haskforce.highlighting.annotation.external;
 
+import com.haskforce.settings.HaskellBuildSettings;
 import com.intellij.openapi.editor.VisualPosition;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.SystemInfo;
+import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.util.containers.OrderedSet;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 
 /**
@@ -48,4 +56,21 @@ public class GhcUtil {
         return "No enclosing type found";
     }
 
+    /**
+     * Updates the environment with path hacks so that ghc-mod(i) can find ghc, cabal, etc.
+     */
+    static void updateEnvironment(@NotNull Project project, @NotNull Map<String, String> env) {
+        HaskellBuildSettings settings = HaskellBuildSettings.getInstance(project);
+        String[] paths = {settings.getGhcPath(), settings.getCabalPath()};
+        Set<String> newPaths = new OrderedSet<String>();
+        for (String path : paths) {
+            //noinspection ObjectAllocationInLoop
+            File exe = new File(path);
+            if (exe.canExecute()) newPaths.add(exe.getParent());
+        }
+        String pathValue = env.get("PATH");
+        if (pathValue != null && !pathValue.isEmpty()) newPaths.add(pathValue);
+        newPaths.add(System.getenv("PATH"));
+        env.put("PATH", StringUtil.join(newPaths, SystemInfo.isWindows ? ";" : ":"));
+    }
 }

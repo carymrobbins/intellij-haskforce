@@ -53,11 +53,11 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         myProject = inProject;
         mySettings = HaskellBuildSettings.getInstance(myProject);
 
-        oldGhcPath = getGhcPath(myProject, mySettings);
+        oldGhcPath = mySettings.getGhcPath();
         ghcPath.setText(oldGhcPath);
         GuiUtil.addFolderListener(ghcPath, "ghc");
 
-        oldCabalPath = getCabalPath(mySettings);
+        oldCabalPath = mySettings.getCabalPath();
         cabalPath.setText(oldCabalPath);
         GuiUtil.addFolderListener(cabalPath, "cabal");
 
@@ -66,24 +66,6 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         installCabalDependencies.setSelected(mySettings.isInstallCabalDependenciesEnabled());
         enableTests.setSelected(mySettings.isEnableTestsEnabled());
         updateVersionInfoFields();
-    }
-
-    private static String getGhcPath(@NotNull Project project, @NotNull HaskellBuildSettings settings) {
-        String ghcPath = settings.getGhcPath();
-        if (ghcPath.equals(HaskellBuildOptions.DEFAULT_GHC_PATH)) {
-            File sdkGhcPath = HaskellSdkType.getExecutable(project);
-            if (sdkGhcPath != null) return sdkGhcPath.getAbsolutePath();
-        }
-        return ghcPath;
-    }
-
-    private static String getCabalPath(@NotNull HaskellBuildSettings settings) {
-        String cabalPath = settings.getCabalPath();
-        if (cabalPath.equals(HaskellBuildOptions.DEFAULT_CABAL_PATH)) {
-            String foundCabalPath = ExecUtil.locateExecutable(HaskellBuildOptions.DEFAULT_CABAL_PATH);
-            if (foundCabalPath != null && !foundCabalPath.isEmpty()) return foundCabalPath;
-        }
-        return cabalPath;
     }
 
     @NotNull
