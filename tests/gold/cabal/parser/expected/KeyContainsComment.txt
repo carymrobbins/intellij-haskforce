@@ -4,7 +4,9 @@ Cabal File
       EXTRA_DOC_FILES
         PsiElement(CabalTokenType.extra-doc-files)('extra-doc-files')
         PsiElement(CabalTokenType.:)(':')
-            MODULE
         VARID
           PsiElement(CabalTokenType.varidRegexp)('dingske')
-  PsiComment(COMMENT)('--    , Board.Object.Object')
+        PsiComment(CabalTokenType.comment)('--    , Board.Object.Object')
+        PsiElement(CabalTokenType.,)(',')
+        VARID
+          PsiElement(CabalTokenType.varidRegexp)('dongske')

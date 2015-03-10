@@ -127,9 +127,6 @@ public class AddBuildDepends extends BaseIntentionAction {
                 .createPopup();
         popup.showInBestPositionFor(editor);
 
-
-
-
     }
 
 

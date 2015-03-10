@@ -1,5 +1,5 @@
 Cabal File
-  PsiComment(COMMENT)('-- The name of the package.')
+  PsiComment(CabalTokenType.comment)('-- The name of the package.')
   KEY_OR_CONFIG
     KEY
       PROJECT_NAME
@@ -7,12 +7,12 @@ Cabal File
         PsiElement(CabalTokenType.:)(':')
         VARID
           PsiElement(CabalTokenType.varidRegexp)('talisman-redux')
-  PsiComment(COMMENT)('-- The package version.  See the Haskell package versioning policy (PVP)')
-  PsiComment(COMMENT)('-- for standards guiding when and how versions should be incremented.')
-  PsiComment(COMMENT)('-- http://www.haskell.org/haskellwiki/Package_versioning_policy')
-  PsiComment(COMMENT)('-- PVP summary:      +-+------- breaking API changes')
-  PsiComment(COMMENT)('--                   | | +----- non-breaking API additions')
-  PsiComment(COMMENT)('--                   | | | +--- code changes with no API change')
+        PsiComment(CabalTokenType.comment)('-- The package version.  See the Haskell package versioning policy (PVP)')
+        PsiComment(CabalTokenType.comment)('-- for standards guiding when and how versions should be incremented.')
+        PsiComment(CabalTokenType.comment)('-- http://www.haskell.org/haskellwiki/Package_versioning_policy')
+        PsiComment(CabalTokenType.comment)('-- PVP summary:      +-+------- breaking API changes')
+        PsiComment(CabalTokenType.comment)('--                   | | +----- non-breaking API additions')
+        PsiComment(CabalTokenType.comment)('--                   | | | +--- code changes with no API change')
   KEY_OR_CONFIG
     KEY
       PACKAGE_VERSION
@@ -30,7 +30,7 @@ Cabal File
           PsiElement(CabalTokenType..)('.')
           NUMBER
             PsiElement(CabalTokenType.numberRegexp)('1')
-  PsiComment(COMMENT)('-- A short (one-line) description of the package.')
+        PsiComment(CabalTokenType.comment)('-- A short (one-line) description of the package.')
   KEY_OR_CONFIG
     KEY
       SYNOPSIS
@@ -38,9 +38,9 @@ Cabal File
         PsiElement(CabalTokenType.:)(':')
         FREEFORM
           PsiElement(CabalTokenType.freeformRegexp)('talisman')
-  PsiComment(COMMENT)('-- A longer description of the package.')
-  PsiComment(COMMENT)('-- description:')
-  PsiComment(COMMENT)('-- The package author(s).')
+        PsiComment(CabalTokenType.comment)('-- A longer description of the package.')
+        PsiComment(CabalTokenType.comment)('-- description:')
+        PsiComment(CabalTokenType.comment)('-- The package author(s).')
   KEY_OR_CONFIG
     KEY
       AUTHOR
@@ -62,7 +62,7 @@ Cabal File
         PsiElement(CabalTokenType.:)(':')
         BUILD_TYPE_ENUM
           PsiElement(CabalTokenType.varidRegexp)('Simple')
-  PsiComment(COMMENT)('-- Constraint on the version of Cabal needed to build this package.')
+        PsiComment(CabalTokenType.comment)('-- Constraint on the version of Cabal needed to build this package.')
   KEY_OR_CONFIG
     KEY
       CABAL_VERSION

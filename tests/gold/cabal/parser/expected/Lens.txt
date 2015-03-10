@@ -99,7 +99,7 @@ Cabal File
         PsiElement(CabalTokenType.:)(':')
         BUILD_TYPE_ENUM
           PsiElement(CabalTokenType.varidRegexp)('Custom')
-  PsiComment(COMMENT)('-- build-tools:   cpphs')
+        PsiComment(CabalTokenType.comment)('-- build-tools:   cpphs')
   KEY_OR_CONFIG
     KEY
       TESTED_WITH
@@ -317,10 +317,10 @@ Cabal File
           PsiElement(CabalTokenType.:)(':')
           FREEFORM
             PsiElement(CabalTokenType.freeformRegexp)('git://github.com/ekmett/lens.git')
-  PsiComment(COMMENT)('-- Enable benchmarking against Neil Mitchell's uniplate library for comparative performance analysis. Defaults to being turned off to avoid')
-  PsiComment(COMMENT)('-- the extra dependency.')
-  PsiComment(COMMENT)('--\n')
-  PsiComment(COMMENT)('-- > cabal configure --enable-benchmarks -fbenchmark-uniplate && cabal build && cabal bench')
+          PsiComment(CabalTokenType.comment)('-- Enable benchmarking against Neil Mitchell's uniplate library for comparative performance analysis. Defaults to being turned off to avoid')
+          PsiComment(CabalTokenType.comment)('-- the extra dependency.')
+          PsiComment(CabalTokenType.comment)('--\n')
+          PsiComment(CabalTokenType.comment)('-- > cabal configure --enable-benchmarks -fbenchmark-uniplate && cabal build && cabal bench')
   KEY_OR_CONFIG
     CONFIG
       FLAG
@@ -337,12 +337,12 @@ Cabal File
           PsiElement(CabalTokenType.:)(':')
           BOOL
             PsiElement(CabalTokenType.true)('True')
-  PsiComment(COMMENT)('-- Generate inline pragmas when using template-haskell. This defaults to enabled, but you can')
-  PsiComment(COMMENT)('--\n')
-  PsiComment(COMMENT)('-- > cabal install lens -f-inlining')
-  PsiComment(COMMENT)('--\n')
-  PsiComment(COMMENT)('-- to shut it off to benchmark the relative performance impact, or as last ditch effort to address compile')
-  PsiComment(COMMENT)('-- errors resulting from the myriad versions of template-haskell that all purport to be 2.8.')
+          PsiComment(CabalTokenType.comment)('-- Generate inline pragmas when using template-haskell. This defaults to enabled, but you can')
+          PsiComment(CabalTokenType.comment)('--\n')
+          PsiComment(CabalTokenType.comment)('-- > cabal install lens -f-inlining')
+          PsiComment(CabalTokenType.comment)('--\n')
+          PsiComment(CabalTokenType.comment)('-- to shut it off to benchmark the relative performance impact, or as last ditch effort to address compile')
+          PsiComment(CabalTokenType.comment)('-- errors resulting from the myriad versions of template-haskell that all purport to be 2.8.')
   KEY_OR_CONFIG
     CONFIG
       FLAG
@@ -359,7 +359,7 @@ Cabal File
           PsiElement(CabalTokenType.:)(':')
           BOOL
             PsiElement(CabalTokenType.true)('True')
-  PsiComment(COMMENT)('-- Some 7.6.1-rc1 users report their TH still uses old style inline pragmas. This lets them turn on inlining.')
+          PsiComment(CabalTokenType.comment)('-- Some 7.6.1-rc1 users report their TH still uses old style inline pragmas. This lets them turn on inlining.')
   KEY_OR_CONFIG
     CONFIG
       FLAG
@@ -376,7 +376,7 @@ Cabal File
           PsiElement(CabalTokenType.:)(':')
           BOOL
             PsiElement(CabalTokenType.true)('True')
-  PsiComment(COMMENT)('-- Make the test suites dump their template-haskell splices.')
+          PsiComment(CabalTokenType.comment)('-- Make the test suites dump their template-haskell splices.')
   KEY_OR_CONFIG
     CONFIG
       FLAG
@@ -393,7 +393,7 @@ Cabal File
           PsiElement(CabalTokenType.:)(':')
           BOOL
             PsiElement(CabalTokenType.true)('True')
-  PsiComment(COMMENT)('-- You can disable the hlint test suite with -f-test-hlint')
+          PsiComment(CabalTokenType.comment)('-- You can disable the hlint test suite with -f-test-hlint')
   KEY_OR_CONFIG
     CONFIG
       FLAG
@@ -410,7 +410,7 @@ Cabal File
           PsiElement(CabalTokenType.:)(':')
           BOOL
             PsiElement(CabalTokenType.true)('True')
-  PsiComment(COMMENT)('-- You can disable the doctests test suite with -f-test-doctests')
+          PsiComment(CabalTokenType.comment)('-- You can disable the doctests test suite with -f-test-doctests')
   KEY_OR_CONFIG
     CONFIG
       FLAG
@@ -427,7 +427,7 @@ Cabal File
           PsiElement(CabalTokenType.:)(':')
           BOOL
             PsiElement(CabalTokenType.true)('True')
-  PsiComment(COMMENT)('-- You can disable the hunit test suite with -f-test-hunit')
+          PsiComment(CabalTokenType.comment)('-- You can disable the hunit test suite with -f-test-hunit')
   KEY_OR_CONFIG
     CONFIG
       FLAG
@@ -444,7 +444,7 @@ Cabal File
           PsiElement(CabalTokenType.:)(':')
           BOOL
             PsiElement(CabalTokenType.true)('True')
-  PsiComment(COMMENT)('-- Build the properties test if we're building tests')
+          PsiComment(CabalTokenType.comment)('-- Build the properties test if we're building tests')
   KEY_OR_CONFIG
     CONFIG
       FLAG
@@ -461,7 +461,7 @@ Cabal File
           PsiElement(CabalTokenType.:)(':')
           BOOL
             PsiElement(CabalTokenType.true)('True')
-  PsiComment(COMMENT)('-- Disallow unsafeCoerce')
+          PsiComment(CabalTokenType.comment)('-- Disallow unsafeCoerce')
   KEY_OR_CONFIG
     CONFIG
       FLAG
@@ -478,7 +478,7 @@ Cabal File
           PsiElement(CabalTokenType.:)(':')
           BOOL
             PsiElement(CabalTokenType.true)('True')
-  PsiComment(COMMENT)('-- Assert that we are trustworthy when we can')
+          PsiComment(CabalTokenType.comment)('-- Assert that we are trustworthy when we can')
   KEY_OR_CONFIG
     CONFIG
       FLAG
@@ -511,7 +511,7 @@ Cabal File
           PsiElement(CabalTokenType.:)(':')
           BOOL
             PsiElement(CabalTokenType.true)('True')
-  PsiComment(COMMENT)('-- Attempt a parallel build with GHC 7.8')
+          PsiComment(CabalTokenType.comment)('-- Attempt a parallel build with GHC 7.8')
   KEY_OR_CONFIG
     CONFIG
       FLAG
@@ -2088,7 +2088,7 @@ Cabal File
               DIRECTORY
                 VARID
                   PsiElement(CabalTokenType.varidRegexp)('src')
-  PsiComment(COMMENT)('-- Verify that Template Haskell expansion works')
+              PsiComment(CabalTokenType.comment)('-- Verify that Template Haskell expansion works')
   KEY_OR_CONFIG
     CONFIG
       TEST_SUITE
@@ -2158,7 +2158,7 @@ Cabal File
                   GHC_OPTION
                     VARID
                       PsiElement(CabalTokenType.varidRegexp)('-ddump-splices')
-  PsiComment(COMMENT)('-- Verify the properties of lenses with QuickCheck')
+                  PsiComment(CabalTokenType.comment)('-- Verify the properties of lenses with QuickCheck')
   KEY_OR_CONFIG
     CONFIG
       TEST_SUITE
@@ -2437,7 +2437,7 @@ Cabal File
                       PsiElement(CabalTokenType..)('.')
                       NUMBER
                         PsiElement(CabalTokenType.numberRegexp)('2')
-  PsiComment(COMMENT)('-- Verify the results of the examples')
+                  PsiComment(CabalTokenType.comment)('-- Verify the results of the examples')
   KEY_OR_CONFIG
     CONFIG
       TEST_SUITE
@@ -2694,7 +2694,7 @@ Cabal File
                       PsiElement(CabalTokenType..)('.')
                       NUMBER
                         PsiElement(CabalTokenType.numberRegexp)('7')
-  PsiComment(COMMENT)('-- Basic benchmarks for the uniplate-style combinators')
+                  PsiComment(CabalTokenType.comment)('-- Basic benchmarks for the uniplate-style combinators')
   KEY_OR_CONFIG
     CONFIG
       BENCHMARK
@@ -2815,7 +2815,7 @@ Cabal File
                   PsiElement(CabalTokenType.:)(':')
                   FREEFORM
                     PsiElement(CabalTokenType.freeformRegexp)('-DBENCHMARK_UNIPLATE')
-  PsiComment(COMMENT)('-- Benchmarking alongside variants')
+                  PsiComment(CabalTokenType.comment)('-- Benchmarking alongside variants')
   KEY_OR_CONFIG
     CONFIG
       BENCHMARK
@@ -2896,7 +2896,7 @@ Cabal File
               DEPENDENCY
                 DEPENDENCY_NAME
                   PsiElement(CabalTokenType.varidRegexp)('transformers')
-  PsiComment(COMMENT)('-- Benchmarking unsafe implementation strategies')
+              PsiComment(CabalTokenType.comment)('-- Benchmarking unsafe implementation strategies')
   KEY_OR_CONFIG
     CONFIG
       BENCHMARK
@@ -2981,7 +2981,7 @@ Cabal File
               DEPENDENCY
                 DEPENDENCY_NAME
                   PsiElement(CabalTokenType.varidRegexp)('transformers')
-  PsiComment(COMMENT)('-- Benchmarking zipper usage')
+              PsiComment(CabalTokenType.comment)('-- Benchmarking zipper usage')
   KEY_OR_CONFIG
     CONFIG
       BENCHMARK
