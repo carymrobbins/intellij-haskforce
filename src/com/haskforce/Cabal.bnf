@@ -86,7 +86,7 @@
     crlf="regexp:[\r\n]"
     if="if"
     else="else"
-    commentRegexp="regexp:--([^\^\r\n][^\r\n]*|[\r\n])"
+    comment="regexp:--([^\^\r\n][^\r\n]*|[\r\n])"
     varidRegexp="regexp:[a-zA-Z_\-0-9']*"
     conditionRegexp="regexp:[a-zA-Z_\-0-9'()<&>=!.]*"
     filePathRegexp="regexp:[a-zA-Z_\-0-9*./']*"
@@ -97,9 +97,7 @@
   ]
 }
 
-cabal ::= keyOrConfig* | comment
-
-comment ::= commentRegexp
+cabal ::= keyOrConfig*
 
 library ::= "library" open libraryKeys+ close
 
@@ -285,15 +283,15 @@ executableSpecificKeys ::= mainIs
 
 benchmarkKeys ::= mainIs | testSuiteType | buildInformation | conditional
 
-private meta commaSeparate ::= <<p>> ( ',' <<p>>)* {pin(".*")=1}
+private meta commaSeparate ::= <<p>> ( ',' <<p>>)*
 
 //TODO find out how pinning works in this case.
 // Or maybe just find out how pinning actually works.
 private meta cabalList ::= <<p>> (',' <<p>>)+ | <<p>>+
 
-private meta dotSeparate ::= <<p>> ('.' <<p>>)* {pin(".*")=1}
+private meta dotSeparate ::= <<p>> ('.' <<p>>)*
 
-private meta slashSeparate ::= <<p>> ('/' <<p>>)* {pin(".*")=1}
+private meta slashSeparate ::= <<p>> ('/' <<p>>)*s
 
 module ::= <<dotSeparate varid>>
 

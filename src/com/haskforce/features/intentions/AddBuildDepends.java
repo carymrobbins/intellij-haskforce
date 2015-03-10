@@ -10,6 +10,8 @@ import com.haskforce.psi.impl.HaskellElementFactory;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.application.ModalityState;
+import com.intellij.openapi.application.Result;
+import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopup;
@@ -97,31 +99,37 @@ public class AddBuildDepends extends BaseIntentionAction {
 
 
         final JList lijstje = new JBList(buildInfosMap.keySet());
-        ApplicationManager.getApplication().invokeAndWait(
-                new Runnable() {
-            @Override
-            public void run() {
-                PopupChooserBuilder listPopupBuilder = JBPopupFactory.getInstance().createListPopupBuilder(lijstje);
-                JBPopup popup = listPopupBuilder
-                        .setItemChoosenCallback(null)
-                        .createPopup();
-                popup.showInBestPositionFor(editor);
-            }
-        }, ModalityState.defaultModalityState());
+        PopupChooserBuilder listPopupBuilder = JBPopupFactory.getInstance().createListPopupBuilder(lijstje);
+        JBPopup popup = listPopupBuilder
+                .setItemChoosenCallback(new Runnable() {
+                    @Override
+                    public void run() {
+                        WriteCommandAction<Void> writeCommandAction = new WriteCommandAction<Void>(project) {
+                            @Override
+                            protected void run(@NotNull Result<Void> result) throws Throwable {
+                                String selectedBuildInfo = (String) lijstje.getSelectedValue();
+                                CabalBuildInformation originalCabalBuildInformation = buildInfosMap.get(selectedBuildInfo);
+                                CabalBuildDepends originalBuildDepends = originalCabalBuildInformation.getBuildDepends();
+                                List<CabalDependency> dependencyList = originalBuildDepends.getDependencyList();
+                                CabalDependency firstDependency = dependencyList.get(0);
+                                CabalBuildInformation cabalBuildInformation = CabalElementFactory.createCabalBuildInformation(project, packageName);
+                                CabalDependency newDependency = cabalBuildInformation.getBuildDepends().getDependencyList().get(0);
+                                PsiElement comma = newDependency.getNextSibling();
 
 
-        String selectedBuildInfo = (String) lijstje.getSelectedValue();
-        CabalBuildInformation originalCabalBuildInformation = buildInfosMap.get(selectedBuildInfo);
-        CabalBuildDepends originalBuildDepends = originalCabalBuildInformation.getBuildDepends();
-        List<CabalDependency> dependencyList = originalBuildDepends.getDependencyList();
-        CabalDependency firstDependency = dependencyList.get(0);
-        CabalBuildInformation cabalBuildInformation = CabalElementFactory.createCabalBuildInformation(project, packageName);
-        CabalDependency newDependency = cabalBuildInformation.getBuildDepends().getDependencyList().get(0);
-        PsiElement comma = newDependency.getNextSibling();
+                                originalBuildDepends.addAfter(newDependency, firstDependency);
+                                originalBuildDepends.addAfter(comma, firstDependency);
+                            }
+                        };
+                        writeCommandAction.execute();
+                    }
+                })
+                .createPopup();
+        popup.showInBestPositionFor(editor);
 
 
-        originalBuildDepends.addAfter(newDependency, firstDependency);
-        originalBuildDepends.addAfter(comma, firstDependency);
+
+
     }
 
 

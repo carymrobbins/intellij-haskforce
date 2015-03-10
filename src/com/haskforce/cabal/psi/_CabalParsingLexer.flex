@@ -461,6 +461,7 @@ CRLF=([\r\n])
                        }
                        return com.intellij.psi.TokenType.WHITE_SPACE;
                   }
+  {COMMENT}          { return COMMENT; }
   [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
 
@@ -470,6 +471,7 @@ CRLF=([\r\n])
                       yybegin(FINDINDENTATIONCONTEXT);
                       return COLON;
                   }
+  {COMMENT}          { return COMMENT; }
   [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
 
@@ -479,6 +481,7 @@ CRLF=([\r\n])
                      yybegin(FINDINDENTATIONCONTEXT);
                      return FREEFORMREGEXP;
                   }
+ {COMMENT}          { return COMMENT; }
  [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
 
@@ -488,6 +491,7 @@ CRLF=([\r\n])
                      yybegin(FINDINDENTATIONCONTEXT);
                      return VARIDREGEXP;
                   }
+  {COMMENT}          { return COMMENT; }
   [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
 
@@ -497,6 +501,7 @@ CRLF=([\r\n])
                      yybegin(YYINITIAL);
                      return FREEFORMREGEXP;
                   }
+  {COMMENT}          { return COMMENT; }
   [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
 
@@ -506,6 +511,7 @@ CRLF=([\r\n])
                      yybegin(YYINITIAL);
                      return FILEPATHREGEXP;
                   }
+  {COMMENT}          { return COMMENT; }
   [^] { return com.intellij.psi.TokenType.BAD_CHARACTER; }
 }
 
@@ -519,6 +525,7 @@ CRLF=([\r\n])
       [\n]            {
                           return com.intellij.psi.TokenType.WHITE_SPACE;
                       }
+      {COMMENT}          { return COMMENT; }
       [^]             {
                           yypushback(1);
 
@@ -557,6 +564,7 @@ CRLF=([\r\n])
       [\n]            {
                           return com.intellij.psi.TokenType.WHITE_SPACE;
                       }
+      {COMMENT}          { return COMMENT; }
       [^]             {
                           yypushback(1);
                           if (indentationStack.isEmpty()){
