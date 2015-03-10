@@ -1,6 +1,7 @@
 package com.haskforce.psi.references;
 
 import com.google.common.collect.Iterables;
+import com.haskforce.cabal.psi.CabalVarid;
 import com.haskforce.codeInsight.HaskellCompletionContributor;
 import com.haskforce.index.HaskellModuleIndex;
 import com.haskforce.psi.*;

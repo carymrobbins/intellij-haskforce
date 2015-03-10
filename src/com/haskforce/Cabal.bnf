@@ -283,15 +283,15 @@ executableSpecificKeys ::= mainIs
 
 benchmarkKeys ::= mainIs | testSuiteType | buildInformation | conditional
 
-private meta commaSeparate ::= <<p>> ( ',' <<p>>)*
+private meta commaSeparate ::= <<p>> ( ',' <<p>>)* {pin(".*")=1}
 
-//TODO find out how pinning works in this case.
+//TODO find out how pinning works i{pin(".*")=1}n this case.
 // Or maybe just find out how pinning actually works.
 private meta cabalList ::= <<p>> (',' <<p>>)+ | <<p>>+
 
-private meta dotSeparate ::= <<p>> ('.' <<p>>)*
+private meta dotSeparate ::= <<p>> ('.' <<p>>)* {pin(".*")=1}
 
-private meta slashSeparate ::= <<p>> ('/' <<p>>)*s
+private meta slashSeparate ::= <<p>> ('/' <<p>>)* {pin(".*")=1}
 
 module ::= <<dotSeparate varid>>
 
