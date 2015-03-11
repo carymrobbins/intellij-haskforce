@@ -34,12 +34,16 @@ public class HaskellRenameTest extends HaskellLightPlatformCodeInsightFixtureTes
     public void testRenameModule()    { doTest("BarModule", true); }
 
     public void testRenameImport () {
-        PsiFile[] psiFiles = myFixture.configureByFiles("ImportDeclaration/ImportDeclaration.hs", "ImportDeclaration/RenameImport.hs");
+        PsiFile[] psiFiles = myFixture.configureByFiles("ImportDeclaration/ImportDeclaration.hs",
+                "ImportDeclaration/RenameImport.hs",
+                "ImportDeclaration/ImportDecls.cabal");
         PsiFile importDeclaration = psiFiles[0];
         String newName = "BarModule";
         myFixture.renameElementAtCaret(newName);
         myFixture.checkResultByFile("ImportDeclaration/BarModule.hs","ImportDeclaration/ImportDeclaration-after.hs", false);
         myFixture.checkResultByFile("ImportDeclaration/RenameImport.hs","ImportDeclaration/RenameImport-after.hs", false);
+        myFixture.checkResultByFile("ImportDeclaration/ImportDecls.cabal","ImportDeclaration/ImportDecls-after.cabal",
+                false);
         assertEquals(StringUtil.unquoteString(newName) + ".hs", importDeclaration.getName());
 
     }

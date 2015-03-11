@@ -17,6 +17,9 @@
 package com.haskforce.codeInsight;
 
 import com.haskforce.HaskellLightPlatformCodeInsightFixtureTestCase;
+import com.intellij.usageView.UsageInfo;
+
+import java.util.Collection;
 
 /**
  * Typed handler test driver. Add new typed handler testcases here.
@@ -29,6 +32,12 @@ public class HaskellFindUsagesTest extends HaskellLightPlatformCodeInsightFixtur
     public void testFunctionUsagesInSingleFile00001()    { doTest(3); }
     public void testFunctionUsagesInMultipleFiles00001() { doTest(3, "FunctionUsagesInSingleFile00001.hs");}
     public void testFunctionUsagesInSingleFile00002()    { doTest(2); }
+
+    public void testFindUsagesCabalFile()   {
+        Collection<UsageInfo> usageInfos = myFixture.testFindUsages("ModuleUsageInCabalFile/Dingske.hs", "ModuleUsageInCabalFile/ModuleUsageInCabalFile" +
+                ".cabal");
+        assertEquals(usageInfos.size(),1);
+    }
 
     private void doTest(int expectedResult, String ... extraFiles) {
         String[] files = new String[1 + extraFiles.length];

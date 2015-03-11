@@ -171,6 +171,7 @@
       <!-- References/navigation -->
       <codeInsight.lineMarkerProvider language="Haskell" implementationClass="com.haskforce.codeInsight.HaskellLineMarkerProvider"/>
       <psi.referenceContributor implementation="com.haskforce.psi.references.HaskellReferenceContributor"/>
+      <psi.referenceContributor implementation="com.haskforce.psi.references.CabalReferenceContributor"/>
       <lang.findUsagesProvider language="Haskell" implementationClass="com.haskforce.codeInsight.HaskellFindUsagesProvider"/>
       <gotoSymbolContributor implementation="com.haskforce.features.HaskellChooseByNameContributor"/>
 
@@ -205,6 +206,8 @@
       <fileTypeFactory implementation="com.haskforce.cabal.CabalFileTypeFactory"/>
       <lang.commenter language="Cabal" implementationClass="com.haskforce.cabal.CabalCommenter"/>
       <lang.syntaxHighlighterFactory key="Cabal" implementationClass="com.haskforce.cabal.highlighting.CabalSyntaxHighlighterFactory"/>
+      <lang.findUsagesProvider language="Cabal"
+                               implementationClass="com.haskforce.codeInsight.CabalFindUsagesProvider"/>
       <annotator language="Cabal" implementationClass="com.haskforce.cabal.highlighting.CabalAnnotator" />
 
       <!-- Hamlet support -->

@@ -80,7 +80,7 @@ public class CabalReference extends PsiReferenceBase<PsiNamedElement> implements
     @Override
     public Object[] getVariants() {
         /**
-         * Screw auto complete for now.
+         * No auto complete for now.
          */
         return new Object[0];
     }
