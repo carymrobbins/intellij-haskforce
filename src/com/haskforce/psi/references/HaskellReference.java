@@ -1,7 +1,6 @@
 package com.haskforce.psi.references;
 
 import com.google.common.collect.Iterables;
-import com.haskforce.cabal.psi.CabalVarid;
 import com.haskforce.codeInsight.HaskellCompletionContributor;
 import com.haskforce.index.HaskellModuleIndex;
 import com.haskforce.psi.*;
@@ -9,16 +8,10 @@ import com.haskforce.psi.impl.HaskellPsiImplUtil;
 import com.haskforce.utils.HaskellUtil;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.popup.JBPopup;
-import com.intellij.openapi.ui.popup.JBPopupFactory;
-import com.intellij.openapi.ui.popup.PopupChooserBuilder;
 import com.intellij.openapi.util.TextRange;
-import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.openapi.vfs.VirtualFileManager;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
-import com.intellij.ui.components.JBList;
 import com.intellij.util.IncorrectOperationException;
 import com.intellij.util.indexing.FileBasedIndex;
 import com.intellij.util.indexing.ID;
@@ -26,7 +19,6 @@ import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -192,6 +184,11 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
             GlobalSearchScope globalSearchScope = GlobalSearchScope.projectScope(myElement.getProject());
             List<HaskellFile> filesByModuleName = HaskellModuleIndex.getFilesByModuleName(myElement.getProject(), moduleName, globalSearchScope);
             for (HaskellFile haskellFile : filesByModuleName) {
+                /**
+                 * TODO Kasper: shouldn't this better be getChildOfType? Don't do anything with the list, and indeed I
+                 * don't
+                 * think it's even possible to have multiple modules declarations in one file in Haskell
+                 */
                 HaskellModuledecl[] moduleDecls = PsiTreeUtil.getChildrenOfType(haskellFile, HaskellModuledecl.class);
                 if (moduleDecls.length != 0){
                     List<HaskellConid> conidList = moduleDecls[0].getQconid().getConidList();

@@ -1,12 +1,14 @@
 {
   parserClass="com.haskforce.cabal.CabalParser"
   implements="com.haskforce.cabal.psi.CabalCompositeElement"
+  implements("varid")="com.haskforce.cabal.psi.CabalNamedElement"
   extends="com.haskforce.cabal.psi.impl.CabalCompositeElementImpl"
   elementTypeHolderClass="com.haskforce.cabal.psi.CabalTypes"
   elementTypeClass="com.haskforce.cabal.psi.CabalElementType"
   tokenTypeClass="com.haskforce.cabal.psi.CabalTokenType"
   psiClassPrefix="Cabal"
   psiImplClassSuffix="Impl"
+  psiImplUtilClass="com.haskforce.cabal.psi.impl.CabalPsiImplUtil"
   psiPackage="com.haskforce.cabal.psi"
   psiImplPackage="com.haskforce.cabal.psi.impl"
   tokens=[
@@ -139,7 +141,9 @@ condtionalKey ::= key | librarySpecificKeys | executableSpecificKeys | buildInfo
 conditional ::= if condition open condtionalKey+ close
   (else open condtionalKey+ close)*
 
-varid ::= varidRegexp
+varid ::= varidRegexp {
+    methods=[getName getReference getNameIdentifier setName]
+    }
 
 dependencyName ::= varidRegexp
 
