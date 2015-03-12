@@ -34,8 +34,8 @@ public class HaskellFindUsagesTest extends HaskellLightPlatformCodeInsightFixtur
     public void testFunctionUsagesInSingleFile00002()    { doTest(2); }
 
     public void testFindUsagesCabalFile()   {
-        Collection<UsageInfo> usageInfos = myFixture.testFindUsages("ModuleUsageInCabalFile/Dingske.hs", "ModuleUsageInCabalFile/ModuleUsageInCabalFile" +
-                ".cabal");
+        Collection<UsageInfo> usageInfos = myFixture.testFindUsages( "ModuleUsageInCabalFile/ModuleUsageInCabalFile" +
+                ".cabal","ModuleUsageInCabalFile/Dingske.hs");
         assertEquals(usageInfos.size(),1);
     }
 

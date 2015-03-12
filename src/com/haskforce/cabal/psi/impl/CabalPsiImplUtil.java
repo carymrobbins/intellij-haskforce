@@ -35,7 +35,10 @@ public class CabalPsiImplUtil {
 
     @Nullable
     public static PsiElement setName(@NotNull CabalVarid o, @NotNull String newName) {
-        throw new NotImplementedException();
+        PsiElement e = CabalElementFactory.createVaridFromText (o.getProject(), newName);
+        if (e == null) return null;
+        o.replace(e);
+        return o;
     }
 
 

@@ -2,6 +2,7 @@ package com.haskforce.psi.references;
 
 import com.haskforce.cabal.psi.CabalModule;
 import com.haskforce.cabal.psi.CabalVarid;
+import com.haskforce.cabal.psi.impl.CabalPsiImplUtil;
 import com.haskforce.index.HaskellModuleIndex;
 import com.haskforce.psi.HaskellConid;
 import com.haskforce.psi.HaskellFile;
@@ -12,6 +13,7 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.psi.*;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.IncorrectOperationException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -83,5 +85,16 @@ public class CabalReference extends PsiReferenceBase<PsiNamedElement> implements
          * No auto complete for now.
          */
         return new Object[0];
+    }
+
+    @Override
+    public PsiElement handleElementRename(String newElementName) throws IncorrectOperationException {
+        PsiElement element;
+        if (myElement instanceof CabalVarid && myElement.getParent() instanceof CabalModule){
+            element = CabalPsiImplUtil.setName((CabalVarid)myElement,newElementName);
+            if (element != null) return element;
+            throw new IncorrectOperationException("cannot rename "+name + "to "+newElementName);
+        }
+        return super.handleElementRename(newElementName);
     }
 }
