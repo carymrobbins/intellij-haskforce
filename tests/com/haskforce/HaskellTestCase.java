@@ -24,11 +24,13 @@ package com.haskforce;
 
 import com.haskforce.codeInsight.HaskellCompletionTest;
 import com.haskforce.codeInsight.HaskellFindUsagesTest;
+import com.haskforce.codeInsight.HaskellGoToSymbolTest;
 import com.haskforce.features.HaskellFeaturesTest;
 import com.haskforce.features.HaskellFoldingBuilderTest;
 import com.haskforce.features.HaskellTypedHandlerTest;
 import com.haskforce.highlighting.HaskellLexerTest;
 import com.haskforce.highlighting.annotation.external.GhcUtilTest;
+import com.haskforce.move.HaskellMoveTest;
 import com.haskforce.parser.HaskellParserTest;
 import com.haskforce.parser.HaskellParsingLexerTest;
 import com.haskforce.refactoring.HaskellRenameTest;
@@ -55,6 +57,7 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(HaskellFeaturesTest.class);
         suite.addTestSuite(HaskellFoldingBuilderTest.class);
         suite.addTestSuite(HaskellCompletionTest.class);
+        suite.addTestSuite(HaskellGoToSymbolTest.class);
         suite.addTestSuite(HaskellFindUsagesTest.class);
         suite.addTestSuite(HaskellRenameTest.class);
         suite.addTestSuite(HaskellResolveTest.class);
