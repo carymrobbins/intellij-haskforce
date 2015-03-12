@@ -72,7 +72,6 @@ public class HaskellCompletionContributor extends CompletionContributor {
                         // whether or not we were in the appropriate context.  This is useful to determine if following
                         // completions should be added.
                         completeKeywordImport(position, result);
-                        completeHaskellKeywords(position, result);
                         completeKeywordQualified(position, result);
                         if (completePragma(position, cacheHolder, result)) return;
                         if (completeModuleImport(position, cacheHolder, result)) return;
@@ -83,19 +82,6 @@ public class HaskellCompletionContributor extends CompletionContributor {
                     }
                 }
         );
-    }
-
-    /**
-     * Will only propose the haskell keywords when inside a haskell body. Will not take into account the specific position
-     * yet, just make sure it's inside the body, so as to not propose keywords other than import in imports
-     */
-    public static void completeHaskellKeywords(@NotNull final PsiElement position, @NotNull final CompletionResultSet result) {
-        if (HaskellUtil.isInsideBody(position)){
-            Set<String> haskellKeywords = HaskellNamesValidator.HASKELL_KEYWORDS;
-            for (String haskellKeyword : haskellKeywords) {
-                result.addElement(LookupElementBuilder.create(haskellKeyword));
-            }
-        }
     }
 
     public static void completeKeywordImport(@NotNull final PsiElement position, @NotNull final CompletionResultSet result) {
