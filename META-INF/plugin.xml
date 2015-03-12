@@ -1,7 +1,7 @@
 <idea-plugin version="2" use-idea-classloader="true">
   <id>com.haskforce</id>
   <name>HaskForce</name>
-  <version>0.3-beta.18</version>
+  <version>0.3-beta.19</version>
   <vendor url="https://github.com/carymrobbins/intellij-haskforce">HaskForce on GitHub</vendor>
 
   <description>Plugin for Haskell language support.</description>
@@ -14,6 +14,18 @@
     <p>
       If you encounter any issues, please submit them on our
       <a href="https://github.com/carymrobbins/intellij-haskforce/issues">bug tracker</a>.
+    </p>
+    <p>
+      <b>v0.3-beta.19</b>
+      <ul>
+        <li>Updated ghc-mod(i) integration to use the user-specified GHC and Cabal.</li>
+        <li>Highlight mdo and rec as keywords (#120)</li>
+        <li>Improved string escape parsing (#111)</li>
+        <li>Parse forall in data declarations (#132)</li>
+        <li>Parse PACK/UNPACK pragmas for GADTs</li>
+        <li>Handle leading slash for QuasiQuote language injections.</li>
+        <li>Updated icons for retina display</li>
+      </ul>
     </p>
     <p>
       <b>v0.3-beta.18</b>
