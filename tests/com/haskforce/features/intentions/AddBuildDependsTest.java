@@ -13,6 +13,13 @@ import java.util.Iterator;
 
 //Maybe rename the haskelllightplatformcodeinsightfixturetestclass, as it actually has no
 //real link with haskell tests, but can also be used for cabal tests
+/**
+TODO still fails, I have to see how I can manage to run a test with a 'UI' part (
+ it will show a pop up and require a selection in that pop up, don't know how
+ to mock this out). An option might be FEST (https://code.google.com/p/fest/) to
+ test the swing part, but I suspect that more will be necessary as right now this
+ test will fail as it tries to show a pop up while there is no screen to be found
+ **/
 public class AddBuildDependsTest extends HaskellLightPlatformCodeInsightFixtureTestCase {
     public AddBuildDependsTest(){
         super("features/intentions", "features/intentions");

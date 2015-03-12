@@ -49,22 +49,25 @@ public class HaskellRenameTest extends HaskellLightPlatformCodeInsightFixtureTes
     }
 
     public void testRenameImport_CaretOnModule () {
-        PsiFile[] psiFiles = myFixture.configureByFiles("ImportDeclaration_CaretOnModule/ImportDeclaration.hs", "ImportDeclaration_CaretOnModule/RenameImport.hs");
+        PsiFile[] psiFiles = myFixture.configureByFiles("ImportDeclaration_CaretOnModule/ImportDeclaration.hs", "ImportDeclaration_CaretOnModule/RenameImport.hs","ImportDeclaration_CaretOnModule/ImportDeclaration.cabal");
         PsiFile importDeclaration = psiFiles[0];
         String newName = "BarModule";
         myFixture.renameElementAtCaret(newName);
         myFixture.checkResultByFile("ImportDeclaration_CaretOnModule/BarModule.hs", "ImportDeclaration_CaretOnModule/ImportDeclaration-after.hs", false);
         myFixture.checkResultByFile("ImportDeclaration_CaretOnModule/RenameImport.hs","ImportDeclaration_CaretOnModule/RenameImport-after.hs", false);
+        myFixture.checkResultByFile("ImportDeclaration_CaretOnModule/ImportDeclaration.cabal","ImportDeclaration_CaretOnModule/ImportDeclaration-after.cabal", false);
+
         assertEquals(StringUtil.unquoteString(newName) + ".hs", importDeclaration.getName());
     }
 
     public void testRenameFile() {
-        PsiFile[] psiFiles = myFixture.configureByFiles("ImportDeclaration_CaretOnModule/ImportDeclaration.hs", "ImportDeclaration_CaretOnModule/RenameImport.hs");
+        PsiFile[] psiFiles = myFixture.configureByFiles("ImportDeclaration_CaretOnModule/ImportDeclaration.hs", "ImportDeclaration_CaretOnModule/RenameImport.hs","ImportDeclaration_CaretOnModule/ImportDeclaration.cabal");
         PsiFile importDeclaration = psiFiles[0];
         String newName = "BarModule";
         myFixture.renameElement(importDeclaration,newName);
         myFixture.checkResultByFile("ImportDeclaration_CaretOnModule/BarModule.hs", "ImportDeclaration_CaretOnModule/ImportDeclaration-after.hs", false);
         myFixture.checkResultByFile("ImportDeclaration_CaretOnModule/RenameImport.hs","ImportDeclaration_CaretOnModule/RenameImport-after.hs", false);
+        myFixture.checkResultByFile("ImportDeclaration_CaretOnModule/ImportDeclaration.cabal","ImportDeclaration_CaretOnModule/ImportDeclaration-after.cabal", false);
         assertEquals(StringUtil.unquoteString(newName) + ".hs", importDeclaration.getName());
     }
 
