@@ -178,7 +178,6 @@
       <!-- Refactoring -->
       <lang.refactoringSupport language="Haskell" implementationClass="com.haskforce.refactoring.HaskellRefactoringSupportProvider"/>
       <renamePsiElementProcessor implementation="com.haskforce.refactoring.HaskellRenamePsiElementProcessor"/>
-      <moveFileHandler implementation="com.haskforce.refactoring.HaskellMoveFileHandler"/>
 
       <!-- Structure view on the left pane -->
       <lang.psiStructureViewFactory language="Haskell" implementationClass="com.haskforce.features.structureview.HaskellStructureViewFactory"/>
