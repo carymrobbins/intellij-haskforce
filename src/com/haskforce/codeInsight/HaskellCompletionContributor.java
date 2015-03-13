@@ -6,8 +6,10 @@ import com.haskforce.HaskellIcons;
 import com.haskforce.HaskellLanguage;
 import com.haskforce.highlighting.annotation.external.GhcMod;
 import com.haskforce.highlighting.annotation.external.GhcModi;
+import com.haskforce.language.HaskellNamesValidator;
 import com.haskforce.psi.*;
 import com.haskforce.utils.ExecUtil;
+import com.haskforce.utils.HaskellUtil;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
@@ -21,19 +23,18 @@ import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.patterns.PlatformPatterns;
-import com.intellij.psi.PsiComment;
-import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.util.ArrayUtil;
 import com.intellij.util.Function;
 import com.intellij.util.ProcessingContext;
-import com.intellij.util.containers.ContainerUtil;
+import com.intellij.util.containers.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.concurrent.Future;
 
 /**
@@ -71,15 +72,30 @@ public class HaskellCompletionContributor extends CompletionContributor {
                         // whether or not we were in the appropriate context.  This is useful to determine if following
                         // completions should be added.
                         completeKeywordImport(position, result);
+                        completeHaskellKeywords(position, result);
                         completeKeywordQualified(position, result);
                         if (completePragma(position, cacheHolder, result)) return;
                         if (completeModuleImport(position, cacheHolder, result)) return;
                         if (completeQualifiedNames(position, imports, cacheHolder, result)) return;
                         if (completeNameImport(position, cacheHolder, result)) return;
                         completeLocalNames(position, imports, cacheHolder, result);
+                        completeFunctionLocalNames(position,result);
                     }
                 }
         );
+    }
+
+    /**
+     * Will only propose the haskell keywords when inside a haskell body. Will not take into account the specific position
+     * yet, just make sure it's inside the body, so as to not propose keywords other than import in imports
+     */
+    public static void completeHaskellKeywords(@NotNull final PsiElement position, @NotNull final CompletionResultSet result) {
+        if (HaskellUtil.isInsideBody(position)){
+            Set<String> haskellKeywords = HaskellNamesValidator.HASKELL_KEYWORDS;
+            for (String haskellKeyword : haskellKeywords) {
+                result.addElement(LookupElementBuilder.create(haskellKeyword));
+            }
+        }
     }
 
     public static void completeKeywordImport(@NotNull final PsiElement position, @NotNull final CompletionResultSet result) {
@@ -219,6 +235,19 @@ public class HaskellCompletionContributor extends CompletionContributor {
         final String module = qconid.getText();
         final Map<String, List<LookupElement>> cachedNames = cacheHolder.getUserData(BROWSE_CACHE_KEY);
         if (cachedNames != null) addAllElements(result, cachedNames.get(module));
+        return true;
+    }
+
+    public static boolean completeFunctionLocalNames(@NotNull final PsiElement position,
+                                                     @NotNull final CompletionResultSet result){
+        List<PsiElement> allDefinitionsInScope = HaskellUtil.getAllDefinitionsInScope(position);
+        for (PsiElement psiElement : allDefinitionsInScope) {
+            result.addElement(LookupElementBuilder.create((PsiNamedElement)psiElement));
+        }
+        List<PsiElement> allDefinitionsInWhereClausesInScope = HaskellUtil.getAllDefinitionsInWhereClausesInScope(position);
+        for (PsiElement psiElement : allDefinitionsInWhereClausesInScope) {
+            result.addElement(LookupElementBuilder.create((PsiNamedElement)psiElement));
+        }
         return true;
     }
 

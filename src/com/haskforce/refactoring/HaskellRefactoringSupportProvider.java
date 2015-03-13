@@ -13,4 +13,6 @@ public class HaskellRefactoringSupportProvider extends RefactoringSupportProvide
     public boolean isMemberInplaceRenameAvailable(@NotNull PsiElement element, PsiElement context) {
         return element instanceof HaskellNamedElement;
     }
+
+
 }

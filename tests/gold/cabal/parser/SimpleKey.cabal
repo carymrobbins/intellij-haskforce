@@ -1,0 +1,5 @@
+name:    koekoek
+
+cabal-version: >= 1.187.12
+
+build-type: Simple

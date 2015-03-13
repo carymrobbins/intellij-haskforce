@@ -37,7 +37,6 @@ public class TypeInfoUtil {
         if (textEditor == null){
             return null;
         }
-
         VisualPosition blockStart = correctFor0BasedVS1Based(textEditor.getSelectionModel().getSelectionStartPosition());
         VisualPosition blockEnd = correctFor0BasedVS1Based(textEditor.getSelectionModel().getSelectionEndPosition());
         if (blockStart == null || blockEnd == null){

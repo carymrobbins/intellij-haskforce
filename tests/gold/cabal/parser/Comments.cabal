@@ -1,0 +1,9 @@
+-- TODO
+-- test-suite tutorial
+--   type: exitcode-stdio-1.0
+
+--   hs-source-dirs: tests examples
+
+--   main-is: TutorialTest.hs
+
+--   default-language: Haskell2010

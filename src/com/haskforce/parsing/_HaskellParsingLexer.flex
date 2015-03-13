@@ -175,6 +175,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         yybegin(REALLYYINITIAL);
                         yypushback(6);
                     }
+
     [^]             {
                         indentationStack.push(Pair.create(yyline, yycolumn));
                         yybegin(REALLYYINITIAL);
@@ -183,6 +184,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                         openBraces.push(Pair.create(Pair.create(yyline,yycolumn), ++lastNum));
                         return WHITESPACELBRACETOK;
                     }
+
 
 }
 

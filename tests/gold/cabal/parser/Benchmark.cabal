@@ -1,0 +1,14 @@
+benchmark zipper
+  type:           exitcode-stdio-1.0
+  main-is:        zipper.hs
+  ghc-options:    -w -O2 -threaded -fdicts-cheap -funbox-strict-fields
+  hs-source-dirs: benchmarks
+  build-depends:
+    base,
+    comonad,
+    comonads-fd,
+    criterion,
+    deepseq,
+    generic-deriving,
+    lens,
+    transformers

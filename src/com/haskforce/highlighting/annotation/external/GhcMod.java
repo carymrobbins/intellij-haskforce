@@ -1,5 +1,6 @@
 package com.haskforce.highlighting.annotation.external;
 
+import com.haskforce.features.intentions.AddBuildDepends;
 import com.haskforce.features.intentions.AddLanguagePragma;
 import com.haskforce.features.intentions.AddTypeSignature;
 import com.haskforce.features.intentions.RemoveForall;
@@ -238,6 +239,22 @@ public class GhcMod {
                                 public void apply(Matcher matcher, Annotation annotation, Problem problem) {
                                     annotation.registerFix(new AddLanguagePragma("RankNTypes"));
                                     annotation.registerFix(new RemoveForall(problem));
+                                }
+                            }),
+                    new Pair(Pattern.compile("Perhaps you intended to use (\\S+)"),
+                            new RegisterFixHandler() {
+                                @Override
+                                public void apply(Matcher matcher, Annotation annotation, Problem problem) {
+                                    String group = matcher.group(1);
+                                    annotation.registerFix(new AddLanguagePragma(group));
+                                }
+                            }),
+                    new Pair(Pattern.compile("Perhaps you need to add ‘(\\S+)’ to the build-depends in your .cabal file."),
+                            new RegisterFixHandler() {
+                                @Override
+                                public void apply(Matcher matcher, Annotation annotation, Problem problem) {
+                                    String group = matcher.group(1);
+                                    annotation.registerFix(new AddBuildDepends(group));
                                 }
                             }),
                     new Pair(Pattern.compile(" -X([A-Z][A-Za-z0-9]+)"),

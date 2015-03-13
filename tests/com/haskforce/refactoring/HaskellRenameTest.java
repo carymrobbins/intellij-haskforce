@@ -18,6 +18,7 @@ package com.haskforce.refactoring;
 
 import com.haskforce.HaskellLightPlatformCodeInsightFixtureTestCase;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiFile;
 
 /**
  * Rename refactoring test driver. Add new rename testcases here.
@@ -28,6 +29,48 @@ public class HaskellRenameTest extends HaskellLightPlatformCodeInsightFixtureTes
     }
 
     public void testFunction()    { doTest("bar"); }
+    public void testFunctionInstance()    { doTest("bar"); }
+    public void testLocalVariable()    { doTest("bars"); }
+    public void testRenameModule()    { doTest("BarModule", true); }
+
+    public void testRenameImport () {
+        PsiFile[] psiFiles = myFixture.configureByFiles("ImportDeclaration/ImportDeclaration.hs",
+                "ImportDeclaration/RenameImport.hs",
+                "ImportDeclaration/ImportDecls.cabal");
+        PsiFile importDeclaration = psiFiles[0];
+        String newName = "BarModule";
+        myFixture.renameElementAtCaret(newName);
+        myFixture.checkResultByFile("ImportDeclaration/BarModule.hs","ImportDeclaration/ImportDeclaration-after.hs", false);
+        myFixture.checkResultByFile("ImportDeclaration/RenameImport.hs","ImportDeclaration/RenameImport-after.hs", false);
+        myFixture.checkResultByFile("ImportDeclaration/ImportDecls.cabal","ImportDeclaration/ImportDecls-after.cabal",
+                false);
+        assertEquals(StringUtil.unquoteString(newName) + ".hs", importDeclaration.getName());
+
+    }
+
+    public void testRenameImport_CaretOnModule () {
+        PsiFile[] psiFiles = myFixture.configureByFiles("ImportDeclaration_CaretOnModule/ImportDeclaration.hs", "ImportDeclaration_CaretOnModule/RenameImport.hs","ImportDeclaration_CaretOnModule/ImportDeclaration.cabal");
+        PsiFile importDeclaration = psiFiles[0];
+        String newName = "BarModule";
+        myFixture.renameElementAtCaret(newName);
+        myFixture.checkResultByFile("ImportDeclaration_CaretOnModule/BarModule.hs", "ImportDeclaration_CaretOnModule/ImportDeclaration-after.hs", false);
+        myFixture.checkResultByFile("ImportDeclaration_CaretOnModule/RenameImport.hs","ImportDeclaration_CaretOnModule/RenameImport-after.hs", false);
+        myFixture.checkResultByFile("ImportDeclaration_CaretOnModule/ImportDeclaration.cabal","ImportDeclaration_CaretOnModule/ImportDeclaration-after.cabal", false);
+
+        assertEquals(StringUtil.unquoteString(newName) + ".hs", importDeclaration.getName());
+    }
+
+    public void testRenameFile() {
+        PsiFile[] psiFiles = myFixture.configureByFiles("ImportDeclaration_CaretOnModule/ImportDeclaration.hs", "ImportDeclaration_CaretOnModule/RenameImport.hs","ImportDeclaration_CaretOnModule/ImportDeclaration.cabal");
+        PsiFile importDeclaration = psiFiles[0];
+        String newName = "BarModule";
+        myFixture.renameElement(importDeclaration,newName);
+        myFixture.checkResultByFile("ImportDeclaration_CaretOnModule/BarModule.hs", "ImportDeclaration_CaretOnModule/ImportDeclaration-after.hs", false);
+        myFixture.checkResultByFile("ImportDeclaration_CaretOnModule/RenameImport.hs","ImportDeclaration_CaretOnModule/RenameImport-after.hs", false);
+        myFixture.checkResultByFile("ImportDeclaration_CaretOnModule/ImportDeclaration.cabal","ImportDeclaration_CaretOnModule/ImportDeclaration-after.cabal", false);
+        assertEquals(StringUtil.unquoteString(newName) + ".hs", importDeclaration.getName());
+    }
+
 
     private void doTest(String newName) {
         doTest(newName, false);
@@ -39,4 +82,5 @@ public class HaskellRenameTest extends HaskellLightPlatformCodeInsightFixtureTes
             assertEquals(StringUtil.unquoteString(newName) + ".hs", myFixture.getFile().getName());
         }
     }
+
 }

@@ -24,11 +24,16 @@ package com.haskforce;
 
 import com.haskforce.codeInsight.HaskellCompletionTest;
 import com.haskforce.codeInsight.HaskellFindUsagesTest;
+import com.haskforce.codeInsight.HaskellGoToSymbolTest;
 import com.haskforce.features.HaskellFeaturesTest;
 import com.haskforce.features.HaskellFoldingBuilderTest;
 import com.haskforce.features.HaskellTypedHandlerTest;
+import com.haskforce.features.intentions.AddBuildDependsTest;
 import com.haskforce.highlighting.HaskellLexerTest;
 import com.haskforce.highlighting.annotation.external.GhcUtilTest;
+import com.haskforce.highlighting.annotation.external.ProblemTest;
+import com.haskforce.move.HaskellMoveTest;
+import com.haskforce.parser.CabalParserTest;
 import com.haskforce.parser.HaskellParserTest;
 import com.haskforce.parser.HaskellParsingLexerTest;
 import com.haskforce.refactoring.HaskellRenameTest;
@@ -52,13 +57,21 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(HaskellLexerTest.class);
         suite.addTestSuite(HaskellParsingLexerTest.class);
         suite.addTestSuite(HaskellParserTest.class);
+        suite.addTestSuite(CabalParserTest.class);
         suite.addTestSuite(HaskellFeaturesTest.class);
         suite.addTestSuite(HaskellFoldingBuilderTest.class);
         suite.addTestSuite(HaskellCompletionTest.class);
+        suite.addTestSuite(HaskellGoToSymbolTest.class);
         suite.addTestSuite(HaskellFindUsagesTest.class);
         suite.addTestSuite(HaskellRenameTest.class);
         suite.addTestSuite(HaskellResolveTest.class);
         suite.addTestSuite(GhcUtilTest.class);
+        /**
+         * Keep commented out for now, don't seem to manage to 'mock' the ui interfacing part of this test (
+         * it will ask for a selection in a list pop up)
+         */
+//        suite.addTestSuite(AddBuildDependsTest.class);
+        suite.addTestSuite(ProblemTest.class);
         return suite;
     }
 }

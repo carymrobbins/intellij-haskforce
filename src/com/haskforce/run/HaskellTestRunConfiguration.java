@@ -67,6 +67,7 @@ public class HaskellTestRunConfiguration extends HaskellRunConfigurationBase {
     @Override
     public Collection<Module> getValidModules() {
         // TODO: Use main modules at first, but later - how do we differentiate main modules from test modules?
+        // Kasper: => Cabal Psi Tree?
         return null;
     }
 
