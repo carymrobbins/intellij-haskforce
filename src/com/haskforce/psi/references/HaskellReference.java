@@ -30,6 +30,10 @@ import java.util.Set;
  * structured implementation should be feasible.
  * It draws heavily on functions that are implemented in the HaskellUtil class. Those functions are not
  * tested in the HaskellUtil class but are also tested through the HaskellGoToSymbolTest class (as is this class)
+ *
+ * There are also some tests present in the HaskellRenameTest. Not all test cases could be fitted into that approach.
+ * My hypothesis is that the test framework doesn't like the 'ref' and 'resolve' tags in the same file,  as it always
+ * only seemed to want to find one of both.
  */
 public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implements PsiPolyVariantReference {
     private String name;
