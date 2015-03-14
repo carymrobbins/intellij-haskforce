@@ -24,6 +24,7 @@ package com.haskforce;
 
 import com.haskforce.codeInsight.HaskellCompletionTest;
 import com.haskforce.codeInsight.HaskellFindUsagesTest;
+import com.haskforce.codeInsight.HaskellGoToSymbolTest;
 import com.haskforce.features.HaskellFeaturesTest;
 import com.haskforce.features.HaskellFoldingBuilderTest;
 import com.haskforce.features.HaskellTypedHandlerTest;
@@ -59,6 +60,7 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(HaskellRenameTest.class);
         suite.addTestSuite(HaskellResolveTest.class);
         suite.addTestSuite(GhcUtilTest.class);
+        suite.addTestSuite(HaskellGoToSymbolTest.class);
         return suite;
     }
 }
