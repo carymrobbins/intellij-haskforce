@@ -28,7 +28,10 @@ public class HaskellModuleIndex extends ScalarIndexExtension<String> {
         @Override
         public boolean acceptInput(@NotNull VirtualFile file) {
             //noinspection ObjectEquality
-            return file.getFileType() == HaskellFileType.INSTANCE;
+            return file.getFileType() == HaskellFileType.INSTANCE
+                    && file.isInLocalFileSystem();
+            // to avoid renaming modules that are somewhere in a lib folder
+            // and added as a library. Can get nasty otherwise.
         }
     };
 
