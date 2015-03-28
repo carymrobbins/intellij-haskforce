@@ -29,10 +29,6 @@ public class TypeInfoUtil {
         if (fileEditorManager == null){
             return null;
         }
-        /**
-         * This call always generates a rather large stacktrace,when called from  but succeeds nevertheless.
-         * No clue why right now, but best find out.
-         */
         Editor textEditor = fileEditorManager.getSelectedTextEditor();
         if (textEditor == null){
             return null;
@@ -52,11 +48,15 @@ public class TypeInfoUtil {
         if (projectFile == null){
             return "project file is null";
         }
+
+        return getTypeInfo(project, blockStart, blockEnd, projectFile);
+    }
+
+    public static String getTypeInfo(Project project, VisualPosition blockStart, VisualPosition blockEnd, VirtualFile projectFile) {
         final String canonicalPath = projectFile.getCanonicalPath();
         if (canonicalPath == null){
             return "canonical path is null";
         }
-
         final String workDir = ExecUtil.guessWorkDir(project, projectFile);
         if (ToolKey.GHC_MODI_KEY.getPath(project) != null) {
             final Module module = ModuleUtilCore.findModuleForFile(projectFile, project);
@@ -67,17 +67,17 @@ public class TypeInfoUtil {
                             blockStart,blockEnd));
 
                 } else {
-                    return "ghcModi == null";
+                    return "ghcModi is not configured";
                 }
             } else {
-                return "module == null";
+                return "didn't find module";
             }
         } else {
             return GhcMod.type(project, workDir, canonicalPath, blockStart, blockEnd);
         }
     }
 
-    private static VisualPosition correctFor0BasedVS1Based(VisualPosition pos0Based) {
+    public static VisualPosition correctFor0BasedVS1Based(VisualPosition pos0Based) {
         if (pos0Based == null){
             return null;
         }
