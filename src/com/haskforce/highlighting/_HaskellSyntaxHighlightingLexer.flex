@@ -69,8 +69,8 @@ INFIXVARID=`[a-zA-Z_0-9][a-zA-Z_0-9'.]*`
 CHARTOKEN='(\\.|[^'])'#?
 INTEGERTOKEN=(0(o|O)[0-7]+|0(x|X)[0-9a-fA-F]+|[0-9]+)#?#?
 FLOATTOKEN=([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))#?#?
-COMMENT=--([^\^\r\n][^\r\n]*\n|[\r\n])
-HADDOCK=--\^[^\r\n]*
+COMMENT=--([^\!\#\$\%\&\*\+\.\/\<\=\>\?\@\\\^\|\~\:\r\n][^\r\n]*\n?|[\r\n])
+HADDOCK=-- [\^\|][^\r\n]*
 CPPIF=#(if|elif|else|endif|define|ifdef|undef|include|pragma)([^\r\n]*)
 // Unicode syntax also supported: https://www.haskell.org/ghc/docs/7.2.1/html/users_guide/syntax-extns.html
 ASCSYMBOL=[\!\#\$\%\&\*\+\.\/\<\=\>\?\@\\\^\|\-\~\:↢↣⤛⤜★]
