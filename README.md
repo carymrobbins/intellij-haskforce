@@ -5,13 +5,11 @@ The IntelliJ plugin for Haskell.
 
 Want to get started right away?  Check out the [Quick Start Guide](https://github.com/carymrobbins/intellij-haskforce/wiki/Quick-Start-Guide)!
 
-Building the plugin
+Building with IntelliJ
 --------
+**Note:** We currently use JDK 6 for building the plugin.
 
-1. Clone HaskForce.
-
-1. If you haven't already, download and install IntelliJ IDEA and Java JDK.
-
+1. Copy the `build.skeleton.properties` to `build.properties` and update the paths to the JDK and IntelliJ installation.
 1. (Optional) Check out the Community Edition source files.
   * `$ git clone https://github.com/JetBrains/intellij-community.git idea`
   * Check the version of your IntelliJ installation by going to About IntelliJ IDEA and checking the
@@ -23,15 +21,16 @@ Building the plugin
   * PsiViewer 3.28.73
   * JFlex Support 1.5.1 (optional, for generating lexers)
   * Grammar Kit 1.2.0.2 (optional, for generating parsers - [download it from here](https://github.com/JetBrains/Grammar-Kit/releases/tag/1.2.0.2))
+  * Ant Support
 1. Configure SDK and source files.
-  * Create a new **IntelliJ Platform Plugin** project from existing sources (pointed to your cloned HaskForce directory).
-  * Go to File > Project Structure.  Add SDKs for JDK and IDEA Plugins.  For the IDEA Plugins, add sources
-    from the cloned idea to the Sourcepath, if applicable.
-1. Set the project SDK to the IDEA SDK.
-1. Generate lexers using **Build > haskforce > generate.sources**.  Alternatively, if you have the `ant` command line
-   tool you can run `ant generate.sources` from the project root.
-1. Choose **Build > Make Project**. If you want to see that something actually happened, you can open the log with **View > Tool Windows > Event Log**.
-
+  * Go to **File > Project Structure**.  Add SDKs for JDK and IDEA Plugins.
+  * For **Project SDK** choose **New > Intellij Platform Plugin SDK**.
+  * Update the **Project compiler output**, e.g. `path/to/intellij-haskforce/out`
+  * If you cloned the IntelliJ sources, go to **SDKs**, choose your IntelliJ Plugin SDK, and update the **Sourcepath**
+    to point to the cloned IntelliJ sources.
+1. Generate lexers by hovering over the opening the **Ant Build** tool and choosing **generate.sources**.
+  * Alternatively, if you have the `ant` command line tool you can run `ant generate.sources` from the project root.
+1. Choose **Build > Prepare Plugin Module 'intellij-haskforce' for Deployment**.
 
 Running the plugin
 --------
