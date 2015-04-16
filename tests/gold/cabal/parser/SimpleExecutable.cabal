@@ -1,0 +1,3 @@
+executable voernekeeruit
+  main-is:  Koekoek.hs
+

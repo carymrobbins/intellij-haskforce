@@ -1,0 +1,6 @@
+Library
+  Exposed-Modules:     Network.Arakoon.Client
+  Other-Modules:       Network.Arakoon.Types
+                     , Network.Arakoon.Protocol
+                     , Network.Arakoon.Statistics
+                     , Network.Arakoon.Serialize

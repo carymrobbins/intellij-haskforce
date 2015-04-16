@@ -1,0 +1,4 @@
+library
+  if flag(old-inline-pragmas) && impl(ghc>=7.6.0.20120810)
+     other-extensions: Trustworthy
+     cpp-options: -DOLD_INLINE_PRAGMAS=1

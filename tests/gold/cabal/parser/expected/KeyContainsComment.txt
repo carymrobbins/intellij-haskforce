@@ -1,0 +1,12 @@
+Cabal File
+  KEY_OR_CONFIG
+    KEY
+      EXTRA_DOC_FILES
+        PsiElement(CabalTokenType.extra-doc-files)('extra-doc-files')
+        PsiElement(CabalTokenType.:)(':')
+        VARID
+          PsiElement(CabalTokenType.varidRegexp)('dingske')
+        PsiComment(CabalTokenType.comment)('--    , Board.Object.Object')
+        PsiElement(CabalTokenType.,)(',')
+        VARID
+          PsiElement(CabalTokenType.varidRegexp)('dongske')
