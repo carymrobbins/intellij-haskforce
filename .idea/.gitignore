@@ -5,3 +5,4 @@ emacs.xml
 misc.xml
 copyright/profiles_settings.xml
 findbugs-idea.xml
+inspectionProfiles/Project_Default.xml
