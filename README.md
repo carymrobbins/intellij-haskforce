@@ -5,32 +5,48 @@ The IntelliJ plugin for Haskell.
 
 Want to get started right away?  Check out the [Quick Start Guide](https://github.com/carymrobbins/intellij-haskforce/wiki/Quick-Start-Guide)!
 
+Prerequisites for building
+--------
+You will need Scala 2.11.6 on your system.  You can download it directly via IntelliJ by going to -
+  * **File > Project Structure > Global Libraries > + > Scala SDK > Download > 2.11.6** 
+Be sure that the SDK is named `scala-sdk-2.11.6` to properly match the module configurations.
+
+Alternatively, you can always install Scala manually via your package manager or the 
+[Scala download page](http://www.scala-lang.org/download/).
+
 Building with IntelliJ
 --------
-**Note:** We currently use JDK 6 for building the plugin.
+**Note:** We currently target JDK 6 for building the plugin.
 
 1. Copy the `build.skeleton.properties` to `build.properties` and update the paths to the JDK and IntelliJ installation.
-1. (Optional) Check out the Community Edition source files.
-  * `$ git clone https://github.com/JetBrains/intellij-community.git idea`
-  * Check the version of your IntelliJ installation by going to About IntelliJ IDEA and checking the
-    build number.
-  * Check out the appropriate tag for your build number.  For instance, you have Build #IC-135.909, then do
-    `$ git checkout idea/135.909`
-  * Be sure to `git checkout` the new tag each time you upgrade IntelliJ.
 1. Install and enable additional plugins.
-  * PsiViewer 3.28.73
+  * Scala
+  * Ant Support
+  * PsiViewer 3.28.73 (optional, for viewing parse trees)
   * JFlex Support 1.5.1 (optional, for generating lexers)
   * Grammar Kit 1.2.0.2 (optional, for generating parsers - [download it from here](https://github.com/JetBrains/Grammar-Kit/releases/tag/1.2.0.2))
-  * Ant Support
 1. Configure SDK and source files.
   * Go to **File > Project Structure**.  Add SDKs for JDK and IDEA Plugins.
   * For **Project SDK** choose **New > Intellij Platform Plugin SDK**.
   * Update the **Project compiler output**, e.g. `path/to/intellij-haskforce/out`
-  * If you cloned the IntelliJ sources, go to **SDKs**, choose your IntelliJ Plugin SDK, and update the **Sourcepath**
-    to point to the cloned IntelliJ sources.
 1. Generate lexers by hovering over the opening the **Ant Build** tool and choosing **generate.sources**.
   * Alternatively, if you have the `ant` command line tool you can run `ant generate.sources` from the project root.
 1. Choose **Build > Prepare Plugin Module 'intellij-haskforce' for Deployment**.
+
+Adding IntelliJ Sources (Optional)
+--------
+1. Check out the Community Edition source files.
+  * `$ git clone https://github.com/JetBrains/intellij-community.git idea`
+  * Check the build version of your IntelliJ installation.  There are two ways to do this.
+    1. Look for a `build.txt` file in your IntelliJ installation directory.
+       It's contents should be something like `IU-141.178.9`
+    1. Alternatively, you can go to **About** in the menu and look at the build number.  This might not have the minor
+       number, e.g. instead of `IU-141.178.9` it might just say `IU-141.178`
+  * Check out the appropriate tag for your build number.
+  * `$ git checkout idea/141.178.9`
+  * Be sure to `git checkout` the new tag each time you upgrade IntelliJ.
+2. Under **File > Project Structure > SDKs** find your **IntelliJ Platform Plugin SDK**.
+3. Under the **Sourcepath** tab, add the directory where you cloned the IntelliJ sources.
 
 Running the plugin
 --------
@@ -51,5 +67,4 @@ To run the tests, you'll need to create a run configuration:
 To add more tests:
 
 * Edit Haskell\*Test.java files to add more tests of the same kind that already exists.
-* Edit HaskellTestCase.java if you need to add tests of a different
-  kind.
+* Edit HaskellTestCase.java if you need to add tests of a different kind.

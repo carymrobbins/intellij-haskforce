@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="haskforce" default="all">
 
-
   <property file="build.properties"/>
   <property name="build.compiler" value="modern"/>
-  <property name="jflex.jar" value="JFlex.jar"/>
-  <property name="jflex.skeleton" value="idea-flex.skeleton"/>
+  <property name="jflex.jar" value="lib/JFlex.jar"/>
+  <property name="jflex.skeleton" value="lib/idea-flex.skeleton"/>
+  <property name="grammar-kit.jar" value="lib/grammar-kit.jar"/>
+  <property name="scala-compiler.jar" location="lib/scala-compiler.jar"/>
+  <property name="scala-library.jar" location="lib/scala-library.jar"/>
+  <property name="scala-reflect.jar" location="lib/scala-reflect.jar"/>
   <!-- TODO: Consider using ant-contrib to generalize this pattern into a loop (task generate.sources) -->
   <property name="jflex.haskellHighlight.target.base" value="src/com/haskforce/highlighting/_HaskellSyntaxHighlightingLexer"/>
   <property name="jflex.haskellHighlight.input.file" value="${jflex.haskellHighlight.target.base}.flex"/>
@@ -23,9 +26,9 @@
   <dirname property="module.haskforce.basedir" file="${ant.file}"/>
   <property name="plugin.zip.path.output" value="${module.haskforce.basedir}/out/intellij-haskforce.zip"/>
   <property name="plugin.zip.path" value="${module.haskforce.basedir}/out/zip"/>
-  <property name="haskforce.plugin.path.jar" value="${plugin.zip.path}/lib/intellij-haskforce.jar"/>
-  <property name="jps-plugin.plugin.path.jar" value="${plugin.zip.path}/lib/jps/jps-plugin.jar"/>
-  <property name="jps-shared.plugin.path.jar" value="${plugin.zip.path}/lib/jps-shared.jar"/>
+  <property name="haskforce.plugin.path.jar" value="${plugin.zip.path}/intellij-haskforce/lib/intellij-haskforce.jar"/>
+  <property name="jps-plugin.plugin.path.jar" value="${plugin.zip.path}/intellij-haskforce/lib/jps/jps-plugin.jar"/>
+  <property name="jps-shared.plugin.path.jar" value="${plugin.zip.path}/intellij-haskforce/lib/jps-shared.jar"/>
 
   <!-- Set jdk.home if not specified in build.properties. -->
   <condition property="jdk.home" value="${java.home}/..">
@@ -150,7 +153,6 @@
 
   <dirname property="module.jps-shared.basedir" file="${ant.file}"/>
 
-
   <property name="module.jdk.home.jps-shared" value="${project.jdk.home}"/>
   <property name="module.jdk.bin.jps-shared" value="${project.jdk.bin}"/>
   <property name="module.jdk.classpath.jps-shared" value="${project.jdk.classpath}"/>
@@ -248,6 +250,9 @@
   <path id="haskforce.module.production.classpath">
     <path refid="${module.jdk.classpath.haskforce}"/>
     <pathelement path="${jps-shared.output.dir}"/>
+    <pathelement location="${scala-compiler.jar}"/>
+    <pathelement location="${scala-reflect.jar}"/>
+    <pathelement location="${scala-library.jar}"/>
   </path>
 
   <path id="haskforce.runtime.production.module.classpath">
@@ -257,6 +262,9 @@
   <path id="haskforce.module.classpath">
     <path refid="${module.jdk.classpath.haskforce}"/>
     <pathelement location="${haskforce.output.dir}"/>
+    <fileset dir="lib">
+      <include name="**/*.jar"/>
+    </fileset>
   </path>
 
   <path id="haskforce.runtime.module.classpath">
@@ -278,6 +286,7 @@
       <include name="src"/>
       <include name="gen"/>
       <include name="resources"/>
+      <include name="scala"/>
     </dirset>
   </path>
 
@@ -292,7 +301,17 @@
 
   <target name="compile.module.haskforce.production" depends="register.custom.compilers" description="Compile module HaskForce; production classes">
     <mkdir dir="${haskforce.output.dir}"/>
-    <javac2 source="1.6" target="1.6" destdir="${haskforce.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.haskforce}/javac">
+
+    <scalac encoding="UTF8" destdir="${haskforce.output.dir}" fork="true">
+      <bootclasspath refid="haskforce.module.bootclasspath"/>
+      <classpath refid="haskforce.module.production.classpath"/>
+      <src refid="haskforce.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.haskforce"/>
+    </scalac>
+
+    <javac2 source="1.6" target="1.6" destdir="${haskforce.output.dir}" debug="${compiler.debug}"
+            nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}"
+            fork="true" executable="${module.jdk.bin.haskforce}/javac">
       <compilerarg line="${compiler.args.haskforce}"/>
       <bootclasspath refid="haskforce.module.bootclasspath"/>
       <classpath refid="haskforce.module.production.classpath"/>
@@ -382,6 +401,8 @@
 
   <!-- Build the plugin zip archive -->
   <target name="build.zip" depends="plugin.build.jar.jps-plugin, plugin.build.jar.jps-shared, plugin.build.jar.haskforce">
+    <copy file="${scala-library.jar}" todir="${plugin.zip.path}/intellij-haskforce/lib"/>
+    <copy file="${scala-reflect.jar}" todir="${plugin.zip.path}/intellij-haskforce/lib"/>
     <zip basedir="${plugin.zip.path}" destfile="${plugin.zip.path.output}"/>
   </target>
 
@@ -472,6 +493,20 @@
   <target name="init" description="Build initialization">
     <echo message="Using IDEA home: ${idea.home}"/>
     <echo message="Using JDK home: ${jdk.home}"/>
+
+    <!-- Add scalac task - http://stackoverflow.com/questions/4665635/configure-ant-for-scala -->
+    <path id="build.classpath">
+      <pathelement location="${scala-library.jar}"/>
+      <pathelement location="${scala-compiler.jar}"/>
+      <pathelement location="${haskforce.output.dir}"/>
+    </path>
+    <taskdef resource="scala/tools/ant/antlib.xml">
+      <classpath>
+        <pathelement location="${scala-library.jar}"/>
+        <pathelement location="${scala-compiler.jar}"/>
+        <pathelement location="${scala-reflect.jar}"/>
+      </classpath>
+    </taskdef>
   </target>
 
   <!-- TODO: Consider using ant-contrib to generalize this pattern into a loop -->
