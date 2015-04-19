@@ -13,7 +13,7 @@
   <property name="jflex.haskellParsing.target.base" value="src/com/haskforce/parsing/_HaskellParsingLexer"/>
   <property name="jflex.haskellParsing.input.file" value="${jflex.haskellParsing.target.base}.flex"/>
   <property name="jflex.haskellParsing.output.file" value="${jflex.haskellParsing.target.base}.java"/>
-  <property name="jflex.cabalHighlight.target.base" value="src/com/haskforce/cabal/highlighting/_CabalSyntaxHighlightingLexer"/>
+  <property name="jflex.cabalHighlight.target.base" value="src/com/haskforce/cabal/psi/_CabalParsingLexer"/>
   <property name="jflex.cabalHighlight.input.file" value="${jflex.cabalHighlight.target.base}.flex"/>
   <property name="jflex.cabalHighlight.output.file" value="${jflex.cabalHighlight.target.base}.java"/>
   <property name="jflex.hamletHighlight.target.base" value="src/com/haskforce/yesod/shakespeare/hamlet/highlighting/_HamletSyntaxHighlightingLexer"/>
