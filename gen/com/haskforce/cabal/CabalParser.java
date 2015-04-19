@@ -1394,14 +1394,15 @@ public class CabalParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // <<slashSeparate varid>>
+  // <<slashSeparate varid>> | dot
   public static boolean directory(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "directory")) return false;
-    if (!nextTokenIs(b, VARIDREGEXP)) return false;
+    if (!nextTokenIs(b, "<directory>", DOT, VARIDREGEXP)) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_, "<directory>");
     r = slashSeparate(b, l + 1, varid_parser_);
-    exit_section_(b, m, DIRECTORY, r);
+    if (!r) r = consumeToken(b, DOT);
+    exit_section_(b, l, m, DIRECTORY, r, false, null);
     return r;
   }
 
@@ -1536,7 +1537,7 @@ public class CabalParser implements PsiParser {
   }
 
   /* ********************************************************** */
-  // extensionsKey colon (open <<commaSeparate varid>> close)*
+  // extensionsKey colon (open <<cabalList varid>> close)*
   public static boolean extensions(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "extensions")) return false;
     if (!nextTokenIs(b, EXTENSIONSKEY)) return false;
@@ -1548,7 +1549,7 @@ public class CabalParser implements PsiParser {
     return r;
   }
 
-  // (open <<commaSeparate varid>> close)*
+  // (open <<cabalList varid>> close)*
   private static boolean extensions_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "extensions_2")) return false;
     int c = current_position_(b);
@@ -1560,13 +1561,13 @@ public class CabalParser implements PsiParser {
     return true;
   }
 
-  // open <<commaSeparate varid>> close
+  // open <<cabalList varid>> close
   private static boolean extensions_2_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "extensions_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = open(b, l + 1);
-    r = r && commaSeparate(b, l + 1, varid_parser_);
+    r = r && cabalList(b, l + 1, varid_parser_);
     r = r && close(b, l + 1);
     exit_section_(b, m, null, r);
     return r;

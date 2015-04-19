@@ -162,7 +162,7 @@ url ::= freeformRegexp*
 
 freeform ::= freeformRegexp*
 
-directory ::= <<slashSeparate varid>>
+directory ::= <<slashSeparate varid>> | dot
 
 compiler ::= varidRegexp versionConstraint version
 
@@ -224,7 +224,7 @@ ghcOption ::= varid (assign (varid | number))*
 buildDepends ::= buildDependsKey colon (open <<commaSeparate dependency>> close)*
 otherModules ::= otherModulesKey colon (open <<cabalList module >> close)*
 hsSourceDirs ::= hsSourceDirsKey colon (open <<cabalList directory>> close)*
-extensions ::= extensionsKey colon (open <<commaSeparate varid>> close)*
+extensions ::= extensionsKey colon (open <<cabalList varid>> close)*
 buildTools ::= buildToolsKey colon (open <<commaSeparate dependency>> close)*
 buildable ::= buildableKey colon (open bool close)*
 ghcOptions ::= ghcOptionsKey colon (open ghcOption* close)*
