@@ -30,6 +30,7 @@ import com.haskforce.features.HaskellFoldingBuilderTest;
 import com.haskforce.features.HaskellTypedHandlerTest;
 import com.haskforce.highlighting.HaskellLexerTest;
 import com.haskforce.highlighting.annotation.external.GhcUtilTest;
+import com.haskforce.highlighting.annotation.external.ProblemTest;
 import com.haskforce.move.HaskellMoveDirectoryDownTest;
 import com.haskforce.move.HaskellMoveDirectoryUpTest;
 import com.haskforce.move.HaskellSimpleMoveMoreReferencesTest;
@@ -66,6 +67,7 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(HaskellRenameTest.class);
         suite.addTestSuite(HaskellResolveTest.class);
         suite.addTestSuite(GhcUtilTest.class);
+        suite.addTestSuite(ProblemTest.class);
         suite.addTestSuite(HaskellGoToSymbolTest.class);
         suite.addTestSuite(HaskellMoveDirectoryDownTest.class);
         suite.addTestSuite(HaskellMoveDirectoryUpTest.class);
