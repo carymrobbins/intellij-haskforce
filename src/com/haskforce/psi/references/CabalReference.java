@@ -28,6 +28,19 @@ public class CabalReference extends PsiReferenceBase<PsiNamedElement> implements
         name = element.getName();
     }
 
+    @Override
+    public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
+        /**
+         * Not sure this is totally canonical. I didn't find an indicator how to implement this method correctly,
+         * not even in the java or groovy plugins. Couldn't find my way to the correct reference maybe, but all
+         * implementations I saw up until now did not perform this replace, just returned the element that it passed in.
+         * They implemented an 'id' function so to speak.
+         * I'm a bit afraid that this is going to trigger a rename for every element.
+         */
+        this.myElement.replace(element);
+        return element;
+    }
+
     @NotNull
     @Override
     public ResolveResult[] multiResolve(boolean b) {

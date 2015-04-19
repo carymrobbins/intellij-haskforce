@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,6 +71,14 @@ public class HaskellElementFactory {
     @NotNull
     public static PsiWhiteSpace createNewLine(@NotNull Project project) {
         return ((PsiWhiteSpace) (createFileFromText(project, "\n")).getFirstChild());
+    }
+
+    @NotNull
+    public static PsiElement createDot(@NotNull Project project) {
+        HaskellFile fileFromText = createFileFromText(project, "import A.B");
+        HaskellConid a = PsiTreeUtil.findChildOfType(fileFromText, HaskellConid.class);
+        PsiElement dot = a.getNextSibling();
+        return  dot;
     }
 
     /**
