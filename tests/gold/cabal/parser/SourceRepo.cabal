@@ -1,0 +1,4 @@
+Source-repository head
+  type:     git
+  location: git://github.com/feuerbach/tasty.git
+  subdir:   core

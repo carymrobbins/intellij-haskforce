@@ -1,0 +1,14 @@
+Cabal File
+  KEY_OR_CONFIG
+    CONFIG
+      EXECUTABLE
+        PsiElement(EXECUTABLE)('executable')
+        VARID
+          PsiElement(CabalTokenType.varidRegexp)('voernekeeruit')
+        EXECUTABLE_KEYS
+          EXECUTABLE_SPECIFIC_KEYS
+            MAIN_IS
+              PsiElement(CabalTokenType.main-is)('main-is')
+              PsiElement(CabalTokenType.:)(':')
+              FILE_PATH
+                PsiElement(CabalTokenType.filePathRegexp)('hier/daar/Koekoek.hs')

@@ -1,0 +1,3 @@
+library
+  other-modules:
+  build-depends: dingske

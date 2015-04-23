@@ -1,0 +1,2 @@
+library
+  ghc-options: -Wall -fwarn-tabs -O2 -fdicts-cheap -funbox-strict-fields -fmax-simplifier-iterations=10 -w -threaded -rtsopts -with-rtsopts=-N
