@@ -1,8 +1,8 @@
 workspace.xml
 bashsupport_project.xml
-dictionaries/*
+dictionaries/
 emacs.xml
 misc.xml
 copyright/profiles_settings.xml
 findbugs-idea.xml
-inspectionProfiles/Project_Default.xml
+inspectionProfiles/
