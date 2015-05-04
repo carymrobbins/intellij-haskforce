@@ -59,9 +59,12 @@ public class GhcUtil {
     /**
      * Updates the environment with path hacks so that ghc-mod(i) can find ghc, cabal, etc.
      */
-    static void updateEnvironment(@NotNull Project project, @NotNull Map<String, String> env) {
+    public static void updateEnvironment(@NotNull Project project, @NotNull Map<String, String> env) {
         HaskellBuildSettings settings = HaskellBuildSettings.getInstance(project);
-        String[] paths = {settings.getGhcPath(), settings.getCabalPath()};
+        updateEnvironment(env, settings.getGhcPath(), settings.getCabalPath());
+    }
+
+    public static void updateEnvironment(@NotNull Map<String, String> env, String... paths) {
         Set<String> newPaths = new OrderedSet<String>();
         for (String path : paths) {
             //noinspection ObjectAllocationInLoop

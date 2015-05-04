@@ -151,6 +151,18 @@
           <keyboard-shortcut first-keystroke="F11" keymap="Mac OS X 10.5+"/>
           <keyboard-shortcut first-keystroke="alt EQUALS" keymap="$default"/>
       </action>
+    <action id="com.haskforce.actions.cabal.AddCabalPackageAction"
+            class="com.haskforce.actions.cabal.AddCabalPackageAction"
+            text="Add Cabal Package"
+            description="Adds a cabal file to your project and configures it as an IntelliJ module.">
+      <add-to-group group-id="ToolsMenu" anchor="first"/>
+    </action>
+    <action id="com.haskforce.actions.cabal.DiscoverCabalPackagesAction"
+            class="com.haskforce.actions.cabal.DiscoverCabalPackagesAction"
+            text="Discover Cabal Packages"
+            description="Finds Cabal packages in your project and imports them as Haskell modules.">
+      <add-to-group group-id="ToolsMenu" anchor="first"/>
+    </action>
   </actions>
 
   <extensions defaultExtensionNs="com.intellij">

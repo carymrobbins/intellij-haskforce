@@ -22,6 +22,7 @@
 
 package com.haskforce;
 
+import com.haskforce.cabal.AddCabalPackageTest;
 import com.haskforce.codeInsight.HaskellCompletionTest;
 import com.haskforce.codeInsight.HaskellFindUsagesTest;
 import com.haskforce.codeInsight.HaskellGoToSymbolTest;
@@ -61,6 +62,7 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(HaskellResolveTest.class);
         suite.addTestSuite(GhcUtilTest.class);
         suite.addTestSuite(HaskellGoToSymbolTest.class);
+        suite.addTestSuite(AddCabalPackageTest.class);
         return suite;
     }
 }
