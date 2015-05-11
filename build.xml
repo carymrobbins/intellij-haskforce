@@ -3,12 +3,15 @@
 
   <property file="build.properties"/>
   <property name="build.compiler" value="modern"/>
-  <property name="jflex.jar" value="lib/JFlex.jar"/>
-  <property name="jflex.skeleton" value="lib/idea-flex.skeleton"/>
-  <property name="grammar-kit.jar" value="lib/grammar-kit.jar"/>
-  <property name="scala-compiler.jar" location="lib/scala-compiler.jar"/>
-  <property name="scala-library.jar" location="lib/scala-library.jar"/>
-  <property name="scala-reflect.jar" location="lib/scala-reflect.jar"/>
+  <dirname property="module.haskforce.basedir" file="${ant.file}"/>
+  <property name="lib.dir" value="${module.haskforce.basedir}/lib"/>
+  <property name="jflex.jar" value="${lib.dir}/JFlex.jar"/>
+  <property name="jflex.skeleton" value="${lib.dir}/idea-flex.skeleton"/>
+  <property name="grammar-kit.jar" value="${lib.dir}/grammar-kit.jar"/>
+  <property name="scala-compiler.jar" location="${lib.dir}/scala-compiler.jar"/>
+  <property name="scala-library.jar" location="${lib.dir}/scala-library.jar"/>
+  <property name="scala-reflect.jar" location="${lib.dir}/scala-reflect.jar"/>
+  <property name="paradise.jar" location="${lib.dir}/paradise_2.11.6-2.1.0-M5.jar"/>
   <!-- TODO: Consider using ant-contrib to generalize this pattern into a loop (task generate.sources) -->
   <property name="jflex.haskellHighlight.target.base" value="src/com/haskforce/highlighting/_HaskellSyntaxHighlightingLexer"/>
   <property name="jflex.haskellHighlight.input.file" value="${jflex.haskellHighlight.target.base}.flex"/>
@@ -23,10 +26,10 @@
   <property name="jflex.hamletHighlight.input.file" value="${jflex.hamletHighlight.target.base}.flex"/>
   <property name="jflex.hamletHighlight.output.file" value="${jflex.hamletHighlight.target.base}.java"/>
 
-  <dirname property="module.haskforce.basedir" file="${ant.file}"/>
   <property name="plugin.zip.path.output" value="${module.haskforce.basedir}/out/intellij-haskforce.zip"/>
   <property name="plugin.zip.path" value="${module.haskforce.basedir}/out/zip"/>
   <property name="haskforce.plugin.path.jar" value="${plugin.zip.path}/intellij-haskforce/lib/intellij-haskforce.jar"/>
+  <property name="macros.plugin.path.jar" value="${plugin.zip.path}/intellij-haskforce/lib/macros.jar"/>
   <property name="jps-plugin.plugin.path.jar" value="${plugin.zip.path}/intellij-haskforce/lib/jps/jps-plugin.jar"/>
   <property name="jps-shared.plugin.path.jar" value="${plugin.zip.path}/intellij-haskforce/lib/jps-shared.jar"/>
 
@@ -232,6 +235,87 @@
     <delete dir="${jps-shared.testoutput.dir}"/>
   </target>
 
+  <!-- Module macros -->
+
+  <dirname property="module.macros.basedir" file="${ant.file}"/>
+
+  <property name="module.jdk.home.macros" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.macros" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.macros" value="${project.jdk.classpath}"/>
+
+  <property name="macros.output.dir" value="${module.macros.basedir}/out/production/macros"/>
+  <property name="macros.testoutput.dir" value="${module.macros.basedir}/out/test/macros"/>
+
+  <path id="macros.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+
+  <path id="macros.module.production.classpath">
+    <path refid="${module.jdk.classpath.macros}"/>
+    <pathelement location="${scala-compiler.jar}"/>
+    <pathelement location="${scala-reflect.jar}"/>
+    <pathelement location="${scala-library.jar}"/>
+  </path>
+
+  <path id="macros.runtime.production.module.classpath">
+    <pathelement location="${macros.output.dir}"/>
+  </path>
+
+  <path id="macros.module.classpath">
+    <path refid="${module.jdk.classpath.macros}"/>
+    <pathelement location="${macros.output.dir}"/>
+    <fileset dir="lib">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+
+  <path id="macros.runtime.module.classpath">
+    <pathelement location="${macros.testoutput.dir}"/>
+    <pathelement location="${macros.output.dir}"/>
+  </path>
+
+
+  <patternset id="excluded.from.module.macros">
+    <patternset refid="ignored.files"/>
+  </patternset>
+
+  <patternset id="excluded.from.compilation.macros">
+    <patternset refid="excluded.from.module.macros"/>
+  </patternset>
+
+  <path id="macros.module.sourcepath">
+    <dirset dir="${module.macros.basedir}/macros">
+      <include name="src"/>
+      <include name="resources"/>
+    </dirset>
+  </path>
+
+
+  <target name="compile.module.macros" depends="compile.module.macros.production" description="Compile module macros"/>
+
+  <target name="compile.module.macros.production" depends="register.custom.compilers" description="Compile module macros; production classes">
+    <mkdir dir="${macros.output.dir}"/>
+
+    <scalac encoding="UTF8" destdir="${macros.output.dir}" fork="true" addparams="-Xplugin:${paradise.jar}">
+      <bootclasspath refid="macros.module.bootclasspath"/>
+      <classpath refid="macros.module.production.classpath"/>
+      <src refid="macros.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.macros"/>
+    </scalac>
+
+    <copy todir="${macros.output.dir}">
+      <fileset dir="${module.macros.basedir}/macros/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <target name="clean.module.macros" description="cleanup module">
+    <delete dir="${macros.output.dir}"/>
+  </target>
+
+
   <!-- Module HaskForce -->
 
   <property name="module.jdk.home.haskforce" value="${project.jdk.home}"/>
@@ -250,6 +334,7 @@
   <path id="haskforce.module.production.classpath">
     <path refid="${module.jdk.classpath.haskforce}"/>
     <pathelement path="${jps-shared.output.dir}"/>
+    <pathelement path="${macros.output.dir}"/>
     <pathelement location="${scala-compiler.jar}"/>
     <pathelement location="${scala-reflect.jar}"/>
     <pathelement location="${scala-library.jar}"/>
@@ -297,12 +382,12 @@
   </path>
 
 
-  <target name="compile.module.haskforce" depends="compile.module.haskforce.production,compile.module.haskforce.tests" description="Compile module HaskForce"/>
+  <target name="compile.module.haskforce" depends="compile.module.macros.production,compile.module.haskforce.production,compile.module.haskforce.tests" description="Compile module HaskForce"/>
 
   <target name="compile.module.haskforce.production" depends="register.custom.compilers" description="Compile module HaskForce; production classes">
     <mkdir dir="${haskforce.output.dir}"/>
 
-    <scalac encoding="UTF8" destdir="${haskforce.output.dir}" fork="true">
+    <scalac encoding="UTF8" destdir="${haskforce.output.dir}" fork="true" addparams="-Xplugin:${paradise.jar}">
       <bootclasspath refid="haskforce.module.bootclasspath"/>
       <classpath refid="haskforce.module.production.classpath"/>
       <src refid="haskforce.module.sourcepath"/>
@@ -343,6 +428,15 @@
 
   <target name="compile.module.haskforce.tests" depends="register.custom.compilers,compile.module.haskforce.production,plugin.build.jar.jps-shared" description="compile module HaskForce; test classes" unless="skip.tests">
     <mkdir dir="${haskforce.testoutput.dir}"/>
+
+    <scalac encoding="UTF8" destdir="${haskforce.testoutput.dir}" fork="true" addparams="-Xplugin:${paradise.jar}">
+      <bootclasspath refid="haskforce.module.bootclasspath"/>
+      <classpath refid="haskforce.module.classpath"/>
+      <classpath refid="haskforce.module.tests.classpath"/>
+      <src refid="haskforce.module.test.sourcepath"/>
+      <patternset refid="excluded.from.compilation.haskforce"/>
+    </scalac>
+
     <javac2 source="1.6" target="1.6" destdir="${haskforce.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.haskforce}/javac">
       <compilerarg line="${compiler.args.haskforce}"/>
       <bootclasspath refid="haskforce.module.bootclasspath"/>
@@ -399,8 +493,19 @@
     </jar>
   </target>
 
+  <!-- Build archive for plugin 'macros' -->
+  <target name="plugin.build.jar.macros" depends="compile.module.macros" description="Build plugin archive for module &#39;macros&#39;">
+    <jar destfile="${macros.plugin.path.jar}" duplicate="preserve">
+      <zipfileset dir="${macros.output.dir}"/>
+      <manifest>
+        <attribute name="Created-By" value="IntelliJ IDEA"/>
+        <attribute name="Manifest-Version" value="1.0"/>
+      </manifest>
+    </jar>
+  </target>
+
   <!-- Build the plugin zip archive -->
-  <target name="build.zip" depends="plugin.build.jar.jps-plugin, plugin.build.jar.jps-shared, plugin.build.jar.haskforce">
+  <target name="build.zip" depends="plugin.build.jar.jps-plugin, plugin.build.jar.jps-shared, plugin.build.jar.macros, plugin.build.jar.haskforce">
     <copy file="${scala-library.jar}" todir="${plugin.zip.path}/intellij-haskforce/lib"/>
     <copy file="${scala-reflect.jar}" todir="${plugin.zip.path}/intellij-haskforce/lib"/>
     <zip basedir="${plugin.zip.path}" destfile="${plugin.zip.path.output}"/>

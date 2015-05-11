@@ -13,6 +13,7 @@
     <orderEntry type="module" module-name="jps-shared" />
     <orderEntry type="module" module-name="jps-plugin" />
     <orderEntry type="library" name="scala-sdk-2.11.6" level="application" />
+    <orderEntry type="module" module-name="macros" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">
@@ -211,4 +212,3 @@
     </option>
   </component>
 </module>
-

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ScalaCompilerConfiguration">
+    <option name="implicitConversions" value="true" />
+    <plugins>
+      <plugin path="$PROJECT_DIR$/lib/paradise_2.11.6-2.1.0-M5.jar" />
+    </plugins>
+  </component>
+</project>
