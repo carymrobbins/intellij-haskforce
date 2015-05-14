@@ -67,10 +67,10 @@
 
   psiImplUtilClass="com.haskforce.psi.impl.HaskellPsiImplUtil"
 
-  implements("varid|conid")="com.haskforce.psi.HaskellNamedElement"
+  implements("varid|conid|qconid")="com.haskforce.psi.HaskellNamedElement"
   implements("qqblob")="com.intellij.psi.PsiLanguageInjectionHost"
-  extends("varid|conid")="com.haskforce.psi.impl.HaskellNamedStubbedPsiElementBase<?>"
-  elementTypeFactory("varid|conid")="com.haskforce.psi.impl.HaskellElementTypeFactory.factory"
+  extends("varid|conid|qconid")="com.haskforce.psi.impl.HaskellNamedStubbedPsiElementBase<?>"
+  elementTypeFactory("varid|conid|qconid")="com.haskforce.psi.impl.HaskellElementTypeFactory.factory"
 
   generate=[tokenAccessors="yes"]
 
@@ -580,7 +580,10 @@ tycls ::= conid
 private modulePrefix ::= (conid '.')+
 
 qvarid ::= [modulePrefix] varid
-qconid ::= [modulePrefix] conid ['#']
+qconid ::= [modulePrefix] conid ['#'] {
+     methods=[getNameIdentifier getName setName getReference getPresentation]
+     stubClass="com.haskforce.stubs.HaskellQconidStub"
+}
 qtycon ::= [modulePrefix] tycon
 qtycls ::= [modulePrefix] tycls
 qvarsym ::= [modulePrefix] varsym

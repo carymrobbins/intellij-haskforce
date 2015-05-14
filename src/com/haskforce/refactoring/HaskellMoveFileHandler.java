@@ -1,22 +1,24 @@
 package com.haskforce.refactoring;
 
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.haskforce.psi.HaskellConid;
-import com.haskforce.psi.HaskellFile;
-import com.haskforce.psi.HaskellModuledecl;
+import com.haskforce.psi.*;
 import com.haskforce.psi.impl.HaskellElementFactory;
 import com.haskforce.utils.FileUtil;
+import com.intellij.find.findUsages.FindUsagesManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
+import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.search.searches.ReferencesSearch;
 import com.intellij.psi.util.PsiTreeUtil;
 import com.intellij.refactoring.move.moveFilesOrDirectories.MoveFileHandler;
 import com.intellij.refactoring.util.MoveRenameUsageInfo;
 import com.intellij.usageView.UsageInfo;
 import com.intellij.util.IncorrectOperationException;
+import com.intellij.util.Query;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
@@ -48,72 +50,23 @@ public class HaskellMoveFileHandler extends MoveFileHandler {
         HaskellModuledecl haskellModuledecl = PsiTreeUtil.getChildOfType(psiFile, HaskellModuledecl.class);
         List<String> subDirs = FileUtil.getPathFromSourceRoot(project, psiDirectory.getVirtualFile());
         List<HaskellConid> conidList = haskellModuledecl.getQconid().getConidList();
-        /**
-         * For all changed constructors need to create a new psi element that's a conid. Somewhere in HaskellPsiUtil?
-         */
-        if (subDirs.size() == conidList.size()-1) {
-            for (int i = 0; i < subDirs.size(); i++) {
-                String currentSubDir = subDirs.get(i);
-                HaskellConid oldConId = conidList.get(i);
-                if (!currentSubDir.equals(oldConId.getName())) {
-                    HaskellConid newConId = HaskellElementFactory.createConidFromText(project, currentSubDir);
-                    map.put(oldConId, oldConId.replace(newConId));
-                }
-            }
-            HaskellConid moduleName = conidList.get(conidList.size() - 1);
-            map.put(moduleName, moduleName);
-        }
-        if (subDirs.size() < conidList.size()-1){
-            int i = 0;
-            for (; i < subDirs.size(); i++) {
-                String currentSubDir = subDirs.get(i);
-                HaskellConid oldConId = conidList.get(i);
-                if (!currentSubDir.equals(oldConId.getName())) {
-                    HaskellConid newConId = HaskellElementFactory.createConidFromText(project, currentSubDir);
-                    map.put(oldConId, oldConId.replace(newConId));
-                } else {
-                    map.put(oldConId, oldConId);
-                }
-            }
-            List<HaskellConid> constructorsToRemove = conidList.subList(i, conidList.size() - 1);
-            for (HaskellConid haskellConid : constructorsToRemove) {
-                map.put(haskellConid,null);
-                PsiElement dot = haskellConid.getNextSibling();
-                dot.delete();
-                haskellConid.delete();
-            }
-            HaskellConid moduleName = conidList.get(conidList.size() - 1);
-            map.put(moduleName, moduleName);
-        }
+        HaskellConid moduleName = Iterables.getLast(conidList);
 
-        if (subDirs.size() > conidList.size()-1){
-            /**
-             * Hacky : we remove all the constructors and will at the end replace
-             * the original module name with a complete chain of constructors.
-             */
-            int i = 0;
-            for (; i < conidList.size()-1; i++) {
-                HaskellConid oldConId = conidList.get(i);
-                map.put(oldConId, null);
-            }
+        PsiReference[] moduleNameReferences = moduleName.getReferences();
 
-            /**
-             * Here we'll make the list of constructors.
-             */
-            HaskellConid originalModuleName = conidList.get(conidList.size() - 1);
-            PsiElement originalModuleNameParent = originalModuleName.getParent();
-            for (; i< subDirs.size();i++){
-                HaskellConid newConId = HaskellElementFactory.createConidFromText(project, subDirs.get(i));
-                originalModuleNameParent.addBefore(newConId, originalModuleName);
-                originalModuleNameParent.addBefore(HaskellElementFactory.createDot(project), originalModuleName);
-            }
+        for (PsiReference moduleNameReference : moduleNameReferences) {
+            HaskellConid reference = (HaskellConid) (moduleNameReference.getElement());
+            PsiElement oldQconid = PsiTreeUtil.getParentOfType(reference, HaskellQconid.class);
+
+            HaskellQconid newQconId = HaskellElementFactory.createQconidFromText(project, subDirs, moduleName.getText());
             /**
              * and indeed, we replace the module name with it's parent.
              * We could avoid this hack most likely if we extended the HaskellReference
              * to link the module declarations together. So instead of resolving the sub elements
              * of A.B.ModuleName (A, B and ModuleName) we resolve the combo.
              */
-            map.put(originalModuleName,originalModuleName.getParent());
+            map.put(oldQconid,newQconId);
+
         }
     }
 
@@ -121,22 +74,13 @@ public class HaskellMoveFileHandler extends MoveFileHandler {
     @Override
     public List<UsageInfo> findUsages(PsiFile psiFile, PsiDirectory newParent, boolean searchInComments,
                                       boolean searchInOtherFiles) {
-
-        // 1 of 4
-        /**
-         * KIVVVSS : hierarchy of one directory deep for now. Only move from one directory deep to one directory deep.
-         * Feeling my way around here.
-         */
-
         HaskellModuledecl haskellModuledecl = PsiTreeUtil.getChildOfType(psiFile, HaskellModuledecl.class);
-        List<HaskellConid> conidList = haskellModuledecl.getQconid().getConidList();
         List<UsageInfo> usageInfos = Lists.newArrayList();
-        for (HaskellConid haskellConid : conidList) {
-            Collection<PsiReference> psiReferences = ReferencesSearch.search(haskellConid).findAll();
-            for (PsiReference psiReference : psiReferences) {
-                UsageInfo usageInfo = new MoveRenameUsageInfo(psiReference, haskellConid);
-                usageInfos.add(usageInfo);
-            }
+        HaskellQconid haskellQconid = haskellModuledecl.getQconid();
+        Collection<PsiReference> psiReferences = ReferencesSearch.search(haskellQconid, GlobalSearchScope.allScope(psiFile.getProject())).findAll();
+        for (PsiReference psiReference : psiReferences) {
+            UsageInfo usageInfo = new MoveRenameUsageInfo(psiReference, haskellQconid);
+            usageInfos.add(usageInfo);
         }
         return usageInfos;
     }
@@ -145,7 +89,7 @@ public class HaskellMoveFileHandler extends MoveFileHandler {
     public void retargetUsages(List<UsageInfo> list, Map<PsiElement, PsiElement> oldToNewMap) {
         // 4 of 4
         /**
-        This renames the usages.
+         This renames the usages.
          **/
         for (UsageInfo usageInfo : list) {
             if (usageInfo instanceof MoveRenameUsageInfo){
@@ -153,18 +97,10 @@ public class HaskellMoveFileHandler extends MoveFileHandler {
                 PsiElement oldElement = moveRenameUsageInfo.getReferencedElement();
                 PsiElement newElement = oldToNewMap.get(oldElement);
                 PsiReference reference = moveRenameUsageInfo.getReference();
-                if (reference != null){
-                    if (newElement != null) {
-                        reference.bindToElement(newElement);
-                    } else {
-                        PsiElement referringElement = reference.getElement();
-                        PsiElement dot = referringElement.getNextSibling();
-                        dot.delete();
-                        referringElement.delete();
-                    }
-                }
+                reference.bindToElement(newElement);
             }
         }
+
     }
 
     @Override
@@ -174,5 +110,18 @@ public class HaskellMoveFileHandler extends MoveFileHandler {
          This is for 'post move' actions. The file's current directory should already be updated and so. Nothing more to
          do here for the haskell side of things.
          */
+        if(psiFile instanceof HaskellFile){
+            /**
+             * TODO Very similar to what happens in 'prepareMovedFile'. Check whether we can extract some common 
+             * funcionality as soon as we're sure it all works and have enough tests.
+             */
+            HaskellModuledecl haskellModuledecl = PsiTreeUtil.getChildOfType(psiFile, HaskellModuledecl.class);
+            HaskellConid moduleName = Iterables.getLast(haskellModuledecl.getQconid().getConidList());
+            Project project = psiFile.getProject();
+            List<String> subDirs = FileUtil.getPathFromSourceRoot(project, psiDirectory.getVirtualFile());
+            HaskellQconid newQconId = HaskellElementFactory.createQconidFromText(project, subDirs, moduleName.getText());
+            HaskellQconid oldQconid = haskellModuledecl.getQconid();
+            oldQconid.replace(newQconId);
+        }
     }
 }

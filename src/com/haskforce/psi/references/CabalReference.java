@@ -1,5 +1,7 @@
 package com.haskforce.psi.references;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.haskforce.cabal.psi.CabalModule;
 import com.haskforce.cabal.psi.CabalVarid;
 import com.haskforce.cabal.psi.impl.CabalPsiImplUtil;
@@ -18,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class CabalReference extends PsiReferenceBase<PsiNamedElement> implements PsiPolyVariantReference {
@@ -45,39 +48,74 @@ public class CabalReference extends PsiReferenceBase<PsiNamedElement> implements
     @Override
     public ResolveResult[] multiResolve(boolean b) {
         List<ResolveResult> results = new ArrayList<ResolveResult>(20);
-        PsiElement cabalModule = myElement.getParent();
-        if ( myElement instanceof CabalVarid && cabalModule instanceof CabalModule) {
+        if (myElement instanceof CabalVarid){
+            PsiElement parent = myElement.getParent();
+            if(parent instanceof  CabalModule){
+                CabalModule cabalModule =(CabalModule) parent;
+                Project project = myElement.getProject();
+                String moduleName = cabalModule.getText();
+                List<HaskellFile> allHaskellFiles = HaskellModuleIndex.getFilesByModuleName(project, moduleName,
+                        GlobalSearchScope.allScope(project));
+                /**
+                 * Finding two modules with the same name and package is a bit weird.
+                 **/
+                assert (allHaskellFiles.size() <= 1);
+
+                /**
+                 * Very similar to code in HaskellReference. Need to find a way to remove pieces of duplication.
+                 */
+                for (HaskellFile haskellFile : allHaskellFiles) {
+                    List<CabalVarid> varidList = cabalModule.getVaridList();
+                    if (myElement.equals (Iterables.getLast(varidList))){
+                        /**
+                         * It's the module name
+                         */
+                        HaskellModuledecl haskellModuledecl = PsiTreeUtil.findChildOfType(haskellFile, HaskellModuledecl.class);
+                        HaskellConid haskellModuleName = Iterables.getLast(haskellModuledecl.getQconid().getConidList());
+                        results.add(new PsiElementResolveResult(haskellModuleName));
+                    } else {
+                        List<CabalVarid> revertedVaridList = Lists.reverse(varidList);
+                        Iterator<CabalVarid> iterator = revertedVaridList.iterator();
+                        /**
+                         * Get rid of the module name
+                         */
+                        iterator.next();
+                        PsiDirectory containingDirectory = haskellFile.getContainingDirectory();
+                        while(iterator.hasNext()){
+                            /**
+                             * Verify whether this approach works with stuff like A.A.Something. Should be because
+                             * comparing on varid should not just compare on text representation of the varid.
+                             */
+                            CabalVarid next = iterator.next();
+                            if (myElement.equals(next)){
+                                results.add(new PsiElementResolveResult(containingDirectory));
+                                break;
+                            }
+                            containingDirectory = containingDirectory.getParent();
+                        }
+                    }
+                }
+            }
+        }
+
+        if (myElement instanceof CabalModule){
+            CabalModule cabalModule =(CabalModule)myElement;
             String moduleName = cabalModule.getText();
             Project project = myElement.getProject();
             List<HaskellFile> allHaskellFiles = HaskellModuleIndex.getFilesByModuleName(project, moduleName,
                     GlobalSearchScope.allScope(project));
-            if (allHaskellFiles.size() == 0){
-                return new ResolveResult[0];
-            }
-            List<CabalVarid> varidList = ((CabalModule) cabalModule).getVaridList();
-            int moduleNumber = 0;
-            for (CabalVarid cabalVarid : varidList) {
-                if (cabalVarid .equals(myElement)){
-                    break;
-                }
-                ++moduleNumber;
-            }
             for (HaskellFile haskellFile : allHaskellFiles) {
                 HaskellModuledecl haskellModule = PsiTreeUtil.getChildOfType(haskellFile, HaskellModuledecl.class);
-                if(haskellModule == null){
+                if (haskellModule == null){
                     continue;
                 }
                 HaskellQconid qconid = haskellModule.getQconid();
-                if(qconid == null){
-                    continue;
+                if (qconid != null) {
+                    results.add(new PsiElementResolveResult(qconid));
                 }
-
-                List<HaskellConid> conidList = qconid.getConidList();
-                HaskellConid haskellConid = conidList.get(moduleNumber);
-                results.add(new PsiElementResolveResult(haskellConid));
-
             }
         }
+
         return results.toArray(new ResolveResult[results.size()]);
     }
 

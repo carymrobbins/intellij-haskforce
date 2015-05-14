@@ -1,14 +1,13 @@
 package com.haskforce.codeInsight;
 
 import com.haskforce.HaskellLightPlatformCodeInsightFixtureTestCase;
+import com.haskforce.cabal.psi.CabalModule;
 import com.haskforce.cabal.psi.CabalVarid;
-import com.haskforce.psi.HaskellCon;
-import com.haskforce.psi.HaskellConid;
-import com.haskforce.psi.HaskellVarid;
+import com.haskforce.psi.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiReference;
-
+import com.intellij.psi.util.PsiTreeUtil;
 
 
 public class HaskellGoToSymbolTest extends HaskellLightPlatformCodeInsightFixtureTestCase {
@@ -404,24 +403,6 @@ public class HaskellGoToSymbolTest extends HaskellLightPlatformCodeInsightFixtur
         assertEquals(expectedStartOffset, referencedElement.getTextRange().getStartOffset());
     }
 
-    public void testGoToSymbolFunction_ImportResolvesToModule_MultipleCons_OnPrefix() {
-        PsiFile[] psiFiles = myFixture.configureByFiles(
-                "ImportResolvesToModule_MultipleCons_OnPrefix/Usage.hs",
-                "ImportResolvesToModule_MultipleCons_OnPrefix/Definition.hs"
-        );
-        PsiFile usage = psiFiles[0];
-        PsiFile definition = psiFiles[1];
-        String textOfFile = definition.getText();
-        int expectedStartOffset = textOfFile.indexOf("module Definition.Definition") + 7;
-        PsiElement psiElement = usage
-                .findElementAt(myFixture.getCaretOffset()).getParent();
-        HaskellConid conId = (HaskellConid) psiElement;
-        PsiReference reference = conId.getReference();
-        HaskellConid referencedElement = (HaskellConid) reference.resolve();
-        assertNotSame(psiElement, referencedElement);
-        assertEquals(expectedStartOffset, referencedElement.getTextRange().getStartOffset());
-    }
-
 
     public void testGoToSymbolFunction_QualifiedImportQualifierresolves() {
         PsiFile[] psiFiles = myFixture.configureByFiles(
@@ -543,7 +524,6 @@ public class HaskellGoToSymbolTest extends HaskellLightPlatformCodeInsightFixtur
         assertNotSame(psiElement, referencedElement);
         assertEquals(expectedStartOffset, referencedElement.getTextRange().getStartOffset());
     }
-
     public void testResolveFromCabalModuleDeclaration() {
         PsiFile[] psiFiles = myFixture.configureByFiles(
                 "ResolveFromCabalModuleDeclaration/CabalFile.cabal",
@@ -553,13 +533,11 @@ public class HaskellGoToSymbolTest extends HaskellLightPlatformCodeInsightFixtur
         PsiFile haskellFile = psiFiles[1];
         String textOfFile = haskellFile.getText();
         int expectedStartOffset = textOfFile.indexOf("Koekoek");
-        PsiElement psiElement = cabalFile
-                .findElementAt(myFixture.getCaretOffset()).getParent();
-        CabalVarid cabalVarid = (CabalVarid) psiElement;
-        PsiReference reference = cabalVarid.getReference();
-        HaskellConid referencedElement = (HaskellConid) reference.resolve();
-        assertNotSame(psiElement, referencedElement);
-        assertEquals(expectedStartOffset, referencedElement.getTextRange().getStartOffset());
+        CabalModule cabalModule = PsiTreeUtil.findChildOfType(cabalFile, CabalModule.class);
+        PsiReference reference = cabalModule.getReference();
+        HaskellQconid referencedElement = (HaskellQconid) reference.resolve();
+        HaskellModuledecl haskellModuledecl = PsiTreeUtil.findChildOfType(haskellFile, HaskellModuledecl.class);
+        assertEquals(haskellModuledecl.getQconid(),referencedElement);
     }
 
 

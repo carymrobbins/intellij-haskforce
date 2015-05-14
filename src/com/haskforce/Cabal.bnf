@@ -1,7 +1,7 @@
 {
   parserClass="com.haskforce.cabal.CabalParser"
   implements="com.haskforce.cabal.psi.CabalCompositeElement"
-  implements("varid")="com.haskforce.cabal.psi.CabalNamedElement"
+  implements("varid|module")="com.haskforce.cabal.psi.CabalNamedElement"
   extends="com.haskforce.cabal.psi.impl.CabalCompositeElementImpl"
   elementTypeHolderClass="com.haskforce.cabal.psi.CabalTypes"
   elementTypeClass="com.haskforce.cabal.psi.CabalElementType"
@@ -297,7 +297,9 @@ private meta dotSeparate ::= <<p>> ('.' <<p>>)* {pin(".*")=1}
 
 private meta slashSeparate ::= <<p>> ('/' <<p>>)* {pin(".*")=1}
 
-module ::= <<dotSeparate varid>>
+module ::= <<dotSeparate varid>> {
+  methods=[getName getReference getNameIdentifier setName]
+}
 
 number ::= numberRegexp
 

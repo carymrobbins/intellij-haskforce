@@ -283,7 +283,7 @@ public class CabalVisitor extends PsiElementVisitor {
   }
 
   public void visitModule(@NotNull CabalModule o) {
-    visitCompositeElement(o);
+    visitNamedElement(o);
   }
 
   public void visitNumber(@NotNull CabalNumber o) {
