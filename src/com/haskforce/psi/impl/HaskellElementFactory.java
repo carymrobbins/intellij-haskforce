@@ -6,8 +6,12 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.util.PsiTreeUtil;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /**
  * Performs creation of element types.
@@ -52,6 +56,26 @@ public class HaskellElementFactory {
     /**
      * Takes a name and returns a Psi node of that name, or null.
      */
+    @Nullable
+    public static HaskellQconid createQconidFromText(@NotNull Project project, List<String> dirs, String moduleName) {
+        dirs.add(moduleName);
+        String moduleDeclaration = "module " + StringUtils.join(dirs, ".") + " where";
+        HaskellFile fileFromText = createFileFromText(project, moduleDeclaration);
+        HaskellQconid haskellQconid = PsiTreeUtil.findChildOfType(fileFromText, HaskellQconid.class);
+        return haskellQconid;
+    }
+
+
+    public static PsiElement createQconidFromText(Project project, String newName) {
+        String moduleDeclaration = "module " + newName + " where";
+        HaskellFile fileFromText = createFileFromText(project, moduleDeclaration);
+        HaskellQconid haskellQconid = PsiTreeUtil.findChildOfType(fileFromText, HaskellQconid.class);
+        return haskellQconid;
+    }
+
+    /**
+     * Takes a name and returns a Psi node of that name, or null.
+     */
     @NotNull
     public static HaskellTycls createTyclsFromText(@NotNull Project project, @NotNull String name) {
         return ((HaskellTycls) (createExpressionFromText(project, name + "uniq = " + name)).getFirstChild());
@@ -70,6 +94,14 @@ public class HaskellElementFactory {
     @NotNull
     public static PsiWhiteSpace createNewLine(@NotNull Project project) {
         return ((PsiWhiteSpace) (createFileFromText(project, "\n")).getFirstChild());
+    }
+
+    @NotNull
+    public static PsiElement createDot(@NotNull Project project) {
+        HaskellFile fileFromText = createFileFromText(project, "import A.B");
+        HaskellConid a = PsiTreeUtil.findChildOfType(fileFromText, HaskellConid.class);
+        PsiElement dot = a.getNextSibling();
+        return  dot;
     }
 
     /**

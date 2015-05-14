@@ -180,7 +180,7 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitQconid(@NotNull HaskellQconid o) {
-    visitCompositeElement(o);
+    visitNamedElement(o);
   }
 
   public void visitQconop(@NotNull HaskellQconop o) {

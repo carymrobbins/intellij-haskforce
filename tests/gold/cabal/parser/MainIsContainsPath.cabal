@@ -1,0 +1,3 @@
+executable voernekeeruit
+  main-is:  hier/daar/Koekoek.hs
+

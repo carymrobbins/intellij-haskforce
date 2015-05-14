@@ -80,6 +80,7 @@ public class HaskellRenamePsiElementProcessor extends RenamePsiElementProcessor 
                     allRenames.put(element,newFileName);
                 }
             }
+
         }
         super.prepareRenaming(element, newName, allRenames);
     }

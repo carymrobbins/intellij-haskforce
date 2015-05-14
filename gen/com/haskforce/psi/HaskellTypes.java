@@ -52,7 +52,7 @@ public interface HaskellTypes {
   IElementType PPRAGMA = new HaskellElementType("PPRAGMA");
   IElementType PSTRINGTOKEN = new HaskellElementType("PSTRINGTOKEN");
   IElementType QCON = new HaskellElementType("QCON");
-  IElementType QCONID = new HaskellElementType("QCONID");
+  IElementType QCONID = HaskellElementTypeFactory.factory("QCONID");
   IElementType QCONOP = new HaskellElementType("QCONOP");
   IElementType QCONSYM = new HaskellElementType("QCONSYM");
   IElementType QOP = new HaskellElementType("QOP");

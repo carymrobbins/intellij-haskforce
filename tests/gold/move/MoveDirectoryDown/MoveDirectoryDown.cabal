@@ -1,0 +1,4 @@
+library
+  exposed-modules:
+    Over.Here.MoveMe,
+    Over.Here.ReferringMoveMe

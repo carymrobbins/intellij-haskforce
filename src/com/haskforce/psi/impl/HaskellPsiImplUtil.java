@@ -1,12 +1,10 @@
 package com.haskforce.psi.impl;
 
 import com.haskforce.HaskellIcons;
-import com.haskforce.psi.HaskellFile;
-import com.haskforce.psi.HaskellQqblob;
+import com.haskforce.psi.*;
 import com.haskforce.psi.references.HaskellReference;
-import com.haskforce.psi.HaskellConid;
-import com.haskforce.psi.HaskellVarid;
 import com.haskforce.stubs.HaskellConidStub;
+import com.haskforce.stubs.HaskellQconidStub;
 import com.haskforce.stubs.HaskellVaridStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
@@ -41,6 +39,13 @@ public class HaskellPsiImplUtil {
         return o.getText();
     }
 
+    @NotNull
+    public static String getName(@NotNull HaskellQconid o) {
+        HaskellQconidStub stub = o.getStub();
+        if (stub != null) return StringUtil.notNullize(stub.getName());
+        return o.getText();
+    }
+
     @Nullable
     public static PsiElement getNameIdentifier(@NotNull HaskellVarid o) {
         ASTNode keyNode = o.getNode();
@@ -54,8 +59,22 @@ public class HaskellPsiImplUtil {
     }
 
     @Nullable
+    public static PsiElement getNameIdentifier(@NotNull HaskellQconid o) {
+        ASTNode keyNode = o.getNode();
+        return keyNode != null ? keyNode.getPsi() : null;
+    }
+
+    @Nullable
     public static PsiElement setName(@NotNull HaskellVarid o, @NotNull String newName) {
         PsiElement e = HaskellElementFactory.createVaridFromText(o.getProject(), newName);
+        if (e == null) return null;
+        o.replace(e);
+        return o;
+    }
+
+    @Nullable
+    public static PsiElement setName(@NotNull HaskellQconid o, @NotNull String newName) {
+        PsiElement e = HaskellElementFactory.createQconidFromText(o.getProject(), newName);
         if (e == null) return null;
         o.replace(e);
         return o;
@@ -77,6 +96,11 @@ public class HaskellPsiImplUtil {
 
     @NotNull
     public static PsiReference getReference(@NotNull HaskellConid o) {
+        return new HaskellReference(o, TextRange.from(0, getName(o).length()));
+    }
+
+    @NotNull
+    public static PsiReference getReference(@NotNull HaskellQconid o) {
         return new HaskellReference(o, TextRange.from(0, getName(o).length()));
     }
 
@@ -126,6 +150,33 @@ public class HaskellPsiImplUtil {
 
     @NotNull
     public static ItemPresentation getPresentation(final HaskellConid o) {
+        return new ItemPresentation() {
+            @Nullable
+            @Override
+            public String getPresentableText() {
+                return o.getName();
+            }
+
+            /**
+             * This is needed to decipher between files when resolving multiple references.
+             */
+            @Nullable
+            @Override
+            public String getLocationString() {
+                final PsiFile psiFile = o.getContainingFile();
+                return psiFile instanceof HaskellFile ? ((HaskellFile) psiFile).getModuleOrFileName() : null;
+            }
+
+            @Nullable
+            @Override
+            public Icon getIcon(boolean unused) {
+                return HaskellIcons.FILE;
+            }
+        };
+    }
+
+    @NotNull
+    public static ItemPresentation getPresentation(final HaskellQconid o) {
         return new ItemPresentation() {
             @Nullable
             @Override

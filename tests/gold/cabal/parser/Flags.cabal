@@ -1,0 +1,3 @@
+flag old-inline-pragmas
+  default: False
+  manual: True

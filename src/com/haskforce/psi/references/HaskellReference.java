@@ -1,6 +1,7 @@
 package com.haskforce.psi.references;
 
 import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.haskforce.codeInsight.HaskellCompletionContributor;
 import com.haskforce.index.HaskellModuleIndex;
@@ -18,10 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Resolves references to elements. Will be used in Go To Symbol as well as its inverse, Find Usages.
@@ -43,6 +41,11 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
         name = element.getName();
     }
 
+    public PsiElement bindToElement(@NotNull PsiElement element) throws IncorrectOperationException {
+        ((PsiNamedElement)this.myElement).replace(element);
+        return element;
+    }
+
     public static final ResolveResult[] EMPTY_RESOLVE_RESULT = new ResolveResult[0];
 
     /**
@@ -51,6 +54,28 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
     @NotNull
     @Override
     public ResolveResult[] multiResolve(boolean incompleteCode) {
+        if(myElement instanceof HaskellQconid){
+            PsiElement parent = ((HaskellQconid) myElement).getParent();
+            if( parent instanceof HaskellImpdecl){
+                HaskellQconid haskellQconid = (HaskellQconid) myElement;
+                String moduleName = haskellQconid.getText();
+                List<HaskellFile> filesByModuleName = HaskellModuleIndex.getFilesByModuleName(myElement.getProject(), moduleName, GlobalSearchScope.projectScope(myElement.getProject()));
+                List<ResolveResult> results = new ArrayList<ResolveResult>(20);
+                for (HaskellFile haskellFile : filesByModuleName) {
+                    Collection<HaskellModuledecl> childrenOfType = PsiTreeUtil.findChildrenOfType(haskellFile, HaskellModuledecl.class);
+                    HaskellModuledecl next = childrenOfType.iterator().next();
+                    HaskellQconid qconid = next.getQconid();
+                    if (qconid != null) {
+                        results.add(new PsiElementResolveResult(qconid));
+                    }
+                }
+                return results.toArray(new ResolveResult[results.size()]);
+            }
+            if (parent instanceof  HaskellModuledecl){
+//                return new ResolveResult[] {new PsiElementResolveResult(myElement)};
+                return EMPTY_RESOLVE_RESULT;
+            }
+        }
         // We should only be resolving varids or conids.
         if (!(myElement instanceof HaskellVarid || myElement instanceof HaskellConid)) {
             return EMPTY_RESOLVE_RESULT;
@@ -126,8 +151,36 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
         /**
          * Do not resolve module to constructor. In fact, do not resolve module as it's a declaration itself.
          */
-        if(PsiTreeUtil.getParentOfType(myElement, HaskellModuledecl.class) != null){
-            return EMPTY_RESOLVE_RESULT;
+        HaskellModuledecl moduleDecl = PsiTreeUtil.getParentOfType(myElement, HaskellModuledecl.class);
+        if(moduleDecl != null){
+            /**
+             * are you the module name?
+             */
+            List<HaskellConid> conidList = moduleDecl.getQconid().getConidList();
+            if (myElement.equals(conidList.get(conidList.size() -1))) {
+                return EMPTY_RESOLVE_RESULT;
+            } else {
+                /*
+                Resolve all cons that aren't the module name to the folder they belong to. Because that's the only
+                single instance where all those cons point to (A.B.C, A and B point to folders A and B)
+                 */
+                PsiDirectory topDirectory = myElement.getContainingFile().getContainingDirectory();
+                List<HaskellConid> reversedConIdList = Lists.reverse(conidList);
+                //skip module name which is after reversal in front of the list
+                Iterator<HaskellConid> reversedConidIterator = reversedConIdList.iterator();
+                reversedConidIterator.next();
+                while(reversedConidIterator.hasNext()){
+                    HaskellConid haskellConid = reversedConidIterator.next();
+                    if (myElement.equals(haskellConid)){
+                        List<PsiElementResolveResult> results = Lists.newArrayList();
+                        results.add(new PsiElementResolveResult(topDirectory));
+                        return results.toArray(new ResolveResult[results.size()]);
+                    }
+                    topDirectory = topDirectory.getParentDirectory();
+                }
+
+            }
+
         }
 
 
@@ -136,6 +189,13 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
             PsiElement parent = myElement.getParent();
             if (parent instanceof  HaskellQconid) {
                 HaskellQconid haskellQconid = (HaskellQconid) parent;
+                /**
+                 * Taking the first qcon here. There are at maximum two qcons, the first one
+                 * containing the list of cons that denote the folders of the import statement.
+                 * The second one is the one used in case of a qualified import.
+                 * So, in import qualified A.B.C.ModuleName as A.B.C.ModuleName2, qcon[0]
+                 * will be A.B.C.ModuleName, qcon[1] will be A.B.C.ModuleName2
+                 */
                 if (haskellImpdecl.getQconidList().get(0).equals(haskellQconid)) {
                     List<HaskellConid> conidList = haskellQconid.getConidList();
                     for (int i = 0; i < conidList.size(); i++) {
@@ -209,22 +269,39 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
          * Don't use the named element yet to determine which element we're
          * talking about, not necessary yet
          */
-        List<PsiElementResolveResult> modulesFound = new ArrayList<PsiElementResolveResult>();
+        List<PsiElementResolveResult> results = new ArrayList<PsiElementResolveResult>();
         List<HaskellQconid> qconidList = haskellImpdecl.getQconidList();
-        if (qconidList.size() > 0){
-            String moduleName = qconidList.get(0).getText();
 
-            GlobalSearchScope globalSearchScope = GlobalSearchScope.projectScope(myElement.getProject());
-            List<HaskellFile> filesByModuleName = HaskellModuleIndex.getFilesByModuleName(myElement.getProject(), moduleName, globalSearchScope);
-            for (HaskellFile haskellFile : filesByModuleName) {
-                HaskellModuledecl[] moduleDecls = PsiTreeUtil.getChildrenOfType(haskellFile, HaskellModuledecl.class);
-                if (moduleDecls.length != 0){
-                    List<HaskellConid> conidList = moduleDecls[0].getQconid().getConidList();
-                    modulesFound.add(new PsiElementResolveResult(conidList.get(i)));
+        if (qconidList.size() > 0){
+            List<HaskellConid> conids = qconidList.get(0).getConidList();
+            if (i == conids.size() - 1) {
+                String moduleName = qconidList.get(0).getText();
+
+                GlobalSearchScope globalSearchScope = GlobalSearchScope.projectScope(myElement.getProject());
+                List<HaskellFile> filesByModuleName = HaskellModuleIndex.getFilesByModuleName(myElement.getProject(), moduleName, globalSearchScope);
+                for (HaskellFile haskellFile : filesByModuleName) {
+                    HaskellModuledecl[] moduleDecls = PsiTreeUtil.getChildrenOfType(haskellFile, HaskellModuledecl.class);
+                    if (moduleDecls.length != 0) {
+                        List<HaskellConid> conidList = moduleDecls[0].getQconid().getConidList();
+                        results.add(new PsiElementResolveResult(conidList.get(i)));
+                    }
                 }
+            } else {
+                //Not dealing with the module name part of an import declaration. Try to point to the correct psidirectory
+                // 'i' denotes the index of the folder in the import statement. So, in A.B.C.ModuleName, i = 2 points to C.
+                // containingDirectory will be A.B.C in this case. We need to determine how many times we need to perform
+                // 'getParentDirectory'. This is (qconidList.size() -1) - i; Because we take the first directory already
+                //before the loop starts, we need to do -2. This could get simpler I think.
+                PsiDirectory containingDirectory = myElement.getContainingFile().getParent();
+                for (int j =0; j < conids.size()- 2 - i;j++){
+                    containingDirectory = containingDirectory.getParentDirectory();
+                }
+                results.add(new PsiElementResolveResult(containingDirectory));
             }
         }
-        return modulesFound;
+        return results;
+
+
     }
 
     /**

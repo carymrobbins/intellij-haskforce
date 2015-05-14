@@ -30,6 +30,11 @@ import com.haskforce.features.HaskellFoldingBuilderTest;
 import com.haskforce.features.HaskellTypedHandlerTest;
 import com.haskforce.highlighting.HaskellLexerTest;
 import com.haskforce.highlighting.annotation.external.GhcUtilTest;
+import com.haskforce.move.HaskellMoveDirectoryDownTest;
+import com.haskforce.move.HaskellMoveDirectoryUpTest;
+import com.haskforce.move.HaskellSimpleMoveMoreReferencesTest;
+import com.haskforce.move.HaskellSimpleMoveTest;
+import com.haskforce.parser.CabalParserTest;
 import com.haskforce.parser.HaskellParserTest;
 import com.haskforce.parser.HaskellParsingLexerTest;
 import com.haskforce.refactoring.HaskellRenameTest;
@@ -53,6 +58,7 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(HaskellLexerTest.class);
         suite.addTestSuite(HaskellParsingLexerTest.class);
         suite.addTestSuite(HaskellParserTest.class);
+        suite.addTestSuite(CabalParserTest.class);
         suite.addTestSuite(HaskellFeaturesTest.class);
         suite.addTestSuite(HaskellFoldingBuilderTest.class);
         suite.addTestSuite(HaskellCompletionTest.class);
@@ -61,6 +67,11 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(HaskellResolveTest.class);
         suite.addTestSuite(GhcUtilTest.class);
         suite.addTestSuite(HaskellGoToSymbolTest.class);
+        suite.addTestSuite(HaskellMoveDirectoryDownTest.class);
+        suite.addTestSuite(HaskellMoveDirectoryUpTest.class);
+        suite.addTestSuite(HaskellSimpleMoveMoreReferencesTest.class);
+        suite.addTestSuite(HaskellSimpleMoveTest.class);
+
         return suite;
     }
 }

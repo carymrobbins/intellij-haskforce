@@ -1,0 +1,5 @@
+library
+  if flag(old-inline-pragmas) && impl(ghc>=7.6.0.20120810)
+     cpp-options: -DOLD_INLINE_PRAGMAS=1
+  else
+     cpp-options: -DNEW_OUTLINE_STRICT=2

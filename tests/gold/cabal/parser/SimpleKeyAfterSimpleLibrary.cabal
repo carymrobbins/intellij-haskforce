@@ -1,0 +1,4 @@
+library
+    js-sources:  one.js, two.js
+
+name: koekoek
