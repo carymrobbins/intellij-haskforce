@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# Since OSX can't do `readlink -f` out of the box.
+BASE_DIR=$(cd $(dirname $0) && echo $PWD)
+IDEA_HOME=$(grep idea.home "$BASE_DIR/build.properties" | cut -d = -f 2)
+IDEA_JARS=$(find "$IDEA_HOME/lib" -name "*.jar")
+LOCAL_JARS=$(find "$BASE_DIR/lib" -name "*.jar")
+PRODUCTION_CLASSES=$(find "$BASE_DIR/out/production" -maxdepth 1 -type d)
+CLASSPATH=${IDEA_JARS//$'\n'/:}:${LOCAL_JARS//$'\n'/:}:${PRODUCTION_CLASSES//$'\n'/:}
+
+if [ -z "$IDEA_HOME" ]; then
+    >&2 echo "You must provide idea.home in your build.properties file."
+    exit 1
+fi
+
+scala -classpath "$CLASSPATH"
