@@ -25,10 +25,11 @@ public class HaskellApplicationCommandLineState extends CommandLineState {
         GeneralCommandLine commandLine = new GeneralCommandLine();
         commandLine.setWorkDirectory(env.getProject().getBasePath());
         // TODO: This should probably be a bit more generic than relying on `cabal run`.
-        final String cabalPath = HaskellBuildSettings.getInstance(myConfig.getProject()).getCabalPath();
-        commandLine.setExePath(cabalPath);
+        final HaskellBuildSettings buildSettings = HaskellBuildSettings.getInstance(myConfig.getProject());
+        commandLine.setExePath(buildSettings.getCabalPath());
         ParametersList parametersList = commandLine.getParametersList();
         parametersList.add("run");
+        parametersList.add("--with-ghc=" + buildSettings.getGhcPath());
         parametersList.addParametersString(myConfig.programArguments);
         return new OSProcessHandler(commandLine.createProcess());
     }

@@ -50,6 +50,7 @@ case class CabalExecutor private (factory: () => GeneralCommandLine) {
   @throws(classOf[ExecutionException])
   def init(project: Project, args: Seq[String]): String = {
     val commandLine = initPreEnv(args)
+    // TODO: We need to patch the PATH since `cabal init` doesn't support --with-ghc
     GhcUtil.updateEnvironment(project, commandLine.getEnvironment)
     initPostEnv(commandLine)
   }
@@ -57,6 +58,7 @@ case class CabalExecutor private (factory: () => GeneralCommandLine) {
   @throws(classOf[ExecutionException])
   def init(ghcPath: String, args: Seq[String]): String = {
     val commandLine = initPreEnv(args)
+    // TODO: We need to patch the PATH since `cabal init` doesn't support --with-ghc
     GhcUtil.updateEnvironment(commandLine.getEnvironment, ghcPath)
     initPostEnv(commandLine)
   }

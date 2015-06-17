@@ -38,6 +38,7 @@ public class CabalJspInterface {
         commandLine.setWorkDirectory(myCabalFile.getParentFile().getCanonicalPath());
         commandLine.setExePath(myBuildOptions.myCabalPath);
         ParametersList parametersList = commandLine.getParametersList();
+        parametersList.add("--with-ghc=" + myBuildOptions.myGhcPath);
         parametersList.add(command);
         if (command.equals("install") || command.equals("configure")) {
             if (myBuildOptions.myEnableTests) {
