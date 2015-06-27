@@ -317,11 +317,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
             browseCache = new HashMap<String, List<LookupElement>>(imports.size());
         }
         for (HaskellPsiUtil.Import x : imports) {
-            final List<LookupElement> cachedNames = browseCache.get(x.module);
-            if (cachedNames != null && !browseCache.containsKey(x.module)) {
-                browseCache.put(x.module, cachedNames);
-                continue;
-            }
+            if (browseCache.containsKey(x.module)) continue;
             final Future<GhcModi.BrowseItem[]> futureBrowseItems = ghcModi.browse(x.module);
             if (futureBrowseItems != null) {
                 final GhcModi.BrowseItem[] browseItems = GhcModi.getFutureBrowseItems(project, futureBrowseItems);
