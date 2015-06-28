@@ -208,7 +208,7 @@ public class HLint {
             final String text = file.getText();
             final int start = getOffsetStart(text);
             final int end = getOffsetEnd(start, text);
-            if (end == -1) {
+            if (start == -1 || end == -1) {
                 return;
             }
             if (useJson && hint.equals("Use camelCase")) {
