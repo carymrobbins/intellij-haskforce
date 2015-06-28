@@ -40,17 +40,29 @@ public class HaskellPsiUtil {
         return result;
     }
 
+    public static boolean hasPragma(@NotNull PsiFile file, @NotNull String pragmaName) {
+        HaskellPpragma[] ppragmas = PsiTreeUtil.getChildrenOfType(file, HaskellPpragma.class);
+        if (ppragmas == null) return false;
+        for (HaskellPpragma ppragma : ppragmas) {
+            if (ppragma.getText().contains(pragmaName)) return true;
+        }
+        return false;
+    }
+
     /**
      * Returns a map of module -> alias for each imported module.  If a module is imported but not qualified, alias
      * will be null.
      */
     @NotNull
     public static List<Import> parseImports(@NotNull final PsiFile file) {
+        final boolean noImplicitPrelude = hasPragma(file, "NoImplicitPrelude");
         final Import prelude = Import.global("Prelude", false, null);
         boolean importedPrelude = false;
         HaskellImpdecl[] impdecls = PsiTreeUtil.getChildrenOfType(PsiTreeUtil.getChildOfType(file, HaskellBody.class), HaskellImpdecl.class);
-        // TODO: For now, just assume Prelude was implicitly imported if there are no import declarations.
-        if (impdecls == null) { return Collections.singletonList(prelude); }
+        if (impdecls == null) {
+            if (noImplicitPrelude) return Collections.EMPTY_LIST;
+            return Collections.singletonList(prelude);
+        }
         List<Import> result = new ArrayList<Import>(impdecls.length);
         for (HaskellImpdecl impdecl : impdecls) {
             final List<HaskellQconid> qconids = impdecl.getQconidList();
@@ -91,8 +103,7 @@ public class HaskellPsiUtil {
             }
             result.add(anImport);
         }
-        // TODO: Eventually we'll want to get fancy and check the cabal file and pragmas for NoImplicitPrelude.
-        if (!importedPrelude) { result.add(prelude); }
+        if (!importedPrelude && !noImplicitPrelude) { result.add(prelude); }
         return result;
     }
 
