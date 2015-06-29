@@ -1,7 +1,7 @@
 <idea-plugin version="2" use-idea-classloader="true">
   <id>com.haskforce</id>
   <name>HaskForce</name>
-  <version>0.3-beta.20</version>
+  <version>0.3-beta.21</version>
   <vendor url="https://github.com/carymrobbins/intellij-haskforce">HaskForce on GitHub</vendor>
 
   <description>Plugin for Haskell language support.</description>
@@ -14,6 +14,17 @@
     <p>
       If you encounter any issues, please submit them on our
       <a href="https://github.com/carymrobbins/intellij-haskforce/issues">bug tracker</a>.
+    </p>
+    <p>
+      <b>v0.3-beta.21</b>
+      <ul>
+        <li>Type info action only applies to Haskell files (#156)</li>
+        <li>ghc-mod completion optimizations</li>
+        <li>Added Add Cabal Package and Discover Cabal Packages actions</li>
+        <li>Enhanced the new project wizard to configure tools and Cabal package settings</li>
+        <li>Resolved hlint annotation issue (#121)</li>
+        <li>Honor NoImplicitPrelude pragma for autocompletion</li>
+      </ul>
     </p>
     <p>
       <b>v0.3-beta.20</b>
