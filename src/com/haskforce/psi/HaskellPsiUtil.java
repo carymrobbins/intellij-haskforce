@@ -71,10 +71,8 @@ public class HaskellPsiUtil {
             final HaskellQconid moduleQconid = qconids.get(0);
             final String module = moduleQconid.getText();
             final String alias = numQconids > 1 ? qconids.get(1).getText() : null;
-            final PsiElement maybeQualified = PsiTreeUtil.prevVisibleLeaf(moduleQconid);
-            final boolean isQualified = maybeQualified != null && isType(maybeQualified, HaskellTypes.QUALIFIED);
-            final PsiElement maybeHiding = PsiTreeUtil.nextVisibleLeaf(moduleQconid);
-            final boolean isHiding = maybeHiding != null && isType(maybeHiding, HaskellTypes.HIDING);
+            final boolean isQualified = impdecl.getQualified() != null;
+            final boolean isHiding = impdecl.getHiding() != null;
             final String[] explicitNames;
             // Check if we have an empty import list.
             if (impdecl.getImpempty() != null) {
