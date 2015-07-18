@@ -2,4 +2,4 @@ module Baz (
     module X
   ) where
 
-import Foo as X
+import Bam as X

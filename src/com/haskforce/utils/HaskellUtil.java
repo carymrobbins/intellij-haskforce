@@ -83,6 +83,7 @@ public class HaskellUtil {
                 if (hidden || notImported) continue;
                 for (HaskellFile f2 : HaskellModuleIndex.getFilesByModuleName(project, imprt.module, GlobalSearchScope.allScope(project))) {
                     findDefinitionNode(f2, name, e, result);
+                    findDefinitionNodeInExport(project, f2, name, e, result);
                 }
             }
         }
