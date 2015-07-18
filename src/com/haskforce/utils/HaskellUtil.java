@@ -26,16 +26,15 @@ public class HaskellUtil {
      * definitions are found when name is null.
      */
     @NotNull
-    public static List<PsiNamedElement> findDefinitionNode(@NotNull Project project, @Nullable String name, @Nullable PsiNamedElement e) {
+    public static List<PsiNamedElement> findDefinitionNode(@NotNull Project project, @Nullable String name, @NotNull PsiNamedElement e) {
         // Guess where the name could be defined by lookup up potential modules.
         final Set<String> potentialModules =
-                e == null ? Collections.EMPTY_SET
-                        : getPotentialDefinitionModuleNames(e, HaskellPsiUtil.parseImports(e.getContainingFile()));
+                getPotentialDefinitionModuleNames(e, HaskellPsiUtil.parseImports(e.getContainingFile()));
         List<PsiNamedElement> result = ContainerUtil.newArrayList();
-        final String qPrefix = e == null ? null : getQualifiedPrefix(e);
-        final PsiFile psiFile = e == null ? null : e.getContainingFile().getOriginalFile();
+        final String qPrefix = getQualifiedPrefix(e);
+        final PsiFile psiFile = e.getContainingFile().getOriginalFile();
         if (psiFile instanceof HaskellFile) {
-            findDefinitionNode((HaskellFile)psiFile, name, e, result);
+            findDefinitionNode((HaskellFile) psiFile, name, e, result);
         }
         for (String potentialModule : potentialModules) {
             List<HaskellFile> files = HaskellModuleIndex.getFilesByModuleName(project, potentialModule, GlobalSearchScope.allScope(project));
@@ -86,22 +85,11 @@ public class HaskellUtil {
     }
 
     /**
-     * Finds name definition across all Haskell files in the project. All
-     * definitions are found when name is null.
-     */
-    @NotNull
-    public static List<PsiNamedElement> findDefinitionNodes(@NotNull Project project) {
-        return findDefinitionNode(project, null, null);
-    }
-
-    /**
      * Finds name definitions that are within the scope of a file, including imports (to some degree).
      */
     @NotNull
     public static List<PsiNamedElement> findDefinitionNodes(@NotNull HaskellFile psiFile) {
-        List<PsiNamedElement> result = findDefinitionNodes(psiFile, null);
-        result.addAll(findDefinitionNode(psiFile.getProject(), null, null));
-        return result;
+        return findDefinitionNodes(psiFile, null);
     }
 
     /**
