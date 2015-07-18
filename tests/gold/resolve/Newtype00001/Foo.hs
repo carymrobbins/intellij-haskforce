@@ -1,4 +1,4 @@
 module Foo where
 
-newtype Foo a = <resolved>Foo (a, a)
+newtype Foo2 a = <resolved>Foo (a, a)
 
