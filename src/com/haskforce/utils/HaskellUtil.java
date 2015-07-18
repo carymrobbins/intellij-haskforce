@@ -74,18 +74,15 @@ public class HaskellUtil {
                                                    @Nullable PsiNamedElement e, List<PsiNamedElement> result) {
         List<HaskellPsiUtil.Import> imports = HaskellPsiUtil.parseImports(f);
         for (HaskellExport export : PsiTreeUtil.findChildrenOfType(f, HaskellExport.class)) {
-            if (export.getModuletoken() == null) continue;
-            for (HaskellConid exportCon : PsiTreeUtil.findChildrenOfType(export, HaskellConid.class)) {
-                String exportName = exportCon.getName();
-                if (exportName == null) continue;
-                for (HaskellPsiUtil.Import imprt : imports) {
-                    if (!exportName.equals(imprt.module) && !exportName.equals(imprt.alias)) continue;
-                    boolean hidden = imprt.getHidingNames() != null && ArrayUtil.contains(name, imprt.getHidingNames());
-                    boolean notImported = imprt.getImportedNames() != null && !ArrayUtil.contains(name, imprt.getImportedNames());
-                    if (hidden || notImported) continue;
-                    for (HaskellFile f2 : HaskellModuleIndex.getFilesByModuleName(project, imprt.module, GlobalSearchScope.allScope(project))) {
-                        findDefinitionNode(f2, name, e, result);
-                    }
+            if (export.getModuletoken() == null || export.getQconid() == null) continue;
+            String exportName = export.getQconid().getText();
+            for (HaskellPsiUtil.Import imprt : imports) {
+                if (!exportName.equals(imprt.module) && !exportName.equals(imprt.alias)) continue;
+                boolean hidden = imprt.getHidingNames() != null && ArrayUtil.contains(name, imprt.getHidingNames());
+                boolean notImported = imprt.getImportedNames() != null && !ArrayUtil.contains(name, imprt.getImportedNames());
+                if (hidden || notImported) continue;
+                for (HaskellFile f2 : HaskellModuleIndex.getFilesByModuleName(project, imprt.module, GlobalSearchScope.allScope(project))) {
+                    findDefinitionNode(f2, name, e, result);
                 }
             }
         }

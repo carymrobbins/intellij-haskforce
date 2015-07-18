@@ -1,8 +1,8 @@
 module Baz (
-    module Foo
+    module Foo.Foo
   , abc
   ) where
 
-import Foo
+import Foo.Foo
 
 abc = "xyz"
