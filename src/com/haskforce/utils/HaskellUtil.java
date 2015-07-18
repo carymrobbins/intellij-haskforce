@@ -70,8 +70,23 @@ public class HaskellUtil {
         for (PsiNamedElement namedElement : namedElements) {
             if ((name == null || name.equals(namedElement.getName())) && definitionNode(namedElement)) {
                 result.add(namedElement);
+            } else if (name != null && name.equals(namedElement.getName()) && typeNode(name, namedElement)) {
+                result.add(namedElement);
             }
         }
+    }
+
+    private static boolean typeNode(@NotNull String name, @NotNull PsiNamedElement e) {
+        HaskellDatadecl datadecl = PsiTreeUtil.getParentOfType(e, HaskellDatadecl.class);
+        if (datadecl != null) {
+            return datadecl.getTypeeList().get(0).getAtypeList().get(0).getText().equals(name);
+        }
+        HaskellNewtypedecl newtypedecl = PsiTreeUtil.getParentOfType(e, HaskellNewtypedecl.class);
+        if (newtypedecl != null && newtypedecl.getTycon() != null) {
+            return name.equals(newtypedecl.getTycon().getConid().getName());
+        }
+        HaskellTypedecl typedecl = PsiTreeUtil.getParentOfType(e, HaskellTypedecl.class);
+        return typedecl != null && name.equals(typedecl.getTypeeList().get(0).getAtypeList().get(0).getText());
     }
 
     /**
