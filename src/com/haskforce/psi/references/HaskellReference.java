@@ -7,6 +7,7 @@ import com.haskforce.index.HaskellModuleIndex;
 import com.haskforce.psi.*;
 import com.haskforce.psi.impl.HaskellPsiImplUtil;
 import com.haskforce.utils.HaskellUtil;
+import com.haskforce.utils.HaskellUtil.FoundDefinition;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
@@ -57,7 +58,7 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
         }
 
         Project project = myElement.getProject();
-        final List<PsiNamedElement> namedElements = HaskellUtil.findDefinitionNode(project, name, myElement);
+        final List<FoundDefinition> namedElements = HaskellUtil.findDefinitionNode(project, name, myElement);
         // Make sure that we only complete the last conid in a qualified expression.
         if (myElement instanceof HaskellConid) {
             // Don't resolve a module import to a constructor.
@@ -110,9 +111,9 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
                 } else {
                     if (myElement.getParent() instanceof HaskellTycon){
                         List<ResolveResult> results = new ArrayList<ResolveResult>(20);
-                        for (PsiNamedElement namedElement : namedElements){
-                            if (namedElement.getParent() instanceof HaskellTycon){
-                                results.add(new PsiElementResolveResult(namedElement));
+                        for (FoundDefinition namedElement : namedElements){
+                            if (namedElement.element.getParent() instanceof HaskellTycon){
+                                results.add(new PsiElementResolveResult(namedElement.element));
                             }
                         }
                         return results.toArray(new ResolveResult[results.size()]);
@@ -165,7 +166,6 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
         // Guess 20 variants tops most of the time in any real code base.
 
         List<ResolveResult> results = new ArrayList<ResolveResult>(20);
-        List<HaskellPsiUtil.Import> imports = HaskellPsiUtil.parseImports(myElement.getContainingFile());
 
         String qualifiedCallName = HaskellUtil.getQualifiedPrefix(myElement);
 
@@ -176,7 +176,7 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
              *  a stop gap.
              */
             Set<PsiElement> resultSet = Sets.newHashSet();
-            resultSet.addAll(HaskellUtil.matchGlobalNamesUnqualified(myElement,namedElements,imports));
+            resultSet.addAll(HaskellUtil.matchGlobalNamesUnqualified(namedElements));
 
             List<PsiElement> localVariables = HaskellUtil.matchLocalDefinitionsInScope(myElement, name);
             for (PsiElement psiElement : localVariables) {
@@ -198,7 +198,7 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
             return results.toArray(new ResolveResult[results.size()]);
 
         } else {
-            results.addAll(HaskellUtil.matchGlobalNamesQualified(namedElements, qualifiedCallName, imports));
+            results.addAll(HaskellUtil.matchGlobalNamesQualified(namedElements, qualifiedCallName));
             return results.toArray(new ResolveResult[results.size()]);
         }
     }
