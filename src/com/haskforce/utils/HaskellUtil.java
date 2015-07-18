@@ -53,12 +53,42 @@ public class HaskellUtil {
                 final boolean inImportedModule = f != null && potentialModuleNames.contains(f.getModuleName());
                 if (returnAllReferences || inLocalModule || inImportedModule) {
                     findDefinitionNode(f, name, e, result);
+                    findDefinitionNodeInExport(project, f, name, e, result);
 
                 }
             }
             addFoundDefinition(result, potentialModule, results);
         }
         return results;
+    }
+
+    /**
+     * Find definitions in full modules that have been exported.
+     *
+     * <code>
+     *   module Foo (module Bar) where
+     *   import Bar
+     * </code>
+     */
+    private static void findDefinitionNodeInExport(@NotNull Project project, HaskellFile f, @Nullable String name,
+                                                   @Nullable PsiNamedElement e, List<PsiNamedElement> result) {
+        List<HaskellPsiUtil.Import> imports = HaskellPsiUtil.parseImports(f);
+        for (HaskellExport export : PsiTreeUtil.findChildrenOfType(f, HaskellExport.class)) {
+            if (export.getModuletoken() == null) continue;
+            for (HaskellConid exportCon : PsiTreeUtil.findChildrenOfType(export, HaskellConid.class)) {
+                String exportName = exportCon.getName();
+                if (exportName == null) continue;
+                for (HaskellPsiUtil.Import imprt : imports) {
+                    if (!exportName.equals(imprt.module) && !exportName.equals(imprt.alias)) continue;
+                    boolean hidden = imprt.getHidingNames() != null && ArrayUtil.contains(name, imprt.getHidingNames());
+                    boolean notImported = imprt.getImportedNames() != null && !ArrayUtil.contains(name, imprt.getImportedNames());
+                    if (hidden || notImported) continue;
+                    for (HaskellFile f2 : HaskellModuleIndex.getFilesByModuleName(project, imprt.module, GlobalSearchScope.allScope(project))) {
+                        findDefinitionNode(f2, name, e, result);
+                    }
+                }
+            }
+        }
     }
 
     /**
