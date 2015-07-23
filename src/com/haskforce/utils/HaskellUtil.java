@@ -11,6 +11,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.PsiNamedElement;
 import com.intellij.psi.search.GlobalSearchScope;
 import com.intellij.psi.util.PsiTreeUtil;
+import com.intellij.util.ArrayUtil;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,29 +27,66 @@ public class HaskellUtil {
      * definitions are found when name is null.
      */
     @NotNull
-    public static List<PsiNamedElement> findDefinitionNode(@NotNull Project project, @Nullable String name, @Nullable PsiNamedElement e) {
+    public static List<FoundDefinition> findDefinitionNode(@NotNull Project project, @Nullable String name, @NotNull PsiNamedElement e) {
         // Guess where the name could be defined by lookup up potential modules.
-        final Set<String> potentialModules =
-                e == null ? Collections.EMPTY_SET
-                        : getPotentialDefinitionModuleNames(e, HaskellPsiUtil.parseImports(e.getContainingFile()));
-        List<PsiNamedElement> result = ContainerUtil.newArrayList();
-        final String qPrefix = e == null ? null : getQualifiedPrefix(e);
-        final PsiFile psiFile = e == null ? null : e.getContainingFile().getOriginalFile();
-        if (psiFile instanceof HaskellFile) {
-            findDefinitionNode((HaskellFile)psiFile, name, e, result);
+        // TODO This removing duplicates, for example importing the same module twice. Fair enough
+        final List<HaskellPsiUtil.Import> potentialModules =
+                getPotentialDefinitionModuleNames(e, HaskellPsiUtil.parseImports(e.getContainingFile()));
+        final Set<String> potentialModuleNames = new HashSet<String>();
+        for (HaskellPsiUtil.Import i : potentialModules) {
+            potentialModuleNames.add(i.module);
         }
-        for (String potentialModule : potentialModules) {
-            List<HaskellFile> files = HaskellModuleIndex.getFilesByModuleName(project, potentialModule, GlobalSearchScope.allScope(project));
+        List<FoundDefinition> results = ContainerUtil.newArrayList();
+        final String qPrefix = getQualifiedPrefix(e);
+        final PsiFile psiFile = e.getContainingFile().getOriginalFile();
+        if (psiFile instanceof HaskellFile) {
+            List<PsiNamedElement> result = ContainerUtil.newArrayList();
+            findDefinitionNode((HaskellFile)psiFile, name, e, result);
+            addFoundDefinition(result, null, results);
+        }
+        for (HaskellPsiUtil.Import potentialModule : potentialModules) {
+            List<PsiNamedElement> result = ContainerUtil.newArrayList();
+            List<HaskellFile> files = HaskellModuleIndex.getFilesByModuleName(project, potentialModule.module, GlobalSearchScope.allScope(project));
             for (HaskellFile f : files) {
                 final boolean returnAllReferences = name == null;
                 final boolean inLocalModule = f != null && qPrefix == null && f.equals(psiFile);
-                final boolean inImportedModule = f != null && potentialModules.contains(f.getModuleName());
+                final boolean inImportedModule = f != null && potentialModuleNames.contains(f.getModuleName());
                 if (returnAllReferences || inLocalModule || inImportedModule) {
                     findDefinitionNode(f, name, e, result);
+                    findDefinitionNodeInExport(project, f, name, e, result);
+
+                }
+            }
+            addFoundDefinition(result, potentialModule, results);
+        }
+        return results;
+    }
+
+    /**
+     * Find definitions in full modules that have been exported.
+     *
+     * <code>
+     *   module Foo (module Bar) where
+     *   import Bar
+     * </code>
+     */
+    private static void findDefinitionNodeInExport(@NotNull Project project, HaskellFile f, @Nullable String name,
+                                                   @Nullable PsiNamedElement e, List<PsiNamedElement> result) {
+        List<HaskellPsiUtil.Import> imports = HaskellPsiUtil.parseImports(f);
+        for (HaskellExport export : PsiTreeUtil.findChildrenOfType(f, HaskellExport.class)) {
+            if (export.getModuletoken() == null || export.getQconid() == null) continue;
+            String exportName = export.getQconid().getText();
+            for (HaskellPsiUtil.Import imprt : imports) {
+                if (!exportName.equals(imprt.module) && !exportName.equals(imprt.alias)) continue;
+                boolean hidden = imprt.getHidingNames() != null && ArrayUtil.contains(name, imprt.getHidingNames());
+                boolean notImported = imprt.getImportedNames() != null && !ArrayUtil.contains(name, imprt.getImportedNames());
+                if (hidden || notImported) continue;
+                for (HaskellFile f2 : HaskellModuleIndex.getFilesByModuleName(project, imprt.module, GlobalSearchScope.allScope(project))) {
+                    findDefinitionNode(f2, name, e, result);
+                    findDefinitionNodeInExport(project, f2, name, e, result);
                 }
             }
         }
-        return result;
     }
 
     /**
@@ -86,22 +124,11 @@ public class HaskellUtil {
     }
 
     /**
-     * Finds name definition across all Haskell files in the project. All
-     * definitions are found when name is null.
-     */
-    @NotNull
-    public static List<PsiNamedElement> findDefinitionNodes(@NotNull Project project) {
-        return findDefinitionNode(project, null, null);
-    }
-
-    /**
      * Finds name definitions that are within the scope of a file, including imports (to some degree).
      */
     @NotNull
     public static List<PsiNamedElement> findDefinitionNodes(@NotNull HaskellFile psiFile) {
-        List<PsiNamedElement> result = findDefinitionNodes(psiFile, null);
-        result.addAll(findDefinitionNode(psiFile.getProject(), null, null));
-        return result;
+        return findDefinitionNodes(psiFile, null);
     }
 
     /**
@@ -197,13 +224,13 @@ public class HaskellUtil {
     }
 
     @NotNull
-    public static Set<String> getPotentialDefinitionModuleNames(@NotNull PsiElement e, @NotNull List<HaskellPsiUtil.Import> imports) {
+    public static List<HaskellPsiUtil.Import> getPotentialDefinitionModuleNames(@NotNull PsiElement e, @NotNull List<HaskellPsiUtil.Import> imports) {
         final String qPrefix = getQualifiedPrefix(e);
-        if (qPrefix == null) { return HaskellPsiUtil.getImportModuleNames(imports); }
-        Set<String> result = new HashSet<String>(2);
+        if (qPrefix == null) { return imports; }
+        List<HaskellPsiUtil.Import> result = new ArrayList<HaskellPsiUtil.Import>(2);
         for (HaskellPsiUtil.Import anImport : imports) {
             if (qPrefix.equals(anImport.module) || qPrefix.equals(anImport.alias)) {
-                result.add(anImport.module);
+                result.add(anImport);
             }
         }
         return result;
@@ -373,18 +400,13 @@ public class HaskellUtil {
     }
 
 
-    public static List<PsiElement> matchGlobalNamesUnqualified(
-            PsiElement psiElement,
-            List<PsiNamedElement> namedElements,
-            List<HaskellPsiUtil.Import> importDeclarations){
+    public static List<PsiElement> matchGlobalNamesUnqualified(List<FoundDefinition> namedElements) {
 
-        String ownModuleName = getModuleName(psiElement);
         List<PsiElement> results = Lists.newArrayList();
-        for (PsiNamedElement possibleReferences : namedElements) {
-            String moduleNameOfPossibleReference = getModuleName(possibleReferences);
-            if (importPresentAndUnqualifiedImport(moduleNameOfPossibleReference, importDeclarations) || ownModuleName.equals(moduleNameOfPossibleReference)) {
+        for (FoundDefinition possibleReferences : namedElements) {
+            if (possibleReferences.imprt == null || !possibleReferences.imprt.isQualified) {
                 //noinspection ObjectAllocationInLoop
-                results.add(possibleReferences);
+                results.add(possibleReferences.element);
             }
         }
         return results;
@@ -392,16 +414,12 @@ public class HaskellUtil {
 
 
     public static List<PsiElementResolveResult> matchGlobalNamesQualified(
-            List<PsiNamedElement> namedElements, String qualifiedCallName,
-            List<HaskellPsiUtil.Import> importDeclarations){
+            List<FoundDefinition> namedElements, String qualifiedCallName){
         List<PsiElementResolveResult> results = Lists.newArrayList();
-        for (PsiNamedElement possibleReference : namedElements) {
-            String moduleNameOfPossibleReference = getModuleName(possibleReference);
-            HaskellPsiUtil.Import correspondingImportDeclaration =
-                    findCorrespondingImportDeclaration(qualifiedCallName, importDeclarations);
-            if(correspondingImportDeclaration != null
-                    && moduleNameOfPossibleReference.equals(correspondingImportDeclaration.module)){
-                results.add(new PsiElementResolveResult(possibleReference));
+        for (FoundDefinition possibleReference : namedElements) {
+            if(possibleReference.imprt != null && possibleReference.imprt.alias != null &&
+                    possibleReference.imprt.alias.equals(qualifiedCallName)){
+                results.add(new PsiElementResolveResult(possibleReference.element));
             }
         }
         return results;
@@ -421,24 +439,22 @@ public class HaskellUtil {
         }
     }
 
-    public static boolean importPresentAndUnqualifiedImport(@NotNull String moduleName,
-                                                            @NotNull List<HaskellPsiUtil.Import> importDeclarations) {
-        for (HaskellPsiUtil.Import importDeclaration : importDeclarations) {
-            if (moduleName.equals(importDeclaration.module) && ! importDeclaration.isQualified){
-                return true;
-            }
+    private static void addFoundDefinition(List<PsiNamedElement> result, HaskellPsiUtil.Import imprt, List<FoundDefinition> results) {
+        for (PsiNamedElement element : result) {
+            results.add(new FoundDefinition(element, imprt));
         }
-        return false;
     }
 
+    public static class FoundDefinition {
+        @NotNull
+        public PsiNamedElement element;
 
-    private static HaskellPsiUtil.Import findCorrespondingImportDeclaration(String qualifiedCallName, List<HaskellPsiUtil.Import> importDeclarations) {
-        for (HaskellPsiUtil.Import importDeclaration : importDeclarations) {
-            String alias = importDeclaration.alias;
-            if (alias != null && qualifiedCallName.equals(alias)){
-                return importDeclaration;
-            }
+        @Nullable
+        public HaskellPsiUtil.Import imprt;
+
+        public FoundDefinition(@NotNull PsiNamedElement element, @Nullable HaskellPsiUtil.Import imprt) {
+            this.element = element;
+            this.imprt = imprt;
         }
-        return null;
     }
 }
