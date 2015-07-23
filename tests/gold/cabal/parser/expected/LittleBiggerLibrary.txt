@@ -1,0 +1,15 @@
+Cabal File
+  KEY_OR_CONFIG
+    CONFIG
+      LIBRARY
+        PsiElement(LIBRARY)('library')
+        LIBRARY_KEYS
+          BUILD_INFORMATION
+            EXTRA_GHCI_LIBRARIES
+              PsiElement(CabalTokenType.extra-ghci-libraries)('extra-ghci-libraries')
+              PsiElement(CabalTokenType.:)(':')
+              VARID
+                PsiElement(CabalTokenType.varidRegexp)('koekoek')
+              PsiElement(CabalTokenType.,)(',')
+              VARID
+                PsiElement(CabalTokenType.varidRegexp)('merel')

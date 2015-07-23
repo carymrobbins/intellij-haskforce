@@ -1,0 +1,23 @@
+Cabal File
+  KEY_OR_CONFIG
+    KEY
+      HOMEPAGE
+        PsiElement(CabalTokenType.homepage)('homepage')
+        PsiElement(CabalTokenType.:)(':')
+        URL
+          PsiElement(CabalTokenType.freeformRegexp)('http://dingske.github.com')
+  KEY_OR_CONFIG
+    KEY
+      BUG_REPORTS
+        PsiElement(CabalTokenType.bug-reports)('bug-reports')
+        PsiElement(CabalTokenType.:)(':')
+        URL
+          PsiElement(CabalTokenType.freeformRegexp)('https://github.com/dingske/dongske/issues')
+  KEY_OR_CONFIG
+    KEY
+      MAINTAINER
+        PsiElement(CabalTokenType.maintainer)('maintainer')
+        PsiElement(CabalTokenType.:)(':')
+        ADDRESS
+          PsiElement(CabalTokenType.freeformRegexp)('koekoek.merel@nest.com')
+          PsiElement(CabalTokenType.freeformRegexp)('hier nog ewa meer')
