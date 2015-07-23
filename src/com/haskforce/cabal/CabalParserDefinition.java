@@ -1,9 +1,8 @@
 package com.haskforce.cabal;
 
-import com.haskforce.cabal.highlighting.CabalSyntaxHighlightingLexer;
 import com.haskforce.cabal.psi.CabalFile;
+import com.haskforce.cabal.psi.CabalParsingLexer;
 import com.haskforce.cabal.psi.CabalTypes;
-import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.Language;
 import com.intellij.lang.ParserDefinition;
@@ -19,12 +18,13 @@ import com.intellij.psi.tree.TokenSet;
 import org.jetbrains.annotations.NotNull;
 
 public class CabalParserDefinition implements ParserDefinition {
-    public static final IFileElementType FILE = new IFileElementType(Language.findInstance(CabalLanguage.class));
+
+//    public static final IFileElementType FILE = new IFileElementType(Language.findInstance(CabalLanguage.class));
 
     @NotNull
     @Override
     public Lexer createLexer(Project project) {
-        return new CabalSyntaxHighlightingLexer();
+        return new CabalParsingLexer();
     }
 
     @Override
@@ -34,7 +34,8 @@ public class CabalParserDefinition implements ParserDefinition {
 
     @Override
     public IFileElementType getFileNodeType() {
-        return FILE;
+        CabalLanguage CABAL_LANGUAGE = Language.findInstance(CabalLanguage.class);
+        return new IFileElementType(CABAL_LANGUAGE);
     }
 
     @NotNull
@@ -52,13 +53,13 @@ public class CabalParserDefinition implements ParserDefinition {
     @NotNull
     @Override
     public TokenSet getStringLiteralElements() {
-        return TokenSet.create(CabalTypes.VALUE_CHAR);
+        return TokenSet.create(CabalTypes.VARID);
     }
 
     @NotNull
     @Override
     public PsiElement createElement(ASTNode node) {
-        return new ASTWrapperPsiElement(node);
+        return CabalTypes.Factory.createElement(node);
     }
 
     @Override

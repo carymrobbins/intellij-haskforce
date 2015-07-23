@@ -1,0 +1,4 @@
+library
+  extra-ghci-libraries:  koekoek,
+                         merel
+  

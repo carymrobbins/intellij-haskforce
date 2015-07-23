@@ -1,0 +1,312 @@
+{
+  parserClass="com.haskforce.cabal.CabalParser"
+  implements="com.haskforce.cabal.psi.CabalCompositeElement"
+  implements("varid")="com.haskforce.cabal.psi.CabalNamedElement"
+  extends="com.haskforce.cabal.psi.impl.CabalCompositeElementImpl"
+  elementTypeHolderClass="com.haskforce.cabal.psi.CabalTypes"
+  elementTypeClass="com.haskforce.cabal.psi.CabalElementType"
+  tokenTypeClass="com.haskforce.cabal.psi.CabalTokenType"
+  psiClassPrefix="Cabal"
+  psiImplClassSuffix="Impl"
+  psiImplUtilClass="com.haskforce.cabal.psi.impl.CabalPsiImplUtil"
+  psiPackage="com.haskforce.cabal.psi"
+  psiImplPackage="com.haskforce.cabal.psi.impl"
+  tokens=[
+    comma = ','
+    colon= ':'
+    dot = "."
+    slash ="/"
+    eq = "=="
+    assign = "="
+    gt = ">"
+    lt = "<"
+    gtEq = ">="
+    ltEq = "<="
+    and = "&&"
+    true = "regexp:?itrue"
+    false = "regexp:?ifalse"
+    nameKey = "name"
+    versionKey = "version"
+    synopsisKey = "synopsis"
+    licenseKey = "license"
+    categoryKey = "category"
+    buildTypeKey = "build-type"
+    licenseFileKey ="license-file"
+    homepageKey ="homepage"
+    buildableKey = "buildable"
+    descriptionKey = "description"
+    bugReportsKey ="bug-reports"
+    packageKey ="package"
+    typeKey = "type"
+    locationKey = "location"
+    moduleKey = "module"
+    branchKey = "branch"
+    tagKey = "tag"
+    subDirKey = "subdir"
+    testModuleKey = "test-module"
+    licenseFilesKey ="license-files"
+    stabilityKey ="stability"
+    dataDirKey ="data-dir"
+    copyrightKey ="copyright"
+    authorKey ="author"
+    dataFilesKey ="data-files"
+    testedWithKey ="tested-with"
+    maintainerKey ="maintainer"
+    cabalVersionKey = "cabal-version"
+    defaultLanguageKey = "default-language"
+    extraSourceFilesKey = "extra-source-files"
+    extraDocFilesKey = "extra-doc-files"
+    extraTmpFilesKey = "extra-tmp-files"
+    buildDependsKey = "build-depends"
+    otherExtensionsKey = "other-extensions"
+    otherModulesKey = "other-modules"
+    exposedModulesKey = "exposed-modules"
+    exposedKey = "exposed"
+    hsSourceDirsKey = "hs-source-dirs"
+    extensionsKey = "extensions"
+    ghcOptionsKey = "ghc-options"
+    ghcProfOptionsKey = "ghc-prof-options"
+    ghcSharedOptionsKey = "ghc-shared-options"
+    buildToolsKey = "build-tools"
+    includesKey = "includes"
+    mainIsKey = "main-is"
+    installIncludesKey = "install-includes"
+    includeDirsKey = "include-dirs"
+    cSourcesKey = "c-sources"
+    jsSourcesKey = "js-sources"
+    extraLibrariesKey = "extra-libraries"
+    extraGhciLibrariesKey = "extra-ghci-libraries"
+    extraLibDirsKey = "extra-lib-dirs"
+    ccOptionsKey = "cc-options"
+    cppOptionsKey = "cpp-options"
+    ldOptionsKey = "ld-options"
+    pkgConfigDependsKey = "pkg-config-depends"
+    defaultFlagValueKey = "default"
+    manualKey = "manual"
+    sourceRepositoryKey = "source-repository"
+    frameworksKey = "frameworks"
+    crlf="regexp:[\r\n]"
+    if="if"
+    else="else"
+    comment="regexp:--([^\^\r\n][^\r\n]*|[\r\n])"
+    varidRegexp="regexp:[a-zA-Z_\-0-9']*"
+    conditionRegexp="regexp:[a-zA-Z_\-0-9'()<&>=!.]*"
+    filePathRegexp="regexp:[a-zA-Z_\-0-9*./']*"
+    numberRegexp="regexp:[0-9*]+"
+    freeformRegexp="regexp:[^]*"
+    WHITESPACELBRACETOK="Synthetic leftbrace"
+    WHITESPACERBRACETOK="Synthetic rightbrace"
+  ]
+}
+
+cabal ::= keyOrConfig*
+
+library ::= "library" open libraryKeys+ close
+
+benchmark ::= "benchmark" varid open benchmarkKeys+ close
+
+libraryKeys ::= librarySpecificKeys | conditional | buildInformation
+
+executableKeys ::= executableSpecificKeys | conditional | buildInformation
+
+executable ::= "executable" varid open executableKeys+ close
+
+testSuite ::= "test-suite" varid open testSuiteKeys+ close
+
+testSuiteKeys ::= testSuiteSpecificKeys | buildInformation | conditional
+
+sourceRepoKeys ::= typeKey colon (open varid close)* |
+                   locationKey colon (open freeform close)* |
+                   moduleKey colon (open varid close)* |
+                   branchKey colon (open varid close)* |
+                   tagKey colon (open varid close)* |
+                   subDirKey colon (open varid close)*
+
+sourceRepository ::=  sourceRepositoryKey varid open sourceRepoKeys+ close
+
+config ::= (library | executable | testSuite | flag | sourceRepository | benchmark )
+
+flag ::= "flag" varid open flagKeys+ close
+
+flagKeys ::= descriptionKey colon (open freeform close)* |
+         defaultFlagValueKey colon (open bool close)* |
+         manualKey colon (open bool close)*
+
+keyOrConfig ::= key | config
+
+condition ::= freeformRegexp
+
+condtionalKey ::= key | librarySpecificKeys | executableSpecificKeys | buildInformation
+
+conditional ::= if condition open condtionalKey+ close
+  (else open condtionalKey+ close)*
+
+varid ::= varidRegexp {
+    methods=[getName getReference getNameIdentifier setName]
+    }
+
+dependencyName ::= varidRegexp
+
+buildTypeEnum ::= "simple" | "configure" | "make" | "custom"
+
+testInterface ::= "exitcode-stdio-1.0" | "detailed-0.9"
+
+// Should we get these regexes finer grained? Now they match nearly anything I guess.
+fileName ::= varid "." varid
+
+filePath ::= filePathRegexp
+
+address ::= freeformRegexp*
+
+url ::= freeformRegexp*
+
+freeform ::= freeformRegexp*
+
+directory ::= <<slashSeparate varid>> | dot
+
+compiler ::= varidRegexp versionConstraint version
+
+bool ::= true | false
+
+projectName ::= nameKey colon (open varid close)*
+synopsis ::= synopsisKey colon (open freeform close)*
+license ::= licenseKey colon (open varid close)*
+author ::= authorKey colon (open freeform close)*
+category ::= categoryKey colon (open freeform close)*
+copyright ::= copyrightKey colon (open freeform close)*
+maintainer ::= maintainerKey colon (open address close)*
+buildType ::= buildTypeKey colon (open buildTypeEnum close)*
+stability ::= stabilityKey colon (open varid close)*
+homepage ::= homepageKey colon (open url close)*
+bugReports ::= bugReportsKey colon (open url close)*
+cabalPackage ::= packageKey colon (open url close)*
+cabalVersion ::= cabalVersionKey colon (open gtEq version close)*
+licenseFile ::= licenseFileKey colon (open freeform close)*
+description ::= descriptionKey colon (open freeform close)*
+dataDir ::= dataDirKey colon (open directory close)*
+packageVersion ::= versionKey colon (open version close)*
+extraSourceFiles ::= extraSourceFilesKey colon (open (<<commaSeparate varid >> | filePath*) close)*
+extraDocFiles ::= extraDocFilesKey colon (open <<commaSeparate varid>> close)*
+extraTmpFiles ::= extraTmpFilesKey colon (open <<commaSeparate varid>> close)*
+otherExtensions ::= otherExtensionsKey colon (open <<commaSeparate varid>> close)*
+testedWith ::= testedWithKey colon (open <<commaSeparate compiler>> close)*
+dataFiles ::= dataFilesKey colon (open <<commaSeparate fileName>> close)*
+licenseFiles ::= licenseFilesKey colon (open <<commaSeparate fileName>> close)*
+
+
+key ::= projectName |
+        synopsis |
+        license |
+        author |
+        category |
+        copyright |
+        maintainer |
+        buildType |
+        stability|
+        homepage |
+        bugReports |
+        cabalPackage |
+        cabalVersion |
+        licenseFile |
+        description |
+        dataDir|
+        packageVersion |
+        extraSourceFiles |
+        extraDocFiles |
+        extraTmpFiles |
+        otherExtensions |
+        testedWith |
+        dataFiles |
+        licenseFiles
+
+ghcOption ::= varid (assign (varid | number))*
+
+buildDepends ::= buildDependsKey colon (open <<commaSeparate dependency>> close)*
+otherModules ::= otherModulesKey colon (open <<cabalList module >> close)*
+hsSourceDirs ::= hsSourceDirsKey colon (open <<cabalList directory>> close)*
+extensions ::= extensionsKey colon (open <<cabalList varid>> close)*
+buildTools ::= buildToolsKey colon (open <<commaSeparate dependency>> close)*
+buildable ::= buildableKey colon (open bool close)*
+ghcOptions ::= ghcOptionsKey colon (open ghcOption* close)*
+ghcProfOptions ::= ghcProfOptionsKey colon (open ghcOption* close)*
+ghcSharedOptions ::= ghcSharedOptionsKey colon (open  ghcOption* close)*
+includes ::= includesKey colon (open <<commaSeparate fileName>> close)*
+installIncludes ::= installIncludesKey colon (open <<commaSeparate fileName>> close)*
+includeDirs ::= includeDirsKey colon (open <<commaSeparate directory>> close)*
+cSources ::= cSourcesKey colon (open <<commaSeparate fileName>> close)*
+jsSources ::= jsSourcesKey colon (open <<commaSeparate fileName>> close)*
+extraLibraries ::= extraLibrariesKey colon (open <<commaSeparate varid>> close)*
+extraGhciLibraries ::= extraGhciLibrariesKey colon (open <<commaSeparate varid>> close)*
+extraLibDirs ::= extraLibDirsKey colon (open <<commaSeparate directory>> close)*
+ccOptions ::= ccOptionsKey colon (open <<commaSeparate varid>> close)*
+cppOptions ::= cppOptionsKey colon (open freeform close)*
+ldOptions ::= ldOptionsKey colon (open <<commaSeparate varid>> close)*
+pkgConfigDepends ::= pkgConfigDependsKey colon (open <<commaSeparate dependency>> close)*
+frameworks ::= frameworksKey colon (open <<commaSeparate varid>> close)*
+defaultLanguage ::= defaultLanguageKey colon (open varid close)*
+
+buildInformation ::= buildDepends |
+                     otherModules |
+                     hsSourceDirs |
+                     extensions |
+                     buildTools |
+                     buildable |
+                     ghcOptions |
+                     ghcProfOptions |
+                     ghcSharedOptions |
+                     includes |
+                     installIncludes |
+                     includeDirs |
+                     cSources |
+                     jsSources |
+                     extraLibraries |
+                     extraGhciLibraries |
+                     extraLibDirs |
+                     ccOptions |
+                     cppOptions |
+                     ldOptions |
+                     pkgConfigDepends |
+                     frameworks |
+                     defaultLanguage
+
+
+testSuiteType ::= typeKey colon (open testInterface close)*
+mainIs ::= mainIsKey colon (open filePath close)*
+testModules ::= testModuleKey colon (open varid close)*
+
+testSuiteSpecificKeys ::= testSuiteType |
+                          mainIs |
+                          testModules
+
+exposed ::= exposedKey colon (open bool close)*
+
+librarySpecificKeys ::= exposedModulesKey colon (open <<cabalList module >> close)* |
+                        exposed
+
+executableSpecificKeys ::= mainIs
+
+benchmarkKeys ::= mainIs | testSuiteType | buildInformation | conditional
+
+private meta commaSeparate ::= <<p>> ( ',' <<p>>)* {pin(".*")=1}
+
+//TODO find out how pinning works i{pin(".*")=1}n this case.
+// Or maybe just find out how pinning actually works.
+private meta cabalList ::= <<p>> (',' <<p>>)+ | <<p>>+
+
+private meta dotSeparate ::= <<p>> ('.' <<p>>)* {pin(".*")=1}
+
+private meta slashSeparate ::= <<p>> ('/' <<p>>)* {pin(".*")=1}
+
+module ::= <<dotSeparate varid>>
+
+number ::= numberRegexp
+
+version ::= <<dotSeparate number>>
+
+versionConstraint ::= eq | gt | lt | gtEq | ltEq
+
+dependency ::= dependencyName [versionConstraint version [and versionConstraint version]]
+
+private open ::= WHITESPACELBRACETOK
+
+private close ::= WHITESPACERBRACETOK
