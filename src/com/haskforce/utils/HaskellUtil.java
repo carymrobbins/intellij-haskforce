@@ -66,11 +66,12 @@ public class HaskellUtil {
         } else {
             elementClass = PsiNamedElement.class;
         }
+        final boolean isType = PsiTreeUtil.getParentOfType(e, HaskellGendecl.class) != null;
         Collection<PsiNamedElement> namedElements = PsiTreeUtil.findChildrenOfType(file, elementClass);
         for (PsiNamedElement namedElement : namedElements) {
             if ((name == null || name.equals(namedElement.getName())) && definitionNode(namedElement)) {
                 result.add(namedElement);
-            } else if (name != null && name.equals(namedElement.getName()) && typeNode(name, namedElement)) {
+            } else if (isType && name != null && name.equals(namedElement.getName()) && typeNode(name, namedElement)) {
                 result.add(namedElement);
             }
         }
