@@ -63,21 +63,27 @@ public class HaskellUtil {
     }
 
     /**
-     * Find definitions in full modules that have been exported.
+     * Find definitions that have been re-exported.
      *
      * <code>
-     *   module Foo (module Bar) where
+     *   module Foo (module Bar, foo) where
      *   import Bar
+     *   import Baz (foo)
      * </code>
      */
     private static void findDefinitionNodeInExport(@NotNull Project project, HaskellFile f, @Nullable String name,
                                                    @Nullable PsiNamedElement e, List<PsiNamedElement> result) {
         List<HaskellPsiUtil.Import> imports = HaskellPsiUtil.parseImports(f);
         for (HaskellExport export : PsiTreeUtil.findChildrenOfType(f, HaskellExport.class)) {
-            if (export.getModuletoken() == null || export.getQconid() == null) continue;
-            String exportName = export.getQconid().getText();
+            boolean exportFn = export.getQvar() != null && export.getQvar().getQvarid() != null
+                    && export.getQvar().getQvarid().getVarid().getName() != null
+                    && export.getQvar().getQvarid().getVarid().getName().equals(name);
+            String moduleName = exportFn
+                    ? getModule(export.getQvar().getQvarid().getConidList())
+                    : export.getModuletoken() != null && export.getQconid() != null ? export.getQconid().getText() : null;
+            if (!exportFn && moduleName == null) continue;
             for (HaskellPsiUtil.Import imprt : imports) {
-                if (!exportName.equals(imprt.module) && !exportName.equals(imprt.alias)) continue;
+                if (moduleName != null && !moduleName.equals(imprt.module) && !moduleName.equals(imprt.alias)) continue;
                 boolean hidden = imprt.getHidingNames() != null && ArrayUtil.contains(name, imprt.getHidingNames());
                 boolean notImported = imprt.getImportedNames() != null && !ArrayUtil.contains(name, imprt.getImportedNames());
                 if (hidden || notImported) continue;
@@ -443,6 +449,23 @@ public class HaskellUtil {
         for (PsiNamedElement element : result) {
             results.add(new FoundDefinition(element, imprt));
         }
+    }
+
+    /**
+     * Returns the textual representation of a qualified module.
+     *
+     * eg. From {@code A.B.C.d} return {@code A.B.C}
+     */
+    @Nullable
+    private static String getModule(@NotNull List<HaskellConid> conids) {
+        if (conids.isEmpty()) return null;
+        StringBuilder b = new StringBuilder();
+        for (HaskellConid cid : conids) {
+            b.append(cid.getName());
+            b.append(".");
+        }
+        b.setLength(b.length() - 1);
+        return b.toString();
     }
 
     public static class FoundDefinition {
