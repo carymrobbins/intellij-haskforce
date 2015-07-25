@@ -22,6 +22,7 @@ Building with IntelliJ
 1. Install and enable additional plugins.
   * Scala
   * Ant Support
+  * UI Designer (without this everything compiles but viewing forms throw NPEs eg. when creating a new project)
   * PsiViewer 3.28.73 (optional, for viewing parse trees)
   * JFlex Support 1.5.1 (optional, for generating lexers)
   * Grammar Kit 1.2.0.2 (optional, for generating parsers - [download it from here](https://github.com/JetBrains/Grammar-Kit/releases/tag/1.2.0.2))
