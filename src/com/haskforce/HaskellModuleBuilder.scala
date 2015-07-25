@@ -132,7 +132,7 @@ extends ProjectSettingsStep(settingsStep.getContext) {
   setCompilerOutputDir()
 
   override def updateDataModel(): Unit = {
-    super.updateDataModel()
+    // NOTE: We don't want to call updateDataModel here as the name will be reset back to 'untitled'
     moduleBuilder.maybeToolsForm.foreach { _.save() }
     moduleBuilder.maybeCabalForm.filter(_.shouldInitializeCabalPackage).foreach { cabalForm =>
       val cabalOptions = buildCabalOptions(cabalForm)
