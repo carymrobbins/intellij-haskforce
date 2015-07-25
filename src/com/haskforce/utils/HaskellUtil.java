@@ -130,7 +130,21 @@ public class HaskellUtil {
             return name.equals(newtypedecl.getTycon().getConid().getName());
         }
         HaskellTypedecl typedecl = PsiTreeUtil.getParentOfType(e, HaskellTypedecl.class);
-        return typedecl != null && name.equals(typedecl.getTypeeList().get(0).getAtypeList().get(0).getText());
+        if (typedecl != null) {
+            return name.equals(typedecl.getTypeeList().get(0).getAtypeList().get(0).getText());
+        }
+        HaskellClassdecl classdecl = PsiTreeUtil.getParentOfType(e, HaskellClassdecl.class);
+        if (classdecl != null && classdecl.getCtype() != null) {
+            HaskellCtype ctype = classdecl.getCtype();
+            while (ctype.getCtype() != null) {
+                ctype = ctype.getCtype();
+            }
+            if (ctype.getTypee() == null) return false;
+            HaskellAtype haskellAtype = ctype.getTypee().getAtypeList().get(0);
+            return haskellAtype.getOqtycon() != null && haskellAtype.getOqtycon().getQtycon() != null &&
+                    name.equals(haskellAtype.getOqtycon().getQtycon().getTycon().getConid().getName());
+        }
+        return false;
     }
 
     /**
