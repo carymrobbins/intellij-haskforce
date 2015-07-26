@@ -75,7 +75,7 @@ class HaskellModuleBuilder extends JavaModuleBuilder with SourcePathsBuilder wit
 
   @Nullable
   override def modifySettingsStep(@NotNull settingsStep: SettingsStep): ModuleWizardStep = {
-    new HaskellProjectSettingsStep(this, settingsStep)
+    new HaskellModifiedSettingsStep(this, settingsStep)
   }
 
   override def hashCode: Int = HashCodeBuilder.reflectionHashCode(this)
@@ -127,12 +127,14 @@ extends ModuleWizardStep {
   override def updateDataModel(): Unit = {}
 }
 
-case class HaskellProjectSettingsStep(moduleBuilder: HaskellModuleBuilder, settingsStep: SettingsStep)
-extends ProjectSettingsStep(settingsStep.getContext) {
+case class HaskellModifiedSettingsStep(moduleBuilder: HaskellModuleBuilder, settingsStep: SettingsStep)
+extends ModuleWizardStep {
   setCompilerOutputDir()
 
+  // Not needed by the module builder.
+  override def getComponent: JComponent = null
+
   override def updateDataModel(): Unit = {
-    super.updateDataModel()
     moduleBuilder.maybeToolsForm.foreach { _.save() }
     moduleBuilder.maybeCabalForm.filter(_.shouldInitializeCabalPackage).foreach { cabalForm =>
       val cabalOptions = buildCabalOptions(cabalForm)
