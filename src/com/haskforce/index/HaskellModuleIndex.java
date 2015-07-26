@@ -90,7 +90,7 @@ public class HaskellModuleIndex extends ScalarIndexExtension<String> {
     private static class MyDataIndexer implements DataIndexer<String, Void, FileContent> {
         @NotNull
         @Override
-        public Map<String, Void> map(FileContent inputData) {
+        public Map<String, Void> map(@NotNull FileContent inputData) {
             final PsiFile psiFile = inputData.getPsiFile();
             final String moduleName = psiFile instanceof HaskellFile ? ((HaskellFile) psiFile).getModuleName() : null;
             if (moduleName == null) { return Collections.emptyMap(); }
