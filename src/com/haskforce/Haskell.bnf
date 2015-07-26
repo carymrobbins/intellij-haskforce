@@ -583,8 +583,11 @@ qvarid ::= [modulePrefix] varid
 qconid ::= [modulePrefix] conid ['#']
 qtycon ::= [modulePrefix] tycon
 qtycls ::= [modulePrefix] tycls
-qvarsym ::= [modulePrefix] varsym
 qconsym ::= [modulePrefix] consym
+// HACK: There are two unfortunate hacks here.  This bides us time until we have a better parser.
+//  1. The lexer groups Prelude.$ into conid(Prelude) varsym(.$), so we just allow this for now.
+//  2. The .. is considered its own reserved op, so handle something like Control.Category..
+qvarsym ::= varsym | conid ('.' conid)* (varsym | '..')
 
 private var ::= varid | '(' varsym ')'
 qvars ::= <<sequence qvar>>
