@@ -76,7 +76,6 @@ public class HaskellUtil {
         List<HaskellPsiUtil.Import> imports = HaskellPsiUtil.parseImports(f);
         for (HaskellExport export : PsiTreeUtil.findChildrenOfType(f, HaskellExport.class)) {
             boolean exportFn = export.getQvar() != null && export.getQvar().getQvarid() != null
-                    && export.getQvar().getQvarid().getVarid().getName() != null
                     && export.getQvar().getQvarid().getVarid().getName().equals(name);
             String moduleName = exportFn
                     ? getModule(export.getQvar().getQvarid().getConidList())
