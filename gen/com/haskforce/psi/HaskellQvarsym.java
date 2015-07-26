@@ -10,7 +10,10 @@ public interface HaskellQvarsym extends HaskellCompositeElement {
   @NotNull
   List<HaskellConid> getConidList();
 
-  @NotNull
+  @Nullable
   HaskellVarsym getVarsym();
+
+  @Nullable
+  PsiElement getDoubleperiod();
 
 }

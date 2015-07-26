@@ -28,9 +28,15 @@ public class HaskellQvarsymImpl extends HaskellCompositeElementImpl implements H
   }
 
   @Override
-  @NotNull
+  @Nullable
   public HaskellVarsym getVarsym() {
-    return findNotNullChildByClass(HaskellVarsym.class);
+    return findChildByClass(HaskellVarsym.class);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getDoubleperiod() {
+    return findChildByType(DOUBLEPERIOD);
   }
 
 }

@@ -5395,22 +5395,61 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // [modulePrefix] varsym
+  // varsym | conid ('.' conid)* (varsym | '..')
   public static boolean qvarsym(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "qvarsym")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, "<qvarsym>");
-    r = qvarsym_0(b, l + 1);
-    r = r && varsym(b, l + 1);
+    r = varsym(b, l + 1);
+    if (!r) r = qvarsym_1(b, l + 1);
     exit_section_(b, l, m, QVARSYM, r, false, null);
     return r;
   }
 
-  // [modulePrefix]
-  private static boolean qvarsym_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "qvarsym_0")) return false;
-    modulePrefix(b, l + 1);
+  // conid ('.' conid)* (varsym | '..')
+  private static boolean qvarsym_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "qvarsym_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = conid(b, l + 1);
+    r = r && qvarsym_1_1(b, l + 1);
+    r = r && qvarsym_1_2(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // ('.' conid)*
+  private static boolean qvarsym_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "qvarsym_1_1")) return false;
+    int c = current_position_(b);
+    while (true) {
+      if (!qvarsym_1_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "qvarsym_1_1", c)) break;
+      c = current_position_(b);
+    }
     return true;
+  }
+
+  // '.' conid
+  private static boolean qvarsym_1_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "qvarsym_1_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, PERIOD);
+    r = r && conid(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // varsym | '..'
+  private static boolean qvarsym_1_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "qvarsym_1_2")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = varsym(b, l + 1);
+    if (!r) r = consumeToken(b, DOUBLEPERIOD);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */
