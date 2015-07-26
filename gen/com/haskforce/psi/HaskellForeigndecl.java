@@ -38,9 +38,6 @@ public interface HaskellForeigndecl extends HaskellCompositeElement {
   PsiElement getLparen();
 
   @Nullable
-  PsiElement getRightarrow();
-
-  @Nullable
   PsiElement getRparen();
 
 }

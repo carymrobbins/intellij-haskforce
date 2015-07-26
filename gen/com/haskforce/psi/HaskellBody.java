@@ -10,41 +10,41 @@ public interface HaskellBody extends HaskellCompositeElement {
   @NotNull
   List<HaskellAlt> getAltList();
 
-  @NotNull
-  List<HaskellClassdecl> getClassdeclList();
+  @Nullable
+  HaskellClassdecl getClassdecl();
 
-  @NotNull
-  List<HaskellDatadecl> getDatadeclList();
+  @Nullable
+  HaskellDatadecl getDatadecl();
 
-  @NotNull
-  List<HaskellDefaultdecl> getDefaultdeclList();
+  @Nullable
+  HaskellDefaultdecl getDefaultdecl();
 
-  @NotNull
-  List<HaskellDerivingdecl> getDerivingdeclList();
+  @Nullable
+  HaskellDerivingdecl getDerivingdecl();
 
-  @NotNull
-  List<HaskellExp> getExpList();
+  @Nullable
+  HaskellExp getExp();
 
-  @NotNull
-  List<HaskellForeigndecl> getForeigndeclList();
+  @Nullable
+  HaskellForeigndecl getForeigndecl();
 
-  @NotNull
-  List<HaskellFunorpatdecl> getFunorpatdeclList();
+  @Nullable
+  HaskellFunorpatdecl getFunorpatdecl();
 
-  @NotNull
-  List<HaskellGendecl> getGendeclList();
+  @Nullable
+  HaskellGendecl getGendecl();
 
   @NotNull
   List<HaskellImpdecl> getImpdeclList();
 
-  @NotNull
-  List<HaskellInstancedecl> getInstancedeclList();
+  @Nullable
+  HaskellInstancedecl getInstancedecl();
 
-  @NotNull
-  List<HaskellLetexp> getLetexpList();
+  @Nullable
+  HaskellLetexp getLetexp();
 
-  @NotNull
-  List<HaskellNewtypedecl> getNewtypedeclList();
+  @Nullable
+  HaskellNewtypedecl getNewtypedecl();
 
   @NotNull
   List<HaskellPat> getPatList();
@@ -70,16 +70,40 @@ public interface HaskellBody extends HaskellCompositeElement {
   @NotNull
   List<HaskellQvarid> getQvaridList();
 
-  @NotNull
-  List<HaskellStmts> getStmtsList();
+  @Nullable
+  HaskellStmts getStmts();
 
-  @NotNull
-  List<HaskellTypedecl> getTypedeclList();
+  @Nullable
+  HaskellTypedecl getTypedecl();
 
   @NotNull
   List<HaskellVarid> getVaridList();
 
   @NotNull
   List<HaskellVarsym> getVarsymList();
+
+  @Nullable
+  PsiElement getCase();
+
+  @Nullable
+  PsiElement getDo();
+
+  @Nullable
+  PsiElement getElse();
+
+  @Nullable
+  PsiElement getIf();
+
+  @Nullable
+  PsiElement getMdotok();
+
+  @Nullable
+  PsiElement getOf();
+
+  @Nullable
+  PsiElement getThen();
+
+  @Nullable
+  PsiElement getBackslash();
 
 }

@@ -28,15 +28,15 @@ public class HaskellRhsImpl extends HaskellCompositeElementImpl implements Haske
   }
 
   @Override
-  @NotNull
-  public List<HaskellFunorpatdecl> getFunorpatdeclList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellFunorpatdecl.class);
+  @Nullable
+  public HaskellFunorpatdecl getFunorpatdecl() {
+    return findChildByClass(HaskellFunorpatdecl.class);
   }
 
   @Override
-  @NotNull
-  public List<HaskellGendecl> getGendeclList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellGendecl.class);
+  @Nullable
+  public HaskellGendecl getGendecl() {
+    return findChildByClass(HaskellGendecl.class);
   }
 
   @Override

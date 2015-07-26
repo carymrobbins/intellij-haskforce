@@ -19,14 +19,14 @@ public interface HaskellDatadecl extends HaskellCompositeElement {
   @NotNull
   List<HaskellContext> getContextList();
 
-  @Nullable
-  HaskellCtype getCtype();
+  @NotNull
+  List<HaskellCtype> getCtypeList();
 
   @Nullable
   HaskellKind getKind();
 
-  @Nullable
-  HaskellOqtycon getOqtycon();
+  @NotNull
+  List<HaskellOqtycon> getOqtyconList();
 
   @NotNull
   List<HaskellQtycls> getQtyclsList();
@@ -65,9 +65,6 @@ public interface HaskellDatadecl extends HaskellCompositeElement {
   PsiElement getWhitespacerbracetok();
 
   @Nullable
-  PsiElement getWhitespacesemitok();
-
-  @Nullable
   PsiElement getEquals();
 
   @Nullable
@@ -78,8 +75,5 @@ public interface HaskellDatadecl extends HaskellCompositeElement {
 
   @Nullable
   PsiElement getRparen();
-
-  @Nullable
-  PsiElement getSemicolon();
 
 }

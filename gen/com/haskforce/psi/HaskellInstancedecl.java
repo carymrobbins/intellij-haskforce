@@ -10,8 +10,8 @@ public interface HaskellInstancedecl extends HaskellCompositeElement {
   @Nullable
   HaskellCtype getCtype();
 
-  @NotNull
-  List<HaskellIdecl> getIdeclList();
+  @Nullable
+  HaskellIdecl getIdecl();
 
   @NotNull
   List<HaskellPpragma> getPpragmaList();

@@ -10,11 +10,11 @@ public interface HaskellTypedecl extends HaskellCompositeElement {
   @Nullable
   HaskellCtype getCtype();
 
-  @NotNull
-  List<HaskellFunorpatdecl> getFunorpatdeclList();
+  @Nullable
+  HaskellFunorpatdecl getFunorpatdecl();
 
-  @NotNull
-  List<HaskellGendecl> getGendeclList();
+  @Nullable
+  HaskellGendecl getGendecl();
 
   @NotNull
   List<HaskellKind> getKindList();

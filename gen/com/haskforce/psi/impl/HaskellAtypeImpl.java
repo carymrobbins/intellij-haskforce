@@ -64,9 +64,9 @@ public class HaskellAtypeImpl extends HaskellCompositeElementImpl implements Has
   }
 
   @Override
-  @NotNull
-  public List<HaskellTypee> getTypeeList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTypee.class);
+  @Nullable
+  public HaskellTypee getTypee() {
+    return findChildByClass(HaskellTypee.class);
   }
 
   @Override
@@ -76,15 +76,21 @@ public class HaskellAtypeImpl extends HaskellCompositeElementImpl implements Has
   }
 
   @Override
-  @NotNull
-  public List<HaskellVars> getVarsList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVars.class);
+  @Nullable
+  public HaskellVars getVars() {
+    return findChildByClass(HaskellVars.class);
   }
 
   @Override
   @Nullable
   public PsiElement getForalltoken() {
     return findChildByType(FORALLTOKEN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getDoublecolon() {
+    return findChildByType(DOUBLECOLON);
   }
 
   @Override

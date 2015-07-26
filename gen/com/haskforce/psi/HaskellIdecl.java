@@ -28,8 +28,8 @@ public interface HaskellIdecl extends HaskellCompositeElement {
   @Nullable
   HaskellKind getKind();
 
-  @Nullable
-  HaskellOqtycon getOqtycon();
+  @NotNull
+  List<HaskellOqtycon> getOqtyconList();
 
   @NotNull
   List<HaskellQtycls> getQtyclsList();
@@ -62,9 +62,6 @@ public interface HaskellIdecl extends HaskellCompositeElement {
   PsiElement getWhitespacerbracetok();
 
   @Nullable
-  PsiElement getWhitespacesemitok();
-
-  @Nullable
   PsiElement getDoublearrow();
 
   @Nullable
@@ -75,8 +72,5 @@ public interface HaskellIdecl extends HaskellCompositeElement {
 
   @Nullable
   PsiElement getRparen();
-
-  @Nullable
-  PsiElement getSemicolon();
 
 }

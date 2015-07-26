@@ -64,9 +64,9 @@ public class HaskellIdeclImpl extends HaskellCompositeElementImpl implements Has
   }
 
   @Override
-  @Nullable
-  public HaskellOqtycon getOqtycon() {
-    return findChildByClass(HaskellOqtycon.class);
+  @NotNull
+  public List<HaskellOqtycon> getOqtyconList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellOqtycon.class);
   }
 
   @Override
@@ -131,12 +131,6 @@ public class HaskellIdeclImpl extends HaskellCompositeElementImpl implements Has
 
   @Override
   @Nullable
-  public PsiElement getWhitespacesemitok() {
-    return findChildByType(WHITESPACESEMITOK);
-  }
-
-  @Override
-  @Nullable
   public PsiElement getDoublearrow() {
     return findChildByType(DOUBLEARROW);
   }
@@ -157,12 +151,6 @@ public class HaskellIdeclImpl extends HaskellCompositeElementImpl implements Has
   @Nullable
   public PsiElement getRparen() {
     return findChildByType(RPAREN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getSemicolon() {
-    return findChildByType(SEMICOLON);
   }
 
 }

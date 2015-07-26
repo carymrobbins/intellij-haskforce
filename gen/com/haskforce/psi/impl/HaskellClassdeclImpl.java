@@ -22,9 +22,9 @@ public class HaskellClassdeclImpl extends HaskellCompositeElementImpl implements
   }
 
   @Override
-  @NotNull
-  public List<HaskellCdecl> getCdeclList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellCdecl.class);
+  @Nullable
+  public HaskellCdecl getCdecl() {
+    return findChildByClass(HaskellCdecl.class);
   }
 
   @Override

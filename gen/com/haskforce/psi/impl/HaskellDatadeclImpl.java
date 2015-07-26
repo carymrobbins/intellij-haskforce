@@ -46,9 +46,9 @@ public class HaskellDatadeclImpl extends HaskellCompositeElementImpl implements 
   }
 
   @Override
-  @Nullable
-  public HaskellCtype getCtype() {
-    return findChildByClass(HaskellCtype.class);
+  @NotNull
+  public List<HaskellCtype> getCtypeList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellCtype.class);
   }
 
   @Override
@@ -58,9 +58,9 @@ public class HaskellDatadeclImpl extends HaskellCompositeElementImpl implements 
   }
 
   @Override
-  @Nullable
-  public HaskellOqtycon getOqtycon() {
-    return findChildByClass(HaskellOqtycon.class);
+  @NotNull
+  public List<HaskellOqtycon> getOqtyconList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellOqtycon.class);
   }
 
   @Override
@@ -137,12 +137,6 @@ public class HaskellDatadeclImpl extends HaskellCompositeElementImpl implements 
 
   @Override
   @Nullable
-  public PsiElement getWhitespacesemitok() {
-    return findChildByType(WHITESPACESEMITOK);
-  }
-
-  @Override
-  @Nullable
   public PsiElement getEquals() {
     return findChildByType(EQUALS);
   }
@@ -163,12 +157,6 @@ public class HaskellDatadeclImpl extends HaskellCompositeElementImpl implements 
   @Nullable
   public PsiElement getRparen() {
     return findChildByType(RPAREN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getSemicolon() {
-    return findChildByType(SEMICOLON);
   }
 
 }

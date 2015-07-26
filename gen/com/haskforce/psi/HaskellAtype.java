@@ -28,17 +28,20 @@ public interface HaskellAtype extends HaskellCompositeElement {
   @NotNull
   List<HaskellTvBndr> getTvBndrList();
 
-  @NotNull
-  List<HaskellTypee> getTypeeList();
+  @Nullable
+  HaskellTypee getTypee();
 
   @Nullable
   HaskellTyvar getTyvar();
 
-  @NotNull
-  List<HaskellVars> getVarsList();
+  @Nullable
+  HaskellVars getVars();
 
   @Nullable
   PsiElement getForalltoken();
+
+  @Nullable
+  PsiElement getDoublecolon();
 
   @Nullable
   PsiElement getDoublehash();
