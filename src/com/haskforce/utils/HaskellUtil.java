@@ -109,12 +109,42 @@ public class HaskellUtil {
         } else {
             elementClass = PsiNamedElement.class;
         }
+        final boolean isType = PsiTreeUtil.getParentOfType(e, HaskellGendecl.class) != null;
         Collection<PsiNamedElement> namedElements = PsiTreeUtil.findChildrenOfType(file, elementClass);
         for (PsiNamedElement namedElement : namedElements) {
             if ((name == null || name.equals(namedElement.getName())) && definitionNode(namedElement)) {
                 result.add(namedElement);
+            } else if (isType && name != null && name.equals(namedElement.getName()) && typeNode(name, namedElement)) {
+                result.add(namedElement);
             }
         }
+    }
+
+    private static boolean typeNode(@NotNull String name, @NotNull PsiNamedElement e) {
+        HaskellDatadecl datadecl = PsiTreeUtil.getParentOfType(e, HaskellDatadecl.class);
+        if (datadecl != null) {
+            return datadecl.getTypeeList().get(0).getAtypeList().get(0).getText().equals(name);
+        }
+        HaskellNewtypedecl newtypedecl = PsiTreeUtil.getParentOfType(e, HaskellNewtypedecl.class);
+        if (newtypedecl != null && newtypedecl.getTycon() != null) {
+            return name.equals(newtypedecl.getTycon().getConid().getName());
+        }
+        HaskellTypedecl typedecl = PsiTreeUtil.getParentOfType(e, HaskellTypedecl.class);
+        if (typedecl != null) {
+            return name.equals(typedecl.getTypeeList().get(0).getAtypeList().get(0).getText());
+        }
+        HaskellClassdecl classdecl = PsiTreeUtil.getParentOfType(e, HaskellClassdecl.class);
+        if (classdecl != null && classdecl.getCtype() != null) {
+            HaskellCtype ctype = classdecl.getCtype();
+            while (ctype.getCtype() != null) {
+                ctype = ctype.getCtype();
+            }
+            if (ctype.getTypee() == null) return false;
+            HaskellAtype haskellAtype = ctype.getTypee().getAtypeList().get(0);
+            return haskellAtype.getOqtycon() != null && haskellAtype.getOqtycon().getQtycon() != null &&
+                    name.equals(haskellAtype.getOqtycon().getQtycon().getTycon().getConid().getName());
+        }
+        return false;
     }
 
     /**

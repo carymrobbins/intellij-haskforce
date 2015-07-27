@@ -1,3 +1,3 @@
 module Foo where
 
-data Foo a = <resolved>Foo a | Bar a deriving (Show)
+data Foo2 a = <resolved>Foo a | Bar a deriving (Show)
