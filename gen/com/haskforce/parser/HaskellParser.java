@@ -546,6 +546,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   //                // Second option is quasiquotes. See TemplateHaskell00002.hs.
   //                | '[' (pat (',' pat)* ']' |  exp '|' [semi] exp [semi]'|]')
   //                | gcon
+  //                | qvar
   static boolean apat(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "apat")) return false;
     boolean r;
@@ -558,6 +559,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     if (!r) r = apat_5(b, l + 1);
     if (!r) r = apat_6(b, l + 1);
     if (!r) r = gcon(b, l + 1);
+    if (!r) r = qvar(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -1307,6 +1309,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   // atdecl
   //         | (funlhs | var) rhs
   //         | gendecl
+  //         | ppragma
   public static boolean cdecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "cdecl")) return false;
     boolean r;
@@ -1314,6 +1317,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     r = atdecl(b, l + 1);
     if (!r) r = cdecl_1(b, l + 1);
     if (!r) r = gendecl(b, l + 1);
+    if (!r) r = ppragma(b, l + 1);
     exit_section_(b, l, m, CDECL, r, false, null);
     return r;
   }
@@ -1393,7 +1397,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // "class" ctype [fundeps] ["where" cdecls]
+  // "class" ctype [fundeps] ["where" ppragma* cdecls]
   public static boolean classdecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "classdecl")) return false;
     if (!nextTokenIs(b, CLASSTOKEN)) return false;
@@ -1415,22 +1419,35 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // ["where" cdecls]
+  // ["where" ppragma* cdecls]
   private static boolean classdecl_3(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "classdecl_3")) return false;
     classdecl_3_0(b, l + 1);
     return true;
   }
 
-  // "where" cdecls
+  // "where" ppragma* cdecls
   private static boolean classdecl_3_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "classdecl_3_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, WHERE);
+    r = r && classdecl_3_0_1(b, l + 1);
     r = r && cdecls(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // ppragma*
+  private static boolean classdecl_3_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "classdecl_3_0_1")) return false;
+    int c = current_position_(b);
+    while (true) {
+      if (!ppragma(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "classdecl_3_0_1", c)) break;
+      c = current_position_(b);
+    }
+    return true;
   }
 
   /* ********************************************************** */
@@ -3350,31 +3367,69 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // idecl0 [semi idecls1]
+  // [gendecl semi] idecl0 [semi [gendecl semi] idecls1]
   static boolean idecls1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "idecls1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = idecl0(b, l + 1);
-    r = r && idecls1_1(b, l + 1);
+    r = idecls1_0(b, l + 1);
+    r = r && idecl0(b, l + 1);
+    r = r && idecls1_2(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // [semi idecls1]
-  private static boolean idecls1_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "idecls1_1")) return false;
-    idecls1_1_0(b, l + 1);
+  // [gendecl semi]
+  private static boolean idecls1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "idecls1_0")) return false;
+    idecls1_0_0(b, l + 1);
     return true;
   }
 
-  // semi idecls1
-  private static boolean idecls1_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "idecls1_1_0")) return false;
+  // gendecl semi
+  private static boolean idecls1_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "idecls1_0_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = gendecl(b, l + 1);
+    r = r && semi(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // [semi [gendecl semi] idecls1]
+  private static boolean idecls1_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "idecls1_2")) return false;
+    idecls1_2_0(b, l + 1);
+    return true;
+  }
+
+  // semi [gendecl semi] idecls1
+  private static boolean idecls1_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "idecls1_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = semi(b, l + 1);
+    r = r && idecls1_2_0_1(b, l + 1);
     r = r && idecls1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // [gendecl semi]
+  private static boolean idecls1_2_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "idecls1_2_0_1")) return false;
+    idecls1_2_0_1_0(b, l + 1);
+    return true;
+  }
+
+  // gendecl semi
+  private static boolean idecls1_2_0_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "idecls1_2_0_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = gendecl(b, l + 1);
+    r = r && semi(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }

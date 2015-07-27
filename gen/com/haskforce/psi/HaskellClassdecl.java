@@ -14,6 +14,9 @@ public interface HaskellClassdecl extends HaskellCompositeElement {
   HaskellCtype getCtype();
 
   @NotNull
+  List<HaskellPpragma> getPpragmaList();
+
+  @NotNull
   List<HaskellTyvar> getTyvarList();
 
   @Nullable

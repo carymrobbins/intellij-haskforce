@@ -52,6 +52,12 @@ public class HaskellCdeclImpl extends HaskellCompositeElementImpl implements Has
   }
 
   @Override
+  @Nullable
+  public HaskellPpragma getPpragma() {
+    return findChildByClass(HaskellPpragma.class);
+  }
+
+  @Override
   @NotNull
   public List<HaskellPstringtoken> getPstringtokenList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPstringtoken.class);

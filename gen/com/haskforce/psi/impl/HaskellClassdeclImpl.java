@@ -35,6 +35,12 @@ public class HaskellClassdeclImpl extends HaskellCompositeElementImpl implements
 
   @Override
   @NotNull
+  public List<HaskellPpragma> getPpragmaList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPpragma.class);
+  }
+
+  @Override
+  @NotNull
   public List<HaskellTyvar> getTyvarList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTyvar.class);
   }

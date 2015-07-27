@@ -22,6 +22,9 @@ public interface HaskellCdecl extends HaskellCompositeElement {
   @NotNull
   List<HaskellPat> getPatList();
 
+  @Nullable
+  HaskellPpragma getPpragma();
+
   @NotNull
   List<HaskellPstringtoken> getPstringtokenList();
 
