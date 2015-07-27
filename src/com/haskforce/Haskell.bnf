@@ -279,7 +279,7 @@ private atdecl ::= "type" ["instance"] (typee [kindsig] | ctype '=' ctype)
 
 private idecls ::= ppragma* open [idecls1] close {pin=2}
 
-private idecls1 ::= idecl0 [semi idecls1]
+private idecls1 ::= [gendecl semi] idecl0 [semi [gendecl semi] idecls1]
 
 private idecl0 ::= ppragma* idecl ppragma*
 
