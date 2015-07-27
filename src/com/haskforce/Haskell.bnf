@@ -257,7 +257,7 @@ private typedeclnorm ::= ["family" | "instance"] typee ['=' (typee|foralltype)]
 // the two is between typee and [deriving].
 datadecl ::= "data" ["instance"] [context "=>"] typee ['=' ["forall" tv_bndr* '.'] constrs| [kindsig] ["where" gadtconstrs]] [deriving] {pin=1}
 newtypedecl ::= "newtype" [context "=>"] simpletype '=' newconstr [deriving] {pin=1}
-classdecl ::= "class" ctype [fundeps] ["where" cdecls] {pin=1}
+classdecl ::= "class" ctype [fundeps] ["where" ppragma* cdecls] {pin=1}
 instancedecl ::= "instance" ctype ["where" idecls] {pin=1}
 defaultdecl ::= "default" <<commaSeparate typee>> {pin=1}
 foreigndecl ::= "foreign" fdecl {pin=1}
@@ -273,6 +273,7 @@ private cdecls1 ::= cdecl [semi cdecls1]
 cdecl ::= atdecl
         | (funlhs | var) rhs
         | gendecl
+        | ppragma
 
 private atdecl ::= "type" ["instance"] (typee [kindsig] | ctype '=' ctype)
                  | "data" ["instance"] ctype [kindsig]
