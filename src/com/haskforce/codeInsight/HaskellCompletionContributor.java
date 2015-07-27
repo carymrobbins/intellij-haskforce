@@ -74,6 +74,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
                         if (completeModuleImport(position, cacheHolder, result)) return;
                         if (completeQualifiedNames(position, imports, cacheHolder, result)) return;
                         if (completeNameImport(position, cacheHolder, result)) return;
+                        completeExpressionKeywords(position, result);
                         completeLocalNames(position, imports, cacheHolder, result);
                         completeFunctionLocalNames(position,result);
                     }
@@ -101,6 +102,14 @@ public class HaskellCompletionContributor extends CompletionContributor {
         final PsiElement prevLeaf = PsiTreeUtil.prevVisibleLeaf(position);
         if (prevLeaf != null && prevLeaf.getText().equals("import")) {
             result.addElement(stringToLookupElement.fun("qualified "));
+        }
+    }
+
+    private static String[] EXPRESSION_KEYWORDS = {"do", "if", "then", "else"};
+    public static void completeExpressionKeywords(@NotNull final PsiElement position, @NotNull final CompletionResultSet result) {
+        if (HaskellPsiUtil.findFirstParent(position, HaskellExp.class) == null) return;
+        for (String keyword : EXPRESSION_KEYWORDS) {
+            result.addElement(stringToLookupElement.fun(keyword));
         }
     }
 

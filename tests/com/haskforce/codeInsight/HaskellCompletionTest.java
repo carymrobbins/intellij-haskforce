@@ -67,6 +67,13 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
         doTestInclude("import <caret>", "qualified ");
     }
 
+    public void testKeywordDo() throws Throwable {
+        doTestInclude(
+                "dayFractionToTimeOfDay = undefined\n" +
+                "bar = do<caret>",
+                    "do", "dayFractionToTimeOfDay");
+    }
+
     public void testPragmaTypes() throws Throwable {
         doTestInclude("{-# <caret> #-}",  getPragmaTypes());
     }
