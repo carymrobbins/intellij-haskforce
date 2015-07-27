@@ -505,6 +505,7 @@ private apat ::= literal
                // Second option is quasiquotes. See TemplateHaskell00002.hs.
                | '[' (pat (',' pat)* ']' |  exp '|' [semi] exp [semi]'|]')
                | gcon
+               | qvar
 
 private fpat ::= qvar ['=' pat]
                | ".."  {pin(".*")=1}
