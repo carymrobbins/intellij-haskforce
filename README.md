@@ -7,12 +7,14 @@ Want to get started right away?  Check out the [Quick Start Guide](https://githu
 
 Prerequisites for building
 --------
-You will need Scala 2.11.6 on your system.  You can download it directly via IntelliJ by going to -
-  * **File > Project Structure > Global Libraries > + > Scala SDK > Download > 2.11.6** 
-Be sure that the SDK is named `scala-sdk-2.11.6` to properly match the module configurations.
+You will need Scala 2.11.7 on your system.  The simplest way that will work out of the box is to use `ant resolve`
+from the command line.  If you don't have [Apache Ant](http://ant.apache.org/) you should be able to find it via
+your system package manager or download and install it manually.
 
-Alternatively, you can always install Scala manually via your package manager or the 
-[Scala download page](http://www.scala-lang.org/download/).
+You can configure Scala manually in IntelliJ; however, this is **not recommended**.
+Ignoring forewarning, you can download it directly via IntelliJ by going to -
+  * **File > Project Structure > Global Libraries > + > Scala SDK > Download > 2.11.7**
+Be sure that the SDK is named `scala-sdk-2.11.7` to properly match the module configurations.
 
 Building with IntelliJ
 --------

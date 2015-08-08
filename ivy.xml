@@ -1,0 +1,9 @@
+<ivy-module version="2.0">
+  <info organisation="com.haskforce" module="haskforce"/>
+  <dependencies>
+    <dependency org="org.scala-lang" name="scala-compiler" rev="2.11.7"/>
+    <dependency org="org.scala-lang" name="scala-library" rev="2.11.7"/>
+    <dependency org="org.scala-lang" name="scala-reflect" rev="2.11.7"/>
+    <dependency org="org.scalamacros" name="paradise_2.11.6" rev="2.1.0-M5"/>
+  </dependencies>
+</ivy-module>
