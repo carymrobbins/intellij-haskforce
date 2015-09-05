@@ -13,11 +13,12 @@ public class HaskellBuildOptions {
     public static final boolean DEFAULT_USE_CABAL = true;
     public static final boolean DEFAULT_USE_CABAL_SANDBOX = false;
     public static final boolean DEFAULT_USE_PROFILING_BUILD = true;
-    public static final String DEFAULT_GHC_PATH = "ghc";
-    public static final String DEFAULT_CABAL_PATH = "cabal";
+    public static final String DEFAULT_GHC_PATH = "";
+    public static final String DEFAULT_CABAL_PATH = "";
     public static final String DEFAULT_CABAL_FLAGS = "";
     public static final boolean DEFAULT_INSTALL_CABAL_DEPENDENCIES = false;
     public static final boolean DEFAULT_ENABLE_TESTS = false;
+    public static final boolean DEFAULT_USE_STACK = false;
 
     public HaskellBuildOptions() {
     }
@@ -60,6 +61,19 @@ public class HaskellBuildOptions {
     @Tag("enableTests")
     public boolean myEnableTests = DEFAULT_ENABLE_TESTS;
 
+    @Tag("useStack")
+    public boolean myUseStack = DEFAULT_USE_STACK;
+
+    @Tag("stackPath")
+    public String myStackPath = "";
+
+
+    @Tag("stackFlags")
+    public String myStackFlags = "";
+
+    @Tag("stackFile")
+    public String myStackFile = "";
+
     @Override
     public String toString() {
         return "HaskellBuildOptions{" +
@@ -72,6 +86,8 @@ public class HaskellBuildOptions {
                 ", myCabalFiles=" + myCabalFiles +
                 ", myInstallCabalDependencies=" + myInstallCabalDependencies +
                 ", myEnableTests=" + myEnableTests +
+                ", myUseStack=" + myUseStack +
+                ", myStackPath=" + myStackPath +
                 '}';
     }
 }

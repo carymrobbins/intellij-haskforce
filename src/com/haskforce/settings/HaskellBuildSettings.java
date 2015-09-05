@@ -1,10 +1,8 @@
 package com.haskforce.settings;
 
-import com.haskforce.HaskellSdkType;
 import com.haskforce.jps.model.HaskellBuildOptions;
 import com.haskforce.jps.model.JpsHaskellBuildOptionsSerializer;
 import com.haskforce.utils.ExecUtil;
-import com.haskforce.utils.SystemUtil;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
@@ -15,7 +13,6 @@ import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.io.File;
 import java.util.List;
 
 @State(
@@ -116,31 +113,67 @@ public class HaskellBuildSettings implements PersistentStateComponent<HaskellBui
         myBuildOptions.myCabalFiles = files;
     }
 
-    public void updatePathsForProject(@NotNull Project project) {
-        myBuildOptions.myGhcPath = guessGhcPathForProject(project);
-        myBuildOptions.myCabalPath = guessCabalPathForProject(project);
+    public boolean isStackEnabled() {
+        return myBuildOptions.myUseStack;
     }
 
-    private String guessGhcPathForProject(@NotNull Project project) {
+    public void setUseStack(boolean enable) {
+        myBuildOptions.myUseStack = enable;
+    }
+
+    public String getStackPath() {
+        return myBuildOptions.myStackPath;
+    }
+
+    public void setStackPath(@NotNull String path) {
+        myBuildOptions.myStackPath = path;
+    }
+
+    public String getStackFlags() {
+        return myBuildOptions.myStackFlags;
+    }
+
+    public void setStackFlags(@NotNull String flags) {
+        myBuildOptions.myStackFlags = flags;
+    }
+
+    public String getStackFile() {
+        return myBuildOptions.myStackFile;
+    }
+
+    public void setStackFile(@NotNull String file) {
+        myBuildOptions.myStackFile = file;
+    }
+
+    public void updatePaths() {
+        myBuildOptions.myGhcPath = guessGhcPath();
+        myBuildOptions.myCabalPath = guessCabalPath();
+        myBuildOptions.myStackPath = guessStackPath();
+    }
+
+    private String guessGhcPath() {
         String path = myBuildOptions.myGhcPath;
-        if (path == null || path.isEmpty() || path.equals(HaskellBuildOptions.DEFAULT_GHC_PATH)) {
-            File sdkGhcPath = HaskellSdkType.getExecutable(project);
-            if (sdkGhcPath != null && sdkGhcPath.canExecute()) return sdkGhcPath.getAbsolutePath();
+        if (path == null || path.isEmpty()) {
+            String guessed = ExecUtil.locateExecutableByGuessing("ghc");
+            if (guessed != null) return guessed;
         }
         return path;
     }
 
-    private String guessCabalPathForProject(@NotNull Project project) {
+    private String guessCabalPath() {
         String path = myBuildOptions.myCabalPath;
-        if (path == null || path.isEmpty() || path.equals(HaskellBuildOptions.DEFAULT_CABAL_PATH)) {
-            File sdkGhcPath = HaskellSdkType.getExecutable(project);
-            if (sdkGhcPath != null) {
-                String parent = sdkGhcPath.getParent();
-                File sdkCabalPath = new File(parent + SystemUtil.PATH_SEPARATOR + "cabal");
-                if (sdkCabalPath.canExecute()) return sdkCabalPath.getAbsolutePath();
-            }
-            String foundCabalPath = ExecUtil.locateExecutable(HaskellBuildOptions.DEFAULT_CABAL_PATH);
-            if (foundCabalPath != null && !foundCabalPath.isEmpty()) return foundCabalPath;
+        if (path == null || path.isEmpty()) {
+            String guessed = ExecUtil.locateExecutableByGuessing("cabal");
+            if (guessed != null) return guessed;
+        }
+        return path;
+    }
+
+    private String guessStackPath() {
+        String path = myBuildOptions.myStackPath;
+        if (path == null || path.isEmpty()) {
+            String guessed = ExecUtil.locateExecutableByGuessing("stack");
+            if (guessed != null) return guessed;
         }
         return path;
     }
@@ -149,7 +182,7 @@ public class HaskellBuildSettings implements PersistentStateComponent<HaskellBui
     public static HaskellBuildSettings getInstance(@NotNull Project project) {
         HaskellBuildSettings settings = ServiceManager.getService(project, HaskellBuildSettings.class);
         if (settings == null) settings = new HaskellBuildSettings();
-        settings.updatePathsForProject(project);
+        settings.updatePaths();
         return settings;
     }
 }

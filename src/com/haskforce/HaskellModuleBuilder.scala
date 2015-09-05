@@ -85,7 +85,7 @@ class HaskellModuleBuilder extends JavaModuleBuilder with SourcePathsBuilder wit
 }
 
 case class HaskellSdkSettingsStep(moduleBuilder: HaskellModuleBuilder, wizardContext: WizardContext)
-extends ProjectJdkForModuleStep(wizardContext, HaskellSdkType.getInstance()) {
+extends ProjectJdkForModuleStep(wizardContext, HaskellSdkType.getInstance) {
   override def updateDataModel(): Unit = {
     super.updateDataModel()
     moduleBuilder.setModuleJdk(getJdk)

@@ -110,7 +110,7 @@ class HaskellCompilerToolsForm(moduleBuilder: HaskellModuleBuilder) extends Hask
       ghcPath -> "GHC",
       ghcModPath -> "GHC Mod",
       ghcModiPath -> "GHC Modi"
-    ).foreach((GuiUtil.addFolderListener _).tupled)
+    ).foreach { case (p, n) => GuiUtil.addFolderListener(p, n) }
   }
 
   /**

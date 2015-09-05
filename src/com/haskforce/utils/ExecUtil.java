@@ -137,15 +137,18 @@ public class ExecUtil {
         }
 
         char sep = File.separatorChar;
+        String homeDir = System.getProperty("user.home");
         List<String> paths = ContainerUtil.newArrayList();
+        // Executables installed by stack.
+        paths.add(homeDir + sep +  ".local" + sep + "bin");
         if (SystemInfo.isWindows) {
             // TODO: Add windows paths.
         } else {
-            String homeDir = System.getProperty("user.home");
-
+            // Unix bin dirs.
             paths.add(homeDir + sep + "Library" + sep + "Haskell" + sep + "bin");
             paths.add(homeDir + sep + ".cabal" + sep + "bin");
-            paths.add(sep + "usr" + "local" + sep + "bin");
+            paths.add(sep + "usr" + sep + "bin");
+            paths.add(sep + "usr" + sep + "local" + sep + "bin");
             paths.add(homeDir + sep + "bin");
         }
         for (String path : paths) {

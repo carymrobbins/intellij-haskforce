@@ -2,8 +2,11 @@ package com.haskforce.utils;
 
 import com.intellij.openapi.externalSystem.util.ExternalSystemUiUtil;
 import com.intellij.openapi.fileChooser.FileChooserDescriptorFactory;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.intellij.openapi.util.Condition;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.TextAccessor;
 import com.intellij.ui.TextFieldWithHistory;
 
@@ -109,9 +112,16 @@ public class GuiUtil {
         return createCheckBoxOption(settings, text, ExternalSystemUiUtil.getFillLineConstraints(0));
     }
 
-    public static void addFolderListener(final TextFieldWithBrowseButton textField, final String executable) {
-        textField.addBrowseFolderListener("Select " + executable + " path", "", null,
-                FileChooserDescriptorFactory.createSingleLocalFileDescriptor());
+    public static void addFolderListener(final TextFieldWithBrowseButton textField,
+                                         final String name,
+                                         final Project project,
+                                         final Condition<VirtualFile> fileFilter) {
+        textField.addBrowseFolderListener("Select " + name + " path", "", project,
+                FileChooserDescriptorFactory.createSingleLocalFileDescriptor().withFileFilter(fileFilter));
+    }
+
+    public static void addFolderListener(final TextFieldWithBrowseButton textField, final String name) {
+        addFolderListener(textField, name, null, null);
     }
 
     public static ActionListener createApplyPathAction(final TextAccessor textField, final String executable) {
