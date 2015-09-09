@@ -22,9 +22,9 @@ public class HaskellLetexpImpl extends HaskellCompositeElementImpl implements Ha
   }
 
   @Override
-  @NotNull
+  @Nullable
   public HaskellExp getExp() {
-    return findNotNullChildByClass(HaskellExp.class);
+    return findChildByClass(HaskellExp.class);
   }
 
   @Override
@@ -46,9 +46,9 @@ public class HaskellLetexpImpl extends HaskellCompositeElementImpl implements Ha
   }
 
   @Override
-  @NotNull
+  @Nullable
   public PsiElement getIn() {
-    return findNotNullChildByType(IN);
+    return findChildByType(IN);
   }
 
   @Override

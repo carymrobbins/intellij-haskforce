@@ -7,7 +7,7 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellLetexp extends HaskellCompositeElement {
 
-  @NotNull
+  @Nullable
   HaskellExp getExp();
 
   @Nullable
@@ -19,7 +19,7 @@ public interface HaskellLetexp extends HaskellCompositeElement {
   @NotNull
   List<HaskellPpragma> getPpragmaList();
 
-  @NotNull
+  @Nullable
   PsiElement getIn();
 
   @NotNull
