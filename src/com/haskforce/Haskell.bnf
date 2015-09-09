@@ -405,7 +405,7 @@ exp ::= ppragma* infixexp ["::" [context "=>"] typee]
 
 private infixexp ::= '-'* lexp [qop infixexp]
 
-letexp ::= "let" decls "in" exp
+letexp ::= "let" decls ["in" exp]
 
 private lexp ::= "\\case" altslist
                | '\' (apat | thaexp)+ "->" exp

@@ -3977,7 +3977,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // "let" decls "in" exp
+  // "let" decls ["in" exp]
   public static boolean letexp(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "letexp")) return false;
     if (!nextTokenIs(b, LET)) return false;
@@ -3985,9 +3985,26 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b);
     r = consumeToken(b, LET);
     r = r && decls(b, l + 1);
-    r = r && consumeToken(b, IN);
-    r = r && exp(b, l + 1);
+    r = r && letexp_2(b, l + 1);
     exit_section_(b, m, LETEXP, r);
+    return r;
+  }
+
+  // ["in" exp]
+  private static boolean letexp_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "letexp_2")) return false;
+    letexp_2_0(b, l + 1);
+    return true;
+  }
+
+  // "in" exp
+  private static boolean letexp_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "letexp_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, IN);
+    r = r && exp(b, l + 1);
+    exit_section_(b, m, null, r);
     return r;
   }
 
