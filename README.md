@@ -7,9 +7,8 @@ Want to get started right away?  Check out the [Quick Start Guide](https://githu
 
 Prerequisites for building
 --------
-You will need Scala 2.11.7 on your system.  The simplest way that will work out of the box is to use `ant resolve`
-from the command line.  If you don't have [Apache Ant](http://ant.apache.org/) you should be able to find it via
-your system package manager or download and install it manually.
+You will need Scala 2.11.7 on your system.  You can use the IvyIDEA plugin to resolve all dependencies,
+including Scala (see **Building with IntelliJ** below).
 
 You can configure Scala manually in IntelliJ; however, this is **not recommended**.
 Ignoring forewarning, you can download it directly via IntelliJ by going to -
@@ -24,6 +23,7 @@ Building with IntelliJ
 1. Install and enable additional plugins.
   * **Scala**
   * **Ant Support**
+  * **IvyIDEA** (resolve dependencies via **Tools > IvyIDEA > Resolve for all modules**)
   * **UI Designer** (without this everything compiles but viewing forms throws NPEs, e.g. when creating a new project.)
   * **PsiViewer 3.28.73** (optional, for viewing parse trees)
   * **JFlex Support 1.5.1** (optional, for generating lexers)
