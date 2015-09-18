@@ -263,6 +263,11 @@
       <lang.syntaxHighlighterFactory key="Hamlet" implementationClass="com.haskforce.yesod.shakespeare.hamlet.highlighting.HamletSyntaxHighlighterFactory"/>
       <lang.parserDefinition language="Hamlet" implementationClass="com.haskforce.yesod.shakespeare.hamlet.HamletParserDefinition" />
 
+      <!-- Spelling support -->
+      <spellchecker.support language="Haskell" implementationClass="com.haskforce.spellchecker.HaskellSpellcheckingStrategy" />
+      <spellchecker.support language="Cabal" implementationClass="com.haskforce.spellchecker.HaskellSpellcheckingStrategy" />
+      <spellchecker.bundledDictionaryProvider implementation="com.haskforce.spellchecker.HaskellBundledDictionaryProvider" />
+
       <!-- External builder support -->
       <!-- Note that the classpath is needed for plugin deployment to export a zip archive. -->
       <compileServer.plugin classpath="jps/jps-plugin.jar;jps-shared.jar"/>

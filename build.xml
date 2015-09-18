@@ -723,7 +723,13 @@
     </java>
   </target>
 
-  <target name="test" depends="build.modules">
+  <target name="validate-dic">
+    <exec executable="/usr/bin/env" failonerror="true">
+      <arg value="${module.haskforce.basedir}/tools/validate-dic"/>
+    </exec>
+  </target>
+
+  <target name="test" depends="validate-dic,build.modules">
     <property name="suspend" value="n"/>
 
     <junit printsummary="yes" haltonfailure="false" showoutput="yes" failureproperty="failureFound"

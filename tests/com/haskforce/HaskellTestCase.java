@@ -35,6 +35,7 @@ import com.haskforce.parser.HaskellParserTest;
 import com.haskforce.parser.HaskellParsingLexerTest;
 import com.haskforce.refactoring.HaskellRenameTest;
 import com.haskforce.resolve.HaskellResolveTest;
+import com.haskforce.spellchecker.HaskellSpellcheckingTest;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
@@ -63,6 +64,7 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(GhcUtilTest.class);
         suite.addTestSuite(HaskellGoToSymbolTest.class);
         suite.addTestSuite(AddCabalPackageTest.class);
+        suite.addTestSuite(HaskellSpellcheckingTest.class);
         return suite;
     }
 }

@@ -36,6 +36,10 @@ public abstract class HaskellLightPlatformCodeInsightFixtureTestCase extends Lig
         expectPath = getDirPath() + '/' + expectName;
     }
 
+    protected HaskellLightPlatformCodeInsightFixtureTestCase(String name) {
+        this(name, name);
+    }
+
     @Override
     protected void setUp() throws Exception {
         super.setUp();

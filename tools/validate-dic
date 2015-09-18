@@ -1,0 +1,26 @@
+#!/bin/bash
+
+set -e
+
+DIC="$(dirname "$0")/../resources/dictionary/haskell.dic"
+
+valid() { sort "$DIC" | uniq; }
+
+case "$1" in
+  "--overwrite")
+    RESULT=$(valid)
+    echo "$RESULT" > "$DIC"
+    ;;
+  "--show")
+    valid
+    ;;
+  "")
+    (valid | cmp - "$DIC" 2>&1 > /dev/null) || {
+      >&2 echo "haskell.dic contains unsorted or duplicate words."
+      exit 1
+    }
+    ;;
+  *)
+    >&2 echo "Usage: $0 [--overwrite]"
+    ;;
+esac
