@@ -10,6 +10,7 @@ import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.components.StoragePathMacros;
 import com.intellij.openapi.components.StorageScheme;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -151,7 +152,7 @@ public class HaskellBuildSettings implements PersistentStateComponent<HaskellBui
         myBuildOptions.myStackPath = guessStackPath();
     }
 
-    private String guessGhcPath() {
+    public String guessGhcPath() {
         String path = myBuildOptions.myGhcPath;
         if (path == null || path.isEmpty()) {
             String guessed = ExecUtil.locateExecutableByGuessing("ghc");
@@ -160,7 +161,7 @@ public class HaskellBuildSettings implements PersistentStateComponent<HaskellBui
         return path;
     }
 
-    private String guessCabalPath() {
+    public String guessCabalPath() {
         String path = myBuildOptions.myCabalPath;
         if (path == null || path.isEmpty()) {
             String guessed = ExecUtil.locateExecutableByGuessing("cabal");
@@ -169,7 +170,7 @@ public class HaskellBuildSettings implements PersistentStateComponent<HaskellBui
         return path;
     }
 
-    private String guessStackPath() {
+    public String guessStackPath() {
         String path = myBuildOptions.myStackPath;
         if (path == null || path.isEmpty()) {
             String guessed = ExecUtil.locateExecutableByGuessing("stack");
@@ -184,5 +185,10 @@ public class HaskellBuildSettings implements PersistentStateComponent<HaskellBui
         if (settings == null) settings = new HaskellBuildSettings();
         settings.updatePaths();
         return settings;
+    }
+
+    @NotNull
+    public static HaskellBuildSettings getDefault() {
+        return getInstance(ProjectManager.getInstance().getDefaultProject());
     }
 }

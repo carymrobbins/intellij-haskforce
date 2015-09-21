@@ -275,6 +275,9 @@
       <spellchecker.support language="Cabal" implementationClass="com.haskforce.spellchecker.HaskellSpellcheckingStrategy" />
       <spellchecker.bundledDictionaryProvider implementation="com.haskforce.spellchecker.HaskellBundledDictionaryProvider" />
 
+      <projectImportProvider implementation="com.haskforce.importWizard.stack.StackProjectImportProvider"/>
+      <projectImportBuilder implementation="com.haskforce.importWizard.stack.StackProjectImportBuilder"/>
+
       <!-- External builder support -->
       <!-- Note that the classpath is needed for plugin deployment to export a zip archive. -->
       <compileServer.plugin classpath="jps/jps-plugin.jar;jps-shared.jar"/>

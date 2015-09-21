@@ -10,7 +10,6 @@ import com.haskforce.jps.model.HaskellBuildOptions
 import com.haskforce.settings.HaskellBuildSettings
 import com.haskforce.utils.CabalExecutor
 import com.haskforce.utils.CabalExecutor.CabalExecutorError
-import com.intellij.ide.projectWizard.ProjectSettingsStep
 import com.intellij.ide.util.projectWizard._
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileTypes.FileTypeManager

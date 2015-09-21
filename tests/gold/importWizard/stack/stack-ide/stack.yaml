@@ -1,0 +1,7 @@
+packages:
+  - stack-ide
+  - stack-ide-api
+  - ide-backend/ide-backend
+  - ide-backend/ide-backend-server
+  - ide-backend/ide-backend-common
+resolver: nightly-2015-08-12

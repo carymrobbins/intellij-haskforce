@@ -1,0 +1,253 @@
+name:                 ide-backend
+version:              0.10.0
+synopsis:             An IDE backend library
+description:          See README.md for more details
+license:              MIT
+license-file:         LICENSE
+author:               Duncan Coutts, Mikolaj Konarski, Edsko de Vries
+maintainer:           Duncan Coutts <duncan@well-typed.com>
+copyright:            (c) 2015 FP Complete
+data-files:           CoreLicenses.txt
+category:             Development
+build-type:           Simple
+cabal-version:        >=1.10
+extra-source-files:   README.md
+                      TestSuite/inputs/README.md
+                      TestSuite/inputs/ABerror/*.hs
+                      TestSuite/inputs/AnotherA/*.hs
+                      TestSuite/inputs/TH/*.hs
+                      TestSuite/inputs/simple-lib17/*.hs
+                      TestSuite/inputs/simple-lib17/*.sh
+                      TestSuite/inputs/simple-lib17/*.cabal
+                      TestSuite/inputs/simple-lib17/LICENSE
+                      TestSuite/inputs/MainModule/cabals/*.cabal
+                      TestSuite/inputs/MainModule/ParFib/*.hs
+                      TestSuite/inputs/MainModule/*.hs
+                      TestSuite/inputs/compiler/utils/Subdir/*.lhs
+                      TestSuite/inputs/compiler/utils/*.hs
+                      TestSuite/inputs/compiler/utils/*.lhs
+                      TestSuite/inputs/AnotherB/*.hs
+                      TestSuite/inputs/bootMods/*.hs
+                      TestSuite/inputs/bootMods/*.hs-boot
+                      TestSuite/inputs/ABnoError/*.hs
+                      TestSuite/inputs/AerrorB/*.hs
+                      TestSuite/inputs/FFI/ffiles/*.c
+                      TestSuite/inputs/FFI/ffiles/*.h
+                      TestSuite/inputs/FFI/*.hs
+                      TestSuite/inputs/FFI/*.h
+                      TestSuite/inputs/FFI/*.c
+                      TestSuite/inputs/Puns/cabals/parse_error/*.cabal
+                      TestSuite/inputs/Puns/cabals/no_text_error/*.cabal
+                      TestSuite/inputs/Puns/cabals/*.cabal
+                      TestSuite/inputs/Puns/GHC/RTS/*.h
+                      TestSuite/inputs/Puns/GHC/RTS/*.hs
+
+library
+  exposed-modules:    IdeSession
+                      IdeSession.State,
+                      IdeSession.Config,
+                      IdeSession.Cabal,
+                      IdeSession.ExeCabalClient,
+                      IdeSession.Licenses,
+                      IdeSession.Query,
+                      IdeSession.Update,
+                      IdeSession.Update.IdeSessionUpdate,
+                      IdeSession.Update.ExecuteSessionUpdate,
+                      IdeSession.GHC.Client
+                      IdeSession.RPC.Client
+
+  build-depends:      base                 ==4.*,
+                      filemanip            >= 0.3.6.2 && < 0.4,
+                      process              >= 1.1     && < 1.3,
+                      filepath             >= 1.3     && < 1.5,
+                      directory            >= 1.1     && < 1.3,
+                      containers           >= 0.4.1   && < 1,
+                      bytestring           >= 0.9.2   && < 1,
+                      mtl                  >= 2.1     && < 2.3,
+                      async                >= 2.0     && < 2.1,
+                      unix                 >= 2.5     && < 2.8,
+                      temporary            >= 1.1.2.4 && < 1.3,
+                      text                 >= 0.11    && < 1.3,
+                      binary               >= 0.7.1.0 && < 0.8,
+                      data-accessor        >= 0.2     && < 0.3,
+                      data-accessor-mtl    >= 0.2     && < 0.3,
+                      pureMD5              >= 2.1     && < 2.2,
+                      transformers         >= 0.3     && < 0.5,
+                      time                 >= 1.4     && < 1.6,
+                      attoparsec           >= 0.10    && < 0.14,
+                      utf8-string          >= 0.3     && < 1.1,
+                      ide-backend-common   >= 0.10    && < 0.11,
+                      template-haskell,
+                      -- our own private fork:
+                      Cabal-ide-backend    >= 1.23,
+                      ghc-prim,
+                      pretty-show
+
+  default-language:   Haskell2010
+  default-extensions: MonoLocalBinds
+                      BangPatterns
+                      RecordWildCards
+                      NamedFieldPuns
+                      RankNTypes
+                      MultiParamTypeClasses
+                      ExistentialQuantification
+                      FlexibleContexts
+                      DeriveDataTypeable
+  other-extensions:   CPP
+                      TemplateHaskell
+                      ScopedTypeVariables,
+                      GeneralizedNewtypeDeriving
+  ghc-options:        -Wall -fno-warn-unused-do-bind
+
+executable ide-backend-exe-cabal
+  main-is:            ide-backend-exe-cabal.hs
+  other-modules:      IdeSession.ExeCabalServer
+  build-depends:      ide-backend,
+                      ide-backend-common,
+                      base                 ==4.*,
+                      filemanip            >= 0.3.6.2 && < 0.4,
+                      process              >= 1.1     && < 1.3,
+                      filepath             >= 1.3     && < 1.5,
+                      directory            >= 1.1     && < 1.3,
+                      containers           >= 0.4.1   && < 1,
+                      random               >= 1.0.1   && < 2,
+                      bytestring           >= 0.9.2   && < 1,
+                      mtl                  >= 2.1     && < 2.3,
+                      async                >= 2.0     && < 2.1,
+                      aeson                >= 0.6.2   && < 0.10,
+                      executable-path      >= 0.0     && < 0.1,
+                      unix                 >= 2.5     && < 2.8,
+                      temporary            >= 1.1.2.4 && < 1.3,
+                      bytestring-trie      >= 0.2     && < 0.3,
+                      unordered-containers >= 0.2.3   && < 0.3,
+                      text                 >= 0.11    && < 1.3,
+                      fingertree           >= 0.0.1   && < 0.2,
+                      binary               >= 0.7.1.0 && < 0.8,
+                      data-accessor        >= 0.2     && < 0.3,
+                      data-accessor-mtl    >= 0.2     && < 0.3,
+                      crypto-api           >= 0.12    && < 0.14,
+                      pureMD5              >= 2.1     && < 2.2,
+                      tagged               >= 0.4     && < 0.9,
+                      transformers         >= 0.3     && < 0.5,
+                      time                 >= 1.4     && < 1.6,
+                      attoparsec           >= 0.10    && < 0.14,
+                      template-haskell,
+                      -- our own private fork:
+                      Cabal-ide-backend    >= 1.22,
+                      ghc-prim,
+                      pretty-show
+
+  default-language:   Haskell2010
+  default-extensions: MonoLocalBinds,
+                      BangPatterns, RecordWildCards, NamedFieldPuns
+  other-extensions:   CPP, TemplateHaskell, ScopedTypeVariables,
+                      DeriveDataTypeable
+  ghc-options:        -Wall -fno-warn-unused-do-bind
+
+test-suite TestSuite
+  type:               exitcode-stdio-1.0
+  main-is:            TestSuite.hs
+  hs-source-dirs:     TestSuite
+                      -- TODO: This is only necessary for TestTools, which in
+                      -- turn is used by the RPC test suite too. We should
+                      -- probably merge that in, too.
+                      test
+  other-modules:      TestSuite.State
+                      TestSuite.Assertions
+                      TestSuite.Session
+                      TestSuite.Tests.API
+                      TestSuite.Tests.Autocompletion
+                      TestSuite.Tests.BufferMode
+                      TestSuite.Tests.BuildDoc
+                      TestSuite.Tests.BuildExe
+                      TestSuite.Tests.BuildLicenses
+                      TestSuite.Tests.C
+                      TestSuite.Tests.CabalMacros
+                      TestSuite.Tests.Compilation
+                      TestSuite.Tests.Compliance
+                      TestSuite.Tests.Concurrency
+                      TestSuite.Tests.Crash
+                      TestSuite.Tests.Debugger
+                      TestSuite.Tests.FFI
+                      TestSuite.Tests.Integration
+                      TestSuite.Tests.InterruptRunExe
+                      TestSuite.Tests.InterruptRunStmt
+                      TestSuite.Tests.Issues
+                      TestSuite.Tests.Packages
+                      TestSuite.Tests.Performance
+                      TestSuite.Tests.Pseudoterminal
+                      TestSuite.Tests.SessionRestart
+                      TestSuite.Tests.SessionState
+                      TestSuite.Tests.SnippetEnvironment
+                      TestSuite.Tests.StdIO
+                      TestSuite.Tests.TH
+                      TestSuite.Tests.TypeInformation
+                      TestSuite.Tests.UpdateTargets
+                      TestTools
+  build-depends:      base,
+                      ide-backend,
+                      ide-backend-common,
+                      tasty,
+                      HUnit,
+                      tagged,
+                      utf8-string,
+                      text,
+                      bytestring,
+                      regex-compat,
+                      filepath,
+                      filemanip,
+                      process,
+                      directory,
+                      stm,
+                      unix,
+                      random,
+                      Cabal-ide-backend,
+                      containers,
+                      deepseq,
+                      -- Dependencies of test suite at runtime
+                      parallel,
+                      monads-tf
+  default-language:   Haskell2010
+  ghc-options:        -Wall
+                      -threaded
+                      -with-rtsopts=-N
+  default-extensions: RecordWildCards
+                      NamedFieldPuns
+                      DeriveDataTypeable
+                      OverloadedStrings
+                      ScopedTypeVariables
+  other-extensions:   TypeSynonymInstances
+                      FlexibleInstances
+                      OverlappingInstances
+
+test-suite rpc-server
+  type:               exitcode-stdio-1.0
+  main-is:            rpc-server.hs
+  hs-source-dirs:     test
+  build-depends:      base                 ==4.*,
+                      directory            ==1.*,
+                      filemanip            >= 0.3.6.2 && < 0.4,
+                      process              ==1.*,
+                      filepath             ==1.*,
+                      containers           >= 0.4.1   && < 1,
+                      random               >= 1.0.1   && < 2,
+                      bytestring           >= 0.9.2   && < 1,
+                      async                >= 2.0     && < 2.1,
+                      aeson                >= 0.6     && < 0.10,
+                      temporary            >= 1.1.2.4 && < 1.3,
+                      test-framework       >= 0.6     && < 0.9,
+                      test-framework-hunit >= 0.2     && < 0.4,
+                      HUnit                >= 1.2     && < 1.3,
+                      executable-path      >= 0.0     && < 0.1,
+                      unix                 >= 2.5     && < 2.8,
+                      binary               >= 0.7.1.0 && < 0.8,
+                      ide-backend,
+                      ide-backend-common,
+                      template-haskell
+
+  default-language:   Haskell2010
+  default-extensions: MonoLocalBinds,
+                      BangPatterns, RecordWildCards, NamedFieldPuns
+  other-extensions:   CPP, TemplateHaskell, ScopedTypeVariables,
+                      DeriveDataTypeable
+  ghc-options:        -Wall -fno-warn-unused-do-bind

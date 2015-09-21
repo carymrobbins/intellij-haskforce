@@ -5,5 +5,7 @@
     <dependency org="org.scala-lang" name="scala-library" rev="2.11.7"/>
     <dependency org="org.scala-lang" name="scala-reflect" rev="2.11.7"/>
     <dependency org="org.scalamacros" name="paradise_2.11.6" rev="2.1.0-M5"/>
+    <dependency org="org.scalaz" name="scalaz-core_2.11" rev="7.1.4"/>
+    <dependency org="org.yaml" name="snakeyaml" rev="1.16"/>
   </dependencies>
 </ivy-module>

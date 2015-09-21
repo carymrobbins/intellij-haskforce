@@ -57,8 +57,10 @@ class HaskellSdkType extends SdkType(JpsHaskellModelSerializerExtension.HASKELL_
 
   /**
    * We don't need to suggest the SDK path for the same reason as isValidSdkHome.
+   * Don't return null so this will still be interpreted as a "valid" SDK by
+   * other utilities (e.g. StackProjectImportBuilder).
    */
-  @Nullable def suggestHomePath: String = null
+  @Nullable def suggestHomePath: String = ""
 
   /**
    * We can modify the SDK using sdk.getSdkModificator, but for now we don't need to.
