@@ -26,7 +26,7 @@ import com.haskforce.cabal.AddCabalPackageTest;
 import com.haskforce.codeInsight.HaskellCompletionTest;
 import com.haskforce.codeInsight.HaskellFindUsagesTest;
 import com.haskforce.codeInsight.HaskellGoToSymbolTest;
-import com.haskforce.features.HaskellFeaturesTest;
+import com.haskforce.features.HaskellCommenterTest;
 import com.haskforce.features.HaskellFoldingBuilderTest;
 import com.haskforce.features.HaskellTypedHandlerTest;
 import com.haskforce.highlighting.HaskellLexerTest;
@@ -55,7 +55,7 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(HaskellLexerTest.class);
         suite.addTestSuite(HaskellParsingLexerTest.class);
         suite.addTestSuite(HaskellParserTest.class);
-        suite.addTestSuite(HaskellFeaturesTest.class);
+        suite.addTestSuite(HaskellCommenterTest.class);
         suite.addTestSuite(HaskellFoldingBuilderTest.class);
         suite.addTestSuite(HaskellCompletionTest.class);
         suite.addTestSuite(HaskellFindUsagesTest.class);

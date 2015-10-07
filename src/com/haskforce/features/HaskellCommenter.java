@@ -53,12 +53,14 @@ public class HaskellCommenter implements CodeDocumentationAwareCommenterEx {
     }
 
     /**
-     * The prefix for multiline Haddock comments ("--").
+     * This is essentially the asterisk in javadoc comments.
+     * For Haskell doc comments, we just use another comment line,
+     * so this doesn't apply.
      */
     @Nullable
     @Override
     public String getDocumentationCommentLinePrefix() {
-        return "--";
+        return null;
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.haskforce.features;
 
 import com.haskforce.HaskellFileType;
-import com.haskforce.utils.SystemUtil;
 import com.intellij.codeInsight.generation.actions.CommentByBlockCommentAction;
 import com.intellij.codeInsight.generation.actions.CommentByLineCommentAction;
 import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
@@ -9,8 +8,8 @@ import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCa
 /**
  * Features test driver. Add new feature testcases here.
  */
-public class HaskellFeaturesTest extends LightPlatformCodeInsightFixtureTestCase {
-    public HaskellFeaturesTest() {
+public class HaskellCommenterTest extends LightPlatformCodeInsightFixtureTestCase {
+    public HaskellCommenterTest() {
         super();
     }
 
@@ -32,5 +31,14 @@ public class HaskellFeaturesTest extends LightPlatformCodeInsightFixtureTestCase
         myFixture.checkResult("f acc [] = acc\n" +
                 "{-f acc (x:xs) = f (x:acc) xs-}\n" +
                 "f _ _ = error \"impossible!\"");
+    }
+
+    public void testCommenter0003() {
+        myFixture.configureByText(HaskellFileType.INSTANCE, "-- foo bar <caret>baz");
+        myFixture.type('\n');
+        myFixture.checkResult(
+                "-- foo bar \n" +
+                "-- baz"
+        );
     }
 }
