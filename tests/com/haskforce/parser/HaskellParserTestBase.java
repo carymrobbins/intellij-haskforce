@@ -28,6 +28,7 @@ import com.intellij.lang.ParserDefinition;
 import com.intellij.testFramework.ParsingTestCase;
 import com.intellij.psi.PsiFile;
 import com.intellij.testFramework.TestDataFile;
+import junit.framework.AssertionFailedError;
 import org.jetbrains.annotations.NonNls;
 
 import java.io.File;
@@ -55,12 +56,33 @@ public abstract class HaskellParserTestBase extends ParsingTestCase {
      * doTest(false, false).
      */
     protected void doTest(boolean checkResult, boolean shouldPass) {
-        doTest(true);
+        // Do some gymnastics to see if we had to create the comparison file.
+        // This is convenient so we can tell if the generated file has error elements or not.
+        AssertionFailedError noComparisonTextFound = null;
+        try {
+            doTest(true);
+        } catch (AssertionFailedError e) {
+            if (e.getMessage().startsWith("No output text found")) {
+                noComparisonTextFound = e;
+            } else {
+                throw e;
+            }
+        }
         if (shouldPass) {
-            assertFalse(
-                    "PsiFile contains error elements",
+            // If we had to create the comparison file, be sure to say that but explain
+            // that there are error elements in the created file.  Otherwise, just report
+            // that the existing file had error elements.
+            final String message = noComparisonTextFound != null
+                    ? noComparisonTextFound.getMessage() + " (but contains error elements)"
+                    : "PsiFile contains error elements";
+            assertFalse(message,
                     toParseTreeText(myFile, skipSpaces(), includeRanges()).contains("PsiErrorElement")
             );
+        }
+        // If we had to create a comparison file, be sure to fail the test but report that
+        // error elements were not found.
+        if (noComparisonTextFound != null) {
+            fail(noComparisonTextFound.getMessage() + " (but no error elements found)");
         }
     }
 
