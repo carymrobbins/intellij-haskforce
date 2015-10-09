@@ -1,7 +1,7 @@
 <idea-plugin version="2" use-idea-classloader="true">
   <id>com.haskforce</id>
   <name>HaskForce</name>
-  <version>0.3-beta.22</version>
+  <version>0.3-beta.23</version>
   <vendor url="https://github.com/carymrobbins/intellij-haskforce">HaskForce on GitHub</vendor>
 
   <description>Plugin for Haskell language support.</description>
@@ -14,6 +14,13 @@
     <p>
       If you encounter any issues, please submit them on our
       <a href="https://github.com/carymrobbins/intellij-haskforce/issues">bug tracker</a>.
+    </p>
+    <p>
+      <b>v0.3-beta.23</b>
+      <ul>
+        <li>Add spellchecker support (#197)</li>
+        <li>Fix redundant dashes when splitting comments (#199)</li>
+      </ul>
     </p>
     <p>
       <b>v0.3-beta.22</b>
