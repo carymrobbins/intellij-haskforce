@@ -2,7 +2,7 @@ package com.haskforce.cabal.settings.ui
 
 import javax.swing._
 
-import com.haskforce.cabal.settings.CabalBuildType
+import com.haskforce.cabal.settings.CabalComponentType
 import com.haskforce.ui.SComboBox
 
 /**
@@ -17,7 +17,7 @@ trait AddCabalPackageForm {
   def getHomepageField: JTextField
   def getSynopsisField: JTextField
   def getCategoryField: SComboBox[String]
-  def getBuildTypeField: SComboBox[CabalBuildType]
+  def getComponentTypeField: SComboBox[CabalComponentType]
   def getLanguageField: SComboBox[String]
   def getSourceDirField: JTextField
   def getPackageVersionField: JTextField

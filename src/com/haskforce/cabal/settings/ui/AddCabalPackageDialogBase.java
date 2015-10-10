@@ -1,7 +1,7 @@
 package com.haskforce.cabal.settings.ui;
 
 import com.haskforce.actions.cabal.ComboModuleProxy;
-import com.haskforce.cabal.settings.CabalBuildType;
+import com.haskforce.cabal.settings.CabalComponentType;
 import com.haskforce.ui.SComboBox;
 
 import javax.swing.*;
@@ -26,7 +26,7 @@ public abstract class AddCabalPackageDialogBase extends JDialog {
     protected JTextField homepage;
     protected JTextField synopsis;
     protected SComboBox<String> category;
-    protected SComboBox<CabalBuildType> buildType;
+    protected SComboBox<CabalComponentType> buildType;
     protected SComboBox<String> language;
     protected JTextField sourceDir;
     protected JTextField version;

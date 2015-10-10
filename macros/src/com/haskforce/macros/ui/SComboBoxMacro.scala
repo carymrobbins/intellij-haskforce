@@ -1,4 +1,4 @@
-package com.haskforce.ui
+package com.haskforce.macros.ui
 
 import scala.annotation.StaticAnnotation
 import scala.language.experimental.macros

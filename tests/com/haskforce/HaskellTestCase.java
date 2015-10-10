@@ -34,6 +34,7 @@ import com.haskforce.highlighting.annotation.external.GhcUtilTest;
 import com.haskforce.importWizard.stack.StackImportWizardTest;
 import com.haskforce.parser.HaskellParserTest;
 import com.haskforce.parser.HaskellParsingLexerTest;
+import com.haskforce.projectWizard.NewProjectWizardTest;
 import com.haskforce.refactoring.HaskellRenameTest;
 import com.haskforce.resolve.HaskellResolveTest;
 import com.haskforce.spellchecker.HaskellSpellcheckingTest;
@@ -67,6 +68,7 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(AddCabalPackageTest.class);
         suite.addTestSuite(HaskellSpellcheckingTest.class);
         suite.addTestSuite(StackImportWizardTest.class);
+        suite.addTestSuite(NewProjectWizardTest.class);
         return suite;
     }
 }

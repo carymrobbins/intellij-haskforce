@@ -10,9 +10,9 @@ import java.util.List;
  * Serialization object for communicating build settings with the build server.
  */
 public class HaskellBuildOptions {
-    public static final boolean DEFAULT_USE_CABAL = true;
+    public static final boolean DEFAULT_USE_CABAL = false;
     public static final boolean DEFAULT_USE_CABAL_SANDBOX = false;
-    public static final boolean DEFAULT_USE_PROFILING_BUILD = true;
+    public static final boolean DEFAULT_USE_PROFILING_BUILD = false;
     public static final String DEFAULT_GHC_PATH = "";
     public static final String DEFAULT_CABAL_PATH = "";
     public static final String DEFAULT_CABAL_FLAGS = "";

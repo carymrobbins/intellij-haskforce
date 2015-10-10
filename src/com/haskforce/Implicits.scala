@@ -37,6 +37,10 @@ object Implicits {
     override def compare(o1: A, o2: A): Int = f(o1, o2)
   }
 
+  implicit class FunToConsumer[A](f: A => Unit) extends com.intellij.util.Consumer[A] {
+    override def consume(a: A): Unit = f(a)
+  }
+
   implicit class BooleanToOption(b: Boolean) {
     def option[A](a: => A): Option[A] = if (b) Some(a) else None
   }

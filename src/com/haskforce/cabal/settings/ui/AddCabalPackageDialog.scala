@@ -81,7 +81,7 @@ class AddCabalPackageDialog(
   override def getCabalVersionField = cabalVersion
   override def getSynopsisField = synopsis
   override def getGenerateCommentsField = generateComments
-  override def getBuildTypeField = buildType
+  override def getComponentTypeField = buildType
   override def getCategoryField = category
   override def getSourceDirField = sourceDir
   override def getHomepageField = homepage

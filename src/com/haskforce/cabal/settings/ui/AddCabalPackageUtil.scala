@@ -1,28 +1,37 @@
 package com.haskforce.cabal.settings.ui
 
+import javax.swing.JTextField
 import javax.swing.text.JTextComponent
+
+import scala.annotation.tailrec
+import scalaz.syntax.id._
 
 import com.haskforce.HaskellModuleType
 import com.haskforce.Implicits._
-import com.haskforce.cabal.settings.{CabalBuildType, AddCabalPackageOptions}
+import com.haskforce.cabal.settings.{CabalComponentType, AddCabalPackageOptions}
+import com.haskforce.ui.SComboBox
 import com.haskforce.utils.{FileUtil, CabalExecutor, ExecUtil}
 import com.intellij.openapi.module.{ModuleManager, Module}
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 
-import scala.annotation.tailrec
-
 /**
  * Helper utility to share functionality between the various forms which create Cabal packages.
+ * TODO: The `cabal init` stuff can probably go away soon, so look into removing most of this.
  */
 object AddCabalPackageUtil {
-  def buildOptions(maybeProject: Option[Project], form: AddCabalPackageForm,
-                   maybeModule: Option[Module], packageName: String, rootDir: String): AddCabalPackageOptions = {
+  def buildOptions
+      (maybeProject: Option[Project],
+       form: AddCabalPackageForm,
+       maybeModule: Option[Module],
+       packageName: String,
+       rootDir: String)
+      : AddCabalPackageOptions = {
     AddCabalPackageOptions(
       maybeModule,
       packageName,
       form.getPackageVersionField.getText,
-      form.getBuildTypeField.getSelectedItem.asInstanceOf[CabalBuildType],
+      form.getComponentTypeField.getSelectedItem.asInstanceOf[CabalComponentType],
       rootDir,
       form.getSourceDirField.getText,
       form.getCabalVersionField.getText,
@@ -37,8 +46,8 @@ object AddCabalPackageUtil {
     )
   }
 
-  def setupFields(maybeProject: Option[Project], form: AddCabalPackageForm) {
-    setupBuildType(form)
+  def setupFields(maybeProject: Option[Project], form: AddCabalPackageForm): Unit = {
+    setupComponentType(form)
     setupSourceDir(form)
     setupVersion(form)
     setupCabalVersion(maybeProject, form)
@@ -51,9 +60,17 @@ object AddCabalPackageUtil {
 
   val languages = Seq("Haskell2010", "Haskell98")
 
-  def setupLanguage(form: AddCabalPackageForm) {
-    languages.foreach(form.getLanguageField.addItem)
-    form.getLanguageField.setSelectedIndex(0)
+  def newLanguageField(): SComboBox[String] = {
+    new SComboBox[String] <| setupLanguage
+  }
+
+  def setupLanguage(field: SComboBox[String]): Unit = {
+    languages.foreach(field.addItem)
+    field.setSelectedIndex(0)
+  }
+
+  def setupLanguage(form: AddCabalPackageForm): Unit = {
+    setupLanguage(form.getLanguageField)
   }
 
   val categories = Seq(
@@ -76,16 +93,46 @@ object AddCabalPackageUtil {
     "Web"
   )
 
-  def setupCategory(form: AddCabalPackageForm) {
-    ("" +: categories).foreach(form.getCategoryField.addItem)
+  def newCategoryField(): SComboBox[String] = {
+    new SComboBox[String] <| setupCategory
   }
 
-  def setupEmail(maybeProject: Option[Project], form: AddCabalPackageForm) {
-    maybeSetTextFromCommandLine(maybeProject.nullMap(_.getBasePath), form.getEmailField, "git", "config", "user.email")
+  def setupCategory(field: SComboBox[String]): Unit = {
+    ("" +: categories).foreach(field.addItem)
   }
 
-  def setupAuthor(maybeProject: Option[Project], form: AddCabalPackageForm) {
-    maybeSetTextFromCommandLine(maybeProject.nullMap(_.getBasePath), form.getAuthorField, "git", "config", "user.name")
+  def setupCategory(form: AddCabalPackageForm): Unit = {
+    setupCategory(form.getCategoryField)
+  }
+
+  def newEmailField(maybeProject: Option[Project] = None): JTextField = {
+    new JTextField() <| (f => setupEmail(maybeProject, f))
+  }
+
+  def setupEmail(maybeProject: Option[Project], field: JTextField): Unit = {
+    maybeSetTextFromCommandLine(
+      maybeProject.nullMap(_.getBasePath), field,
+      "git", "config", "user.email"
+    )
+  }
+
+  def setupEmail(maybeProject: Option[Project], form: AddCabalPackageForm): Unit = {
+    setupEmail(maybeProject, form.getEmailField)
+  }
+
+  def newAuthorField(maybeProject: Option[Project] = None): JTextField = {
+    new JTextField() <| (f => setupAuthor(None, f))
+  }
+
+  def setupAuthor(maybeProject: Option[Project], field: JTextField): Unit = {
+    maybeSetTextFromCommandLine(
+      maybeProject.nullMap(_.getBasePath), field,
+      "git", "config", "user.name"
+    )
+  }
+
+  def setupAuthor(maybeProject: Option[Project], form: AddCabalPackageForm): Unit = {
+    setupAuthor(maybeProject, form.getAuthorField)
   }
 
   val licenses = Seq(
@@ -103,7 +150,7 @@ object AddCabalPackageUtil {
     "AllRightsReserved"
   )
 
-  def setupLicense(form: AddCabalPackageForm) {
+  def setupLicense(form: AddCabalPackageForm): Unit = {
     ("" +: licenses).foreach(form.getLicenseField.addItem)
   }
 
@@ -127,13 +174,24 @@ object AddCabalPackageUtil {
 
   def cleanString(s: String): Option[String] = Option(s).map(_.trim).filter(_.nonEmpty)
 
-  def setupVersion(form: AddCabalPackageForm) {
+  def setupVersion(form: AddCabalPackageForm): Unit = {
     form.getPackageVersionField.setText("0.1.0.0")
   }
 
-  def setupBuildType(form: AddCabalPackageForm) {
-    Seq(CabalBuildType.Executable, CabalBuildType.Library).foreach(form.getBuildTypeField.addItem)
-    form.getBuildTypeField.setSelectedIndex(0)
+  def newComponentTypeField(): SComboBox[CabalComponentType] = {
+    new SComboBox[CabalComponentType] <| setupComponentType
+  }
+
+  def setupComponentType(field: SComboBox[CabalComponentType]): Unit = {
+    Seq(
+      CabalComponentType.Executable,
+      CabalComponentType.Library
+    ).foreach(field.addItem)
+    field.setSelectedIndex(0)
+  }
+  
+  def setupComponentType(form: AddCabalPackageForm): Unit = {
+    setupComponentType(form.getComponentTypeField)
   }
 
   def setupSourceDir(form: AddCabalPackageForm): Unit = form.getSourceDirField.setText("src")
@@ -162,9 +220,9 @@ object AddCabalPackageUtil {
     Option(value).filter(_.nonEmpty).map(v => s"--$key=$value")
   }
 
-  private def asArg(buildType: CabalBuildType): String = buildType match {
-    case CabalBuildType.Executable => "--is-executable"
-    case CabalBuildType.Library => "--is-library"
+  private def asArg(buildType: CabalComponentType): String = buildType match {
+    case CabalComponentType.Executable => "--is-executable"
+    case CabalComponentType.Library => "--is-library"
   }
 
   def importCabalPackage(project: Project)(file: VirtualFile): Unit = {

@@ -1,6 +1,6 @@
 package com.haskforce.cabal
 
-import com.haskforce.cabal.settings.{CabalBuildType, AddCabalPackageOptions}
+import com.haskforce.cabal.settings.{CabalComponentType, AddCabalPackageOptions}
 import com.haskforce.cabal.settings.ui.AddCabalPackageUtil
 import com.intellij.testFramework.UsefulTestCase
 
@@ -12,7 +12,7 @@ class AddCabalPackageTest extends UsefulTestCase {
     maybeModule = None,
     packageName = "my-package",
     packageVersion = "0.1",
-    buildType = CabalBuildType.Library,
+    buildType = CabalComponentType.Library,
     rootDir = "path/to/my-package",
     sourceDir = "src",
     cabalVersion = ">=1.20",

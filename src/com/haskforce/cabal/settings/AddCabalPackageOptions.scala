@@ -9,7 +9,7 @@ sealed case class AddCabalPackageOptions(
   maybeModule: Option[Module],
   packageName: String,
   packageVersion: String,
-  buildType: CabalBuildType,
+  buildType: CabalComponentType,
   rootDir: String,
   sourceDir: String,
   cabalVersion: String,
@@ -26,8 +26,8 @@ sealed case class AddCabalPackageOptions(
 /**
  * ADT representing possible Cabal build types.
  */
-sealed trait CabalBuildType
-object CabalBuildType {
-  case object Library extends CabalBuildType
-  case object Executable extends CabalBuildType
+sealed trait CabalComponentType
+object CabalComponentType {
+  case object Library extends CabalComponentType
+  case object Executable extends CabalComponentType
 }

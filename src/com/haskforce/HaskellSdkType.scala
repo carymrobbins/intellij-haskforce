@@ -1,6 +1,6 @@
 package com.haskforce
 
-import com.haskforce.jps.model.JpsHaskellModelSerializerExtension
+import com.intellij.openapi.projectRoots.impl.SdkConfigurationUtil
 import com.intellij.openapi.projectRoots.AdditionalDataConfigurable
 import com.intellij.openapi.projectRoots.Sdk
 import com.intellij.openapi.projectRoots.SdkAdditionalData
@@ -12,6 +12,9 @@ import org.jetbrains.annotations.NotNull
 import org.jetbrains.annotations.Nullable
 import javax.swing._
 
+import com.haskforce.Implicits._
+import com.haskforce.jps.model.JpsHaskellModelSerializerExtension
+
 /**
  * Responsible for the mechanics when pressing "+" in the SDK configuration,
  * as well as the project SDK configuration.
@@ -22,6 +25,18 @@ object HaskellSdkType {
    */
   @NotNull def getInstance: HaskellSdkType = {
     SdkType.findInstance(classOf[HaskellSdkType])
+  }
+
+  def findOrCreateSdk(): Sdk = {
+    val sdkType = getInstance
+    // Essentially, sorts the Sdks so that the Haskell one comes first.
+    // If it doesn't exist, should create a new one.
+    val cmp = { (sdk1: Sdk, sdk2: Sdk) =>
+      if (sdk1.getSdkType == sdkType) -1
+      else if (sdk2.getSdkType == sdkType) 1
+      else 0
+    }
+    SdkConfigurationUtil.findOrCreateSdk(cmp, sdkType)
   }
 }
 
