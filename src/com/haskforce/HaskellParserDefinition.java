@@ -1,14 +1,10 @@
 package com.haskforce;
 
-import com.haskforce.parsing.HaskellParser2;
 import com.haskforce.parsing.HaskellParsingLexer;
-import com.haskforce.parsing.HaskellTypes2;
-import com.haskforce.psi.HaskellModuledecl;
 import com.haskforce.psi.HaskellParserWrapper;
 import com.haskforce.psi.HaskellTypes;
 import com.haskforce.stubs.types.HaskellFileStubElementType;
 import com.intellij.lang.ASTNode;
-import com.intellij.lang.Language;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.lang.PsiParser;
 import com.intellij.lexer.Lexer;
@@ -27,9 +23,9 @@ import org.jetbrains.annotations.NotNull;
  * things useful for parsing.
  */
 public class HaskellParserDefinition implements ParserDefinition {
-    private static final boolean pjbuild = false;
     public static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
-    public static final TokenSet COMMENTS = TokenSet.create(HaskellTypes.COMMENT,
+    public static final TokenSet COMMENTS = TokenSet.create(
+            HaskellTypes.COMMENT, HaskellTypes.HADDOCK,
             HaskellTypes.COMMENTTEXT, HaskellTypes.OPENCOM, HaskellTypes.CLOSECOM,
             // Interpret C preprocessor directives as comments.
             HaskellTypes.CPPIF, HaskellTypes.CPPELSE, HaskellTypes.CPPENDIF,
@@ -73,9 +69,6 @@ public class HaskellParserDefinition implements ParserDefinition {
     @NotNull
     @Override
     public PsiParser createParser(final Project project) {
-        if (pjbuild || System.getProperty("PARSER", "").equals("2")) {
-            return new HaskellParser2(project);
-        }
         return new HaskellParserWrapper();
     }
 
@@ -100,9 +93,6 @@ public class HaskellParserDefinition implements ParserDefinition {
      */
     @NotNull
     public PsiElement createElement(ASTNode node) {
-        if (pjbuild || System.getProperty("PARSER", "").equals("2")) {
-            return HaskellTypes2.Factory.createElement(node);
-        }
         return HaskellTypes.Factory.createElement(node);
     }
 }

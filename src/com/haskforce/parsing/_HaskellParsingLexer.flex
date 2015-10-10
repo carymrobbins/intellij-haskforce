@@ -85,7 +85,7 @@ CHARTOKEN='(\\.|[^'])'#?
 INTEGERTOKEN=(0(o|O)[0-7]+|0(x|X)[0-9a-fA-F]+|[0-9]+)#?#?
 FLOATTOKEN=([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))#?#?
 COMMENT=--([^\!\#\$\%\&\*\+\.\/\<\=\>\?\@\\\^\|\~\:\r\n][^\r\n]*\n?|[\r\n])
-HADDOCK=-- [\^\|][^\r\n]*
+HADDOCK=--\ [\^\|]([^\r\n]*\n?|[\r\n])
 CPPIF=#if[^\r\n]*
 CPPIFDEF=#ifdef[^\r\n]*
 CPPELIF=#elif[^\r\n]*
@@ -122,8 +122,8 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                     }
 
 <YYINITIAL,ININDENTATION,FINDINGINDENTATIONCONTEXT> {
-    {COMMENT}       { indent = 0; return COMMENT; }
     {HADDOCK}       { indent = 0; return HADDOCK; }
+    {COMMENT}       { indent = 0; return COMMENT; }
     {CPPIFDEF}      { indent = 0; return CPPIFDEF; }
     {CPPIF}         { indent = 0; return CPPIF; }
     {CPPELIF}       { indent = 0; return CPPELIF; }
@@ -200,8 +200,8 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                           indent = indent + (indent + 8) % 8;
                           return com.intellij.psi.TokenType.WHITE_SPACE;
                       }
-  {COMMENT}           { indent = 0; yybegin(ININDENTATION); return COMMENT; }
   {HADDOCK}           { indent = 0; yybegin(ININDENTATION); return HADDOCK; }
+  {COMMENT}           { indent = 0; yybegin(ININDENTATION); return COMMENT; }
   {CPPIF}             { indent = 0; yybegin(ININDENTATION); return CPPIF; }
   {CPPELIF}           { indent = 0; yybegin(ININDENTATION); return CPPELIF; }
   {CPPELSE}           { indent = 0; yybegin(ININDENTATION); return CPPELSE; }
