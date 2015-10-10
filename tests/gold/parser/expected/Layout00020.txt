@@ -10,7 +10,7 @@ Haskell File
     PsiElement(HaskellTokenType.PRAGMA)('LANGUAGE')
     PsiElement(HaskellTokenType.PRAGMA)('CPP')
     PsiElement(HaskellTokenType.#-})('#-}')
-  PsiComment(HaskellTokenType.comment)('-- | Module to be shared between server and client.\n')
+  PsiComment(HaskellTokenType.haddock)('-- | Module to be shared between server and client.\n')
   PsiComment(HaskellTokenType.comment)('--\n')
   PsiComment(HaskellTokenType.comment)('-- This module must be valid for both GHC and Fay.\n')
   MODULEDECL

@@ -30,7 +30,7 @@ Haskell File
       CONID
         PsiElement(HaskellTokenType.conidRegexp)('Fun00004')
     PsiElement(HaskellTokenType.where)('where')
-  PsiComment(HaskellTokenType.comment)('-- | A record with options for explicit passing in rewrite rules.\n')
+  PsiComment(HaskellTokenType.haddock)('-- | A record with options for explicit passing in rewrite rules.\n')
   BODY
     DATADECL
       PsiElement(HaskellTokenType.data)('data')
@@ -64,7 +64,7 @@ Haskell File
                           PsiElement(HaskellTokenType.conidRegexp)('Target')
             PsiElement(HaskellTokenType.])(']')
         PsiElement(HaskellTokenType.})('}')
-    PsiComment(HaskellTokenType.comment)('-- | Default options.\n')
+    PsiComment(HaskellTokenType.haddock)('-- | Default options.\n')
     GENDECL
       VARS
         VARID
@@ -99,7 +99,7 @@ Haskell File
             PsiElement(HaskellTokenType.[)('[')
             PsiElement(HaskellTokenType.])(']')
           PsiElement(HaskellTokenType.})('}')
-    PsiComment(HaskellTokenType.comment)('-- | Insert a variable into the environment\n')
+    PsiComment(HaskellTokenType.haddock)('-- | Insert a variable into the environment\n')
     GENDECL
       VARS
         VARID
@@ -228,7 +228,7 @@ Haskell File
                   VARID
                     PsiElement(HaskellTokenType.varidRegexp)('env')
             PsiElement(HaskellTokenType.})('}')
-    PsiComment(HaskellTokenType.comment)('-- | It the expression is a literal, its value is returned, otherwise 'Nothing'\n')
+    PsiComment(HaskellTokenType.haddock)('-- | It the expression is a literal, its value is returned, otherwise 'Nothing'\n')
     GENDECL
       VARS
         VARID

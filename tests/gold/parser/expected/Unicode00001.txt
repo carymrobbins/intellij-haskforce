@@ -832,7 +832,7 @@ Haskell File
             QVARID
               VARID
                 PsiElement(HaskellTokenType.varidRegexp)('inputs')
-    PsiComment(HaskellTokenType.comment)('-- | Accumulator that outputs a value determined by the supplied function.\n')
+    PsiComment(HaskellTokenType.haddock)('-- | Accumulator that outputs a value determined by the supplied function.\n')
     GENDECL
       VARS
         VARID
@@ -973,7 +973,7 @@ Haskell File
                       VARID
                         PsiElement(HaskellTokenType.varidRegexp)('output')
                 PsiElement(HaskellTokenType.))(')')
-    PsiComment(HaskellTokenType.comment)('-- | Accumulator that outputs the accumulator value.\n')
+    PsiComment(HaskellTokenType.haddock)('-- | Accumulator that outputs the accumulator value.\n')
     GENDECL
       VARS
         VARID

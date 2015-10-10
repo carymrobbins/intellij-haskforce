@@ -5,7 +5,7 @@ Haskell File
       CONID
         PsiElement(HaskellTokenType.conidRegexp)('Layout00008')
     PsiElement(HaskellTokenType.where)('where')
-  PsiComment(HaskellTokenType.comment)('-- | Calculate the normal form CRC using a table\n')
+  PsiComment(HaskellTokenType.haddock)('-- | Calculate the normal form CRC using a table\n')
   BODY
     GENDECL
       VARS

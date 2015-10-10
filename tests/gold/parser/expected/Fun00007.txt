@@ -20,7 +20,7 @@ Haskell File
       CONID
         PsiElement(HaskellTokenType.conidRegexp)('Fun00007')
     PsiElement(HaskellTokenType.where)('where')
-  PsiComment(HaskellTokenType.comment)('-- | Cast a 'Size' to a 'RangeSet'\n')
+  PsiComment(HaskellTokenType.haddock)('-- | Cast a 'Size' to a 'RangeSet'\n')
   BODY
     GENDECL
       VARS

@@ -5,7 +5,7 @@ Haskell File
     PsiElement(HaskellTokenType.PRAGMA)('hide')
     PsiElement(HaskellTokenType.#-})('#-}')
   PsiComment(HaskellTokenType.comment)('-----------------------------------------------------------------------------\n')
-  PsiComment(HaskellTokenType.comment)('-- |\n')
+  PsiComment(HaskellTokenType.haddock)('-- |\n')
   PsiComment(HaskellTokenType.comment)('-- Module      :  Language.Haskell.Exts.Annotated.InternalLexer\n')
   PsiComment(HaskellTokenType.comment)('-- Copyright   :  (c) The GHC Team, 1997-2000\n')
   PsiComment(HaskellTokenType.comment)('--                (c) Niklas Broberg, 2004-2009\n')
@@ -879,7 +879,7 @@ Haskell File
         CON
           CONID
             PsiElement(HaskellTokenType.conidRegexp)('THCloseQuote')
-      PsiComment(HaskellTokenType.comment)('-- |]\n')
+      PsiComment(HaskellTokenType.haddock)('-- |]\n')
       PsiElement(HaskellTokenType.|)('|')
       CONSTR
         CON
@@ -953,7 +953,7 @@ Haskell File
         CON
           CONID
             PsiElement(HaskellTokenType.conidRegexp)('RPGuardClose')
-      PsiComment(HaskellTokenType.comment)('-- |)\n')
+      PsiComment(HaskellTokenType.haddock)('-- |)\n')
       PsiElement(HaskellTokenType.|)('|')
       CONSTR
         CON
@@ -6054,7 +6054,7 @@ Haskell File
                         CONID
                           PsiElement(HaskellTokenType.conidRegexp)('False')
                   PsiElement(HaskellTokenType.))(')')
-              PsiComment(HaskellTokenType.comment)('-- | lexWhiteSpace without the return value.\n')
+              PsiComment(HaskellTokenType.haddock)('-- | lexWhiteSpace without the return value.\n')
     GENDECL
       VARS
         VARID
@@ -14683,7 +14683,7 @@ Haskell File
         PsiElement(HaskellTokenType.))(')')
       PsiElement(DUMMY_BLOCK)
         PsiElement(HaskellTokenType.varidRegexp)('flagDo')
-        PsiComment(HaskellTokenType.comment)('-- | Selects ASCII binary digits, i.e. @\'0\'@..@\'1\'@.\n')
+        PsiComment(HaskellTokenType.haddock)('-- | Selects ASCII binary digits, i.e. @\'0\'@..@\'1\'@.\n')
         PsiElement(HaskellTokenType.varidRegexp)('isBinDigit')
         PsiElement(HaskellTokenType.::)('::')
         PsiElement(HaskellTokenType.conidRegexp)('Char')
