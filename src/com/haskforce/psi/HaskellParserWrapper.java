@@ -2,7 +2,6 @@ package com.haskforce.psi;
 
 import com.haskforce.HaskellLanguage;
 import com.haskforce.parser.HaskellParser;
-import com.haskforce.parsing.HaskellParser2;
 import com.haskforce.parsing._HaskellParsingLexer;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.ITokenTypeRemapper;
@@ -56,7 +55,7 @@ public class HaskellParserWrapper extends HaskellParser {
             String token = text.toString();
             if (HaskellLanguage.RESERVEDOPS.contains(token)) {
                 // Lexer somehow missed lexing the op if we end up here.
-                throw new HaskellParser2.ParserErrorException("Internal Error: Unexpected reservedop: " + token);
+                throw new RuntimeException("Internal Error: Unexpected reservedop: " + token);
             }
 
             if ("--".equals(token) || "---".equals(token)) {

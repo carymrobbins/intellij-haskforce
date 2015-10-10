@@ -3,10 +3,6 @@
   <Match>
     <Class name="~.*\._.*Lexer"/>
   </Match>
-  <!-- Ignore HaskellParser2-related classes. -->
-  <Match>
-    <Class name="com.haskforce.parsing.HaskellParser2"/>
-  </Match>
   <Match>
     <Class name="~com\.haskforce\.parsing\.jsonParser\..*"/>
   </Match>
