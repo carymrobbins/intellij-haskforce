@@ -52,7 +52,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * First stop that does any work in the external builder.
+ * First stop that does any work in the Cabal builder.
  */
 public class CabalBuilder extends ModuleLevelBuilder {
     // Messages go to the log available in Help -> Show log in finder,
@@ -79,13 +79,18 @@ public class CabalBuilder extends ModuleLevelBuilder {
                     continue;
                 }
 
+                HaskellBuildOptions buildOptions = JpsHaskellBuildOptionsExtension.getOrCreateExtension(module.getProject()).getOptions();
+                // If we're not using Cabal, don't use Cabal.
+                if (!buildOptions.myUseCabal || buildOptions.myUseStack) {
+                    continue;
+                }
+
                 File cabalFile = getCabalFile(module);
                 if (cabalFile == null) {
                     context.processMessage(new CompilerMessage("cabal", BuildMessage.Kind.ERROR,
                             "Can not find cabal file in " + getContentRootPath(module)));
                     continue;
                 }
-                HaskellBuildOptions buildOptions = JpsHaskellBuildOptionsExtension.getOrCreateExtension(module.getProject()).getOptions();
                 //noinspection ObjectAllocationInLoop
                 CabalJspInterface cabal = new CabalJspInterface(cabalFile, buildOptions);
 
