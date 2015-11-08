@@ -23,15 +23,13 @@ class NewProjectWizardTest extends NewProjectWizardTestCase with AssertMixin wit
     val project = createProject { step: Step =>
       val projectTypeStep = assertInstanceOf[ProjectTypeStep](step)
       assertTrue(projectTypeStep.setSelectedTemplate("Haskell", null))
-      assertEquals(6, myWizard.getSequence.getSelectedSteps.size)
+      assertEquals(5, myWizard.getSequence.getSelectedSteps.size)
 
       val buildToolForm = nextStep[HaskellBuildToolStep]().form
       buildToolForm.buildWithStackRadio.setSelected(true)
       assertFalse(buildToolForm.buildWithCabalRadio.isSelected)
       // We should have stack installed, and it should be inferred properly.
       assertExecutable(buildToolForm.stackPathField.getText)
-
-      nextStep[HaskellToolsSettingsStep]()
 
       val cabalStepForm = nextStep[HaskellCabalPackageSettingsStep]().form
       assertTrue(cabalStepForm.shouldInitializeCabalPackage)

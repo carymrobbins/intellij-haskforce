@@ -348,20 +348,21 @@ public class HaskellCompletionContributor extends CompletionContributor {
 
     public static void loadCacheData(@NotNull final PsiFile file, final boolean force) {
         final UserDataHolder cache = getCacheHolder(file);
+        final Module module = ModuleUtilCore.findModuleForPsiElement(file);
         ApplicationManager.getApplication().invokeLater(new Runnable() {
             @Override
             public void run() {
                 final Project project = file.getProject();
                 final String workDir = ExecUtil.guessWorkDir(file);
                 if (force || cache.getUserData(LANGUAGE_CACHE_KEY) == null) {
-                    final String[] langs = GhcMod.lang(project, workDir);
+                    final String[] langs = GhcMod.lang(module, workDir);
                     cache.putUserData(LANGUAGE_CACHE_KEY, langs == null ? null : ContainerUtil.map(langs, stringToLookupElement));
                 }
                 if (force || cache.getUserData(FLAG_CACHE_KEY) == null) {
-                    cache.putUserData(FLAG_CACHE_KEY, GhcMod.flag(project, workDir));
+                    cache.putUserData(FLAG_CACHE_KEY, GhcMod.flag(module, workDir));
                 }
                 if (force || cache.getUserData(MODULE_CACHE_KEY) == null) {
-                    cache.putUserData(MODULE_CACHE_KEY, GhcMod.list(project, workDir));
+                    cache.putUserData(MODULE_CACHE_KEY, GhcMod.list(module, workDir));
                 }
                 // Checks for force and existing cache are done in getBrowseCache()
                 cache.putUserData(BROWSE_CACHE_KEY, getBrowseCache(cache, file, force));

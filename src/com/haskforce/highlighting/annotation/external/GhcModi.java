@@ -88,7 +88,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
             @Override
             public Problems call() throws GhcModiError {
                 final String stdout = simpleExec("check " + file);
-                return stdout == null ? new Problems() : handleCheck(file, stdout);
+                return stdout == null ? new Problems() : handleCheck(module, file, stdout);
             }
         });
     }
@@ -131,8 +131,8 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
 
     @Nullable
-    private static Problems handleCheck(@NotNull String file, @NotNull String stdout) throws GhcModiError {
-        final Problems problems = GhcMod.parseProblems(new Scanner(stdout));
+    private static Problems handleCheck(@NotNull Module module, @NotNull String file, @NotNull String stdout) throws GhcModiError {
+        final Problems problems = GhcMod.parseProblems(module, new Scanner(stdout));
         if (problems == null) {
             // parseProblems should have returned something, so let's just dump the output to the user.
             throw new CheckParseError(stdout);

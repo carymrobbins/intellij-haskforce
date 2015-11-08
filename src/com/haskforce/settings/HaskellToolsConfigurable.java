@@ -3,11 +3,15 @@ package com.haskforce.settings;
 import com.haskforce.ui.JTextAccessorField;
 import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.GuiUtil;
+import com.intellij.execution.ExecutionException;
+import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.ide.util.PropertiesComponent;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.intellij.openapi.util.Pair;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.RawCommandLineEditor;
 import com.intellij.ui.TextAccessor;
@@ -18,14 +22,18 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * The "Haskell Tools" option in Preferences->Project Settings.
  */
 public class HaskellToolsConfigurable implements SearchableConfigurable {
     public static final String HASKELL_TOOLS_ID = "Haskell Tools";
+    private static final Logger LOG = Logger.getInstance(HaskellToolsConfigurable.class);
 
     private PropertiesComponent propertiesComponent;
 
@@ -84,13 +92,13 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     }
 
     interface Property {
-        public boolean isModified();
-        public void saveState();
-        public void restoreState();
+        boolean isModified();
+        void saveState();
+        void restoreState();
     }
 
     interface Versioned {
-        public void updateVersion();
+        void updateVersion();
     }
 
     /**
@@ -257,8 +265,8 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
      */
     @Override
     public void apply() throws ConfigurationException {
-        updateVersionInfoFields();
         saveState();
+        updateVersionInfoFields();
     }
 
     /**
@@ -297,9 +305,57 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
      * Persistent save of the current state.
      */
     private void saveState() {
+        preSaveHook();
         for (Property property : properties) {
             property.saveState();
         }
+    }
+
+    /**
+     * Updates tool settings before saving.
+     */
+    private void preSaveHook() {
+        ghcModLegacyInteractivePreSaveHook();
+    }
+
+    private static Pattern GHC_MOD_VERSION_REGEX = Pattern.compile("(\\d+)\\.(\\d+)");
+
+    @Nullable
+    public static Pair<Integer, Integer> parseGhcModVersion(String version) {
+        if (version == null) return null;
+        Matcher m = GHC_MOD_VERSION_REGEX.matcher(version);
+        if (!m.find()) {
+            LOG.error("Could not find ghc-mod version number from string: " + version);
+            return null;
+        }
+        return Pair.create(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)));
+    }
+
+    /**
+     * If we're using ghc-mod >= 5.4, ghc-modi will be configured as `ghc-mod legacy-interactive`
+     */
+    private void ghcModLegacyInteractivePreSaveHook() {
+        // If ghc-mod is not configured or is not >= 5.4, we can't infer legacy-interactive.
+        if (ghcModPath.getText().isEmpty() || !isGhcMod5_4(ghcModPath.getText())) return;
+        // If ghc-modi is configured and it is not >= 5.4, leave it alone.
+        if (!ghcModiPath.getText().isEmpty() && !isGhcMod5_4(ghcModiPath.getText())) return;
+        // If all is good, configure ghc-modi as legacy-interactive.
+        ghcModiPath.setText(ghcModPath.getText());
+        ghcModiFlags.setText("legacy-interactive");
+    }
+
+    private boolean isGhcMod5_4(String exePath) {
+        String versionStr = getVersion(exePath, "version");
+        if (versionStr == null) {
+            LOG.warn("Could not retrieve ghc-mod version from " + exePath);
+            return false;
+        }
+        Pair<Integer, Integer> version = parseGhcModVersion(versionStr);
+        if (version == null) {
+            LOG.warn("Could not parse ghc-mod version from string: " + versionStr);
+            return false;
+        }
+        return version.first > 5 || (version.first == 5 && version.second >= 4);
     }
 
     /**

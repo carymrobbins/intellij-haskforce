@@ -48,32 +48,28 @@ public class TypeInfoUtil {
         if (projectFile == null){
             return "project file is null";
         }
+        Module module = ModuleUtilCore.findModuleForFile(projectFile, project);
 
-        return getTypeInfo(project, blockStart, blockEnd, projectFile);
+        return getTypeInfo(module, blockStart, blockEnd, projectFile);
     }
 
-    public static String getTypeInfo(Project project, VisualPosition blockStart, VisualPosition blockEnd, VirtualFile projectFile) {
+    public static String getTypeInfo(Module module, VisualPosition blockStart, VisualPosition blockEnd, VirtualFile projectFile) {
         final String canonicalPath = projectFile.getCanonicalPath();
         if (canonicalPath == null){
             return "canonical path is null";
         }
-        final String workDir = ExecUtil.guessWorkDir(project, projectFile);
-        if (ToolKey.GHC_MODI_KEY.getPath(project) != null) {
-            final Module module = ModuleUtilCore.findModuleForFile(projectFile, project);
-            if (module != null) {
-                GhcModi ghcModi = module.getComponent(GhcModi.class);
-                if (ghcModi != null) {
-                    return GhcModi.getFutureType(project, ghcModi.type(canonicalPath,
-                            blockStart,blockEnd));
+        final String workDir = ExecUtil.guessWorkDir(module);
+        if (ToolKey.GHC_MODI_KEY.getPath(module.getProject()) != null) {
+            GhcModi ghcModi = module.getComponent(GhcModi.class);
+            if (ghcModi != null) {
+                return GhcModi.getFutureType(module.getProject(), ghcModi.type(canonicalPath,
+                        blockStart, blockEnd));
 
-                } else {
-                    return "ghcModi is not configured";
-                }
             } else {
-                return "didn't find module";
+                return "ghcModi is not configured";
             }
         } else {
-            return GhcMod.type(project, workDir, canonicalPath, blockStart, blockEnd);
+            return GhcMod.type(module, workDir, canonicalPath, blockStart, blockEnd);
         }
     }
 

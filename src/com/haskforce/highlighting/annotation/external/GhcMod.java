@@ -16,15 +16,19 @@ import com.intellij.notification.NotificationType;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.editor.VisualPosition;
+import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.TextRange;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
+import com.intellij.util.PathUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.File;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,7 +41,7 @@ public class GhcMod {
     private static final Logger LOG = Logger.getInstance(GhcMod.class);
 
     // Map of project -> errorMessage.  Useful to ensure we don't output the same error multiple times.
-    private static Map<Project, String> errorState = new HashMap<Project, String>(0);
+    private static Map<Module, String> errorState = new HashMap<Module, String>(0);
 
     @Nullable
     public static String getPath(@NotNull Project project) {
@@ -50,59 +54,59 @@ public class GhcMod {
     }
 
     @Nullable
-    public static Problems check(@NotNull Project project, @NotNull String workingDirectory, @NotNull String file) {
-        final String stdout = simpleExec(project, workingDirectory, getFlags(project), "check", file);
-        return stdout == null ? new Problems() : handleCheck(project, stdout);
+    public static Problems check(@NotNull Module module, @NotNull String workingDirectory, @NotNull String file) {
+        final String stdout = simpleExec(module, workingDirectory, getFlags(module.getProject()), "check", file);
+        return stdout == null ? new Problems() : handleCheck(module, stdout);
     }
 
     @Nullable
-    public static Problems handleCheck(@NotNull Project project, @NotNull String stdout) {
-        final Problems problems = parseProblems(new Scanner(stdout));
+    public static Problems handleCheck(@NotNull Module module, @NotNull String stdout) {
+        final Problems problems = parseProblems(module, new Scanner(stdout));
         if (problems == null) {
             // parseProblems should have returned something, so let's just dump the output to the user.
-            displayError(project, stdout);
+            displayError(module, stdout);
             return null;
         } else if (problems.size() == 1) {
             final Problem problem = (Problem)problems.get(0);
             if (problem.startLine == 0 && problem.startColumn == 0) {
-                displayError(project, problem.message);
+                displayError(module, problem.message);
                 return null;
             }
         }
         // Clear the errorState since ghc-mod was successful.
-        errorState.remove(project);
+        errorState.remove(module);
         return problems;
     }
 
     @Nullable
-    public static String[] list(@NotNull Project project, @NotNull String workingDirectory) {
-        return simpleExecToLines(project, workingDirectory, "", "list");
+    public static String[] list(@NotNull Module module, @NotNull String workingDirectory) {
+        return simpleExecToLines(module, workingDirectory, "", "list");
     }
 
     @Nullable
-    public static String[] lang(@NotNull Project project, @NotNull String workingDirectory) {
-        return simpleExecToLines(project, workingDirectory, "", "lang");
+    public static String[] lang(@NotNull Module module, @NotNull String workingDirectory) {
+        return simpleExecToLines(module, workingDirectory, "", "lang");
     }
 
     @Nullable
-    public static String[] flag(@NotNull Project project, @NotNull String workingDirectory) {
-        return simpleExecToLines(project, workingDirectory, "", "flag");
+    public static String[] flag(@NotNull Module module, @NotNull String workingDirectory) {
+        return simpleExecToLines(module, workingDirectory, "", "flag");
     }
 
-    public static void displayError(@NotNull Project project, @NotNull String message) {
-        if (!message.equals(errorState.get(project))) {
-            errorState.put(project, message);
-            NotificationUtil.displayToolsNotification(NotificationType.ERROR, project, "ghc-mod error", message);
+    public static void displayError(@NotNull Module module, @NotNull String message) {
+        if (!message.equals(errorState.get(module))) {
+            errorState.put(module, message);
+            NotificationUtil.displayToolsNotification(NotificationType.ERROR, module.getProject(), "ghc-mod error", message);
         }
     }
 
     @Nullable
-    public static String simpleExec(@NotNull Project project, @NotNull String workingDirectory,
+    public static String simpleExec(@NotNull Module module, @NotNull String workingDirectory,
                                     @NotNull String ghcModFlags, @NotNull String command, String... params) {
-        final String ghcModPath = getPath(project);
+        final String ghcModPath = getPath(module.getProject());
         final String stdout;
         if (ghcModPath == null
-                || (stdout = exec(project, workingDirectory, ghcModPath, command, ghcModFlags, params)) == null
+                || (stdout = exec(module.getProject(), workingDirectory, ghcModPath, command, ghcModFlags, params)) == null
                 || stdout.length() == 0) {
             return null;
         }
@@ -110,9 +114,9 @@ public class GhcMod {
     }
 
     @Nullable
-    public static String[] simpleExecToLines(@NotNull Project project, @NotNull String workingDirectory,
+    public static String[] simpleExecToLines(@NotNull Module module, @NotNull String workingDirectory,
                                              @NotNull String ghcModFlags, @NotNull String command, String... params) {
-        final String result = simpleExec(project, workingDirectory, ghcModFlags, command, params);
+        final String result = simpleExec(module, workingDirectory, ghcModFlags, command, params);
         return result == null ? null : StringUtil.splitByLines(result);
     }
 
@@ -132,10 +136,10 @@ public class GhcMod {
     }
 
     @Nullable
-    public static Problems parseProblems(@NotNull Scanner scanner) {
+    public static Problems parseProblems(@NotNull Module module, @NotNull Scanner scanner) {
         Problems result = new Problems();
         Problem problem;
-        while ((problem = parseProblem(scanner)) != null) {
+        while ((problem = parseProblem(module, scanner)) != null) {
             result.add(problem);
         }
         // We only call this function if ghc-mod returned errors, so if we couldn't parse a result something
@@ -147,7 +151,7 @@ public class GhcMod {
     private static final Pattern USE_V_REGEX = Pattern.compile("\nUse -v.*");
 
     @Nullable
-    public static Problem parseProblem(@NotNull Scanner scanner) {
+    public static Problem parseProblem(@NotNull Module module, @NotNull Scanner scanner) {
         scanner.useDelimiter(":");
         if (!scanner.hasNext()) {
             return null;
@@ -181,14 +185,23 @@ public class GhcMod {
         message = USE_V_REGEX.matcher(message).replaceAll("");
         // Remove newlines from filename.
         file = file.trim();
+        // Attempt to build the full path to the file since ghc-mod might be giving us a relative path.
+        if (!new File(file).exists()) {
+            final VirtualFile moduleFile = module.getModuleFile();
+            if (moduleFile != null) {
+                final String inferredPath = FileUtil.join(moduleFile.getParent().getCanonicalPath(), file);
+                if (new File(inferredPath).exists()) {
+                    file = inferredPath;
+                }
+            }
+        }
         return new Problem(file, startLine, startColumn, message);
     }
 
-
     @Nullable
-    public static String type(@NotNull Project project, @NotNull String workDir, @NotNull String canonicalPath,
+    public static String type(@NotNull Module module, @NotNull String workDir, @NotNull String canonicalPath,
                               VisualPosition startPosition, @NotNull VisualPosition stopPosition) {
-        final String stdout = simpleExec(project, workDir, getFlags(project), "type" , canonicalPath,
+        final String stdout = simpleExec(module, workDir, getFlags(module.getProject()), "type" , canonicalPath,
                 String.valueOf(startPosition.line), String.valueOf(startPosition.column));
         return stdout == null ? "Type info not found" :
                 GhcUtil.handleTypeInfo (startPosition,stopPosition, stdout);

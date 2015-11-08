@@ -82,7 +82,6 @@ class HaskellModuleBuilder extends JavaModuleBuilder with SourcePathsBuilder wit
     if (wizardContext.isCreatingNewProject) {
       Array(
         HaskellBuildToolStep(this, wizardContext),
-        HaskellToolsSettingsStep(this, wizardContext),
         HaskellCabalPackageSettingsStep(this, wizardContext)
       )
     } else {
@@ -96,115 +95,6 @@ class HaskellModuleBuilder extends JavaModuleBuilder with SourcePathsBuilder wit
   }
 
   override def hashCode: Int = HashCodeBuilder.reflectionHashCode(this)
-}
-
-case class HaskellToolsSettingsStep(
-  moduleBuilder: HaskellModuleBuilder,
-  wizardContext: WizardContext
-) extends ModuleWizardStep {
-  val form = new HaskellToolsSettingsStepForm(wizardContext)
-
-  override def getComponent: JComponent = form.contentPane
-
-  override def updateDataModel(): Unit = {
-    moduleBuilder.registerSetupRootModelCallback { rootModel: ModifiableRootModel =>
-      val project = rootModel.getProject
-      val defaultProject = ProjectManager.getInstance.getDefaultProject
-      val toolSettings = PropertiesComponent.getInstance(project)
-      val defaultToolSettings = PropertiesComponent.getInstance(defaultProject)
-      List(
-        (ToolKey.GHC_MOD_KEY, form.ghcModPathField, form.ghcModSetDefault),
-        (ToolKey.HLINT_KEY, form.hlintPathField, form.hlintSetDefault),
-        (ToolKey.STYLISH_HASKELL_KEY, form.stylishPathField, form.stylishSetDefault)
-      ).foreach { case (key, field, setDefault) =>
-        if (field.getText.nonEmpty) {
-          toolSettings.setValue(key.pathKey, field.getText)
-          if (setDefault.isSelected) {
-            defaultToolSettings.setValue(key.pathKey, field.getText)
-          }
-        }
-      }
-    }
-  }
-
-  override def validate(): Boolean = {
-    var result = true
-    List(
-      ("ghc-mod", form.ghcModPathField, form.ghcModPathErrorsField),
-      ("hlint", form.hlintPathField, form.hlintPathErrorsField),
-      ("stylish-haskell", form.stylishPathField, form.stylishPathErrorsField)
-    ).foreach { case (name, field, errors) =>
-      if (field.getText.nonEmpty && !new File(field.getText).canExecute) {
-        errors.setErrorText(s"Invalid $name path", Color.red)
-        result = false
-      } else {
-        errors.setText("")
-      }
-    }
-    result
-  }
-}
-
-class HaskellToolsSettingsStepForm(wizardContext: WizardContext) {
-  val ghcModPathField = new TextFieldWithBrowseButton
-  val ghcModPathErrorsField = new ErrorLabel
-  val ghcModAutoFindButton = new JButton("Auto Find")
-  val ghcModSetDefault = new JCheckBox("Set as default")
-  GuiUtil.addFolderListener(ghcModPathField, "ghc-mod")
-  GuiUtil.addApplyPathAction(ghcModAutoFindButton, ghcModPathField, "ghc-mod")
-
-  val hlintPathField = new TextFieldWithBrowseButton
-  val hlintPathErrorsField = new ErrorLabel
-  val hlintAutoFindButton = new JButton("Auto Find")
-  val hlintSetDefault = new JCheckBox("Set as default")
-  GuiUtil.addFolderListener(hlintPathField, "hlint")
-  GuiUtil.addApplyPathAction(hlintAutoFindButton, hlintPathField, "hlint")
-
-  val stylishPathField = new TextFieldWithBrowseButton
-  val stylishPathErrorsField = new ErrorLabel
-  val stylishAutoFindButton = new JButton("Auto Find")
-  val stylishSetDefault = new JCheckBox("Set as default")
-  GuiUtil.addFolderListener(stylishPathField, "stylish-haskell")
-  GuiUtil.addApplyPathAction(stylishAutoFindButton, stylishPathField, "stylish-haskell")
-
-  val contentPane = new JPanel(new GridBagLayout) {
-    val gc = GC.pad(10, 5).northWest
-
-    var gridY = 0
-    add(new JLabel("GHC Mod:"), gc.grid(0, gridY))
-    add(ghcModPathField, gc.fillHorizontal.grid(1, gridY))
-    add(ghcModAutoFindButton, gc.grid(2, gridY))
-    add(ghcModSetDefault, gc.grid(3, gridY))
-    gridY += 1
-    add(ghcModPathErrorsField, gc.fillHorizontal.grid(1, gridY))
-
-    gridY += 1
-    add(new JLabel("HLint:"), gc.grid(0, gridY))
-    add(hlintPathField, gc.fillHorizontal.grid(1, gridY))
-    add(hlintAutoFindButton, gc.grid(2, gridY))
-    add(hlintSetDefault, gc.grid(3, gridY))
-    gridY += 1
-    add(hlintPathErrorsField, gc.fillHorizontal.grid(1, gridY))
-
-    gridY += 1
-    add(new JLabel("Stylish Haskell:"), gc.grid(0, gridY))
-    add(stylishPathField, gc.fillHorizontal.grid(1, gridY))
-    add(stylishAutoFindButton, gc.grid(2, gridY))
-    add(stylishSetDefault, gc.grid(3, gridY))
-    gridY += 1
-    add(stylishPathErrorsField, gc.fillHorizontal.grid(1, gridY))
-
-    gridY += 1
-    add(new Spacer, gc.width(2).weight(1, 1).grid(0, gridY))
-  }
-
-  // Populate from wizardContext
-  private val project = Option(wizardContext.getProject).getOrElse(
-    ProjectManager.getInstance.getDefaultProject
-  )
-  ghcModPathField.setText(ToolKey.GHC_MOD_KEY.getPath(project))
-  hlintPathField.setText(ToolKey.HLINT_KEY.getPath(project))
-  stylishPathField.setText(ToolKey.STYLISH_HASKELL_KEY.getPath(project))
 }
 
 case class HaskellBuildToolStep(

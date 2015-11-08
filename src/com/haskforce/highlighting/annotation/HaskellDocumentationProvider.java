@@ -7,6 +7,8 @@ import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.VisualPosition;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.fileEditor.FileEditorManager;
+import com.intellij.openapi.module.Module;
+import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
@@ -25,7 +27,7 @@ public class HaskellDocumentationProvider extends AbstractDocumentationProvider 
     public String generateDoc(PsiElement element, @Nullable PsiElement originalElement) {
         int startOffset = element.getTextRange().getStartOffset();
         int endOffset = element.getTextRange().getEndOffset();
-        Project project = element.getProject();
+        Module module = ModuleUtilCore.findModuleForPsiElement(element);
         FileDocumentManager fileDocumentManager= FileDocumentManager.getInstance();
         VirtualFile projectFile = element.getContainingFile().getVirtualFile();
         Document cachedDocument = fileDocumentManager.getCachedDocument(projectFile);
@@ -40,7 +42,7 @@ public class HaskellDocumentationProvider extends AbstractDocumentationProvider 
         // and also correct them for (0,0) vs (1,1) leftmost coordinate (intellij -> ghc)
         VisualPosition startPosition = TypeInfoUtil.correctFor0BasedVS1Based(new VisualPosition(startLineNumber, startColumn));
         VisualPosition endPosition = TypeInfoUtil.correctFor0BasedVS1Based(new VisualPosition(endLineNumber, endColumn));
-        return TypeInfoUtil.getTypeInfo(project,startPosition,endPosition, projectFile);
+        return TypeInfoUtil.getTypeInfo(module,startPosition,endPosition, projectFile);
     }
 
 }
