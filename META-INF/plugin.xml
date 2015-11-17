@@ -1,7 +1,7 @@
 <idea-plugin version="2" use-idea-classloader="true">
   <id>com.haskforce</id>
   <name>HaskForce</name>
-  <version>0.3-beta.23</version>
+  <version>0.3-beta.24</version>
   <vendor url="https://github.com/carymrobbins/intellij-haskforce">HaskForce on GitHub</vendor>
 
   <description>Plugin for Haskell language support.</description>
@@ -14,6 +14,14 @@
     <p>
       If you encounter any issues, please submit them on our
       <a href="https://github.com/carymrobbins/intellij-haskforce/issues">bug tracker</a>.
+    </p>
+    <p>
+      <b>v0.3-beta.24</b>
+      <ul>
+        <li>Added stack support (#167)</li>
+        <li>Added ghc-mod 5.4 support (#182)</li>
+        <li>Parse numeric escapes (#196) and haddock comments (#198)</li>
+      </ul>
     </p>
     <p>
       <b>v0.3-beta.23</b>
