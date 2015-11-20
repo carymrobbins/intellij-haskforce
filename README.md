@@ -1,12 +1,20 @@
 # HaskForce [![Build Status](https://travis-ci.org/carymrobbins/intellij-haskforce.svg?branch=master)](https://travis-ci.org/carymrobbins/intellij-haskforce)
 
-The IntelliJ plugin for Haskell.
---------
+## The IntelliJ plugin for Haskell.
 
 Want to get started right away?  Check out the [Quick Start Guide](https://github.com/carymrobbins/intellij-haskforce/wiki/Quick-Start-Guide)!
 
-Prerequisites for building
---------
+## Getting involved
+
+Want to contribute code?  See the [CONTRIBUTING](./CONTRIBUTING.md) doc for more info.
+
+Follow [@HaskForce](https://twitter.com/haskforce) on Twitter to stay up to date
+on new releases and work in progress.
+
+Do you IRC?  Join **#haskforce** on freenode!
+
+## Prerequisites for building
+
 You will need Scala 2.11.7 on your system.  You can use the IvyIDEA plugin to resolve all dependencies,
 including Scala (see **Building with IntelliJ** below).
 
@@ -15,8 +23,8 @@ Ignoring forewarning, you can download it directly via IntelliJ by going to -
   * **File > Project Structure > Global Libraries > + > Scala SDK > Download > 2.11.7**
 Be sure that the SDK is named `scala-sdk-2.11.7` to properly match the module configurations.
 
-Building with IntelliJ
---------
+## Building with IntelliJ
+
 **Note:** We currently target JDK 6 for building the plugin.
 
 1. Copy the `build.skeleton.properties` to `build.properties` and update the paths to the JDK and IntelliJ installation.
@@ -36,8 +44,8 @@ Building with IntelliJ
   * Alternatively, if you have the `ant` command line tool you can run `ant generate.sources` from the project root.
 1. Choose **Build > Prepare Plugin Module 'intellij-haskforce' for Deployment**.
 
-Adding IntelliJ Sources (Optional)
---------
+## Adding IntelliJ Sources (Optional)
+
 1. Check out the Community Edition source files.
   * `$ git clone https://github.com/JetBrains/intellij-community.git idea`
   * Check the build version of your IntelliJ installation.  There are two ways to do this.
@@ -51,14 +59,13 @@ Adding IntelliJ Sources (Optional)
 2. Under **File > Project Structure > SDKs** find your **IntelliJ Platform Plugin SDK**.
 3. Under the **Sourcepath** tab, add the directory where you cloned the IntelliJ sources.
 
-Running the plugin
---------
+## Running the plugin
+
 1. From the menu go to **Run > Edit Configurations**
 1. Click on the `+` sign and choose **Plugin**, name the configuration something evocative like **Haskforce**, click **OK**, then run your new configuration.
 1. Intellij will open a copy of itself, with default settings, and the plugin installed.
 
-Testing the plugin
---------
+## Testing the plugin
 
 To run the tests, you'll need to create a run configuration:
 
@@ -71,3 +78,5 @@ To add more tests:
 
 * Edit Haskell\*Test.java files to add more tests of the same kind that already exists.
 * Edit HaskellTestCase.java if you need to add tests of a different kind.
+
+
