@@ -139,8 +139,11 @@ public class GhcMod {
     public static Problems parseProblems(@NotNull Module module, @NotNull Scanner scanner) {
         Problems result = new Problems();
         Problem problem;
-        while ((problem = parseProblem(module, scanner)) != null) {
-            result.add(problem);
+        while (scanner.hasNext()) {
+            problem = parseProblem(module, scanner);
+            if (problem != null) {
+                result.add(problem);
+            }
         }
         // We only call this function if ghc-mod returned errors, so if we couldn't parse a result something
         // bad happened.  We'll check for a null return value in handleCheck.

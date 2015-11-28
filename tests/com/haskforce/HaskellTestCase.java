@@ -30,6 +30,7 @@ import com.haskforce.features.HaskellCommenterTest;
 import com.haskforce.features.HaskellFoldingBuilderTest;
 import com.haskforce.features.HaskellTypedHandlerTest;
 import com.haskforce.highlighting.HaskellLexerTest;
+import com.haskforce.highlighting.annotation.external.GhcModTest;
 import com.haskforce.highlighting.annotation.external.GhcUtilTest;
 import com.haskforce.importWizard.stack.StackImportWizardTest;
 import com.haskforce.parser.HaskellParserTest;
@@ -69,6 +70,7 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(HaskellSpellcheckingTest.class);
         suite.addTestSuite(StackImportWizardTest.class);
         suite.addTestSuite(NewProjectWizardTest.class);
+        suite.addTestSuite(GhcModTest.class);
         return suite;
     }
 }
