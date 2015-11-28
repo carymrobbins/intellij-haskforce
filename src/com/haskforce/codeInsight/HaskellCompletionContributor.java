@@ -292,9 +292,9 @@ public class HaskellCompletionContributor extends CompletionContributor {
         for (HaskellPsiUtil.Import anImport : imports) {
             List<LookupElement> names = cachedNames.get(anImport.module);
             if (names == null) continue;
+            String[] importedNames = anImport.getImportedNames();
+            String[] hidingNames = anImport.getHidingNames();
             for (LookupElement cachedName : names) {
-                String[] importedNames = anImport.getImportedNames();
-                String[] hidingNames = anImport.getHidingNames();
                 String lookupString = cachedName.getLookupString();
                 boolean noExplicitNames = importedNames == null;
                 boolean isImportedName = importedNames != null && ArrayUtil.contains(lookupString, importedNames);
