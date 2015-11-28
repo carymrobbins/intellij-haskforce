@@ -9,6 +9,7 @@ import com.intellij.xml.util.XmlStringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
 import java.util.regex.Pattern;
 
 public class HaskellAnnotationHolder {
@@ -18,35 +19,32 @@ public class HaskellAnnotationHolder {
         this.holder = holder;
     }
 
+    @Nullable
     public Annotation createInfoAnnotation(@NotNull TextRange range, @Nullable String message) {
-        return holder instanceof AnnotationHolderImpl ?
-                createAnnotation((AnnotationHolderImpl)holder, HighlightSeverity.INFORMATION, range, message)
-                : holder.createInfoAnnotation(range, message);
+        return createAnnotation(HighlightSeverity.INFORMATION, range, message);
     }
 
+    @Nullable
     public Annotation createWeakWarningAnnotation(@NotNull TextRange range, @Nullable String message) {
-        return holder instanceof AnnotationHolderImpl ?
-                createAnnotation((AnnotationHolderImpl)holder, HighlightSeverity.WEAK_WARNING, range, message)
-                : holder.createWeakWarningAnnotation(range, message);
+        return createAnnotation(HighlightSeverity.WEAK_WARNING, range, message);
     }
 
+    @Nullable
     public Annotation createWarningAnnotation(@NotNull TextRange range, @Nullable String message) {
-        return holder instanceof AnnotationHolderImpl ?
-                createAnnotation((AnnotationHolderImpl)holder, HighlightSeverity.WARNING, range, message)
-                : holder.createWarningAnnotation(range, message);
+        return createAnnotation(HighlightSeverity.WARNING, range, message);
     }
 
+    @Nullable
     public Annotation createErrorAnnotation(@NotNull TextRange range, @Nullable String message) {
-        return holder instanceof AnnotationHolderImpl ?
-                createAnnotation((AnnotationHolderImpl)holder, HighlightSeverity.ERROR, range, message)
-                : holder.createErrorAnnotation(range, message);
+        return createAnnotation(HighlightSeverity.ERROR, range, message);
     }
 
-    private static Annotation createAnnotation(@NotNull AnnotationHolderImpl holder, @NotNull HighlightSeverity severity, @NotNull TextRange range, @Nullable String message) {
+    @Nullable
+    private Annotation createAnnotation(@NotNull HighlightSeverity severity, @NotNull TextRange range, @Nullable String message) {
+        // Skip duplicate messages.
+        if (!messages.add(message)) return null;
         String tooltip = message == null ? null : XmlStringUtil.wrapInHtml(escapeSpacesForHtml(XmlStringUtil.escapeString(message)));
-        Annotation annotation = new Annotation(range.getStartOffset(), range.getEndOffset(), severity, message, tooltip);
-        holder.add(annotation);
-        return annotation;
+        return holder.createAnnotation(severity, range, message, tooltip);
     }
 
     private static final Pattern NEWLINE_REGEX = Pattern.compile("\n");
@@ -55,4 +53,9 @@ public class HaskellAnnotationHolder {
     public static String escapeSpacesForHtml(String string) {
         return string == null ? null : SPACE_REGEX.matcher(NEWLINE_REGEX.matcher(string).replaceAll("<br/>")).replaceAll("&nbsp;");
     }
+
+    /**
+     * Keep track of what messages we are displaying so we won't have duplicates.
+     */
+    private HashSet<String> messages = new HashSet<String>();
 }

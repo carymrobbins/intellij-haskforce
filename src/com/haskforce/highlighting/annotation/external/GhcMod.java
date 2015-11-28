@@ -266,7 +266,7 @@ public class GhcMod {
             ));
         }
 
-        public void registerFix(Annotation annotation) {
+        public void registerFix(@NotNull Annotation annotation) {
             for (Pair<Pattern, RegisterFixHandler> p : fixHandlers) {
                 final Matcher matcher = p.first.matcher(message);
                 if (matcher.find()) {
@@ -306,6 +306,7 @@ public class GhcMod {
             } else {
                 annotation = holder.createWeakWarningAnnotation(range, message);
             }
+            if (annotation == null) return;
             registerFix(annotation);
         }
     }

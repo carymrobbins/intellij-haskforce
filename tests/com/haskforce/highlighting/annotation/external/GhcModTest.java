@@ -1,7 +1,13 @@
 package com.haskforce.highlighting.annotation.external;
 
 import com.haskforce.HaskellLightPlatformCodeInsightFixtureTestCase;
+import com.haskforce.highlighting.annotation.HaskellAnnotationHolder;
 import com.haskforce.highlighting.annotation.Problems;
+import com.haskforce.psi.HaskellFile;
+import com.haskforce.psi.impl.HaskellElementFactory;
+import com.intellij.codeInsight.daemon.impl.AnnotationHolderImpl;
+import com.intellij.lang.annotation.AnnotationHolder;
+import com.intellij.lang.annotation.AnnotationSession;
 import com.intellij.openapi.util.text.StringUtil;
 
 import java.util.Arrays;
@@ -42,5 +48,37 @@ public class GhcModTest extends HaskellLightPlatformCodeInsightFixtureTestCase {
         assertEquals(1, problem.startColumn);
         assertEquals("src/Main.hs", problem.file);
         assertEquals("parse error (possibly incorrect indentation or mismatched brackets)", problem.message);
+    }
+
+    public void testDuplicateAnnotations() {
+        HaskellFile file = HaskellElementFactory.createFileFromText(getProject(),
+                StringUtil.join(Arrays.asList(
+                        "module Main where",
+                        "",
+                        "import ",
+                        "",
+                        "main ="
+                ), "\n")
+        );
+        file.setName("src/Main.hs");
+
+        // Intentionally leaving both paths to /src/Main.hs the same to ensure that
+        // createAnnotations sees both as the same file and handles the duplicate properly.
+        String stdout = StringUtil.join(Arrays.asList(
+                "Warning: resolveModule \"/foo/bar/src/Main.hs\":",
+                "         /src/Main.hs:5:1:parse error (possibly incorrect indentation or mismatched brackets)",
+                "/src/Main.hs:5:1:parse error (possibly incorrect indentation or mismatched brackets)"
+        ), "\n");
+        Scanner scanner = new Scanner(stdout);
+
+        Problems problems = GhcMod.parseProblems(myModule, scanner);
+
+        HaskellAnnotationHolder holder = new HaskellAnnotationHolder(
+                new AnnotationHolderImpl(new AnnotationSession(file))
+        );
+
+        HaskellExternalAnnotator.createAnnotations(file, problems, holder);
+
+        assertEquals(1, ((AnnotationHolderImpl)holder.holder).size());
     }
 }
