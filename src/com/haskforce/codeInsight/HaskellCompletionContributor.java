@@ -296,7 +296,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
                 String[] importedNames = anImport.getImportedNames();
                 String[] hidingNames = anImport.getHidingNames();
                 String lookupString = cachedName.getLookupString();
-                boolean noExplicitNames = importedNames == null && hidingNames == null;
+                boolean noExplicitNames = importedNames == null;
                 boolean isImportedName = importedNames != null && ArrayUtil.contains(lookupString, importedNames);
                 boolean isHidingName = hidingNames != null && ArrayUtil.contains(lookupString, hidingNames);
                 if ((noExplicitNames || isImportedName) && !isHidingName) {

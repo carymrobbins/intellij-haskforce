@@ -184,6 +184,18 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
                     "Just", "Nothing", "all");
     }
 
+    public void testHiddenNames() throws Throwable {
+        FakeBrowseCache fakeBrowseCache = new FakeBrowseCache(
+                "Control.Monad", Arrays.asList("liftM", "mapM", "forM")
+        );
+        loadCache(BROWSE_CACHE_KEY, fakeBrowseCache);
+        String src =
+                "import Control.Monad hiding (liftM)\n" +
+                "main = <caret>";
+        doTestExclude(src, "liftM");
+        doTestInclude(src, "mapM", "forM");
+    }
+
     public void testReferenceCompletion() throws Throwable {
         // Complete basic references.
         doTestInclude(
