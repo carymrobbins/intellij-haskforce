@@ -1,7 +1,7 @@
 <idea-plugin version="2" use-idea-classloader="true">
   <id>com.haskforce</id>
   <name>HaskForce</name>
-  <version>0.3-beta.24</version>
+  <version>0.3-beta.25</version>
   <vendor url="https://github.com/carymrobbins/intellij-haskforce">HaskForce on GitHub</vendor>
 
   <description>Plugin for Haskell language support.</description>
@@ -14,6 +14,15 @@
     <p>
       If you encounter any issues, please submit them on our
       <a href="https://github.com/carymrobbins/intellij-haskforce/issues">bug tracker</a>.
+    </p>
+    <p>
+      <b>v0.3-beta.25</b>
+      <ul>
+        <li>Bug fixes and minor refactoring</li>
+        <li>Fix type info errors (#204)</li>
+        <li>Fix autocompletion when hiding names (#209)</li>
+        <li>Fix ghc-mod parse error messages (#212)</li>
+      </ul>
     </p>
     <p>
       <b>v0.3-beta.24</b>
