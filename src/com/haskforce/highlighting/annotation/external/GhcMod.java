@@ -14,7 +14,6 @@ import com.intellij.execution.configurations.ParametersList;
 import com.intellij.lang.annotation.Annotation;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.editor.VisualPosition;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.Project;
@@ -24,7 +23,6 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
-import com.intellij.util.PathUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -135,12 +133,30 @@ public class GhcMod {
         return ExecUtil.readCommandLine(commandLine);
     }
 
+    /** Similar to parseProblems(Scanner), except also resolves absolute file paths. */
     @Nullable
     public static Problems parseProblems(@NotNull Module module, @NotNull Scanner scanner) {
+        List<Problem> problems = parseProblems(scanner);
         Problems result = new Problems();
+        if (problems == null) return null;
+        for (Problem problem : problems) {
+            String absPath = inferAbsolutePath(module, problem.file);
+            if (absPath != null) {
+                result.add(new Problem(absPath, problem.startLine, problem.startColumn, problem.message));
+            } else {
+                result.add(problem);
+            }
+        }
+        return result;
+    }
+
+    /** Continually parses from scanner until end of input, returning a list of problems. */
+    @Nullable
+    public static List<Problem> parseProblems(@NotNull Scanner scanner) {
+        List<Problem> result = new ArrayList<Problem>();
         Problem problem;
         while (scanner.hasNext()) {
-            problem = parseProblem(module, scanner);
+            problem = parseProblem(scanner);
             if (problem != null) {
                 result.add(problem);
             }
@@ -153,8 +169,8 @@ public class GhcMod {
     private static final Pattern IN_A_STMT_REGEX = Pattern.compile("\nIn a stmt.*");
     private static final Pattern USE_V_REGEX = Pattern.compile("\nUse -v.*");
 
-    @Nullable
-    public static Problem parseProblem(@NotNull Module module, @NotNull Scanner scanner) {
+    /** Parses a single problem from the scanner. */
+    public static Problem parseProblem(@NotNull Scanner scanner) {
         scanner.useDelimiter(":");
         if (!scanner.hasNext()) {
             return null;
@@ -188,17 +204,19 @@ public class GhcMod {
         message = USE_V_REGEX.matcher(message).replaceAll("");
         // Remove newlines from filename.
         file = file.trim();
-        // Attempt to build the full path to the file since ghc-mod might be giving us a relative path.
-        if (!new File(file).exists()) {
-            final VirtualFile moduleFile = module.getModuleFile();
-            if (moduleFile != null) {
-                final String inferredPath = FileUtil.join(moduleFile.getParent().getCanonicalPath(), file);
-                if (new File(inferredPath).exists()) {
-                    file = inferredPath;
-                }
-            }
-        }
         return new Problem(file, startLine, startColumn, message);
+    }
+
+    /** Infers the absolute path given a relative one and its enclosing module. */
+    @Nullable
+    private static String inferAbsolutePath(@NotNull Module module, @NotNull String path) {
+        File file = new File(path);
+        if (file.exists()) return file.getAbsolutePath();
+        final VirtualFile moduleFile = module.getModuleFile();
+        if (moduleFile == null) return null;
+        final String inferredPath = FileUtil.join(moduleFile.getParent().getCanonicalPath(), path);
+        if (new File(inferredPath).exists()) return inferredPath;
+        return null;
     }
 
     @Nullable
@@ -206,10 +224,20 @@ public class GhcMod {
                               VisualPosition startPosition, @NotNull VisualPosition stopPosition) {
         final String stdout = simpleExec(module, workDir, getFlags(module.getProject()), "type" , canonicalPath,
                 String.valueOf(startPosition.line), String.valueOf(startPosition.column));
-        return stdout == null ? "Type info not found" :
-                GhcUtil.handleTypeInfo (startPosition,stopPosition, stdout);
+        if (stdout == null) return "Type info not found";
+        try {
+            return GhcUtil.handleTypeInfo(startPosition, stopPosition, stdout);
+        } catch (GhcUtil.TypeInfoParseException e) {
+            String userError = e.getUserError();
+            if (userError == null) {
+                NotificationUtil.displayToolsNotification(
+                        NotificationType.ERROR, module.getProject(), "Type Info Error",
+                        "There was an error when executing the `ghc-mod type` command:\n\n" + stdout);
+                return null;
+            }
+            return userError;
+        }
     }
-
 
     public static class Problem extends HaskellProblem {
         public String file;

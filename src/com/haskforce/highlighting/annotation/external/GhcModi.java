@@ -14,7 +14,6 @@ import com.intellij.execution.configurations.ParametersList;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.editor.VisualPosition;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
@@ -99,36 +98,20 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         return handleGhcModiCall(new GhcModiCallable<String>(){
             @Override
             public String call() throws GhcModiError {
-                final String stdout = simpleExec("type "+canonicalPath+' '+startPosition.line+' '+startPosition.column);
-                return stdout == null ? "Type info not found" : GhcUtil.handleTypeInfo (startPosition,stopPosition, stdout);
+                final String command = "type " + canonicalPath + ' ' + startPosition.line + ' ' + startPosition.column;
+                final String stdout = simpleExec(command);
+                try {
+                    return stdout == null ? "Type info not found" : GhcUtil.handleTypeInfo(startPosition, stopPosition, stdout);
+                } catch (GhcUtil.TypeInfoParseException e) {
+                    // If there's a user error, provide that via the tooltip.
+                    String userError = e.getUserError();
+                    // Otherwise, provide a notification for the error.
+                    if (userError == null) throw new ExecError(command, stdout);
+                    return userError;
+                }
             }
         });
     }
-
-
-    /**
-     * Maybe start using the compare function of logicalposition instead of
-     * this home brew thingy.
-     */
-    private static boolean selectionStopWithinBoundaries(int endRow, int endCol, VisualPosition selectionStopPosition) {
-        if(endRow > selectionStopPosition.line || (endRow == selectionStopPosition.line
-                && endCol >= selectionStopPosition.column)) {
-            return true;
-        }
-        return false;
-    }
-
-    private static boolean selectionStartWithinBoundaries(int startRow, int startCol,
-                                                          VisualPosition selectionStartPosition
-                                                          ) {
-        if (startRow < selectionStartPosition.line ||
-                (startRow == selectionStartPosition.line
-                        && startCol <= selectionStartPosition.column)) {
-            return true;
-        }
-        return false;
-    }
-
 
     @Nullable
     private static Problems handleCheck(@NotNull Module module, @NotNull String file, @NotNull String stdout) throws GhcModiError {
