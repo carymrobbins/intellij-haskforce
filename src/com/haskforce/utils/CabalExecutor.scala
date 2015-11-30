@@ -1,6 +1,6 @@
 package com.haskforce.utils
 
-import com.haskforce.highlighting.annotation.external.GhcUtil
+import com.haskforce.highlighting.annotation.external.GhcModUtil
 import com.haskforce.settings.HaskellBuildSettings
 import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.GeneralCommandLine
@@ -51,7 +51,7 @@ case class CabalExecutor private (factory: () => GeneralCommandLine) {
   def init(project: Project, args: Seq[String]): String = {
     val commandLine = initPreEnv(args)
     // TODO: We need to patch the PATH since `cabal init` doesn't support --with-ghc
-    GhcUtil.updateEnvironment(project, commandLine.getEnvironment)
+    GhcModUtil.updateEnvironment(project, commandLine.getEnvironment)
     initPostEnv(commandLine)
   }
 
@@ -59,7 +59,7 @@ case class CabalExecutor private (factory: () => GeneralCommandLine) {
   def init(ghcPath: String, args: Seq[String]): String = {
     val commandLine = initPreEnv(args)
     // TODO: We need to patch the PATH since `cabal init` doesn't support --with-ghc
-    GhcUtil.updateEnvironment(commandLine.getEnvironment, ghcPath)
+    GhcModUtil.updateEnvironment(commandLine.getEnvironment, ghcPath)
     initPostEnv(commandLine)
   }
 

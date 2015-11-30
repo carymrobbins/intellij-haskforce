@@ -8,14 +8,14 @@ import org.junit.Assert;
 import java.util.Arrays;
 
 /**
- * Test class for GhcUtil, which should contain the actions common to GhcMod and GhcModi
+ * Test class for GhcModUtil, which should contain the actions common to GhcMod and GhcModi
  */
-public class GhcUtilTest extends UsefulTestCase {
+public class GhcModUtilTest extends UsefulTestCase {
 
     public void testCanHandleSimpleOutput() {
         String ghcModTypeInfo = "24 31 24 45 \"Player\"\n" +
                 "24 1 25 52 \"Player -> [Player] -> [Player]\"";
-        String typeInfo = GhcUtil.unsafeHandleTypeInfo(new VisualPosition (24, 33), new VisualPosition (24, 33), ghcModTypeInfo);
+        String typeInfo = GhcModUtil.unsafeHandleTypeInfo(new VisualPosition (24, 33), new VisualPosition (24, 33), ghcModTypeInfo);
         Assert.assertEquals("Player", typeInfo);
     }
 
@@ -24,7 +24,7 @@ public class GhcUtilTest extends UsefulTestCase {
                 "24 48 24 59 \"(Player -> Bool) -> [Player] -> [Player]\"\n" +
                 "24 48 24 109 \"[Player] -> [Player]\"\n" +
                 "24 1 25 52 \"Player -> [Player] -> [Player]\"";
-        String typeInfo = GhcUtil.unsafeHandleTypeInfo(new VisualPosition (24, 49), new VisualPosition (24, 49), ghcModTypeInfo);
+        String typeInfo = GhcModUtil.unsafeHandleTypeInfo(new VisualPosition (24, 49), new VisualPosition (24, 49), ghcModTypeInfo);
         Assert.assertEquals("(Player -> Bool) -> [Player] -> [Player]", typeInfo);
     }
 
@@ -33,7 +33,7 @@ public class GhcUtilTest extends UsefulTestCase {
                 "24 48 24 59 \"(Player -> Bool) -> [Player] -> [Player]\"\n" +
                 "24 48 24 109 \"[Player] -> [Player]\"\n" +
                 "24 1 25 52 \"Player -> [Player] -> [Player]\"";
-        String typeInfo = GhcUtil.unsafeHandleTypeInfo(new VisualPosition (24, 60),new VisualPosition (24, 60), ghcModTypeInfo);
+        String typeInfo = GhcModUtil.unsafeHandleTypeInfo(new VisualPosition (24, 60),new VisualPosition (24, 60), ghcModTypeInfo);
         Assert.assertEquals("[Player] -> [Player]", typeInfo);
     }
 
@@ -42,7 +42,7 @@ public class GhcUtilTest extends UsefulTestCase {
                 "24 48 24 59 \"(Player -> Bool) -> [Player] -> [Player]\"\n" +
                 "24 48 24 109 \"[Player] -> [Player]\"\n" +
                 "24 1 25 52 \"Player -> [Player] -> [Player]\"";
-        String typeInfo = GhcUtil.unsafeHandleTypeInfo(
+        String typeInfo = GhcModUtil.unsafeHandleTypeInfo(
                 new VisualPosition(24, 5),
                 new VisualPosition (24, 60), ghcModTypeInfo);
         Assert.assertEquals("Player -> [Player] -> [Player]", typeInfo);
@@ -55,9 +55,9 @@ public class GhcUtilTest extends UsefulTestCase {
                 "/src/Main.hs:5:1:parse error (possibly incorrect indentation or mismatched brackets)"
         ), "\n");
         try {
-            GhcUtil.handleTypeInfo(new VisualPosition(1, 1), new VisualPosition(1, 1), ghcModTypeInfo);
+            GhcModUtil.handleTypeInfo(new VisualPosition(1, 1), new VisualPosition(1, 1), ghcModTypeInfo);
             fail("Expected TypeInfoParseException to be thrown.");
-        } catch (GhcUtil.TypeInfoParseException e) {
+        } catch (GhcModUtil.TypeInfoParseException e) {
             String userError = e.getUserError();
             assertNotNull(userError);
             assertEquals("/src/Main.hs:5:1:parse error (possibly incorrect indentation or mismatched brackets)", userError);
@@ -70,9 +70,9 @@ public class GhcUtilTest extends UsefulTestCase {
                 "some crazy unknown message"
         ), "\n");
         try {
-            GhcUtil.handleTypeInfo(new VisualPosition(1, 1), new VisualPosition(1, 1), ghcModTypeInfo);
+            GhcModUtil.handleTypeInfo(new VisualPosition(1, 1), new VisualPosition(1, 1), ghcModTypeInfo);
             fail("Expected TypeInfoParseException to be thrown.");
-        } catch (GhcUtil.TypeInfoParseException e) {
+        } catch (GhcModUtil.TypeInfoParseException e) {
             String userError = e.getUserError();
             assertNull(userError);
             assertEquals(ghcModTypeInfo, e.stdout);

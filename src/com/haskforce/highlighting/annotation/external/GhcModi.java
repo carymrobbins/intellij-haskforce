@@ -101,8 +101,8 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
                 final String command = "type " + canonicalPath + ' ' + startPosition.line + ' ' + startPosition.column;
                 final String stdout = simpleExec(command);
                 try {
-                    return stdout == null ? "Type info not found" : GhcUtil.handleTypeInfo(startPosition, stopPosition, stdout);
-                } catch (GhcUtil.TypeInfoParseException e) {
+                    return stdout == null ? "Type info not found" : GhcModUtil.handleTypeInfo(startPosition, stopPosition, stdout);
+                } catch (GhcModUtil.TypeInfoParseException e) {
                     // If there's a user error, provide that via the tooltip.
                     String userError = e.getUserError();
                     // Otherwise, provide a notification for the error.
@@ -206,7 +206,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     private void spawnProcess() throws GhcModiError {
         GeneralCommandLine commandLine = new GeneralCommandLine(path);
-        GhcUtil.updateEnvironment(module.getProject(), commandLine.getEnvironment());
+        GhcModUtil.updateEnvironment(module.getProject(), commandLine.getEnvironment());
         ParametersList parametersList = commandLine.getParametersList();
         parametersList.addParametersString(flags);
         // setWorkDirectory is deprecated but is needed to work with IntelliJ 13 which does not have withWorkDirectory.

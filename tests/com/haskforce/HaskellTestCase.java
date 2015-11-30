@@ -31,7 +31,7 @@ import com.haskforce.features.HaskellFoldingBuilderTest;
 import com.haskforce.features.HaskellTypedHandlerTest;
 import com.haskforce.highlighting.HaskellLexerTest;
 import com.haskforce.highlighting.annotation.external.GhcModTest;
-import com.haskforce.highlighting.annotation.external.GhcUtilTest;
+import com.haskforce.highlighting.annotation.external.GhcModUtilTest;
 import com.haskforce.importWizard.stack.StackImportWizardTest;
 import com.haskforce.parser.HaskellParserTest;
 import com.haskforce.parser.HaskellParsingLexerTest;
@@ -64,7 +64,7 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(HaskellFindUsagesTest.class);
         suite.addTestSuite(HaskellRenameTest.class);
         suite.addTestSuite(HaskellResolveTest.class);
-        suite.addTestSuite(GhcUtilTest.class);
+        suite.addTestSuite(GhcModUtilTest.class);
         suite.addTestSuite(HaskellGoToSymbolTest.class);
         suite.addTestSuite(AddCabalPackageTest.class);
         suite.addTestSuite(HaskellSpellcheckingTest.class);

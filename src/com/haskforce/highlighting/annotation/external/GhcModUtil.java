@@ -18,7 +18,7 @@ import java.util.HashSet;
  * This class should contain the common code between GhcMod and GhcModi. Right now this class
  * only contains static methods, as there is no 'state' in common between GhcMod and GhcModi.
  */
-public class GhcUtil {
+public class GhcModUtil {
     /**
      * Returns a String to display to the user as the type info.
      * If we are unable to parse the type info from ghc-mod, a

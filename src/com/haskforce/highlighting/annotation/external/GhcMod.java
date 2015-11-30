@@ -122,7 +122,7 @@ public class GhcMod {
     public static String exec(@NotNull Project project, @NotNull String workingDirectory, @NotNull String ghcModPath,
                               @NotNull String command, @NotNull String ghcModFlags, String... params) {
         GeneralCommandLine commandLine = new GeneralCommandLine(ghcModPath, command);
-        GhcUtil.updateEnvironment(project, commandLine.getEnvironment());
+        GhcModUtil.updateEnvironment(project, commandLine.getEnvironment());
         ParametersList parametersList = commandLine.getParametersList();
         parametersList.addParametersString(ghcModFlags);
         parametersList.addAll(params);
@@ -226,8 +226,8 @@ public class GhcMod {
                 String.valueOf(startPosition.line), String.valueOf(startPosition.column));
         if (stdout == null) return "Type info not found";
         try {
-            return GhcUtil.handleTypeInfo(startPosition, stopPosition, stdout);
-        } catch (GhcUtil.TypeInfoParseException e) {
+            return GhcModUtil.handleTypeInfo(startPosition, stopPosition, stdout);
+        } catch (GhcModUtil.TypeInfoParseException e) {
             String userError = e.getUserError();
             if (userError == null) {
                 NotificationUtil.displayToolsNotification(
