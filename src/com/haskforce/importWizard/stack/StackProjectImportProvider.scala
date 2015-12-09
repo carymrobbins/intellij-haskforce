@@ -24,7 +24,9 @@ extends ProjectImportProvider(builder) {
     for (stackFile <- Option(fileOrDirectory.findChild("stack.yaml"))) {
       if (canImportFromFile(stackFile)) return true
     }
-    val stackFiles = fileOrDirectory.getChildren.filter(_.getName != "stack.yaml")
+    val stackFiles = fileOrDirectory.getChildren.filter(f =>
+      !f.isDirectory && f.getName != "stack.yaml"
+    )
     stackFiles.exists(canImportFromFile)
   }
 
@@ -33,11 +35,17 @@ extends ProjectImportProvider(builder) {
    * and, if so, set the builder's parameters accordingly.
    */
   override def canImportFromFile(file: VirtualFile): Boolean = {
-    val content = new String(file.contentsToByteArray(), CharsetToolkit.UTF8)
-    // Bail out if we can't parse the yaml file.
-    if (StackYaml.fromString(content).isLeft) return false
-    // If we can parse it, go ahead and update the builder accordingly.
-    builder.params.stackYamlPath = Some(file.getCanonicalPath)
-    true
+    try {
+      val content = new String(file.contentsToByteArray(), CharsetToolkit.UTF8)
+      // Bail out if we can't parse the yaml file.
+      if (StackYaml.fromString(content).isLeft) return false
+      // If we can parse it, go ahead and update the builder accordingly.
+      builder.params.stackYamlPath = Some(file.getCanonicalPath)
+      true
+    } catch {
+      // If we can't read the file, we can't import from it.
+      case e: java.io.IOException =>
+        false
+    }
   }
 }
