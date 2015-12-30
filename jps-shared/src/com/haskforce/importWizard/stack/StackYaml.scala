@@ -3,12 +3,14 @@ package com.haskforce.importWizard.stack
 import java.io.File
 import java.util
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
+import scala.util.control.NonFatal
 import scalaz.\/
 import scalaz.syntax.either._
+import scalaz.syntax.traverse._
+import scalaz.std.list._
 
 import com.intellij.openapi.util.io.FileUtil
-import org.yaml.snakeyaml.Yaml
 
 /**
  * The parse result of a stack.yaml file.
@@ -34,23 +36,10 @@ object StackYaml {
   }
 
   def fromString(doc: String): String \/ StackYaml = for {
-    yaml <- rawFromString(doc)
-    mbPackages = Option(yaml.get("packages"))
-    packagesRaw <- \/.fromEither(mbPackages.toRight("Expected key 'packages'"))
-    packages <- safeCast[java.util.List[String]]("Expected 'packages' to be a list")(packagesRaw)
-  } yield StackYaml(packages.map(Package))
-
-  def rawFromString(doc: String): String \/ util.LinkedHashMap[String, Object] = {
-    \/.fromTryCatchNonFatal(new Yaml().load(doc)).leftMap(_.getMessage).flatMap(
-      safeCast[util.LinkedHashMap[String, Object]]("Unable to parse yaml file")
-    )
-  }
-
-  def safeCast[A : Manifest](err: String)(o: AnyRef): String \/ A = {
-    val cls = manifest[A].runtimeClass
-    if (cls.isInstance(o)) o.asInstanceOf[A].right
-    else err.left
-  }
+    assoc <- Yaml.parse(doc).flatMap(_.assoc).leftMap(_.message)
+    packages <- \/.fromEither(assoc.get("packages").toRight("Expected key 'packages'"))
+    result <- packages.list.flatMap(xs => xs.map(_.string).sequenceU).leftMap(_.message)
+  } yield StackYaml(result.map(Package(_)).asJava)
 }
 
 object StackYamlUtil {
@@ -67,3 +56,73 @@ object StackYamlUtil {
     )
   }
 }
+
+
+/** A wrapper around snakeyaml to provide a safer interface. */
+object Yaml {
+
+  final case class Error(message: String)
+
+  def parse(doc: String): Error \/ Yaml = {
+    try {
+      fromObject(new org.yaml.snakeyaml.Yaml().load(doc))
+    } catch {
+      case NonFatal(e) => Error(e.getMessage).left
+    }
+  }
+
+  def fromObject(o: Any): Error \/ Yaml = o match {
+    case m: util.Map[_, _] =>
+      m.asScala.map { case (k, v) =>
+        k match {
+          case kk: String => fromObject(v).map(vv => (kk, vv))
+          case other => Error(s"Key in map must be String, got: $k").left
+        }
+      }.toList.sequenceU.map(kvs => YamlAssoc(kvs.toMap))
+
+    case xs: util.List[_] =>
+      xs.asScala.map(fromObject).toList.sequenceU.map(YamlList(_))
+
+    case s: String => YamlString(s).right
+    case n: Int => YamlInt(n).right
+    case d: Double => YamlDouble(d).right
+
+    case other =>
+      val cls = Option(other).map(_.getClass.getName).getOrElse("")
+      Error(s"Unsupported Yaml type $cls: $other").left
+  }
+}
+
+sealed trait Yaml {
+
+  def assoc: Yaml.Error \/ Map[String, Yaml] = this match {
+    case YamlAssoc(m) => m.right
+    case _ => Yaml.Error(s"Expected YamlAssoc, got: $this").left
+  }
+
+  def list: Yaml.Error \/ List[Yaml] = this match {
+    case YamlList(xs) => xs.right
+    case _ => Yaml.Error(s"Expected YamlList, got: $this").left
+  }
+
+  def string: Yaml.Error \/ String = this match {
+    case YamlString(s) => s.right
+    case _ => Yaml.Error(s"Expected YamlString, got: $this").left
+  }
+
+  def int: Yaml.Error \/ Int = this match {
+    case YamlInt(n) => n.right
+    case _ => Yaml.Error(s"Expected YamlInt, got: $this}").left
+  }
+
+  def double: Yaml.Error \/ Double = this match {
+    case YamlDouble(d) => d.right
+    case _ => Yaml.Error(s"Expected YamlDouble, got: $this").left
+  }
+}
+
+sealed case class YamlAssoc(underlying: Map[String, Yaml]) extends Yaml
+sealed case class YamlList(underlying: List[Yaml]) extends Yaml
+sealed case class YamlString(underlying: String) extends Yaml
+sealed case class YamlInt(underlying: Int) extends Yaml
+sealed case class YamlDouble(underlying: Double) extends Yaml
