@@ -2,7 +2,7 @@
 
 # Since OSX can't do `readlink -f` out of the box.
 BASE_DIR=$(cd $(dirname $0) && echo $PWD)
-IDEA_HOME=$(grep idea.home "$BASE_DIR/build.properties" | cut -d = -f 2)
+IDEA_HOME=$(grep '^idea.home=' "$BASE_DIR/build.properties" | cut -d = -f 2)
 IDEA_JARS=$(find "$IDEA_HOME/lib" -name "*.jar")
 LOCAL_JARS=$(find "$BASE_DIR/lib" -name "*.jar")
 PRODUCTION_CLASSES=$(find "$BASE_DIR/out/production" -maxdepth 1 -type d)
