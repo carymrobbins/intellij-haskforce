@@ -341,8 +341,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
         if (!ghcModiPath.getText().isEmpty() && !isGhcMod5_4(ghcModiPath.getText())) return;
         // If all is good, configure ghc-modi as legacy-interactive.
         ghcModiPath.setText(ghcModPath.getText());
-        // If the current ghc-modi flags contains the `legacy-interactive` command,
-        // do not add it back.
+        // If the current ghc-modi flags contains the `legacy-interactive` command, do not add it back.
         if (!ghcModiFlags.getText().contains("legacy-interactive")) {
             ghcModiFlags.setText(ghcModiFlags.getText() + " legacy-interactive");
         }
