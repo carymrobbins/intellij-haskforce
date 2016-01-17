@@ -1,7 +1,7 @@
 <idea-plugin version="2" use-idea-classloader="true">
   <id>com.haskforce</id>
   <name>HaskForce</name>
-  <version>0.3-beta.25</version>
+  <version>0.3-beta.26</version>
   <vendor url="https://github.com/carymrobbins/intellij-haskforce">HaskForce on GitHub</vendor>
 
   <description>Plugin for Haskell language support.</description>
@@ -14,6 +14,13 @@
     <p>
       If you encounter any issues, please submit them on our
       <a href="https://github.com/carymrobbins/intellij-haskforce/issues">bug tracker</a>.
+    </p>
+    <p>
+      <b>v0.3-beta.26</b>
+      <ul>
+        <li>Don't override user-specified ghc-modi flags, thanks to @adinapoli (#224)</li>
+        <li>Don't attempt to parse directories as stack.yaml (#216, #227)</li>
+      </ul>
     </p>
     <p>
       <b>v0.3-beta.25</b>
