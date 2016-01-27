@@ -88,18 +88,33 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
                      */
 
                     HaskellFile containingFile = (HaskellFile)myElement.getContainingFile();
-                    List<HaskellImpdecl> importDeclarations = containingFile.getBody().getImpdeclList();
+                    final HaskellBody body = containingFile.getBody();
+                    if (body == null) return EMPTY_RESOLVE_RESULT;
+                    List<HaskellImpdecl> importDeclarations = body.getImpdeclList();
                     for (HaskellImpdecl importDeclaration : importDeclarations) {
                         List<HaskellQconid> qconidList = importDeclaration.getQconidList();
                         if (importDeclaration.getQualified() != null){
                             HaskellQconid moduleName = Iterables.getFirst(qconidList, null);
+                            if (moduleName == null) continue;
                             HaskellQconid last = Iterables.getLast(qconidList);
                             if (fullQualifierName.equals(last.getText())){
                                 List<HaskellFile> filesByModuleName = HaskellModuleIndex.getFilesByModuleName(myElement.getProject(), moduleName.getText(), GlobalSearchScope.projectScope(myElement.getProject()));
-                                List<PsiNamedElement> definitionNodes = HaskellUtil.findDefinitionNodes(filesByModuleName.get(0), functionName);
+                                List<PsiNamedElement> definitionNodes;
+                                try {
+                                    definitionNodes = HaskellUtil.findDefinitionNodes(filesByModuleName.get(0), functionName);
+                                } catch (IndexOutOfBoundsException e) {
+                                    continue;
+                                }
                                 for (PsiNamedElement definitionNode : definitionNodes) {
-                                    if (definitionNode.getName().equals(functionName)){
-                                        HaskellConid haskellConid = last.getConidList().get(i);
+                                    String definitionNodeName = definitionNode.getName();
+                                    if (definitionNodeName == null) continue;
+                                    if (definitionNodeName.equals(functionName)){
+                                        HaskellConid haskellConid;
+                                        try {
+                                            haskellConid = last.getConidList().get(i);
+                                        } catch (IndexOutOfBoundsException e) {
+                                            continue;
+                                        }
                                         return new ResolveResult[]{new PsiElementResolveResult(haskellConid)};
                                     }
                                 }
@@ -218,9 +233,12 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
             List<HaskellFile> filesByModuleName = HaskellModuleIndex.getFilesByModuleName(myElement.getProject(), moduleName, globalSearchScope);
             for (HaskellFile haskellFile : filesByModuleName) {
                 HaskellModuledecl[] moduleDecls = PsiTreeUtil.getChildrenOfType(haskellFile, HaskellModuledecl.class);
-                if (moduleDecls.length != 0){
-                    List<HaskellConid> conidList = moduleDecls[0].getQconid().getConidList();
-                    modulesFound.add(new PsiElementResolveResult(conidList.get(i)));
+                if (moduleDecls != null && moduleDecls.length > 0){
+                    HaskellQconid qconid = moduleDecls[0].getQconid();
+                    if (qconid != null) {
+                        List<HaskellConid> conidList = moduleDecls[0].getQconid().getConidList();
+                        modulesFound.add(new PsiElementResolveResult(conidList.get(i)));
+                    }
                 }
             }
         }
