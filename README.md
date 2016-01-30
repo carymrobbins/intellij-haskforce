@@ -54,7 +54,7 @@ Be sure that the SDK is named `scala-sdk-2.11.7` to properly match the module co
     1. Alternatively, you can go to **About** in the menu and look at the build number.  This might not have the minor
        number, e.g. instead of `IU-141.178.9` it might just say `IU-141.178`
   * Check out the appropriate tag for your build number.
-  * `$ git checkout idea/141.178.9`
+    * `$ git fetch --tags && git checkout idea/141.178.9`
   * Be sure to `git checkout` the new tag each time you upgrade IntelliJ.
 2. Under **File > Project Structure > SDKs** find your **IntelliJ Platform Plugin SDK**.
 3. Under the **Sourcepath** tab, add the directory where you cloned the IntelliJ sources.
