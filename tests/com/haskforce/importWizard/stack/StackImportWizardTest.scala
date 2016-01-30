@@ -49,6 +49,32 @@ class StackImportWizardTest extends ProjectWizardTestCase[AddModuleWizard] with 
     }
   }
 
+  /** Imports a simple stack project created from 'stack new' */
+  def testImportSimpleProject(): Unit = {
+    val projectDir = s"$testDir/simple"
+    val project = importProjectFrom(projectDir, null, newImportProvider()).getProject
+    val modules = HaskellModuleType.findModules(project)
+    val paths = modules.map(_.getModuleFilePath)
+
+    val expected = util.Arrays.asList(
+      "simple.iml"
+    ).map(path => new File(s"$projectDir/$path").getCanonicalPath)
+
+    assertInstanceOf[HaskellSdkType](
+      "expected project SdkType to be HaskellSdkType",
+      ProjectRootManager.getInstance(project).getProjectSdk.getSdkType
+    )
+
+    assertSameElements("Could not find module file(s)", paths, expected)
+
+    modules.foreach { m =>
+      assertInstanceOf[HaskellSdkType](
+        s"Expected module '$m' SdkType to be HaskellSdkType",
+        ModuleRootManager.getInstance(m).getSdk.getSdkType
+      )
+    }
+  }
+
   private def newImportProvider() = {
     new StackProjectImportProvider(new StackProjectImportBuilder)
   }

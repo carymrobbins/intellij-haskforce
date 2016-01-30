@@ -99,7 +99,7 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
       moduleModel: ModifiableModuleModel,
       projectRoot: String,
       pkg: StackYaml.Package): (String, Module) = {
-    val moduleDir = FileUtil.join(projectRoot, pkg.path)
+    val moduleDir = new File(FileUtil.join(projectRoot, pkg.path)).getCanonicalPath
     // This should already be validated.
     val cabalFile = StackYamlUtil.unsafeFindCabalFile(projectRoot, pkg)
     val moduleName = cabalFile.getName.split('.').head
