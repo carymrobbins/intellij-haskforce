@@ -112,4 +112,43 @@ public class GhcModUtil {
         newPaths.add(System.getenv("PATH"));
         env.put("PATH", StringUtil.join(newPaths, SystemInfo.isWindows ? ";" : ":"));
     }
+
+    /**
+     * If stack is enabled for the project, returns the path to stack.  The .getFlags
+     * method will then take care of pointing to the correct ghc-mod executable.
+     * Otherwise, the ghc-mod path is returned directly.  If ghc-mod is not configured,
+     * the method returns null.
+     */
+    public static String changedPathIfStack(@NotNull Project project, @Nullable String ghcModPath) {
+        if (ghcModPath == null) return null;
+        String stackPath = GhcModUtil.maybeStackPath(project);
+        if (stackPath == null) return ghcModPath;
+        return stackPath;
+    }
+
+    /**
+     * If stack is enabled for the project, returns the arguments needed to point stack
+     * to ghc-mod, including any flags provided. Otherwise, returns the flags configured
+     * for ghc-mod.
+     */
+    @NotNull
+    public static String changedFlagsIfStack(@NotNull Project project,
+                                             @Nullable String ghcModPath,
+                                             @NotNull String ghcModFlags) {
+        if (GhcModUtil.maybeStackPath(project) == null) {
+            return ghcModFlags;
+        }
+        return "exec -- " + ghcModPath +  " " + ghcModFlags;
+    }
+
+    /**
+     * If stack is enabled for the project, return the stack path.  If this method
+     * returns null, stack is not enabled for the project.
+     */
+    @Nullable
+    private static String maybeStackPath(@NotNull Project project) {
+        HaskellBuildSettings s = HaskellBuildSettings.getInstance(project);
+        if (!s.isStackEnabled()) return null;
+        return s.getStackPath();
+    }
 }

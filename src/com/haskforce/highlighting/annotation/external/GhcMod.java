@@ -43,12 +43,16 @@ public class GhcMod {
 
     @Nullable
     public static String getPath(@NotNull Project project) {
-        return ToolKey.GHC_MOD_KEY.getPath(project);
+        return GhcModUtil.changedPathIfStack(project, ToolKey.GHC_MOD_KEY.getPath(project));
     }
 
     @NotNull
     public static String getFlags(@NotNull Project project) {
-        return ToolKey.GHC_MOD_KEY.getFlags(project);
+        return GhcModUtil.changedFlagsIfStack(
+          project,
+          ToolKey.GHC_MOD_KEY.getPath(project),
+          ToolKey.GHC_MOD_KEY.getFlags(project)
+        );
     }
 
     @Nullable
@@ -121,10 +125,11 @@ public class GhcMod {
     @Nullable
     public static String exec(@NotNull Project project, @NotNull String workingDirectory, @NotNull String ghcModPath,
                               @NotNull String command, @NotNull String ghcModFlags, String... params) {
-        GeneralCommandLine commandLine = new GeneralCommandLine(ghcModPath, command);
+        GeneralCommandLine commandLine = new GeneralCommandLine(ghcModPath);
         GhcModUtil.updateEnvironment(project, commandLine.getEnvironment());
         ParametersList parametersList = commandLine.getParametersList();
         parametersList.addParametersString(ghcModFlags);
+        parametersList.add(command);
         parametersList.addAll(params);
         // setWorkDirectory is deprecated but is needed to work with IntelliJ 13 which does not have withWorkDirectory.
         commandLine.setWorkDirectory(workingDirectory);

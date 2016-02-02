@@ -375,8 +375,9 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
      */
     public GhcModi(@NotNull Module module) {
         this.module = module;
-        this.path = lookupPath();
-        this.flags = lookupFlags();
+        String path = lookupPath();
+        this.path = GhcModUtil.changedPathIfStack(module.getProject(), path);
+        this.flags = GhcModUtil.changedFlagsIfStack(module.getProject(), path, lookupFlags());
         this.workingDirectory = lookupWorkingDirectory();
         // Ensure that we are notified of changes to the settings.
         module.getProject().getMessageBus().connect().subscribe(SettingsChangeNotifier.GHC_MODI_TOPIC, this);
@@ -384,8 +385,9 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     @Override
     public void onSettingsChanged(@NotNull ToolSettings settings) {
-        this.path = settings.getPath();
-        this.flags = settings.getFlags();
+        String path = settings.getPath();
+        this.path = GhcModUtil.changedPathIfStack(module.getProject(), path);
+        this.flags = GhcModUtil.changedFlagsIfStack(module.getProject(), path, settings.getFlags());
         kill();
         try {
             spawnProcess();
