@@ -3,6 +3,7 @@ bashsupport_project.xml
 dictionaries/
 emacs.xml
 misc.xml
+compiler.xml
 copyright/profiles_settings.xml
 findbugs-idea.xml
 inspectionProfiles/
