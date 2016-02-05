@@ -154,7 +154,7 @@
       <include name="jre/lib/ext/sunpkcs11.jar"/>
       <include name="jre/lib/ext/zipfs.jar"/>
     </fileset>
-    <pathelement location="${idea.home}/lib/junit-4.11.jar" />
+    <fileset dir="${idea.home}/lib" includes="junit-*.jar" />
     <fileset dir="${idea.home}" includes="**/*.jar">
       <exclude name="lib/ant/lib/**"/>
     </fileset>
