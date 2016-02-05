@@ -255,8 +255,8 @@ private typedeclnorm ::= ["family" | "instance"] typee ['=' (typee|foralltype)]
 
 // Both data declaration and gadt declaration. The syntactic difference between
 // the two is between typee and [deriving].
-datadecl ::= "data" ["instance"] [context "=>"] typee ['=' ["forall" tv_bndr* '.'] constrs| [kindsig] ["where" gadtconstrs]] [deriving] {pin=1}
-newtypedecl ::= "newtype" [context "=>"] simpletype '=' newconstr [deriving] {pin=1}
+datadecl ::= "data" ["instance"] [clscontext "=>"] typee ['=' ["forall" tv_bndr* '.'] constrs| [kindsig] ["where" gadtconstrs]] [deriving] {pin=1}
+newtypedecl ::= "newtype" [clscontext "=>"] simpletype '=' newconstr [deriving] {pin=1}
 classdecl ::= "class" ctype [fundeps] ["where" ppragma* cdecls] {pin=1}
 instancedecl ::= "instance" ctype ["where" idecls] {pin=1}
 defaultdecl ::= "default" <<commaSeparate typee>> {pin=1}
@@ -313,7 +313,7 @@ ctype ::= foralltype
         | typee
 
 private foralltype ::=  "forall" tv_bndr* '.' ctype {pin=1}
-private contexttype ::= context '=>' ctype {pin=2}
+private contexttype ::= clscontext '=>' ctype {pin=2}
 
 private btype ::= atype [btype]
 
@@ -337,7 +337,7 @@ private ntgtycon ::=  '(#' commas '#)'
 
 private commas ::= ','+
 
-context ::= btype ['~' btype]
+clscontext ::= btype ['~' btype]
 
 private simpletype ::= tycon tyvar*
 
@@ -349,7 +349,7 @@ private gadtconstrs1 ::= gadtconstr semi gadtconstrs1
 private gadtconstr ::= <<sequence con>> "::" ctype
                      | oqtycon '{' fielddecls '}' "::" ctype
 
-private constrs ::= [context "=>"] constr ('|' constr)*
+private constrs ::= [clscontext "=>"] constr ('|' constr)*
 
 constr ::= btype conop btype
          | con ('{' [(fielddecl ',')* fielddecl] '}' | btype*)
@@ -401,7 +401,7 @@ guard ::= pat '<-' exp
         | "let" decls
         | infixexp
 
-exp ::= ppragma* infixexp ["::" [context "=>"] typee]
+exp ::= ppragma* infixexp ["::" [clscontext "=>"] typee]
 
 private infixexp ::= '-'* lexp [qop infixexp]
 
