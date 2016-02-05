@@ -23,8 +23,8 @@ public class HaskellCtypeImpl extends HaskellCompositeElementImpl implements Has
 
   @Override
   @Nullable
-  public HaskellContext getContext() {
-    return findChildByClass(HaskellContext.class);
+  public HaskellClscontext getClscontext() {
+    return findChildByClass(HaskellClscontext.class);
   }
 
   @Override

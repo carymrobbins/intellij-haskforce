@@ -44,6 +44,9 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     else if (t == CLASSDECL) {
       r = classdecl(b, 0);
     }
+    else if (t == CLSCONTEXT) {
+      r = clscontext(b, 0);
+    }
     else if (t == CON) {
       r = con(b, 0);
     }
@@ -58,9 +61,6 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     }
     else if (t == CONSYM) {
       r = consym(b, 0);
-    }
-    else if (t == CONTEXT) {
-      r = context(b, 0);
     }
     else if (t == CTYPE) {
       r = ctype(b, 0);
@@ -1473,6 +1473,36 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // btype ['~' btype]
+  public static boolean clscontext(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "clscontext")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, "<clscontext>");
+    r = btype(b, l + 1);
+    r = r && clscontext_1(b, l + 1);
+    exit_section_(b, l, m, CLSCONTEXT, r, false, null);
+    return r;
+  }
+
+  // ['~' btype]
+  private static boolean clscontext_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "clscontext_1")) return false;
+    clscontext_1_0(b, l + 1);
+    return true;
+  }
+
+  // '~' btype
+  private static boolean clscontext_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "clscontext_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, TILDE);
+    r = r && btype(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // var | con
   static boolean cname(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "cname")) return false;
@@ -1814,7 +1844,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // [context "=>"] constr ('|' constr)*
+  // [clscontext "=>"] constr ('|' constr)*
   static boolean constrs(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "constrs")) return false;
     boolean r;
@@ -1826,19 +1856,19 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // [context "=>"]
+  // [clscontext "=>"]
   private static boolean constrs_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "constrs_0")) return false;
     constrs_0_0(b, l + 1);
     return true;
   }
 
-  // context "=>"
+  // clscontext "=>"
   private static boolean constrs_0_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "constrs_0_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = context(b, l + 1);
+    r = clscontext(b, l + 1);
     r = r && consumeToken(b, DOUBLEARROW);
     exit_section_(b, m, null, r);
     return r;
@@ -1880,42 +1910,12 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // btype ['~' btype]
-  public static boolean context(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "context")) return false;
-    boolean r;
-    Marker m = enter_section_(b, l, _NONE_, "<context>");
-    r = btype(b, l + 1);
-    r = r && context_1(b, l + 1);
-    exit_section_(b, l, m, CONTEXT, r, false, null);
-    return r;
-  }
-
-  // ['~' btype]
-  private static boolean context_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "context_1")) return false;
-    context_1_0(b, l + 1);
-    return true;
-  }
-
-  // '~' btype
-  private static boolean context_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "context_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, TILDE);
-    r = r && btype(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  /* ********************************************************** */
-  // context '=>' ctype
+  // clscontext '=>' ctype
   static boolean contexttype(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "contexttype")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_, null);
-    r = context(b, l + 1);
+    r = clscontext(b, l + 1);
     r = r && consumeToken(b, DOUBLEARROW);
     p = r; // pin = 2
     r = r && ctype(b, l + 1);
@@ -1939,7 +1939,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // "data" ["instance"] [context "=>"] typee ['=' ["forall" tv_bndr* '.'] constrs| [kindsig] ["where" gadtconstrs]] [deriving]
+  // "data" ["instance"] [clscontext "=>"] typee ['=' ["forall" tv_bndr* '.'] constrs| [kindsig] ["where" gadtconstrs]] [deriving]
   public static boolean datadecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "datadecl")) return false;
     if (!nextTokenIs(b, DATA)) return false;
@@ -1963,19 +1963,19 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // [context "=>"]
+  // [clscontext "=>"]
   private static boolean datadecl_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "datadecl_2")) return false;
     datadecl_2_0(b, l + 1);
     return true;
   }
 
-  // context "=>"
+  // clscontext "=>"
   private static boolean datadecl_2_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "datadecl_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = context(b, l + 1);
+    r = clscontext(b, l + 1);
     r = r && consumeToken(b, DOUBLEARROW);
     exit_section_(b, m, null, r);
     return r;
@@ -2281,7 +2281,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ppragma* infixexp ["::" [context "=>"] typee]
+  // ppragma* infixexp ["::" [clscontext "=>"] typee]
   public static boolean exp(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "exp")) return false;
     boolean r;
@@ -2305,14 +2305,14 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // ["::" [context "=>"] typee]
+  // ["::" [clscontext "=>"] typee]
   private static boolean exp_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "exp_2")) return false;
     exp_2_0(b, l + 1);
     return true;
   }
 
-  // "::" [context "=>"] typee
+  // "::" [clscontext "=>"] typee
   private static boolean exp_2_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "exp_2_0")) return false;
     boolean r;
@@ -2324,19 +2324,19 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // [context "=>"]
+  // [clscontext "=>"]
   private static boolean exp_2_0_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "exp_2_0_1")) return false;
     exp_2_0_1_0(b, l + 1);
     return true;
   }
 
-  // context "=>"
+  // clscontext "=>"
   private static boolean exp_2_0_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "exp_2_0_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = context(b, l + 1);
+    r = clscontext(b, l + 1);
     r = r && consumeToken(b, DOUBLEARROW);
     exit_section_(b, m, null, r);
     return r;
@@ -4625,7 +4625,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // "newtype" [context "=>"] simpletype '=' newconstr [deriving]
+  // "newtype" [clscontext "=>"] simpletype '=' newconstr [deriving]
   public static boolean newtypedecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "newtypedecl")) return false;
     if (!nextTokenIs(b, NEWTYPE)) return false;
@@ -4642,19 +4642,19 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // [context "=>"]
+  // [clscontext "=>"]
   private static boolean newtypedecl_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "newtypedecl_1")) return false;
     newtypedecl_1_0(b, l + 1);
     return true;
   }
 
-  // context "=>"
+  // clscontext "=>"
   private static boolean newtypedecl_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "newtypedecl_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = context(b, l + 1);
+    r = clscontext(b, l + 1);
     r = r && consumeToken(b, DOUBLEARROW);
     exit_section_(b, m, null, r);
     return r;

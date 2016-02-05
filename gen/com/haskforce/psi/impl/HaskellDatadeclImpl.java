@@ -29,6 +29,12 @@ public class HaskellDatadeclImpl extends HaskellCompositeElementImpl implements 
 
   @Override
   @NotNull
+  public List<HaskellClscontext> getClscontextList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellClscontext.class);
+  }
+
+  @Override
+  @NotNull
   public List<HaskellCon> getConList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellCon.class);
   }
@@ -37,12 +43,6 @@ public class HaskellDatadeclImpl extends HaskellCompositeElementImpl implements 
   @NotNull
   public List<HaskellConstr> getConstrList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellConstr.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellContext> getContextList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellContext.class);
   }
 
   @Override

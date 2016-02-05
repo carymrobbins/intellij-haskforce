@@ -35,6 +35,10 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitCompositeElement(o);
   }
 
+  public void visitClscontext(@NotNull HaskellClscontext o) {
+    visitCompositeElement(o);
+  }
+
   public void visitCon(@NotNull HaskellCon o) {
     visitCompositeElement(o);
   }
@@ -52,10 +56,6 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitConsym(@NotNull HaskellConsym o) {
-    visitCompositeElement(o);
-  }
-
-  public void visitContext(@NotNull HaskellContext o) {
     visitCompositeElement(o);
   }
 

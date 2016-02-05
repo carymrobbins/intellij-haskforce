@@ -29,8 +29,8 @@ public class HaskellExpImpl extends HaskellCompositeElementImpl implements Haske
 
   @Override
   @Nullable
-  public HaskellContext getContext() {
-    return findChildByClass(HaskellContext.class);
+  public HaskellClscontext getClscontext() {
+    return findChildByClass(HaskellClscontext.class);
   }
 
   @Override

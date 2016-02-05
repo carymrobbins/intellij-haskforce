@@ -23,8 +23,8 @@ public class HaskellNewtypedeclImpl extends HaskellCompositeElementImpl implemen
 
   @Override
   @Nullable
-  public HaskellContext getContext() {
-    return findChildByClass(HaskellContext.class);
+  public HaskellClscontext getClscontext() {
+    return findChildByClass(HaskellClscontext.class);
   }
 
   @Override

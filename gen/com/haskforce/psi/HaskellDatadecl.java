@@ -11,13 +11,13 @@ public interface HaskellDatadecl extends HaskellCompositeElement {
   List<HaskellAtype> getAtypeList();
 
   @NotNull
+  List<HaskellClscontext> getClscontextList();
+
+  @NotNull
   List<HaskellCon> getConList();
 
   @NotNull
   List<HaskellConstr> getConstrList();
-
-  @NotNull
-  List<HaskellContext> getContextList();
 
   @NotNull
   List<HaskellCtype> getCtypeList();

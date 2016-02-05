@@ -28,6 +28,12 @@ public class HaskellIdeclImpl extends HaskellCompositeElementImpl implements Has
   }
 
   @Override
+  @Nullable
+  public HaskellClscontext getClscontext() {
+    return findChildByClass(HaskellClscontext.class);
+  }
+
+  @Override
   @NotNull
   public List<HaskellCon> getConList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellCon.class);
@@ -37,12 +43,6 @@ public class HaskellIdeclImpl extends HaskellCompositeElementImpl implements Has
   @NotNull
   public List<HaskellConstr> getConstrList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellConstr.class);
-  }
-
-  @Override
-  @Nullable
-  public HaskellContext getContext() {
-    return findChildByClass(HaskellContext.class);
   }
 
   @Override

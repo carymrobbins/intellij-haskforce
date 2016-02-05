@@ -10,14 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
 import com.haskforce.psi.*;
 
-public class HaskellContextImpl extends HaskellCompositeElementImpl implements HaskellContext {
+public class HaskellClscontextImpl extends HaskellCompositeElementImpl implements HaskellClscontext {
 
-  public HaskellContextImpl(ASTNode node) {
+  public HaskellClscontextImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitContext(this);
+    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitClscontext(this);
     else super.accept(visitor);
   }
 

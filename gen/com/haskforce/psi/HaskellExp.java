@@ -11,7 +11,7 @@ public interface HaskellExp extends HaskellCompositeElement {
   List<HaskellAlt> getAltList();
 
   @Nullable
-  HaskellContext getContext();
+  HaskellClscontext getClscontext();
 
   @NotNull
   List<HaskellExp> getExpList();

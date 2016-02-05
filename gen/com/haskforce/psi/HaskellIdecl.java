@@ -10,14 +10,14 @@ public interface HaskellIdecl extends HaskellCompositeElement {
   @NotNull
   List<HaskellAtype> getAtypeList();
 
+  @Nullable
+  HaskellClscontext getClscontext();
+
   @NotNull
   List<HaskellCon> getConList();
 
   @NotNull
   List<HaskellConstr> getConstrList();
-
-  @Nullable
-  HaskellContext getContext();
 
   @NotNull
   List<HaskellCtype> getCtypeList();

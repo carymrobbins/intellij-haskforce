@@ -8,7 +8,7 @@ import com.intellij.psi.PsiElement;
 public interface HaskellCtype extends HaskellCompositeElement {
 
   @Nullable
-  HaskellContext getContext();
+  HaskellClscontext getClscontext();
 
   @Nullable
   HaskellCtype getCtype();

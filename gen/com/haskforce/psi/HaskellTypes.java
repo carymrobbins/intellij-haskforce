@@ -16,12 +16,12 @@ public interface HaskellTypes {
   IElementType BODY = new HaskellElementType("BODY");
   IElementType CDECL = new HaskellElementType("CDECL");
   IElementType CLASSDECL = new HaskellElementType("CLASSDECL");
+  IElementType CLSCONTEXT = new HaskellElementType("CLSCONTEXT");
   IElementType CON = new HaskellElementType("CON");
   IElementType CONID = HaskellElementTypeFactory.factory("CONID");
   IElementType CONOP = new HaskellElementType("CONOP");
   IElementType CONSTR = new HaskellElementType("CONSTR");
   IElementType CONSYM = new HaskellElementType("CONSYM");
-  IElementType CONTEXT = new HaskellElementType("CONTEXT");
   IElementType CTYPE = new HaskellElementType("CTYPE");
   IElementType DATADECL = new HaskellElementType("DATADECL");
   IElementType DEFAULTDECL = new HaskellElementType("DEFAULTDECL");
@@ -220,6 +220,9 @@ public interface HaskellTypes {
       else if (type == CLASSDECL) {
         return new HaskellClassdeclImpl(node);
       }
+      else if (type == CLSCONTEXT) {
+        return new HaskellClscontextImpl(node);
+      }
       else if (type == CON) {
         return new HaskellConImpl(node);
       }
@@ -234,9 +237,6 @@ public interface HaskellTypes {
       }
       else if (type == CONSYM) {
         return new HaskellConsymImpl(node);
-      }
-      else if (type == CONTEXT) {
-        return new HaskellContextImpl(node);
       }
       else if (type == CTYPE) {
         return new HaskellCtypeImpl(node);
