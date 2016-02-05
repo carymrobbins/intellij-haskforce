@@ -24,7 +24,7 @@ Haskell File
             VARID
               PsiElement(HaskellTokenType.varidRegexp)('a')
       PsiElement(HaskellTokenType.=)('=')
-      CONTEXT
+      CLSCONTEXT
         ATYPE
           OQTYCON
             QTYCON

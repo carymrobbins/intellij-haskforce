@@ -13,7 +13,7 @@ Haskell File
           PsiElement(HaskellTokenType.varidRegexp)('crcNormal')
       PsiElement(HaskellTokenType.::)('::')
       CTYPE
-        CONTEXT
+        CLSCONTEXT
           ATYPE
             PsiElement(HaskellTokenType.()('(')
             CTYPE

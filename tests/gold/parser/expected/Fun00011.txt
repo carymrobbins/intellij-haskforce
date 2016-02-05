@@ -169,7 +169,7 @@ Haskell File
           PsiElement(HaskellTokenType.varidRegexp)('sort')
       PsiElement(HaskellTokenType.::)('::')
       CTYPE
-        CONTEXT
+        CLSCONTEXT
           ATYPE
             PsiElement(HaskellTokenType.()('(')
             PsiElement(HaskellTokenType.?)('?')

@@ -65,7 +65,7 @@ Haskell File
     CLASSDECL
       PsiElement(HaskellTokenType.class)('class')
       CTYPE
-        CONTEXT
+        CLSCONTEXT
           ATYPE
             PsiElement(HaskellTokenType.()('(')
             CTYPE

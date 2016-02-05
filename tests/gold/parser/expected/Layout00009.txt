@@ -17,6 +17,5 @@ Haskell File
   PsiElement(HaskellTokenType.STRINGTOKEN)('foo')
   PsiElement(HaskellTokenType.")('"')
   PsiElement(HaskellTokenType.,)(',')
-  PsiElement(HaskellTokenType.])(']')
-  PsiErrorElement:'' unexpected
-    <empty list>
+  PsiErrorElement:<exp> expected, got ']'
+    PsiElement(HaskellTokenType.])(']')

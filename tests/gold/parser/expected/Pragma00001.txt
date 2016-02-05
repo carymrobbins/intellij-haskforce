@@ -162,7 +162,7 @@ Haskell File
           PsiElement(HaskellTokenType.varidRegexp)('f')
       PsiElement(HaskellTokenType.::)('::')
       CTYPE
-        CONTEXT
+        CLSCONTEXT
           ATYPE
             OQTYCON
               QTYCON

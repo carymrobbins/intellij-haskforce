@@ -106,7 +106,7 @@ Haskell File
           PsiElement(HaskellTokenType.varidRegexp)('localVar')
       PsiElement(HaskellTokenType.::)('::')
       CTYPE
-        CONTEXT
+        CLSCONTEXT
           ATYPE
             OQTYCON
               QTYCON
@@ -250,7 +250,7 @@ Haskell File
               PsiElement(HaskellTokenType.varidRegexp)('a')
         PsiElement(HaskellTokenType..)('.')
         CTYPE
-          CONTEXT
+          CLSCONTEXT
             ATYPE
               PsiElement(HaskellTokenType.()('(')
               CTYPE

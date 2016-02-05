@@ -31,7 +31,7 @@ Haskell File
           PsiElement(HaskellTokenType.conidRegexp)('Info')
       PsiElement(HaskellTokenType.::)('::')
       CTYPE
-        CONTEXT
+        CLSCONTEXT
           ATYPE
             PsiElement(HaskellTokenType.()('(')
             CTYPE

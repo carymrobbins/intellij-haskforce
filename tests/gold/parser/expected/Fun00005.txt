@@ -32,7 +32,7 @@ Haskell File
           PsiElement(HaskellTokenType.varidRegexp)('prjF')
       PsiElement(HaskellTokenType.::)('::')
       CTYPE
-        CONTEXT
+        CLSCONTEXT
           ATYPE
             OQTYCON
               QTYCON
@@ -127,7 +127,7 @@ Haskell File
     CLASSDECL
       PsiElement(HaskellTokenType.class)('class')
       CTYPE
-        CONTEXT
+        CLSCONTEXT
           ATYPE
             PsiElement(HaskellTokenType.()('(')
             CTYPE
@@ -398,7 +398,7 @@ Haskell File
           PsiElement(HaskellTokenType.varidRegexp)('optimizeM')
       PsiElement(HaskellTokenType.::)('::')
       CTYPE
-        CONTEXT
+        CLSCONTEXT
           ATYPE
             PsiElement(HaskellTokenType.()('(')
             CTYPE
@@ -594,7 +594,7 @@ Haskell File
           PsiElement(HaskellTokenType.varidRegexp)('optimizeN')
       PsiElement(HaskellTokenType.::)('::')
       CTYPE
-        CONTEXT
+        CLSCONTEXT
           ATYPE
             PsiElement(HaskellTokenType.()('(')
             CTYPE
@@ -736,7 +736,7 @@ Haskell File
           PsiElement(HaskellTokenType.varidRegexp)('optimizeO')
       PsiElement(HaskellTokenType.::)('::')
       CTYPE
-        CONTEXT
+        CLSCONTEXT
           ATYPE
             OQTYCON
               QTYCON
@@ -849,7 +849,7 @@ Haskell File
     INSTANCEDECL
       PsiElement(HaskellTokenType.instance)('instance')
       CTYPE
-        CONTEXT
+        CLSCONTEXT
           ATYPE
             OQTYCON
               QTYCON
@@ -930,7 +930,7 @@ Haskell File
     INSTANCEDECL
       PsiElement(HaskellTokenType.instance)('instance')
       CTYPE
-        CONTEXT
+        CLSCONTEXT
           ATYPE
             PsiElement(HaskellTokenType.()('(')
             CTYPE
@@ -1067,7 +1067,7 @@ Haskell File
     INSTANCEDECL
       PsiElement(HaskellTokenType.instance)('instance')
       CTYPE
-        CONTEXT
+        CLSCONTEXT
           ATYPE
             OQTYCON
               QTYCON

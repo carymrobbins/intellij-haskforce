@@ -9,7 +9,7 @@ Haskell File
     INSTANCEDECL
       PsiElement(HaskellTokenType.instance)('instance')
       CTYPE
-        CONTEXT
+        CLSCONTEXT
           ATYPE
             PsiElement(HaskellTokenType.()('(')
             CTYPE

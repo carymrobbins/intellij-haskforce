@@ -19,7 +19,7 @@ Haskell File
     INSTANCEDECL
       PsiElement(HaskellTokenType.instance)('instance')
       CTYPE
-        CONTEXT
+        CLSCONTEXT
           ATYPE
             OQTYCON
               QTYCON
