@@ -2,6 +2,7 @@ package com.haskforce.highlighting.annotation.external;
 
 import com.haskforce.actions.RestartGhcModi;
 import com.haskforce.highlighting.annotation.Problems;
+import com.haskforce.highlighting.annotation.external.GhcModUtil.GhcVersionValidation;
 import com.haskforce.settings.SettingsChangeNotifier;
 import com.haskforce.settings.ToolKey;
 import com.haskforce.settings.ToolSettings;
@@ -44,6 +45,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     private @Nullable BufferedWriter output;
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
     private boolean enabled = true;
+    private GhcVersionValidation ghcVersionValidation = GhcVersionValidation.PENDING_VALIDATION;
     // Keep track of error messages so we don't output the same ones multiple times.
     public static final Pattern TYPE_SPLIT_REGEX = Pattern.compile(" :: ");
 
@@ -151,8 +153,6 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         });
     }
 
-
-
     /**
      * Wrapper class for the output of `ghc-modi browse` command.
      */
@@ -198,6 +198,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     public synchronized String exec(@NotNull String command) throws GhcModiError {
         if (!enabled) { return null; }
         if (path == null) { return null; }
+        if (!validateGhcVersion()) { return null; }
         if (process == null) { spawnProcess(); }
         if (output == null) { throw new InitError("Output stream was unexpectedly null."); }
         if (input == null) { throw new InitError("Input stream was unexpectedly null."); }
@@ -222,10 +223,17 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         output = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
     }
 
+    private boolean validateGhcVersion() {
+        if (path == null) throw new RuntimeException("Unexpected GhcModi.path == null");
+        ghcVersionValidation = GhcModUtil.validateGhcVersion(ghcVersionValidation, module.getProject(), path, flags);
+        return ghcVersionValidation == GhcVersionValidation.VALID;
+    }
+
     /**
      * Kills the existing process and closes input and output if they exist.
      */
     private synchronized void kill() {
+        ghcVersionValidation = GhcVersionValidation.PENDING_VALIDATION;
         if (process != null) process.destroy();
         process = null;
         try { if (input != null) input.close(); } catch (IOException e) { /* Ignored */ }
@@ -443,5 +451,4 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     public String getComponentName() {
         return "GhcModi";
     }
-
 }

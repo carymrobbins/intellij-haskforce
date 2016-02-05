@@ -1,6 +1,12 @@
 package com.haskforce.highlighting.annotation.external;
 
 import com.haskforce.settings.HaskellBuildSettings;
+import com.haskforce.settings.ToolKey;
+import com.haskforce.utils.ExecUtil;
+import com.haskforce.utils.NotificationUtil;
+import com.intellij.execution.configurations.GeneralCommandLine;
+import com.intellij.execution.configurations.ParametersList;
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.editor.VisualPosition;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
@@ -12,6 +18,8 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.util.*;
 import java.util.HashSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 /**
@@ -141,6 +149,76 @@ public class GhcModUtil {
         return "exec -- " + ghcModPath +  " " + ghcModFlags;
     }
 
+    @NotNull
+    public static GhcVersionValidation validateGhcVersion(@Nullable GhcVersionValidation v,
+                                                          @NotNull Project project,
+                                                          @NotNull String ghcModPath,
+                                                          @NotNull String ghcModFlags) {
+        if (v == null || v == GhcVersionValidation.PENDING_VALIDATION) {
+            return validateGhcVersion(project, ghcModPath, ghcModFlags)
+                ? GhcVersionValidation.VALID
+                : GhcVersionValidation.INVALID;
+        }
+        return v;
+    }
+
+    private static boolean validateGhcVersion(@NotNull Project project,
+                                              @NotNull String ghcModPath,
+                                              @NotNull String ghcModFlags) {
+        GeneralCommandLine ghcModVersionCmdLine = new GeneralCommandLine(ghcModPath);
+        ParametersList ghcModVersionParamsList = ghcModVersionCmdLine.getParametersList();
+        ghcModVersionParamsList.addParametersString(ghcModFlags);
+        ghcModVersionParamsList.add("--version");
+        String maybeGhcModVersionInfo = ExecUtil.readCommandLine(ghcModVersionCmdLine);
+        if (maybeGhcModVersionInfo == null) {
+            NotificationUtil.displayToolsNotification(NotificationType.ERROR, project, "ghc-mod",
+              "Could not get version info from ghc-mod executable: " + ghcModPath
+            );
+            return false;
+        }
+        String ghcModVersionInfo = maybeGhcModVersionInfo.trim();
+        Matcher m = GHC_VERSION_REGEX.matcher(ghcModVersionInfo);
+        if (!m.find()) {
+            NotificationUtil.displayToolsNotification(NotificationType.ERROR, project, "ghc-mod",
+              "Could not find GHC version in ghc-mod version info: " + ghcModVersionInfo
+            );
+            return false;
+        }
+        String ghcModGhcVersion = m.group(1);
+        String stackPath = maybeStackPath(project);
+        GeneralCommandLine ghcVersionCmdLine = new GeneralCommandLine();
+        HaskellBuildSettings settings = HaskellBuildSettings.getInstance(project);
+        if (stackPath != null) {
+            ghcVersionCmdLine.setExePath(stackPath);
+            ghcVersionCmdLine.addParameters(
+                "--stack-yaml", settings.getStackFile(),
+                "ghc", "--", "--numeric-version"
+            );
+        } else {
+            String ghcPath = settings.getGhcPath();
+            ghcVersionCmdLine.setExePath(ghcPath);
+            ghcVersionCmdLine.addParameter("--numeric-version");
+        }
+        String maybeGhcVersion = ExecUtil.readCommandLine(ghcVersionCmdLine);
+        if (maybeGhcVersion == null) {
+            NotificationUtil.displaySimpleNotification(NotificationType.ERROR, project, "ghc",
+              "No version info returned from GHC command: " + ghcVersionCmdLine.getCommandLineString()
+            );
+            return false;
+        }
+        String ghcVersion = maybeGhcVersion.trim();
+        if (!ghcVersion.trim().equals(ghcModGhcVersion)) {
+            NotificationUtil.displayToolsNotification(NotificationType.ERROR, project, "ghc-mod",
+              "Attempting to use a ghc-mod compiled with a different version of ghc:\n" +
+                "GHC version: " + ghcVersion + "\n" +
+                "ghc-mod compiled with ghc version: " + ghcModGhcVersion + "\n" +
+                "Please reconfigure ghc-mod to use a version compiled with GHC " + ghcVersion
+            );
+            return false;
+        }
+        return true;
+    }
+
     /**
      * If stack is enabled for the project, return the stack path.  If this method
      * returns null, stack is not enabled for the project.
@@ -150,5 +228,32 @@ public class GhcModUtil {
         HaskellBuildSettings s = HaskellBuildSettings.getInstance(project);
         if (!s.isStackEnabled()) return null;
         return s.getStackPath();
+    }
+
+    /**
+     * Used for parsing the GHC version from `ghc-mod --version`, for example -
+     * $ ghc-mod --version
+     * ghc-mod version 5.4.0.0 compiled by GHC 7.10.2
+     */
+    private static Pattern GHC_VERSION_REGEX = Pattern.compile("GHC (\\d+(\\.\\d+)+)");
+
+    /**
+     * Values for keeping track of ghc-mod processes' validation of their ghc version.
+     */
+    public enum GhcVersionValidation {
+        PENDING_VALIDATION("PENDING_VALIDATION"),
+        VALID("VALID"),
+        INVALID("INVALID");
+
+        private final String name;
+
+        GhcVersionValidation(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return getClass().getSimpleName() + '.' + name;
+        }
     }
 }

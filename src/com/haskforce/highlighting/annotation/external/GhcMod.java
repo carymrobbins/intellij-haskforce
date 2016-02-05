@@ -6,6 +6,7 @@ import com.haskforce.features.intentions.RemoveForall;
 import com.haskforce.highlighting.annotation.HaskellAnnotationHolder;
 import com.haskforce.highlighting.annotation.HaskellProblem;
 import com.haskforce.highlighting.annotation.Problems;
+import com.haskforce.highlighting.annotation.external.GhcModUtil.GhcVersionValidation;
 import com.haskforce.settings.ToolKey;
 import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.NotificationUtil;
@@ -40,6 +41,9 @@ public class GhcMod {
 
     // Map of module -> errorMessage.  Useful to ensure we don't output the same error multiple times.
     private static Map<Module, String> errorState = new HashMap<Module, String>(0);
+
+    private static Map<Project, GhcVersionValidation> ghcVersionValidationMap =
+        new HashMap<Project, GhcVersionValidation>(0);
 
     @Nullable
     public static String getPath(@NotNull Project project) {
@@ -125,6 +129,7 @@ public class GhcMod {
     @Nullable
     public static String exec(@NotNull Project project, @NotNull String workingDirectory, @NotNull String ghcModPath,
                               @NotNull String command, @NotNull String ghcModFlags, String... params) {
+        if (!validateGhcVersion(project, ghcModPath, ghcModFlags)) return null;
         GeneralCommandLine commandLine = new GeneralCommandLine(ghcModPath);
         GhcModUtil.updateEnvironment(project, commandLine.getEnvironment());
         ParametersList parametersList = commandLine.getParametersList();
@@ -136,6 +141,15 @@ public class GhcMod {
         // Make sure we can actually see the errors.
         commandLine.setRedirectErrorStream(true);
         return ExecUtil.readCommandLine(commandLine);
+    }
+
+    private static boolean validateGhcVersion(@NotNull Project project,
+                                              @NotNull String ghcModPath,
+                                              @NotNull String ghcModFlags) {
+        GhcVersionValidation v = ghcVersionValidationMap.get(project);
+        GhcVersionValidation newV = GhcModUtil.validateGhcVersion(v, project, ghcModPath, ghcModFlags);
+        ghcVersionValidationMap.put(project, newV);
+        return newV == GhcVersionValidation.VALID;
     }
 
     /** Similar to parseProblems(Scanner), except also resolves absolute file paths. */
