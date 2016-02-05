@@ -38,7 +38,7 @@ public class GhcMod {
     @SuppressWarnings("UnusedDeclaration")
     private static final Logger LOG = Logger.getInstance(GhcMod.class);
 
-    // Map of project -> errorMessage.  Useful to ensure we don't output the same error multiple times.
+    // Map of module -> errorMessage.  Useful to ensure we don't output the same error multiple times.
     private static Map<Module, String> errorState = new HashMap<Module, String>(0);
 
     @Nullable
@@ -82,17 +82,17 @@ public class GhcMod {
 
     @Nullable
     public static String[] list(@NotNull Module module, @NotNull String workingDirectory) {
-        return simpleExecToLines(module, workingDirectory, "", "list");
+        return simpleExecToLines(module, workingDirectory, getFlags(module.getProject()), "list");
     }
 
     @Nullable
     public static String[] lang(@NotNull Module module, @NotNull String workingDirectory) {
-        return simpleExecToLines(module, workingDirectory, "", "lang");
+        return simpleExecToLines(module, workingDirectory, getFlags(module.getProject()), "lang");
     }
 
     @Nullable
     public static String[] flag(@NotNull Module module, @NotNull String workingDirectory) {
-        return simpleExecToLines(module, workingDirectory, "", "flag");
+        return simpleExecToLines(module, workingDirectory, getFlags(module.getProject()), "flag");
     }
 
     public static void displayError(@NotNull Module module, @NotNull String message) {
