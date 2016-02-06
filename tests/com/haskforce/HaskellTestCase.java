@@ -33,6 +33,7 @@ import com.haskforce.highlighting.HaskellLexerTest;
 import com.haskforce.highlighting.annotation.external.GhcModTest;
 import com.haskforce.highlighting.annotation.external.GhcModUtilTest;
 import com.haskforce.importWizard.stack.StackImportWizardTest;
+import com.haskforce.importWizard.stack.StackYamlTest;
 import com.haskforce.parser.HaskellParserTest;
 import com.haskforce.parser.HaskellParsingLexerTest;
 import com.haskforce.projectWizard.NewProjectWizardTest;
@@ -71,6 +72,7 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(StackImportWizardTest.class);
         suite.addTestSuite(NewProjectWizardTest.class);
         suite.addTestSuite(GhcModTest.class);
+        suite.addTestSuite(StackYamlTest.class);
         return suite;
     }
 }
