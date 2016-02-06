@@ -1,7 +1,7 @@
 <idea-plugin version="2" use-idea-classloader="true">
   <id>com.haskforce</id>
   <name>HaskForce</name>
-  <version>0.3-beta.27-SNAPSHOT</version>
+  <version>0.3-beta.27</version>
   <vendor url="https://github.com/carymrobbins/intellij-haskforce">HaskForce on GitHub</vendor>
 
   <description>Plugin for Haskell language support.</description>
@@ -14,6 +14,16 @@
     <p>
       If you encounter any issues, please submit them on our
       <a href="https://github.com/carymrobbins/intellij-haskforce/issues">bug tracker</a>.
+    </p>
+    <p>
+      <b>v0.3-beta.27</b>
+      <ul>
+        <li>Warn if ghc-mod is compiled with a different version of GHC (#219)</li>
+        <li>Ghc-mod now executes in Stack context if applicable (#229)</li>
+        <li>Fixed halted IDE when modifying class constraints (#228)</li>
+        <li>Fixed importing Stack project at `.` directory (#230)</li>
+        <li>Fixed IndexOutOfBounds exception during indexing (#164)</li>
+      </ul>
     </p>
     <p>
       <b>v0.3-beta.26</b>
