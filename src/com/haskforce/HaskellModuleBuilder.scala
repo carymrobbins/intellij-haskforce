@@ -9,7 +9,6 @@ import javax.swing._
 import scala.collection.mutable
 
 import com.intellij.execution.configurations.GeneralCommandLine
-import com.intellij.ide.util.PropertiesComponent
 import com.intellij.ide.util.projectWizard._
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileTypes.FileTypeManager
@@ -21,7 +20,6 @@ import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
 import com.intellij.openapi.util.io.FileUtil
-import com.intellij.ui.ErrorLabel
 import com.intellij.uiDesigner.core.Spacer
 import org.apache.commons.lang.builder.HashCodeBuilder
 import org.jetbrains.annotations.{NotNull, Nullable}
@@ -30,7 +28,7 @@ import com.haskforce.Implicits._
 import com.haskforce.cabal.settings.CabalComponentType
 import com.haskforce.cabal.settings.ui.NewCabalProjectForm
 import com.haskforce.macros.string.dedent
-import com.haskforce.settings.{HaskellBuildSettings, ToolKey}
+import com.haskforce.settings.HaskellBuildSettings
 import com.haskforce.ui.GC
 import com.haskforce.utils.{GuiUtil, Logging}
 
@@ -134,22 +132,24 @@ case class HaskellBuildToolStep(
     var result = true
     if (form.buildWithStackRadio.isSelected) {
       if (!new File(form.stackPathField.getText).canExecute) {
-        form.stackPathErrorsField.setErrorText("Invalid stack path", Color.red)
+        form.stackPathErrorsField.setText("Invalid stack path")
         result = false
       }
     } else if (form.buildWithCabalRadio.isSelected) {
       if (!new File(form.ghcPathField.getText).canExecute) {
-        form.ghcPathErrorsField.setErrorText("Invalid ghc path", Color.red)
+        form.ghcPathErrorsField.setText("Invalid ghc path")
         result = false
       }
       if (!new File(form.cabalPathField.getText).canExecute) {
-        form.cabalPathErrorsField.setErrorText("Invalid cabal path", Color.red)
+        form.cabalPathErrorsField.setText("Invalid cabal path")
         result = false
       }
     } else {
-      form.stackPathErrorsField.setErrorText("Must select Stack or Cabal build.", Color.red)
+      form.stackPathErrorsField.setText("Must select Stack or Cabal build.")
       result = false
     }
+    form.contentPane.revalidate()
+    form.contentPane.repaint()
     result
   }
 }
@@ -161,13 +161,16 @@ class HaskellBuildToolStepForm(wizardContext: WizardContext) {
   buildWithRadioGroup.add(buildWithStackRadio)
   buildWithRadioGroup.add(buildWithCabalRadio)
   val stackPathField = new TextFieldWithBrowseButton
-  val stackPathErrorsField = new ErrorLabel()
+  val stackPathErrorsField = new JLabel()
+  stackPathErrorsField.setForeground(Color.red)
   GuiUtil.addFolderListener(stackPathField, "stack")
   val ghcPathField = new TextFieldWithBrowseButton
-  val ghcPathErrorsField = new ErrorLabel()
+  val ghcPathErrorsField = new JLabel()
+  ghcPathErrorsField.setForeground(Color.red)
   GuiUtil.addFolderListener(ghcPathField, "ghc")
   val cabalPathField = new TextFieldWithBrowseButton
-  val cabalPathErrorsField = new ErrorLabel()
+  val cabalPathErrorsField = new JLabel()
+  cabalPathErrorsField.setForeground(Color.red)
   GuiUtil.addFolderListener(cabalPathField, "cabal")
 
   private val stackFields = List(stackPathField)
