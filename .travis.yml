@@ -1,7 +1,10 @@
 language: java
 sudo: false
 jdk:
-  - openjdk6
+  # Disable jdk6 builds as they are mysteriously failing on travis
+  # Failing CI job: https://travis-ci.org/carymrobbins/intellij-haskforce/jobs/107356422
+  # Issue: https://github.com/carymrobbins/intellij-haskforce/issues/234
+  # - openjdk6
   - oraclejdk8
 cache:
   directories:
