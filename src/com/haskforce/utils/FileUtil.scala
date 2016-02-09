@@ -20,12 +20,12 @@ object FileUtil {
   def updateFileText(project: Project, file: PsiFile, function: Function[String, String]) {
     val app = ApplicationManager.getApplication
     app.saveAll()
-    app.invokeLater {
+    app.invokeLater { () =>
       Option(PsiDocumentManager.getInstance(project).getDocument(file)).foreach { document =>
-        CommandProcessor.getInstance.executeCommand(project, {
-          app.runWriteAction {
+        CommandProcessor.getInstance.executeCommand(project, { () =>
+          app.runWriteAction({ () =>
             document.setText(function.fun(document.getText))
-          }
+          }: Runnable)
         }, "Update text for " + file.getName, "", document)
       }
     }

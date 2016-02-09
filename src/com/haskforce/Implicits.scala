@@ -2,14 +2,29 @@ package com.haskforce
 
 import java.awt.event._
 import java.util.Comparator
+import java.util.concurrent.Callable
 import javax.swing.event.{DocumentListener, DocumentEvent}
 
 import com.intellij.openapi.util.{Computable, Condition}
 
 object Implicits {
-  implicit def funToRunnable(block: => Unit): Runnable = new Runnable { def run() = block }
+  implicit class Fun0[A](f: () => A) {
+    def toRunnable(implicit ev: A =:= Unit): Runnable = new Runnable {
+      override def run(): Unit = f()
+    }
 
-  implicit def funToComputable[A](block: => A): Computable[A] = new Computable[A] { def compute(): A = block }
+    def toCallable: Callable[A] = new Callable[A] {
+      override def call(): A = f()
+    }
+
+    def toComputable: Computable[A] = new Computable[A] {
+      override def compute(): A = f()
+    }
+  }
+
+  implicit def funToRunnable(block: () => Unit): Runnable = block.toRunnable
+
+  implicit def funToComputable[A](block: () => A): Computable[A] = block.toComputable
 
   implicit def funToItemListener(f: ItemEvent => Unit): ItemListener = new ItemListener {
     override def itemStateChanged(e: ItemEvent): Unit = f(e)
