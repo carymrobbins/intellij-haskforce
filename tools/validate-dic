@@ -4,7 +4,13 @@ set -e
 
 DIC="$(dirname "$0")/../resources/dictionary/haskell.dic"
 
-valid() { sort "$DIC" | uniq; }
+get_unique() {
+  sort "$DIC" | uniq
+}
+
+invalid_words() {
+  egrep -i '[^a-z]' "$DIC" || true
+}
 
 case "$1" in
   "--overwrite")
@@ -12,15 +18,24 @@ case "$1" in
     echo "$RESULT" > "$DIC"
     ;;
   "--show")
-    valid
+    get_unique
     ;;
   "")
-    (valid | cmp - "$DIC" 2>&1 > /dev/null) || {
+    (get_unique | cmp - "$DIC" 2>&1 > /dev/null) || {
       >&2 echo "haskell.dic contains unsorted or duplicate words."
       exit 1
     }
+    INVALID="$(invalid_words)"
+    if [ -n "$INVALID" ]; then
+      >&2 echo "Invalid words found:"
+      while read -r word; do
+        >&2 echo " * '$word'"
+      done <<< "$INVALID"
+      exit 1
+    fi
     ;;
   *)
     >&2 echo "Usage: $0 [--overwrite]"
+    exit 1
     ;;
 esac
