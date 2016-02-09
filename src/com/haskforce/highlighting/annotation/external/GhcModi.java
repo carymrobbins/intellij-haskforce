@@ -61,9 +61,8 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         return getFuture(project, typeFuture);
     }
 
-
     @Nullable
-    private static <T> T getFuture(@NotNull Project project, @NotNull Future<T> future) {
+    public static <T> T getFuture(@NotNull Project project, @NotNull Future<T> future) {
         long timeout = ToolKey.getGhcModiTimeout(project);
         try {
             return future.get(timeout, TimeUnit.MILLISECONDS);
@@ -78,6 +77,10 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public boolean isConfigured() {
+        return path != null;
     }
 
     /**
