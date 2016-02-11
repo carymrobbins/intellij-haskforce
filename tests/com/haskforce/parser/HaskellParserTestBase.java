@@ -22,7 +22,6 @@
 
 package com.haskforce.parser;
 
-import com.haskforce.parsing.jsonParser.JsonParser;
 import com.haskforce.utils.ExecUtil;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.testFramework.ParsingTestCase;
@@ -35,8 +34,6 @@ import java.io.File;
 import java.io.IOException;
 
 public abstract class HaskellParserTestBase extends ParsingTestCase {
-    private JsonParser jsonParser;
-
     public HaskellParserTestBase(String dataPath, String fileExt, ParserDefinition... definitions) {
         super(dataPath, fileExt, definitions);
     }
@@ -94,8 +91,7 @@ public abstract class HaskellParserTestBase extends ParsingTestCase {
      * is a convenient place to hook into the testing.
      *
      * Expected outputs go <path>/<component>/expected/, putting the parser
-     * outputs in tests/gold/parser/expected and jsonParser outputs in
-     * tests/gold/parser/expectedJson.
+     * outputs in tests/gold/parser/expected
      */
     @Override
     protected void checkResult(@NonNls @TestDataFile String targetDataName,
@@ -103,22 +99,10 @@ public abstract class HaskellParserTestBase extends ParsingTestCase {
         doCheckResult(myFullDataPath, file, checkAllPsiRoots(),
                 "expected" + File.separator + targetDataName, skipSpaces(),
                 includeRanges());
-/* TODO: Re-enable if we return to parser-helper.
-        String phPath = ExecUtil.locateExecutableByGuessing("parser-helper");
-        if (phPath != null && !phPath.isEmpty()) {
-            String expectedFile = myFullDataPath + File.separator +
-                    "expectedJson" + File.separator + targetDataName + ".txt";
-            assertSameLinesWithFile(expectedFile,
-                    jsonParser.getJson(file.getText(), phPath));
-        } else {
-            assertEquals(true, false); // Always false.
-        }
-*/
     }
 
     @Override
     protected void setUp() throws Exception {
         super.setUp();
-        jsonParser = new JsonParser(myProject);
     }
 }
