@@ -154,7 +154,7 @@
       <include name="jre/lib/ext/sunpkcs11.jar"/>
       <include name="jre/lib/ext/zipfs.jar"/>
     </fileset>
-    <fileset dir="${idea.home}/lib" includes="junit-*.jar" />
+
     <fileset dir="${idea.home}" includes="**/*.jar">
       <exclude name="lib/ant/lib/**"/>
     </fileset>
@@ -760,19 +760,27 @@
     </exec>
   </target>
 
-  <target name="test" depends="validate-dic,build.modules">
+  <target name="test" depends="validate-dic,build.modules,test-without-build"/>
+
+  <target name="test-without-build">
     <property name="suspend" value="n"/>
 
     <junit printsummary="yes" haltonfailure="false" showoutput="yes" failureproperty="failureFound"
            fork="yes" forkmode="once" reloading="no">
+      <!--
+        Note that the JVM args provided here were determined by running the tests from IntelliJ.
+        IntelliJ's "Run" console output lists all of the arguments passed to the java process.
+        If tests stop working mysteriously after upgrading IntelliJ, you should double check
+        to ensure all of our arguments still match what IntelliJ's.
+       -->
       <jvmarg value="-Didea.home.path=${idea.home}"/>
       <jvmarg value="-Xbootclasspath/a:${idea.home}/lib/boot.jar"/>
+      <jvmarg value="-Didea.load.plugins.id=com.haskforce"/>
       <jvmarg value="-Dfile.encoding=UTF-8"/>
       <jvmarg value="-ea"/>
       <jvmarg value="-Didea.plugins.path=${idea.home}/plugins"/>
       <jvmarg value="-Didea.launcher.bin.path=${idea.home}/bin"/>
-      <classpath location=".">
-        <pathelement location="${idea.home}/lib/junit-4.11.jar" />
+      <classpath>
         <fileset dir="${idea.home}" includes="**/*.jar">
           <exclude name="lib/ant/lib/*"/>
         </fileset>
