@@ -9,6 +9,8 @@ import java.io.File
 
 import com.intellij.openapi.project.Project
 
+import com.haskforce.utils.ExecUtil.ExecError
+
 /**
  * Helper class to execute cabal based on compiler settings.
  */
@@ -35,7 +37,7 @@ object CabalExecutor {
 }
 
 case class CabalExecutor private (factory: () => GeneralCommandLine) {
-  def getNumericVersion: String = rawExec("--numeric-version")
+  def getNumericVersion: Either[ExecError, String] = rawExec("--numeric-version")
 
   def rawCommandLine(): GeneralCommandLine = factory()
 
@@ -45,7 +47,9 @@ case class CabalExecutor private (factory: () => GeneralCommandLine) {
     commandLine
   }
 
-  def rawExec(args: String*): String = ExecUtil.readCommandLine(rawCommandLine(args: _*))
+  def rawExec(args: String*): Either[ExecError, String] = {
+    ExecUtil.readCommandLine(rawCommandLine(args: _*))
+  }
 
   @throws(classOf[ExecutionException])
   def init(project: Project, args: Seq[String]): String = {

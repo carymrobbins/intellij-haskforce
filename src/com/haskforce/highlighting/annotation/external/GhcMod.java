@@ -10,6 +10,7 @@ import com.haskforce.highlighting.annotation.external.GhcModUtil.GhcVersionValid
 import com.haskforce.settings.ToolKey;
 import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.NotificationUtil;
+import com.haskforce.utils.EitherUtil;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
 import com.intellij.lang.annotation.Annotation;
@@ -26,6 +27,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import scala.util.Either;
 
 import java.io.File;
 import java.util.*;
@@ -140,7 +142,16 @@ public class GhcMod {
         commandLine.setWorkDirectory(workingDirectory);
         // Make sure we can actually see the errors.
         commandLine.setRedirectErrorStream(true);
-        return ExecUtil.readCommandLine(commandLine);
+        Either<ExecUtil.ExecError, String> result = ExecUtil.readCommandLine(commandLine);
+        if (result.isLeft()) {
+            //noinspection ThrowableResultOfMethodCallIgnored
+            ExecUtil.ExecError e = EitherUtil.unsafeGetLeft(result);
+            NotificationUtil.displayToolsNotification(
+                NotificationType.ERROR, project, "ghc-mod", e.getMessage()
+            );
+            return null;
+        }
+        return EitherUtil.unsafeGetRight(result);
     }
 
     private static boolean validateGhcVersion(@NotNull Project project,

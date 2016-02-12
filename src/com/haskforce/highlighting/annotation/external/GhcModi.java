@@ -209,10 +209,14 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     }
 
     private void spawnProcess() throws GhcModiError {
-        GeneralCommandLine commandLine = new GeneralCommandLine(path);
+        GeneralCommandLine commandLine = new GeneralCommandLine(
+            GhcModUtil.changedPathIfStack(module.getProject(), path)
+        );
         GhcModUtil.updateEnvironment(module.getProject(), commandLine.getEnvironment());
         ParametersList parametersList = commandLine.getParametersList();
-        parametersList.addParametersString(flags);
+        parametersList.addParametersString(
+            GhcModUtil.changedFlagsIfStack(module.getProject(), path, flags)
+        );
         // setWorkDirectory is deprecated but is needed to work with IntelliJ 13 which does not have withWorkDirectory.
         commandLine.setWorkDirectory(workingDirectory);
         // Make sure we can actually see the errors.
@@ -386,9 +390,8 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
      */
     public GhcModi(@NotNull Module module) {
         this.module = module;
-        String path = lookupPath();
-        this.path = GhcModUtil.changedPathIfStack(module.getProject(), path);
-        this.flags = GhcModUtil.changedFlagsIfStack(module.getProject(), path, lookupFlags());
+        this.path = lookupPath();
+        this.flags = lookupFlags();
         this.workingDirectory = lookupWorkingDirectory();
         // Ensure that we are notified of changes to the settings.
         module.getProject().getMessageBus().connect().subscribe(SettingsChangeNotifier.GHC_MODI_TOPIC, this);
@@ -396,9 +399,8 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     @Override
     public void onSettingsChanged(@NotNull ToolSettings settings) {
-        String path = settings.getPath();
-        this.path = GhcModUtil.changedPathIfStack(module.getProject(), path);
-        this.flags = GhcModUtil.changedFlagsIfStack(module.getProject(), path, settings.getFlags());
+        this.path = settings.getPath();
+        this.flags = settings.getFlags();
         kill();
         try {
             spawnProcess();

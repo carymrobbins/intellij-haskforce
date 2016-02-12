@@ -7,9 +7,15 @@ import com.haskforce.highlighting.annotation.HaskellAnnotationHolder;
 import com.haskforce.highlighting.annotation.HaskellProblem;
 import com.haskforce.highlighting.annotation.Problems;
 import com.haskforce.settings.ToolKey;
+import com.haskforce.utils.EitherUtil;
 import com.haskforce.utils.ExecUtil;
+import com.haskforce.utils.ExecUtil.ExecError;
+import com.haskforce.utils.FunctionUtil;
+import com.haskforce.utils.NotificationUtil;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
+import com.intellij.lang.annotation.Annotation;
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
@@ -18,8 +24,10 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import scala.runtime.AbstractFunction1;
+import scala.util.Either;
+import scala.util.Right;
 
-import java.io.File;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,31 +42,57 @@ public class HLint {
     private static final Gson gson = new GsonBuilder().create();
 
     @NotNull
-    public static Problems lint(@NotNull Project project, @NotNull String workingDirectory, @NotNull String file) {
+    public static Problems lint(final @NotNull Project project, @NotNull String workingDirectory,
+                                @NotNull String file) {
         final String hlintPath = ToolKey.HLINT_KEY.getPath(project);
         final String hlintFlags = ToolKey.HLINT_KEY.getFlags(project);
         if (hlintPath == null) return new Problems();
 
-        return parseProblems(workingDirectory, hlintPath, hlintFlags, file);
+        return parseProblems(workingDirectory, hlintPath, hlintFlags, file).fold(
+            new AbstractFunction1<ExecError, Problems>() {
+                @Override
+                public Problems apply(ExecError e) {
+                    NotificationUtil.displayToolsNotification(
+                        NotificationType.ERROR, project, "hlint", e.getMessage()
+                    );
+                    return new Problems();
+                }
+            },
+            FunctionUtil.<Problems>identity()
+        );
     }
 
     @NotNull
-    public static Problems parseProblems(@NotNull String workingDirectory, @NotNull String path, @NotNull String flags, @NotNull String file) {
-        VersionTriple version = getVersion(workingDirectory, path);
-        if (version == null) {
-            return new Problems();
-        }
-        final boolean useJson = version.gte(HLINT_MIN_VERSION_WITH_JSON_SUPPORT);
-        final String stdout = runHlint(workingDirectory, path, flags,
-                                       useJson ? new String[]{"--json", file} : new String[]{file});
-        if (stdout == null) {
-            LOG.warn("Unable to get output from hlint");
-            return new Problems();
-        }
-        if (useJson) {
-            return parseProblemsJson(stdout);
-        }
-        return parseProblemsFallback(stdout);
+    public static Either<ExecError, Problems> parseProblems(final @NotNull String workingDirectory,
+                                                            final @NotNull String path,
+                                                            final @NotNull String flags,
+                                                            final @NotNull String file) {
+        return getVersion(workingDirectory, path).fold(
+            new AbstractFunction1<ExecError, Either<ExecError, Problems>>() {
+                @Override
+                public Either<ExecError, Problems> apply(ExecError e) {
+                    return e.toLeft();
+                }
+            },
+            new AbstractFunction1<VersionTriple, Either<ExecError, Problems>>() {
+                @Override
+                public Either<ExecError, Problems> apply(VersionTriple version) {
+                    final boolean useJson = version.gte(HLINT_MIN_VERSION_WITH_JSON_SUPPORT);
+                    return EitherUtil.rightMap(runHlint(
+                        workingDirectory, path, flags,
+                        useJson ? new String[]{"--json", file} : new String[]{file}
+                    ), new AbstractFunction1<String, Problems>() {
+                        @Override
+                        public Problems apply(String stdout) {
+                            if (useJson) {
+                                return parseProblemsJson(stdout);
+                            }
+                            return parseProblemsFallback(stdout);
+                        }
+                    });
+                }
+            }
+        );
     }
 
     /**
@@ -118,32 +152,38 @@ public class HLint {
 
     private static final Pattern HLINT_VERSION_REGEX = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)");
 
-    @Nullable
-    private static VersionTriple getVersion(String workingDirectory, String hlintPath) {
-        final String version = runHlint(workingDirectory, hlintPath, "--version");
-        if (version == null) {
-            return null;
-        }
-        Matcher m = HLINT_VERSION_REGEX.matcher(version);
-        if (!m.find()) {
-            return null;
-        }
-        return new VersionTriple(
-                Integer.parseInt(m.group(1)),
-                Integer.parseInt(m.group(2)),
-                Integer.parseInt(m.group(3)));
+    @NotNull
+    private static Either<ExecError, VersionTriple> getVersion(String workingDirectory, String hlintPath) {
+        return EitherUtil.rightFlatMap(
+            runHlint(workingDirectory, hlintPath, "--version"),
+            new AbstractFunction1<String, Either<ExecError, VersionTriple>>() {
+                @Override
+                public Either<ExecError, VersionTriple> apply(String version) {
+                    Matcher m = HLINT_VERSION_REGEX.matcher(version);
+                    if (!m.find()) {
+                        return new ExecError(
+                            "Could not parse version from hlint: '" + version + "'",
+                            null
+                        ).toLeft();
+                    }
+                    return new Right<ExecError, VersionTriple>(new VersionTriple(
+                        Integer.parseInt(m.group(1)),
+                        Integer.parseInt(m.group(2)),
+                        Integer.parseInt(m.group(3))
+                    ));
+                }
+            }
+        );
     }
 
     /**
      * Runs hlintProg with parameters if hlintProg can be executed.
      */
-    @Nullable
-    private static String runHlint(@NotNull String workingDirectory,
-                                   @NotNull String hlintProg,
-                                   @NotNull String hlintFlags,
-                                   @NotNull String... params) {
-        if (!(new File(hlintProg).canExecute())) return null;
-
+    @NotNull
+    private static Either<ExecError, String> runHlint(@NotNull String workingDirectory,
+                                                               @NotNull String hlintProg,
+                                                               @NotNull String hlintFlags,
+                                                               @NotNull String... params) {
         GeneralCommandLine commandLine = new GeneralCommandLine();
         commandLine.setWorkDirectory(workingDirectory);
         commandLine.setExePath(hlintProg);
@@ -200,7 +240,8 @@ public class HLint {
         }
 
         protected void createAnnotation(@NotNull HaskellAnnotationHolder holder, int start, int end, @NotNull String message) {
-            holder.createWarningAnnotation(TextRange.create(start, end), message).registerFix(new IgnoreHLint(hint));
+            Annotation ann = holder.createWarningAnnotation(TextRange.create(start, end), message);
+            if (ann != null) ann.registerFix(new IgnoreHLint(hint));
         }
 
         @Override

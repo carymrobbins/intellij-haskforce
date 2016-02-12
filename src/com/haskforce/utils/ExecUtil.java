@@ -1,5 +1,9 @@
 package com.haskforce.utils;
 
+import scala.util.Either;
+import scala.util.Left;
+import scala.util.Right;
+
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.CapturingProcessHandler;
@@ -8,7 +12,6 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
@@ -20,7 +23,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
-import java.nio.charset.Charset;
 import java.util.List;
 
 /**
@@ -31,96 +33,27 @@ public class ExecUtil {
     private final static Logger LOG = Logger.getInstance(ExecUtil.class);
 
     /**
-     * Execute a command using the default shell.
-     */
-    @Nullable
-    public static String exec(@NotNull final String command) {
-        List<String> lines = execMultiLine(command);
-        if (lines == null) return null;
-        StringBuilder sb = new StringBuilder(100 * lines.size());
-        for (String line : lines) {
-            sb.append(line);
-        }
-        return sb.toString();
-    }
-
-    /**
-     * Execute a command using the default shell.
-     */
-    @Nullable
-    public static List<String> execMultiLine(@NotNull final String command) {
-        // Find some valid working directory, doesn't matter which one.
-        ProjectManager pm = ProjectManager.getInstance();
-        Project[] projects = pm == null ? null : pm.getOpenProjects();
-        final String defaultWorkDir = ".";
-        final String workDir;
-        // Set the working directory if there is an open project.
-        if (pm == null || projects.length == 0) {
-            LOG.info("No open projects so cannot find a valid path. Using '.'.");
-            workDir = defaultWorkDir;
-        } else {
-            workDir = projects[0].getBaseDir().getCanonicalPath();
-        }
-        return execMultiLine(workDir == null ? defaultWorkDir : workDir, command);
-    }
-
-    /**
-     * Execute a command using the default shell in a given work directory.
-     */
-    @Nullable
-    public static List<String> execMultiLine(@NotNull final String workDir, @NotNull final String command) {
-        // Setup shell and the GeneralCommandLine.
-        //
-        // Getting the right PATH among other things is apparently tricky,
-        // but this works regardless if I start IntelliJ through Spotlight or
-        // a terminal.
-        //
-        // WARNING: Running the plugin in IntelliJ directly gives a different
-        //          environment. Install the plugin and make sure that adding
-        //          an Haskell SDK still autodetects things right.
-        final GeneralCommandLine commandLine = new GeneralCommandLine();
-        commandLine.setWorkDirectory(workDir);
-        commandLine.setPassParentEnvironment(true);
-        if (SystemInfo.isWindows) {
-            commandLine.setExePath("cmd");
-            commandLine.addParameter("/c");
-        } else {
-            // Default to UNIX if not Windows.
-            commandLine.setExePath("/bin/sh");
-            commandLine.addParameter("-c");
-        }
-        commandLine.addParameter(command);
-
-        ProcessOutput output;
-        try {
-            output = new CapturingProcessHandler(commandLine.createProcess(),
-                            Charset.defaultCharset(), commandLine.getCommandLineString()).runProcess();
-        } catch (ExecutionException e) {
-            LOG.info("Failed executing " + command);
-            LOG.info("Message: " + e.getMessage());
-            return null;
-        }
-
-        if (output == null) {
-            LOG.info("No output from " + command);
-            return null;
-        }
-
-        return output.getStdoutLines();
-    }
-
-    /**
      * Tries to get the absolute path for a command in the PATH.
      */
     @Nullable
-    public static String locateExecutable(@NotNull final String command) {
-        String whereCmd = (SystemInfo.isWindows ? "where" : "which") + ' ' + command;
-        List<String> lines = execMultiLine(whereCmd);
-        if (lines == null || lines.isEmpty()) return null;
-        String res = lines.get(0);
-        if (res == null) return null;
-        if (res.isEmpty()) LOG.info("Could not find '" + command + "' with ExecUtil.locateExecutable()");
-        return res;
+    public static String locateExecutable(@NotNull final String exePath) {
+        GeneralCommandLine cmdLine = new GeneralCommandLine(
+            SystemInfo.isWindows ? "where" : "which"
+        );
+        cmdLine.addParameter(exePath);
+        final ProcessOutput processOutput;
+        try {
+            processOutput = new CapturingProcessHandler(cmdLine).runProcess();
+        } catch (ExecutionException e) {
+            throw new RuntimeException(
+                "Failed to execute command: " + cmdLine.getCommandLineString(),
+                e
+            );
+        }
+        final String stdout = processOutput.getStdout();
+        final String[] lines = stdout.trim().split("\n");
+        if (lines.length == 0) return null;
+        return lines[0].trim();
     }
 
     /**
@@ -141,6 +74,7 @@ public class ExecUtil {
         List<String> paths = ContainerUtil.newArrayList();
         // Executables installed by stack.
         paths.add(homeDir + sep +  ".local" + sep + "bin");
+        //noinspection StatementWithEmptyBody
         if (SystemInfo.isWindows) {
             // TODO: Add windows paths.
         } else {
@@ -162,7 +96,8 @@ public class ExecUtil {
     @NotNull
     public static String guessWorkDir(@NotNull Project project, @NotNull VirtualFile file) {
         final Module module = ModuleUtilCore.findModuleForFile(file, project);
-        return module == null ? project.getBasePath() : guessWorkDir(module);
+        if (module != null) return guessWorkDir(module);
+        return getProjectPath(project);
     }
 
     @NotNull
@@ -174,39 +109,71 @@ public class ExecUtil {
     public static String guessWorkDir(@NotNull Module module) {
         final VirtualFile moduleFile = module.getModuleFile();
         final VirtualFile moduleDir = moduleFile == null ? null : moduleFile.getParent();
-        return moduleDir == null ? module.getProject().getBasePath() : moduleDir.getPath();
+        if (moduleDir != null) return moduleDir.getPath();
+        return getProjectPath(module.getProject());
+    }
+
+    @NotNull
+    private static String getProjectPath(@NotNull Project project) {
+        final String projectPath = project.getBasePath();
+        if (projectPath == null) {
+            // This shouldn't actually happen since the projectPath will only be null for
+            // the default project, not a project which has a corresponding module.
+            throw new RuntimeException(
+                "Unable to guess work directory - project '" + project + "' does not have a " +
+                "base directory"
+            );
+        }
+        return projectPath;
     }
 
     /**
      * Executes commandLine, optionally piping input to stdin, and return stdout.
      */
-    @Nullable
-    public static String readCommandLine(@NotNull GeneralCommandLine commandLine, @Nullable String input) {
-        String output = null;
+    @NotNull
+    public static Either<ExecError, String> readCommandLine(@NotNull GeneralCommandLine commandLine,
+                                                            @Nullable String input) {
+        Process process;
         try {
-            Process process = commandLine.createProcess();
-            if (input != null) {
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+            process = commandLine.createProcess();
+        } catch (ExecutionException e) {
+            return new ExecError(
+                "Failed to create process for command: " + commandLine.getCommandLineString(),
+                e
+            ).toLeft();
+        }
+        if (input != null) {
+            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+            try {
                 writer.write(input);
                 writer.flush();
                 writer.close();
+            } catch (IOException e) {
+                return new ExecError(
+                    "IO error when writing to command process: " + commandLine.getCommandLineString(),
+                    e
+                ).toLeft();
             }
-            output = new CapturingProcessHandler(process).runProcess().getStdout();
-        } catch (ExecutionException e) {
-            LOG.debug(e);
-        } catch (IOException e) {
-            LOG.debug(e);
         }
-        return output;
+        ProcessOutput processOutput = new CapturingProcessHandler(process).runProcess();
+        if (processOutput.getExitCode() != 0) {
+            return new ExecError(
+                "Nonzero exit status (" + processOutput.getExitCode() + ") " +
+                "from command: " + commandLine.getCommandLineString() + "\n" +
+                "Process stderr: " + processOutput.getStderr(),
+                null
+            ).toLeft();
+        }
+        return new Right<ExecError, String>(processOutput.getStdout());
     }
 
-    @Nullable
-    public static String readCommandLine(@NotNull GeneralCommandLine commandLine) {
+    @NotNull
+    public static Either<ExecError, String> readCommandLine(@NotNull GeneralCommandLine commandLine) {
         return readCommandLine(commandLine, null);
     }
 
-    @Nullable
-    public static String readCommandLine(@Nullable String workingDirectory, @NotNull String command, @NotNull String[] params, @Nullable String input) {
+    @NotNull
+    public static Either<ExecError, String> readCommandLine(@Nullable String workingDirectory, @NotNull String command, @NotNull String[] params, @Nullable String input) {
         GeneralCommandLine commandLine = new GeneralCommandLine(command);
         if (workingDirectory != null) {
             commandLine.setWorkDirectory(workingDirectory);
@@ -215,8 +182,28 @@ public class ExecUtil {
         return readCommandLine(commandLine, input);
     }
 
-    @Nullable
-    public static String readCommandLine(@Nullable String workingDirectory, @NotNull String command, @NotNull String... params) {
+    @NotNull
+    public static Either<ExecError, String> readCommandLine(@Nullable String workingDirectory, @NotNull String command, @NotNull String... params) {
         return readCommandLine(workingDirectory, command, params, null);
+    }
+
+    public static class ExecError {
+        private final @NotNull String message;
+        private final @Nullable Throwable cause;
+
+        public ExecError(@NotNull String message, @Nullable Exception cause) {
+            this.cause = cause;
+            this.message = message;
+            // Use .warn() instead of .error() since the latter causes unit test failures.
+            LOG.warn(message, cause);
+        }
+
+        public String getMessage() {
+            return message + "\nCaused by: " + cause;
+        }
+
+        public <A> Left<ExecError, A> toLeft() {
+            return new Left<ExecError, A>(this);
+        }
     }
 }

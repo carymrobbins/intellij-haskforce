@@ -3,9 +3,9 @@ package com.haskforce.settings;
 import com.haskforce.ui.JTextAccessorField;
 import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.GuiUtil;
-import com.intellij.execution.ExecutionException;
-import com.intellij.execution.configurations.GeneralCommandLine;
+import com.haskforce.utils.NotificationUtil;
 import com.intellij.ide.util.PropertiesComponent;
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
@@ -19,6 +19,7 @@ import com.intellij.util.messages.Topic;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import scala.runtime.AbstractFunction1;
 
 import javax.swing.*;
 import java.awt.*;
@@ -265,8 +266,30 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
      */
     @Override
     public void apply() throws ConfigurationException {
-        saveState();
+        validate();
         updateVersionInfoFields();
+        saveState();
+    }
+
+    public void validate() throws ConfigurationException {
+        validateExecutableIfNonEmpty("stylish", stylishPath);
+        validateExecutableIfNonEmpty("hlint", hlintPath);
+        // Validate ghcModPath if either it or ghcModiPath have been set.
+        if (ghcModPath.getText().isEmpty() && !ghcModiPath.getText().isEmpty()) {
+            throw new ConfigurationException("ghc-mod must be configured if ghc-modi is configured.");
+        }
+        validateExecutableIfNonEmpty("ghc-mod", ghcModPath);
+        validateExecutableIfNonEmpty("ghc-modi", ghcModiPath);
+    }
+
+    public void validateExecutable(String name, TextAccessor field) throws ConfigurationException {
+        if (new File(field.getText()).canExecute()) return;
+        throw new ConfigurationException("Not a valid '" + name + "' executable: '" + field.getText() + "'");
+    }
+
+    public void validateExecutableIfNonEmpty(String name, TextAccessor field) throws ConfigurationException {
+        if (field.getText().isEmpty()) return;
+        validateExecutable(name, field);
     }
 
     /**
@@ -286,8 +309,25 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
      * Heuristically finds the version number. Current implementation is the
      * identity function since cabal plays nice.
      */
+    @Nullable
     private static String getVersion(String cmd, String versionFlag) {
-        return ExecUtil.readCommandLine(null, cmd, versionFlag);
+        return ExecUtil.readCommandLine(null, cmd, versionFlag).fold(
+            new AbstractFunction1<ExecUtil.ExecError, String>() {
+                @Override
+                public String apply(ExecUtil.ExecError e) {
+                    NotificationUtil.displaySimpleNotification(
+                        NotificationType.ERROR, null, "Haskell Tools", e.getMessage()
+                    );
+                    return null;
+                }
+            },
+            new AbstractFunction1<String, String>() {
+                @Override
+                public String apply(String s) {
+                    return s;
+                }
+            }
+        );
     }
 
     /**
