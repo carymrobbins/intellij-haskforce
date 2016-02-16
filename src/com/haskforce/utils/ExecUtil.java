@@ -199,7 +199,9 @@ public class ExecUtil {
         }
 
         public String getMessage() {
-            return message + "\nCaused by: " + cause;
+            final StringBuilder result = new StringBuilder(message);
+            if (cause != null) result.append("\nCaused by: ").append(cause);
+            return result.toString();
         }
 
         public <A> Left<ExecError, A> toLeft() {
