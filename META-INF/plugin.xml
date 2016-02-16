@@ -1,7 +1,7 @@
 <idea-plugin version="2" use-idea-classloader="true">
   <id>com.haskforce</id>
   <name>HaskForce</name>
-  <version>0.3-beta.28</version>
+  <version>0.3-beta.29</version>
   <vendor url="https://github.com/carymrobbins/intellij-haskforce">HaskForce on GitHub</vendor>
 
   <description>Plugin for Haskell language support.</description>
@@ -14,6 +14,12 @@
     <p>
       If you encounter any issues, please submit them on our
       <a href="https://github.com/carymrobbins/intellij-haskforce/issues">bug tracker</a>.
+    </p>
+    <p>
+      <b>v0.3-beta.29</b>
+      <ul>
+        <li>Use `hlint --no-exit-code` to avoid failing on lint warnings (#244)</li>
+      </ul>
     </p>
     <p>
       <b>v0.3-beta.28</b>
