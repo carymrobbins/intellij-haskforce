@@ -188,6 +188,9 @@ public class HLint {
         commandLine.setWorkDirectory(workingDirectory);
         commandLine.setExePath(hlintProg);
         ParametersList parametersList = commandLine.getParametersList();
+        // Required so that hlint won't report a non-zero exit status for lint issues.
+        // Otherwise, ExecUtil.readCommandLine will return an error.
+        parametersList.add("--no-exit-code");
         parametersList.addParametersString(hlintFlags);
         parametersList.addAll(params);
         return ExecUtil.readCommandLine(commandLine);
