@@ -1,10 +1,9 @@
 package com.haskforce.highlighting.annotation.external
 
 import com.haskforce.highlighting.annotation.Problems
+import com.haskforce.utils.WrappedFuture
 
-/**
- * Created by crobbins on 2/9/16.
- */
+/** A component which provides problems to be highlighted in the editor. */
 trait ProblemsProvider {
   def getProblems: WrappedFuture[Option[Problems]]
 }

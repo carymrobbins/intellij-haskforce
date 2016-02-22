@@ -9,8 +9,8 @@ import com.intellij.psi.PsiFile
 
 import com.haskforce.Implicits._
 import com.haskforce.highlighting.annotation.Problems
-import com.haskforce.highlighting.annotation.external.{ProblemsProvider, HLint, WrappedFuture}
-import com.haskforce.utils.{NotificationUtil, ExecUtil}
+import com.haskforce.highlighting.annotation.external.{ProblemsProvider, HLint}
+import com.haskforce.utils.{WrappedFuture, NotificationUtil, ExecUtil}
 
 class HLintProblemsProvider private(
   project: Project,
