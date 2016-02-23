@@ -7,8 +7,8 @@ import java.util.EventObject
 
 import com.haskforce.HaskellModuleType
 import com.haskforce.Implicits._
-import com.haskforce.actions.cabal.ComboModuleProxy
 import com.haskforce.cabal.settings.AddCabalPackageOptions
+import com.haskforce.ui.ComboModuleProxy
 import com.haskforce.utils.FileUtil
 import com.intellij.openapi.project.Project
 

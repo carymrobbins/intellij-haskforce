@@ -1,4 +1,4 @@
-package com.haskforce.actions.cabal
+package com.haskforce.ui
 
 import com.intellij.openapi.module.Module
 

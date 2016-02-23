@@ -1,6 +1,6 @@
 package com.haskforce.cabal.settings.ui;
 
-import com.haskforce.actions.cabal.ComboModuleProxy;
+import com.haskforce.ui.ComboModuleProxy;
 import com.haskforce.cabal.settings.CabalComponentType;
 import com.haskforce.ui.SComboBox;
 
