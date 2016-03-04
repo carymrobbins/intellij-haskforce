@@ -14,6 +14,7 @@ public class ToolKey {
     public static final ToolKey HLINT_KEY = new ToolKey("hlint");
     public static final ToolKey GHC_MOD_KEY = new ToolKey("ghcMod");
     public static final ToolKey GHC_MODI_KEY = new ToolKey("ghcModi");
+    public static final ToolKey HASKELL_IDE_ENGINE = new ToolKey("haskellIdeEngine");
 
     public static final String GHC_MODI_TIMEOUT_KEY = "ghcModiTimeout";
     public static final long GHC_MODI_TIMEOUT_DEFAULT = 5000;
