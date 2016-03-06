@@ -143,6 +143,10 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitCompositeElement(o);
   }
 
+  public void visitListlike(@NotNull HaskellListlike o) {
+    visitCompositeElement(o);
+  }
+
   public void visitModuledecl(@NotNull HaskellModuledecl o) {
     visitCompositeElement(o);
   }

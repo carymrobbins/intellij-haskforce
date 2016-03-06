@@ -26,8 +26,8 @@ public class HaskellQqblobImpl extends HaskellCompositeElementImpl implements Ha
     return HaskellPsiImplUtil.isValidHost(this);
   }
 
-  public HaskellQqblob updateText(String s) {
-    return HaskellPsiImplUtil.updateText(this, s);
+  public HaskellQqblob updateText(String p1) {
+    return HaskellPsiImplUtil.updateText(this, p1);
   }
 
   @NotNull

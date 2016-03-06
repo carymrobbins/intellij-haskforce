@@ -104,21 +104,22 @@ Haskell File
                     PsiElement(HaskellTokenType.varidRegexp)('mailTo')
               PsiElement(HaskellTokenType.=)('=')
               EXP
-                PsiElement(HaskellTokenType.[)('[')
-                EXP
-                  QCON
-                    QCONID
-                      CONID
-                        PsiElement(HaskellTokenType.conidRegexp)('Address')
-                  QCON
-                    QCONID
-                      CONID
-                        PsiElement(HaskellTokenType.conidRegexp)('Nothing')
-                  QVAR
-                    QVARID
-                      VARID
-                        PsiElement(HaskellTokenType.varidRegexp)('email')
-                PsiElement(HaskellTokenType.])(']')
+                LISTLIKE
+                  PsiElement(HaskellTokenType.[)('[')
+                  EXP
+                    QCON
+                      QCONID
+                        CONID
+                          PsiElement(HaskellTokenType.conidRegexp)('Address')
+                    QCON
+                      QCONID
+                        CONID
+                          PsiElement(HaskellTokenType.conidRegexp)('Nothing')
+                    QVAR
+                      QVARID
+                        VARID
+                          PsiElement(HaskellTokenType.varidRegexp)('email')
+                  PsiElement(HaskellTokenType.])(']')
               PsiElement(HaskellTokenType.,)(',')
               QVAR
                 QVARID
@@ -126,22 +127,23 @@ Haskell File
                     PsiElement(HaskellTokenType.varidRegexp)('mailHeaders')
               PsiElement(HaskellTokenType.=)('=')
               EXP
-                PsiElement(HaskellTokenType.[)('[')
-                EXP
-                  PsiElement(HaskellTokenType.()('(')
+                LISTLIKE
+                  PsiElement(HaskellTokenType.[)('[')
                   EXP
-                    PSTRINGTOKEN
-                      PsiElement(HaskellTokenType.")('"')
-                      PsiElement(HaskellTokenType.STRINGTOKEN)('Subject')
-                      PsiElement(HaskellTokenType.")('"')
-                  PsiElement(HaskellTokenType.,)(',')
-                  EXP
-                    PSTRINGTOKEN
-                      PsiElement(HaskellTokenType.")('"')
-                      PsiElement(HaskellTokenType.STRINGTOKEN)('Verify your email address')
-                      PsiElement(HaskellTokenType.")('"')
-                  PsiElement(HaskellTokenType.))(')')
-                PsiElement(HaskellTokenType.])(']')
+                    PsiElement(HaskellTokenType.()('(')
+                    EXP
+                      PSTRINGTOKEN
+                        PsiElement(HaskellTokenType.")('"')
+                        PsiElement(HaskellTokenType.STRINGTOKEN)('Subject')
+                        PsiElement(HaskellTokenType.")('"')
+                    PsiElement(HaskellTokenType.,)(',')
+                    EXP
+                      PSTRINGTOKEN
+                        PsiElement(HaskellTokenType.")('"')
+                        PsiElement(HaskellTokenType.STRINGTOKEN)('Verify your email address')
+                        PsiElement(HaskellTokenType.")('"')
+                    PsiElement(HaskellTokenType.))(')')
+                  PsiElement(HaskellTokenType.])(']')
               PsiElement(HaskellTokenType.,)(',')
               QVAR
                 QVARID
@@ -149,22 +151,24 @@ Haskell File
                     PsiElement(HaskellTokenType.varidRegexp)('mailParts')
               PsiElement(HaskellTokenType.=)('=')
               EXP
-                PsiElement(HaskellTokenType.[)('[')
-                EXP
+                LISTLIKE
                   PsiElement(HaskellTokenType.[)('[')
                   EXP
-                    QVAR
-                      QVARID
-                        VARID
-                          PsiElement(HaskellTokenType.varidRegexp)('textPart')
-                  PsiElement(HaskellTokenType.,)(',')
-                  EXP
-                    QVAR
-                      QVARID
-                        VARID
-                          PsiElement(HaskellTokenType.varidRegexp)('htmlPart')
+                    LISTLIKE
+                      PsiElement(HaskellTokenType.[)('[')
+                      EXP
+                        QVAR
+                          QVARID
+                            VARID
+                              PsiElement(HaskellTokenType.varidRegexp)('textPart')
+                      PsiElement(HaskellTokenType.,)(',')
+                      EXP
+                        QVAR
+                          QVARID
+                            VARID
+                              PsiElement(HaskellTokenType.varidRegexp)('htmlPart')
+                      PsiElement(HaskellTokenType.])(']')
                   PsiElement(HaskellTokenType.])(']')
-                PsiElement(HaskellTokenType.])(']')
               PsiElement(HaskellTokenType.})('}')
             PsiElement(HaskellTokenType.where)('where')
             FUNORPATDECL

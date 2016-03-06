@@ -22,6 +22,9 @@ public interface HaskellGuard extends HaskellCompositeElement {
   @Nullable
   HaskellLetexp getLetexp();
 
+  @NotNull
+  List<HaskellListlike> getListlikeList();
+
   @Nullable
   HaskellPat getPat();
 

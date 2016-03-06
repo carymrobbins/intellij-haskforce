@@ -125,6 +125,9 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     else if (t == LETEXP) {
       r = letexp(b, 0);
     }
+    else if (t == LISTLIKE) {
+      r = listlike(b, 0);
+    }
     else if (t == MODULEDECL) {
       r = moduledecl(b, 0);
     }
@@ -4227,7 +4230,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // '[' exp [listlike1] ']'
-  static boolean listlike(PsiBuilder b, int l) {
+  public static boolean listlike(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "listlike")) return false;
     if (!nextTokenIs(b, LBRACKET)) return false;
     boolean r;
@@ -4236,7 +4239,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     r = r && exp(b, l + 1);
     r = r && listlike_2(b, l + 1);
     r = r && consumeToken(b, RBRACKET);
-    exit_section_(b, m, null, r);
+    exit_section_(b, m, LISTLIKE, r);
     return r;
   }
 

@@ -94,6 +94,12 @@ public class HaskellBodyImpl extends HaskellCompositeElementImpl implements Hask
   }
 
   @Override
+  @NotNull
+  public List<HaskellListlike> getListlikeList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellListlike.class);
+  }
+
+  @Override
   @Nullable
   public HaskellNewtypedecl getNewtypedecl() {
     return findChildByClass(HaskellNewtypedecl.class);

@@ -41,20 +41,14 @@ public class HaskellExpImpl extends HaskellCompositeElementImpl implements Haske
 
   @Override
   @NotNull
-  public List<HaskellFunorpatdecl> getFunorpatdeclList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellFunorpatdecl.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellGendecl> getGendeclList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellGendecl.class);
-  }
-
-  @Override
-  @NotNull
   public List<HaskellLetexp> getLetexpList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellLetexp.class);
+  }
+
+  @Override
+  @NotNull
+  public List<HaskellListlike> getListlikeList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellListlike.class);
   }
 
   @Override
