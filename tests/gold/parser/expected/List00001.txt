@@ -13,19 +13,20 @@ Haskell File
       RHS
         PsiElement(HaskellTokenType.=)('=')
         EXP
-          PsiElement(HaskellTokenType.[)('[')
-          EXP
-            PSTRINGTOKEN
-              PsiElement(HaskellTokenType.")('"')
-              PsiElement(HaskellTokenType.STRINGTOKEN)('a')
-              PsiElement(HaskellTokenType.")('"')
-          PsiElement(HaskellTokenType.,)(',')
-          EXP
-            PSTRINGTOKEN
-              PsiElement(HaskellTokenType.")('"')
-              PsiElement(HaskellTokenType.STRINGTOKEN)('b')
-              PsiElement(HaskellTokenType.")('"')
-          PsiElement(HaskellTokenType.])(']')
+          LISTLIKE
+            PsiElement(HaskellTokenType.[)('[')
+            EXP
+              PSTRINGTOKEN
+                PsiElement(HaskellTokenType.")('"')
+                PsiElement(HaskellTokenType.STRINGTOKEN)('a')
+                PsiElement(HaskellTokenType.")('"')
+            PsiElement(HaskellTokenType.,)(',')
+            EXP
+              PSTRINGTOKEN
+                PsiElement(HaskellTokenType.")('"')
+                PsiElement(HaskellTokenType.STRINGTOKEN)('b')
+                PsiElement(HaskellTokenType.")('"')
+            PsiElement(HaskellTokenType.])(']')
     FUNORPATDECL
       PAT
         VARID

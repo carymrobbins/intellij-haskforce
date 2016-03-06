@@ -25,7 +25,7 @@ extends ProjectImportProvider(builder) {
       if (canImportFromFile(stackFile)) return true
     }
     val stackFiles = fileOrDirectory.getChildren.filter(f =>
-      !f.isDirectory && f.getName != "stack.yaml"
+      !f.isDirectory && f.getName.endsWith(".yaml") && f.getName != "stack.yaml"
     )
     stackFiles.exists(canImportFromFile)
   }

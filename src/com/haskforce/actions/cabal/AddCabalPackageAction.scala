@@ -36,7 +36,7 @@ object AddCabalPackageAction {
     def display(notificationType: NotificationType, message: String) = {
       NotificationUtil.displaySimpleNotification(notificationType, project, TITLE, message)
     }
-    ApplicationManager.getApplication.runWriteAction {
+    ApplicationManager.getApplication.runWriteAction({ () =>
       val cabal = CabalExecutor.create(project, Some(options.rootDir)).right.getOrElse {
         display(ERROR, "Could not generate cabal file, path to cabal not configured in compiler settings.")
         return
@@ -48,8 +48,8 @@ object AddCabalPackageAction {
         case Success(message) => display(INFORMATION, message)
         case Failure(e) => display(ERROR, e.getMessage)
       }
-    }
-    VirtualFileManager.getInstance.asyncRefresh {
+    }: Runnable)
+    VirtualFileManager.getInstance.asyncRefresh { () =>
       val newCabalFilePath: String = FileUtil.join(options.rootDir, options.packageName + ".cabal")
       Option(LocalFileSystem.getInstance.refreshAndFindFileByPath(newCabalFilePath)) match {
         case None => display(WARNING, s"Could not find new cabal file at $newCabalFilePath - may not have been created.")

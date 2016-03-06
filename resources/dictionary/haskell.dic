@@ -2,7 +2,7 @@ aeson
 attoparsec
 bytestring
 compat
-datatype                         s
+datatype
 decl
 decls
 deserialize

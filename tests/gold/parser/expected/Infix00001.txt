@@ -24,13 +24,14 @@ Haskell File
                 VARID
                   PsiElement(HaskellTokenType.varidRegexp)('elem')
               PsiElement(HaskellTokenType.`)('`')
-          PsiElement(HaskellTokenType.[)('[')
-          EXP
-            PsiElement(HaskellTokenType.integertoken)('1')
-          PsiElement(HaskellTokenType.,)(',')
-          EXP
-            PsiElement(HaskellTokenType.integertoken)('2')
-          PsiElement(HaskellTokenType.,)(',')
-          EXP
-            PsiElement(HaskellTokenType.integertoken)('3')
-          PsiElement(HaskellTokenType.])(']')
+          LISTLIKE
+            PsiElement(HaskellTokenType.[)('[')
+            EXP
+              PsiElement(HaskellTokenType.integertoken)('1')
+            PsiElement(HaskellTokenType.,)(',')
+            EXP
+              PsiElement(HaskellTokenType.integertoken)('2')
+            PsiElement(HaskellTokenType.,)(',')
+            EXP
+              PsiElement(HaskellTokenType.integertoken)('3')
+            PsiElement(HaskellTokenType.])(']')

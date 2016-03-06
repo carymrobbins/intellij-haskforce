@@ -1,5 +1,6 @@
 package com.haskforce.highlighting.annotation.external;
 
+import com.haskforce.hie.HaskellIdeEngine;
 import com.haskforce.settings.ToolKey;
 import com.haskforce.utils.ExecUtil;
 import com.intellij.openapi.editor.Editor;
@@ -11,6 +12,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiUtilBase;
+import scala.Option;
 
 /**
  * This class will return the type info of the type under cursor or the selection. It seems to be necessary
@@ -59,7 +61,12 @@ public class TypeInfoUtil {
             return "canonical path is null";
         }
         final String workDir = ExecUtil.guessWorkDir(module);
-        if (ToolKey.GHC_MODI_KEY.getPath(module.getProject()) != null) {
+
+        Option<HaskellIdeEngine> hie = HaskellIdeEngine.apply(module.getProject());
+        if(hie.isDefined()){
+            return hie.get().typeAt(module, canonicalPath, blockStart, blockEnd);
+        }
+        else if (ToolKey.GHC_MODI_KEY.getPath(module.getProject()) != null) {
             GhcModi ghcModi = module.getComponent(GhcModi.class);
             if (ghcModi != null) {
                 return GhcModi.getFutureType(module.getProject(), ghcModi.type(canonicalPath,

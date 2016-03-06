@@ -86,9 +86,9 @@ object DiscoverCabalPackagesAction {
   }
 
   private def importCabalPackages(project: Project)(files: Seq[VirtualFile]): Unit = {
-    ApplicationManager.getApplication.runWriteAction {
+    ApplicationManager.getApplication.runWriteAction({ () =>
       files.foreach(AddCabalPackageUtil.importCabalPackage(project))
       onSuccess(files.map(_.getNameWithoutExtension))
-    }
+    }: Runnable)
   }
 }

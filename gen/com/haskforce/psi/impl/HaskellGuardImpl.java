@@ -52,6 +52,12 @@ public class HaskellGuardImpl extends HaskellCompositeElementImpl implements Has
   }
 
   @Override
+  @NotNull
+  public List<HaskellListlike> getListlikeList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellListlike.class);
+  }
+
+  @Override
   @Nullable
   public HaskellPat getPat() {
     return findChildByClass(HaskellPat.class);

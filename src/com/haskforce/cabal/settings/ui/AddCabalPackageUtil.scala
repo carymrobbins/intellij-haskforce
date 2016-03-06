@@ -6,11 +6,13 @@ import javax.swing.text.JTextComponent
 import scala.annotation.tailrec
 import scalaz.syntax.id._
 
+import com.intellij.notification.NotificationType
+
 import com.haskforce.HaskellModuleType
 import com.haskforce.Implicits._
 import com.haskforce.cabal.settings.{CabalComponentType, AddCabalPackageOptions}
 import com.haskforce.ui.SComboBox
-import com.haskforce.utils.{FileUtil, CabalExecutor, ExecUtil}
+import com.haskforce.utils.{NotificationUtil, FileUtil, CabalExecutor, ExecUtil}
 import com.intellij.openapi.module.{ModuleManager, Module}
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
@@ -158,14 +160,19 @@ object AddCabalPackageUtil {
     for(
       project <- maybeProject;
       cabal <- CabalExecutor.create(project, None).right.toOption;
-      version <- cleanString(cabal.getNumericVersion)
+      version <- cabal.getNumericVersion.right.toOption.flatMap(cleanString)
     )
     form.getCabalVersionField.setText(">=" + version)
   }
 
   def maybeSetTextFromCommandLine(workDir: Option[String], component: JTextComponent,
                                   command: String, args: String*): Unit = {
-    maybeSetText(component, ExecUtil.readCommandLine(workDir.orNull, command, args: _*))
+    ExecUtil.readCommandLine(workDir.orNull, command, args: _*).fold(
+      e => NotificationUtil.displaySimpleNotification(
+        NotificationType.ERROR, null, "exec", e.getMessage
+      ),
+      stdout => maybeSetText(component, stdout)
+    )
   }
 
   def maybeSetText(textComponent: JTextComponent, value: String): Unit = {

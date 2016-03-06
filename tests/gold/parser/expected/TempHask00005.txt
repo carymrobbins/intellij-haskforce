@@ -68,19 +68,20 @@ Haskell File
                           QCONID
                             CONID
                               PsiElement(HaskellTokenType.conidRegexp)('StaticR')
-                        PsiElement(HaskellTokenType.[)('[')
-                        EXP
-                          QVAR
-                            QVARID
-                              VARID
-                                PsiElement(HaskellTokenType.varidRegexp)('css_normalize_css')
-                        PsiElement(HaskellTokenType.,)(',')
-                        EXP
-                          QVAR
-                            QVARID
-                              VARID
-                                PsiElement(HaskellTokenType.varidRegexp)('css_bootstrap_css')
-                        PsiElement(HaskellTokenType.])(']')
+                        LISTLIKE
+                          PsiElement(HaskellTokenType.[)('[')
+                          EXP
+                            QVAR
+                              QVARID
+                                VARID
+                                  PsiElement(HaskellTokenType.varidRegexp)('css_normalize_css')
+                          PsiElement(HaskellTokenType.,)(',')
+                          EXP
+                            QVAR
+                              QVARID
+                                VARID
+                                  PsiElement(HaskellTokenType.varidRegexp)('css_bootstrap_css')
+                          PsiElement(HaskellTokenType.])(']')
                       PsiElement(HaskellTokenType.))(')')
                     EXP
                       PsiElement(HaskellTokenType.$()('$(')

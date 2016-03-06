@@ -55,7 +55,7 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
     val moduleModel = Option(model).getOrElse {
       ModuleManager.getInstance(project).getModifiableModel
     }
-    ApplicationManager.getApplication.runWriteAction {
+    ApplicationManager.getApplication.runWriteAction { () =>
       commitSdk(project)
       setProjectSettings(project, stackPath, stackYamlPath)
       buildModules(project, moduleModel, stackYaml)

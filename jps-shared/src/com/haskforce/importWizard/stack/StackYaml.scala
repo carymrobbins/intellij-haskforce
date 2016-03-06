@@ -86,6 +86,7 @@ object Yaml {
     case s: String => YamlString(s).right
     case n: Int => YamlInt(n).right
     case d: Double => YamlDouble(d).right
+    case b: Boolean => YamlBoolean(b).right
 
     case other =>
       val cls = Option(other).map(_.getClass.getName).getOrElse("")
@@ -119,6 +120,11 @@ sealed trait Yaml {
     case YamlDouble(d) => d.right
     case _ => Yaml.Error(s"Expected YamlDouble, got: $this").left
   }
+
+  def bool: Yaml.Error \/ Boolean = this match {
+    case YamlBoolean(b) => b.right
+    case _ => Yaml.Error(s"Expected YamlBoolean, got: $this").left
+  }
 }
 
 sealed case class YamlAssoc(underlying: Map[String, Yaml]) extends Yaml
@@ -126,3 +132,4 @@ sealed case class YamlList(underlying: List[Yaml]) extends Yaml
 sealed case class YamlString(underlying: String) extends Yaml
 sealed case class YamlInt(underlying: Int) extends Yaml
 sealed case class YamlDouble(underlying: Double) extends Yaml
+sealed case class YamlBoolean(underlying: Boolean) extends Yaml

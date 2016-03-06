@@ -2,19 +2,24 @@ package com.haskforce.settings;
 
 import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.GuiUtil;
+import com.haskforce.utils.NotificationUtil;
 import com.intellij.compiler.options.CompilerConfigurable;
+import com.intellij.notification.NotificationType;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.util.Condition;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.ui.TextAccessor;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import scala.runtime.AbstractFunction1;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.Arrays;
 
 /**
@@ -206,8 +211,9 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
      */
     @Override
     public void apply() throws ConfigurationException {
-        updateVersionInfoFields();
+        validate();
         saveState();
+        updateVersionInfoFields();
     }
 
     /**
@@ -242,13 +248,56 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         mySettings.setStackFile(stackFile.getText());
     }
 
+    private void validate() throws ConfigurationException {
+        if (buildWithCabal.isSelected()) {
+            validateExecutable("cabal", cabalPath);
+            validateExecutable("ghc", ghcPath);
+        }
+        if (buildWithStack.isSelected()) {
+            validateExecutable("stack", stackPath);
+            validateFileExists("stack.yaml", stackFile);
+        }
+    }
+
+    private void validateExecutable(String name, TextAccessor field) throws ConfigurationException {
+        if (new File(field.getText()).canExecute()) return;
+        throw new ConfigurationException("Not a valid '" + name + "' executable: '" + field.getText() + "'");
+    }
+
+    private void validateFileExists(String name, TextAccessor field) throws ConfigurationException {
+        if (new File(field.getText()).exists()) return;
+        throw new ConfigurationException("'" + name + "' file does not exist: '" + field.getText() + "'");
+    }
+
     /**
      * Updates the version info fields for all files configured.
      */
     private void updateVersionInfoFields() {
-        ghcVersion.setText(ExecUtil.readCommandLine(ghcPath.getText(), " --numeric-version"));
-        cabalVersion.setText(ExecUtil.readCommandLine(cabalPath.getText(), " --numeric-version"));
-        stackVersion.setText(ExecUtil.readCommandLine(stackPath.getText(), " --numeric-version"));
+        updateVersionInfoField("ghc", ghcPath.getText(), "--numeric-version", ghcVersion);
+        updateVersionInfoField("cabal", cabalPath.getText(), "--numeric-version", cabalVersion);
+        updateVersionInfoField("stack", stackPath.getText(), "--numeric-version", stackVersion);
+    }
+
+    private void updateVersionInfoField(final String name, String exePath, String versionFlag,
+                                        final JLabel versionField) {
+        ExecUtil.readCommandLine(null, exePath, versionFlag).fold(
+            new AbstractFunction1<ExecUtil.ExecError, Void>() {
+                @Override
+                public Void apply(ExecUtil.ExecError e) {
+                    NotificationUtil.displaySimpleNotification(
+                        NotificationType.ERROR, myProject, name, e.getMessage()
+                    );
+                    return null;
+                }
+            },
+            new AbstractFunction1<String, Void>() {
+                @Override
+                public Void apply(String version) {
+                    versionField.setText(version);
+                    return null;
+                }
+            }
+        );
     }
 
     /**

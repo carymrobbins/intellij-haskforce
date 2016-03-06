@@ -1,23 +1,20 @@
 package com.haskforce.settings;
 
 import com.intellij.ide.util.PropertiesComponent;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * String wrapper to ensure that we don't accidentally pass an invalid key to the PropertiesComponent.
  * These are set as property keys in HaskellToolsConfigurable.
  */
 public class ToolKey {
-    public static final ToolKey PARSER_HELPER_KEY = new ToolKey("parserHelper");
     public static final ToolKey STYLISH_HASKELL_KEY = new ToolKey("stylishHaskell");
     public static final ToolKey HLINT_KEY = new ToolKey("hlint");
     public static final ToolKey GHC_MOD_KEY = new ToolKey("ghcMod");
     public static final ToolKey GHC_MODI_KEY = new ToolKey("ghcModi");
+    public static final ToolKey HASKELL_IDE_ENGINE = new ToolKey("haskellIdeEngine");
 
     public static final String GHC_MODI_TIMEOUT_KEY = "ghcModiTimeout";
     public static final long GHC_MODI_TIMEOUT_DEFAULT = 5000;
