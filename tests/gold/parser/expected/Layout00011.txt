@@ -151,13 +151,14 @@ Haskell File
                 QVARID
                   VARID
                     PsiElement(HaskellTokenType.varidRegexp)('tellProg')
-              PsiElement(HaskellTokenType.[)('[')
-              EXP
-                QCON
-                  QCONID
-                    CONID
-                      PsiElement(HaskellTokenType.conidRegexp)('Switch')
-                PsiElement(HaskellTokenType.{)('{')
-                PsiElement(HaskellTokenType...)('..')
-                PsiElement(HaskellTokenType.})('}')
-              PsiElement(HaskellTokenType.])(']')
+              LISTLIKE
+                PsiElement(HaskellTokenType.[)('[')
+                EXP
+                  QCON
+                    QCONID
+                      CONID
+                        PsiElement(HaskellTokenType.conidRegexp)('Switch')
+                  PsiElement(HaskellTokenType.{)('{')
+                  PsiElement(HaskellTokenType...)('..')
+                  PsiElement(HaskellTokenType.})('}')
+                PsiElement(HaskellTokenType.])(']')

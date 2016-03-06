@@ -95,49 +95,50 @@ Haskell File
       RHS
         PsiElement(HaskellTokenType.=)('=')
         EXP
-          PsiElement(HaskellTokenType.[)('[')
-          EXP
-            PsiElement(HaskellTokenType.()('(')
+          LISTLIKE
+            PsiElement(HaskellTokenType.[)('[')
+            EXP
+              PsiElement(HaskellTokenType.()('(')
+              EXP
+                QVAR
+                  QVARID
+                    VARID
+                      PsiElement(HaskellTokenType.varidRegexp)('x')
+              PsiElement(HaskellTokenType.,)(',')
+              EXP
+                QVAR
+                  QVARID
+                    VARID
+                      PsiElement(HaskellTokenType.varidRegexp)('y')
+              PsiElement(HaskellTokenType.))(')')
+            PsiElement(HaskellTokenType.|)('|')
+            PAT
+              VARID
+                PsiElement(HaskellTokenType.varidRegexp)('x')
+            PsiElement(HaskellTokenType.<-)('<-')
             EXP
               QVAR
                 QVARID
                   VARID
-                    PsiElement(HaskellTokenType.varidRegexp)('x')
+                    PsiElement(HaskellTokenType.varidRegexp)('xs')
             PsiElement(HaskellTokenType.,)(',')
+            PAT
+              VARID
+                PsiElement(HaskellTokenType.varidRegexp)('y')
+            PsiElement(HaskellTokenType.<-)('<-')
             EXP
               QVAR
                 QVARID
                   VARID
-                    PsiElement(HaskellTokenType.varidRegexp)('y')
-            PsiElement(HaskellTokenType.))(')')
-          PsiElement(HaskellTokenType.|)('|')
-          PAT
-            VARID
-              PsiElement(HaskellTokenType.varidRegexp)('x')
-          PsiElement(HaskellTokenType.<-)('<-')
-          EXP
-            QVAR
-              QVARID
-                VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('xs')
-          PsiElement(HaskellTokenType.,)(',')
-          PAT
-            VARID
-              PsiElement(HaskellTokenType.varidRegexp)('y')
-          PsiElement(HaskellTokenType.<-)('<-')
-          EXP
-            QVAR
-              QVARID
-                VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('ys')
-          PsiElement(HaskellTokenType.,)(',')
-          PsiElement(HaskellTokenType.then)('then')
-          EXP
-            QVAR
-              QVARID
-                VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('sortWith')
-          PsiElement(HaskellTokenType.])(']')
+                    PsiElement(HaskellTokenType.varidRegexp)('ys')
+            PsiElement(HaskellTokenType.,)(',')
+            PsiElement(HaskellTokenType.then)('then')
+            EXP
+              QVAR
+                QVARID
+                  VARID
+                    PsiElement(HaskellTokenType.varidRegexp)('sortWith')
+            PsiElement(HaskellTokenType.])(']')
     FUNORPATDECL
       PAT
         VARID
@@ -145,69 +146,70 @@ Haskell File
       RHS
         PsiElement(HaskellTokenType.=)('=')
         EXP
-          PsiElement(HaskellTokenType.[)('[')
-          EXP
-            PsiElement(HaskellTokenType.()('(')
+          LISTLIKE
+            PsiElement(HaskellTokenType.[)('[')
+            EXP
+              PsiElement(HaskellTokenType.()('(')
+              EXP
+                QVAR
+                  QVARID
+                    VARID
+                      PsiElement(HaskellTokenType.varidRegexp)('x')
+              PsiElement(HaskellTokenType.,)(',')
+              EXP
+                QVAR
+                  QVARID
+                    VARID
+                      PsiElement(HaskellTokenType.varidRegexp)('y')
+              PsiElement(HaskellTokenType.))(')')
+            PsiElement(HaskellTokenType.|)('|')
+            PAT
+              VARID
+                PsiElement(HaskellTokenType.varidRegexp)('x')
+            PsiElement(HaskellTokenType.<-)('<-')
             EXP
               QVAR
                 QVARID
                   VARID
-                    PsiElement(HaskellTokenType.varidRegexp)('x')
+                    PsiElement(HaskellTokenType.varidRegexp)('xs')
             PsiElement(HaskellTokenType.,)(',')
+            PAT
+              VARID
+                PsiElement(HaskellTokenType.varidRegexp)('y')
+            PsiElement(HaskellTokenType.<-)('<-')
             EXP
               QVAR
                 QVARID
                   VARID
-                    PsiElement(HaskellTokenType.varidRegexp)('y')
-            PsiElement(HaskellTokenType.))(')')
-          PsiElement(HaskellTokenType.|)('|')
-          PAT
-            VARID
-              PsiElement(HaskellTokenType.varidRegexp)('x')
-          PsiElement(HaskellTokenType.<-)('<-')
-          EXP
-            QVAR
-              QVARID
-                VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('xs')
-          PsiElement(HaskellTokenType.,)(',')
-          PAT
-            VARID
-              PsiElement(HaskellTokenType.varidRegexp)('y')
-          PsiElement(HaskellTokenType.<-)('<-')
-          EXP
-            QVAR
-              QVARID
-                VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('ys')
-          PsiElement(HaskellTokenType.,)(',')
-          PsiElement(HaskellTokenType.then)('then')
-          EXP
-            QVAR
-              QVARID
-                VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('sortWith')
-            QVAR
-              QVARID
-                VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('by')
-            PsiElement(HaskellTokenType.()('(')
+                    PsiElement(HaskellTokenType.varidRegexp)('ys')
+            PsiElement(HaskellTokenType.,)(',')
+            PsiElement(HaskellTokenType.then)('then')
             EXP
               QVAR
                 QVARID
                   VARID
-                    PsiElement(HaskellTokenType.varidRegexp)('x')
-              QOP
-                QVAROP
-                  QVARSYM
-                    VARSYM
-                      PsiElement(HaskellTokenType.+)('+')
+                    PsiElement(HaskellTokenType.varidRegexp)('sortWith')
               QVAR
                 QVARID
                   VARID
-                    PsiElement(HaskellTokenType.varidRegexp)('y')
-            PsiElement(HaskellTokenType.))(')')
-          PsiElement(HaskellTokenType.])(']')
+                    PsiElement(HaskellTokenType.varidRegexp)('by')
+              PsiElement(HaskellTokenType.()('(')
+              EXP
+                QVAR
+                  QVARID
+                    VARID
+                      PsiElement(HaskellTokenType.varidRegexp)('x')
+                QOP
+                  QVAROP
+                    QVARSYM
+                      VARSYM
+                        PsiElement(HaskellTokenType.+)('+')
+                QVAR
+                  QVARID
+                    VARID
+                      PsiElement(HaskellTokenType.varidRegexp)('y')
+              PsiElement(HaskellTokenType.))(')')
+            PsiElement(HaskellTokenType.])(']')
     FUNORPATDECL
       PAT
         VARID
@@ -215,51 +217,52 @@ Haskell File
       RHS
         PsiElement(HaskellTokenType.=)('=')
         EXP
-          PsiElement(HaskellTokenType.[)('[')
-          EXP
-            PsiElement(HaskellTokenType.()('(')
+          LISTLIKE
+            PsiElement(HaskellTokenType.[)('[')
+            EXP
+              PsiElement(HaskellTokenType.()('(')
+              EXP
+                QVAR
+                  QVARID
+                    VARID
+                      PsiElement(HaskellTokenType.varidRegexp)('x')
+              PsiElement(HaskellTokenType.,)(',')
+              EXP
+                QVAR
+                  QVARID
+                    VARID
+                      PsiElement(HaskellTokenType.varidRegexp)('y')
+              PsiElement(HaskellTokenType.))(')')
+            PsiElement(HaskellTokenType.|)('|')
+            PAT
+              VARID
+                PsiElement(HaskellTokenType.varidRegexp)('x')
+            PsiElement(HaskellTokenType.<-)('<-')
             EXP
               QVAR
                 QVARID
                   VARID
-                    PsiElement(HaskellTokenType.varidRegexp)('x')
+                    PsiElement(HaskellTokenType.varidRegexp)('xs')
             PsiElement(HaskellTokenType.,)(',')
+            PAT
+              VARID
+                PsiElement(HaskellTokenType.varidRegexp)('y')
+            PsiElement(HaskellTokenType.<-)('<-')
             EXP
               QVAR
                 QVARID
                   VARID
-                    PsiElement(HaskellTokenType.varidRegexp)('y')
-            PsiElement(HaskellTokenType.))(')')
-          PsiElement(HaskellTokenType.|)('|')
-          PAT
-            VARID
-              PsiElement(HaskellTokenType.varidRegexp)('x')
-          PsiElement(HaskellTokenType.<-)('<-')
-          EXP
-            QVAR
-              QVARID
-                VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('xs')
-          PsiElement(HaskellTokenType.,)(',')
-          PAT
-            VARID
-              PsiElement(HaskellTokenType.varidRegexp)('y')
-          PsiElement(HaskellTokenType.<-)('<-')
-          EXP
-            QVAR
-              QVARID
-                VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('ys')
-          PsiElement(HaskellTokenType.,)(',')
-          PsiElement(HaskellTokenType.then)('then')
-          PsiElement(HaskellTokenType.varidRegexp)('group')
-          PsiElement(HaskellTokenType.varidRegexp)('using')
-          EXP
-            QVAR
-              QVARID
-                VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('permutations')
-          PsiElement(HaskellTokenType.])(']')
+                    PsiElement(HaskellTokenType.varidRegexp)('ys')
+            PsiElement(HaskellTokenType.,)(',')
+            PsiElement(HaskellTokenType.then)('then')
+            PsiElement(HaskellTokenType.varidRegexp)('group')
+            PsiElement(HaskellTokenType.varidRegexp)('using')
+            EXP
+              QVAR
+                QVARID
+                  VARID
+                    PsiElement(HaskellTokenType.varidRegexp)('permutations')
+            PsiElement(HaskellTokenType.])(']')
     FUNORPATDECL
       PAT
         VARID
@@ -267,77 +270,78 @@ Haskell File
       RHS
         PsiElement(HaskellTokenType.=)('=')
         EXP
-          PsiElement(HaskellTokenType.[)('[')
-          EXP
-            PsiElement(HaskellTokenType.()('(')
+          LISTLIKE
+            PsiElement(HaskellTokenType.[)('[')
+            EXP
+              PsiElement(HaskellTokenType.()('(')
+              EXP
+                QVAR
+                  QVARID
+                    VARID
+                      PsiElement(HaskellTokenType.varidRegexp)('x')
+              PsiElement(HaskellTokenType.,)(',')
+              EXP
+                QVAR
+                  QVARID
+                    VARID
+                      PsiElement(HaskellTokenType.varidRegexp)('y')
+              PsiElement(HaskellTokenType.))(')')
+            PsiElement(HaskellTokenType.|)('|')
+            PAT
+              VARID
+                PsiElement(HaskellTokenType.varidRegexp)('x')
+            PsiElement(HaskellTokenType.<-)('<-')
             EXP
               QVAR
                 QVARID
                   VARID
-                    PsiElement(HaskellTokenType.varidRegexp)('x')
+                    PsiElement(HaskellTokenType.varidRegexp)('xs')
             PsiElement(HaskellTokenType.,)(',')
+            PAT
+              VARID
+                PsiElement(HaskellTokenType.varidRegexp)('y')
+            PsiElement(HaskellTokenType.<-)('<-')
             EXP
               QVAR
                 QVARID
                   VARID
-                    PsiElement(HaskellTokenType.varidRegexp)('y')
-            PsiElement(HaskellTokenType.))(')')
-          PsiElement(HaskellTokenType.|)('|')
-          PAT
-            VARID
-              PsiElement(HaskellTokenType.varidRegexp)('x')
-          PsiElement(HaskellTokenType.<-)('<-')
-          EXP
-            QVAR
-              QVARID
-                VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('xs')
-          PsiElement(HaskellTokenType.,)(',')
-          PAT
-            VARID
-              PsiElement(HaskellTokenType.varidRegexp)('y')
-          PsiElement(HaskellTokenType.<-)('<-')
-          EXP
-            QVAR
-              QVARID
-                VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('ys')
-          PsiElement(HaskellTokenType.,)(',')
-          PsiElement(HaskellTokenType.then)('then')
-          EXP
-            QVAR
-              QVARID
-                VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('group')
-            QVAR
-              QVARID
-                VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('by')
-            PsiElement(HaskellTokenType.()('(')
+                    PsiElement(HaskellTokenType.varidRegexp)('ys')
+            PsiElement(HaskellTokenType.,)(',')
+            PsiElement(HaskellTokenType.then)('then')
             EXP
               QVAR
                 QVARID
                   VARID
-                    PsiElement(HaskellTokenType.varidRegexp)('x')
-              QOP
-                QVAROP
-                  QVARSYM
-                    VARSYM
-                      PsiElement(HaskellTokenType.+)('+')
+                    PsiElement(HaskellTokenType.varidRegexp)('group')
               QVAR
                 QVARID
                   VARID
-                    PsiElement(HaskellTokenType.varidRegexp)('y')
-            PsiElement(HaskellTokenType.))(')')
-            QVAR
-              QVARID
-                VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('using')
-            QVAR
-              QVARID
-                VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('groupWith')
-          PsiElement(HaskellTokenType.])(']')
+                    PsiElement(HaskellTokenType.varidRegexp)('by')
+              PsiElement(HaskellTokenType.()('(')
+              EXP
+                QVAR
+                  QVARID
+                    VARID
+                      PsiElement(HaskellTokenType.varidRegexp)('x')
+                QOP
+                  QVAROP
+                    QVARSYM
+                      VARSYM
+                        PsiElement(HaskellTokenType.+)('+')
+                QVAR
+                  QVARID
+                    VARID
+                      PsiElement(HaskellTokenType.varidRegexp)('y')
+              PsiElement(HaskellTokenType.))(')')
+              QVAR
+                QVARID
+                  VARID
+                    PsiElement(HaskellTokenType.varidRegexp)('using')
+              QVAR
+                QVARID
+                  VARID
+                    PsiElement(HaskellTokenType.varidRegexp)('groupWith')
+            PsiElement(HaskellTokenType.])(']')
     PPRAGMA
       PsiElement(HaskellTokenType.{-#)('{-#')
       PsiElement(HaskellTokenType.PRAGMA)('RULES')

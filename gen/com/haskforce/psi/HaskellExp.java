@@ -17,13 +17,10 @@ public interface HaskellExp extends HaskellCompositeElement {
   List<HaskellExp> getExpList();
 
   @NotNull
-  List<HaskellFunorpatdecl> getFunorpatdeclList();
-
-  @NotNull
-  List<HaskellGendecl> getGendeclList();
-
-  @NotNull
   List<HaskellLetexp> getLetexpList();
+
+  @NotNull
+  List<HaskellListlike> getListlikeList();
 
   @NotNull
   List<HaskellPat> getPatList();

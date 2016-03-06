@@ -69,8 +69,8 @@ public class HaskellVaridImpl extends HaskellNamedStubbedPsiElementBase<HaskellV
   }
 
   @Nullable
-  public PsiElement setName(String newName) {
-    return HaskellPsiImplUtil.setName(this, newName);
+  public PsiElement setName(String p1) {
+    return HaskellPsiImplUtil.setName(this, p1);
   }
 
   @NotNull

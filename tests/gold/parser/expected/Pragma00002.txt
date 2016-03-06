@@ -94,13 +94,14 @@ Haskell File
                     PsiElement(HaskellTokenType.PRAGMA)('SCC')
                     PsiElement(HaskellTokenType.PRAGMA)('"X"')
                     PsiElement(HaskellTokenType.#-})('#-}')
-                  PsiElement(HaskellTokenType.[)('[')
-                  EXP
-                    PsiElement(HaskellTokenType.integertoken)('1')
-                  PsiElement(HaskellTokenType...)('..')
-                  EXP
-                    PsiElement(HaskellTokenType.integertoken)('1000000')
-                  PsiElement(HaskellTokenType.])(']')
+                  LISTLIKE
+                    PsiElement(HaskellTokenType.[)('[')
+                    EXP
+                      PsiElement(HaskellTokenType.integertoken)('1')
+                    PsiElement(HaskellTokenType...)('..')
+                    EXP
+                      PsiElement(HaskellTokenType.integertoken)('1000000')
+                    PsiElement(HaskellTokenType.])(']')
             PsiElement(HaskellTokenType.in)('in')
             EXP
               QVAR

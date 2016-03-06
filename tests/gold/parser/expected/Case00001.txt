@@ -76,13 +76,14 @@ Haskell File
                     QVARID
                       VARID
                         PsiElement(HaskellTokenType.varidRegexp)('createClient')
-                  PsiElement(HaskellTokenType.[)('[')
-                  EXP
-                    QVAR
-                      QVARID
-                        VARID
-                          PsiElement(HaskellTokenType.varidRegexp)('h')
-                  PsiElement(HaskellTokenType.])(']')
+                  LISTLIKE
+                    PsiElement(HaskellTokenType.[)('[')
+                    EXP
+                      QVAR
+                        QVARID
+                          VARID
+                            PsiElement(HaskellTokenType.varidRegexp)('h')
+                    PsiElement(HaskellTokenType.])(']')
     FUNORPATDECL
       VARID
         PsiElement(HaskellTokenType.varidRegexp)('connect'')
