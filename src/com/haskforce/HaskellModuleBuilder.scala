@@ -365,6 +365,14 @@ case class HaskellModifiedSettingsStep(
     setSdk()
   }
 
+  override def validate(): Boolean = {
+    val projectName = settingsStep.getModuleNameField.getText
+    if(!projectName.matches("[a-zA-Z0-9-]+")){
+      throw new ConfigurationException("Project name can only contain letters, numbers and hyphens", "Invalid Project name");
+    }
+    super.validate()
+  }
+
   private def setSdk(): Unit = {
     settingsStep.getContext.setProjectJdk(HaskellSdkType.findOrCreateSdk())
   }

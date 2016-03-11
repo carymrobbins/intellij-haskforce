@@ -5,6 +5,7 @@ import scala.concurrent.duration._
 import com.intellij.ide.projectWizard.{ProjectSettingsStep, NewProjectWizardTestCase, ProjectTypeStep}
 import com.intellij.ide.wizard.Step
 import com.intellij.openapi.module.ModuleManager
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.{ModuleRootManager, ProjectRootManager}
 
 import com.haskforce.Implicits._
@@ -20,25 +21,7 @@ class NewProjectWizardTest extends NewProjectWizardTestCase with AssertMixin wit
 
   def testNewStackProject(): Unit = {
     val projectName = "myProject"
-    val project = createProject { step: Step =>
-      val projectTypeStep = assertInstanceOf[ProjectTypeStep](step)
-      assertTrue(projectTypeStep.setSelectedTemplate("Haskell", null))
-      assertEquals(5, myWizard.getSequence.getSelectedSteps.size)
-
-      val buildToolForm = nextStep[HaskellBuildToolStep]().form
-      buildToolForm.buildWithStackRadio.setSelected(true)
-      assertFalse(buildToolForm.buildWithCabalRadio.isSelected)
-      // We should have stack installed, and it should be inferred properly.
-      assertExecutable(buildToolForm.stackPathField.getText)
-
-      val cabalStepForm = nextStep[HaskellCabalPackageSettingsStep]().form
-      assertTrue(cabalStepForm.shouldInitializeCabalPackage)
-      cabalStepForm.categoryField.setSelectedItem("Web")
-
-      val projectStep = nextStep[ProjectSettingsStep]()
-      projectStep.getModuleNameField.setText(projectName)
-      assertTrue(myWizard.doFinishAction())
-    }
+    val project: Project = runWizard(projectName)
 
     // Assert that the project name matches.
     assertEquals(projectName, project.getName)
@@ -75,6 +58,40 @@ class NewProjectWizardTest extends NewProjectWizardTestCase with AssertMixin wit
     //   assertSome(stackFile)(_.exists())
     //   println(s"Found stack.yaml in ${duration.toMillis} ms")
     // }
+  }
+
+  def testNewStackProject_withInvalidProjectName(): Unit = {
+    val projectName = "with whitespace"
+    try{
+      runWizard(projectName)
+      fail("A validation error should occur when trying to create a project where project name contains whitespace")
+    } catch {
+      case exception: Throwable => {
+        assertEquals(exception.getMessage, "Project name can only contain letters, numbers and hyphens")
+      }
+    }
+  }
+
+  def runWizard(projectName: String): Project = {
+   createProject { step: Step =>
+      val projectTypeStep = assertInstanceOf[ProjectTypeStep](step)
+      assertTrue(projectTypeStep.setSelectedTemplate("Haskell", null))
+      assertEquals(5, myWizard.getSequence.getSelectedSteps.size)
+
+      val buildToolForm = nextStep[HaskellBuildToolStep]().form
+      buildToolForm.buildWithStackRadio.setSelected(true)
+      assertFalse(buildToolForm.buildWithCabalRadio.isSelected)
+      // We should have stack installed, and it should be inferred properly.
+      assertExecutable(buildToolForm.stackPathField.getText)
+
+      val cabalStepForm = nextStep[HaskellCabalPackageSettingsStep]().form
+      assertTrue(cabalStepForm.shouldInitializeCabalPackage)
+      cabalStepForm.categoryField.setSelectedItem("Web")
+
+      val projectStep = nextStep[ProjectSettingsStep]()
+      projectStep.getModuleNameField.setText(projectName)
+      assertTrue(myWizard.doFinishAction())
+    }
   }
 
   private def nextStep[A <: Step : Manifest](): A = {
