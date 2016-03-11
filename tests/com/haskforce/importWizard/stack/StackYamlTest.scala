@@ -30,6 +30,21 @@ class StackYamlTest extends TestCase {
     TestCase.assertEquals(expected.right, actual)
   }
 
+  def testPackagesDefaultsToRoot(): Unit = {
+    val actual = StackYaml.fromString(dedent("""
+      resolver: lts-3.14
+      image:
+        container:
+          base: "fpco/ubuntu-with-libgmp:14.04"
+          entrypoints:
+            - stack
+    """))
+
+    val expected = StackYaml(packages("."))
+
+    TestCase.assertEquals(expected.right, actual)
+  }
+
   private def packages(ps: String*): util.List[StackYaml.Package] = {
     util.Arrays.asList(ps.map(StackYaml.Package): _*)
   }

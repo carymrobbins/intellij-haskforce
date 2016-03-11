@@ -37,7 +37,8 @@ object StackYaml {
 
   def fromString(doc: String): String \/ StackYaml = for {
     assoc <- Yaml.parse(doc).flatMap(_.assoc).leftMap(_.message)
-    packages <- \/.fromEither(assoc.get("packages").toRight("Expected key 'packages'"))
+    // Stack defaults to using the root dir if there is no packages field.
+    packages = assoc.getOrElse("packages", YamlList(List(YamlString("."))))
     result <- packages.list.flatMap(xs => xs.map(_.string).sequenceU).leftMap(_.message)
   } yield StackYaml(result.map(Package(_)).asJava)
 }
