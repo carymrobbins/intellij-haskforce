@@ -8,6 +8,7 @@ import com.haskforce.highlighting.annotation.HaskellProblem;
 import com.haskforce.highlighting.annotation.Problems;
 import com.haskforce.highlighting.annotation.external.GhcModUtil.GhcVersionValidation;
 import com.haskforce.settings.ToolKey;
+import com.haskforce.ui.tools.HaskellToolsConsole;
 import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.NotificationUtil;
 import com.haskforce.utils.EitherUtil;
@@ -142,16 +143,21 @@ public class GhcMod {
         commandLine.setWorkDirectory(workingDirectory);
         // Make sure we can actually see the errors.
         commandLine.setRedirectErrorStream(true);
+        HaskellToolsConsole toolConsole = HaskellToolsConsole.get(project);
+        toolConsole.writeInput(ToolKey.GHC_MOD_KEY, commandLine.getCommandLineString());
         Either<ExecUtil.ExecError, String> result = ExecUtil.readCommandLine(commandLine);
         if (result.isLeft()) {
             //noinspection ThrowableResultOfMethodCallIgnored
             ExecUtil.ExecError e = EitherUtil.unsafeGetLeft(result);
+            toolConsole.writeError(ToolKey.GHC_MOD_KEY, e.getMessage());
             NotificationUtil.displayToolsNotification(
                 NotificationType.ERROR, project, "ghc-mod", e.getMessage()
             );
             return null;
         }
-        return EitherUtil.unsafeGetRight(result);
+        String out = EitherUtil.unsafeGetRight(result);
+        toolConsole.writeOutput(ToolKey.GHC_MOD_KEY, out);
+        return out;
     }
 
     private static boolean validateGhcVersion(@NotNull Project project,

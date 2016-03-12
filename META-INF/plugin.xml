@@ -308,6 +308,12 @@
       <colorSettingsPage implementation="com.haskforce.settings.HaskellColorSettingsPage"/>
       <colorSettingsPage implementation="com.haskforce.settings.CabalColorSettingsPage"/>
 
+      <!-- Tool windows -->
+      <toolWindow id="Haskell Tools Console" anchor="bottom"
+                  icon="/icons/haskell-13px.png"
+                  factoryClass="com.haskforce.ui.tools.HaskellToolsConsoleWindowFactory"
+                  conditionClass="com.haskforce.ui.tools.HaskellToolsConsoleWindowFactory" />
+
       <!-- Cabal support -->
       <fileTypeFactory implementation="com.haskforce.cabal.CabalFileTypeFactory"/>
       <lang.commenter language="Cabal" implementationClass="com.haskforce.cabal.CabalCommenter"/>

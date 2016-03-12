@@ -7,6 +7,7 @@ import com.haskforce.highlighting.annotation.HaskellAnnotationHolder;
 import com.haskforce.highlighting.annotation.HaskellProblem;
 import com.haskforce.highlighting.annotation.Problems;
 import com.haskforce.settings.ToolKey;
+import com.haskforce.ui.tools.HaskellToolsConsole;
 import com.haskforce.utils.EitherUtil;
 import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.ExecUtil.ExecError;
@@ -44,14 +45,16 @@ public class HLint {
     @NotNull
     public static Problems lint(final @NotNull Project project, @NotNull String workingDirectory,
                                 @NotNull String file) {
+        final HaskellToolsConsole toolConsole = HaskellToolsConsole.get(project);
         final String hlintPath = ToolKey.HLINT_KEY.getPath(project);
         final String hlintFlags = ToolKey.HLINT_KEY.getFlags(project);
         if (hlintPath == null) return new Problems();
 
-        return parseProblems(workingDirectory, hlintPath, hlintFlags, file).fold(
+        return parseProblems(toolConsole, workingDirectory, hlintPath, hlintFlags, file).fold(
             new AbstractFunction1<ExecError, Problems>() {
                 @Override
                 public Problems apply(ExecError e) {
+                    toolConsole.writeError(ToolKey.HLINT_KEY, e.getMessage());
                     NotificationUtil.displayToolsNotification(
                         NotificationType.ERROR, project, "hlint", e.getMessage()
                     );
@@ -63,11 +66,12 @@ public class HLint {
     }
 
     @NotNull
-    public static Either<ExecError, Problems> parseProblems(final @NotNull String workingDirectory,
+    public static Either<ExecError, Problems> parseProblems(final HaskellToolsConsole toolConsole,
+                                                            final @NotNull String workingDirectory,
                                                             final @NotNull String path,
                                                             final @NotNull String flags,
                                                             final @NotNull String file) {
-        return getVersion(workingDirectory, path).fold(
+        return getVersion(toolConsole, workingDirectory, path).fold(
             new AbstractFunction1<ExecError, Either<ExecError, Problems>>() {
                 @Override
                 public Either<ExecError, Problems> apply(ExecError e) {
@@ -79,11 +83,12 @@ public class HLint {
                 public Either<ExecError, Problems> apply(VersionTriple version) {
                     final boolean useJson = version.gte(HLINT_MIN_VERSION_WITH_JSON_SUPPORT);
                     return EitherUtil.rightMap(runHlint(
-                        workingDirectory, path, flags,
+                      toolConsole, workingDirectory, path, flags,
                         useJson ? new String[]{"--json", file} : new String[]{file}
                     ), new AbstractFunction1<String, Problems>() {
                         @Override
                         public Problems apply(String stdout) {
+                            toolConsole.writeOutput(ToolKey.HLINT_KEY, stdout);
                             if (useJson) {
                                 return parseProblemsJson(stdout);
                             }
@@ -153,9 +158,9 @@ public class HLint {
     private static final Pattern HLINT_VERSION_REGEX = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)");
 
     @NotNull
-    private static Either<ExecError, VersionTriple> getVersion(String workingDirectory, String hlintPath) {
+    private static Either<ExecError, VersionTriple> getVersion(HaskellToolsConsole toolConsole, String workingDirectory, String hlintPath) {
         return EitherUtil.rightFlatMap(
-            runHlint(workingDirectory, hlintPath, "--version"),
+            runHlint(toolConsole, workingDirectory, hlintPath, "--version"),
             new AbstractFunction1<String, Either<ExecError, VersionTriple>>() {
                 @Override
                 public Either<ExecError, VersionTriple> apply(String version) {
@@ -180,10 +185,11 @@ public class HLint {
      * Runs hlintProg with parameters if hlintProg can be executed.
      */
     @NotNull
-    private static Either<ExecError, String> runHlint(@NotNull String workingDirectory,
-                                                               @NotNull String hlintProg,
-                                                               @NotNull String hlintFlags,
-                                                               @NotNull String... params) {
+    private static Either<ExecError, String> runHlint(HaskellToolsConsole toolConsole,
+                                                      @NotNull String workingDirectory,
+                                                      @NotNull String hlintProg,
+                                                      @NotNull String hlintFlags,
+                                                      @NotNull String... params) {
         GeneralCommandLine commandLine = new GeneralCommandLine();
         commandLine.setWorkDirectory(workingDirectory);
         commandLine.setExePath(hlintProg);
@@ -193,6 +199,7 @@ public class HLint {
         parametersList.add("--no-exit-code");
         parametersList.addParametersString(hlintFlags);
         parametersList.addAll(params);
+        toolConsole.writeInput(ToolKey.HLINT_KEY, commandLine.getCommandLineString());
         return ExecUtil.readCommandLine(commandLine);
     }
 

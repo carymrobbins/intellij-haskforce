@@ -6,6 +6,7 @@ import com.haskforce.highlighting.annotation.external.GhcModUtil.GhcVersionValid
 import com.haskforce.settings.SettingsChangeNotifier;
 import com.haskforce.settings.ToolKey;
 import com.haskforce.settings.ToolSettings;
+import com.haskforce.ui.tools.HaskellToolsConsole;
 import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.NotificationUtil;
 import com.haskforce.utils.SystemUtil;
@@ -46,6 +47,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     private ExecutorService executorService = Executors.newSingleThreadExecutor();
     private boolean enabled = true;
     private GhcVersionValidation ghcVersionValidation = GhcVersionValidation.PENDING_VALIDATION;
+    private final HaskellToolsConsole toolConsole;
     // Keep track of error messages so we don't output the same ones multiple times.
     public static final Pattern TYPE_SPLIT_REGEX = Pattern.compile(" :: ");
 
@@ -73,8 +75,9 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
             LOG.warn(e);
             displayError(project, "ghc-modi execution was aborted: " + e);
         } catch (TimeoutException e) {
-            LOG.warn("ghc-modi took too long to respond (waited " + timeout + " milliseconds): " + e);
-            e.printStackTrace();
+            String msg = "ghc-modi took too long to respond (waited " + timeout + " milliseconds)";
+            LOG.warn(msg, e);
+            HaskellToolsConsole.get(project).writeError(ToolKey.GHC_MODI_KEY, msg);
         }
         return null;
     }
@@ -221,9 +224,11 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         commandLine.setWorkDirectory(workingDirectory);
         // Make sure we can actually see the errors.
         commandLine.setRedirectErrorStream(true);
+        toolConsole.writeInput(ToolKey.GHC_MODI_KEY, "Starting ghc-modi process: " + commandLine.getCommandLineString());
         try {
             process = commandLine.createProcess();
         } catch (ExecutionException e) {
+            toolConsole.writeError(ToolKey.GHC_MODI_KEY, "Failed to initialize process");
             throw new InitError(e.toString());
         }
         input = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -250,18 +255,25 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     }
 
     @Nullable
-    private static String interact(@NotNull String command, @NotNull BufferedReader input, @NotNull BufferedWriter output) throws GhcModiError {
+    private String interact(@NotNull String command, @NotNull BufferedReader input, @NotNull BufferedWriter output) throws GhcModiError {
+        toolConsole.writeInput(ToolKey.GHC_MODI_KEY, command);
         write(command, input, output);
         try {
-            return read(command, input);
+            final String result = read(command, input);
+            toolConsole.writeOutput(ToolKey.GHC_MODI_KEY, result);
+            return result;
         } catch (InterruptedException e) {
-            throw new ExecError(command, e.toString());
+            final ExecError err = new ExecError(command, e.toString());
+            toolConsole.writeError(ToolKey.GHC_MODI_KEY, err.message);
+            throw err;
         } catch (IOException e) {
-            throw new ExecError(command, e.toString());
+            final ExecError err = new ExecError(command, e.toString());
+            toolConsole.writeError(ToolKey.GHC_MODI_KEY, err.message);
+            throw err;
         }
     }
 
-    private static void write(@NotNull String command, @NotNull BufferedReader input, @NotNull BufferedWriter output) throws GhcModiError {
+    private void write(@NotNull String command, @NotNull BufferedReader input, @NotNull BufferedWriter output) throws GhcModiError {
         try {
             output.write(command);
             output.newLine();
@@ -283,7 +295,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     }
 
     @Nullable
-    private static String read(@NotNull String command, @NotNull BufferedReader input) throws GhcModiError, IOException, InterruptedException {
+    private String read(@NotNull String command, @NotNull BufferedReader input) throws GhcModiError, IOException, InterruptedException {
         StringBuilder builder = new StringBuilder(0);
         String line;
         for (;;) {
@@ -341,6 +353,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     }
 
     private static void displayError(@NotNull Project project, @NotNull String message) {
+        HaskellToolsConsole.get(project).writeError(ToolKey.GHC_MODI_KEY, message);
         NotificationUtil.displayToolsNotification(NotificationType.ERROR, project, "ghc-modi error", message);
     }
 
@@ -395,12 +408,14 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         this.workingDirectory = lookupWorkingDirectory();
         // Ensure that we are notified of changes to the settings.
         module.getProject().getMessageBus().connect().subscribe(SettingsChangeNotifier.GHC_MODI_TOPIC, this);
+        toolConsole = HaskellToolsConsole.get(module.getProject());
     }
 
     @Override
     public void onSettingsChanged(@NotNull ToolSettings settings) {
         this.path = settings.getPath();
         this.flags = settings.getFlags();
+        toolConsole.writeError(ToolKey.GHC_MODI_KEY, "Settings changed, reloading ghc-modi");
         kill();
         try {
             spawnProcess();
