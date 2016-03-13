@@ -65,6 +65,11 @@ Be sure that the SDK is named `scala-sdk-2.11.7` to properly match the module co
 1. Click on the `+` sign and choose **Plugin**, name the configuration something evocative like **Haskforce**, click **OK**, then run your new configuration.
 1. Intellij will open a copy of itself, with default settings, and the plugin installed.
 
+### Debugging the plugin
+
+If you simply want to debug the files in `src`, running the plugin with Debug is enough. However, to enable breakpoints in `jps-shared` or `jps-plugin`, follow the instructions from [the IntelliJ SDK DevGuide](http://www.jetbrains.org/intellij/sdk/docs/reference_guide/frameworks_and_external_apis/external_builder_api.html#debugging-a-plugin-for-external-builder)
+
+
 ## Testing the plugin
 
 To run the tests, you'll need to create a run configuration:
@@ -74,9 +79,9 @@ To run the tests, you'll need to create a run configuration:
 1. In the Class field enter **HaskellTestCase**, which should auto-complete for you.
 1. Click **OK** and run your new test configuration.
 
+
 To add more tests:
 
 * Edit Haskell\*Test.java files to add more tests of the same kind that already exists.
 * Edit HaskellTestCase.java if you need to add tests of a different kind.
-
 
