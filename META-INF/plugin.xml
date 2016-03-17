@@ -9,7 +9,8 @@
   <change-notes><![CDATA[
     <p>
       <span style="color:red"><b>Warning:</b> You cannot use multiple Haskell plugins at the same time.</span>
-      If you have installed a Haskell language plugin for IntelliJ be sure to uninstall it before installing this one.
+      If you have installed a Haskell language plugin for IntelliJ be sure to uninstall it before
+      installing this one.
     </p>
     <p>
       If you encounter any issues, please submit them on our
@@ -74,10 +75,14 @@
     <p>
       <b>v0.3-beta.22</b>
       <ul>
-        <li>Parser improvements: InstanceSigs, MINIMAL pragma for class definitions, and qualified expressions in
-            ViewPatterns, relaxed let expressions.</li>
+        <li>Parser improvements: InstanceSigs, MINIMAL pragma for class definitions, and qualified
+          expressions in
+          ViewPatterns, relaxed let expressions.
+        </li>
         <li>Autocompletion no longer includes keywords where not applicable.</li>
-        <li>Go to definition for exported modules, re-exported functions, and type definitions, thanks to @charleso.</li>
+        <li>Go to definition for exported modules, re-exported functions, and type definitions,
+          thanks to @charleso.
+        </li>
       </ul>
     </p>
     <p>
@@ -119,7 +124,8 @@
         <li>Implemented language injections for QuasiQuotes.</li>
         <li>Improved import completion with aliased modules.</li>
         <li>Improved <b>Restart ghc-modi</b> action. (#103)</li>
-        <li>Implemented creation of subdirectories for create file action, e.g. <b>Foo.Bar.Baz</b> creates <b>Foo/Bar/Baz.hs</b></li>
+        <li>Implemented creation of subdirectories for create file action, e.g. <b>Foo.Bar.Baz</b>
+          creates <b>Foo/Bar/Baz.hs</b></li>
         <li>Fixed hash operator parsing. (#106)</li>
         <li>Improved RankNTypes support. (#92)</li>
         <li>Improved Windows support. (#108, #109)</li>
@@ -152,7 +158,9 @@
         <li>Improved "Go to symbol" by indexing declarations.</li>
         <li>Resolved bug with ghc-modi blocking. (#91)</li>
         <li>Prevent ghc-modi from restarting when it terminates unexpectedly.</li>
-        <li>Added a "Restart ghc-modi" action to give the user control over when to restart ghc-modi.</li>
+        <li>Added a "Restart ghc-modi" action to give the user control over when to restart
+          ghc-modi.
+        </li>
       </ul>
       <b>v0.3-beta.11</b>
       <ul>
@@ -171,15 +179,15 @@
         <li>Completion takes into account explicit and hiding imports.</li>
         <li>Reference completion now displays module name instead of file name.</li>
       </ul>
-    </p>
-    <p>
-      <b>v0.3-beta.9</b>
+      </p>
+      <p>
+        <b>v0.3-beta.9</b>
       <ul>
         <li>Fixed auto-add type signature intention on Windows. (issue #79)</li>
         <li>Fixed ignore hlint intention on Windows. (issue #59)</li>
       </ul>
     </p>
-      ]]>
+    ]]>
   </change-notes>
 
   <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
@@ -200,33 +208,34 @@
   </project-components>
 
   <actions>
-      <action id="Haskell.NewHaskellFile" class="com.haskforce.actions.CreateHaskellFileAction"
-              text="Haskell File" description="Create new Haskell file">
-          <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
-      </action>
-      <action id="HaskForce.StylishFormat"
-              class="com.haskforce.actions.HaskellStylishFormatAction"
-              text="Reformat code with Stylish Haskell"
-              description="Format current file with Stylish-Haskell formatter">
-            <add-to-group group-id="CodeFormatGroup" anchor="last"/>
-            <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl alt E"/>
-      </action>
-      <action id="com.haskforce.actions.HaskellReloadCompletionCache"
-              class="com.haskforce.actions.HaskellReloadCompletionCache" text="Haskell Completion Cache Reload"
-              description="Reloads completion cache for a Haskell module.  Generally, this involves calling out to an external process.">
-        <add-to-group group-id="CodeMenu" anchor="last"/>
-        <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl SPACE"/>
-      </action>
+    <action id="Haskell.NewHaskellFile" class="com.haskforce.actions.CreateHaskellFileAction"
+            text="Haskell File" description="Create new Haskell file">
+      <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
+    </action>
+    <action id="HaskForce.StylishFormat"
+            class="com.haskforce.actions.HaskellStylishFormatAction"
+            text="Reformat code with Stylish Haskell"
+            description="Format current file with Stylish-Haskell formatter">
+      <add-to-group group-id="CodeFormatGroup" anchor="last"/>
+      <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl alt E"/>
+    </action>
+    <action id="com.haskforce.actions.HaskellReloadCompletionCache"
+            class="com.haskforce.actions.HaskellReloadCompletionCache"
+            text="Haskell Completion Cache Reload"
+            description="Reloads completion cache for a Haskell module.  Generally, this involves calling out to an external process.">
+      <add-to-group group-id="CodeMenu" anchor="last"/>
+      <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl SPACE"/>
+    </action>
     <action id="com.haskforce.actions.RestartGhcModi" class="com.haskforce.actions.RestartGhcModi"
             text="Restart ghc-modi" description="Restarts a disabled ghc-modi process">
       <add-to-group group-id="ToolsMenu" anchor="last"/>
     </action>
-      <action id="TypeInfo" class="com.haskforce.actions.TypeInfoAction" text="Type Info">
-          <add-to-group group-id="ViewMenu" anchor="first"/>
-          <keyboard-shortcut first-keystroke="F11" keymap="Mac OS X"/>
-          <keyboard-shortcut first-keystroke="F11" keymap="Mac OS X 10.5+"/>
-          <keyboard-shortcut first-keystroke="alt EQUALS" keymap="$default"/>
-      </action>
+    <action id="TypeInfo" class="com.haskforce.actions.TypeInfoAction" text="Type Info">
+      <add-to-group group-id="ViewMenu" anchor="first"/>
+      <keyboard-shortcut first-keystroke="F11" keymap="Mac OS X"/>
+      <keyboard-shortcut first-keystroke="F11" keymap="Mac OS X 10.5+"/>
+      <keyboard-shortcut first-keystroke="alt EQUALS" keymap="$default"/>
+    </action>
     <action id="com.haskforce.actions.cabal.AddCabalPackageAction"
             class="com.haskforce.actions.cabal.AddCabalPackageAction"
             text="Add Cabal Package"
@@ -242,101 +251,130 @@
   </actions>
 
   <extensions defaultExtensionNs="com.intellij">
-      <!-- Haskell support -->
-      <internalFileTemplate name="Haskell Module"/>
-      <moduleType id="HASKELL_MODULE" implementationClass="com.haskforce.HaskellModuleType"/>
-      <sdkType implementation="com.haskforce.HaskellSdkType"/>
-      <fileTypeFactory implementation="com.haskforce.HaskellFileTypeFactory"/>
-      <lang.syntaxHighlighterFactory key="Haskell" implementationClass="com.haskforce.highlighting.HaskellSyntaxHighlighterFactory"/>
-      <lang.parserDefinition language="Haskell" implementationClass="com.haskforce.HaskellParserDefinition"/>
-      <lang.documentationProvider language="Haskell" implementationClass="com.haskforce.highlighting.annotation.HaskellDocumentationProvider"/>
-      <annotator language="Haskell" implementationClass="com.haskforce.highlighting.HaskellAnnotator" />
-      <externalAnnotator language="Haskell" implementationClass="com.haskforce.highlighting.annotation.external.HaskellExternalAnnotator"/>
-      <configurationType implementation="com.haskforce.run.HaskellApplicationConfigurationType"/>
-      <configurationType implementation="com.haskforce.run.HaskellTestConfigurationType"/>
-      <configurationType implementation="com.haskforce.run.stack.StackApplicationConfigurationType"/>
-      <programRunner implementation="com.haskforce.run.HaskellRunner"/>
-      <codeStyleSettingsProvider implementation="com.haskforce.language.formatting.HaskellCodeStyleSettingsProvider"/>
-      <langCodeStyleSettingsProvider implementation="com.haskforce.language.formatting.HaskellLanguageCodeStyleSettingsProvider"/>
+    <!-- Haskell support -->
+    <internalFileTemplate name="Haskell Module"/>
+    <moduleType id="HASKELL_MODULE" implementationClass="com.haskforce.HaskellModuleType"/>
+    <sdkType implementation="com.haskforce.HaskellSdkType"/>
+    <fileTypeFactory implementation="com.haskforce.HaskellFileTypeFactory"/>
+    <lang.syntaxHighlighterFactory language="Haskell"
+                                   implementationClass="com.haskforce.highlighting.HaskellSyntaxHighlighterFactory"/>
+    <lang.parserDefinition language="Haskell"
+                           implementationClass="com.haskforce.HaskellParserDefinition"/>
+    <lang.documentationProvider language="Haskell"
+                                implementationClass="com.haskforce.highlighting.annotation.HaskellDocumentationProvider"/>
+    <annotator language="Haskell"
+               implementationClass="com.haskforce.highlighting.HaskellAnnotator"/>
+    <externalAnnotator language="Haskell"
+                       implementationClass="com.haskforce.highlighting.annotation.external.HaskellExternalAnnotator"/>
+    <configurationType implementation="com.haskforce.run.HaskellApplicationConfigurationType"/>
+    <configurationType implementation="com.haskforce.run.HaskellTestConfigurationType"/>
+    <configurationType implementation="com.haskforce.run.stack.StackApplicationConfigurationType"/>
+    <programRunner implementation="com.haskforce.run.HaskellRunner"/>
+    <codeStyleSettingsProvider
+        implementation="com.haskforce.language.formatting.HaskellCodeStyleSettingsProvider"/>
+    <langCodeStyleSettingsProvider
+        implementation="com.haskforce.language.formatting.HaskellLanguageCodeStyleSettingsProvider"/>
 
-      <!-- Language injections -->
-      <lang.elementManipulator forClass="com.haskforce.psi.HaskellQqblob"
-                               implementationClass="com.haskforce.psi.impl.HaskellQqblobManipulator"/>
+    <!-- Language injections -->
+    <lang.elementManipulator forClass="com.haskforce.psi.HaskellQqblob"
+                             implementationClass="com.haskforce.psi.impl.HaskellQqblobManipulator"/>
 
-      <!-- Indexes -->
-      <fileBasedIndex implementation="com.haskforce.index.HaskellModuleIndex"/>
-      <stubIndex implementation="com.haskforce.stubs.index.HaskellAllNameIndex"/>
+    <!-- Indexes -->
+    <fileBasedIndex implementation="com.haskforce.index.HaskellModuleIndex"/>
+    <stubIndex implementation="com.haskforce.stubs.index.HaskellAllNameIndex"/>
 
-      <!-- Editing utils -->
-      <lang.braceMatcher language="Haskell" implementationClass="com.haskforce.features.HaskellBraceMatcher"/>
-      <lang.commenter language="Haskell" implementationClass="com.haskforce.features.HaskellCommenter"/>
-      <quoteHandler fileType="Haskell" className="com.haskforce.features.HaskellQuoteHandler"/>
-      <typedHandler implementation="com.haskforce.features.HaskellTypedHandler" id="HaskellFile"/>
-      <lang.foldingBuilder language="Haskell" implementationClass="com.haskforce.features.HaskellFoldingBuilder"/>
-      <elementDescriptionProvider implementation="com.haskforce.features.HaskellDescriptionProvider"/>
-      <completion.contributor language="Haskell" implementationClass="com.haskforce.codeInsight.HaskellCompletionContributor"/>
+    <!-- Editing utils -->
+    <lang.braceMatcher language="Haskell"
+                       implementationClass="com.haskforce.features.HaskellBraceMatcher"/>
+    <lang.commenter language="Haskell"
+                    implementationClass="com.haskforce.features.HaskellCommenter"/>
+    <quoteHandler fileType="Haskell" className="com.haskforce.features.HaskellQuoteHandler"/>
+    <typedHandler implementation="com.haskforce.features.HaskellTypedHandler" id="HaskellFile"/>
+    <lang.foldingBuilder language="Haskell"
+                         implementationClass="com.haskforce.features.HaskellFoldingBuilder"/>
+    <elementDescriptionProvider implementation="com.haskforce.features.HaskellDescriptionProvider"/>
+    <completion.contributor language="Haskell"
+                            implementationClass="com.haskforce.codeInsight.HaskellCompletionContributor"/>
 
-      <!-- References/navigation -->
-      <codeInsight.lineMarkerProvider language="Haskell" implementationClass="com.haskforce.codeInsight.HaskellLineMarkerProvider"/>
-      <psi.referenceContributor implementation="com.haskforce.psi.references.HaskellReferenceContributor"/>
-      <lang.findUsagesProvider language="Haskell" implementationClass="com.haskforce.codeInsight.HaskellFindUsagesProvider"/>
-      <gotoSymbolContributor implementation="com.haskforce.features.HaskellChooseByNameContributor"/>
+    <!-- References/navigation -->
+    <codeInsight.lineMarkerProvider language="Haskell"
+                                    implementationClass="com.haskforce.codeInsight.HaskellLineMarkerProvider"/>
+    <psi.referenceContributor
+        implementation="com.haskforce.psi.references.HaskellReferenceContributor"/>
+    <lang.findUsagesProvider language="Haskell"
+                             implementationClass="com.haskforce.codeInsight.HaskellFindUsagesProvider"/>
+    <gotoSymbolContributor implementation="com.haskforce.features.HaskellChooseByNameContributor"/>
 
-      <!-- Language utilities -->
-      <lang.namesValidator language="Haskell" implementationClass="com.haskforce.language.HaskellNamesValidator"/>
+    <!-- Language utilities -->
+    <lang.namesValidator language="Haskell"
+                         implementationClass="com.haskforce.language.HaskellNamesValidator"/>
 
-      <!-- Refactoring -->
-      <lang.refactoringSupport language="Haskell" implementationClass="com.haskforce.refactoring.HaskellRefactoringSupportProvider"/>
-      <renamePsiElementProcessor implementation="com.haskforce.refactoring.HaskellRenamePsiElementProcessor"/>
+    <!-- Refactoring -->
+    <lang.refactoringSupport language="Haskell"
+                             implementationClass="com.haskforce.refactoring.HaskellRefactoringSupportProvider"/>
+    <renamePsiElementProcessor
+        implementation="com.haskforce.refactoring.HaskellRenamePsiElementProcessor"/>
 
-      <!-- Structure view on the left pane -->
-      <lang.psiStructureViewFactory language="Haskell" implementationClass="com.haskforce.features.structureview.HaskellStructureViewFactory"/>
+    <!-- Structure view on the left pane -->
+    <lang.psiStructureViewFactory language="Haskell"
+                                  implementationClass="com.haskforce.features.structureview.HaskellStructureViewFactory"/>
 
-      <!-- Project settings -->
+    <!-- Project settings -->
 
-      <!-- Tab under compiler in IntelliJ -> Preferences -->
-      <projectConfigurable instance="com.haskforce.settings.HaskellCompilerConfigurable"
-                           parentId="project.propCompiler" id="Haskell compiler"
-                           displayName="Haskell Compiler"/>
-      <!-- Persistent data + build server communication for compiler settings -->
-      <projectService serviceImplementation="com.haskforce.settings.HaskellBuildSettings" />
-      <!-- Tab in IntelliJ -> Preferences -->
-      <projectConfigurable instance="com.haskforce.settings.HaskellToolsConfigurable"/>
-      <!-- File -> Project Structure dialogue. -->
-      <moduleConfigurationEditorProvider implementation="com.haskforce.settings.HaskellModuleConfigurationEditor" order="first"/>
-      <!-- Tab in IntelliJ -> Preferences -->
-      <colorSettingsPage implementation="com.haskforce.settings.HaskellColorSettingsPage"/>
-      <colorSettingsPage implementation="com.haskforce.settings.CabalColorSettingsPage"/>
+    <!-- Tab under compiler in IntelliJ -> Preferences -->
+    <projectConfigurable instance="com.haskforce.settings.HaskellCompilerConfigurable"
+                         parentId="project.propCompiler" id="Haskell compiler"
+                         displayName="Haskell Compiler"/>
+    <!-- Persistent data + build server communication for compiler settings -->
+    <projectService serviceImplementation="com.haskforce.settings.HaskellBuildSettings"/>
+    <!-- Tab in IntelliJ -> Preferences -->
+    <projectConfigurable instance="com.haskforce.settings.HaskellToolsConfigurable"/>
+    <!-- File -> Project Structure dialogue. -->
+    <moduleConfigurationEditorProvider
+        implementation="com.haskforce.settings.HaskellModuleConfigurationEditor" order="first"/>
+    <!-- Tab in IntelliJ -> Preferences -->
+    <colorSettingsPage implementation="com.haskforce.settings.HaskellColorSettingsPage"/>
+    <colorSettingsPage implementation="com.haskforce.settings.CabalColorSettingsPage"/>
 
-      <!-- Tool windows -->
-      <toolWindow id="Haskell Tools Console" anchor="bottom"
-                  icon="/icons/haskell-13px.png"
-                  factoryClass="com.haskforce.ui.tools.HaskellToolsConsoleWindowFactory"
-                  conditionClass="com.haskforce.ui.tools.HaskellToolsConsoleWindowFactory" />
+    <!-- Tool windows -->
+    <toolWindow id="Haskell Tools Console" anchor="bottom"
+                icon="/icons/haskell-13px.png"
+                factoryClass="com.haskforce.ui.tools.HaskellToolsConsoleWindowFactory"
+                conditionClass="com.haskforce.ui.tools.HaskellToolsConsoleWindowFactory"/>
 
-      <!-- Cabal support -->
-      <fileTypeFactory implementation="com.haskforce.cabal.CabalFileTypeFactory"/>
-      <lang.commenter language="Cabal" implementationClass="com.haskforce.cabal.CabalCommenter"/>
-      <lang.syntaxHighlighterFactory key="Cabal" implementationClass="com.haskforce.cabal.highlighting.CabalSyntaxHighlighterFactory"/>
-      <lang.parserDefinition language="Cabal" implementationClass="com.haskforce.cabal.CabalParserDefinition"/>
-      <annotator language="Cabal" implementationClass="com.haskforce.cabal.highlighting.CabalAnnotator" />
+    <!-- Cabal support -->
+    <fileTypeFactory implementation="com.haskforce.cabal.CabalFileTypeFactory"/>
+    <lang.commenter language="Cabal" implementationClass="com.haskforce.cabal.CabalCommenter"/>
+    <lang.syntaxHighlighterFactory language="Cabal"
+                                   implementationClass="com.haskforce.cabal.highlighting.CabalSyntaxHighlighterFactory"/>
+    <lang.parserDefinition language="Cabal"
+                           implementationClass="com.haskforce.cabal.CabalParserDefinition"/>
+    <annotator language="Cabal"
+               implementationClass="com.haskforce.cabal.highlighting.CabalAnnotator"/>
 
-      <!-- Hamlet support -->
-      <fileTypeFactory implementation="com.haskforce.yesod.shakespeare.hamlet.HamletFileTypeFactory"/>
-      <lang.syntaxHighlighterFactory key="Hamlet" implementationClass="com.haskforce.yesod.shakespeare.hamlet.highlighting.HamletSyntaxHighlighterFactory"/>
-      <lang.parserDefinition language="Hamlet" implementationClass="com.haskforce.yesod.shakespeare.hamlet.HamletParserDefinition" />
+    <!-- Hamlet support -->
+    <fileTypeFactory implementation="com.haskforce.yesod.shakespeare.hamlet.HamletFileTypeFactory"/>
+    <lang.syntaxHighlighterFactory language="Hamlet"
+                                   implementationClass="com.haskforce.yesod.shakespeare.hamlet.highlighting.HamletSyntaxHighlighterFactory"/>
+    <lang.parserDefinition language="Hamlet"
+                           implementationClass="com.haskforce.yesod.shakespeare.hamlet.HamletParserDefinition"/>
 
-      <!-- Spelling support -->
-      <spellchecker.support language="Haskell" implementationClass="com.haskforce.spellchecker.HaskellSpellcheckingStrategy" />
-      <spellchecker.support language="Cabal" implementationClass="com.haskforce.spellchecker.HaskellSpellcheckingStrategy" />
-      <spellchecker.bundledDictionaryProvider implementation="com.haskforce.spellchecker.HaskellBundledDictionaryProvider" />
+    <!-- Spelling support -->
+    <spellchecker.support language="Haskell"
+                          implementationClass="com.haskforce.spellchecker.HaskellSpellcheckingStrategy"/>
+    <spellchecker.support language="Cabal"
+                          implementationClass="com.haskforce.spellchecker.HaskellSpellcheckingStrategy"/>
+    <spellchecker.bundledDictionaryProvider
+        implementation="com.haskforce.spellchecker.HaskellBundledDictionaryProvider"/>
 
-      <projectImportProvider implementation="com.haskforce.importWizard.stack.StackProjectImportProvider"/>
-      <projectImportBuilder implementation="com.haskforce.importWizard.stack.StackProjectImportBuilder"/>
+    <projectImportProvider
+        implementation="com.haskforce.importWizard.stack.StackProjectImportProvider"/>
+    <projectImportBuilder
+        implementation="com.haskforce.importWizard.stack.StackProjectImportBuilder"/>
 
-      <!-- External builder support -->
-      <!-- Note that the classpath is needed for plugin deployment to export a zip archive. -->
-      <compileServer.plugin classpath="jps/jps-plugin.jar;jps-shared.jar;scala-library-2.11.7.jar;scalaz-core_2.11-7.1.4.jar;snakeyaml-1.16.jar"/>
+    <!-- External builder support -->
+    <!-- Note that the classpath is needed for plugin deployment to export a zip archive. -->
+    <compileServer.plugin classpath="jps/jps-plugin.jar;jps-shared.jar;scala-library-2.11.7.jar;scalaz-core_2.11-7.1.4.jar;snakeyaml-1.16.jar"/>
   </extensions>
   <module-components>
     <component>
