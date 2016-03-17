@@ -1,7 +1,7 @@
 <idea-plugin version="2" use-idea-classloader="true">
   <id>com.haskforce</id>
   <name>HaskForce</name>
-  <version>0.3-beta.29</version>
+  <version>0.3-beta.30</version>
   <vendor url="https://github.com/carymrobbins/intellij-haskforce">HaskForce on GitHub</vendor>
 
   <description>Plugin for Haskell language support.</description>
@@ -15,6 +15,16 @@
     <p>
       If you encounter any issues, please submit them on our
       <a href="https://github.com/carymrobbins/intellij-haskforce/issues">bug tracker</a>.
+    </p>
+    <p>
+      <b>v0.3-beta.30</b>
+      <ul>
+        <li>Fix "expand selection" feature to work with lists (#246)</li>
+        <li>Handle missing "packages" field in stack.yaml (#248)</li>
+        <li>Validate that project names do not contain whitespace (#252)</li>
+        <li>New "Haskell Stack Run" configuration (#252)</li>
+        <li>Added Haskell Tools Console (#237)</li>
+      </ul>
     </p>
     <p>
       <b>v0.3-beta.29</b>
