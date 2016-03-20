@@ -85,23 +85,6 @@ public class GhcModUtil {
             super("Could not parse type info output", cause);
             this.stdout = stdout;
         }
-
-        /** Attempts to parse errors from ghc-mod from the stdout to report to the user. */
-        @Nullable
-        public String getUserError() {
-            List<GhcMod.Problem> problems = GhcMod.parseProblems(new Scanner(stdout));
-            if (problems == null || problems.isEmpty()) return null;
-            HashSet<String> messages = new HashSet<String>(problems.size());
-            for (GhcMod.Problem problem : problems) {
-                messages.add(StringUtil.join(Arrays.asList(
-                        problem.file,
-                        problem.startLine,
-                        problem.startColumn,
-                        problem.message
-                ), ":"));
-            }
-            return StringUtil.join(messages, "\n\n");
-        }
     }
 
     /**

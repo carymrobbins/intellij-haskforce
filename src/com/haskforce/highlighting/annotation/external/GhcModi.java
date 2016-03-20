@@ -111,11 +111,10 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
                 try {
                     return stdout == null ? "Type info not found" : GhcModUtil.handleTypeInfo(startPosition, stopPosition, stdout);
                 } catch (GhcModUtil.TypeInfoParseException e) {
-                    // If there's a user error, provide that via the tooltip.
-                    String userError = e.getUserError();
-                    // Otherwise, provide a notification for the error.
-                    if (userError == null) throw new ExecError(command, stdout);
-                    return userError;
+                    NotificationUtil.displayToolsNotification(
+                      NotificationType.ERROR, module.getProject(), "Type Info Error",
+                      "There was an error when executing the ghc-modi `type` command:\n\n" + stdout);
+                    return null;
                 }
             }
         });

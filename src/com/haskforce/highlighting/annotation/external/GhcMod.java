@@ -264,14 +264,10 @@ public class GhcMod {
         try {
             return GhcModUtil.handleTypeInfo(startPosition, stopPosition, stdout);
         } catch (GhcModUtil.TypeInfoParseException e) {
-            String userError = e.getUserError();
-            if (userError == null) {
-                NotificationUtil.displayToolsNotification(
-                        NotificationType.ERROR, module.getProject(), "Type Info Error",
-                        "There was an error when executing the `ghc-mod type` command:\n\n" + stdout);
-                return null;
-            }
-            return userError;
+              NotificationUtil.displayToolsNotification(
+                      NotificationType.ERROR, module.getProject(), "Type Info Error",
+                      "There was an error when executing the `ghc-mod type` command:\n\n" + stdout);
+              return null;
         }
     }
 

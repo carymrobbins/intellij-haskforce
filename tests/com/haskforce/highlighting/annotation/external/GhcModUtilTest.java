@@ -47,35 +47,4 @@ public class GhcModUtilTest extends UsefulTestCase {
                 new VisualPosition (24, 60), ghcModTypeInfo);
         Assert.assertEquals("Player -> [Player] -> [Player]", typeInfo);
     }
-
-    public void testTypeInfoParseError() {
-        String ghcModTypeInfo = StringUtil.join(Arrays.asList(
-                "Warning: resolveModule \"/foo/bar/src/Main.hs\":",
-                "         /src/Main.hs:5:1:parse error (possibly incorrect indentation or mismatched brackets)",
-                "/src/Main.hs:5:1:parse error (possibly incorrect indentation or mismatched brackets)"
-        ), "\n");
-        try {
-            GhcModUtil.handleTypeInfo(new VisualPosition(1, 1), new VisualPosition(1, 1), ghcModTypeInfo);
-            fail("Expected TypeInfoParseException to be thrown.");
-        } catch (GhcModUtil.TypeInfoParseException e) {
-            String userError = e.getUserError();
-            assertNotNull(userError);
-            assertEquals("/src/Main.hs:5:1:parse error (possibly incorrect indentation or mismatched brackets)", userError);
-        }
-    }
-
-    public void testTypeInfoUnknownError() {
-        String ghcModTypeInfo = StringUtil.join(Arrays.asList(
-                "Warning: resolveModule \"/foo/bar/src/Main.hs\":",
-                "some crazy unknown message"
-        ), "\n");
-        try {
-            GhcModUtil.handleTypeInfo(new VisualPosition(1, 1), new VisualPosition(1, 1), ghcModTypeInfo);
-            fail("Expected TypeInfoParseException to be thrown.");
-        } catch (GhcModUtil.TypeInfoParseException e) {
-            String userError = e.getUserError();
-            assertNull(userError);
-            assertEquals(ghcModTypeInfo, e.stdout);
-        }
-    }
 }
