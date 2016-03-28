@@ -255,6 +255,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         commandLine.setWorkDirectory(workingDirectory);
         // Make sure we can actually see the errors.
         commandLine.setRedirectErrorStream(true);
+        toolConsole.writeInput(ToolKey.GHC_MODI_KEY, "Using working directory: " + workingDirectory);
         toolConsole.writeInput(ToolKey.GHC_MODI_KEY, "Starting ghc-modi process: " + commandLine.getCommandLineString());
         try {
             process = commandLine.createProcess();

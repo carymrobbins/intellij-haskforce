@@ -144,6 +144,7 @@ public class GhcMod {
         // Make sure we can actually see the errors.
         commandLine.setRedirectErrorStream(true);
         HaskellToolsConsole toolConsole = HaskellToolsConsole.get(project);
+        toolConsole.writeInput(ToolKey.GHC_MOD_KEY, "Using working directory: " + workingDirectory);
         toolConsole.writeInput(ToolKey.GHC_MOD_KEY, commandLine.getCommandLineString());
         Either<ExecUtil.ExecError, String> result = ExecUtil.readCommandLine(commandLine);
         if (result.isLeft()) {

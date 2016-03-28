@@ -199,6 +199,7 @@ public class HLint {
         parametersList.add("--no-exit-code");
         parametersList.addParametersString(hlintFlags);
         parametersList.addAll(params);
+        toolConsole.writeInput(ToolKey.HLINT_KEY, "Using working directory: " + workingDirectory);
         toolConsole.writeInput(ToolKey.HLINT_KEY, commandLine.getCommandLineString());
         return ExecUtil.readCommandLine(commandLine);
     }
