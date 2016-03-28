@@ -214,7 +214,11 @@
   </application-components>
 
   <project-components>
-    <!-- Add your project components here -->
+    <component>
+      <implementation-class>
+        com.haskforce.codeInsight.HaskellCompletionCacheLoader
+      </implementation-class>
+    </component>
   </project-components>
 
   <actions>

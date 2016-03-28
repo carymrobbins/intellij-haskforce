@@ -19,13 +19,8 @@ class GhcModCompileProblemsProvider private(
   filePath: String
 ) extends ProblemsProvider {
 
-  override def getProblems: WrappedFuture[Option[Problems]] = {
-    new GhcModFutureProblems(
-      module.getProject,
-      GhcModCompileProblemsProvider.executorService.submit({ () =>
-        GhcMod.check(module, workDir, filePath)
-      }.toCallable)
-    )
+  override def getProblems: Option[Problems] = {
+    Option(GhcMod.check(module, workDir, filePath))
   }
 }
 

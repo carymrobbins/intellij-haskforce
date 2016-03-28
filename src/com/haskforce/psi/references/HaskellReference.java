@@ -3,6 +3,7 @@ package com.haskforce.psi.references;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import com.haskforce.codeInsight.HaskellCompletionContributor;
+import com.haskforce.codeInsight.LookupElementUtil;
 import com.haskforce.index.HaskellModuleIndex;
 import com.haskforce.psi.*;
 import com.haskforce.psi.impl.HaskellPsiImplUtil;
@@ -291,7 +292,7 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
             } else {
                 type = "";
             }
-            variants.add(HaskellCompletionContributor.createLookupElement(name, module, type));
+            variants.add(LookupElementUtil.create(name, module, type));
         }
         return variants.toArray();
     }

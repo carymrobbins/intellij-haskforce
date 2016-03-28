@@ -53,7 +53,8 @@ final class HaskellToolsConsole private(project: Project) {
 
   private def write(contentType: ConsoleViewContentType, toolKey: ToolKey, msg: String): Unit = {
     ApplicationManager.getApplication.invokeLater(SAMUtils.runnable {
-      getConsole(toolKey).view.print(msg + "\n", contentType)
+      val m = if (msg.isEmpty) "<empty message>" else msg
+      getConsole(toolKey).view.print(m + "\n", contentType)
     })
   }
 

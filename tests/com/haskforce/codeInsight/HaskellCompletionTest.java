@@ -6,10 +6,12 @@ import com.haskforce.psi.impl.HaskellElementFactory;
 import static com.haskforce.codeInsight.HaskellCompletionContributor.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 import org.junit.Assert;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -80,13 +82,13 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
 
     public void testLanguages() throws Throwable {
         final String[] fakeLangs = {"OverloadedStrings", "TypeFamilies", "OverloadedRecordFields"};
-        loadCache(LANGUAGE_CACHE_KEY, fakeLangs);
+        loadLanguageExtensions(fakeLangs);
         doTestInclude("{-# LANGUAGE <caret> #-}", fakeLangs);
     }
 
     public void testGhcFlags() throws Throwable {
         final String[] fakeFlags = {"-ferror-spans", "-fno-error-spans", "-fprint-explicit-foralls"};
-        loadCache(FLAG_CACHE_KEY, fakeFlags);
+        loadGhcFlags(fakeFlags);
         doTestInclude("{-# OPTIONS_GHC <caret> #-}", fakeFlags);
         clearCache();
         // Strip the first "-" from each flag.
@@ -99,7 +101,7 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
 
     public void testModuleImports() throws Throwable {
         final String[] fakeModules = {"Control.Monad", "Data.ByteString", "Data.Byteable"};
-        loadCache(MODULE_CACHE_KEY, fakeModules);
+        loadVisibleModules(fakeModules);
         doTestInclude("import <caret>", "Control", "Data");
         doTestInclude("import Data.<caret>", "ByteString", "Byteable");
         doTestExclude("import Data.<caret>", "import ");
@@ -108,7 +110,7 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
     public void testNameImports() throws Throwable {
         FakeBrowseCache fakeBrowseCache = new FakeBrowseCache(
                 "Data.Ord", Arrays.asList("Down", "EQ", "GT", "LT", "Ord", "Ordering", "compare", "comparing"));
-        loadCache(BROWSE_CACHE_KEY, fakeBrowseCache);
+        loadModuleSymbols(fakeBrowseCache);
         doTestInclude("import Data.Ord (<caret>)", fakeBrowseCache.get("Data.Ord"));
         doTestInclude("import Data.Ord (c<caret>)", "compare", "comparing");
         doTestInclude("import Data.Ord (Or<caret>)", "Ord", "Ordering");
@@ -140,7 +142,7 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
         FakeBrowseCache fakeBrowseCache = new FakeBrowseCache(
                 "Data.ByteString.Char8", Arrays.asList("ByteString", "all", "any", "append", "appendFile", "break"),
                 "C", Arrays.asList("ByteString", "all", "any", "append", "appendFile", "break"));
-        loadCache(BROWSE_CACHE_KEY, fakeBrowseCache);
+        loadModuleSymbols(fakeBrowseCache);
         doTestInclude(
                 "import qualified Data.ByteString.Char8 as C\n" +
                 "foo = C.<caret>",
@@ -160,7 +162,7 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
                 "Prelude", Arrays.asList("Just", "Nothing", "all", "any", "readFile"),
                 "Control.Monad", Arrays.asList("liftM", "mapM", "forM"),
                 "C", Arrays.asList("ByteString", "all", "any", "append", "appendFile", "break"));
-        loadCache(BROWSE_CACHE_KEY, fakeBrowseCache);
+        loadModuleSymbols(fakeBrowseCache);
         doTestInclude(
                 "foo = <caret>",
                 fakeBrowseCache.get("Prelude"));
@@ -188,7 +190,7 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
         FakeBrowseCache fakeBrowseCache = new FakeBrowseCache(
                 "Control.Monad", Arrays.asList("liftM", "mapM", "forM")
         );
-        loadCache(BROWSE_CACHE_KEY, fakeBrowseCache);
+        loadModuleSymbols(fakeBrowseCache);
         String src =
                 "import Control.Monad hiding (liftM)\n" +
                 "main = <caret>";
@@ -225,12 +227,12 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
     /**
      * Terrible hack to make constructing and using these maps way simpler.
      */
-    static class FakeBrowseCache extends HashMap<String, List<LookupElement>> {
+    private static class FakeBrowseCache extends HashMap<String, List<LookupElement>> {
         private HashMap<String, String[]> nameMap;
 
         FakeBrowseCache(Object... objects) {
             super(objects.length / 2);
-            nameMap = new HashMap(objects.length / 2);
+            nameMap = new HashMap<String, String[]>(objects.length / 2);
             String key = null;
             for (int i = 0; i < objects.length; ++i) {
                 if (i % 2 == 0) {
@@ -242,7 +244,12 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
         }
 
         public List<LookupElement> put(String key, List<String> value) {
-            List<LookupElement> result = super.put(key, ContainerUtil.map(value, stringToLookupElement));
+            List<LookupElement> result = super.put(key, ContainerUtil.map(value, new Function<String, LookupElement>() {
+                @Override
+                public LookupElement fun(String s) {
+                    return LookupElementUtil.fromString(s);
+                }
+            }));
             //noinspection SuspiciousArrayCast
             nameMap.put(key, (String[])(value.toArray()));
             return result;

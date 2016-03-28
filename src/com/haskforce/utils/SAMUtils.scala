@@ -6,6 +6,7 @@ import javax.swing.event.PopupMenuEvent
 
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.DumbAwareAction
+import com.intellij.openapi.util.Computable
 import com.intellij.ui.PopupMenuListenerAdapter
 
 import com.haskforce.ui.SListCellRendererWrapper
@@ -17,6 +18,10 @@ object SAMUtils {
     override def run(): Unit = f
   }
 
+  def computable[A](f: => A) = new Computable[A] {
+    override def compute(): A = f
+  }
+
   def popupMenuWillBecomeVisible(f: PopupMenuEvent => Unit) = new PopupMenuListenerAdapter {
     override def popupMenuWillBecomeVisible(e: PopupMenuEvent): Unit = f(e)
   }
@@ -26,4 +31,8 @@ object SAMUtils {
   }
 
   def listCellRenderer[A](f: A => String) = new SListCellRendererWrapper[A](f)
+
+  def ijFunction[A, B](f: A => B): com.intellij.util.Function[A, B] = new com.intellij.util.Function[A, B] {
+    override def fun(param: A): B = f(param)
+  }
 }

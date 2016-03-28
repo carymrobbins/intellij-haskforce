@@ -1,6 +1,7 @@
 package com.haskforce.highlighting.annotation.external;
 
 import com.haskforce.actions.RestartGhcModi;
+import com.haskforce.codeInsight.BrowseItem;
 import com.haskforce.highlighting.annotation.Problems;
 import com.haskforce.highlighting.annotation.external.GhcModUtil.GhcVersionValidation;
 import com.haskforce.settings.SettingsChangeNotifier;
@@ -19,11 +20,14 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.VisualPosition;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
+import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.psi.PsiElement;
 import com.intellij.xml.util.XmlUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import scala.Option;
 
 import java.io.*;
 import java.util.*;
@@ -34,6 +38,19 @@ import java.util.regex.Pattern;
  * Process wrapper for GhcModi.  Implements ModuleComponent so destruction of processes coincides with closing projects.
  */
 public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
+
+    public static Option<GhcModi> get(PsiElement element) {
+        final Module module = ModuleUtilCore.findModuleForPsiElement(element);
+        if (module == null) return Option.apply(null);
+        return get(module);
+    }
+
+    public static Option<GhcModi> get(@NotNull Module module) {
+        final GhcModi ghcModi = module.getComponent(GhcModi.class);
+        if (ghcModi.isConfigured()) return Option.apply(ghcModi);
+        return Option.apply(null);
+    }
+
     @SuppressWarnings("UnusedDeclaration")
     private static final Logger LOG = Logger.getInstance(GhcModi.class);
 
@@ -94,10 +111,30 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         return handleGhcModiCall(new GhcModiCallable<Problems>() {
             @Override
             public Problems call() throws GhcModiError {
-                final String stdout = simpleExec("check " + file);
-                return stdout == null ? new Problems() : handleCheck(module, file, stdout);
+                return unsafeCheck(file);
             }
         });
+    }
+
+    @Nullable
+    public Problems unsafeCheck(final @NotNull String file) throws GhcModiError {
+        final String stdout = simpleExec("check " + file);
+        return stdout == null ? new Problems() : handleCheck(module, file, stdout);
+    }
+
+    @NotNull
+    public String[] unsafeLang() throws GhcModiError {
+        return simpleExecToLinesOrEmpty("lang");
+    }
+
+    @NotNull
+    public String[] unsafeFlag() throws GhcModiError {
+        return simpleExecToLinesOrEmpty("flag");
+    }
+
+    @NotNull
+    public String[] unsafeList() throws GhcModiError {
+        return simpleExecToLinesOrEmpty("list");
     }
 
     public Future<String> type(final @NotNull String canonicalPath,
@@ -143,35 +180,24 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         return handleGhcModiCall(new GhcModiCallable<BrowseItem[]>() {
             @Override
             public BrowseItem[] call() throws GhcModiError {
-                String[] lines = simpleExecToLines("browse -d " + module);
-                if (lines == null) {
-                    return null;
-                }
-                BrowseItem[] result = new BrowseItem[lines.length];
-                for (int i = 0; i < lines.length; ++i) {
-                    final String[] parts = TYPE_SPLIT_REGEX.split(lines[i], 2);
-                    //noinspection ObjectAllocationInLoop
-                    result[i] = new BrowseItem(parts[0], module, parts.length == 2 ? parts[1] : "");
-                }
-                return result;
+                return unsafeBrowse(module);
             }
         });
     }
 
-    /**
-     * Wrapper class for the output of `ghc-modi browse` command.
-     */
-    public static class BrowseItem {
-        public final @NotNull String name;
-        public final @NotNull String module;
-        public final @NotNull String type;
-
-        public BrowseItem(@NotNull String name, @NotNull String module, @NotNull String type) {
-            this.name = name;
-            this.module = module;
-            this.type = type;
+    @NotNull
+    public BrowseItem[] unsafeBrowse(@NotNull final String module) throws GhcModiError {
+        String[] lines = simpleExecToLines("browse -d " + module);
+        if (lines == null) {
+            return null;
         }
-
+        BrowseItem[] result = new BrowseItem[lines.length];
+        for (int i = 0; i < lines.length; ++i) {
+            final String[] parts = TYPE_SPLIT_REGEX.split(lines[i], 2);
+            //noinspection ObjectAllocationInLoop
+            result[i] = new BrowseItem(parts[0], module, parts.length == 2 ? parts[1] : "");
+        }
+        return result;
     }
 
     /**
@@ -193,6 +219,12 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     public String[] simpleExecToLines(@NotNull String command) throws GhcModiError {
         final String result = simpleExec(command);
         return result == null ? null : StringUtil.splitByLines(result);
+    }
+
+    @NotNull
+    public String[] simpleExecToLinesOrEmpty(@NotNull String command) throws GhcModiError {
+        final String[] result = simpleExecToLines(command);
+        return result == null ? new String[] {} : result;
     }
 
     /**

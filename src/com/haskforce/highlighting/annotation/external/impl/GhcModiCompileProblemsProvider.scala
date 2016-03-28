@@ -11,22 +11,18 @@ import com.haskforce.highlighting.annotation.external.{ProblemsProvider, GhcModi
 import com.haskforce.utils.WrappedFuture
 
 class GhcModiCompileProblemsProvider private(
-  module: Module,
   ghcModi: GhcModi,
   filePath: String
 ) extends ProblemsProvider {
 
-  override def getProblems: WrappedFuture[Option[Problems]] = {
-    new GhcModiFutureProblems(ghcModi.check(filePath), module.getProject)
-  }
+  override def getProblems: Option[Problems] = Option(ghcModi.unsafeCheck(filePath))
 }
 
 object GhcModiCompileProblemsProvider {
   def create(psiFile: PsiFile): Option[GhcModiCompileProblemsProvider] = for {
-    module <- Option(ModuleUtilCore.findModuleForPsiElement(psiFile))
-    ghcModi <- Option(module.getComponent(classOf[GhcModi])) if ghcModi.isConfigured
+    ghcModi <- GhcModi.get(psiFile)
     filePath <- Option(psiFile.getVirtualFile.getCanonicalPath)
-  } yield new GhcModiCompileProblemsProvider(module, ghcModi, filePath)
+  } yield new GhcModiCompileProblemsProvider(ghcModi, filePath)
 }
 
 final class GhcModiFutureProblems(

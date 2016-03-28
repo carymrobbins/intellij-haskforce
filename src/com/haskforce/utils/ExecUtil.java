@@ -134,8 +134,11 @@ public class ExecUtil {
     public static Either<ExecError, String> readCommandLine(@NotNull GeneralCommandLine commandLine,
                                                             @Nullable String input) {
         Process process;
+        CapturingProcessHandler processHandler;
+        ProcessOutput processOutput;
         try {
-            process = commandLine.createProcess();
+            processHandler = new CapturingProcessHandler(commandLine);
+            process = processHandler.getProcess();
         } catch (ExecutionException e) {
             return new ExecError(
                 "Failed to create process for command: " + commandLine.getCommandLineString(),
@@ -155,7 +158,7 @@ public class ExecUtil {
                 ).toLeft();
             }
         }
-        ProcessOutput processOutput = new CapturingProcessHandler(process).runProcess();
+        processOutput = processHandler.runProcess();
         if (processOutput.getExitCode() != 0) {
             return new ExecError(
                 "Nonzero exit status (" + processOutput.getExitCode() + ") " +

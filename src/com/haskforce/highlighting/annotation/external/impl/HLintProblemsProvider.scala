@@ -18,13 +18,8 @@ class HLintProblemsProvider private(
   filePath: String
 ) extends ProblemsProvider {
 
-  override def getProblems: WrappedFuture[Option[Problems]] = {
-    new HLintFutureProblems(
-      project,
-      HLintProblemsProvider.executorService.submit({ () =>
-        HLint.lint(project, workDir, filePath)
-      }.toCallable)
-    )
+  override def getProblems: Option[Problems] = {
+    Option(HLint.lint(project, workDir, filePath))
   }
 }
 

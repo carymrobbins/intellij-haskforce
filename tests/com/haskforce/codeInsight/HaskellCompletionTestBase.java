@@ -19,30 +19,26 @@ package com.haskforce.codeInsight;
 // Imported from Erlang repository on 24 July 2014.
 
 import com.haskforce.HaskellLightPlatformCodeInsightFixtureTestCase;
+import com.haskforce.codeInsight.HaskellCompletionCacheLoader.LookupElementWrapper;
+import com.haskforce.codeInsight.HaskellCompletionCacheLoader.LookupElementWrapper$;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.lookup.LookupElement;
-import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.psi.PsiFile;
 import com.intellij.testFramework.UsefulTestCase;
 import com.intellij.util.Function;
-import com.intellij.util.containers.ContainerUtil;
-import org.jetbrains.annotations.NotNull;
+import com.intellij.util.containers.HashSet;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * Common functionality for completion tests
  */
 abstract public class HaskellCompletionTestBase extends HaskellLightPlatformCodeInsightFixtureTestCase {
-    final protected List<Function<UserDataHolder, Void>> cacheLoaders;
+    final protected List<Function<HaskellCompletionCacheLoader.Cache, Void>> cacheLoaders;
 
     protected HaskellCompletionTestBase() {
         super("codeInsight", "codeInsight");
-        cacheLoaders = new ArrayList<Function<UserDataHolder, Void>>(0);
+        cacheLoaders = new ArrayList<Function<HaskellCompletionCacheLoader.Cache, Void>>(0);
     }
 
 /*
@@ -88,28 +84,63 @@ abstract public class HaskellCompletionTestBase extends HaskellLightPlatformCode
                                   String... variants) throws Throwable {
         myFixture.configureByText("a.hs", txt);
         PsiFile file = myFixture.getFile();
-        UserDataHolder cacheHolder = HaskellCompletionContributor.getCacheHolder(file);
-        for (Function f : cacheLoaders) {
+        HaskellCompletionCacheLoader.Cache cacheHolder = HaskellCompletionCacheLoader.get(file.getProject()).cache();
+        for (Function<HaskellCompletionCacheLoader.Cache, Void> f : cacheLoaders) {
             f.fun(cacheHolder);
         }
         doTestVariantsInner(type, count, checkType, variants);
     }
 
-    /**
-     * Helper to load fake completion data.
-     */
-    protected <T> void loadCache(final Key<T> key, final T value) {
-        cacheLoaders.add(new Function<UserDataHolder, Void>() {
+    protected void loadLanguageExtensions(final String... ss) {
+        cacheLoaders.add(new Function<HaskellCompletionCacheLoader.Cache, Void>() {
             @Override
-            public Void fun(UserDataHolder holder) {
-                holder.putUserData(key, value);
+            public Void fun(HaskellCompletionCacheLoader.Cache cache) {
+                for (String s : ss) {
+                    cache.languageExtensions().add(LookupElementWrapper$.MODULE$.fromString(s));
+                }
                 return null;
             }
         });
     }
 
-    protected void loadCache(final Key<List<LookupElement>> key, final @NotNull String[] value) {
-        loadCache(key, ContainerUtil.map(value, HaskellCompletionContributor.stringToLookupElement));
+    protected void loadGhcFlags(final String... ss) {
+        cacheLoaders.add(new Function<HaskellCompletionCacheLoader.Cache, Void>() {
+            @Override
+            public Void fun(HaskellCompletionCacheLoader.Cache cache) {
+                Collections.addAll(cache.ghcFlags(), ss);
+                return null;
+            }
+        });
+    }
+
+    protected void loadVisibleModules(final String... ss) {
+        cacheLoaders.add(new Function<HaskellCompletionCacheLoader.Cache, Void>() {
+            @Override
+            public Void fun(HaskellCompletionCacheLoader.Cache cache) {
+                Collections.addAll(cache.visibleModules(), ss);
+                return null;
+            }
+        });
+    }
+
+    protected void loadModuleSymbols(final Map<String, List<LookupElement>> m) {
+        cacheLoaders.add(new Function<HaskellCompletionCacheLoader.Cache, Void>() {
+            @Override
+            public Void fun(HaskellCompletionCacheLoader.Cache cache) {
+                Map<String, Set<LookupElementWrapper>> syms = cache.moduleSymbols();
+                for (Map.Entry<String, List<LookupElement>> kvp : m.entrySet()) {
+                    Set<LookupElementWrapper> v = syms.get(kvp.getKey());
+                    if (v == null) {
+                        v = new HashSet<LookupElementWrapper>(kvp.getValue().size());
+                        syms.put(kvp.getKey(), v);
+                    }
+                    for (LookupElement e : kvp.getValue()) {
+                        v.add(new LookupElementWrapper(e));
+                    }
+                }
+                return null;
+            }
+        });
     }
 
     protected void clearCache() {

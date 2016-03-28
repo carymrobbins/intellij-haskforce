@@ -1,30 +1,41 @@
 package com.haskforce
 
 import java.awt.event._
+import java.util
 import java.util.Comparator
 import java.util.concurrent.Callable
 import javax.swing.event.{DocumentListener, DocumentEvent}
 
+import scala.collection.JavaConverters._
+
 import com.intellij.openapi.util.{Computable, Condition}
 
 object Implicits {
-  implicit class Fun0[A](f: () => A) {
+  implicit final class Fun0[A](val underlying: () => A) extends AnyVal {
     def toRunnable(implicit ev: A =:= Unit): Runnable = new Runnable {
-      override def run(): Unit = f()
+      override def run(): Unit = underlying()
     }
 
     def toCallable: Callable[A] = new Callable[A] {
-      override def call(): A = f()
+      override def call(): A = underlying()
     }
 
     def toComputable: Computable[A] = new Computable[A] {
-      override def compute(): A = f()
+      override def compute(): A = underlying()
     }
   }
 
   implicit def funToRunnable(block: () => Unit): Runnable = block.toRunnable
 
   implicit def funToComputable[A](block: () => A): Computable[A] = block.toComputable
+
+  implicit final class Fun1[A, B](val underlying: A => B) extends AnyVal {
+    def toIJFunction: com.intellij.util.Function[A, B] = new com.intellij.util.Function[A, B] {
+      override def fun(param: A): B = underlying(param)
+    }
+  }
+
+  implicit def funToIJFunction[A, B](f: A => B): com.intellij.util.Function[A, B] = f.toIJFunction
 
   implicit def funToItemListener(f: ItemEvent => Unit): ItemListener = new ItemListener {
     override def itemStateChanged(e: ItemEvent): Unit = f(e)
@@ -58,6 +69,10 @@ object Implicits {
 
   implicit class BooleanToOption(b: Boolean) {
     def option[A](a: => A): Option[A] = if (b) Some(a) else None
+  }
+
+  implicit class RichJavaCollection[A](val underlying: util.Collection[A]) {
+    def foreach[U](f: A => U): Unit = underlying.iterator().asScala.foreach(f)
   }
 
   /**

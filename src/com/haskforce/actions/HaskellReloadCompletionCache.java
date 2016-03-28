@@ -1,5 +1,6 @@
 package com.haskforce.actions;
 
+import com.haskforce.codeInsight.HaskellCompletionCacheLoader;
 import com.haskforce.codeInsight.HaskellCompletionContributor;
 import com.haskforce.psi.HaskellFile;
 import com.intellij.notification.Notification;
@@ -32,6 +33,6 @@ public class HaskellReloadCompletionCache extends AnAction implements DumbAware 
             LOG.error(message);
             return;
         }
-        HaskellCompletionContributor.loadCacheData(file, true);
+        HaskellCompletionCacheLoader.get(file.getProject()).forceUpdateCache(file);
     }
 }

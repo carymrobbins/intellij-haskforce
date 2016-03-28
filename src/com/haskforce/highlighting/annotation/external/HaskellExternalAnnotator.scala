@@ -3,7 +3,7 @@ package com.haskforce.highlighting.annotation.external
 import scala.collection.JavaConverters._
 
 import com.intellij.lang.annotation.{AnnotationHolder, ExternalAnnotator}
-import com.intellij.openapi.application.{ModalityState, ApplicationManager}
+import com.intellij.openapi.application.{ApplicationManager, ModalityState}
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.PsiFile
@@ -11,10 +11,9 @@ import org.jetbrains.annotations.{NotNull, Nullable}
 
 import com.haskforce.Implicits._
 import com.haskforce.codeInsight.HaskellCompletionContributor
-import com.haskforce.highlighting.annotation.{Problems, HaskellProblem, HaskellAnnotationHolder}
-
+import com.haskforce.highlighting.annotation.{HaskellAnnotationHolder, HaskellProblem, Problems}
 import HaskellExternalAnnotator.State
-import com.haskforce.utils.WrappedFuture
+import com.haskforce.utils.{SAMUtils, WrappedFuture}
 
 /** Single annotator that calls all external tools used for annotations. */
 class HaskellExternalAnnotator extends ExternalAnnotator[PsiFile, State] {
@@ -41,8 +40,6 @@ class HaskellExternalAnnotator extends ExternalAnnotator[PsiFile, State] {
   override def doAnnotate(@NotNull file: PsiFile): State = {
     // We need to save the files so external processes will see what we see.
     saveAllFiles()
-    // TODO: This belongs in a better place, it's just convenient to do this here.
-    HaskellCompletionContributor.loadCacheData(file)
     // Constructs our annotation state for a file given our registered providers.
     State.buildForFile(file)
   }
@@ -83,13 +80,11 @@ object HaskellExternalAnnotator {
   }
 
   /** Wraps the problems provided by external tools. */
-  final case class State(futures: List[WrappedFuture[Option[Problems]]]) {
+  final case class State(problems: List[Option[Problems]]) {
 
     /** Streams the problems in the order they were provided to the State. */
     def getProblems: Stream[HaskellProblem] = {
-      futures.toStream.flatMap(future =>
-        future.get.map(_.asScala.toStream).getOrElse(Stream.empty)
-      )
+      problems.toStream.flatten.flatMap(_.iterator().asScala.toStream)
     }
   }
 
