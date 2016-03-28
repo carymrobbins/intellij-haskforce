@@ -1,7 +1,7 @@
 <idea-plugin version="2" use-idea-classloader="true">
   <id>com.haskforce</id>
   <name>HaskForce</name>
-  <version>0.3-beta.30</version>
+  <version>0.3-beta.31</version>
   <vendor url="https://github.com/carymrobbins/intellij-haskforce">HaskForce on GitHub</vendor>
 
   <description>Plugin for Haskell language support.</description>
@@ -15,6 +15,15 @@
     <p>
       If you encounter any issues, please submit them on our
       <a href="https://github.com/carymrobbins/intellij-haskforce/issues">bug tracker</a>.
+    </p>
+    <p>
+      <b>v0.3-beta.31</b>
+      <ul>
+        <li>Fixed issues with ghc-mod halting the IDE (#259)</li>
+        <li>Don't terminate ghc-modi on type info error (#261)</li>
+        <li>Allow 'location' values in stack.yaml packages (#263)</li>
+        <li>Show working directory in tools console (#251)</li>
+      </ul>
     </p>
     <p>
       <b>v0.3-beta.30</b>
