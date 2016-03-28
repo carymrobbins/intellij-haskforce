@@ -37,10 +37,18 @@ object StackYaml {
 
   def fromString(doc: String): String \/ StackYaml = for {
     assoc <- Yaml.parse(doc).flatMap(_.assoc).leftMap(_.message)
-    // Stack defaults to using the root dir if there is no packages field.
-    packages = assoc.getOrElse("packages", YamlList(List(YamlString("."))))
-    result <- packages.list.flatMap(xs => xs.map(_.string).sequenceU).leftMap(_.message)
-  } yield StackYaml(result.map(Package(_)).asJava)
+    packages <- parsePackages(assoc)
+  } yield StackYaml(packages.map(Package(_)).asJava)
+
+  private def parsePackages(assoc: Map[String, Yaml]): String \/ List[String] = {
+    assoc.get("packages") match {
+      // Stack defaults to using the root dir if there is no packages field.
+      case None => List(".").right
+      // Any non-string values in the packages list are omitted (e.g. "location" values).
+      // See https://github.com/carymrobbins/intellij-haskforce/issues/263
+      case Some(y) => y.list.map(pkgs => pkgs.flatMap(_.string.toOption)).leftMap(_.message)
+    }
+  }
 }
 
 object StackYamlUtil {
