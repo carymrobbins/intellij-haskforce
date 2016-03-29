@@ -29,6 +29,7 @@ Be sure that the SDK is named `scala-sdk-2.11.7` to properly match the module co
 
 1. Copy the `build.skeleton.properties` to `build.properties` and update the paths to the JDK and IntelliJ installation.
 1. Install and enable additional plugins.
+  * **Plugin DevKit**
   * **Scala**
   * **Ant Support**
   * **IvyIDEA** (resolve dependencies via **Tools > IvyIDEA > Resolve for all modules**)
