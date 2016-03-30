@@ -23,6 +23,8 @@
 package com.haskforce;
 
 import com.haskforce.cabal.AddCabalPackageTest;
+import com.haskforce.cabal.lang.parser.CabalParserTest;
+import com.haskforce.cabal.lang.lexer.CabalParsingLexerTest;
 import com.haskforce.codeInsight.HaskellCompletionTest;
 import com.haskforce.codeInsight.HaskellFindUsagesTest;
 import com.haskforce.codeInsight.HaskellGoToSymbolTest;
@@ -73,6 +75,10 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(NewProjectWizardTest.class);
         suite.addTestSuite(GhcModTest.class);
         suite.addTestSuite(StackYamlTest.class);
+
+        // Cabal parser tests
+        suite.addTestSuite(CabalParsingLexerTest.class);
+        suite.addTestSuite(CabalParserTest.class);
         return suite;
     }
 }

@@ -1,0 +1,10 @@
+-- Comment
+
+-- Comment
+name:
+    foo-bar
+version:
+    1.2.3-git1234
+synopsis: A foo bar
+description: A foo
+  bar spam eggs

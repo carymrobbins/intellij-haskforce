@@ -41,9 +41,9 @@ CONDITIONAL=(if [^\n\r]+|else)
 <YYINITIAL> {CONFIG}                                { yybegin(YYINITIAL); return CabalTypes.CONFIG; }
 <YYINITIAL> {CONDITIONAL}                           { yybegin(YYINITIAL); return CabalTypes.CONDITIONAL; }
 <YYINITIAL> {WHITE_SPACE}+                          { yybegin(YYINITIAL); return TokenType.WHITE_SPACE; }
-<YYINITIAL> {CRLF}                                  { yybegin(YYINITIAL); return CabalTypes.CRLF; }
+<YYINITIAL> {CRLF}                                  { yybegin(YYINITIAL); return CabalTypes.EOL; }
 <WAITING_VALUE> {CRLF} {WHITE_SPACE}* ({KEY_PATTERN} | {CONFIG} | {CONDITIONAL})
-                                                    { yypushback(yylength()); yybegin(YYINITIAL); return CabalTypes.CRLF; }
+                                                    { yypushback(yylength()); yybegin(YYINITIAL); return CabalTypes.EOL; }
 <WAITING_VALUE> {END_OF_LINE_COMMENT}               { return CabalTypes.COMMENT; }
 <WAITING_VALUE> [^]                                 { return CabalTypes.VALUE_CHAR; }
 [^]                                                 { return TokenType.BAD_CHARACTER; }

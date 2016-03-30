@@ -1,0 +1,41 @@
+Name: Test1
+Version: 0.0.1
+Cabal-Version: >= 1.2
+License: BSD3
+Author:  Jane Doe
+Synopsis: Test package to test configurations
+Category: Example
+
+Flag Debug
+  Description: Enable debug support
+  Default:     False
+
+Flag WebFrontend
+  Description: Include API for web frontend.
+  -- Cabal checks if the configuration is possible, first
+  -- with this flag set to True and if not it tries with False
+
+Library
+  Build-Depends:   base
+  Exposed-Modules: Testing.Test1
+  Extensions:      CPP
+
+  if flag(debug)
+    GHC-Options: -DDEBUG
+    if !os(windows)
+      CC-Options: "-DDEBUG"
+    else
+      CC-Options: "-DNDEBUG"
+
+  if flag(webfrontend)
+    Build-Depends: cgi > 0.42
+    Other-Modules: Testing.WebStuff
+
+Executable test1
+  Main-is: T1.hs
+  Other-Modules: Testing.Test1
+  Build-Depends: base
+
+  if flag(debug)
+    CC-Options: "-DDEBUG"
+    GHC-Options: -DDEBUG

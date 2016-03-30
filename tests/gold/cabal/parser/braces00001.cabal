@@ -1,0 +1,26 @@
+Name: Test1
+Version: 0.0.1
+Cabal-Version: >= 1.2
+License: BSD3
+Author:  Jane Doe
+Synopsis: Test package to test configurations
+Category: Example
+
+Flag Debug {
+  Description: Enable debug support
+  Default:     False
+}
+
+Library {
+  Build-Depends:   base
+  Exposed-Modules: Testing.Test1
+  Extensions:      CPP
+  if flag(debug) {
+    GHC-Options: -DDEBUG
+    if !os(windows) {
+      CC-Options: "-DDEBUG"
+    } else {
+      CC-Options: "-DNDEBUG"
+    }
+  }
+}
