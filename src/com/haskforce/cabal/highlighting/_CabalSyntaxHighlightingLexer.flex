@@ -3,7 +3,7 @@ package com.haskforce.cabal.highlighting;
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.TokenType;
-import com.haskforce.cabal.psi.CabalTypes;
+import com.haskforce.cabal.lang.psi.CabalTypes;
 
 %%
 
@@ -28,7 +28,7 @@ WHITE_SPACE=[\ \t\f]
 KEY_PATTERN=[A-Za-z0-9\-]+\ *:
 END_OF_LINE_COMMENT=--[^\r\n]*
 COLON=:
-CONFIG=(executable|library|benchmark|test-suite|flag )[^\n\r]*
+CONFIG=(executable|library|benchmark|test-suite|flag|source-repository )[^\n\r]*
 CONDITIONAL=(if [^\n\r]+|else)
 
 %state WAITING_VALUE
@@ -41,9 +41,9 @@ CONDITIONAL=(if [^\n\r]+|else)
 <YYINITIAL> {CONFIG}                                { yybegin(YYINITIAL); return CabalTypes.CONFIG; }
 <YYINITIAL> {CONDITIONAL}                           { yybegin(YYINITIAL); return CabalTypes.CONDITIONAL; }
 <YYINITIAL> {WHITE_SPACE}+                          { yybegin(YYINITIAL); return TokenType.WHITE_SPACE; }
-<YYINITIAL> {CRLF}                                  { yybegin(YYINITIAL); return CabalTypes.CRLF; }
+<YYINITIAL> {CRLF}                                  { yybegin(YYINITIAL); return CabalTypes.EOL; }
 <WAITING_VALUE> {CRLF} {WHITE_SPACE}* ({KEY_PATTERN} | {CONFIG} | {CONDITIONAL})
-                                                    { yypushback(yylength()); yybegin(YYINITIAL); return CabalTypes.CRLF; }
+                                                    { yypushback(yylength()); yybegin(YYINITIAL); return CabalTypes.EOL; }
 <WAITING_VALUE> {END_OF_LINE_COMMENT}               { return CabalTypes.COMMENT; }
 <WAITING_VALUE> [^]                                 { return CabalTypes.VALUE_CHAR; }
 [^]                                                 { return TokenType.BAD_CHARACTER; }

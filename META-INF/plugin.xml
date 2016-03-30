@@ -385,7 +385,7 @@
     <lang.syntaxHighlighterFactory language="Cabal"
                                    implementationClass="com.haskforce.cabal.highlighting.CabalSyntaxHighlighterFactory"/>
     <lang.parserDefinition language="Cabal"
-                           implementationClass="com.haskforce.cabal.CabalParserDefinition"/>
+                           implementationClass="com.haskforce.cabal.lang.parser.CabalParserDefinition"/>
     <annotator language="Cabal"
                implementationClass="com.haskforce.cabal.highlighting.CabalAnnotator"/>
 

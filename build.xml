@@ -52,6 +52,9 @@
   <property name="jflex.cabalHighlight.target.base" value="src/com/haskforce/cabal/highlighting/_CabalSyntaxHighlightingLexer"/>
   <property name="jflex.cabalHighlight.input.file" value="${jflex.cabalHighlight.target.base}.flex"/>
   <property name="jflex.cabalHighlight.output.file" value="${jflex.cabalHighlight.target.base}.java"/>
+  <property name="jflex.cabalParsing.target.base" value="src/com/haskforce/cabal/lang/lexer/_CabalParsingLexer"/>
+  <property name="jflex.cabalParsing.input.file" value="${jflex.cabalParsing.target.base}.flex"/>
+  <property name="jflex.cabalParsing.output.file" value="${jflex.cabalParsing.target.base}.java"/>
   <property name="jflex.hamletHighlight.target.base" value="src/com/haskforce/yesod/shakespeare/hamlet/highlighting/_HamletSyntaxHighlightingLexer"/>
   <property name="jflex.hamletHighlight.input.file" value="${jflex.hamletHighlight.target.base}.flex"/>
   <property name="jflex.hamletHighlight.output.file" value="${jflex.hamletHighlight.target.base}.java"/>
@@ -682,7 +685,7 @@
   <!-- TODO: Consider using ant-contrib to generalize this pattern into a loop -->
   <target name="generate.sources"
           depends="check.jflex, generate.jflex.haskellHighlight, generate.jflex.haskellParsing,
-                   generate.jflex.cabalHighlight, generate.jflex.hamletHighlight"/>
+                   generate.jflex.cabalHighlight, generate.jflex.cabalParsing, generate.jflex.hamletHighlight"/>
 
   <target name="check.jflex">
     <condition property="jflex.haskellHighlight.notRequired">
@@ -703,6 +706,13 @@
       <and>
         <available file="${jflex.cabalHighlight.output.file}"/>
         <uptodate srcfile="${jflex.cabalHighlight.input.file}" targetfile="${jflex.cabalHighlight.output.file}"/>
+      </and>
+    </condition>
+
+    <condition property="jflex.cabalParsing.notRequired">
+      <and>
+        <available file="${jflex.cabalParsing.output.file}"/>
+        <uptodate srcfile="${jflex.cabalParsing.input.file}" targetfile="${jflex.cabalParsing.output.file}"/>
       </and>
     </condition>
 
@@ -741,6 +751,16 @@
       <arg value="--charat"/>
       <arg value="--nobak"/>
       <arg value="${jflex.cabalHighlight.input.file}"/>
+    </java>
+  </target>
+
+  <target name="generate.jflex.cabalParsing" unless="jflex.cabalParsing.notRequired">
+    <java jar="${jflex.jar}" fork="true">
+      <arg value="--skel"/>
+      <arg value="${jflex.skeleton}"/>
+      <arg value="--charat"/>
+      <arg value="--nobak"/>
+      <arg value="${jflex.cabalParsing.input.file}"/>
     </java>
   </target>
 

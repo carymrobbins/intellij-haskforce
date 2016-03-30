@@ -34,8 +34,9 @@ import java.io.File;
 import java.io.IOException;
 
 public abstract class HaskellParserTestBase extends ParsingTestCase {
-    public HaskellParserTestBase(String dataPath, String fileExt, ParserDefinition... definitions) {
-        super(dataPath, fileExt, definitions);
+    public HaskellParserTestBase(String dataPath, String fileExt, boolean lowercaseFirstLetter,
+                                 ParserDefinition... definitions) {
+        super(dataPath, fileExt, lowercaseFirstLetter, definitions);
     }
 
     @Override
@@ -46,6 +47,11 @@ public abstract class HaskellParserTestBase extends ParsingTestCase {
     @Override
     protected boolean skipSpaces() {
         return true;
+    }
+
+    // NOTE: This is public to ensure our CabalParsingTestCases mixin works.
+    public void doTest() {
+        doTest(true, true);
     }
 
     /**

@@ -1,0 +1,16 @@
+name:           HUnit
+version:        1.1.1
+synopsis:       A unit testing framework for Haskell
+homepage:       http://hunit.sourceforge.net/
+category:       Testing
+author:         Dean Herington
+license:        BSD3
+license-file:   LICENSE
+cabal-version:  >= 1.10
+build-type:     Simple
+
+library
+  build-depends:      base >= 2 && < 4
+  exposed-modules:    Test.HUnit.Base, Test.HUnit.Lang,
+                      Test.HUnit.Terminal, Test.HUnit.Text, Test.HUnit
+  default-extensions: CPP

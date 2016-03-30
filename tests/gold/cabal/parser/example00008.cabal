@@ -1,0 +1,95 @@
+Name:             ShellCheck
+Version:          0.4.3
+Synopsis:         Shell script analysis tool
+License:          GPL-3
+License-file:     LICENSE
+Category:         Static Analysis
+Author:           Vidar Holen
+Maintainer:       vidar@vidarholen.net
+Homepage:         http://www.shellcheck.net/
+Build-Type:       Custom
+Cabal-Version:    >= 1.8
+Bug-reports:      https://github.com/koalaman/shellcheck/issues
+Description:
+  The goals of ShellCheck are:
+  .
+  * To point out and clarify typical beginner's syntax issues,
+    that causes a shell to give cryptic error messages.
+  .
+  * To point out and clarify typical intermediate level semantic problems,
+    that causes a shell to behave strangely and counter-intuitively.
+  .
+  * To point out subtle caveats, corner cases and pitfalls, that may cause an
+    advanced user's otherwise working script to fail under future circumstances.
+
+Extra-Source-Files:
+    -- documentation
+    README.md
+    shellcheck.1.md
+    -- built with a cabal sdist hook
+    shellcheck.1
+    -- tests
+    test/shellcheck.hs
+
+source-repository head
+    type: git
+    location: git://github.com/koalaman/shellcheck.git
+
+library
+    build-depends:
+      base >= 4 && < 5,
+      containers,
+      directory,
+      json,
+      mtl >= 2.2.1,
+      parsec,
+      regex-tdfa,
+      QuickCheck >= 2.7.4,
+      -- When cabal supports it, move this to setup-depends:
+      process
+    exposed-modules:
+      ShellCheck.AST
+      ShellCheck.ASTLib
+      ShellCheck.Analytics
+      ShellCheck.Analyzer
+      ShellCheck.AnalyzerLib
+      ShellCheck.Checker
+      ShellCheck.Checks.Commands
+      ShellCheck.Data
+      ShellCheck.Formatter.Format
+      ShellCheck.Formatter.CheckStyle
+      ShellCheck.Formatter.GCC
+      ShellCheck.Formatter.JSON
+      ShellCheck.Formatter.TTY
+      ShellCheck.Interface
+      ShellCheck.Parser
+      ShellCheck.Regex
+    other-modules:
+      Paths_ShellCheck
+
+executable shellcheck
+    build-depends:
+      ShellCheck,
+      base >= 4 && < 5,
+      containers,
+      directory,
+      json,
+      mtl >= 2.2.1,
+      parsec,
+      regex-tdfa,
+      QuickCheck >= 2.7.4
+    main-is: shellcheck.hs
+
+test-suite test-shellcheck
+    type: exitcode-stdio-1.0
+    build-depends:
+      ShellCheck,
+      base >= 4 && < 5,
+      containers,
+      directory,
+      json,
+      mtl >= 2.2.1,
+      parsec,
+      regex-tdfa,
+      QuickCheck >= 2.7.4
+    main-is: test/shellcheck.hs

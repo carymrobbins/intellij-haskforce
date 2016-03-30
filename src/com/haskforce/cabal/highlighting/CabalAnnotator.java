@@ -1,6 +1,6 @@
 package com.haskforce.cabal.highlighting;
 
-import com.haskforce.cabal.psi.CabalTypes;
+import com.haskforce.cabal.lang.psi.CabalTypes;
 import com.intellij.lang.annotation.AnnotationHolder;
 import com.intellij.lang.annotation.Annotator;
 import com.intellij.openapi.editor.colors.EditorColorsManager;

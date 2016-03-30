@@ -1,0 +1,10 @@
+name:     Foo
+version:  1.0
+
+library
+  build-depends:   base
+  exposed-modules: Foo
+  extensions:      ForeignFunctionInterface
+  ghc-options:     -Wall
+  if os(windows)
+    build-depends: Win32
