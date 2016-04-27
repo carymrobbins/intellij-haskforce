@@ -17,181 +17,44 @@ import com.haskforce.cabal.psi.CabalTypes;
     "(\\r|\\n|\\r\\n)( *)", Pattern.MULTILINE
   );
 
-  protected int currentLineIndent = 0;
-  protected int indentLevel = 0;
-%}
+  protected IElementType newlineIndentRule() {
+    return newlineIndentRuleForValue(false);
+  }
 
-%public
-%class _CabalParsingLexer
-%implements FlexLexer
-%function advance
-%type IElementType
-%unicode
-%ignorecase
-%eof{ return;
-%eof}
+  protected IElementType newlineIndentRuleForValue() {
+    return newlineIndentRuleForValue(true);
+  }
 
-CRLF=\n|\r|\r\n
-WHITE_SPACE=[\ ]
-NOT_WHITE_SPACE=[^\ ]
-KEY=[A-Za-z][A-Za-z0-9\-]*
-DIGIT=[0-9]
-COMMENT="--" [^\r\n]*
-
-%state MAIN, INDENT
-
-%%
-
-// This entry point is the start of any line.  We always go to MAIN immediately
-// after any of these rules, reason being that we need to know when we are
-// at the start of a line so we know when to lex a comment.  The ony exceptions
-// are when we lex a COMMENT or CRLF.
-<YYINITIAL> {
-  {WHITE_SPACE}* {COMMENT} { return CabalTypes.COMMENT; }
-  {CRLF}*  { return CabalTypes.WHITE_SPACE; }
-  [^]     { yypushback(yylength()); yybegin(MAIN); return CabalTypes.WHITE_SPACE; }
-}
-
-// Entry point after we've
-<MAIN> {
-  ":"   { return CabalTypes.COLON; }
-  "("   { return CabalTypes.LPAREN; }
-  ")"   { return CabalTypes.RPAREN; }
-  "["   { return CabalTypes.LBRACKET; }
-  "]"   { return CabalTypes.RBRACKET; }
-  "{"   { return CabalTypes.LBRACE; }
-  "}"   { return CabalTypes.RBRACE; }
-  "=="  { return CabalTypes.EQ; }
-  ">"   { return CabalTypes.GT; }
-  ">="  { return CabalTypes.GTE; }
-  "<"   { return CabalTypes.LT; }
-  "<="  { return CabalTypes.LTE; }
-  "&&"  { return CabalTypes.AND; }
-  "||"  { return CabalTypes.OR; }
-  "-"   { return CabalTypes.DASH; }
-  "."   { return CabalTypes.DOT; }
-  ","   { return CabalTypes.COMMA; }
-  "!"   { return CabalTypes.BANG; }
-  \t    { return CabalTypes.TAB; }
-
-  // Keywords
-  "with" { return CabalTypes.WITH; }
-  "true" { return CabalTypes.TRUE; }
-  "false" { return CabalTypes.FALSE; }
-  "if" { return CabalTypes.IF; }
-  "else" { return CabalTypes.ELSE; }
-  "flag" { return CabalTypes.FLAG; }
-  "os" { return CabalTypes.OS; }
-  "arch" { return CabalTypes.ARCH; }
-  "impl" { return CabalTypes.IMPL; }
-
-  // Stanza names
-  "library" { return CabalTypes.LIBRARY_KEY; }
-  "executable" { return CabalTypes.EXECUTABLE_KEY; }
-  "test-suite" { return CabalTypes.TEST_SUITE_KEY; }
-  "benchmark" { return CabalTypes.BENCHMARK_KEY; }
-  "source-repository" { return CabalTypes.SOURCE_REPO_KEY; }
-
-  // Field names
-  "name" { return CabalTypes.NAME_KEY; }
-  "version" { return CabalTypes.VERSION_KEY; }
-  "cabal-version" { return CabalTypes.CABAL_VERSION_KEY; }
-  "build-type" { return CabalTypes.BUILD_TYPE_KEY; }
-  "license" { return CabalTypes.LICENSE_KEY; }
-  "license-file" { return CabalTypes.LICENSE_FILE_KEY; }
-  "license-files" { return CabalTypes.LICENSE_FILES_KEY; }
-  "copyright" { return CabalTypes.COPYRIGHT_KEY; }
-  "author" { return CabalTypes.AUTHOR_KEY; }
-  "maintainer" { return CabalTypes.MAINTAINER_KEY; }
-  "stability" { return CabalTypes.STABILITY_KEY; }
-  "homepage" { return CabalTypes.HOMEPAGE_KEY; }
-  "bug-reports" { return CabalTypes.BUG_REPORTS_KEY; }
-  "package-url" { return CabalTypes.PACKAGE_URL_KEY; }
-  "synopsis" { return CabalTypes.SYNOPSIS_KEY; }
-  "description" { return CabalTypes.DESCRIPTION_KEY; }
-  "category" { return CabalTypes.CATEGORY_KEY; }
-  "tested-with" { return CabalTypes.TESTED_WITH_KEY; }
-  "data-files" { return CabalTypes.DATA_FILES_KEY; }
-  "data-dir" { return CabalTypes.DATA_DIR_KEY; }
-  "extra-source-files" { return CabalTypes.EXTRA_SOURCE_FILES_KEY; }
-  "extra-doc-files" { return CabalTypes.EXTRA_DOC_FILES_KEY; }
-  "extra-tmp-files" { return CabalTypes.EXTRA_TMP_FILES_KEY; }
-  "default" { return CabalTypes.DEFAULT_KEY; }
-  "manual" { return CabalTypes.MANUAL_KEY; }
-  "type" { return CabalTypes.TYPE_KEY; }
-  "main-is" { return CabalTypes.MAIN_IS_KEY; }
-  "location" { return CabalTypes.LOCATION_KEY; }
-  "branch" { return CabalTypes.BRANCH_KEY; }
-  "tag" { return CabalTypes.TAG_KEY; }
-  "subdir" { return CabalTypes.SUBDIR_KEY; }
-  "build-depends" { return CabalTypes.BUILD_DEPENDS_KEY; }
-  "other-modules" { return CabalTypes.OTHER_MODULES_KEY; }
-  "default-language" { return CabalTypes.DEFAULT_LANGUAGE_KEY; }
-  "other-languages" { return CabalTypes.OTHER_LANGUAGES_KEY; }
-  "default-extensions" { return CabalTypes.DEFAULT_EXTENSIONS_KEY; }
-  "other-extensions" { return CabalTypes.OTHER_EXTENSIONS_KEY; }
-  "hs-source-dirs" { return CabalTypes.HS_SOURCE_DIRS_KEY; }
-  "extensions" { return CabalTypes.EXTENSIONS_KEY; }
-  "build-tools" { return CabalTypes.BUILD_TOOLS_KEY; }
-  "buildable" { return CabalTypes.BUILDABLE_KEY; }
-  "ghc-options" { return CabalTypes.GHC_OPTIONS_KEY; }
-  "ghc-prof-options" { return CabalTypes.GHC_PROF_OPTIONS_KEY; }
-  "ghc-shared-options" { return CabalTypes.GHC_SHARED_OPTIONS_KEY; }
-  "includes" { return CabalTypes.INCLUDES_KEY; }
-  "install-includes" { return CabalTypes.INSTALL_INCLUDES_KEY; }
-  "include-dirs" { return CabalTypes.INCLUDE_DIRS_KEY; }
-  "c-sources" { return CabalTypes.C_SOURCES_KEY; }
-  "js-sources" { return CabalTypes.JS_SOURCES_KEY; }
-  "extra-libraries" { return CabalTypes.EXTRA_LIBRARIES_KEY; }
-  "extra-ghci-libraries" { return CabalTypes.EXTRA_GHCI_LIBRARIES_KEY; }
-  "extra-lib-dirs" { return CabalTypes.EXTRA_LIB_DIRS_KEY; }
-  "cc-options" { return CabalTypes.CC_OPTIONS_KEY; }
-  "cpp-options" { return CabalTypes.CPP_OPTIONS_KEY; }
-  "ld-options" { return CabalTypes.LD_OPTIONS_KEY; }
-  "pkgconfig-depends" { return CabalTypes.PKGCONFIG_DEPENDS_KEY; }
-  "frameworks" { return CabalTypes.FRAMEWORKS_KEY; }
-  "exposed-modules" { return CabalTypes.EXPOSED_MODULES_KEY; }
-  "exposed" { return CabalTypes.EXPOSED_KEY; }
-  "reexported-modules" { return CabalTypes.REEXPORTED_MODULES_KEY; }
-
-  "x-" {KEY} { return CabalTypes.CUSTOM_KEY; }
-  {KEY} { return CabalTypes.UNKNOWN_KEY; }
-
-  {DIGIT} ("." {DIGIT}+)* (".*"?)  { return CabalTypes.NUMBERS; }
-  {WHITE_SPACE}+  { return CabalTypes.WHITE_SPACE; }
-
-  // Newline indent rule, this should match the NEWLINE_INDENT_REGEX pattern.
-  {CRLF} {WHITE_SPACE}* {
+  protected IElementType newlineIndentRuleForValue(boolean checkForValue) {
     final Matcher m = NEWLINE_INDENT_REGEX.matcher(yytext());
     if (!m.matches()) throw new AssertionError("NEWLINE_INDENT_REGEX did not match!");
     final String indent = m.group(2);
+    if (checkForValue && indent.length() > indentLevel) {
+      inValue = true;
+      valueIndent = indentLevel;
+    }
+    //System.out.println("NIR: indent.length(): " + indent.length());
+    //debugIndent();
     yypushback(indent.length());
     yybegin(INDENT);
     return CabalTypes.EOL;
   }
 
-  [^]   { return CabalTypes.OTHER_CHAR; }
-}
+  protected void debugIndent() {
+    System.out.println("NIR: indentLevel: " + indentLevel);
+    System.out.println("NIR: inValue: " + inValue);
+    System.out.println("NIR: valueIndent: " + valueIndent);
+  }
 
-// This section is only entered after the newline indent rule.
-<INDENT> {
-  // Comments shouldn't affect the indentation.
-  {WHITE_SPACE}* {COMMENT}  { return CabalTypes.COMMENT; }
-
-  // A pure whitespace line can be disregarded.
-  {WHITE_SPACE}* {CRLF} { currentLineIndent = 0; return CabalTypes.WHITE_SPACE; }
-
-  // This rule only consumes zero or one whitespaces and returns an INDENT or DEDENT token.
-  // The rule will be continually applied until there are zero whitespaces.
-  {WHITE_SPACE}* {NOT_WHITE_SPACE} {
+  protected IElementType handleIndent() {
+    //debugIndent();
     final int numWhitespace = yylength() - 1;
 
     if (currentLineIndent == 0) {
       if (numWhitespace == indentLevel) {
         // Consume all except the NON_WHITE_SPACE char
         yypushback(1);
-        yybegin(YYINITIAL);
-        //return CabalTypes.LINE_START;
+        beginInitialOrValue();
         return CabalTypes.WHITE_SPACE;
       }
       if (numWhitespace > indentLevel) {
@@ -217,7 +80,7 @@ COMMENT="--" [^\r\n]*
       indentLevel = currentLineIndent;
       currentLineIndent = 0;
       yypushback(1);
-      yybegin(YYINITIAL);
+      beginInitialOrValue();
       return CabalTypes.WHITE_SPACE;
       //return CabalTypes.LINE_START;
     }
@@ -227,4 +90,221 @@ COMMENT="--" [^\r\n]*
     yypushback(yylength() - 1);
     return CabalTypes.INDENT;
   }
+
+  protected void beginInitialOrValue() {
+    if (inValue) {
+      if (indentLevel <= valueIndent) {
+        inValue = false;
+        yybegin(YYINITIAL);
+      } else {
+        yybegin(VALUE);
+      }
+    } else {
+      yybegin(YYINITIAL);
+    }
+  }
+
+  protected int currentLineIndent = 0;
+  protected int indentLevel = 0;
+  protected boolean inValue = false;
+  protected int valueIndent = -1;
+%}
+
+%public
+%class _CabalParsingLexer
+%implements FlexLexer
+%function advance
+%type IElementType
+%unicode
+%ignorecase
+%eof{ return;
+%eof}
+
+CRLF=\n|\r|\r\n
+WHITE_SPACE=[\ ]
+NOT_WHITE_SPACE=[^\ ]
+KEY=[A-Za-z\-_][A-Za-z0-9\-_]*
+DIGIT=[0-9]
+COMMENT="--" [^\r\n]*
+NEWLINE_INDENT={CRLF} {WHITE_SPACE}*
+
+%state MAIN, VALUE, STANZA_ARGS, CONDITIONAL, INDENT
+
+%%
+
+// This entry point is the start of any line.  We always go to MAIN immediately
+// after any of these rules, reason being that we need to know when we are
+// at the start of a line so we know when to lex a comment.  The ony exceptions
+// are when we lex a COMMENT or CRLF.
+<YYINITIAL> {
+  {WHITE_SPACE}* {COMMENT} { return CabalTypes.COMMENT; }
+  {CRLF}*  { return CabalTypes.WHITE_SPACE; }
+  [^]     { yypushback(yylength()); yybegin(MAIN); return CabalTypes.WHITE_SPACE; }
+}
+
+// Entry point after we've
+<MAIN> {
+  // TODO: How to avoid copy pasta with other lexical states?
+  ":"   { return CabalTypes.COLON; }
+  "{"   { return CabalTypes.LBRACE; }
+  "}"   { return CabalTypes.RBRACE; }
+  \t    { return CabalTypes.TAB; }
+
+  // Keywords
+  // TODO: How to avoid copy pasta with other lexical states?
+  "if"      { yybegin(CONDITIONAL); return CabalTypes.IF; }
+  "else"    { return CabalTypes.ELSE; }
+
+  // Stanza names
+  "library"           { yybegin(STANZA_ARGS); return CabalTypes.LIBRARY_KEY; }
+  "executable"        { yybegin(STANZA_ARGS); return CabalTypes.EXECUTABLE_KEY; }
+  "test-suite"        { yybegin(STANZA_ARGS); return CabalTypes.TEST_SUITE_KEY; }
+  "benchmark"         { yybegin(STANZA_ARGS); return CabalTypes.BENCHMARK_KEY; }
+  "source-repository" { yybegin(STANZA_ARGS); return CabalTypes.SOURCE_REPO_KEY; }
+  "flag"              { yybegin(STANZA_ARGS); return CabalTypes.FLAG; }
+
+  // Field names
+  "name"                    { yybegin(VALUE); return CabalTypes.NAME_KEY; }
+  "version"                 { yybegin(VALUE); return CabalTypes.VERSION_KEY; }
+  "cabal-version"           { yybegin(VALUE); return CabalTypes.CABAL_VERSION_KEY; }
+  "build-type"              { yybegin(VALUE); return CabalTypes.BUILD_TYPE_KEY; }
+  "license"                 { yybegin(VALUE); return CabalTypes.LICENSE_KEY; }
+  "license-file"            { yybegin(VALUE); return CabalTypes.LICENSE_FILE_KEY; }
+  "license-files"           { yybegin(VALUE); return CabalTypes.LICENSE_FILES_KEY; }
+  "copyright"               { yybegin(VALUE); return CabalTypes.COPYRIGHT_KEY; }
+  "author"                  { yybegin(VALUE); return CabalTypes.AUTHOR_KEY; }
+  "maintainer"              { yybegin(VALUE); return CabalTypes.MAINTAINER_KEY; }
+  "stability"               { yybegin(VALUE); return CabalTypes.STABILITY_KEY; }
+  "homepage"                { yybegin(VALUE); return CabalTypes.HOMEPAGE_KEY; }
+  "bug-reports"             { yybegin(VALUE); return CabalTypes.BUG_REPORTS_KEY; }
+  "package-url"             { yybegin(VALUE); return CabalTypes.PACKAGE_URL_KEY; }
+  "synopsis"                { yybegin(VALUE); return CabalTypes.SYNOPSIS_KEY; }
+  "description"             { yybegin(VALUE); return CabalTypes.DESCRIPTION_KEY; }
+  "category"                { yybegin(VALUE); return CabalTypes.CATEGORY_KEY; }
+  "tested-with"             { yybegin(VALUE); return CabalTypes.TESTED_WITH_KEY; }
+  "data-files"              { yybegin(VALUE); return CabalTypes.DATA_FILES_KEY; }
+  "data-dir"                { yybegin(VALUE); return CabalTypes.DATA_DIR_KEY; }
+  "extra-source-files"      { yybegin(VALUE); return CabalTypes.EXTRA_SOURCE_FILES_KEY; }
+  "extra-doc-files"         { yybegin(VALUE); return CabalTypes.EXTRA_DOC_FILES_KEY; }
+  "extra-tmp-files"         { yybegin(VALUE); return CabalTypes.EXTRA_TMP_FILES_KEY; }
+  "default"                 { yybegin(VALUE); return CabalTypes.DEFAULT_KEY; }
+  "manual"                  { yybegin(VALUE); return CabalTypes.MANUAL_KEY; }
+  "type"                    { yybegin(VALUE); return CabalTypes.TYPE_KEY; }
+  "main-is"                 { yybegin(VALUE); return CabalTypes.MAIN_IS_KEY; }
+  "module"                  { yybegin(VALUE); return CabalTypes.MODULE_KEY; }
+  "location"                { yybegin(VALUE); return CabalTypes.LOCATION_KEY; }
+  "branch"                  { yybegin(VALUE); return CabalTypes.BRANCH_KEY; }
+  "tag"                     { yybegin(VALUE); return CabalTypes.TAG_KEY; }
+  "subdir"                  { yybegin(VALUE); return CabalTypes.SUBDIR_KEY; }
+  "build-depends"           { yybegin(VALUE); return CabalTypes.BUILD_DEPENDS_KEY; }
+  "other-modules"           { yybegin(VALUE); return CabalTypes.OTHER_MODULES_KEY; }
+  "default-language"        { yybegin(VALUE); return CabalTypes.DEFAULT_LANGUAGE_KEY; }
+  "other-languages"         { yybegin(VALUE); return CabalTypes.OTHER_LANGUAGES_KEY; }
+  "default-extensions"      { yybegin(VALUE); return CabalTypes.DEFAULT_EXTENSIONS_KEY; }
+  "other-extensions"        { yybegin(VALUE); return CabalTypes.OTHER_EXTENSIONS_KEY; }
+  "hs-source-dirs"          { yybegin(VALUE); return CabalTypes.HS_SOURCE_DIRS_KEY; }
+  "extensions"              { yybegin(VALUE); return CabalTypes.EXTENSIONS_KEY; }
+  "build-tools"             { yybegin(VALUE); return CabalTypes.BUILD_TOOLS_KEY; }
+  "buildable"               { yybegin(VALUE); return CabalTypes.BUILDABLE_KEY; }
+  "ghc-options"             { yybegin(VALUE); return CabalTypes.GHC_OPTIONS_KEY; }
+  "ghc-prof-options"        { yybegin(VALUE); return CabalTypes.GHC_PROF_OPTIONS_KEY; }
+  "ghc-shared-options"      { yybegin(VALUE); return CabalTypes.GHC_SHARED_OPTIONS_KEY; }
+  "includes"                { yybegin(VALUE); return CabalTypes.INCLUDES_KEY; }
+  "install-includes"        { yybegin(VALUE); return CabalTypes.INSTALL_INCLUDES_KEY; }
+  "include-dirs"            { yybegin(VALUE); return CabalTypes.INCLUDE_DIRS_KEY; }
+  "c-sources"               { yybegin(VALUE); return CabalTypes.C_SOURCES_KEY; }
+  "js-sources"              { yybegin(VALUE); return CabalTypes.JS_SOURCES_KEY; }
+  "extra-libraries"         { yybegin(VALUE); return CabalTypes.EXTRA_LIBRARIES_KEY; }
+  "extra-ghci-libraries"    { yybegin(VALUE); return CabalTypes.EXTRA_GHCI_LIBRARIES_KEY; }
+  "extra-lib-dirs"          { yybegin(VALUE); return CabalTypes.EXTRA_LIB_DIRS_KEY; }
+  "cc-options"              { yybegin(VALUE); return CabalTypes.CC_OPTIONS_KEY; }
+  "cpp-options"             { yybegin(VALUE); return CabalTypes.CPP_OPTIONS_KEY; }
+  "ld-options"              { yybegin(VALUE); return CabalTypes.LD_OPTIONS_KEY; }
+  "pkgconfig-depends"       { yybegin(VALUE); return CabalTypes.PKGCONFIG_DEPENDS_KEY; }
+  "frameworks"              { yybegin(VALUE); return CabalTypes.FRAMEWORKS_KEY; }
+  "exposed-modules"         { yybegin(VALUE); return CabalTypes.EXPOSED_MODULES_KEY; }
+  "exposed"                 { yybegin(VALUE); return CabalTypes.EXPOSED_KEY; }
+  "reexported-modules"      { yybegin(VALUE); return CabalTypes.REEXPORTED_MODULES_KEY; }
+  "x-" {KEY}                { yybegin(VALUE); return CabalTypes.CUSTOM_KEY; }
+  {KEY}                     { yybegin(VALUE); return CabalTypes.UNKNOWN_KEY; }
+
+  {WHITE_SPACE}+  { return CabalTypes.WHITE_SPACE; }
+
+  {NEWLINE_INDENT} { return newlineIndentRule(); }
+
+  [^]   { return CabalTypes.OTHER_CHAR; }
+}
+
+<VALUE> {
+  // TODO: How to avoid copy pasta with other lexical states?
+  ":"   { return CabalTypes.COLON; }
+  "("   { return CabalTypes.LPAREN; }
+  ")"   { return CabalTypes.RPAREN; }
+  "["   { return CabalTypes.LBRACKET; }
+  "]"   { return CabalTypes.RBRACKET; }
+  "{"   { return CabalTypes.LBRACE; }
+  "}"   { return CabalTypes.RBRACE; }
+  "=="  { return CabalTypes.EQ; }
+  ">"   { return CabalTypes.GT; }
+  ">="  { return CabalTypes.GTE; }
+  "<"   { return CabalTypes.LT; }
+  "<="  { return CabalTypes.LTE; }
+  "&&"  { return CabalTypes.AND; }
+  "||"  { return CabalTypes.OR; }
+  "-"   { return CabalTypes.DASH; }
+  "."   { return CabalTypes.DOT; }
+  ","   { return CabalTypes.COMMA; }
+  "!"   { return CabalTypes.BANG; }
+  \t    { return CabalTypes.TAB; }
+
+  // Keywords
+  // TODO: How to avoid copy pasta with other lexical states?
+  "with"    { return CabalTypes.WITH; }
+  "true"    { return CabalTypes.TRUE; }
+  "false"   { return CabalTypes.FALSE; }
+
+  {DIGIT}+ ("." {DIGIT}+)* (".*"?)  { return CabalTypes.NUMBERS; }
+  {KEY} { return CabalTypes.IDENT; }
+
+  {NEWLINE_INDENT} { return newlineIndentRuleForValue(); }
+
+  {WHITE_SPACE}+ { return CabalTypes.WHITE_SPACE; }
+
+  [^]   { return CabalTypes.OTHER_CHAR; }
+}
+
+<STANZA_ARGS> {
+  "{"   { return CabalTypes.LBRACE; }
+  {WHITE_SPACE}+ { return CabalTypes.WHITE_SPACE; }
+  {NEWLINE_INDENT} { return newlineIndentRule(); }
+  {KEY} { return CabalTypes.IDENT; }
+  [^] { return CabalTypes.OTHER_CHAR; }
+}
+
+<CONDITIONAL> {
+  "flag"    { return CabalTypes.FLAG; }
+  "os"      { return CabalTypes.OS; }
+  "arch"    { return CabalTypes.ARCH; }
+  "impl"    { return CabalTypes.IMPL; }
+  "("       { return CabalTypes.LPAREN; }
+  ")"       { return CabalTypes.RPAREN; }
+  "!"       { return CabalTypes.BANG; }
+  "{"       { return CabalTypes.LBRACE; }
+  {KEY} { return CabalTypes.IDENT; }
+  {WHITE_SPACE}+ { return CabalTypes.WHITE_SPACE; }
+  {NEWLINE_INDENT} { return newlineIndentRule(); }
+  [^]       { return CabalTypes.OTHER_CHAR; }
+}
+
+// This section is only entered after the newline indent rule.
+<INDENT> {
+  // Comments shouldn't affect the indentation.
+  {WHITE_SPACE}* {COMMENT}  { return CabalTypes.COMMENT; }
+
+  // A pure whitespace line can be disregarded.
+  {WHITE_SPACE}* {CRLF} { currentLineIndent = 0; return CabalTypes.WHITE_SPACE; }
+
+  // This rule only consumes zero or one whitespaces and returns an INDENT or DEDENT token.
+  // The rule will be continually applied until there are zero whitespaces.
+  {WHITE_SPACE}* {NOT_WHITE_SPACE} { return handleIndent(); }
 }

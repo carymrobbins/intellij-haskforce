@@ -33,7 +33,7 @@ public class CabalParserDefinition implements ParserDefinition {
 
   @Override
   public PsiParser createParser(Project project) {
-    return new CabalParser();
+    return new CabalParser2();
   }
 
   @Override

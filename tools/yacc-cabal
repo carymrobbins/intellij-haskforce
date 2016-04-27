@@ -1,0 +1,14 @@
+#!/bin/bash
+
+cd src/com/haskforce/cabal/lang/parser
+
+rm CabalYaccParser.java CabalYaccParserVal.java
+
+byaccj \
+  -Jclass=CabalYaccParser \
+  -Jvalue=CabalYaccParserVal \
+  -Jpackage=com.haskforce.cabal.lang.parser \
+  -Jnorun \
+  -Jnoconstruct \
+  "$@" \
+  CabalYaccParser.y
