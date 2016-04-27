@@ -13,7 +13,7 @@ before_install:
   - export PATH=~/.local/bin:$PATH
   - travis_retry curl -L https://github.com/commercialhaskell/stack/releases/download/v0.1.4.0/stack-0.1.4.0-x86_64-linux.tar.gz | tar xz -C ~/.local/bin
 install:
-  - IDEA_VERSION=15.0.3
+  - IDEA_VERSION=15.0.5
   - IDEA_TAR=ideaIC-${IDEA_VERSION}.tar.gz
   - IDEA_PARENT_DIR=$HOME/idea
   - IDEA_DIR=$IDEA_PARENT_DIR/$IDEA_VERSION
@@ -25,7 +25,7 @@ install:
         rm -rf $IDEA_PARENT_DIR
         mkdir -p $IDEA_PARENT_DIR
         echo "Downloading IDEA archive."
-        travis_retry wget http://download.jetbrains.com/idea/$IDEA_TAR -P $HOME
+        travis_retry wget --max-redirect=2 http://download.jetbrains.com/idea/$IDEA_TAR -P $HOME
         echo "Installing IDEA to $IDEA_DIR"
         tar xzvf $HOME/$IDEA_TAR -C $IDEA_PARENT_DIR
         mv $IDEA_PARENT_DIR/idea-IC-* $IDEA_DIR
