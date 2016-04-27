@@ -22,7 +22,9 @@ class GhcModiCompilerFlagsProvider(
   ghcModi: GhcModi
 ) extends CompilerFlagsProvider {
 
-  override def getFlags: Array[String] = ghcModi.unsafeFlag()
+  override def getFlags: Array[String] = {
+    Option(ghcModi.syncFlag()).getOrElse(Array.empty)
+  }
 }
 
 object GhcModiCompilerFlagsProvider {
@@ -36,7 +38,9 @@ class GhcModCompilerFlagsProvider(
   workDir: String
 ) extends CompilerFlagsProvider {
 
-  override def getFlags: Array[String] = GhcMod.flag(module, workDir)
+  override def getFlags: Array[String] = {
+    Option(GhcMod.flag(module, workDir)).getOrElse(Array.empty)
+  }
 }
 
 object GhcModCompilerFlagsProvider {

@@ -117,23 +117,63 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     }
 
     @Nullable
-    public Problems unsafeCheck(final @NotNull String file) throws GhcModiError {
+    public Problems syncCheck(final @NotNull String file) {
+        return runSync(new GhcModiCallable<Problems>() {
+            @Override
+            public Problems call() throws GhcModiError {
+                return unsafeCheck(file);
+            }
+        });
+    }
+
+    @Nullable
+    private Problems unsafeCheck(final @NotNull String file) throws GhcModiError {
         final String stdout = simpleExec("check " + file);
         return stdout == null ? new Problems() : handleCheck(module, file, stdout);
     }
 
+    @Nullable
+    public String[] syncLang() {
+        return runSync(new GhcModiCallable<String[]>() {
+            @Override
+            public String[] call() throws GhcModiError {
+                return unsafeLang();
+            }
+        });
+    }
+
     @NotNull
-    public String[] unsafeLang() throws GhcModiError {
+    private String[] unsafeLang() throws GhcModiError {
         return simpleExecToLinesOrEmpty("lang");
     }
 
-    @NotNull
-    public String[] unsafeFlag() throws GhcModiError {
-        return simpleExecToLinesOrEmpty("flag");
+    @Nullable
+    public String[] syncFlag() {
+        return runSync(new GhcModiCallable<String[]>() {
+            @Override
+            public String[] call() throws GhcModiError {
+                return unsafeFlag();
+            }
+        });
     }
 
     @NotNull
-    public String[] unsafeList() throws GhcModiError {
+    private String[] unsafeFlag() throws GhcModiError {
+        return simpleExecToLinesOrEmpty("flag");
+    }
+
+    @Nullable
+    public String[] syncList() {
+        return runSync(new GhcModiCallable<String[]>() {
+            @Override
+            public String[] call() throws GhcModiError {
+                return unsafeList();
+            }
+        });
+    }
+
+    @NotNull
+    private String[] unsafeList() throws GhcModiError {
         return simpleExecToLinesOrEmpty("list");
     }
 
@@ -185,12 +225,20 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         });
     }
 
+    @Nullable
+    public BrowseItem[] syncBrowse(@NotNull final String module) {
+        return runSync(new GhcModiCallable<BrowseItem[]>() {
+            @Override
+            public BrowseItem[] call() throws GhcModiError {
+                return unsafeBrowse(module);
+            }
+        });
+    }
+
     @NotNull
-    public BrowseItem[] unsafeBrowse(@NotNull final String module) throws GhcModiError {
+    private BrowseItem[] unsafeBrowse(@NotNull final String module) throws GhcModiError {
         String[] lines = simpleExecToLines("browse -d " + module);
-        if (lines == null) {
-            return null;
-        }
+        if (lines == null) return new BrowseItem[0];
         BrowseItem[] result = new BrowseItem[lines.length];
         for (int i = 0; i < lines.length; ++i) {
             final String[] parts = TYPE_SPLIT_REGEX.split(lines[i], 2);
@@ -352,30 +400,35 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     }
 
     @Nullable
+    private <T> T runSync(final GhcModiCallable<T> callable) {
+        try {
+            return callable.call();
+        } catch (final GhcModiError e) {
+            final String messagePrefix;
+            if (e.killProcess) {
+                kill();
+                setEnabled(false);
+                messagePrefix = "Killing ghc-modi due to process failure.<br/><br/>You can restart it using " +
+                  "<b>" + XmlUtil.escape(RestartGhcModi.MENU_PATH) + "</b><br/><br/>";
+            } else {
+                messagePrefix = "";
+            }
+            ApplicationManager.getApplication().invokeLater(new Runnable() {
+                @Override
+                public void run() {
+                    displayError(messagePrefix + e.message);
+                }
+            });
+            return null;
+        }
+    }
+
+    @Nullable
     private synchronized <T> Future<T> handleGhcModiCall(final GhcModiCallable<T> callable) {
         return executorService.submit(new Callable<T>() {
             @Override
             public T call() {
-                try {
-                    return callable.call();
-                } catch (final GhcModiError e) {
-                    final String messagePrefix;
-                    if (e.killProcess) {
-                        kill();
-                        setEnabled(false);
-                        messagePrefix = "Killing ghc-modi due to process failure.<br/><br/>You can restart it using " +
-                                "<b>" + XmlUtil.escape(RestartGhcModi.MENU_PATH) + "</b><br/><br/>";
-                    } else {
-                        messagePrefix = "";
-                    }
-                    ApplicationManager.getApplication().invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            displayError(messagePrefix + e.message);
-                        }
-                    });
-                    return null;
-                }
+                return runSync(callable);
             }
         });
     }
@@ -389,7 +442,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         NotificationUtil.displayToolsNotification(NotificationType.ERROR, project, "ghc-modi error", message);
     }
 
-    static interface GhcModiCallable<V> extends Callable<V> {
+    interface GhcModiCallable<V> extends Callable<V> {
         V call() throws GhcModiError;
     }
 
@@ -403,6 +456,12 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
             this.error = error;
             this.message = message;
             this.killProcess = killProcess;
+        }
+
+        @NotNull
+        @Override
+        public String getMessage() {
+            return message;
         }
     }
 

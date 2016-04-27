@@ -19,7 +19,7 @@ class GhcModiModuleSymbolsProvider(
 ) extends ModuleSymbolsProvider {
 
   override def getSymbols(haskellModuleName: String): Array[BrowseItem] = {
-    ghcModi.unsafeBrowse(haskellModuleName)
+    Option(ghcModi.syncBrowse(haskellModuleName)).getOrElse(Array.empty)
   }
 }
 

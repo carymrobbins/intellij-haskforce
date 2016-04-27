@@ -15,7 +15,9 @@ class GhcModiCompileProblemsProvider private(
   filePath: String
 ) extends ProblemsProvider {
 
-  override def getProblems: Option[Problems] = Option(ghcModi.unsafeCheck(filePath))
+  override def getProblems: Option[Problems] = {
+    Option(ghcModi.syncCheck(filePath))
+  }
 }
 
 object GhcModiCompileProblemsProvider {

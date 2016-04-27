@@ -4,8 +4,6 @@ import java.awt.event.{ItemEvent, ItemListener}
 import javax.swing.{Icon, JList}
 import javax.swing.event.PopupMenuEvent
 
-import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.project.DumbAwareAction
 import com.intellij.openapi.util.Computable
 import com.intellij.ui.PopupMenuListenerAdapter
 

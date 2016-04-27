@@ -22,7 +22,9 @@ class GhcModiLanguageExtensionsProvider(
   ghcModi: GhcModi
 ) extends LanguageExtensionsProvider {
 
-  override def getLanguages: Array[String] = ghcModi.unsafeLang()
+  override def getLanguages: Array[String] = {
+    Option(ghcModi.syncLang()).getOrElse(Array.empty)
+  }
 }
 
 object GhcModiLanguageExtensionsProvider {

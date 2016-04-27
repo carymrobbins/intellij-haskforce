@@ -22,7 +22,9 @@ class GhcModiVisibleModulesProvider(
   ghcModi: GhcModi
 ) extends VisibleModulesProvider {
 
-  override def getVisibleModules: Array[String] = ghcModi.unsafeList()
+  override def getVisibleModules: Array[String] = {
+    Option(ghcModi.syncList()).getOrElse(Array.empty)
+  }
 }
 
 object GhcModiVisibleModulesProvider {
@@ -36,7 +38,9 @@ class GhcModVisibleModulesProvider(
   workDir: String
 ) extends VisibleModulesProvider {
 
-  override def getVisibleModules: Array[String] = GhcMod.list(module, workDir)
+  override def getVisibleModules: Array[String] = {
+    Option(GhcMod.list(module, workDir)).getOrElse(Array.empty)
+  }
 }
 
 object GhcModVisibleModulesProvider {
