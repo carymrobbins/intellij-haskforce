@@ -4,28 +4,31 @@ import com.intellij.psi.tree.IElementType
 
 import com.haskforce.cabal.CabalLanguage
 
-class CabalTokenType(debugName: String)
+class CabalHighlighterTokenType(val debugName: String)
   extends IElementType(debugName, CabalLanguage.INSTANCE)
 
-class CabalSymbolTokenType(debugName: String) extends CabalTokenType(debugName)
-class CabalOperatorTokenType(debugName: String) extends CabalTokenType(debugName)
-class CabalComparatorTokenType(debugName: String) extends CabalTokenType(debugName)
-class CabalLogicalTokenType(debugName: String) extends CabalTokenType(debugName)
+class CabalTokenType(val debugName: String, val yyval: Short)
+  extends IElementType(debugName, CabalLanguage.INSTANCE)
 
-class CabalWordLikeTokenType(debugName: String) extends CabalTokenType(debugName)
-class CabalIdentTokenType(debugName: String) extends CabalWordLikeTokenType(debugName)
-class CabalNumericTokenType(debugName: String) extends CabalWordLikeTokenType(debugName)
-class CabalFieldKeyTokenType(debugName: String) extends CabalIdentTokenType(debugName)
-class CabalStanzaKeyTokenType(debugName: String) extends CabalIdentTokenType(debugName)
+class CabalSymbolTokenType(debugName: String, yyval: Short) extends CabalTokenType(debugName, yyval)
+class CabalOperatorTokenType(debugName: String, yyval: Short) extends CabalTokenType(debugName, yyval)
+class CabalComparatorTokenType(debugName: String, yyval: Short) extends CabalTokenType(debugName, yyval)
+class CabalLogicalTokenType(debugName: String, yyval: Short) extends CabalTokenType(debugName, yyval)
+
+class CabalWordLikeTokenType(debugName: String, yyval: Short) extends CabalTokenType(debugName, yyval)
+class CabalIdentTokenType(debugName: String, yyval: Short) extends CabalWordLikeTokenType(debugName, yyval)
+class CabalNumericTokenType(debugName: String, yyval: Short) extends CabalWordLikeTokenType(debugName, yyval)
+class CabalFieldKeyTokenType(debugName: String, yyval: Short) extends CabalIdentTokenType(debugName, yyval)
+class CabalStanzaKeyTokenType(debugName: String, yyval: Short) extends CabalIdentTokenType(debugName, yyval)
 
 trait CabalFuncLikeTokenType
 
-class CabalFuncNameTokenType(debugName: String)
-  extends CabalIdentTokenType(debugName)
+class CabalFuncNameTokenType(debugName: String, yyval: Short)
+  extends CabalIdentTokenType(debugName, yyval)
   with CabalFuncLikeTokenType
 
-class CabalFlagKeywordTokenType(debugName: String)
-  extends CabalStanzaKeyTokenType(debugName)
+class CabalFlagKeywordTokenType(debugName: String, yyval: Short)
+  extends CabalStanzaKeyTokenType(debugName, yyval)
   with CabalFuncLikeTokenType
 
-class CabalLayoutTokenType(debugName: String) extends CabalTokenType(debugName)
+class CabalLayoutTokenType(debugName: String, yyval: Short) extends CabalTokenType(debugName, yyval)

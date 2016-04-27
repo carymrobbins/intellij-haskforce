@@ -104,6 +104,16 @@ object CabalElementFactory {
     case ELSE_BODY => new ElseBody(node)
     case LOGICAL_NEG => new LogicalNeg(node)
 
+    case NAME => new Name(node)
+    case TYPE => new Type(node)
+    case VERSION => new Version(node)
+    case BRANCH => new Branch(node)
+    case DEFAULT => new Default(node)
+    case MANUAL => new Manual(node)
+    case SUBDIR => new SubDir(node)
+    case TAG => new Tag(node)
+    case LOCATION => new Location(node)
+
     case other => throw new AssertionError("Unexpected element type: " + other)
   }
 }
