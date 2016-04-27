@@ -2,7 +2,7 @@ WHITE_SPACE ('') 0-0
 NAME_KEY ('name') 0-4
 COLON (':') 4-5
 WHITE_SPACE ('     ') 5-10
-UNKNOWN_KEY ('Foo') 10-13
+IDENT ('Foo') 10-13
 EOL ('\n') 13-14
 WHITE_SPACE ('') 14-14
 WHITE_SPACE ('') 14-14
@@ -23,29 +23,28 @@ WHITE_SPACE ('') 39-39
 BUILD_DEPENDS_KEY ('build-depends') 39-52
 COLON (':') 52-53
 WHITE_SPACE ('   ') 53-56
-UNKNOWN_KEY ('base') 56-60
+IDENT ('base') 56-60
 EOL ('\n') 60-61
 WHITE_SPACE ('  ') 61-63
 WHITE_SPACE ('') 63-63
 EXPOSED_MODULES_KEY ('exposed-modules') 63-78
 COLON (':') 78-79
 WHITE_SPACE (' ') 79-80
-UNKNOWN_KEY ('Foo') 80-83
+IDENT ('Foo') 80-83
 EOL ('\n') 83-84
 WHITE_SPACE ('  ') 84-86
 WHITE_SPACE ('') 86-86
 EXTENSIONS_KEY ('extensions') 86-96
 COLON (':') 96-97
 WHITE_SPACE ('      ') 97-103
-UNKNOWN_KEY ('ForeignFunctionInterface') 103-127
+IDENT ('ForeignFunctionInterface') 103-127
 EOL ('\n') 127-128
 WHITE_SPACE ('  ') 128-130
 WHITE_SPACE ('') 130-130
 GHC_OPTIONS_KEY ('ghc-options') 130-141
 COLON (':') 141-142
 WHITE_SPACE ('     ') 142-147
-- ('-') 147-148
-UNKNOWN_KEY ('Wall') 148-152
+IDENT ('-Wall') 147-152
 EOL ('\n') 152-153
 WHITE_SPACE ('  ') 153-155
 WHITE_SPACE ('') 155-155
@@ -53,7 +52,7 @@ IF ('if') 155-157
 WHITE_SPACE (' ') 157-158
 OS ('os') 158-160
 ( ('(') 160-161
-UNKNOWN_KEY ('windows') 161-168
+IDENT ('windows') 161-168
 ) (')') 168-169
 EOL ('\n') 169-170
 INDENT ('   ') 170-173
@@ -63,4 +62,4 @@ WHITE_SPACE ('') 174-174
 BUILD_DEPENDS_KEY ('build-depends') 174-187
 COLON (':') 187-188
 WHITE_SPACE (' ') 188-189
-UNKNOWN_KEY ('Win32') 189-194
+IDENT ('Win32') 189-194

@@ -12,6 +12,7 @@ trait CabalParsingTestCases {
   def testExample00005() = doTest()
   def testIf00001() = doTest()
   def testIf00002() = doTest()
+  def testSimple00001() = doTest()
 
   def doTest(): Unit
 }

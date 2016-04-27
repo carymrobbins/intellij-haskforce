@@ -1,0 +1,6 @@
+Cabal File
+  NAME
+    PsiElement(NAME_KEY)('name')
+    PsiElement(COLON)(':')
+    FREEFORM
+      PsiElement(IDENT)('foo')
