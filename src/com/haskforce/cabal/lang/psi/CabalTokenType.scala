@@ -17,6 +17,7 @@ class CabalIdentTokenType(debugName: String) extends CabalWordLikeTokenType(debu
 class CabalNumericTokenType(debugName: String) extends CabalWordLikeTokenType(debugName)
 class CabalFieldKeyTokenType(debugName: String) extends CabalIdentTokenType(debugName)
 class CabalStanzaKeyTokenType(debugName: String) extends CabalIdentTokenType(debugName)
+class CabalStanzaArgTokenType(debugName: String) extends CabalIdentTokenType(debugName)
 
 trait CabalFuncLikeTokenType
 

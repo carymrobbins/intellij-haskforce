@@ -184,7 +184,7 @@ public interface CabalTypes {
 
   CabalElementType FLAG_DECL = new CabalElementType("FLAG_DECL");
 
-  CabalElementType FLAG_NAME = new CabalElementType("FLAG_NAME");
+  CabalStanzaArgTokenType FLAG_NAME = new CabalStanzaArgTokenType("FLAG_NAME");
 
   CabalElementType FLAG_DESCR = new CabalElementType("FLAG_DESCR");
 
@@ -207,7 +207,7 @@ public interface CabalTypes {
 
   CabalElementType SOURCE_REPO = new CabalElementType("SOURCE_REPO");
   CabalStanzaKeyTokenType SOURCE_REPO_KEY = new CabalStanzaKeyTokenType("SOURCE_REPO_KEY");
-  CabalElementType SOURCE_REPO_NAME = new CabalElementType("SOURCE_REPO_NAME");
+  CabalStanzaArgTokenType SOURCE_REPO_NAME = new CabalStanzaArgTokenType("SOURCE_REPO_NAME");
 
   CabalElementType SOURCE_REPO_TYPE = new CabalElementType("SOURCE_REPO_TYPE");
 
@@ -328,13 +328,13 @@ public interface CabalTypes {
 
   CabalElementType EXECUTABLE = new CabalElementType("EXECUTABLE");
   CabalStanzaKeyTokenType EXECUTABLE_KEY = new CabalStanzaKeyTokenType("EXECUTABLE_KEY");
-  CabalElementType EXECUTABLE_NAME = new CabalElementType("EXECUTABLE_NAME");
+  CabalStanzaArgTokenType EXECUTABLE_NAME = new CabalStanzaArgTokenType("EXECUTABLE_NAME");
 
   // Test-suite stanza
 
   CabalElementType TEST_SUITE = new CabalElementType("TEST_SUITE");
   CabalStanzaKeyTokenType TEST_SUITE_KEY = new CabalStanzaKeyTokenType("TEST_SUITE_KEY");
-  CabalElementType TEST_SUITE_NAME = new CabalElementType("TEST_SUITE_NAME");
+  CabalStanzaArgTokenType TEST_SUITE_NAME = new CabalStanzaArgTokenType("TEST_SUITE_NAME");
 
   CabalElementType TEST_SUITE_TYPE = new CabalElementType("TEST_SUITE_TYPE");
 
@@ -342,7 +342,7 @@ public interface CabalTypes {
 
   CabalElementType BENCHMARK = new CabalElementType("BENCHMARK");
   CabalStanzaKeyTokenType BENCHMARK_KEY = new CabalStanzaKeyTokenType("BENCHMARK_KEY");
-  CabalElementType BENCHMARK_NAME = new CabalElementType("BENCHMARK_NAME");
+  CabalStanzaArgTokenType BENCHMARK_NAME = new CabalStanzaArgTokenType("BENCHMARK_NAME");
 
   CabalElementType BENCHMARK_TYPE = new CabalElementType("BENCHMARK_TYPE");
 }
