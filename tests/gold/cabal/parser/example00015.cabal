@@ -1,0 +1,9 @@
+name: lazy-utilities
+build-depends:
+  utilities (Utils, Data.ByteString as Data.ByteString.Lazy),
+  bytestring,
+  containers with (Data.IntSet as Set, Data.IntMap as Map)
+reexported-modules:
+  Control.Applicative,
+  Utils as Utils.Lazy,
+  Control.Arrow

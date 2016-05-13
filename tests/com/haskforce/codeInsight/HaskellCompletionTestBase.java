@@ -18,11 +18,13 @@ package com.haskforce.codeInsight;
 
 // Imported from Erlang repository on 24 July 2014.
 
+import com.haskforce.HaskellFileType;
 import com.haskforce.HaskellLightPlatformCodeInsightFixtureTestCase;
 import com.haskforce.codeInsight.HaskellCompletionCacheLoader.LookupElementWrapper;
 import com.haskforce.codeInsight.HaskellCompletionCacheLoader.LookupElementWrapper$;
 import com.intellij.codeInsight.completion.CompletionType;
 import com.intellij.codeInsight.lookup.LookupElement;
+import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.PsiFile;
 import com.intellij.testFramework.UsefulTestCase;
 import com.intellij.util.Function;
@@ -36,9 +38,13 @@ import java.util.*;
 abstract public class HaskellCompletionTestBase extends HaskellLightPlatformCodeInsightFixtureTestCase {
     final protected List<Function<HaskellCompletionCacheLoader.Cache, Void>> cacheLoaders;
 
-    protected HaskellCompletionTestBase() {
-        super("codeInsight", "codeInsight");
+    protected HaskellCompletionTestBase(String srcName) {
+        super(srcName, srcName);
         cacheLoaders = new ArrayList<Function<HaskellCompletionCacheLoader.Cache, Void>>(0);
+    }
+
+    protected HaskellCompletionTestBase() {
+        this("codeInsight");
     }
 
 /*
@@ -71,6 +77,10 @@ abstract public class HaskellCompletionTestBase extends HaskellLightPlatformCode
       }
 */
 
+    protected void doTestEqual(String txt, String... variants) throws Throwable {
+        doTestVariants(txt, CompletionType.BASIC, 1, CheckType.EQUALS, variants);
+    }
+
     protected void doTestInclude(String txt, String... variants) throws Throwable {
         doTestVariants(txt, CompletionType.BASIC, 1, CheckType.INCLUDES, variants);
     }
@@ -79,10 +89,14 @@ abstract public class HaskellCompletionTestBase extends HaskellLightPlatformCode
         doTestVariants(txt, CompletionType.BASIC, 1, CheckType.EXCLUDES, variants);
     }
 
+    protected FileType getFileType() {
+        return HaskellFileType.INSTANCE;
+    }
+
     protected void doTestVariants(String txt, CompletionType type, int count,
                                   CheckType checkType,
                                   String... variants) throws Throwable {
-        myFixture.configureByText("a.hs", txt);
+        myFixture.configureByText(getFileType(), txt);
         PsiFile file = myFixture.getFile();
         HaskellCompletionCacheLoader.Cache cacheHolder = HaskellCompletionCacheLoader.get(file.getProject()).cache();
         for (Function<HaskellCompletionCacheLoader.Cache, Void> f : cacheLoaders) {
@@ -171,5 +185,5 @@ abstract public class HaskellCompletionTestBase extends HaskellLightPlatformCode
         }
     }
 
-    protected enum CheckType { EQUALS, INCLUDES, EXCLUDES }
+    public enum CheckType { EQUALS, INCLUDES, EXCLUDES }
 }

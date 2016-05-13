@@ -147,87 +147,126 @@ Cabal File
       PsiElement(COLON)(':')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('ShellCheck')
+          MODULE_PART
+            PsiElement(IDENT)('ShellCheck')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('AST')
+          MODULE_PART
+            PsiElement(IDENT)('AST')
         MODULE
-          PsiElement(MODULE_PART)('ShellCheck')
+          MODULE_PART
+            PsiElement(IDENT)('ShellCheck')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('ASTLib')
+          MODULE_PART
+            PsiElement(IDENT)('ASTLib')
         MODULE
-          PsiElement(MODULE_PART)('ShellCheck')
+          MODULE_PART
+            PsiElement(IDENT)('ShellCheck')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Analytics')
+          MODULE_PART
+            PsiElement(IDENT)('Analytics')
         MODULE
-          PsiElement(MODULE_PART)('ShellCheck')
+          MODULE_PART
+            PsiElement(IDENT)('ShellCheck')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Analyzer')
+          MODULE_PART
+            PsiElement(IDENT)('Analyzer')
         MODULE
-          PsiElement(MODULE_PART)('ShellCheck')
+          MODULE_PART
+            PsiElement(IDENT)('ShellCheck')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('AnalyzerLib')
+          MODULE_PART
+            PsiElement(IDENT)('AnalyzerLib')
         MODULE
-          PsiElement(MODULE_PART)('ShellCheck')
+          MODULE_PART
+            PsiElement(IDENT)('ShellCheck')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Checker')
+          MODULE_PART
+            PsiElement(IDENT)('Checker')
         MODULE
-          PsiElement(MODULE_PART)('ShellCheck')
+          MODULE_PART
+            PsiElement(IDENT)('ShellCheck')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Checks')
+          MODULE_PART
+            PsiElement(IDENT)('Checks')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Commands')
+          MODULE_PART
+            PsiElement(IDENT)('Commands')
         MODULE
-          PsiElement(MODULE_PART)('ShellCheck')
+          MODULE_PART
+            PsiElement(IDENT)('ShellCheck')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Data')
+          MODULE_PART
+            PsiElement(IDENT)('Data')
         MODULE
-          PsiElement(MODULE_PART)('ShellCheck')
+          MODULE_PART
+            PsiElement(IDENT)('ShellCheck')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Formatter')
+          MODULE_PART
+            PsiElement(IDENT)('Formatter')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Format')
+          MODULE_PART
+            PsiElement(IDENT)('Format')
         MODULE
-          PsiElement(MODULE_PART)('ShellCheck')
+          MODULE_PART
+            PsiElement(IDENT)('ShellCheck')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Formatter')
+          MODULE_PART
+            PsiElement(IDENT)('Formatter')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('CheckStyle')
+          MODULE_PART
+            PsiElement(IDENT)('CheckStyle')
         MODULE
-          PsiElement(MODULE_PART)('ShellCheck')
+          MODULE_PART
+            PsiElement(IDENT)('ShellCheck')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Formatter')
+          MODULE_PART
+            PsiElement(IDENT)('Formatter')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('GCC')
+          MODULE_PART
+            PsiElement(IDENT)('GCC')
         MODULE
-          PsiElement(MODULE_PART)('ShellCheck')
+          MODULE_PART
+            PsiElement(IDENT)('ShellCheck')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Formatter')
+          MODULE_PART
+            PsiElement(IDENT)('Formatter')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('JSON')
+          MODULE_PART
+            PsiElement(IDENT)('JSON')
         MODULE
-          PsiElement(MODULE_PART)('ShellCheck')
+          MODULE_PART
+            PsiElement(IDENT)('ShellCheck')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Formatter')
+          MODULE_PART
+            PsiElement(IDENT)('Formatter')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('TTY')
+          MODULE_PART
+            PsiElement(IDENT)('TTY')
         MODULE
-          PsiElement(MODULE_PART)('ShellCheck')
+          MODULE_PART
+            PsiElement(IDENT)('ShellCheck')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Interface')
+          MODULE_PART
+            PsiElement(IDENT)('Interface')
         MODULE
-          PsiElement(MODULE_PART)('ShellCheck')
+          MODULE_PART
+            PsiElement(IDENT)('ShellCheck')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Parser')
+          MODULE_PART
+            PsiElement(IDENT)('Parser')
         MODULE
-          PsiElement(MODULE_PART)('ShellCheck')
+          MODULE_PART
+            PsiElement(IDENT)('ShellCheck')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Regex')
+          MODULE_PART
+            PsiElement(IDENT)('Regex')
     OTHER_MODULES
       PsiElement(OTHER_MODULES_KEY)('other-modules')
       PsiElement(COLON)(':')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('Paths_ShellCheck')
+          MODULE_PART
+            PsiElement(IDENT)('Paths_ShellCheck')
   EXECUTABLE
     PsiElement(EXECUTABLE_KEY)('executable')
     PsiElement(EXECUTABLE_NAME)('shellcheck')

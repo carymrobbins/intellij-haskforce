@@ -110,7 +110,7 @@ Cabal File
             PsiElement(FLAG)('flag')
           PsiElement(()('(')
           FUNC_ARG
-            PsiElement(UNKNOWN_KEY)('dev')
+            PsiElement(IDENT)('dev')
           PsiElement())(')')
       THEN_BODY
         GHC_OPTIONS
@@ -137,499 +137,701 @@ Cabal File
       PsiElement(COLON)(':')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('Elm')
+          MODULE_PART
+            PsiElement(IDENT)('Elm')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Compiler')
+          MODULE_PART
+            PsiElement(IDENT)('Compiler')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Elm')
+          MODULE_PART
+            PsiElement(IDENT)('Elm')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Compiler')
+          MODULE_PART
+            PsiElement(IDENT)('Compiler')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Module')
+          MODULE_PART
+            PsiElement(IDENT)('Module')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Elm')
+          MODULE_PART
+            PsiElement(IDENT)('Elm')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Compiler')
+          MODULE_PART
+            PsiElement(IDENT)('Compiler')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Type')
+          MODULE_PART
+            PsiElement(IDENT)('Type')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Elm')
+          MODULE_PART
+            PsiElement(IDENT)('Elm')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Docs')
+          MODULE_PART
+            PsiElement(IDENT)('Docs')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Elm')
+          MODULE_PART
+            PsiElement(IDENT)('Elm')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Package')
+          MODULE_PART
+            PsiElement(IDENT)('Package')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Elm')
+          MODULE_PART
+            PsiElement(IDENT)('Elm')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Utils')
+          MODULE_PART
+            PsiElement(IDENT)('Utils')
     OTHER_MODULES
       PsiElement(OTHER_MODULES_KEY)('other-modules')
       PsiElement(COLON)(':')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('AST')
+          MODULE_PART
+            PsiElement(IDENT)('AST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Declaration')
+          MODULE_PART
+            PsiElement(IDENT)('Declaration')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('AST')
+          MODULE_PART
+            PsiElement(IDENT)('AST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Effects')
+          MODULE_PART
+            PsiElement(IDENT)('Effects')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('AST')
+          MODULE_PART
+            PsiElement(IDENT)('AST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Expression')
+          MODULE_PART
+            PsiElement(IDENT)('Expression')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Canonical')
+          MODULE_PART
+            PsiElement(IDENT)('Canonical')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('AST')
+          MODULE_PART
+            PsiElement(IDENT)('AST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Expression')
+          MODULE_PART
+            PsiElement(IDENT)('Expression')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('General')
+          MODULE_PART
+            PsiElement(IDENT)('General')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('AST')
+          MODULE_PART
+            PsiElement(IDENT)('AST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Expression')
+          MODULE_PART
+            PsiElement(IDENT)('Expression')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Optimized')
+          MODULE_PART
+            PsiElement(IDENT)('Optimized')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('AST')
+          MODULE_PART
+            PsiElement(IDENT)('AST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Expression')
+          MODULE_PART
+            PsiElement(IDENT)('Expression')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Source')
+          MODULE_PART
+            PsiElement(IDENT)('Source')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('AST')
+          MODULE_PART
+            PsiElement(IDENT)('AST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Expression')
+          MODULE_PART
+            PsiElement(IDENT)('Expression')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Valid')
+          MODULE_PART
+            PsiElement(IDENT)('Valid')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('AST')
+          MODULE_PART
+            PsiElement(IDENT)('AST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Helpers')
+          MODULE_PART
+            PsiElement(IDENT)('Helpers')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('AST')
+          MODULE_PART
+            PsiElement(IDENT)('AST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Literal')
+          MODULE_PART
+            PsiElement(IDENT)('Literal')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('AST')
+          MODULE_PART
+            PsiElement(IDENT)('AST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Module')
+          MODULE_PART
+            PsiElement(IDENT)('Module')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('AST')
+          MODULE_PART
+            PsiElement(IDENT)('AST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Module')
+          MODULE_PART
+            PsiElement(IDENT)('Module')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Name')
+          MODULE_PART
+            PsiElement(IDENT)('Name')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('AST')
+          MODULE_PART
+            PsiElement(IDENT)('AST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Pattern')
+          MODULE_PART
+            PsiElement(IDENT)('Pattern')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('AST')
+          MODULE_PART
+            PsiElement(IDENT)('AST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Type')
+          MODULE_PART
+            PsiElement(IDENT)('Type')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('AST')
+          MODULE_PART
+            PsiElement(IDENT)('AST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Variable')
+          MODULE_PART
+            PsiElement(IDENT)('Variable')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Canonicalize')
+          MODULE_PART
+            PsiElement(IDENT)('Canonicalize')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Canonicalize')
+          MODULE_PART
+            PsiElement(IDENT)('Canonicalize')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Body')
+          MODULE_PART
+            PsiElement(IDENT)('Body')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Canonicalize')
+          MODULE_PART
+            PsiElement(IDENT)('Canonicalize')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Effects')
+          MODULE_PART
+            PsiElement(IDENT)('Effects')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Canonicalize')
+          MODULE_PART
+            PsiElement(IDENT)('Canonicalize')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Environment')
+          MODULE_PART
+            PsiElement(IDENT)('Environment')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Canonicalize')
+          MODULE_PART
+            PsiElement(IDENT)('Canonicalize')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Setup')
+          MODULE_PART
+            PsiElement(IDENT)('Setup')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Canonicalize')
+          MODULE_PART
+            PsiElement(IDENT)('Canonicalize')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Sort')
+          MODULE_PART
+            PsiElement(IDENT)('Sort')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Canonicalize')
+          MODULE_PART
+            PsiElement(IDENT)('Canonicalize')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Type')
+          MODULE_PART
+            PsiElement(IDENT)('Type')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Canonicalize')
+          MODULE_PART
+            PsiElement(IDENT)('Canonicalize')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Variable')
+          MODULE_PART
+            PsiElement(IDENT)('Variable')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Compile')
+          MODULE_PART
+            PsiElement(IDENT)('Compile')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Docs')
+          MODULE_PART
+            PsiElement(IDENT)('Docs')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('AST')
+          MODULE_PART
+            PsiElement(IDENT)('AST')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Docs')
+          MODULE_PART
+            PsiElement(IDENT)('Docs')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Centralize')
+          MODULE_PART
+            PsiElement(IDENT)('Centralize')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Docs')
+          MODULE_PART
+            PsiElement(IDENT)('Docs')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Check')
+          MODULE_PART
+            PsiElement(IDENT)('Check')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Elm')
+          MODULE_PART
+            PsiElement(IDENT)('Elm')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Compiler')
+          MODULE_PART
+            PsiElement(IDENT)('Compiler')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Imports')
+          MODULE_PART
+            PsiElement(IDENT)('Imports')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Elm')
+          MODULE_PART
+            PsiElement(IDENT)('Elm')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Compiler')
+          MODULE_PART
+            PsiElement(IDENT)('Compiler')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Type')
+          MODULE_PART
+            PsiElement(IDENT)('Type')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Extract')
+          MODULE_PART
+            PsiElement(IDENT)('Extract')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Elm')
+          MODULE_PART
+            PsiElement(IDENT)('Elm')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Compiler')
+          MODULE_PART
+            PsiElement(IDENT)('Compiler')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Version')
+          MODULE_PART
+            PsiElement(IDENT)('Version')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Generate')
+          MODULE_PART
+            PsiElement(IDENT)('Generate')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('JavaScript')
+          MODULE_PART
+            PsiElement(IDENT)('JavaScript')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Generate')
+          MODULE_PART
+            PsiElement(IDENT)('Generate')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('JavaScript')
+          MODULE_PART
+            PsiElement(IDENT)('JavaScript')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Builder')
+          MODULE_PART
+            PsiElement(IDENT)('Builder')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Generate')
+          MODULE_PART
+            PsiElement(IDENT)('Generate')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('JavaScript')
+          MODULE_PART
+            PsiElement(IDENT)('JavaScript')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('BuiltIn')
+          MODULE_PART
+            PsiElement(IDENT)('BuiltIn')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Generate')
+          MODULE_PART
+            PsiElement(IDENT)('Generate')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('JavaScript')
+          MODULE_PART
+            PsiElement(IDENT)('JavaScript')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Expression')
+          MODULE_PART
+            PsiElement(IDENT)('Expression')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Generate')
+          MODULE_PART
+            PsiElement(IDENT)('Generate')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('JavaScript')
+          MODULE_PART
+            PsiElement(IDENT)('JavaScript')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Foreign')
+          MODULE_PART
+            PsiElement(IDENT)('Foreign')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Generate')
+          MODULE_PART
+            PsiElement(IDENT)('Generate')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('JavaScript')
+          MODULE_PART
+            PsiElement(IDENT)('JavaScript')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Helpers')
+          MODULE_PART
+            PsiElement(IDENT)('Helpers')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Generate')
+          MODULE_PART
+            PsiElement(IDENT)('Generate')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('JavaScript')
+          MODULE_PART
+            PsiElement(IDENT)('JavaScript')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Literal')
+          MODULE_PART
+            PsiElement(IDENT)('Literal')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Generate')
+          MODULE_PART
+            PsiElement(IDENT)('Generate')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('JavaScript')
+          MODULE_PART
+            PsiElement(IDENT)('JavaScript')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Variable')
+          MODULE_PART
+            PsiElement(IDENT)('Variable')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Nitpick')
+          MODULE_PART
+            PsiElement(IDENT)('Nitpick')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Pattern')
+          MODULE_PART
+            PsiElement(IDENT)('Pattern')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Nitpick')
+          MODULE_PART
+            PsiElement(IDENT)('Nitpick')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('PatternMatches')
+          MODULE_PART
+            PsiElement(IDENT)('PatternMatches')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Nitpick')
+          MODULE_PART
+            PsiElement(IDENT)('Nitpick')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('TopLevelTypes')
+          MODULE_PART
+            PsiElement(IDENT)('TopLevelTypes')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Optimize')
+          MODULE_PART
+            PsiElement(IDENT)('Optimize')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Optimize')
+          MODULE_PART
+            PsiElement(IDENT)('Optimize')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Case')
+          MODULE_PART
+            PsiElement(IDENT)('Case')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Optimize')
+          MODULE_PART
+            PsiElement(IDENT)('Optimize')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('DecisionTree')
+          MODULE_PART
+            PsiElement(IDENT)('DecisionTree')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Optimize')
+          MODULE_PART
+            PsiElement(IDENT)('Optimize')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Environment')
+          MODULE_PART
+            PsiElement(IDENT)('Environment')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Optimize')
+          MODULE_PART
+            PsiElement(IDENT)('Optimize')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Inline')
+          MODULE_PART
+            PsiElement(IDENT)('Inline')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Parse')
+          MODULE_PART
+            PsiElement(IDENT)('Parse')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Binop')
+          MODULE_PART
+            PsiElement(IDENT)('Binop')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Parse')
+          MODULE_PART
+            PsiElement(IDENT)('Parse')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Declaration')
+          MODULE_PART
+            PsiElement(IDENT)('Declaration')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Parse')
+          MODULE_PART
+            PsiElement(IDENT)('Parse')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Expression')
+          MODULE_PART
+            PsiElement(IDENT)('Expression')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Parse')
+          MODULE_PART
+            PsiElement(IDENT)('Parse')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Helpers')
+          MODULE_PART
+            PsiElement(IDENT)('Helpers')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Parse')
+          MODULE_PART
+            PsiElement(IDENT)('Parse')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Literal')
+          MODULE_PART
+            PsiElement(IDENT)('Literal')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Parse')
+          MODULE_PART
+            PsiElement(IDENT)('Parse')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Module')
+          MODULE_PART
+            PsiElement(IDENT)('Module')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Parse')
+          MODULE_PART
+            PsiElement(IDENT)('Parse')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Parse')
+          MODULE_PART
+            PsiElement(IDENT)('Parse')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Parse')
+          MODULE_PART
+            PsiElement(IDENT)('Parse')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Pattern')
+          MODULE_PART
+            PsiElement(IDENT)('Pattern')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Parse')
+          MODULE_PART
+            PsiElement(IDENT)('Parse')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Type')
+          MODULE_PART
+            PsiElement(IDENT)('Type')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Reporting')
+          MODULE_PART
+            PsiElement(IDENT)('Reporting')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Annotation')
+          MODULE_PART
+            PsiElement(IDENT)('Annotation')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Reporting')
+          MODULE_PART
+            PsiElement(IDENT)('Reporting')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Bag')
+          MODULE_PART
+            PsiElement(IDENT)('Bag')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Reporting')
+          MODULE_PART
+            PsiElement(IDENT)('Reporting')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Error')
+          MODULE_PART
+            PsiElement(IDENT)('Error')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Reporting')
+          MODULE_PART
+            PsiElement(IDENT)('Reporting')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Error')
+          MODULE_PART
+            PsiElement(IDENT)('Error')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Canonicalize')
+          MODULE_PART
+            PsiElement(IDENT)('Canonicalize')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Reporting')
+          MODULE_PART
+            PsiElement(IDENT)('Reporting')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Error')
+          MODULE_PART
+            PsiElement(IDENT)('Error')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Docs')
+          MODULE_PART
+            PsiElement(IDENT)('Docs')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Reporting')
+          MODULE_PART
+            PsiElement(IDENT)('Reporting')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Error')
+          MODULE_PART
+            PsiElement(IDENT)('Error')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Helpers')
+          MODULE_PART
+            PsiElement(IDENT)('Helpers')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Reporting')
+          MODULE_PART
+            PsiElement(IDENT)('Reporting')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Error')
+          MODULE_PART
+            PsiElement(IDENT)('Error')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Pattern')
+          MODULE_PART
+            PsiElement(IDENT)('Pattern')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Reporting')
+          MODULE_PART
+            PsiElement(IDENT)('Reporting')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Error')
+          MODULE_PART
+            PsiElement(IDENT)('Error')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Syntax')
+          MODULE_PART
+            PsiElement(IDENT)('Syntax')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Reporting')
+          MODULE_PART
+            PsiElement(IDENT)('Reporting')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Error')
+          MODULE_PART
+            PsiElement(IDENT)('Error')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Type')
+          MODULE_PART
+            PsiElement(IDENT)('Type')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Reporting')
+          MODULE_PART
+            PsiElement(IDENT)('Reporting')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Region')
+          MODULE_PART
+            PsiElement(IDENT)('Region')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Reporting')
+          MODULE_PART
+            PsiElement(IDENT)('Reporting')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Render')
+          MODULE_PART
+            PsiElement(IDENT)('Render')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Code')
+          MODULE_PART
+            PsiElement(IDENT)('Code')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Reporting')
+          MODULE_PART
+            PsiElement(IDENT)('Reporting')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Render')
+          MODULE_PART
+            PsiElement(IDENT)('Render')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Type')
+          MODULE_PART
+            PsiElement(IDENT)('Type')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Reporting')
+          MODULE_PART
+            PsiElement(IDENT)('Reporting')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Report')
+          MODULE_PART
+            PsiElement(IDENT)('Report')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Reporting')
+          MODULE_PART
+            PsiElement(IDENT)('Reporting')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Result')
+          MODULE_PART
+            PsiElement(IDENT)('Result')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Reporting')
+          MODULE_PART
+            PsiElement(IDENT)('Reporting')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Warning')
+          MODULE_PART
+            PsiElement(IDENT)('Warning')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Type')
+          MODULE_PART
+            PsiElement(IDENT)('Type')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Constrain')
+          MODULE_PART
+            PsiElement(IDENT)('Constrain')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Effects')
+          MODULE_PART
+            PsiElement(IDENT)('Effects')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Type')
+          MODULE_PART
+            PsiElement(IDENT)('Type')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Constrain')
+          MODULE_PART
+            PsiElement(IDENT)('Constrain')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Expression')
+          MODULE_PART
+            PsiElement(IDENT)('Expression')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Type')
+          MODULE_PART
+            PsiElement(IDENT)('Type')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Constrain')
+          MODULE_PART
+            PsiElement(IDENT)('Constrain')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Literal')
+          MODULE_PART
+            PsiElement(IDENT)('Literal')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Type')
+          MODULE_PART
+            PsiElement(IDENT)('Type')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Constrain')
+          MODULE_PART
+            PsiElement(IDENT)('Constrain')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Pattern')
+          MODULE_PART
+            PsiElement(IDENT)('Pattern')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Type')
+          MODULE_PART
+            PsiElement(IDENT)('Type')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Environment')
+          MODULE_PART
+            PsiElement(IDENT)('Environment')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Type')
+          MODULE_PART
+            PsiElement(IDENT)('Type')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Fragment')
+          MODULE_PART
+            PsiElement(IDENT)('Fragment')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Type')
+          MODULE_PART
+            PsiElement(IDENT)('Type')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Inference')
+          MODULE_PART
+            PsiElement(IDENT)('Inference')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Type')
+          MODULE_PART
+            PsiElement(IDENT)('Type')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Solve')
+          MODULE_PART
+            PsiElement(IDENT)('Solve')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Type')
+          MODULE_PART
+            PsiElement(IDENT)('Type')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('State')
+          MODULE_PART
+            PsiElement(IDENT)('State')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Type')
+          MODULE_PART
+            PsiElement(IDENT)('Type')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Type')
+          MODULE_PART
+            PsiElement(IDENT)('Type')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Type')
+          MODULE_PART
+            PsiElement(IDENT)('Type')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Unify')
+          MODULE_PART
+            PsiElement(IDENT)('Unify')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Validate')
+          MODULE_PART
+            PsiElement(IDENT)('Validate')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Paths_elm_compiler')
+          MODULE_PART
+            PsiElement(IDENT)('Paths_elm_compiler')
     BUILD_DEPENDS_KEY
       PsiElement(BUILD_DEPENDS_KEY)('Build-depends')
       PsiElement(COLON)(':')
@@ -832,14 +1034,18 @@ Cabal File
       PsiElement(COLON)(':')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('Elm')
+          MODULE_PART
+            PsiElement(IDENT)('Elm')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Compiler')
+          MODULE_PART
+            PsiElement(IDENT)('Compiler')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Version')
+          MODULE_PART
+            PsiElement(IDENT)('Version')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Paths_elm_compiler')
+          MODULE_PART
+            PsiElement(IDENT)('Paths_elm_compiler')
     BUILD_DEPENDS_KEY
       PsiElement(BUILD_DEPENDS_KEY)('Build-depends')
       PsiElement(COLON)(':')
@@ -928,27 +1134,38 @@ Cabal File
       PsiElement(COLON)(':')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('Test')
+          MODULE_PART
+            PsiElement(IDENT)('Test')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Compiler')
+          MODULE_PART
+            PsiElement(IDENT)('Compiler')
         MODULE
-          PsiElement(MODULE_PART)('Test')
+          MODULE_PART
+            PsiElement(IDENT)('Test')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Property')
+          MODULE_PART
+            PsiElement(IDENT)('Property')
         MODULE
-          PsiElement(MODULE_PART)('Test')
+          MODULE_PART
+            PsiElement(IDENT)('Test')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Property')
+          MODULE_PART
+            PsiElement(IDENT)('Property')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Arbitrary')
+          MODULE_PART
+            PsiElement(IDENT)('Arbitrary')
         MODULE
-          PsiElement(MODULE_PART)('AST')
+          MODULE_PART
+            PsiElement(IDENT)('AST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Helpers')
+          MODULE_PART
+            PsiElement(IDENT)('Helpers')
         MODULE
-          PsiElement(MODULE_PART)('AST')
+          MODULE_PART
+            PsiElement(IDENT)('AST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Literal')
+          MODULE_PART
+            PsiElement(IDENT)('Literal')
     BUILD_DEPENDS_KEY
       PsiElement(BUILD_DEPENDS_KEY)('build-depends')
       PsiElement(COLON)(':')

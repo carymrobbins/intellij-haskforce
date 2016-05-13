@@ -1,0 +1,172 @@
+WHITE_SPACE ('') 0-0
+NAME_KEY ('name') 0-4
+COLON (':') 4-5
+WHITE_SPACE ('                ') 5-21
+UNKNOWN_KEY ('q') 21-22
+EOL ('\n') 22-23
+WHITE_SPACE ('') 23-23
+WHITE_SPACE ('') 23-23
+VERSION_KEY ('version') 23-30
+COLON (':') 30-31
+WHITE_SPACE ('             ') 31-44
+NUMBERS ('0.1.0.0') 44-51
+EOL ('\n') 51-52
+WHITE_SPACE ('') 52-52
+WHITE_SPACE ('') 52-52
+LICENSE_FILE_KEY ('license-file') 52-64
+COLON (':') 64-65
+WHITE_SPACE ('        ') 65-73
+LICENSE_KEY ('LICENSE') 73-80
+EOL ('\n') 80-81
+WHITE_SPACE ('') 81-81
+WHITE_SPACE ('') 81-81
+AUTHOR_KEY ('author') 81-87
+COLON (':') 87-88
+WHITE_SPACE ('              ') 88-102
+UNKNOWN_KEY ('Edward') 102-108
+WHITE_SPACE (' ') 108-109
+UNKNOWN_KEY ('Z') 109-110
+. ('.') 110-111
+WHITE_SPACE (' ') 111-112
+UNKNOWN_KEY ('Yang') 112-116
+EOL ('\n') 116-117
+WHITE_SPACE ('') 117-117
+WHITE_SPACE ('') 117-117
+MAINTAINER_KEY ('maintainer') 117-127
+COLON (':') 127-128
+WHITE_SPACE ('          ') 128-138
+UNKNOWN_KEY ('ezyang') 138-144
+OTHER_CHAR ('@') 144-145
+UNKNOWN_KEY ('cs') 145-147
+. ('.') 147-148
+UNKNOWN_KEY ('stanford') 148-156
+. ('.') 156-157
+UNKNOWN_KEY ('edu') 157-160
+EOL ('\n') 160-161
+WHITE_SPACE ('') 161-161
+WHITE_SPACE ('') 161-161
+BUILD_TYPE_KEY ('build-type') 161-171
+COLON (':') 171-172
+WHITE_SPACE ('          ') 172-182
+UNKNOWN_KEY ('Simple') 182-188
+EOL ('\n') 188-189
+WHITE_SPACE ('') 189-189
+WHITE_SPACE ('') 189-189
+CABAL_VERSION_KEY ('cabal-version') 189-202
+COLON (':') 202-203
+WHITE_SPACE ('       ') 203-210
+>= ('>=') 210-212
+NUMBERS ('1.21') 212-216
+EOL ('\n') 216-217
+WHITE_SPACE ('\n') 217-218
+WHITE_SPACE ('') 218-218
+WHITE_SPACE ('') 218-218
+LIBRARY_KEY ('library') 218-225
+EOL ('\n') 225-226
+INDENT (' ') 226-227
+INDENT (' ') 227-228
+WHITE_SPACE ('') 228-228
+WHITE_SPACE ('') 228-228
+EXPOSED_MODULES_KEY ('exposed-modules') 228-243
+COLON (':') 243-244
+WHITE_SPACE ('     ') 244-249
+UNKNOWN_KEY ('Q') 249-250
+EOL ('\n') 250-251
+WHITE_SPACE ('  ') 251-253
+WHITE_SPACE ('') 253-253
+REEXPOSED_MODULES_KEY ('reexported-modules') 253-271
+COLON (':') 271-272
+EOL ('\n') 272-273
+COMMENT ('    -- qualified=NO, where=DEP(ORIG), renaming=NO, conflict=NO') 273-335
+WHITE_SPACE ('\n') 335-336
+COMMENT ('    --      impossible') 336-358
+WHITE_SPACE ('\n') 358-359
+COMMENT ('    -- qualified=NO, where=DEP(ORIG), renaming=NO, conflict=YES (p,s)') 359-428
+WHITE_SPACE ('\n') 428-429
+INDENT ('   ') 429-432
+INDENT (' ') 432-433
+WHITE_SPACE ('') 433-433
+WHITE_SPACE ('') 433-433
+UNKNOWN_KEY ('P') 433-434
+, (',') 434-435
+EOL ('\n') 435-436
+COMMENT ('    -- qualified=NO, where=DEP(ORIG), renaming=YES, conflict=NO') 436-499
+WHITE_SPACE ('\n') 499-500
+WHITE_SPACE ('    ') 500-504
+WHITE_SPACE ('') 504-504
+UNKNOWN_KEY ('P') 504-505
+WHITE_SPACE (' ') 505-506
+AS ('as') 506-508
+WHITE_SPACE (' ') 508-509
+UNKNOWN_KEY ('QP') 509-511
+, (',') 511-512
+EOL ('\n') 512-513
+COMMENT ('    -- qualified=NO, where=DEP(ORIG), renaming=YES, conflict=YES (r)') 513-581
+WHITE_SPACE ('\n') 581-582
+WHITE_SPACE ('    ') 582-586
+WHITE_SPACE ('') 586-586
+UNKNOWN_KEY ('P') 586-587
+WHITE_SPACE (' ') 587-588
+AS ('as') 588-590
+WHITE_SPACE (' ') 590-591
+UNKNOWN_KEY ('PMerge') 591-597
+, (',') 597-598
+EOL ('\n') 598-599
+WHITE_SPACE ('    ') 599-603
+WHITE_SPACE ('') 603-603
+UNKNOWN_KEY ('P2') 603-605
+WHITE_SPACE (' ') 605-606
+AS ('as') 606-608
+WHITE_SPACE (' ') 608-609
+UNKNOWN_KEY ('PMerge2') 609-616
+, (',') 616-617
+EOL ('\n') 617-618
+COMMENT ('    -- qualified=NO, where=SELF, renaming=NO, conflict=NO') 618-675
+WHITE_SPACE ('\n') 675-676
+COMMENT ('    --      impossible') 676-698
+WHITE_SPACE ('\n') 698-699
+COMMENT ('    -- qualified=NO, where=SELF, renaming=NO, conflict=YES') 699-757
+WHITE_SPACE ('\n') 757-758
+COMMENT ('    --      should error') 758-782
+WHITE_SPACE ('\n') 782-783
+COMMENT ('    -- qualified=NO, where=SELF, renaming=YES, conflict=NO') 783-841
+WHITE_SPACE ('\n') 841-842
+WHITE_SPACE ('    ') 842-846
+WHITE_SPACE ('') 846-846
+UNKNOWN_KEY ('Q') 846-847
+WHITE_SPACE (' ') 847-848
+AS ('as') 848-850
+WHITE_SPACE (' ') 850-851
+UNKNOWN_KEY ('QQ') 851-853
+, (',') 853-854
+EOL ('\n') 854-855
+COMMENT ('    -- qualified=NO, where=SELF, renaming=YES, conflict=YES (r)') 855-918
+WHITE_SPACE ('\n') 918-919
+WHITE_SPACE ('    ') 919-923
+WHITE_SPACE ('') 923-923
+UNKNOWN_KEY ('Q') 923-924
+WHITE_SPACE (' ') 924-925
+AS ('as') 925-927
+WHITE_SPACE (' ') 927-928
+UNKNOWN_KEY ('QMerge') 928-934
+, (',') 934-935
+EOL ('\n') 935-936
+WHITE_SPACE ('    ') 936-940
+WHITE_SPACE ('') 940-940
+UNKNOWN_KEY ('P2') 940-942
+WHITE_SPACE (' ') 942-943
+AS ('as') 943-945
+WHITE_SPACE (' ') 945-946
+UNKNOWN_KEY ('Conflict') 946-954
+EOL ('\n') 954-955
+DEDENT ('') 955-955
+DEDENT ('') 955-955
+WHITE_SPACE ('  ') 955-957
+WHITE_SPACE ('') 957-957
+BUILD_DEPENDS_KEY ('build-depends') 957-970
+COLON (':') 970-971
+WHITE_SPACE ('       ') 971-978
+UNKNOWN_KEY ('base') 978-982
+, (',') 982-983
+WHITE_SPACE (' ') 983-984
+UNKNOWN_KEY ('p') 984-985

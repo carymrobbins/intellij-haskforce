@@ -1,0 +1,41 @@
+WHITE_SPACE ('') 0-0
+NAME_KEY ('name') 0-4
+COLON (':') 4-5
+WHITE_SPACE (' ') 5-6
+UNKNOWN_KEY ('a') 6-7
+EOL ('\n') 7-8
+WHITE_SPACE ('') 8-8
+WHITE_SPACE ('') 8-8
+VERSION_KEY ('version') 8-15
+COLON (':') 15-16
+WHITE_SPACE (' ') 16-17
+NUMBERS ('2.0') 17-20
+EOL ('\n') 20-21
+WHITE_SPACE ('') 21-21
+WHITE_SPACE ('') 21-21
+EXPOSED_MODULES_KEY ('exposed-modules') 21-36
+COLON (':') 36-37
+WHITE_SPACE (' ') 37-38
+UNKNOWN_KEY ('A') 38-39
+EOL ('\n') 39-40
+WHITE_SPACE ('') 40-40
+WHITE_SPACE ('') 40-40
+BUILD_DEPENDS_KEY ('build-depends') 40-53
+COLON (':') 53-54
+WHITE_SPACE (' ') 54-55
+UNKNOWN_KEY ('base') 55-59
+EOL ('\n') 59-60
+WHITE_SPACE ('') 60-60
+WHITE_SPACE ('') 60-60
+BUILD_TYPE_KEY ('build-type') 60-70
+COLON (':') 70-71
+WHITE_SPACE (' ') 71-72
+UNKNOWN_KEY ('Simple') 72-78
+EOL ('\n') 78-79
+WHITE_SPACE ('') 79-79
+WHITE_SPACE ('') 79-79
+GHC_OPTIONS_KEY ('ghc-options') 79-90
+COLON (':') 90-91
+WHITE_SPACE (' ') 91-92
+- ('-') 92-93
+UNKNOWN_KEY ('O0') 93-95

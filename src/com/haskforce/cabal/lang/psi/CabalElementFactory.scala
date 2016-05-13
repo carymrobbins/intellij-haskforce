@@ -37,6 +37,9 @@ object CabalElementFactory {
     case DEPENDENCIES => new Dependencies(node)
     case DEPENDENCY => new Dependency(node)
     case DEPENDENCY_VERSION => new DependencyVersion(node)
+    case THIN_RENAME_MODULES => new ThinRenameModules(node)
+    case WITH_RENAME_MODULES => new WithRenameModules(node)
+    case RENAME_MODULE => new RenameModule(node)
     case OTHER_MODULES => new OtherModules(node)
     case DEFAULT_LANGUAGE => new DefaultLanguage(node)
     case OTHER_LANGUAGES => new OtherLanguages(node)
@@ -62,6 +65,7 @@ object CabalElementFactory {
     case LD_OPTIONS => new LdOptions(node)
     case PKGCONFIG_DEPENDS => new PkgconfigDepends(node)
     case FRAMEWORKS => new Frameworks(node)
+    case REQUIRED_SIGNATURES => new RequiredSignatures(node)
 
     case SOURCE_REPO => new SourceRepo(node)
     case SOURCE_REPO_TYPE => new SourceRepoType(node)
@@ -80,6 +84,7 @@ object CabalElementFactory {
     case EXPOSED_MODULES => new ExposedModules(node)
     case EXPOSED => new Exposed(node)
     case REEXPORTED_MODULES => new ReexportedModules(node)
+    case MODULE_REEXPORT => new ModuleReexport(node)
 
     case EXECUTABLE => new Executable(node)
 
@@ -89,10 +94,13 @@ object CabalElementFactory {
     case BENCHMARK => new Benchmark(node)
     case BENCHMARK_TYPE => new BenchmarkType(node)
 
+    case INVALID_STANZA => new InvalidStanza(node)
+
     case FREEFORM => new Freeform(node)
     case IDENT_LIST => new IdentList(node)
     case MODULE_LIST => new ModuleList(node)
     case MODULE => new Module(node)
+    case MODULE_PART => new ModulePart(node)
     case BOOL_VALUE => new BoolValue(node)
 
     case FUNC_CALL => new FuncCall(node)

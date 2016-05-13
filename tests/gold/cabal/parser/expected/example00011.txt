@@ -226,80 +226,111 @@ Cabal File
       PsiElement(COLON)(':')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('Haxl')
+          MODULE_PART
+            PsiElement(IDENT)('Haxl')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Core')
+          MODULE_PART
+            PsiElement(IDENT)('Core')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Haxl')
+          MODULE_PART
+            PsiElement(IDENT)('Haxl')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Core')
+          MODULE_PART
+            PsiElement(IDENT)('Core')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('DataCache')
+          MODULE_PART
+            PsiElement(IDENT)('DataCache')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Haxl')
+          MODULE_PART
+            PsiElement(IDENT)('Haxl')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Core')
+          MODULE_PART
+            PsiElement(IDENT)('Core')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Exception')
+          MODULE_PART
+            PsiElement(IDENT)('Exception')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Haxl')
+          MODULE_PART
+            PsiElement(IDENT)('Haxl')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Core')
+          MODULE_PART
+            PsiElement(IDENT)('Core')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Monad')
+          MODULE_PART
+            PsiElement(IDENT)('Monad')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Haxl')
+          MODULE_PART
+            PsiElement(IDENT)('Haxl')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Core')
+          MODULE_PART
+            PsiElement(IDENT)('Core')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('RequestStore')
+          MODULE_PART
+            PsiElement(IDENT)('RequestStore')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Haxl')
+          MODULE_PART
+            PsiElement(IDENT)('Haxl')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Core')
+          MODULE_PART
+            PsiElement(IDENT)('Core')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('StateStore')
+          MODULE_PART
+            PsiElement(IDENT)('StateStore')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Haxl')
+          MODULE_PART
+            PsiElement(IDENT)('Haxl')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Core')
+          MODULE_PART
+            PsiElement(IDENT)('Core')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Show1')
+          MODULE_PART
+            PsiElement(IDENT)('Show1')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Haxl')
+          MODULE_PART
+            PsiElement(IDENT)('Haxl')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Core')
+          MODULE_PART
+            PsiElement(IDENT)('Core')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Types')
+          MODULE_PART
+            PsiElement(IDENT)('Types')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Haxl')
+          MODULE_PART
+            PsiElement(IDENT)('Haxl')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Core')
+          MODULE_PART
+            PsiElement(IDENT)('Core')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Memo')
+          MODULE_PART
+            PsiElement(IDENT)('Memo')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Haxl')
+          MODULE_PART
+            PsiElement(IDENT)('Haxl')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Prelude')
+          MODULE_PART
+            PsiElement(IDENT)('Prelude')
     OTHER_MODULES
       PsiElement(OTHER_MODULES_KEY)('other-modules')
       PsiElement(COLON)(':')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('Haxl')
+          MODULE_PART
+            PsiElement(IDENT)('Haxl')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Core')
+          MODULE_PART
+            PsiElement(IDENT)('Core')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Util')
+          MODULE_PART
+            PsiElement(IDENT)('Util')
     DEFAULT_LANGUAGE
       PsiElement(DEFAULT_LANGUAGE_KEY)('default-language')
       PsiElement(COLON)(':')
@@ -369,23 +400,32 @@ Cabal File
       PsiElement(COLON)(':')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('BatchTests')
+          MODULE_PART
+            PsiElement(IDENT)('BatchTests')
         MODULE
-          PsiElement(MODULE_PART)('CoreTests')
+          MODULE_PART
+            PsiElement(IDENT)('CoreTests')
         MODULE
-          PsiElement(MODULE_PART)('DataCacheTest')
+          MODULE_PART
+            PsiElement(IDENT)('DataCacheTest')
         MODULE
-          PsiElement(MODULE_PART)('ExampleDataSource')
+          MODULE_PART
+            PsiElement(IDENT)('ExampleDataSource')
         MODULE
-          PsiElement(MODULE_PART)('LoadCache')
+          MODULE_PART
+            PsiElement(IDENT)('LoadCache')
         MODULE
-          PsiElement(MODULE_PART)('MockTAO')
+          MODULE_PART
+            PsiElement(IDENT)('MockTAO')
         MODULE
-          PsiElement(MODULE_PART)('TestExampleDataSource')
+          MODULE_PART
+            PsiElement(IDENT)('TestExampleDataSource')
         MODULE
-          PsiElement(MODULE_PART)('TestTypes')
+          MODULE_PART
+            PsiElement(IDENT)('TestTypes')
         MODULE
-          PsiElement(MODULE_PART)('TestUtils')
+          MODULE_PART
+            PsiElement(IDENT)('TestUtils')
     TEST_SUITE_TYPE
       PsiElement(TYPE_KEY)('type')
       PsiElement(COLON)(':')
@@ -434,7 +474,8 @@ Cabal File
       PsiElement(COLON)(':')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('ExampleDataSource')
+          MODULE_PART
+            PsiElement(IDENT)('ExampleDataSource')
     GHC_OPTIONS
       PsiElement(GHC_OPTIONS_KEY)('ghc-options')
       PsiElement(COLON)(':')

@@ -4,22 +4,26 @@ import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 
-trait CabalCompositeElement extends PsiElement
+import com.haskforce.cabal.lang.psi.impl._
 
-abstract class CabalCompositeElementImpl(node: ASTNode)
-  extends ASTWrapperPsiElement(node) with CabalCompositeElement {
+sealed trait CabalCompositeElement extends PsiElement
+
+sealed abstract class CabalCompositeElementImpl(node: ASTNode)
+  extends ASTWrapperPsiElement(node)
+  with CabalCompositeElement {
 
   override def toString: String = getNode.getElementType.toString
 }
 
-abstract class CabalFieldElement(node: ASTNode) extends CabalCompositeElementImpl(node)
-abstract class CabalStanzaElement(node: ASTNode) extends CabalCompositeElementImpl(node)
-abstract class CabalFieldValueElement(node: ASTNode) extends CabalCompositeElementImpl(node)
+sealed abstract class CabalFieldElement(node: ASTNode) extends CabalCompositeElementImpl(node)
+sealed abstract class CabalFieldValueElement(node: ASTNode) extends CabalCompositeElementImpl(node)
+sealed abstract class CabalStanzaElement(node: ASTNode) extends CabalCompositeElementImpl(node)
 
 final class Freeform(node: ASTNode) extends CabalFieldValueElement(node)
 final class IdentList(node: ASTNode) extends CabalFieldValueElement(node)
 final class ModuleList(node: ASTNode) extends CabalFieldValueElement(node)
-final class Module(node: ASTNode) extends CabalCompositeElementImpl(node)
+final class Module(node: ASTNode) extends CabalCompositeElementImpl(node) with ModuleImpl
+final class ModulePart(node: ASTNode) extends CabalCompositeElementImpl(node) with ModulePartImpl
 final class BoolValue(node: ASTNode) extends CabalFieldValueElement(node)
 
 final class FuncCall(node: ASTNode) extends CabalCompositeElementImpl(node)
@@ -63,13 +67,16 @@ final class BuildDepends(node: ASTNode) extends CabalFieldElement(node)
 final class Dependencies(node: ASTNode) extends CabalFieldValueElement(node)
 final class Dependency(node: ASTNode) extends CabalCompositeElementImpl(node)
 final class DependencyVersion(node: ASTNode) extends CabalCompositeElementImpl(node)
+final class ThinRenameModules(node: ASTNode) extends CabalCompositeElementImpl(node)
+final class WithRenameModules(node: ASTNode) extends CabalCompositeElementImpl(node)
+final class RenameModule(node: ASTNode) extends CabalCompositeElementImpl(node)
 final class OtherModules(node: ASTNode) extends CabalFieldElement(node)
 final class DefaultLanguage(node: ASTNode) extends CabalFieldElement(node)
 final class OtherLanguages(node: ASTNode) extends CabalFieldElement(node)
-final class DefaultExtensions(node: ASTNode) extends CabalFieldElement(node)
-final class OtherExtensions(node: ASTNode) extends CabalFieldElement(node)
+final class Extensions(node: ASTNode) extends CabalFieldElement(node) with ExtensionsImpl
+final class DefaultExtensions(node: ASTNode) extends CabalFieldElement(node) with ExtensionsImpl
+final class OtherExtensions(node: ASTNode) extends CabalFieldElement(node) with ExtensionsImpl
 final class HsSourceDirs(node: ASTNode) extends CabalFieldElement(node)
-final class Extensions(node: ASTNode) extends CabalFieldElement(node)
 final class BuildTools(node: ASTNode) extends CabalFieldElement(node)
 final class Buildable(node: ASTNode) extends CabalFieldElement(node)
 final class GhcOptions(node: ASTNode) extends CabalFieldElement(node)
@@ -88,6 +95,7 @@ final class CppOptions(node: ASTNode) extends CabalFieldElement(node)
 final class LdOptions(node: ASTNode) extends CabalFieldElement(node)
 final class PkgconfigDepends(node: ASTNode) extends CabalFieldElement(node)
 final class Frameworks(node: ASTNode) extends CabalFieldElement(node)
+final class RequiredSignatures(node: ASTNode) extends CabalFieldElement(node)
 
 final class SourceRepo(node: ASTNode) extends CabalStanzaElement(node)
 final class SourceRepoType(node: ASTNode) extends CabalFieldElement(node)
@@ -106,6 +114,7 @@ final class Library(node: ASTNode) extends CabalStanzaElement(node)
 final class ExposedModules(node: ASTNode) extends CabalFieldElement(node)
 final class Exposed(node: ASTNode) extends CabalFieldElement(node)
 final class ReexportedModules(node: ASTNode) extends CabalFieldElement(node)
+final class ModuleReexport(node: ASTNode) extends CabalFieldValueElement(node)
 
 final class Executable(node: ASTNode) extends CabalStanzaElement(node)
 
@@ -114,3 +123,5 @@ final class TestSuiteType(node: ASTNode) extends CabalFieldElement(node)
 
 final class Benchmark(node: ASTNode) extends CabalStanzaElement(node)
 final class BenchmarkType(node: ASTNode) extends CabalFieldElement(node)
+
+final class InvalidStanza(node: ASTNode) extends CabalStanzaElement(node)

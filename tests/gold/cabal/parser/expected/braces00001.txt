@@ -63,9 +63,11 @@ Cabal File
       PsiElement(COLON)(':')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('Testing')
+          MODULE_PART
+            PsiElement(IDENT)('Testing')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Test1')
+          MODULE_PART
+            PsiElement(IDENT)('Test1')
     EXTENSIONS
       PsiElement(EXTENSIONS_KEY)('Extensions')
       PsiElement(COLON)(':')
@@ -79,7 +81,7 @@ Cabal File
             PsiElement(FLAG)('flag')
           PsiElement(()('(')
           FUNC_ARG
-            PsiElement(UNKNOWN_KEY)('debug')
+            PsiElement(IDENT)('debug')
           PsiElement())(')')
       THEN_BODY
         PsiElement({)('{')
@@ -98,7 +100,7 @@ Cabal File
                   PsiElement(OS)('os')
                 PsiElement(()('(')
                 FUNC_ARG
-                  PsiElement(UNKNOWN_KEY)('windows')
+                  PsiElement(IDENT)('windows')
                 PsiElement())(')')
           THEN_BODY
             PsiElement({)('{')

@@ -70,9 +70,11 @@ Cabal File
       PsiElement(COLON)(':')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('Testing')
+          MODULE_PART
+            PsiElement(IDENT)('Testing')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Test1')
+          MODULE_PART
+            PsiElement(IDENT)('Test1')
     EXTENSIONS
       PsiElement(EXTENSIONS_KEY)('Extensions')
       PsiElement(COLON)(':')
@@ -86,7 +88,7 @@ Cabal File
             PsiElement(FLAG)('flag')
           PsiElement(()('(')
           FUNC_ARG
-            PsiElement(UNKNOWN_KEY)('debug')
+            PsiElement(IDENT)('debug')
           PsiElement())(')')
       THEN_BODY
         GHC_OPTIONS
@@ -104,7 +106,7 @@ Cabal File
                   PsiElement(OS)('os')
                 PsiElement(()('(')
                 FUNC_ARG
-                  PsiElement(UNKNOWN_KEY)('windows')
+                  PsiElement(IDENT)('windows')
                 PsiElement())(')')
           THEN_BODY
             CC_OPTIONS
@@ -127,7 +129,7 @@ Cabal File
             PsiElement(FLAG)('flag')
           PsiElement(()('(')
           FUNC_ARG
-            PsiElement(UNKNOWN_KEY)('webfrontend')
+            PsiElement(IDENT)('webfrontend')
           PsiElement())(')')
       THEN_BODY
         BUILD_DEPENDS_KEY
@@ -144,9 +146,11 @@ Cabal File
           PsiElement(COLON)(':')
           MODULE_LIST
             MODULE
-              PsiElement(MODULE_PART)('Testing')
+              MODULE_PART
+                PsiElement(IDENT)('Testing')
               PsiElement(.)('.')
-              PsiElement(MODULE_PART)('WebStuff')
+              MODULE_PART
+                PsiElement(IDENT)('WebStuff')
   EXECUTABLE
     PsiElement(EXECUTABLE_KEY)('Executable')
     PsiElement(EXECUTABLE_NAME)('test1')
@@ -160,9 +164,11 @@ Cabal File
       PsiElement(COLON)(':')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('Testing')
+          MODULE_PART
+            PsiElement(IDENT)('Testing')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Test1')
+          MODULE_PART
+            PsiElement(IDENT)('Test1')
     BUILD_DEPENDS_KEY
       PsiElement(BUILD_DEPENDS_KEY)('Build-Depends')
       PsiElement(COLON)(':')
@@ -177,7 +183,7 @@ Cabal File
             PsiElement(FLAG)('flag')
           PsiElement(()('(')
           FUNC_ARG
-            PsiElement(UNKNOWN_KEY)('debug')
+            PsiElement(IDENT)('debug')
           PsiElement())(')')
       THEN_BODY
         CC_OPTIONS

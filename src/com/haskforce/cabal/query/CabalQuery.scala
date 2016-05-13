@@ -1,12 +1,11 @@
 package com.haskforce.cabal.query
 
-import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
-import com.intellij.psi.tree.{IElementType, TokenSet}
-import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.tree.IElementType
 
 import com.haskforce.cabal.lang.psi
 import com.haskforce.cabal.lang.psi.CabalTypes
+import com.haskforce.utils.PQ
 
 final class CabalQuery(file: psi.CabalFile) {
 
@@ -46,18 +45,6 @@ final class CabalQuery(file: psi.CabalFile) {
       case c: psi.TestSuite => new BuildInfo.TestSuite(c)
       case c: psi.Benchmark => new BuildInfo.Benchmark(c)
     }
-  }
-}
-
-/** Safer version of PsiTreeUtil which wraps nullable results in Option. */
-object PQ {
-
-  def getChildOfType[T <: PsiElement](el: PsiElement, cls: Class[T]): Option[T] = {
-    Option(PsiTreeUtil.getChildOfType(el, cls))
-  }
-
-  def getChildNodes(el: PsiElement, typ: IElementType, typs: IElementType*): Array[ASTNode] = {
-    el.getNode.getChildren(TokenSet.create(typ +: typs: _*))
   }
 }
 

@@ -1,6 +1,5 @@
 package com.haskforce.cabal.lang.psi;
 
-import com.haskforce.cabal.lang.psi.CabalElementType;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;
 
@@ -88,6 +87,7 @@ public interface CabalTypes {
 
   // Keywords
 
+  CabalIdentTokenType AS = new CabalIdentTokenType("AS");
   CabalIdentTokenType WITH = new CabalIdentTokenType("WITH");
   CabalIdentTokenType TRUE = new CabalIdentTokenType("TRUE");
   CabalIdentTokenType FALSE = new CabalIdentTokenType("FALSE");
@@ -113,9 +113,6 @@ public interface CabalTypes {
 
   CabalElementType PKG_VERSION = new CabalElementType("PKG_VERSION");
   CabalFieldKeyTokenType VERSION_KEY = new CabalFieldKeyTokenType("VERSION_KEY");
-
-  CabalElementType VERSION_BRANCH = new CabalElementType("VERSION_BRANCH");
-  CabalElementType VERSION_TAG = new CabalElementType("VERSION_TAG");
 
   CabalElementType CABAL_VERSION = new CabalElementType("CABAL_VERSION");
   CabalFieldKeyTokenType CABAL_VERSION_KEY = new CabalFieldKeyTokenType("CABAL_VERSION_KEY");
@@ -235,6 +232,10 @@ public interface CabalTypes {
   CabalElementType DEPENDENCY_NAME = new CabalElementType("DEPENDENCY_NAME");
   CabalElementType DEPENDENCY_VERSION = new CabalElementType("DEPENDENCY_VERSION");
 
+  CabalElementType THIN_RENAME_MODULES = new CabalElementType("THIN_RENAME_MODULES");
+  CabalElementType WITH_RENAME_MODULES = new CabalElementType("WITH_RENAME_MODULES");
+  CabalElementType RENAME_MODULE = new CabalElementType("RENAME_MODULE");
+
   CabalElementType OTHER_MODULES = new CabalElementType("OTHER_MODULES");
   CabalFieldKeyTokenType OTHER_MODULES_KEY = new CabalFieldKeyTokenType("OTHER_MODULES_KEY");
 
@@ -310,6 +311,9 @@ public interface CabalTypes {
   CabalElementType FRAMEWORKS = new CabalElementType("FRAMEWORKS");
   CabalFieldKeyTokenType FRAMEWORKS_KEY = new CabalFieldKeyTokenType("FRAMEWORKS_KEY");
 
+  CabalElementType REQUIRED_SIGNATURES = new CabalElementType("REQUIRED_SIGNATURES");
+  CabalFieldKeyTokenType REQUIRED_SIGNATURES_KEY = new CabalFieldKeyTokenType("REQUIRED_SIGNATURES_KEY");
+
   // Library stanza
 
   CabalElementType LIBRARY = new CabalElementType("LIBRARY");
@@ -323,6 +327,9 @@ public interface CabalTypes {
 
   CabalElementType REEXPORTED_MODULES = new CabalElementType("REEXPOSED_MODULES");
   CabalFieldKeyTokenType REEXPORTED_MODULES_KEY = new CabalFieldKeyTokenType("REEXPOSED_MODULES_KEY");
+
+  CabalElementType MODULE_REEXPORT = new CabalElementType("MODULE_REEXPORT");
+  CabalElementType ORIGINAL_PACKAGE = new CabalElementType("ORIGINAL_PACKAGE");
 
   // Executable stanza
 
@@ -345,4 +352,8 @@ public interface CabalTypes {
   CabalStanzaArgTokenType BENCHMARK_NAME = new CabalStanzaArgTokenType("BENCHMARK_NAME");
 
   CabalElementType BENCHMARK_TYPE = new CabalElementType("BENCHMARK_TYPE");
+
+  // Invalid stanza
+
+  CabalElementType INVALID_STANZA = new CabalElementType("INVALID_STANZA");
 }

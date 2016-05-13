@@ -79,7 +79,7 @@ Cabal File
             PsiElement(OS)('os')
           PsiElement(()('(')
           FUNC_ARG
-            PsiElement(UNKNOWN_KEY)('windows')
+            PsiElement(IDENT)('windows')
           PsiElement())(')')
       THEN_BODY
         CPP_OPTIONS
@@ -236,42 +236,58 @@ Cabal File
       PsiElement(COLON)(':')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('Yesod')
+          MODULE_PART
+            PsiElement(IDENT)('Yesod')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Yesod')
+          MODULE_PART
+            PsiElement(IDENT)('Yesod')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Default')
+          MODULE_PART
+            PsiElement(IDENT)('Default')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Config')
+          MODULE_PART
+            PsiElement(IDENT)('Config')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Yesod')
+          MODULE_PART
+            PsiElement(IDENT)('Yesod')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Default')
+          MODULE_PART
+            PsiElement(IDENT)('Default')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Config2')
+          MODULE_PART
+            PsiElement(IDENT)('Config2')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Yesod')
+          MODULE_PART
+            PsiElement(IDENT)('Yesod')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Default')
+          MODULE_PART
+            PsiElement(IDENT)('Default')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Main')
+          MODULE_PART
+            PsiElement(IDENT)('Main')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Yesod')
+          MODULE_PART
+            PsiElement(IDENT)('Yesod')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Default')
+          MODULE_PART
+            PsiElement(IDENT)('Default')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Util')
+          MODULE_PART
+            PsiElement(IDENT)('Util')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Yesod')
+          MODULE_PART
+            PsiElement(IDENT)('Yesod')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Default')
+          MODULE_PART
+            PsiElement(IDENT)('Default')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Handlers')
+          MODULE_PART
+            PsiElement(IDENT)('Handlers')
     GHC_OPTIONS
       PsiElement(GHC_OPTIONS_KEY)('ghc-options')
       PsiElement(COLON)(':')
@@ -287,7 +303,7 @@ Cabal File
               PsiElement(OS)('os')
             PsiElement(()('(')
             FUNC_ARG
-              PsiElement(UNKNOWN_KEY)('windows')
+              PsiElement(IDENT)('windows')
             PsiElement())(')')
       THEN_BODY
         BUILD_DEPENDS_KEY

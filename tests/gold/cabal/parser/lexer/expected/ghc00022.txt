@@ -1,0 +1,21 @@
+WHITE_SPACE ('') 0-0
+NAME_KEY ('name') 0-4
+COLON (':') 4-5
+WHITE_SPACE (' ') 5-6
+UNKNOWN_KEY ('test') 6-10
+EOL ('\n') 10-11
+WHITE_SPACE ('') 11-11
+WHITE_SPACE ('') 11-11
+VERSION_KEY ('version') 11-18
+COLON (':') 18-19
+WHITE_SPACE (' ') 19-20
+NUMBERS ('1.0') 20-23
+EOL ('\n') 23-24
+WHITE_SPACE ('') 24-24
+WHITE_SPACE ('') 24-24
+EXPOSED_MODULES_KEY ('exposed-modules') 24-39
+COLON (':') 39-40
+WHITE_SPACE (' ') 40-41
+UNKNOWN_KEY ('B') 41-42
+. ('.') 42-43
+UNKNOWN_KEY ('C') 43-44

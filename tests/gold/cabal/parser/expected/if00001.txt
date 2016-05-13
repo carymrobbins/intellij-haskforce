@@ -22,7 +22,8 @@ Cabal File
       PsiElement(COLON)(':')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('Foo')
+          MODULE_PART
+            PsiElement(IDENT)('Foo')
     EXTENSIONS
       PsiElement(EXTENSIONS_KEY)('extensions')
       PsiElement(COLON)(':')
@@ -41,7 +42,7 @@ Cabal File
             PsiElement(OS)('os')
           PsiElement(()('(')
           FUNC_ARG
-            PsiElement(UNKNOWN_KEY)('windows')
+            PsiElement(IDENT)('windows')
           PsiElement())(')')
       THEN_BODY
         BUILD_DEPENDS_KEY

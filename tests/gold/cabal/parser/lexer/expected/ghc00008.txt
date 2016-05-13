@@ -1,0 +1,34 @@
+WHITE_SPACE ('') 0-0
+NAME_KEY ('name') 0-4
+COLON (':') 4-5
+WHITE_SPACE (' ') 5-6
+UNKNOWN_KEY ('r') 6-7
+EOL ('\n') 7-8
+WHITE_SPACE ('') 8-8
+WHITE_SPACE ('') 8-8
+VERSION_KEY ('version') 8-15
+COLON (':') 15-16
+WHITE_SPACE (' ') 16-17
+NUMBERS ('1.0') 17-20
+EOL ('\n') 20-21
+WHITE_SPACE ('') 21-21
+WHITE_SPACE ('') 21-21
+BUILD_DEPENDS_KEY ('build-depends') 21-34
+COLON (':') 34-35
+WHITE_SPACE (' ') 35-36
+UNKNOWN_KEY ('p') 36-37
+, (',') 37-38
+WHITE_SPACE (' ') 38-39
+UNKNOWN_KEY ('q') 39-40
+EOL ('\n') 40-41
+WHITE_SPACE ('') 41-41
+WHITE_SPACE ('') 41-41
+EXPOSED_MODULES_KEY ('exposed-modules') 41-56
+COLON (':') 56-57
+EOL ('\n') 57-58
+WHITE_SPACE ('') 58-58
+WHITE_SPACE ('') 58-58
+BUILD_TYPE_KEY ('build-type') 58-68
+COLON (':') 68-69
+WHITE_SPACE (' ') 69-70
+UNKNOWN_KEY ('Simple') 70-76

@@ -95,7 +95,8 @@ Cabal File
       PsiElement(COLON)(':')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('SVM')
+          MODULE_PART
+            PsiElement(IDENT)('SVM')
   SOURCE_REPO
     PsiElement(SOURCE_REPO_KEY)('Source-Repository')
     PsiElement(SOURCE_REPO_NAME)('head')

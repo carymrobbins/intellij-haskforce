@@ -75,6 +75,7 @@ COMMENT="--" [^\r\n]*
   \t    { return CabalTypes.TAB; }
 
   // Keywords
+  "as" { return CabalTypes.AS; }
   "with" { return CabalTypes.WITH; }
   "true" { return CabalTypes.TRUE; }
   "false" { return CabalTypes.FALSE; }
@@ -150,6 +151,7 @@ COMMENT="--" [^\r\n]*
   "ld-options" { return CabalTypes.LD_OPTIONS_KEY; }
   "pkgconfig-depends" { return CabalTypes.PKGCONFIG_DEPENDS_KEY; }
   "frameworks" { return CabalTypes.FRAMEWORKS_KEY; }
+  "required-signatures" { return CabalTypes.REQUIRED_SIGNATURES_KEY; }
   "exposed-modules" { return CabalTypes.EXPOSED_MODULES_KEY; }
   "exposed" { return CabalTypes.EXPOSED_KEY; }
   "reexported-modules" { return CabalTypes.REEXPORTED_MODULES_KEY; }

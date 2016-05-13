@@ -1,13 +1,14 @@
 package com.haskforce.cabal.lang.parser
 
-import scala.annotation.tailrec
-
 import com.intellij.lang.impl.PsiBuilderAdapter
 import com.intellij.lang.{ASTNode, PsiBuilder, PsiParser}
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiFile
+import com.intellij.psi.impl.source.resolve.FileContextUtil
 import com.intellij.psi.tree.IElementType
 
-import com.haskforce.cabal.lang.psi._
 import com.haskforce.cabal.lang.psi.CabalTypes._
+import com.haskforce.cabal.lang.psi._
 
 final class CabalParser extends PsiParser {
 
@@ -16,9 +17,16 @@ final class CabalParser extends PsiParser {
   }
 }
 
-final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(builder) {
+final class CabalPsiBuilder(builder: PsiBuilder)
+  extends PsiBuilderAdapter(builder) {
 
   val DEBUG = false
+
+  def getPsiFile: Option[PsiFile] = {
+    Option(getUserDataUnprotected(FileContextUtil.CONTAINING_FILE_KEY))
+  }
+
+  def getVirtualFile: Option[VirtualFile] = getPsiFile.map(_.getVirtualFile)
 
   def doParse(root: IElementType): ASTNode = {
     val marker = mark()
@@ -43,6 +51,7 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
     || testSuite()
     || benchmark()
     || sourceRepo()
+    || invalidStanza()
   )
 
   def library(): Boolean = stanza(
@@ -51,10 +60,9 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
 
   def libraryField(): Boolean = (
     buildInfoField()
-    || field(EXPOSED_MODULES, EXPOSED_MODULES_KEY, moduleList)
-    || field(EXPOSED, EXPOSED_KEY, freeform)
-    || field(REEXPORTED_MODULES, REEXPORTED_MODULES_KEY, freeform)
-    || field(REEXPORTED_MODULES, REEXPORTED_MODULES_KEY, freeform)
+    || exposedModules()
+    || exposed()
+    || reexportedModules()
   )
 
   def executable(): Boolean = stanza(
@@ -64,10 +72,8 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
 
   def executableField(): Boolean = (
     buildInfoField()
-    || mainIsField()
+    || mainIs()
   )
-
-  def mainIsField(): Boolean = field(MAIN_IS, MAIN_IS_KEY, freeform)
 
   def testSuite(): Boolean = stanza(
     "test-suite", TEST_SUITE, TEST_SUITE_KEY,
@@ -76,7 +82,7 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
 
   def testSuiteField(): Boolean = (
     buildInfoField()
-    || mainIsField()
+    || mainIs()
     || field(TEST_SUITE_TYPE, TYPE_KEY, freeform)
   )
 
@@ -87,7 +93,7 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
 
   def benchmarkField(): Boolean = (
     buildInfoField()
-    || mainIsField()
+    || mainIs()
     || field(BENCHMARK_TYPE, TYPE_KEY, freeform)
   )
 
@@ -118,18 +124,28 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
   val noStanzaArgs = () => {}
 
   def stanzaNameArg(el: CabalStanzaArgTokenType)(): Unit = getTokenType match {
-    case _: CabalIdentTokenType => remapAdvance(el)
+    case _: CabalWordLikeTokenType => remapAdvance(el)
     case _ => error(s"Expected name argument")
   }
 
-  def stanza
+  def invalidStanza(): Boolean = {
+    parseStanzaWithPred(getTokenType.isInstanceOf[CabalIdentTokenType] && lookAhead(1) != COLON)(
+      "invalid",
+      INVALID_STANZA,
+      argsParser = () => advanceWhile(getTokenType != EOL && getTokenType != LBRACE) {},
+      fieldParser = () => invalidField("invalid")
+    )
+  }
+
+  def parseStanzaWithPred
+      (pred: => Boolean)
       (stanzaType: String,
        el: CabalElementType,
-       k: CabalStanzaKeyTokenType,
        argsParser: () => Unit,
        fieldParser: () => Boolean)
       : Boolean = {
-    if (getTokenType != k) return false
+    if (!pred) return false
+    if (lookAhead(1) == COLON) return oldStyleStanza(stanzaType, el, argsParser, fieldParser)
     val m = mark()
     advanceLexer()
     argsParser()
@@ -143,6 +159,16 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
     true
   }
 
+  def stanza
+      (stanzaType: String,
+       el: CabalElementType,
+       k: CabalStanzaKeyTokenType,
+       argsParser: () => Unit,
+       fieldParser: () => Boolean)
+      : Boolean = {
+    parseStanzaWithPred(getTokenType == k)(stanzaType, el, argsParser, fieldParser)
+  }
+
   def stanzaBraceBody(stanzaType: String, fieldParser: () => Boolean): Unit = {
     var foundRBrace = false
     parseWhile(!foundRBrace) {
@@ -151,7 +177,7 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
         case RBRACE => advanceLexer(); foundRBrace = true
         case _ =>
           if (!(ifExpr(stanzaType, fieldParser) || fieldParser() || invalidField(stanzaType))) {
-            error(s"Unexpected token in $stanzaType stanza: " + getTokenType)
+            errorAdvance(s"Unexpected token in $stanzaType stanza: " + getTokenType)
           }
       }
     }
@@ -170,7 +196,7 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
       parseWhile(!break && indent > 0) {
         assert(getTokenType != INDENT, "Unexpected INDENT")
         if (!(ifExpr(stanzaType, fieldParser) || fieldParser() || invalidField(stanzaType))) {
-          error(s"Unexpected token in $stanzaType stanza: " + getTokenType)
+          errorAdvance(s"Unexpected token in $stanzaType stanza: " + getTokenType)
           break = true
         }
         advanceWhile(indent > 0 && getTokenType == DEDENT) { indent -= 1 }
@@ -182,6 +208,29 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
     case LBRACE => advanceLexer(); stanzaBraceBody(stanzaType, fieldParser)
     case EOL => remapAdvance(WHITE_SPACE); stanzaIndentBody(stanzaType, fieldParser)
     case _ => error("Expected { or end of line")
+  }
+
+  def oldStyleStanza
+      (stanzaType: String,
+       el: CabalElementType,
+       argsParser: () => Unit,
+       fieldParser: () => Boolean)
+      : Boolean = {
+    val m = mark()
+    advanceLexer()
+    expectColon()
+    argsParser()
+    if (!eof() && getTokenType != EOL) {
+      errorWith(s"Unexpected $stanzaType argument") {
+        advanceWhile(getTokenType != EOL) {}
+      }
+    }
+    parseWhile(!getTokenType.isInstanceOf[CabalStanzaKeyTokenType]) {
+      advanceWhile(oneOf(INDENT, DEDENT, EOL)) { remapCurrentToken(WHITE_SPACE) }
+      if (!fieldParser()) errorAdvance(s"Unexpected $getTokenType")
+    }
+    m.done(el)
+    true
   }
 
   def ifExpr(stanzaType: String, fieldParser: () => Boolean): Boolean = {
@@ -226,8 +275,22 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
   }
 
   def boolExpr(): Unit = {
-    if(boolLit() || funcCall() || negation()) return
+    if (boolLit() || funcCall() || negation() || parens(boolExpr)) {
+      if (oneOf(AND, OR)) {
+        advanceLexer()
+        boolExpr()
+      }
+      return
+    }
     errorAdvance("Invalid boolean expression")
+  }
+
+  def parens(p: () => Unit): Boolean = {
+    if (getTokenType != LPAREN) return false
+    advanceLexer()
+    p()
+    if (getTokenType == RPAREN) advanceLexer() else error("Expected )")
+    true
   }
 
   def negation(): Boolean = {
@@ -261,7 +324,9 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
         }
         if (getTokenType != LPAREN) error("Expected (") else advanceLexer()
         markWith(FUNC_ARG) {
-          advanceWhile(getTokenType != RPAREN && getTokenType != EOL) {}
+          advanceWhile(getTokenType != RPAREN && getTokenType != EOL) {
+            if (getTokenType.isInstanceOf[CabalIdentTokenType]) remapCurrentToken(IDENT)
+          }
         }
         if (getTokenType != RPAREN) error("Expected )") else advanceLexer()
       }
@@ -269,6 +334,12 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
 
     case _ => false
   }
+
+  def buildDepends() = field(BUILD_DEPENDS, BUILD_DEPENDS_KEY, dependencies)
+  def exposedModules() = field(EXPOSED_MODULES, EXPOSED_MODULES_KEY, moduleList)
+  def exposed() = field(EXPOSED, EXPOSED_KEY, freeform)
+  def reexportedModules() = field(REEXPORTED_MODULES, REEXPORTED_MODULES_KEY, reexportedField)
+  def mainIs(): Boolean = field(MAIN_IS, MAIN_IS_KEY, freeform)
 
   def topLevelField(): Boolean = (
     field(PKG_NAME, NAME_KEY, freeform)
@@ -295,11 +366,18 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
     || field(EXTRA_DOC_FILES, EXTRA_DOC_FILES_KEY, freeform)
     || field(EXTRA_TMP_FILES, EXTRA_TMP_FILES_KEY, freeform)
     || field(CUSTOM_FIELD, CUSTOM_KEY, freeform)
+    // These fields usually belong in their own stanzas, but it seems they can
+    // appear at the top level if there are no other stanzas.
+    || buildDepends()
+    || exposedModules()
+    || exposed()
+    || reexportedModules()
+    || buildInfoField()
     || invalidField("main")
   )
 
   def buildInfoField(): Boolean = (
-    field(BUILD_DEPENDS, BUILD_DEPENDS_KEY, dependencies)
+    buildDepends()
     || field(OTHER_MODULES, OTHER_MODULES_KEY, moduleList)
     || field(DEFAULT_LANGUAGE, DEFAULT_LANGUAGE_KEY, freeform)
     || field(OTHER_LANGUAGES, OTHER_LANGUAGES_KEY, identList)
@@ -325,15 +403,14 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
     || field(LD_OPTIONS, LD_OPTIONS_KEY, freeform)
     || field(PKGCONFIG_DEPENDS, PKGCONFIG_DEPENDS_KEY, freeform)
     || field(FRAMEWORKS, FRAMEWORKS_KEY, freeform)
+    || field(REQUIRED_SIGNATURES, REQUIRED_SIGNATURES_KEY, freeform)
   )
-  /**
-   * Should be called after all valid fields have been tried.
-   * If any CabalKeyElementType is found, applies an error element.
-   */
+
+  /** Should be called after all valid fields have been tried. */
   def invalidField(stanzaType: String): Boolean = getTokenType match {
-    case _: CabalFieldKeyTokenType =>
+    case _: CabalFieldKeyTokenType if lookAhead(1) == COLON =>
       val m = mark()
-      errorAdvance(s"Field not supported in $stanzaType stanza")
+      advanceLexer()
       expectColon()
       freeform()
       m.done(INVALID_FIELD)
@@ -342,14 +419,18 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
     case _ => false
   }
 
-  def field(el: CabalElementType, k: CabalFieldKeyTokenType, p: () => Unit): Boolean = {
-    if (getTokenType != k) return false
+  def parseFieldWithPred(pred: => Boolean)(el: CabalElementType, p: () => Unit): Boolean = {
+    if (!pred) return false
     val m = mark()
     advanceLexer()
     expectColon()
     p()
     m.done(el)
     true
+  }
+
+  def field(el: CabalElementType, k: CabalFieldKeyTokenType, p: () => Unit): Boolean = {
+    parseFieldWithPred(getTokenType == k)(el, p)
   }
 
   def ghcOptions(): Unit = {
@@ -369,6 +450,21 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
       advanceLexer()
     }
     m.collapse(IDENT)
+  }
+
+  def reexportedField(): Unit = {
+    var lookForComma = false
+    indentContext {
+      case _: CabalIdentTokenType =>
+        moduleReexport()
+        lookForComma = true
+
+      case COMMA =>
+        if (!lookForComma) error("Unexpected comma")
+        advanceLexer()
+
+      case other => errorAdvance("Expected module")
+    }
   }
 
   def dependencies(): Unit = {
@@ -393,6 +489,7 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
     val m = mark()
     remapAdvance(DEPENDENCY_NAME)
     dependencyVersion()
+    renameModules()
     m.done(DEPENDENCY)
   }
 
@@ -437,6 +534,8 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
         m.done(DEPENDENCY_VERSION)
 
       case LPAREN =>
+        // If next is ident, we're actually at module renaming, not version.
+        if (lookAhead(1).isInstanceOf[CabalIdentTokenType]) return
         val m = mark()
         advanceLexer()
         var break = false
@@ -463,6 +562,73 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
 
       case _ => // done
     }
+  }
+
+  def renameModules(): Unit = (getTokenType, lookAhead(1)) match {
+    case (WITH, LPAREN) => withRenameModules()
+    case (LPAREN, _: CabalIdentTokenType) => thinRenameModules()
+    case _ => // noop
+  }
+
+  def innerRenameModules(): Unit = {
+    if (getTokenType == LPAREN) advanceLexer() else error("Expected (")
+    var break = false
+    parseWhile(!break) {
+      getTokenType match {
+        case RPAREN => break = true
+        case _: CabalIdentTokenType => renameModule()
+        case COMMA => advanceLexer()
+        case other => errorAdvance("Unexpected token: " + other)
+      }
+    }
+    if (getTokenType != RPAREN) error("Missing )")
+    advanceLexer()
+  }
+
+  def withRenameModules(): Unit = {
+    val m = mark()
+    advanceLexer() // WITH
+    innerRenameModules()
+    m.done(WITH_RENAME_MODULES)
+  }
+
+  def thinRenameModules(): Unit = {
+    val m = mark()
+    innerRenameModules()
+    m.done(THIN_RENAME_MODULES)
+  }
+
+  def moduleReexport(): Boolean = {
+    if (!getTokenType.isInstanceOf[CabalIdentTokenType]) return false
+    val m = mark()
+    // Might specify package via -
+    // p:P as RP,
+    if (lookAhead(1) == COLON) {
+      remapAdvance(ORIGINAL_PACKAGE)
+      expectColon()
+    }
+    if (getTokenType.isInstanceOf[CabalIdentTokenType]) {
+      renameModule()
+    }
+    m.done(MODULE_REEXPORT)
+    true
+  }
+
+  def renameModule(): Boolean = {
+    val m = mark()
+    if (!module()) {
+      m.drop()
+      return false
+    }
+    if (getTokenType != AS) {
+      // No need to wrap an MODULE element in a RENAME_MODULE element.
+      m.drop()
+      return true
+    }
+    advanceLexer() // AS
+    if (!module()) error("Expected module")
+    m.done(RENAME_MODULE)
+    true
   }
 
   def boolValue(): Unit = {
@@ -511,9 +677,9 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
   }
 
   def module(): Boolean = {
-    assert(getTokenType.isInstanceOf[CabalIdentTokenType], "Unexpected token: " + getTokenType)
+    if (!getTokenType.isInstanceOf[CabalIdentTokenType]) return false
     val m = mark()
-    remapAdvance(MODULE_PART)
+    markWith(MODULE_PART) { remapAdvance(IDENT) }
     var break = false
     parseWhile(!break && getTokenType == DOT) {
       advanceLexer()
@@ -521,7 +687,7 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
         error("Expected module")
         break = true
       } else {
-        remapAdvance(MODULE_PART)
+        markWith(MODULE_PART) { remapAdvance(IDENT) }
       }
     }
     m.done(MODULE)
@@ -588,12 +754,32 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
     errorWith(msg) { advanceLexer() }
   }
 
-  /** Safer while loop that always checks eof() to avoid infinite loops. */
+  /**
+   * Safer while loop that always checks eof() to avoid infinite loops.
+   * If we iterate too many times (PARSE_WHILE_ASSERTION_LIMIT) and never move past
+   * the current offset, an AssertionError is thrown to avoid entering an infinite loop.
+   */
   def parseWhile(cond: => Boolean)(block: => Unit): Unit = {
+    var trackedOffset = -1
+    var trackedCount = 0
     while (!eof() && cond) {
+      if (trackedOffset == getCurrentOffset) {
+        trackedCount += 1
+        if (trackedCount > PARSE_WHILE_ASSERTION_LIMIT) {
+          throw new AssertionError(
+            s"parseWhile stuck at offset $getCurrentOffset for $trackedCount iterations in file: "
+              + getVirtualFile.orNull
+          )
+        }
+      } else {
+        trackedOffset = getCurrentOffset
+        trackedCount = 0
+      }
       block
     }
   }
+
+  private val PARSE_WHILE_ASSERTION_LIMIT = 100
 
   /** Safer while loop that always checks eof() and advances to avoid infinite loops. */
   def advanceWhile(cond: => Boolean)(block: => Unit): Unit = {
@@ -615,6 +801,12 @@ final class CabalPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(build
     val result = block
     m.error(msg)
     result
+  }
+
+  def oneOf(t1: IElementType, ts: IElementType*): Boolean = {
+    val t = getTokenType
+    if (t == t1) return true
+    ts.contains(t)
   }
 
   def assert(cond: Boolean, msg: => String): Unit = {

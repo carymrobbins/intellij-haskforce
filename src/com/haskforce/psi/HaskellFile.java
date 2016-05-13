@@ -41,11 +41,15 @@ public class HaskellFile extends PsiFileBase {
      */
     @Nullable
     public String getModuleName() {
+        final HaskellQconid qconid = getModuleElement();
+        return qconid == null ? null : qconid.getText();
+    }
+
+    @Nullable
+    public HaskellQconid getModuleElement() {
         final HaskellModuledecl moduledecl = findChildByClass(HaskellModuledecl.class);
         if (moduledecl == null) { return null; }
-        final HaskellQconid qconid = moduledecl.getQconid();
-        if (qconid == null) { return null; }
-        return qconid.getText();
+        return moduledecl.getQconid();
     }
 
     /**

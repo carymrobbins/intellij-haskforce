@@ -4,7 +4,7 @@ import java.awt.event.{ItemEvent, ItemListener}
 import javax.swing.{Icon, JList}
 import javax.swing.event.PopupMenuEvent
 
-import com.intellij.openapi.util.Computable
+import com.intellij.openapi.util.{Computable, Condition}
 import com.intellij.ui.PopupMenuListenerAdapter
 
 import com.haskforce.ui.SListCellRendererWrapper
@@ -20,6 +20,10 @@ object SAMUtils {
     override def compute(): A = f
   }
 
+  def condition[A](f: A => Boolean) = new Condition[A] {
+    override def value(t: A): Boolean = f(t)
+  }
+
   def popupMenuWillBecomeVisible(f: PopupMenuEvent => Unit) = new PopupMenuListenerAdapter {
     override def popupMenuWillBecomeVisible(e: PopupMenuEvent): Unit = f(e)
   }
@@ -32,5 +36,11 @@ object SAMUtils {
 
   def ijFunction[A, B](f: A => B): com.intellij.util.Function[A, B] = new com.intellij.util.Function[A, B] {
     override def fun(param: A): B = f(param)
+  }
+
+  object guava {
+    def predicate[A](f: A => Boolean) = new com.google.common.base.Predicate[A] {
+      override def apply(t: A): Boolean = f(t)
+    }
   }
 }

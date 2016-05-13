@@ -388,6 +388,9 @@
                            implementationClass="com.haskforce.cabal.lang.parser.CabalParserDefinition"/>
     <annotator language="Cabal"
                implementationClass="com.haskforce.cabal.highlighting.CabalAnnotator"/>
+    <completion.contributor
+        language="Cabal"
+        implementationClass="com.haskforce.cabal.completion.CabalCompletionContributor" />
 
     <!-- Hamlet support -->
     <fileTypeFactory implementation="com.haskforce.yesod.shakespeare.hamlet.HamletFileTypeFactory"/>

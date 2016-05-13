@@ -113,17 +113,23 @@ Cabal File
       PsiComment(COMMENT)('  -- {{{')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('Example')
+          MODULE_PART
+            PsiElement(IDENT)('Example')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Foo')
+          MODULE_PART
+            PsiElement(IDENT)('Foo')
         MODULE
-          PsiElement(MODULE_PART)('Example')
+          MODULE_PART
+            PsiElement(IDENT)('Example')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Bar')
+          MODULE_PART
+            PsiElement(IDENT)('Bar')
         MODULE
-          PsiElement(MODULE_PART)('Example')
+          MODULE_PART
+            PsiElement(IDENT)('Example')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Baz')
+          MODULE_PART
+            PsiElement(IDENT)('Baz')
     PsiComment(COMMENT)('  -- }}}')
     OTHER_MODULES
       PsiElement(OTHER_MODULES_KEY)('other-modules')
@@ -131,31 +137,44 @@ Cabal File
       PsiComment(COMMENT)('  -- {{{')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('Example')
+          MODULE_PART
+            PsiElement(IDENT)('Example')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('DB')
+          MODULE_PART
+            PsiElement(IDENT)('DB')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Cache')
+          MODULE_PART
+            PsiElement(IDENT)('Cache')
         MODULE
-          PsiElement(MODULE_PART)('Example')
+          MODULE_PART
+            PsiElement(IDENT)('Example')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('DB')
+          MODULE_PART
+            PsiElement(IDENT)('DB')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Access')
+          MODULE_PART
+            PsiElement(IDENT)('Access')
         MODULE
-          PsiElement(MODULE_PART)('Example')
+          MODULE_PART
+            PsiElement(IDENT)('Example')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('DB')
+          MODULE_PART
+            PsiElement(IDENT)('DB')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Queries')
+          MODULE_PART
+            PsiElement(IDENT)('Queries')
         MODULE
-          PsiElement(MODULE_PART)('Example')
+          MODULE_PART
+            PsiElement(IDENT)('Example')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Quux')
+          MODULE_PART
+            PsiElement(IDENT)('Quux')
         MODULE
-          PsiElement(MODULE_PART)('Example')
+          MODULE_PART
+            PsiElement(IDENT)('Example')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Spam')
+          MODULE_PART
+            PsiElement(IDENT)('Spam')
     PsiComment(COMMENT)('  -- }}}')
     BUILD_DEPENDS_KEY
       PsiElement(BUILD_DEPENDS_KEY)('build-depends')
@@ -435,27 +454,38 @@ Cabal File
       PsiElement(COLON)(':')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('Dyn')
+          MODULE_PART
+            PsiElement(IDENT)('Dyn')
         MODULE
-          PsiElement(MODULE_PART)('Equal')
+          MODULE_PART
+            PsiElement(IDENT)('Equal')
         MODULE
-          PsiElement(MODULE_PART)('Example')
+          MODULE_PART
+            PsiElement(IDENT)('Example')
         MODULE
-          PsiElement(MODULE_PART)('Misc')
+          MODULE_PART
+            PsiElement(IDENT)('Misc')
         MODULE
-          PsiElement(MODULE_PART)('Semantics')
+          MODULE_PART
+            PsiElement(IDENT)('Semantics')
         MODULE
-          PsiElement(MODULE_PART)('Serialization')
+          MODULE_PART
+            PsiElement(IDENT)('Serialization')
         MODULE
-          PsiElement(MODULE_PART)('SmallCheck')
+          MODULE_PART
+            PsiElement(IDENT)('SmallCheck')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Instances')
+          MODULE_PART
+            PsiElement(IDENT)('Instances')
         MODULE
-          PsiElement(MODULE_PART)('TwilioInboundRecovery')
+          MODULE_PART
+            PsiElement(IDENT)('TwilioInboundRecovery')
         MODULE
-          PsiElement(MODULE_PART)('Vars')
+          MODULE_PART
+            PsiElement(IDENT)('Vars')
         MODULE
-          PsiElement(MODULE_PART)('WorkItemParser')
+          MODULE_PART
+            PsiElement(IDENT)('WorkItemParser')
     DEFAULT_LANGUAGE
       PsiElement(DEFAULT_LANGUAGE_KEY)('default-language')
       PsiElement(COLON)(':')

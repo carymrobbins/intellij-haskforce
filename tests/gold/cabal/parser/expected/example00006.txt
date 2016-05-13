@@ -317,7 +317,7 @@ Cabal File
               PsiElement(OS)('os')
             PsiElement(()('(')
             FUNC_ARG
-              PsiElement(UNKNOWN_KEY)('windows')
+              PsiElement(IDENT)('windows')
             PsiElement())(')')
       THEN_BODY
         BUILD_DEPENDS_KEY
@@ -342,62 +342,85 @@ Cabal File
       PsiElement(COLON)(':')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('Paths_postgrest')
+          MODULE_PART
+            PsiElement(IDENT)('Paths_postgrest')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('App')
+          MODULE_PART
+            PsiElement(IDENT)('App')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Auth')
+          MODULE_PART
+            PsiElement(IDENT)('Auth')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Config')
+          MODULE_PART
+            PsiElement(IDENT)('Config')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Error')
+          MODULE_PART
+            PsiElement(IDENT)('Error')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Middleware')
+          MODULE_PART
+            PsiElement(IDENT)('Middleware')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Parsers')
+          MODULE_PART
+            PsiElement(IDENT)('Parsers')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('DbStructure')
+          MODULE_PART
+            PsiElement(IDENT)('DbStructure')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('QueryBuilder')
+          MODULE_PART
+            PsiElement(IDENT)('QueryBuilder')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('RangeQuery')
+          MODULE_PART
+            PsiElement(IDENT)('RangeQuery')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('ApiRequest')
+          MODULE_PART
+            PsiElement(IDENT)('ApiRequest')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Types')
+          MODULE_PART
+            PsiElement(IDENT)('Types')
   LIBRARY
     PsiElement(LIBRARY_KEY)('library')
     DEFAULT_LANGUAGE
@@ -539,65 +562,88 @@ Cabal File
       PsiElement(COLON)(':')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('Paths_postgrest')
+          MODULE_PART
+            PsiElement(IDENT)('Paths_postgrest')
     EXPOSED_MODULES
       PsiElement(EXPOSED_MODULES_KEY)('Exposed-Modules')
       PsiElement(COLON)(':')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('App')
+          MODULE_PART
+            PsiElement(IDENT)('App')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Auth')
+          MODULE_PART
+            PsiElement(IDENT)('Auth')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Config')
+          MODULE_PART
+            PsiElement(IDENT)('Config')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Error')
+          MODULE_PART
+            PsiElement(IDENT)('Error')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Middleware')
+          MODULE_PART
+            PsiElement(IDENT)('Middleware')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Parsers')
+          MODULE_PART
+            PsiElement(IDENT)('Parsers')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('DbStructure')
+          MODULE_PART
+            PsiElement(IDENT)('DbStructure')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('QueryBuilder')
+          MODULE_PART
+            PsiElement(IDENT)('QueryBuilder')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('RangeQuery')
+          MODULE_PART
+            PsiElement(IDENT)('RangeQuery')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('ApiRequest')
+          MODULE_PART
+            PsiElement(IDENT)('ApiRequest')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Types')
+          MODULE_PART
+            PsiElement(IDENT)('Types')
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
@@ -647,118 +693,163 @@ Cabal File
       PsiElement(COLON)(':')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('Feature')
+          MODULE_PART
+            PsiElement(IDENT)('Feature')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('AuthSpec')
+          MODULE_PART
+            PsiElement(IDENT)('AuthSpec')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Feature')
+          MODULE_PART
+            PsiElement(IDENT)('Feature')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('ConcurrentSpec')
+          MODULE_PART
+            PsiElement(IDENT)('ConcurrentSpec')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Feature')
+          MODULE_PART
+            PsiElement(IDENT)('Feature')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('CorsSpec')
+          MODULE_PART
+            PsiElement(IDENT)('CorsSpec')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Feature')
+          MODULE_PART
+            PsiElement(IDENT)('Feature')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('DeleteSpec')
+          MODULE_PART
+            PsiElement(IDENT)('DeleteSpec')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Feature')
+          MODULE_PART
+            PsiElement(IDENT)('Feature')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('InsertSpec')
+          MODULE_PART
+            PsiElement(IDENT)('InsertSpec')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Feature')
+          MODULE_PART
+            PsiElement(IDENT)('Feature')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('QuerySpec')
+          MODULE_PART
+            PsiElement(IDENT)('QuerySpec')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Feature')
+          MODULE_PART
+            PsiElement(IDENT)('Feature')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('QueryLimitedSpec')
+          MODULE_PART
+            PsiElement(IDENT)('QueryLimitedSpec')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Feature')
+          MODULE_PART
+            PsiElement(IDENT)('Feature')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('RangeSpec')
+          MODULE_PART
+            PsiElement(IDENT)('RangeSpec')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Feature')
+          MODULE_PART
+            PsiElement(IDENT)('Feature')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('StructureSpec')
+          MODULE_PART
+            PsiElement(IDENT)('StructureSpec')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Feature')
+          MODULE_PART
+            PsiElement(IDENT)('Feature')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('UnicodeSpec')
+          MODULE_PART
+            PsiElement(IDENT)('UnicodeSpec')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Paths_postgrest')
+          MODULE_PART
+            PsiElement(IDENT)('Paths_postgrest')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('App')
+          MODULE_PART
+            PsiElement(IDENT)('App')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Auth')
+          MODULE_PART
+            PsiElement(IDENT)('Auth')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Config')
+          MODULE_PART
+            PsiElement(IDENT)('Config')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Error')
+          MODULE_PART
+            PsiElement(IDENT)('Error')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Middleware')
+          MODULE_PART
+            PsiElement(IDENT)('Middleware')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Parsers')
+          MODULE_PART
+            PsiElement(IDENT)('Parsers')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('DbStructure')
+          MODULE_PART
+            PsiElement(IDENT)('DbStructure')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('QueryBuilder')
+          MODULE_PART
+            PsiElement(IDENT)('QueryBuilder')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('RangeQuery')
+          MODULE_PART
+            PsiElement(IDENT)('RangeQuery')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('ApiRequest')
+          MODULE_PART
+            PsiElement(IDENT)('ApiRequest')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('PostgREST')
+          MODULE_PART
+            PsiElement(IDENT)('PostgREST')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Types')
+          MODULE_PART
+            PsiElement(IDENT)('Types')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('SpecHelper')
+          MODULE_PART
+            PsiElement(IDENT)('SpecHelper')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('TestTypes')
+          MODULE_PART
+            PsiElement(IDENT)('TestTypes')
     BUILD_DEPENDS_KEY
       PsiElement(BUILD_DEPENDS_KEY)('Build-Depends')
       PsiElement(COLON)(':')

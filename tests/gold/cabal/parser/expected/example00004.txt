@@ -68,37 +68,51 @@ Cabal File
       PsiElement(COLON)(':')
       MODULE_LIST
         MODULE
-          PsiElement(MODULE_PART)('Test')
+          MODULE_PART
+            PsiElement(IDENT)('Test')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('HUnit')
+          MODULE_PART
+            PsiElement(IDENT)('HUnit')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Base')
+          MODULE_PART
+            PsiElement(IDENT)('Base')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Test')
+          MODULE_PART
+            PsiElement(IDENT)('Test')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('HUnit')
+          MODULE_PART
+            PsiElement(IDENT)('HUnit')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Lang')
+          MODULE_PART
+            PsiElement(IDENT)('Lang')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Test')
+          MODULE_PART
+            PsiElement(IDENT)('Test')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('HUnit')
+          MODULE_PART
+            PsiElement(IDENT)('HUnit')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Terminal')
+          MODULE_PART
+            PsiElement(IDENT)('Terminal')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Test')
+          MODULE_PART
+            PsiElement(IDENT)('Test')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('HUnit')
+          MODULE_PART
+            PsiElement(IDENT)('HUnit')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('Text')
+          MODULE_PART
+            PsiElement(IDENT)('Text')
         PsiElement(,)(',')
         MODULE
-          PsiElement(MODULE_PART)('Test')
+          MODULE_PART
+            PsiElement(IDENT)('Test')
           PsiElement(.)('.')
-          PsiElement(MODULE_PART)('HUnit')
+          MODULE_PART
+            PsiElement(IDENT)('HUnit')
     DEFAULT_EXTENSIONS
       PsiElement(DEFAULT_EXTENSIONS_KEY)('default-extensions')
       PsiElement(COLON)(':')

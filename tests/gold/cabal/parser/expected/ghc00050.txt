@@ -1,0 +1,94 @@
+Cabal File
+  PKG_NAME
+    PsiElement(NAME_KEY)('Name')
+    PsiElement(COLON)(':')
+    FREEFORM
+      PsiElement(FREEFORM_LINE)('dll-split')
+  PKG_VERSION
+    PsiElement(VERSION_KEY)('Version')
+    PsiElement(COLON)(':')
+    FREEFORM
+      PsiElement(FREEFORM_LINE)('0.1')
+  COPYRIGHT
+    PsiElement(COPYRIGHT_KEY)('Copyright')
+    PsiElement(COLON)(':')
+    FREEFORM
+      PsiElement(FREEFORM_LINE)('XXX')
+  LICENSE
+    PsiElement(LICENSE_KEY)('License')
+    PsiElement(COLON)(':')
+    FREEFORM
+      PsiElement(FREEFORM_LINE)('BSD3')
+  PsiComment(COMMENT)('-- XXX License-File: LICENSE')
+  AUTHOR
+    PsiElement(AUTHOR_KEY)('Author')
+    PsiElement(COLON)(':')
+    FREEFORM
+      PsiElement(FREEFORM_LINE)('XXX')
+  MAINTAINER
+    PsiElement(MAINTAINER_KEY)('Maintainer')
+    PsiElement(COLON)(':')
+    FREEFORM
+      PsiElement(FREEFORM_LINE)('XXX')
+  SYNOPSIS
+    PsiElement(SYNOPSIS_KEY)('Synopsis')
+    PsiElement(COLON)(':')
+    FREEFORM
+      PsiElement(FREEFORM_LINE)('A tool for verifying the partitioning of the GHC library on Windows')
+  DESCRIPTION
+    PsiElement(DESCRIPTION_KEY)('Description')
+    PsiElement(COLON)(':')
+    FREEFORM
+      PsiElement(FREEFORM_LINE)('Due to various toolchain issues (see GHC Trac #5987) we are forced to keep')
+      PsiElement(FREEFORM_LINE)('DLLs on Windows smaller than 65,000 symbols. To accomplish this we split')
+      PsiElement(FREEFORM_LINE)('the @ghc@ package into multiple DLLs by partitioning defined in the')
+      PsiElement(FREEFORM_LINE)('build system (see @compiler/ghc.mk@).')
+      PsiElement(FREEFORM_LINE)('.')
+      PsiElement(FREEFORM_LINE)('This tool checks this partitioning to ensure consistency with the actual')
+      PsiElement(FREEFORM_LINE)('module dependencies.')
+  CATEGORY
+    PsiElement(CATEGORY_KEY)('Category')
+    PsiElement(COLON)(':')
+    FREEFORM
+      PsiElement(FREEFORM_LINE)('Development')
+  BUILD_TYPE
+    PsiElement(BUILD_TYPE_KEY)('build-type')
+    PsiElement(COLON)(':')
+    FREEFORM
+      PsiElement(FREEFORM_LINE)('Simple')
+  CABAL_VERSION
+    PsiElement(CABAL_VERSION_KEY)('cabal-version')
+    PsiElement(COLON)(':')
+    FREEFORM
+      PsiElement(FREEFORM_LINE)('>=1.10')
+  EXECUTABLE
+    PsiElement(EXECUTABLE_KEY)('Executable')
+    PsiElement(EXECUTABLE_NAME)('dll-split')
+    DEFAULT_LANGUAGE
+      PsiElement(DEFAULT_LANGUAGE_KEY)('Default-Language')
+      PsiElement(COLON)(':')
+      FREEFORM
+        PsiElement(FREEFORM_LINE)('Haskell2010')
+    MAIN_IS
+      PsiElement(MAIN_IS_KEY)('Main-Is')
+      PsiElement(COLON)(':')
+      FREEFORM
+        PsiElement(FREEFORM_LINE)('Main.hs')
+    BUILD_DEPENDS_KEY
+      PsiElement(BUILD_DEPENDS_KEY)('Build-Depends')
+      PsiElement(COLON)(':')
+      DEPENDENCIES
+        DEPENDENCY
+          PsiElement(DEPENDENCY_NAME)('base')
+          DEPENDENCY_VERSION
+            PsiElement(>=)('>=')
+            PsiElement(NUMBERS)('4')
+            PsiElement(&&)('&&')
+            PsiElement(<)('<')
+            PsiElement(NUMBERS)('5')
+        PsiElement(,)(',')
+        DEPENDENCY
+          PsiElement(DEPENDENCY_NAME)('containers')
+        PsiElement(,)(',')
+        DEPENDENCY
+          PsiElement(DEPENDENCY_NAME)('filepath')

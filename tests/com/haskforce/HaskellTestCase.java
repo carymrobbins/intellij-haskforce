@@ -26,6 +26,7 @@ import com.haskforce.cabal.AddCabalPackageTest;
 import com.haskforce.cabal.lang.parser.CabalParserTest;
 import com.haskforce.cabal.lang.lexer.CabalParsingLexerTest;
 import com.haskforce.cabal.query.CabalQueryTest;
+import com.haskforce.cabal.resolve.CabalResolveTest;
 import com.haskforce.codeInsight.HaskellCompletionTest;
 import com.haskforce.codeInsight.HaskellFindUsagesTest;
 import com.haskforce.codeInsight.HaskellGoToSymbolTest;
@@ -81,6 +82,7 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(CabalParsingLexerTest.class);
         suite.addTestSuite(CabalParserTest.class);
         suite.addTestSuite(CabalQueryTest.class);
+        suite.addTestSuite(CabalResolveTest.class);
         return suite;
     }
 }
