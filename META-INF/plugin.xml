@@ -242,6 +242,13 @@
       <add-to-group group-id="CodeFormatGroup" anchor="last"/>
       <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl alt E"/>
     </action>
+    <action id="HaskForce.HindentFormat"
+            class="com.haskforce.actions.HaskellHindentFormatAction"
+            text="Reformat code with Hindent"
+            description="Format current file with Hindent">
+      <add-to-group group-id="CodeFormatGroup" anchor="last"/>
+      <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl alt D"/>
+    </action>
     <action id="com.haskforce.actions.HaskellReloadCompletionCache"
             class="com.haskforce.actions.HaskellReloadCompletionCache"
             text="Haskell Completion Cache Reload"
