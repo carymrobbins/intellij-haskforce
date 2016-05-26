@@ -14,6 +14,7 @@ public class ToolKey {
     public static final ToolKey HLINT_KEY = new ToolKey("hlint", "hlint");
     public static final ToolKey GHC_MOD_KEY = new ToolKey("ghcMod", "ghc-mod");
     public static final ToolKey GHC_MODI_KEY = new ToolKey("ghcModi", "ghc-modi");
+    public static final ToolKey HINDENT_KEY = new ToolKey("hindent", "hindent");
 
     public static final String GHC_MODI_TIMEOUT_KEY = "ghcModiTimeout";
     public static final long GHC_MODI_TIMEOUT_DEFAULT = 5000;
