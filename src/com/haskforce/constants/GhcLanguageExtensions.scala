@@ -26,6 +26,9 @@ object GhcLanguageExtensions extends Enumeration {
     list
   }
 
+  /** Pre-computed names as an array. */
+  lazy val stringArray: Array[String] = values.view.map(_.toString).toArray
+
   /** Provide faster lookups using a HashMap as opposed to withName(). */
   private lazy val mapping = {
     val m = new util.HashMap[String, Value](values.size)
