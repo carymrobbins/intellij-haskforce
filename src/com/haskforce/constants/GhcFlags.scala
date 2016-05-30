@@ -4,7 +4,7 @@ package com.haskforce.constants
 object GhcFlags {
 
   /** Flags list generated from 'ghc-mod flag' */
-  val list = List(
+  val list = Array(
     "-fbreak-on-error",
     "-fno-break-on-error",
     "-fbreak-on-exception",
