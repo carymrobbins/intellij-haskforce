@@ -130,12 +130,14 @@ object FileTreeLike {
   def childrenOf[A : FileTreeLike](a: A): Stream[A] = implicitly[FileTreeLike[A]].childrenOf(a)
 
   implicit val javaFile: FileTreeLike[File] = new FileTreeLike[File] {
-    override def childrenOf(a: File): Stream[File] = a.listFiles().toStream
+    override def childrenOf(a: File): Stream[File] = {
+      NullUtil.fold(a.listFiles())(Stream.empty, _.toStream)
+    }
   }
 
   implicit val virtualFile: FileTreeLike[VirtualFile] = new FileTreeLike[VirtualFile] {
     override def childrenOf(a: VirtualFile): Stream[VirtualFile] = {
-      Option(a.getChildren).getOrElse(Array.empty).toStream
+      NullUtil.fold(a.getChildren)(Stream.empty, _.toStream)
     }
   }
 }
