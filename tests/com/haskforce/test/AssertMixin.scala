@@ -44,6 +44,20 @@ trait AssertMixin {
       : Unit
       = UsefulTestCase.assertSameElements(message, collection, expected)
 
+  def assertSameElements[A](collection: util.Collection[_ <: A], expected: A*): Unit = {
+    UsefulTestCase.assertSameElements(collection, expected: _*)
+  }
+
+  def assertSameElements[A](actual: Array[A], expected: A*): Unit = {
+    UsefulTestCase.assertSameElements(util.Arrays.asList(actual), expected)
+  }
+
+  def assertEmpty(array: Array[AnyRef]): Unit = UsefulTestCase.assertEmpty(array)
+
+  def assertEmpty(collection: util.Collection[_]): Unit = {
+    UsefulTestCase.assertEmpty(collection)
+  }
+
   /** Adapted from UsefulTestCase.assertInstanceOf */
   def assertInstanceOf[A : Manifest](@Nullable message: String, o: Any): A = {
     val c = manifest[A].runtimeClass
@@ -62,12 +76,14 @@ trait AssertMixin {
 
   def assertInstanceOf[A : Manifest](@Nullable o: Any): A = assertInstanceOf(null, o)
 
-  def assertSome[A](o: Option[A])(f: A => Boolean): A = {
+  def assertSome[A](o: Option[A]): A = {
     o match {
       case None | Some(null) => throw new AssertionFailedError(s"Expected Some, got $o")
-      case Some(a) => assertPredicate(a)(f)
+      case Some(a) => a
     }
   }
+
+  def assertSomeWith[A](o: Option[A])(f: A => Boolean): A = assertPredicate(assertSome(o))(f)
 
   def assertPredicate[A](a: A)(f: A => Boolean): A = {
     assertTrue(s"Failed to match predicate: $a", f(a))
@@ -120,5 +136,9 @@ trait AssertMixin {
   /** Curried version to simplify building a curried function with the prefix. */
   def maybePrefix(prefix: Option[String]): String => String = { s: String =>
     maybePrefix(prefix, s)
+  }
+
+  implicit class RichAssertions[A](val underlying: A) {
+    def ===(other: A): Unit = assertEquals(other, underlying)
   }
 }
