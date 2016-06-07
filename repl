@@ -13,4 +13,4 @@ if [ -z "$IDEA_HOME" ]; then
     exit 1
 fi
 
-java -Dscala.usejavacp=true -classpath "$CLASSPATH" scala.tools.nsc.MainGenericRunner
+java -Dscala.usejavacp=true -classpath "$CLASSPATH" scala.tools.nsc.MainGenericRunner "$@"
