@@ -30,6 +30,6 @@ public class HaskellTestCommandLineState extends CommandLineState {
         ParametersList parametersList = commandLine.getParametersList();
         parametersList.add("test");
         parametersList.addParametersString(myConfig.programArguments);
-        return new OSProcessHandler(commandLine.createProcess());
+        return new OSProcessHandler(commandLine);
     }
 }

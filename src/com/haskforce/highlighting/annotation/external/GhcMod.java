@@ -301,15 +301,15 @@ public class GhcMod {
          */
         static final List<Pair<Pattern, RegisterFixHandler>> fixHandlers;
         static {
-            fixHandlers = new ArrayList(Arrays.asList(
-                    new Pair(Pattern.compile("^Top-level binding with no type signature"),
+            fixHandlers = new ArrayList<>(Arrays.<Pair<Pattern, RegisterFixHandler>>asList(
+                    Pair.create(Pattern.compile("^Top-level binding with no type signature"),
                             new RegisterFixHandler() {
                                 @Override
                                 public void apply(Matcher matcher, Annotation annotation, Problem problem) {
                                     annotation.registerFix(new AddTypeSignature(problem));
                                 }
                             }),
-                    new Pair(Pattern.compile("^Illegal symbol '.' in type"),
+                    Pair.create(Pattern.compile("^Illegal symbol '.' in type"),
                             new RegisterFixHandler() {
                                 @Override
                                 public void apply(Matcher matcher, Annotation annotation, Problem problem) {
@@ -317,7 +317,7 @@ public class GhcMod {
                                     annotation.registerFix(new RemoveForall(problem));
                                 }
                             }),
-                    new Pair(Pattern.compile(" -X([A-Z][A-Za-z0-9]+)"),
+                    Pair.create(Pattern.compile(" -X([A-Z][A-Za-z0-9]+)"),
                             new RegisterFixHandler() {
                                 @Override
                                 public void apply(Matcher matcher, Annotation annotation, Problem problem) {

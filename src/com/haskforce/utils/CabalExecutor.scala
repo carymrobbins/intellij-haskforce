@@ -6,6 +6,7 @@ import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.CapturingProcessHandler
 import java.io.File
+import java.nio.charset.StandardCharsets
 
 import com.intellij.openapi.project.Project
 
@@ -70,8 +71,7 @@ case class CabalExecutor private (factory: () => GeneralCommandLine) {
   private def initPreEnv(args: Seq[String]) = rawCommandLine("init" +: args: _*)
 
   private def initPostEnv(commandLine: GeneralCommandLine): String = {
-    val process = commandLine.createProcess()
-    val output = new CapturingProcessHandler(process).runProcess
+    val output = new CapturingProcessHandler(commandLine).runProcess
     if (output.getExitCode == 0) return output.getStdout
     throw new ExecutionException(output.getStderr)
   }

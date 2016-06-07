@@ -31,6 +31,6 @@ public class HaskellApplicationCommandLineState extends CommandLineState {
         parametersList.add("run");
         parametersList.add("--with-ghc=" + buildSettings.getGhcPath());
         parametersList.addParametersString(myConfig.programArguments);
-        return new OSProcessHandler(commandLine.createProcess());
+        return new OSProcessHandler(commandLine);
     }
 }

@@ -7,7 +7,6 @@ import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StoragePathMacros;
 import com.intellij.openapi.components.StorageScheme;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
@@ -19,9 +18,7 @@ import java.util.List;
 @State(
         name = JpsHaskellBuildOptionsSerializer.HASKELL_BUILD_OPTIONS_COMPONENT_NAME,
         storages = {
-                @Storage(file = StoragePathMacros.PROJECT_FILE),
-                @Storage(file = StoragePathMacros.PROJECT_CONFIG_DIR + "/compiler.xml",
-                        scheme = StorageScheme.DIRECTORY_BASED)
+                @Storage("compiler.xml")
         }
 )
 public class HaskellBuildSettings implements PersistentStateComponent<HaskellBuildOptions> {

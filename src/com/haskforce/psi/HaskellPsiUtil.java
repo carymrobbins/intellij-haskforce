@@ -20,16 +20,6 @@ import java.util.List;
 import java.util.Set;
 
 public class HaskellPsiUtil {
-    @Nullable
-    public static <T extends PsiElement> T findFirstParent(@NotNull PsiElement el, final Class<T> klass) {
-        return (T)PsiTreeUtil.findFirstParent(el, new Condition<PsiElement>() {
-            @Override
-            public boolean value(PsiElement parent) {
-                return klass.isInstance(parent);
-            }
-        });
-    }
-
     @NotNull
     public static <T extends PsiElement> String[] getTexts(@NotNull List<T> psiElements) {
         final int size = psiElements.size();
@@ -60,7 +50,7 @@ public class HaskellPsiUtil {
         boolean importedPrelude = false;
         HaskellImpdecl[] impdecls = PsiTreeUtil.getChildrenOfType(PsiTreeUtil.getChildOfType(file, HaskellBody.class), HaskellImpdecl.class);
         if (impdecls == null) {
-            if (noImplicitPrelude) return Collections.EMPTY_LIST;
+            if (noImplicitPrelude) return Collections.emptyList();
             return Collections.singletonList(prelude);
         }
         List<Import> result = new ArrayList<Import>(impdecls.length);

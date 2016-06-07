@@ -268,7 +268,7 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
             return new Object[]{};
         }
         // If we are in a qualified name, don't provide reference completion.
-        final PsiElement qId = PsiTreeUtil.getParentOfType(myElement, HaskellQconid.class, HaskellQvarid.class);
+        final PsiElement qId = HaskellUtil.getParentOfType(myElement, HaskellQconid.class, HaskellQvarid.class);
         if (qId != null && qId.textContains('.')) {
             return new Object[]{};
         }

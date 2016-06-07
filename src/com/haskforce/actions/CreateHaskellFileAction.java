@@ -109,7 +109,7 @@ public class CreateHaskellFileAction extends CreateFileFromTemplateAction implem
         Project project = dir.getProject();
         try {
             // Patch props with custom property.
-            Properties props = FileTemplateManager.getInstance().getDefaultProperties(project);
+            Properties props = FileTemplateManager.getInstance(project).getDefaultProperties();
             props.setProperty("HASKELL_MODULE_NAME", modulePrefix.isEmpty() ? name : modulePrefix + '.' + name);
             element = FileTemplateUtil
                     .createFromTemplate(template, name, props, dir);

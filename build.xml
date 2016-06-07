@@ -253,7 +253,7 @@
       <patternset refid="excluded.from.compilation.jps-shared"/>
     </scalac>
 
-    <javac2 source="1.6" target="1.6" destdir="${jps-shared.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jps-shared}/javac">
+    <javac2 source="${jdk.source}" target="${jdk.target}" destdir="${jps-shared.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jps-shared}/javac">
       <compilerarg line="${compiler.args.jps-shared}"/>
       <bootclasspath refid="jps-shared.module.bootclasspath"/>
       <classpath refid="jps-shared.module.production.classpath"/>
@@ -439,7 +439,7 @@
       <patternset refid="excluded.from.compilation.haskforce"/>
     </scalac>
 
-    <javac2 source="1.6" target="1.6" destdir="${haskforce.output.dir}" debug="${compiler.debug}"
+    <javac2 source="${jdk.source}" target="${jdk.target}" destdir="${haskforce.output.dir}" debug="${compiler.debug}"
             nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}"
             fork="true" executable="${module.jdk.bin.haskforce}/javac">
       <compilerarg line="${compiler.args.haskforce}"/>
@@ -482,7 +482,7 @@
       <patternset refid="excluded.from.compilation.haskforce"/>
     </scalac>
 
-    <javac2 source="1.6" target="1.6" destdir="${haskforce.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.haskforce}/javac">
+    <javac2 source="${jdk.source}" target="${jdk.target}" destdir="${haskforce.testoutput.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.haskforce}/javac">
       <compilerarg line="${compiler.args.haskforce}"/>
       <bootclasspath refid="haskforce.module.bootclasspath"/>
       <classpath refid="haskforce.module.classpath"/>
@@ -632,7 +632,7 @@
       <patternset refid="excluded.from.compilation.jps-plugin"/>
     </scalac>
 
-    <javac2 source="1.6" target="1.6" destdir="${jps-plugin.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jps-plugin}/javac">
+    <javac2 source="${jdk.source}" target="${jdk.target}" destdir="${jps-plugin.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jps-plugin}/javac">
       <compilerarg line="${compiler.args.jps-plugin}"/>
       <bootclasspath refid="jps-plugin.module.bootclasspath"/>
       <classpath refid="jps-plugin.module.production.classpath"/>

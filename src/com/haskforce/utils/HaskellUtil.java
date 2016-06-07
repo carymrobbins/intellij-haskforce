@@ -250,12 +250,23 @@ public class HaskellUtil {
 
     @Nullable
     public static String getQualifiedPrefix(@NotNull PsiElement e) {
-        final PsiElement q = PsiTreeUtil.getParentOfType(e, HaskellQcon.class, HaskellQvar.class);
+        final PsiElement q = getParentOfType(e, HaskellQcon.class, HaskellQvar.class);
         if (q == null) { return null; }
         final String qText = q.getText();
         final int lastDotPos = qText.lastIndexOf('.');
         if (lastDotPos == -1) { return null; }
         return qText.substring(0, lastDotPos);
+    }
+
+    /**
+     * Helper method to avoid the compiler warning.
+     * See https://youtrack.jetbrains.com/issue/IDEA-157225
+     */
+    @SafeVarargs
+    @Nullable
+    public static <T extends PsiElement> T getParentOfType(@Nullable final PsiElement element,
+                                                           @NotNull final Class<? extends T>... classes) {
+        return PsiTreeUtil.getParentOfType(element, classes);
     }
 
     @NotNull

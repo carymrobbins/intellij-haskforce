@@ -27,7 +27,7 @@ public class HaskellQqblobManipulator extends AbstractElementManipulator<Haskell
     private static Pair<Integer, Integer> getRangeForText(String text) {
         final int start = LEADING_SLASH_ESCAPE_REGEX.matcher(text).matches() ? 2 : 1;
         final int end = text.length() - start;
-        return new Pair(start, end);
+        return Pair.create(start, end);
     }
 
     private static TextRange pairToTextRange(Pair<Integer, Integer> pair) {

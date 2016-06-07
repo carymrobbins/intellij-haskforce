@@ -83,8 +83,8 @@ public class HaskellCompletionContributor extends CompletionContributor {
     }
 
     public static void completeKeywordImport(@NotNull final PsiElement position, @NotNull final CompletionResultSet result) {
-        if (HaskellPsiUtil.findFirstParent(position, HaskellImpdecl.class) != null) return;
-        HaskellBody body = HaskellPsiUtil.findFirstParent(position, HaskellBody.class);
+        if (PsiTreeUtil.getParentOfType(position, HaskellImpdecl.class) != null) return;
+        HaskellBody body = PsiTreeUtil.getParentOfType(position, HaskellBody.class);
         PsiElement root = body == null ? position.getContainingFile() : body;
         PsiElement topLevel = PsiTreeUtil.findPrevParent(root, position);
         // If we have spaces, then we are into an expression, definition, etc. and shouldn't provide completion.
@@ -107,7 +107,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
 
     private static String[] EXPRESSION_KEYWORDS = {"do", "if", "then", "else"};
     public static void completeExpressionKeywords(@NotNull final PsiElement position, @NotNull final CompletionResultSet result) {
-        if (HaskellPsiUtil.findFirstParent(position, HaskellExp.class) == null) return;
+        if (PsiTreeUtil.getParentOfType(position, HaskellExp.class) == null) return;
         for (String keyword : EXPRESSION_KEYWORDS) {
             result.addElement(LookupElementUtil.fromString(keyword));
         }

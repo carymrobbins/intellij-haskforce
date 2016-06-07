@@ -108,8 +108,9 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
     }
 
     public void testNameImports() throws Throwable {
-        FakeBrowseCache fakeBrowseCache = new FakeBrowseCache(
-                "Data.Ord", Arrays.asList("Down", "EQ", "GT", "LT", "Ord", "Ordering", "compare", "comparing"));
+        FakeBrowseCache fakeBrowseCache = new FakeBrowseCacheBuilder()
+          .put("Data.Ord", "Down", "EQ", "GT", "LT", "Ord", "Ordering", "compare", "comparing")
+          .build();
         loadModuleSymbols(fakeBrowseCache);
         doTestInclude("import Data.Ord (<caret>)", fakeBrowseCache.get("Data.Ord"));
         doTestInclude("import Data.Ord (c<caret>)", "compare", "comparing");
@@ -139,9 +140,10 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
     }
 
     public void testQualifiedNames() throws Throwable {
-        FakeBrowseCache fakeBrowseCache = new FakeBrowseCache(
-                "Data.ByteString.Char8", Arrays.asList("ByteString", "all", "any", "append", "appendFile", "break"),
-                "C", Arrays.asList("ByteString", "all", "any", "append", "appendFile", "break"));
+        FakeBrowseCache fakeBrowseCache = new FakeBrowseCacheBuilder()
+          .put("Data.ByteString.Char8", "ByteString", "all", "any", "append", "appendFile", "break")
+          .put("C", "ByteString", "all", "any", "append", "appendFile", "break")
+          .build();
         loadModuleSymbols(fakeBrowseCache);
         doTestInclude(
                 "import qualified Data.ByteString.Char8 as C\n" +
@@ -158,10 +160,11 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
     }
 
     public void testLocalNames() throws Throwable {
-        FakeBrowseCache fakeBrowseCache = new FakeBrowseCache(
-                "Prelude", Arrays.asList("Just", "Nothing", "all", "any", "readFile"),
-                "Control.Monad", Arrays.asList("liftM", "mapM", "forM"),
-                "C", Arrays.asList("ByteString", "all", "any", "append", "appendFile", "break"));
+        FakeBrowseCache fakeBrowseCache = new FakeBrowseCacheBuilder()
+          .put("Prelude", "Just", "Nothing", "all", "any", "readFile")
+          .put("Control.Monad", "liftM", "mapM", "forM")
+          .put("C", "ByteString", "all", "any", "append", "appendFile", "break")
+          .build();
         loadModuleSymbols(fakeBrowseCache);
         doTestInclude(
                 "foo = <caret>",
@@ -187,9 +190,9 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
     }
 
     public void testHiddenNames() throws Throwable {
-        FakeBrowseCache fakeBrowseCache = new FakeBrowseCache(
-                "Control.Monad", Arrays.asList("liftM", "mapM", "forM")
-        );
+        FakeBrowseCache fakeBrowseCache = new FakeBrowseCacheBuilder()
+          .put("Control.Monad", "liftM", "mapM", "forM")
+          .build();
         loadModuleSymbols(fakeBrowseCache);
         String src =
                 "import Control.Monad hiding (liftM)\n" +
@@ -224,34 +227,27 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
                     "foo");
     }
 
-    /**
-     * Terrible hack to make constructing and using these maps way simpler.
-     */
-    private static class FakeBrowseCache extends HashMap<String, List<LookupElement>> {
-        private HashMap<String, String[]> nameMap;
+    private static class FakeBrowseCacheBuilder {
 
-        FakeBrowseCache(Object... objects) {
-            super(objects.length / 2);
-            nameMap = new HashMap<String, String[]>(objects.length / 2);
-            String key = null;
-            for (int i = 0; i < objects.length; ++i) {
-                if (i % 2 == 0) {
-                    key = (String)objects[i];
-                } else {
-                    put(key, (List<String>)objects[i]);
-                }
-            }
+        private final FakeBrowseCache underlying = new FakeBrowseCache();
+
+        FakeBrowseCacheBuilder put(String key, String... values) {
+            underlying.put(key, values);
+            return this;
         }
 
-        public List<LookupElement> put(String key, List<String> value) {
-            List<LookupElement> result = super.put(key, ContainerUtil.map(value, new Function<String, LookupElement>() {
-                @Override
-                public LookupElement fun(String s) {
-                    return LookupElementUtil.fromString(s);
-                }
-            }));
-            //noinspection SuspiciousArrayCast
-            nameMap.put(key, (String[])(value.toArray()));
+        public FakeBrowseCache build() {
+            return underlying;
+        }
+    }
+
+    private static class FakeBrowseCache extends HashMap<String, List<LookupElement>> {
+
+        private final HashMap<String, String[]> nameMap = new HashMap<>();
+
+        List<LookupElement> put(String key, String[] values) {
+            List<LookupElement> result = super.put(key, ContainerUtil.map(values, LookupElementUtil::fromString));
+            nameMap.put(key, values);
             return result;
         }
 
