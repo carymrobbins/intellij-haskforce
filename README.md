@@ -1,4 +1,7 @@
-# HaskForce [![Build Status](https://travis-ci.org/carymrobbins/intellij-haskforce.svg?branch=master)](https://travis-ci.org/carymrobbins/intellij-haskforce)
+# HaskForce
+
+[![Build Status](https://travis-ci.org/carymrobbins/intellij-haskforce.svg?branch=master)](https://travis-ci.org/carymrobbins/intellij-haskforce)
+[![Join the chat at https://gitter.im/carymrobbins/intellij-haskforce](https://badges.gitter.im/carymrobbins/intellij-haskforce.svg)](https://gitter.im/carymrobbins/intellij-haskforce?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## The IntelliJ plugin for Haskell.
 
@@ -10,6 +13,8 @@ Want to contribute code?  See the [CONTRIBUTING](./CONTRIBUTING.md) doc for more
 
 Follow [@HaskForce](https://twitter.com/haskforce) on Twitter to stay up to date
 on new releases and work in progress.
+
+Start a discussion on our [gitter channel](https://gitter.im/carymrobbins/intellij-haskforce).
 
 Do you IRC?  Join **#haskforce** on freenode!
 
