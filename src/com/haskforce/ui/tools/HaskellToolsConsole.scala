@@ -36,6 +36,10 @@ final class HaskellToolsConsole private(project: Project) {
   val LINE_LIMIT = 3
   val TRUNCATED_SUFFIX = "\n<<truncated output...>>\n"
 
+  def curry(toolKey: ToolKey): HaskellToolsConsole.Curried = {
+    new HaskellToolsConsole.Curried(this, toolKey)
+  }
+
   /** Log tool input to the console. */
   def writeInput(toolKey: ToolKey, msg: String): Unit = {
     write(ConsoleViewContentType.USER_INPUT, toolKey, msg)
@@ -172,6 +176,12 @@ object HaskellToolsConsole {
   }
 
   private val consoles = mutable.Map[Project, HaskellToolsConsole]()
+
+  final class Curried(val console: HaskellToolsConsole, toolKey: ToolKey) {
+    def writeInput(msg: String): Unit = console.writeInput(toolKey, msg)
+    def writeOutput(msg: String): Unit = console.writeOutput(toolKey, msg)
+    def writeError(msg: String): Unit = console.writeError(toolKey, msg)
+  }
 }
 
 /** Factory which lazily creates the Haskell Tools Console ToolWindow on demand. */
