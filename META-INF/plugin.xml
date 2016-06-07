@@ -235,6 +235,11 @@
         com.haskforce.codeInsight.HaskellCompletionCacheLoader
       </implementation-class>
     </component>
+    <component>
+      <implementation-class>
+        com.haskforce.tools.GhciProjectComponent
+      </implementation-class>
+    </component>
   </project-components>
 
   <actions>

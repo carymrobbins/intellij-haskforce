@@ -4,13 +4,22 @@ import java.awt.event._
 import java.util
 import java.util.Comparator
 import java.util.concurrent.Callable
-import javax.swing.event.{DocumentListener, DocumentEvent}
+import javax.swing.event.{DocumentEvent, DocumentListener}
 
 import scala.collection.JavaConverters._
+import scalaz.\/
 
 import com.intellij.openapi.util.{Computable, Condition}
 
 object Implicits {
+
+  implicit final class RichOption[A](val underlying: Option[A]) extends AnyVal {
+    def disj[L](left: L): L \/ A = underlying match {
+      case None => \/.left(left)
+      case Some(a) => \/.right(a)
+    }
+  }
+
   implicit final class Fun0[A](val underlying: () => A) extends AnyVal {
     def toRunnable(implicit ev: A =:= Unit): Runnable = new Runnable {
       override def run(): Unit = underlying()

@@ -16,6 +16,10 @@ public class ToolKey {
     public static final ToolKey GHC_MODI_KEY = new ToolKey("ghcModi", "ghc-modi");
     public static final ToolKey HINDENT_KEY = new ToolKey("hindent", "hindent");
 
+    // NOTE: This isn't configured by Haskell tools, it's done automatically
+    // by the compiler configuration, e.g. path/to/ghc --interactive
+    public static final ToolKey GHCI = new ToolKey("ghci", "ghci");
+
     public static final String GHC_MODI_TIMEOUT_KEY = "ghcModiTimeout";
     public static final long GHC_MODI_TIMEOUT_DEFAULT = 5000;
 
