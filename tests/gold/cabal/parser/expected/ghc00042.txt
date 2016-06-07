@@ -107,8 +107,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('src/')
+      PsiElement(SOURCE_DIR)('src/')
     GHC_OPTIONS
       PsiElement(GHC_OPTIONS_KEY)('ghc-options')
       PsiElement(COLON)(':')

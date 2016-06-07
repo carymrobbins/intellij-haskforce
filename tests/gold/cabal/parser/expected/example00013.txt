@@ -930,8 +930,8 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('src lib/ghcjs-prim')
+      PsiElement(SOURCE_DIR)('src')
+      PsiElement(SOURCE_DIR)('lib/ghcjs-prim')
     INCLUDE_DIRS
       PsiElement(INCLUDE_DIRS_KEY)('include-dirs')
       PsiElement(COLON)(':')
@@ -965,8 +965,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('src-bin')
+      PsiElement(SOURCE_DIR)('src-bin')
     BUILD_DEPENDS_KEY
       PsiElement(BUILD_DEPENDS_KEY)('Build-Depends')
       PsiElement(COLON)(':')
@@ -1022,8 +1021,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('src-bin')
+      PsiElement(SOURCE_DIR)('src-bin')
     BUILD_DEPENDS_KEY
       PsiElement(BUILD_DEPENDS_KEY)('Build-Depends')
       PsiElement(COLON)(':')
@@ -1103,8 +1101,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('src-bin')
+      PsiElement(SOURCE_DIR)('src-bin')
     BUILD_DEPENDS_KEY
       PsiElement(BUILD_DEPENDS_KEY)('Build-Depends')
       PsiElement(COLON)(':')
@@ -1169,8 +1166,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('Hs-Source-Dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('src-bin')
+      PsiElement(SOURCE_DIR)('src-bin')
     BUILD_DEPENDS_KEY
       PsiElement(BUILD_DEPENDS_KEY)('Build-Depends')
       PsiElement(COLON)(':')
@@ -1315,8 +1311,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('Hs-Source-Dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('src-bin')
+      PsiElement(SOURCE_DIR)('src-bin')
     BUILD_DEPENDS_KEY
       PsiElement(BUILD_DEPENDS_KEY)('Build-Depends')
       PsiElement(COLON)(':')
@@ -1569,8 +1564,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('Hs-Source-Dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('src-bin')
+      PsiElement(SOURCE_DIR)('src-bin')
     BUILD_DEPENDS_KEY
       PsiElement(BUILD_DEPENDS_KEY)('Build-Depends')
       PsiElement(COLON)(':')
@@ -1615,8 +1609,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('test')
+      PsiElement(SOURCE_DIR)('test')
     DEFAULT_LANGUAGE
       PsiElement(DEFAULT_LANGUAGE_KEY)('Default-Language')
       PsiElement(COLON)(':')

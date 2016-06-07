@@ -1,5 +1,7 @@
 package com.haskforce.utils
 
+import scala.collection.JavaConverters._
+
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.{IElementType, TokenSet}
@@ -17,6 +19,10 @@ object PQ {
 
   def getChildNodes(el: PsiElement, typ: IElementType, typs: IElementType*): Array[ASTNode] = {
     el.getNode.getChildren(TokenSet.create(typ +: typs: _*))
+  }
+
+  def streamChildren[T <: PsiElement](el: PsiElement, cls: Class[T]): Stream[T] = {
+    PsiTreeUtil.childIterator(el, cls).asScala.toStream
   }
 
   /** Analogous to PsiTreeUtil.findFirstParent */

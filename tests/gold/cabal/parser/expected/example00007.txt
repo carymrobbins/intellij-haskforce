@@ -960,8 +960,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('Hs-Source-Dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('src')
+      PsiElement(SOURCE_DIR)('src')
     IF_EXPR
       PsiElement(IF)('if')
       IF_COND
@@ -978,8 +977,7 @@ Cabal File
         HS_SOURCE_DIRS
           PsiElement(HS_SOURCE_DIRS_KEY)('Hs-Source-Dirs')
           PsiElement(COLON)(':')
-          FREEFORM
-            PsiElement(FREEFORM_LINE)('prelude')
+          PsiElement(SOURCE_DIR)('prelude')
         OTHER_MODULES
           PsiElement(OTHER_MODULES_KEY)('Other-Modules')
           PsiElement(COLON)(':')
@@ -2370,8 +2368,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('Hs-Source-Dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('.')
+      PsiElement(SOURCE_DIR)('.')
     IF_EXPR
       PsiElement(IF)('if')
       IF_COND
@@ -2388,8 +2385,7 @@ Cabal File
         HS_SOURCE_DIRS
           PsiElement(HS_SOURCE_DIRS_KEY)('Hs-Source-Dirs')
           PsiElement(COLON)(':')
-          FREEFORM
-            PsiElement(FREEFORM_LINE)('prelude')
+          PsiElement(SOURCE_DIR)('prelude')
         OTHER_MODULES
           PsiElement(OTHER_MODULES_KEY)('Other-Modules')
           PsiElement(COLON)(':')
@@ -2425,8 +2421,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('Hs-Source-Dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('trypandoc')
+      PsiElement(SOURCE_DIR)('trypandoc')
     IF_EXPR
       PsiElement(IF)('if')
       IF_COND
@@ -2443,8 +2438,7 @@ Cabal File
         HS_SOURCE_DIRS
           PsiElement(HS_SOURCE_DIRS_KEY)('Hs-Source-Dirs')
           PsiElement(COLON)(':')
-          FREEFORM
-            PsiElement(FREEFORM_LINE)('prelude')
+          PsiElement(SOURCE_DIR)('prelude')
         OTHER_MODULES
           PsiElement(OTHER_MODULES_KEY)('Other-Modules')
           PsiElement(COLON)(':')
@@ -2526,8 +2520,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('Hs-Source-Dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('tests')
+      PsiElement(SOURCE_DIR)('tests')
     IF_EXPR
       PsiElement(IF)('if')
       IF_COND
@@ -2544,8 +2537,7 @@ Cabal File
         HS_SOURCE_DIRS
           PsiElement(HS_SOURCE_DIRS_KEY)('Hs-Source-Dirs')
           PsiElement(COLON)(':')
-          FREEFORM
-            PsiElement(FREEFORM_LINE)('prelude')
+          PsiElement(SOURCE_DIR)('prelude')
         OTHER_MODULES
           PsiElement(OTHER_MODULES_KEY)('Other-Modules')
           PsiElement(COLON)(':')
@@ -2973,8 +2965,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('Hs-Source-Dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('benchmark')
+      PsiElement(SOURCE_DIR)('benchmark')
     IF_EXPR
       PsiElement(IF)('if')
       IF_COND
@@ -2991,8 +2982,7 @@ Cabal File
         HS_SOURCE_DIRS
           PsiElement(HS_SOURCE_DIRS_KEY)('Hs-Source-Dirs')
           PsiElement(COLON)(':')
-          FREEFORM
-            PsiElement(FREEFORM_LINE)('prelude')
+          PsiElement(SOURCE_DIR)('prelude')
         OTHER_MODULES
           PsiElement(OTHER_MODULES_KEY)('Other-Modules')
           PsiElement(COLON)(':')

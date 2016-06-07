@@ -1951,8 +1951,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('src')
+      PsiElement(SOURCE_DIR)('src')
     OTHER_MODULES
       PsiElement(OTHER_MODULES_KEY)('other-modules')
       PsiElement(COLON)(':')
@@ -2093,8 +2092,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('psc')
+      PsiElement(SOURCE_DIR)('psc')
     OTHER_MODULES
       PsiElement(OTHER_MODULES_KEY)('other-modules')
       PsiElement(COLON)(':')
@@ -2233,8 +2231,8 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('psci psci/main')
+      PsiElement(SOURCE_DIR)('psci')
+      PsiElement(SOURCE_DIR)('psci/main')
     OTHER_MODULES
       PsiElement(OTHER_MODULES_KEY)('other-modules')
       PsiElement(COLON)(':')
@@ -2406,8 +2404,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('psc-docs')
+      PsiElement(SOURCE_DIR)('psc-docs')
     OTHER_MODULES
       PsiElement(OTHER_MODULES_KEY)('other-modules')
       PsiElement(COLON)(':')
@@ -2486,8 +2483,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('psc-publish')
+      PsiElement(SOURCE_DIR)('psc-publish')
     GHC_OPTIONS
       PsiElement(GHC_OPTIONS_KEY)('ghc-options')
       PsiElement(COLON)(':')
@@ -2577,8 +2573,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('hierarchy')
+      PsiElement(SOURCE_DIR)('hierarchy')
     OTHER_MODULES
       PsiElement(OTHER_MODULES_KEY)('other-modules')
       PsiElement(COLON)(':')
@@ -2679,8 +2674,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('psc-bundle')
+      PsiElement(SOURCE_DIR)('psc-bundle')
   EXECUTABLE
     PsiElement(EXECUTABLE_KEY)('executable')
     PsiElement(EXECUTABLE_NAME)('psc-ide-server')
@@ -2795,8 +2789,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('psc-ide-server')
+      PsiElement(SOURCE_DIR)('psc-ide-server')
   EXECUTABLE
     PsiElement(EXECUTABLE_KEY)('executable')
     PsiElement(EXECUTABLE_NAME)('psc-ide-client')
@@ -2868,8 +2861,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('psc-ide-client')
+      PsiElement(SOURCE_DIR)('psc-ide-client')
   TEST_SUITE
     PsiElement(TEST_SUITE_KEY)('test-suite')
     PsiElement(TEST_SUITE_NAME)('tests')
@@ -3203,5 +3195,5 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('tests psci')
+      PsiElement(SOURCE_DIR)('tests')
+      PsiElement(SOURCE_DIR)('psci')

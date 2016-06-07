@@ -1033,8 +1033,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('src')
+      PsiElement(SOURCE_DIR)('src')
     EXPOSED_MODULES
       PsiElement(EXPOSED_MODULES_KEY)('Exposed-modules')
       PsiElement(COLON)(':')
@@ -2408,8 +2407,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('main')
+      PsiElement(SOURCE_DIR)('main')
     BUILD_DEPENDS_KEY
       PsiElement(BUILD_DEPENDS_KEY)('Build-depends')
       PsiElement(COLON)(':')
@@ -2463,8 +2461,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('test')
+      PsiElement(SOURCE_DIR)('test')
     BUILD_DEPENDS_KEY
       PsiElement(BUILD_DEPENDS_KEY)('Build-depends')
       PsiElement(COLON)(':')
@@ -2522,8 +2519,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('codegen/idris-codegen-c')
+      PsiElement(SOURCE_DIR)('codegen/idris-codegen-c')
     BUILD_DEPENDS_KEY
       PsiElement(BUILD_DEPENDS_KEY)('Build-depends')
       PsiElement(COLON)(':')
@@ -2569,8 +2565,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('codegen/idris-codegen-javascript')
+      PsiElement(SOURCE_DIR)('codegen/idris-codegen-javascript')
     BUILD_DEPENDS_KEY
       PsiElement(BUILD_DEPENDS_KEY)('Build-depends')
       PsiElement(COLON)(':')
@@ -2616,8 +2611,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('codegen/idris-codegen-node')
+      PsiElement(SOURCE_DIR)('codegen/idris-codegen-node')
     BUILD_DEPENDS_KEY
       PsiElement(BUILD_DEPENDS_KEY)('Build-depends')
       PsiElement(COLON)(':')

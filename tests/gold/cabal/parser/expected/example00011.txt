@@ -388,8 +388,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('tests')
+      PsiElement(SOURCE_DIR)('tests')
     MAIN_IS
       PsiElement(MAIN_IS_KEY)('main-is')
       PsiElement(COLON)(':')
@@ -447,8 +446,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('tests')
+      PsiElement(SOURCE_DIR)('tests')
     BUILD_DEPENDS_KEY
       PsiElement(BUILD_DEPENDS_KEY)('build-depends')
       PsiElement(COLON)(':')

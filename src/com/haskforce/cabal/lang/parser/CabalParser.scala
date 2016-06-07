@@ -383,7 +383,7 @@ final class CabalPsiBuilder(builder: PsiBuilder)
     || field(OTHER_LANGUAGES, OTHER_LANGUAGES_KEY, identList)
     || field(DEFAULT_EXTENSIONS, DEFAULT_EXTENSIONS_KEY, identList)
     || field(OTHER_EXTENSIONS, OTHER_EXTENSIONS_KEY, identList)
-    || field(HS_SOURCE_DIRS, HS_SOURCE_DIRS_KEY, freeform)
+    || field(HS_SOURCE_DIRS, HS_SOURCE_DIRS_KEY, sourceDirs)
     || field(EXTENSIONS, EXTENSIONS_KEY, identList)
     || field(BUILD_TOOLS, BUILD_TOOLS_KEY, freeform)
     || field(BUILDABLE, BUILDABLE_KEY, freeform)
@@ -664,6 +664,40 @@ final class CabalPsiBuilder(builder: PsiBuilder)
       case _ => errorAdvance("Expected identifier")
     }
     m.done(IDENT_LIST)
+  }
+
+  def sourceDirs(): Unit = indentContext { _ =>
+    if (!sourceDir()) advanceLexer()
+  }
+
+  def sourceDir(): Boolean = {
+    if (isSourceDirSep(getTokenType)) return false
+    val m = mark()
+    var break = false
+    parseWhile(!break) {
+      if (isSourceDirSep(getTokenType)) {
+        break = true
+      } else if (isSourceDirSep(rawLookup(1))) {
+        advanceLexer()
+        break = true
+      } else {
+        advanceLexer()
+      }
+    }
+    m.collapse(SOURCE_DIR)
+    true
+  }
+
+  def isSourceDirSep(typ: IElementType): Boolean = typ match {
+    case COMMA => true
+    case t if isWhiteSpace(t) => true
+    case _ => false
+  }
+
+  def isWhiteSpace(typ: IElementType): Boolean = typ match {
+    case WHITE_SPACE => true
+    case _: CabalLayoutTokenType => true
+    case _ => false
   }
 
   def moduleList(): Unit = {

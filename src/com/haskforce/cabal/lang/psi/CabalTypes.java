@@ -45,6 +45,8 @@ public interface CabalTypes {
   CabalElementType MODULE = new CabalElementType("MODULE");
   CabalElementType MODULE_PART = new CabalElementType("MODULE_PART");
 
+  CabalElementType SOURCE_DIR = new CabalElementType("SOURCE_DIR");
+
   CabalElementType BOOL_VALUE = new CabalElementType("BOOL_VALUE");
   CabalElementType BOOL_LIT = new CabalElementType("BOOL_LIT");
   CabalElementType FUNC_CALL = new CabalElementType("FUNC_CALL");

@@ -63,7 +63,7 @@ final class ExtraSourceFiles(node: ASTNode) extends CabalFieldElement(node)
 final class ExtraDocFiles(node: ASTNode) extends CabalFieldElement(node)
 final class ExtraTmpFiles(node: ASTNode) extends CabalFieldElement(node)
 final class MainIs(node: ASTNode) extends CabalFieldElement(node)
-final class BuildDepends(node: ASTNode) extends CabalFieldElement(node)
+final class BuildDepends(node: ASTNode) extends CabalFieldElement(node) with BuildDependsImpl
 final class Dependencies(node: ASTNode) extends CabalFieldValueElement(node)
 final class Dependency(node: ASTNode) extends CabalCompositeElementImpl(node)
 final class DependencyVersion(node: ASTNode) extends CabalCompositeElementImpl(node)
@@ -76,12 +76,12 @@ final class OtherLanguages(node: ASTNode) extends CabalFieldElement(node)
 final class Extensions(node: ASTNode) extends CabalFieldElement(node) with ExtensionsImpl
 final class DefaultExtensions(node: ASTNode) extends CabalFieldElement(node) with ExtensionsImpl
 final class OtherExtensions(node: ASTNode) extends CabalFieldElement(node) with ExtensionsImpl
-final class HsSourceDirs(node: ASTNode) extends CabalFieldElement(node)
+final class HsSourceDirs(node: ASTNode) extends CabalFieldElement(node) with SourceDirsImpl
 final class BuildTools(node: ASTNode) extends CabalFieldElement(node)
 final class Buildable(node: ASTNode) extends CabalFieldElement(node)
-final class GhcOptions(node: ASTNode) extends CabalFieldElement(node)
-final class GhcProfOptions(node: ASTNode) extends CabalFieldElement(node)
-final class GhcSharedOptions(node: ASTNode) extends CabalFieldElement(node)
+final class GhcOptions(node: ASTNode) extends CabalFieldElement(node) with GhcOptionsImpl
+final class GhcProfOptions(node: ASTNode) extends CabalFieldElement(node) with GhcOptionsImpl
+final class GhcSharedOptions(node: ASTNode) extends CabalFieldElement(node) with GhcOptionsImpl
 final class Includes(node: ASTNode) extends CabalFieldElement(node)
 final class InstallIncludes(node: ASTNode) extends CabalFieldElement(node)
 final class IncludeDirs(node: ASTNode) extends CabalFieldElement(node)

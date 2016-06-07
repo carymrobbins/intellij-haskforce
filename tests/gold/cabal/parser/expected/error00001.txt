@@ -81,8 +81,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('src')
+      PsiElement(SOURCE_DIR)('src')
     DEFAULT_LANGUAGE
       PsiElement(DEFAULT_LANGUAGE_KEY)('default-language')
       PsiElement(COLON)(':')

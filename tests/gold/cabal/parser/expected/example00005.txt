@@ -1253,8 +1253,8 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('src examples')
+      PsiElement(SOURCE_DIR)('src')
+      PsiElement(SOURCE_DIR)('examples')
     GHC_OPTIONS
       PsiElement(GHC_OPTIONS_KEY)('ghc-options')
       PsiElement(COLON)(':')
@@ -1271,8 +1271,7 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('tests')
+      PsiElement(SOURCE_DIR)('tests')
     MAIN_IS
       PsiElement(MAIN_IS_KEY)('main-is')
       PsiElement(COLON)(':')
@@ -1346,8 +1345,8 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('tests examples')
+      PsiElement(SOURCE_DIR)('tests')
+      PsiElement(SOURCE_DIR)('examples')
     MAIN_IS
       PsiElement(MAIN_IS_KEY)('main-is')
       PsiElement(COLON)(':')
@@ -1421,8 +1420,8 @@ Cabal File
     HS_SOURCE_DIRS
       PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
       PsiElement(COLON)(':')
-      FREEFORM
-        PsiElement(FREEFORM_LINE)('tests examples')
+      PsiElement(SOURCE_DIR)('tests')
+      PsiElement(SOURCE_DIR)('examples')
     MAIN_IS
       PsiElement(MAIN_IS_KEY)('main-is')
       PsiElement(COLON)(':')

@@ -22,33 +22,98 @@ class CabalQueryTest extends CabalParserTestBase {
     if00002.getPackageName === Some("Test1")
   }
 
+  def testBuildInfoFromSourceFile(): Unit = {
+    def findBuildInfo(q: CabalQuery, sourcePath: String) = {
+      CabalQuery.findBuildInfoForSourceFile(q.getBuildInfo, "/", sourcePath)
+    }
+    findBuildInfo(example00001, "/foo.hs").get |> { bi =>
+      assertInstanceOf(bi, classOf[BuildInfo.Library])
+    }
+    findBuildInfo(example00001, "/tests/foo.hs").get |> { bi =>
+      val ts = assertInstanceOf(bi, classOf[BuildInfo.TestSuite])
+      ts.getName === Some("test")
+    }
+    findBuildInfo(example00005, "/foo.hs") === None
+    findBuildInfo(example00005, "/src/foo.hs").get |> { bi =>
+      assertInstanceOf(bi, classOf[BuildInfo.Library])
+    }
+    findBuildInfo(example00005, "/tests/foo.hs").get |> { bi =>
+      val ts = assertInstanceOf(bi, classOf[BuildInfo.TestSuite])
+      ts.getName === Some("range")
+    }
+    findBuildInfo(example00005, "/examples/foo.hs").get |> { bi =>
+      assertInstanceOf(bi, classOf[BuildInfo.Library])
+    }
+  }
+
   def testExtensions(): Unit = {
     assertSameElements(braces00001.getLibrary.get.getExtensions,
-      Extension("CPP")
+      "CPP"
     )
     assertSameElements(example00001.getTestSuites.head.getExtensions,
-      Extension("NoImplicitPrelude"),
-      Extension("OverloadedStrings"),
-      Extension("PackageImports"),
-      Extension("GeneralizedNewtypeDeriving"),
-      Extension("DeriveGeneric"),
-      Extension("DeriveFunctor"),
-      Extension("ImplicitParams"),
-      Extension("DeriveDataTypeable"),
-      Extension("ScopedTypeVariables"),
-      Extension("LambdaCase"),
-      Extension("FlexibleContexts"),
-      Extension("FlexibleInstances"),
-      Extension("MultiParamTypeClasses"),
-      Extension("RecordWildCards"),
-      Extension("ViewPatterns"),
-      Extension("BangPatterns"),
-      Extension("ConstraintKinds"),
-      Extension("DataKinds"),
-      Extension("TypeOperators"),
-      Extension("NoMonomorphismRestriction"),
-      Extension("StandaloneDeriving"),
-      Extension("QuasiQuotes")
+      "NoImplicitPrelude",
+      "OverloadedStrings",
+      "PackageImports",
+      "GeneralizedNewtypeDeriving",
+      "DeriveGeneric",
+      "DeriveFunctor",
+      "ImplicitParams",
+      "DeriveDataTypeable",
+      "ScopedTypeVariables",
+      "LambdaCase",
+      "FlexibleContexts",
+      "FlexibleInstances",
+      "MultiParamTypeClasses",
+      "RecordWildCards",
+      "ViewPatterns",
+      "BangPatterns",
+      "ConstraintKinds",
+      "DataKinds",
+      "TypeOperators",
+      "NoMonomorphismRestriction",
+      "StandaloneDeriving",
+      "QuasiQuotes"
+    )
+  }
+
+  def testDependencies(): Unit = {
+    assertSameElements(example00005.getLibrary.get.getDependencies,
+      "array",
+      "base",
+      "containers",
+      "data-hash",
+      "data-lens",
+      "mtl",
+      "QuickCheck",
+      "patch-combinators",
+      "syntactic",
+      "tagged",
+      "tuple",
+      "monad-par",
+      "deepseq",
+      "random",
+      "data-default"
+    )
+  }
+
+  def testGhcOptions(): Unit = {
+    assertSameElements(example00001.getLibrary.get.getGhcOptions,
+      "-fcontext-stack=30",
+      "-Wall",
+      "-fno-warn-missing-signatures",
+      "-fno-warn-orphans",
+      "-fno-warn-type-defaults",
+      "-fno-warn-partial-type-signatures"
+    )
+    assertSameElements(example00001.getTestSuites.head.getGhcOptions,
+      "-Wall",
+      "-fno-warn-missing-signatures",
+      "-fno-warn-orphans",
+      "-fno-warn-type-defaults",
+      "-threaded",
+      "-with-rtsopts=-N",
+      "-main-is",
+      "ExampleLibTest"
     )
   }
 
