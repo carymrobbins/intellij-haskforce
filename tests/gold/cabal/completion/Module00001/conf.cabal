@@ -1,0 +1,74 @@
+name:                conf
+version:             0.1.1.0
+license:             BSD3
+license-file:        LICENSE
+author:              Cary M. Robbins
+maintainer:          carymrobbins@gmail.com
+copyright:           Copyright (C) 2015 Cary M. Robbins
+category:            Configuration, Parsing
+build-type:          Simple
+cabal-version:       >=1.10
+synopsis:            Parser for Haskell-based configuration files.
+description:
+    This package is designed to allow you to create configuration files
+    with declarative Haskell and parse the values back into Haskell code.
+    The benefit here is to have a configuration file in Haskell that does
+    not have to be recompiled - it is interpreted/parsed at runtime in a
+    type-safe manner.
+    .
+    Example usage:
+    .
+    > -- /path/to/my-config.hs
+    > foo = ["bar", "baz"]
+    > spam = Eggs
+    .
+    > -- Application source
+    > import Data.Conf
+    > import Data.Maybe
+    >
+    > data Spam = Eggs | Parrot | SomethingEntirelyDifferent
+    >     deriving (Show, Read)
+    >
+    > getSpam :: Conf -> Spam
+    > getSpam = fromMaybe SomethingEntirelyDifferent . getConf "spam"
+    >
+    > getFoo :: Conf -> Maybe Int
+    > getFoo = getConf "foo"
+    >
+    > main = do
+    >     conf <- readConf "my-config.hs"
+    >     print $ getSpam conf -- Output: Eggs
+    >     print $ getFoo conf  -- Output: Nothing
+
+extra-source-files:
+    LICENSE
+    README.md
+    Setup.hs
+    .gitignore
+    tools/generate-readme.hs
+
+source-repository head
+    type: git
+    location: git://github.com/carymrobbins/haskell-conf.git
+
+library
+  exposed-modules:     Data.Conf
+                     , Data.Conf.<caret>
+  hs-source-dirs:      src
+  default-language:    Haskell2010
+  ghc-options:         -Wall
+  build-depends:       base >=4.6 && <4.8
+                     , haskell-src
+
+Test-Suite unit-test
+  type:                exitcode-stdio-1.0
+  main-is:             UnitTests.hs
+  hs-source-dirs:      tests
+  default-language:    Haskell2010
+  build-depends:       conf
+                     , base >=4.6 && <4.8
+                     , HUnit
+                     , test-framework
+                     , test-framework-hunit
+                     , test-framework-th
+  other-extensions:    TemplateHaskell
