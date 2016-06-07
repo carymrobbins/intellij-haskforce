@@ -56,7 +56,7 @@ public abstract class HaskellLightPlatformCodeInsightFixtureTestCase extends Lig
     }
 
     protected String getTestDataPath(String... names) {
-        return srcPath + '/' + StringUtil.join(names, "/");
+        return getTestDataPath() + '/' + StringUtil.join(names, "/");
     }
 
     /**

@@ -1,0 +1,24 @@
+Cabal File
+  PsiComment(COMMENT)('-- Comment')
+  PsiComment(COMMENT)('-- Comment')
+  PKG_NAME
+    PsiElement(NAME_KEY)('name')
+    PsiElement(COLON)(':')
+    FREEFORM
+      PsiElement(FREEFORM_LINE)('foo-bar')
+  PKG_VERSION
+    PsiElement(VERSION_KEY)('version')
+    PsiElement(COLON)(':')
+    FREEFORM
+      PsiElement(FREEFORM_LINE)('1.2.3-git1234')
+  SYNOPSIS
+    PsiElement(SYNOPSIS_KEY)('synopsis')
+    PsiElement(COLON)(':')
+    FREEFORM
+      PsiElement(FREEFORM_LINE)('A foo bar')
+  DESCRIPTION
+    PsiElement(DESCRIPTION_KEY)('description')
+    PsiElement(COLON)(':')
+    FREEFORM
+      PsiElement(FREEFORM_LINE)('A foo')
+      PsiElement(FREEFORM_LINE)('bar spam eggs')

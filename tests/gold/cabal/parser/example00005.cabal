@@ -1,0 +1,241 @@
+name:           feldspar-language
+version:        0.6.1.0
+synopsis:       A functional embedded language for DSP and parallelism
+description:    Feldspar (Functional Embedded Language for DSP and PARallelism)
+                is an embedded DSL for describing digital signal processing
+                algorithms. This package contains the language front-end and an
+                interpreter.
+category:       Language
+copyright:      Copyright (c) 2013 Emil Axelsson, Peter Jonsson,
+                                   Anders Persson, Josef Svenningsson
+                Copyright (c) 2012 Emil Axelsson, Gergely Dévai,
+                                   Anders Persson, Josef Svenningsson
+                Copyright (c) 2009-2011, ERICSSON AB
+author:         Functional programming group at Chalmers University of Technology
+maintainer:     Emil Axelsson <emax@chalmers.se>,
+                Anders Persson <anders.cj.persson@gmail.com>
+license:        BSD3
+license-file:   LICENSE
+stability:      experimental
+homepage:       http://feldspar.github.com
+bug-reports:    https://github.com/feldspar/feldspar-language/issues
+build-type:     Simple
+cabal-version:  >= 1.14
+tested-with:    GHC==7.6.1, GHC==7.4.2
+
+extra-source-files:
+  examples/Examples/Simple/Basics.hs
+  examples/Tutorial/*.lhs
+
+source-repository head
+  type:     git
+  location: git://github.com/Feldspar/feldspar-language.git
+
+library
+  exposed-modules:
+    Feldspar.Prelude
+    Feldspar.Lattice
+    Feldspar.Range
+    Feldspar.Core.Types
+    Feldspar.Core.UntypedRepresentation
+    Feldspar.Core.Middleend.CreateTasks
+    Feldspar.Core.Middleend.FromTyped
+    Feldspar.Core.Middleend.LetSinking
+    Feldspar.Core.Middleend.OptimizeUntyped
+    Feldspar.Core.Interpretation.Typed
+    Feldspar.Core.Interpretation
+    Feldspar.Core.Constructs.Array
+    Feldspar.Core.Constructs.Binding
+    Feldspar.Core.Constructs.Bits
+    Feldspar.Core.Constructs.Complex
+    Feldspar.Core.Constructs.Condition
+    Feldspar.Core.Constructs.ConditionM
+    Feldspar.Core.Constructs.Conversion
+    Feldspar.Core.Constructs.Eq
+    Feldspar.Core.Constructs.Error
+    Feldspar.Core.Constructs.Elements
+    Feldspar.Core.Constructs.Floating
+    Feldspar.Core.Constructs.Fractional
+    Feldspar.Core.Constructs.Future
+    Feldspar.Core.Constructs.Integral
+    Feldspar.Core.Constructs.Literal
+    Feldspar.Core.Constructs.Logic
+    Feldspar.Core.Constructs.Loop
+    Feldspar.Core.Constructs.Mutable
+    Feldspar.Core.Constructs.MutableArray
+    Feldspar.Core.Constructs.MutableReference
+    Feldspar.Core.Constructs.MutableToPure
+    Feldspar.Core.Constructs.NoInline
+    Feldspar.Core.Constructs.Par
+    Feldspar.Core.Constructs.Num
+    Feldspar.Core.Constructs.Ord
+    Feldspar.Core.Constructs.SizeProp
+    Feldspar.Core.Constructs.SourceInfo
+    Feldspar.Core.Constructs.Switch
+    Feldspar.Core.Constructs.RealFloat
+    Feldspar.Core.Constructs.Tuple
+    Feldspar.Core.Constructs.FFI
+    Feldspar.Core.Constructs.Save
+    Feldspar.Core.Constructs
+    Feldspar.Core.Frontend.Array
+    Feldspar.Core.Frontend.Binding
+    Feldspar.Core.Frontend.Bits
+    Feldspar.Core.Frontend.Complex
+    Feldspar.Core.Frontend.Condition
+    Feldspar.Core.Frontend.ConditionM
+    Feldspar.Core.Frontend.Conversion
+    Feldspar.Core.Frontend.Elements
+    Feldspar.Core.Frontend.Eq
+    Feldspar.Core.Frontend.Error
+    Feldspar.Core.Frontend.Floating
+    Feldspar.Core.Frontend.Fractional
+    Feldspar.Core.Frontend.Future
+    Feldspar.Core.Frontend.Integral
+    Feldspar.Core.Frontend.Literal
+    Feldspar.Core.Frontend.Logic
+    Feldspar.Core.Frontend.Loop
+    Feldspar.Core.Frontend.Mutable
+    Feldspar.Core.Frontend.MutableArray
+    Feldspar.Core.Frontend.MutableReference
+    Feldspar.Core.Frontend.MutableToPure
+    Feldspar.Core.Frontend.NoInline
+    Feldspar.Core.Frontend.Par
+    Feldspar.Core.Frontend.Num
+    Feldspar.Core.Frontend.Ord
+    Feldspar.Core.Frontend.SizeProp
+    Feldspar.Core.Frontend.SourceInfo
+    Feldspar.Core.Frontend.Switch
+    Feldspar.Core.Frontend.RealFloat
+    Feldspar.Core.Frontend.Tuple
+    Feldspar.Core.Frontend.FFI
+    Feldspar.Core.Frontend.Save
+    Feldspar.Core.Frontend
+    Feldspar.Core.Collection
+    Feldspar.Core
+    Feldspar
+    Feldspar.BitVector
+    Feldspar.FixedPoint
+    Feldspar.Future
+    Feldspar.Memoize
+    Feldspar.Option
+    Feldspar.Repa
+    Feldspar.Stream
+    Feldspar.Vector
+    Feldspar.Vector.Shape
+    Feldspar.Par
+    Feldspar.Algorithm.CRC
+    Feldspar.Algorithm.FFT
+
+  default-language: Haskell2010
+
+  build-depends:
+    array,
+    base                        >= 4      && < 4.8,
+    containers                  >= 0.4    && < 0.6,
+    data-hash                   >= 0.1    && < 0.3,
+    data-lens                   >= 2.10   && < 2.11,
+    mtl                         >= 2.0    && < 2.2,
+    QuickCheck                  >= 2.7    && < 3,
+    patch-combinators           >= 0.2    && < 0.3,
+    syntactic                   >= 1.12   && < 2.0,
+    tagged                      >= 0.4    && < 0.8,
+    tuple                       >= 0.2    && < 0.3,
+    monad-par                   >= 0.3.4.5,
+    deepseq,
+    random                      >= 1.0    && < 1.1,
+    data-default                >= 0.5.3  && < 0.6
+
+  other-extensions:
+    DeriveDataTypeable
+    EmptyDataDecls
+    FlexibleInstances
+    FlexibleContexts
+    FunctionalDependencies
+    GADTs
+    GeneralizedNewtypeDeriving
+    MultiParamTypeClasses
+    PatternGuards
+    Rank2Types
+    ScopedTypeVariables
+    StandaloneDeriving
+    TypeFamilies
+    TypeOperators
+    TypeSynonymInstances
+    ViewPatterns
+
+  hs-source-dirs: src examples
+
+  ghc-options: -fcontext-stack=100
+
+test-suite range
+  type: exitcode-stdio-1.0
+
+  hs-source-dirs: tests
+
+  main-is: RangeTest.hs
+
+  other-modules:
+    Feldspar.Range.Test
+
+  default-language: Haskell2010
+
+  build-depends:
+    feldspar-language,
+    base,
+    random           >= 1   && < 2,
+    QuickCheck       >= 2.7 && < 3,
+    tasty            >= 0.3,
+    tasty-quickcheck >= 0.2
+
+test-suite semantics
+  type: exitcode-stdio-1.0
+
+  hs-source-dirs: tests examples
+
+  main-is: SemanticsTest.hs
+
+  other-modules:
+    Feldspar.Vector.Test
+    SemanticsTest
+
+  default-language: Haskell2010
+
+  build-depends:
+    feldspar-language,
+    base,
+    QuickCheck       >= 2.7 && < 3,
+    tasty            >= 0.3,
+    tasty-th         >= 0.1,
+    tasty-quickcheck >= 0.2
+
+test-suite decoration
+  type: exitcode-stdio-1.0
+
+  hs-source-dirs: tests examples
+
+  main-is: DecorationTests.hs
+
+  default-language: Haskell2010
+
+  build-depends:
+    feldspar-language,
+    base,
+    bytestring            >= 0.9 && < 0.11,
+    tasty                 >= 0.3,
+    tasty-golden          >= 2.0,
+    utf8-string           >= 0.3.7
+
+-- TODO
+-- test-suite tutorial
+--   type: exitcode-stdio-1.0
+
+--   hs-source-dirs: tests examples
+
+--   main-is: TutorialTest.hs
+
+--   default-language: Haskell2010
+
+  build-depends:
+    feldspar-language,
+    base,
+    bytestring         >= 0.9 && < 0.11

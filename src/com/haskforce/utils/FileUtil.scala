@@ -1,6 +1,12 @@
 package com.haskforce.utils
 
 import java.io.File
+import java.util
+
+import scala.annotation.tailrec
+import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
+import scala.language.implicitConversions
 
 import com.haskforce.Implicits._
 import com.intellij.openapi.application.ApplicationManager
@@ -11,10 +17,6 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.{PsiDirectory, PsiDocumentManager, PsiFile}
 import com.intellij.util.Function
 import org.jetbrains.annotations.{NotNull, Nullable}
-
-import scala.annotation.tailrec
-import scala.collection.JavaConversions._
-import scala.language.implicitConversions
 
 object FileUtil {
   def updateFileText(project: Project, file: PsiFile, function: Function[String, String]) {
@@ -80,16 +82,12 @@ object FileUtil {
     paths.foldLeft(base) { (acc, path) => new File(acc, path.replaceFirst("^\\.(\\\\|/)", "")).getPath }
   }
 
-  def findFilesRecursively(file: VirtualFile, predicate: VirtualFile => Boolean): Seq[VirtualFile] = {
-    @tailrec
-    def loop(files: List[VirtualFile], acc: Seq[VirtualFile]): Seq[VirtualFile] = files match {
-      case Nil => acc
-      case f :: rest =>
-        val children = Option(f.getChildren).getOrElse(Array())
-        val newAcc = if (predicate(f)) f +: acc else acc
-        loop(children.toList ++ rest, newAcc)
-    }
-    loop(List(file), List())
+  def findFilesRecursively(dir: VirtualFile, p: VirtualFile => Boolean): Seq[VirtualFile] = {
+    FileTreeLike.findRecursively(dir, p)
+  }
+
+  def findFilesRecursively(file: File): util.Collection[File] = {
+    FileTreeLike.findRecursively(file, (_: File) => true).asJavaCollection
   }
 
   /**
@@ -108,5 +106,38 @@ object FileUtil {
   def toRelativePath(project: Project, file: VirtualFile): String = {
     val path = file.getCanonicalPath
     Option(project.getBasePath).map(toRelativePath(_, path)).getOrElse(path)
+  }
+}
+
+trait FileTreeLike[A] {
+  def childrenOf(a: A): Stream[A]
+}
+
+object FileTreeLike {
+
+  def findRecursively[A : FileTreeLike](dir: A, p: A => Boolean): Stream[A] = {
+    @tailrec
+    def loop(files: Stream[A], acc: Stream[A]): Stream[A] = files match {
+      case Stream.Empty => acc
+      case f #:: rest =>
+        val children = FileTreeLike.childrenOf(f)
+        val newAcc = if (p(f)) f +: acc else acc
+        loop(children #::: rest, newAcc)
+    }
+    loop(Stream(dir), Stream.Empty)
+  }
+
+  def childrenOf[A : FileTreeLike](a: A): Stream[A] = implicitly[FileTreeLike[A]].childrenOf(a)
+
+  implicit val javaFile: FileTreeLike[File] = new FileTreeLike[File] {
+    override def childrenOf(a: File): Stream[File] = {
+      NullUtil.fold(a.listFiles())(Stream.empty, _.toStream)
+    }
+  }
+
+  implicit val virtualFile: FileTreeLike[VirtualFile] = new FileTreeLike[VirtualFile] {
+    override def childrenOf(a: VirtualFile): Stream[VirtualFile] = {
+      NullUtil.fold(a.getChildren)(Stream.empty, _.toStream)
+    }
   }
 }

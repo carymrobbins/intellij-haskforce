@@ -34,8 +34,9 @@ import java.io.File;
 import java.io.IOException;
 
 public abstract class HaskellParserTestBase extends ParsingTestCase {
-    public HaskellParserTestBase(String dataPath, String fileExt, ParserDefinition... definitions) {
-        super(dataPath, fileExt, definitions);
+    public HaskellParserTestBase(String dataPath, String fileExt, boolean lowercaseFirstLetter,
+                                 ParserDefinition... definitions) {
+        super(dataPath, fileExt, lowercaseFirstLetter, definitions);
     }
 
     @Override
@@ -48,6 +49,11 @@ public abstract class HaskellParserTestBase extends ParsingTestCase {
         return true;
     }
 
+    // NOTE: This is public to ensure our CabalParsingTestCases mixin works.
+    public void doTest() {
+        doTest(true, true);
+    }
+
     /**
      * Perform a test. Add tests that should work but does not work yet with
      * doTest(false, false).
@@ -57,29 +63,15 @@ public abstract class HaskellParserTestBase extends ParsingTestCase {
         // This is convenient so we can tell if the generated file has error elements or not.
         AssertionFailedError noComparisonTextFound = null;
         try {
-            doTest(true);
+            doTest(checkResult);
         } catch (AssertionFailedError e) {
             if (e.getMessage().startsWith("No output text found")) {
-                noComparisonTextFound = e;
+                boolean hasErrors = toParseTreeText(myFile, skipSpaces(), includeRanges()).contains("PsiErrorElement");
+                if (hasErrors) fail(e.getMessage() + " (contains error elements)");
+                fail(e.getMessage() + " (no error elements)");
             } else {
                 throw e;
             }
-        }
-        if (shouldPass) {
-            // If we had to create the comparison file, be sure to say that but explain
-            // that there are error elements in the created file.  Otherwise, just report
-            // that the existing file had error elements.
-            final String message = noComparisonTextFound != null
-                    ? noComparisonTextFound.getMessage() + " (but contains error elements)"
-                    : "PsiFile contains error elements";
-            assertFalse(message,
-                    toParseTreeText(myFile, skipSpaces(), includeRanges()).contains("PsiErrorElement")
-            );
-        }
-        // If we had to create a comparison file, be sure to fail the test but report that
-        // error elements were not found.
-        if (noComparisonTextFound != null) {
-            fail(noComparisonTextFound.getMessage() + " (but no error elements found)");
         }
     }
 

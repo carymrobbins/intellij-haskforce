@@ -26,7 +26,7 @@ import com.haskforce.HaskellParserDefinition;
 
 public class HaskellParserTest extends HaskellParserTestBase {
     public HaskellParserTest() {
-        super("parser", "hs", new HaskellParserDefinition());
+        super("parser", "hs", false, new HaskellParserDefinition());
     }
 
     // See comment in HaskellLexerTest.java.

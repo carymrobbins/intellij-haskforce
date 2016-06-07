@@ -1,6 +1,6 @@
 package com.haskforce.cabal.highlighting;
 
-import com.haskforce.cabal.psi.CabalTypes;
+import com.haskforce.cabal.lang.psi.CabalTypes;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
@@ -29,6 +29,10 @@ public class CabalSyntaxHighlighter extends SyntaxHighlighterBase {
             "CABAL_CONDITIONAL", DefaultLanguageHighlighterColors.INSTANCE_METHOD);
     private static final TextAttributesKey[] CONDITIONAL_KEYS = new TextAttributesKey[]{CONDITIONAL};
 
+    public static final TextAttributesKey BRACES = TextAttributesKey.createTextAttributesKey(
+      "CABAL_COLON", DefaultLanguageHighlighterColors.BRACES);
+    private static final TextAttributesKey[] BRACES_KEYS = new TextAttributesKey[]{BRACES};
+
     @NotNull
     @Override
     public Lexer getHighlightingLexer() {
@@ -52,6 +56,9 @@ public class CabalSyntaxHighlighter extends SyntaxHighlighterBase {
         }
         if (tokenType == CabalTypes.CONDITIONAL) {
             return CONDITIONAL_KEYS;
+        }
+        if (tokenType == CabalTypes.LBRACE || tokenType == CabalTypes.RBRACE) {
+            return BRACES_KEYS;
         }
         return EMPTY;
     }

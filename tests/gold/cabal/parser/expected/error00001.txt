@@ -1,0 +1,90 @@
+Cabal File
+  PKG_NAME
+    PsiElement(NAME_KEY)('name')
+    PsiElement(COLON)(':')
+    FREEFORM
+      PsiElement(FREEFORM_LINE)('test1')
+  PKG_VERSION
+    PsiElement(VERSION_KEY)('version')
+    PsiElement(COLON)(':')
+    FREEFORM
+      PsiElement(FREEFORM_LINE)('0.1.0.0')
+  SYNOPSIS
+    PsiElement(SYNOPSIS_KEY)('synopsis')
+    PsiElement(COLON)(':')
+    PsiComment(COMMENT)('-- description:')
+    PsiComment(COMMENT)('-- license:')
+    PsiComment(COMMENT)('-- license-file:')
+    FREEFORM
+      <empty list>
+  HOMEPAGE
+    PsiElement(HOMEPAGE_KEY)('homepage')
+    PsiElement(COLON)(':')
+    FREEFORM
+      <empty list>
+  AUTHOR
+    PsiElement(AUTHOR_KEY)('author')
+    PsiElement(COLON)(':')
+    FREEFORM
+      PsiElement(FREEFORM_LINE)('Cary M. Robbins')
+  MAINTAINER
+    PsiElement(MAINTAINER_KEY)('maintainer')
+    PsiElement(COLON)(':')
+    FREEFORM
+      PsiElement(FREEFORM_LINE)('carymrobbins@gmail.com')
+  CATEGORY
+    PsiElement(CATEGORY_KEY)('category')
+    PsiElement(COLON)(':')
+    PsiComment(COMMENT)('-- copyright:')
+    FREEFORM
+      <empty list>
+  BUILD_TYPE
+    PsiElement(BUILD_TYPE_KEY)('build-type')
+    PsiElement(COLON)(':')
+    FREEFORM
+      PsiElement(FREEFORM_LINE)('Simple')
+  PsiComment(COMMENT)('-- extra-source-files:')
+  CABAL_VERSION
+    PsiElement(CABAL_VERSION_KEY)('cabal-version')
+    PsiElement(COLON)(':')
+    FREEFORM
+      PsiElement(FREEFORM_LINE)('>=1.10')
+  EXECUTABLE
+    PsiElement(EXECUTABLE_KEY)('executable')
+    PsiElement(EXECUTABLE_NAME)('test1')
+    PsiElement({)('{')
+    PsiErrorElement:Unexpected token in executable stanza: -
+      PsiElement(-)('-')
+    MAIN_IS
+      PsiElement(MAIN_IS_KEY)('main-is')
+      PsiElement(COLON)(':')
+      FREEFORM
+        PsiElement(FREEFORM_LINE)('Main.hs')
+    PsiComment(COMMENT)('  -- other-modules:')
+    OTHER_EXTENSIONS
+      PsiElement(OTHER_EXTENSIONS_KEY)('other-extensions')
+      PsiElement(COLON)(':')
+      IDENT_LIST
+        <empty list>
+    BUILD_DEPENDS_KEY
+      PsiElement(BUILD_DEPENDS_KEY)('build-depends')
+      PsiElement(COLON)(':')
+      DEPENDENCIES
+        DEPENDENCY
+          PsiElement(DEPENDENCY_NAME)('base')
+          DEPENDENCY_VERSION
+            PsiElement(>=)('>=')
+            PsiElement(NUMBERS)('4.7')
+            PsiElement(&&)('&&')
+            PsiElement(<)('<')
+            PsiElement(NUMBERS)('5')
+    HS_SOURCE_DIRS
+      PsiElement(HS_SOURCE_DIRS_KEY)('hs-source-dirs')
+      PsiElement(COLON)(':')
+      PsiElement(SOURCE_DIR)('src')
+    DEFAULT_LANGUAGE
+      PsiElement(DEFAULT_LANGUAGE_KEY)('default-language')
+      PsiElement(COLON)(':')
+      FREEFORM
+        PsiElement(FREEFORM_LINE)('Haskell2010')
+    PsiElement(})('}')

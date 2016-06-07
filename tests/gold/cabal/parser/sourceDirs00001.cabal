@@ -1,0 +1,19 @@
+name: foo
+-- Ignored since the 'library' stanza exists.
+hs-source-dirs: bad
+
+library
+  exported-modules: Foo
+
+executable baz
+  hs-source-dirs: app
+
+test-suite test
+  hs-source-dir: tests
+  type: exitcode-stdio-1.0
+  main-is: Test.hs
+
+benchmark bench
+  hs-source-dirs: bench1 bench2
+  type:            exitcode-stdio-1.0
+  main-is:         Bench.hs

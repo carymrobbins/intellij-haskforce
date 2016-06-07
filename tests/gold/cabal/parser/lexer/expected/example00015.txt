@@ -1,0 +1,97 @@
+WHITE_SPACE ('') 0-0
+NAME_KEY ('name') 0-4
+COLON (':') 4-5
+WHITE_SPACE (' ') 5-6
+UNKNOWN_KEY ('lazy-utilities') 6-20
+EOL ('\n') 20-21
+WHITE_SPACE ('') 21-21
+WHITE_SPACE ('') 21-21
+BUILD_DEPENDS_KEY ('build-depends') 21-34
+COLON (':') 34-35
+EOL ('\n') 35-36
+INDENT (' ') 36-37
+INDENT (' ') 37-38
+WHITE_SPACE ('') 38-38
+WHITE_SPACE ('') 38-38
+UNKNOWN_KEY ('utilities') 38-47
+WHITE_SPACE (' ') 47-48
+( ('(') 48-49
+UNKNOWN_KEY ('Utils') 49-54
+, (',') 54-55
+WHITE_SPACE (' ') 55-56
+UNKNOWN_KEY ('Data') 56-60
+. ('.') 60-61
+UNKNOWN_KEY ('ByteString') 61-71
+WHITE_SPACE (' ') 71-72
+AS ('as') 72-74
+WHITE_SPACE (' ') 74-75
+UNKNOWN_KEY ('Data') 75-79
+. ('.') 79-80
+UNKNOWN_KEY ('ByteString') 80-90
+. ('.') 90-91
+UNKNOWN_KEY ('Lazy') 91-95
+) (')') 95-96
+, (',') 96-97
+EOL ('\n') 97-98
+WHITE_SPACE ('  ') 98-100
+WHITE_SPACE ('') 100-100
+UNKNOWN_KEY ('bytestring') 100-110
+, (',') 110-111
+EOL ('\n') 111-112
+WHITE_SPACE ('  ') 112-114
+WHITE_SPACE ('') 114-114
+UNKNOWN_KEY ('containers') 114-124
+WHITE_SPACE (' ') 124-125
+WITH ('with') 125-129
+WHITE_SPACE (' ') 129-130
+( ('(') 130-131
+UNKNOWN_KEY ('Data') 131-135
+. ('.') 135-136
+UNKNOWN_KEY ('IntSet') 136-142
+WHITE_SPACE (' ') 142-143
+AS ('as') 143-145
+WHITE_SPACE (' ') 145-146
+UNKNOWN_KEY ('Set') 146-149
+, (',') 149-150
+WHITE_SPACE (' ') 150-151
+UNKNOWN_KEY ('Data') 151-155
+. ('.') 155-156
+UNKNOWN_KEY ('IntMap') 156-162
+WHITE_SPACE (' ') 162-163
+AS ('as') 163-165
+WHITE_SPACE (' ') 165-166
+UNKNOWN_KEY ('Map') 166-169
+) (')') 169-170
+EOL ('\n') 170-171
+DEDENT ('') 171-171
+DEDENT ('') 171-171
+WHITE_SPACE ('') 171-171
+WHITE_SPACE ('') 171-171
+REEXPOSED_MODULES_KEY ('reexported-modules') 171-189
+COLON (':') 189-190
+EOL ('\n') 190-191
+INDENT (' ') 191-192
+INDENT (' ') 192-193
+WHITE_SPACE ('') 193-193
+WHITE_SPACE ('') 193-193
+UNKNOWN_KEY ('Control') 193-200
+. ('.') 200-201
+UNKNOWN_KEY ('Applicative') 201-212
+, (',') 212-213
+EOL ('\n') 213-214
+WHITE_SPACE ('  ') 214-216
+WHITE_SPACE ('') 216-216
+UNKNOWN_KEY ('Utils') 216-221
+WHITE_SPACE (' ') 221-222
+AS ('as') 222-224
+WHITE_SPACE (' ') 224-225
+UNKNOWN_KEY ('Utils') 225-230
+. ('.') 230-231
+UNKNOWN_KEY ('Lazy') 231-235
+, (',') 235-236
+EOL ('\n') 236-237
+WHITE_SPACE ('  ') 237-239
+WHITE_SPACE ('') 239-239
+UNKNOWN_KEY ('Control') 239-246
+. ('.') 246-247
+UNKNOWN_KEY ('Arrow') 247-252
