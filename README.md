@@ -1,5 +1,7 @@
 # HaskForce [![Build Status](https://travis-ci.org/carymrobbins/intellij-haskforce.svg?branch=master)](https://travis-ci.org/carymrobbins/intellij-haskforce)
 
+[![Join the chat at https://gitter.im/carymrobbins/intellij-haskforce](https://badges.gitter.im/carymrobbins/intellij-haskforce.svg)](https://gitter.im/carymrobbins/intellij-haskforce?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## The IntelliJ plugin for Haskell.
 
 Want to get started right away?  Check out the [Quick Start Guide](https://github.com/carymrobbins/intellij-haskforce/wiki/Quick-Start-Guide)!
