@@ -6,21 +6,25 @@ import javax.swing.Icon
 
 import scala.collection.JavaConversions._
 
+import com.intellij.ide.util.projectWizard.ModuleBuilder
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.{ModifiableModuleModel, Module, ModuleManager}
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.projectRoots.Sdk
 import com.intellij.openapi.projectRoots.impl.SdkConfigurationUtil
-import com.intellij.openapi.roots.ProjectRootManager
+import com.intellij.openapi.roots.{ModifiableRootModel, ProjectRootManager}
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider
 import com.intellij.openapi.util.Pair
 import com.intellij.openapi.util.io.FileUtil
+import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.packaging.artifacts.ModifiableArtifactModel
 import com.intellij.projectImport.ProjectImportBuilder
 
 import com.haskforce.Implicits._
+import com.haskforce.cabal.query.CabalQuery
 import com.haskforce.settings.HaskellBuildSettings
-import com.haskforce.{HaskellIcons, HaskellModuleType, HaskellSdkType}
+import com.haskforce.{HaskellIcons, HaskellModuleBuilder, HaskellModuleType, HaskellSdkType}
 
 /**
  * Imports a Stack project and configures modules from the stack.yaml file.
@@ -85,7 +89,7 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
     // let's create it as the "root" module.
     if (!isUpdate && !moduleDirs.contains(projectRoot)) {
       val projectName = new File(projectRoot).getName
-      val projectModule = buildModule(project, moduleModel, projectRoot, projectName + " (root)")
+      val projectModule = buildModule(project, moduleModel, projectRoot, projectName + " (root)", None)
       modules.add(projectModule)
     }
     modules
@@ -103,25 +107,75 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
     // This should already be validated.
     val cabalFile = StackYamlUtil.unsafeFindCabalFile(projectRoot, pkg)
     val moduleName = cabalFile.getName.split('.').head
-    val module = buildModule(project, moduleModel, moduleDir, moduleName)
+    val optCabalQuery = CabalQuery.fromJavaFile(None, cabalFile)
+    val module = buildModule(project, moduleModel, moduleDir, moduleName, optCabalQuery)
     (moduleDir, module)
   }
 
-  private def buildModule(
-      project: Project,
-      moduleModel: ModifiableModuleModel,
-      moduleDir: String,
-      moduleName: String): Module = {
+  private def buildModule
+      (project: Project,
+       moduleModel: ModifiableModuleModel,
+       moduleDir: String,
+       moduleName: String,
+       optCabalQuery: Option[CabalQuery])
+      : Module = {
     val moduleFilePath = FileUtil.join(moduleDir, s"$moduleName.iml")
     // TODO: Parse the cabal file to determine the appropriate module name, source/test dirs, etc.
     val moduleBuilder = HaskellModuleType.getInstance.createModuleBuilder()
     moduleBuilder.setModuleFilePath(moduleFilePath)
     moduleBuilder.setContentEntryPath(moduleDir)
     moduleBuilder.setName(moduleName)
-    moduleBuilder.addSourcePath(Pair.create(moduleDir, ""))
+    optCabalQuery match {
+      // If the cabal file was found and was parsed, query it for source roots.
+      case Some(q) => setupSourceRoots(q, moduleBuilder, moduleDir)
+      // Otherwise, explicitly set an empty set of source paths (to avoid the Java default 'src/')
+      case None => moduleBuilder.setSourcePaths(util.Collections.emptyList())
+    }
     val module = moduleBuilder.createModule(moduleModel)
     moduleBuilder.commit(project)
     module
+  }
+
+  private def setupSourceRoots
+      (q: CabalQuery, moduleBuilder: HaskellModuleBuilder, moduleDir: String)
+      : Unit = {
+    q.getSourceRoots.foreach { dir =>
+      moduleBuilder.addSourcePath(Pair.create(FileUtil.join(moduleDir, dir), ""))
+    }
+    // '.addSourcePath' doesn't support test sources, so we must do this manually.
+    moduleBuilder.addModuleConfigurationUpdater(new ModuleBuilder.ModuleConfigurationUpdater {
+      override def update(module: Module, rootModel: ModifiableRootModel): Unit = {
+        rootModel.getContentEntries.collectFirst {
+          case ce if ce.getFile.getPath == moduleDir => ce
+        } match {
+          case Some(ce) =>
+            val vFileMgr = VirtualFileManager.getInstance()
+            q.getTestSourceRoots.foreach { _.foreach { dir =>
+              if (!new File(s"${ce.getFile.getCanonicalPath}/$dir").mkdirs()) {
+                StackProjectImportBuilder.LOG.warn(new AssertionError(
+                  s"Could not create directory: ${ce.getFile.getCanonicalPath}/$dir"
+                ))
+              }
+              Option(vFileMgr.findFileByUrl(s"${ce.getUrl}/$dir")) match {
+                case Some(vDir) if vDir.isDirectory =>
+                  ce.addSourceFolder(FileUtil.join(ce.getUrl, dir), /* isTestSource */ true)
+                case Some(_) =>
+                  StackProjectImportBuilder.LOG.warn(new AssertionError(
+                    s"Path is not a directory: $dir (relative to ${ce.getFile.getPath})"
+                  ))
+                case None =>
+                  StackProjectImportBuilder.LOG.warn(new AssertionError(
+                    s"VirtualFile not found: $dir (relative to ${ce.getFile.getPath})"
+                  ))
+              }
+            }}
+          case None =>
+            StackProjectImportBuilder.LOG.warn(new AssertionError(
+              s"Could not find content entry for module with path: $moduleDir"
+            ))
+        }
+      }
+    })
   }
 
   // Helper to be called only after validation.
@@ -150,4 +204,8 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
     val f = new File(path)
     if (f.isDirectory) path else f.getParent
   }
+}
+
+object StackProjectImportBuilder {
+  private val LOG = Logger.getInstance(classOf[StackProjectImportBuilder])
 }

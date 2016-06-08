@@ -46,9 +46,9 @@ class NewProjectWizardTest extends NewProjectWizardTestCase with AssertMixin wit
     // Assert that the cabal, Setup.hs, and stack.yaml files were created.
     val contentRoot = moduleRootManager.getContentRoots.head
     val cabalFile = Option(contentRoot.findChild("myProject.cabal"))
-    assertSome(cabalFile)(_.exists())
+    assertSomeWith(cabalFile)(_.exists())
     val setupFile = Option(contentRoot.findChild("Setup.hs"))
-    assertSome(setupFile)(_.exists())
+    assertSomeWith(setupFile)(_.exists())
     // TODO: This doesn't work on CI
     // See: https://github.com/carymrobbins/intellij-haskforce/issues/235
     // Wait at least 1 second for `stack init` to finish.
