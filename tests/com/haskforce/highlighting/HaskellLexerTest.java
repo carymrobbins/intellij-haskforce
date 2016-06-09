@@ -86,7 +86,5 @@ public class HaskellLexerTest extends HaskellLexerTestBase {
     public void testTempHask00004()     { doTest(true, true); }
     public void testUnicode00001()      { doTest(true, true); }
     public void testQuote00001()        { doTest(true, true); }
-
-    // TODO: refs #234: Disabling this test as it appears to cause CI to run out of memory.
-    // public void testInternalLexer()     { doTest(true, true); }
+    public void testInternalLexer()     { doTest(true, true); }
 }

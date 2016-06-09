@@ -785,8 +785,9 @@
   <target name="test-without-build">
     <property name="suspend" value="n"/>
 
+    <!-- maxmemory is provided to help ensure the CI doesn't run out of memory. -->
     <junit printsummary="yes" haltonfailure="false" showoutput="yes" failureproperty="failureFound"
-           fork="yes" forkmode="once" reloading="no">
+           fork="yes" forkmode="once" reloading="no" maxmemory="1g">
       <!--
         Note that the JVM args provided here were determined by running the tests from IntelliJ.
         IntelliJ's "Run" console output lists all of the arguments passed to the java process.
