@@ -5,11 +5,11 @@ import java.awt.{GridBagLayout, GridLayout}
 import java.util.regex.Pattern
 import javax.swing.{JComponent, JPanel}
 
-import scala.annotation.tailrec
 import scala.collection.mutable
 
 import com.intellij.execution.filters.TextConsoleBuilderFactory
 import com.intellij.execution.ui.{ConsoleView, ConsoleViewContentType}
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.{ActionManager, DefaultActionGroup}
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
@@ -168,6 +168,10 @@ object HaskellToolsConsole {
     consoles.getOrElse(project, create(project))
   }
 
+  def dispose(console: HaskellToolsConsole): Unit = {
+    console.consoles.foreach { case (_, view) => view.view.dispose() }
+  }
+
   /** Creates a new HaskellToolsConsole, storing the result in the consoles cache. */
   private def create(project: Project): HaskellToolsConsole = {
     val console = new HaskellToolsConsole(project)
@@ -193,6 +197,11 @@ class HaskellToolsConsoleWindowFactory extends ToolWindowFactory with Condition[
     console.initUI()
     val content = ContentFactory.SERVICE.getInstance().createContent(console.component, "", false)
     toolWindow.getContentManager.addContent(content)
+    // Explicitly dispose resources.
+    // See https://github.com/carymrobbins/intellij-haskforce/issues/269
+    content.setDisposer(new Disposable {
+      override def dispose(): Unit = HaskellToolsConsole.dispose(console)
+    })
   }
 
   /**
