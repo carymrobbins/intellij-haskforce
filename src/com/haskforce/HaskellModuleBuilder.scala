@@ -3,6 +3,7 @@ package com.haskforce
 import java.awt.event.ActionEvent
 import java.awt.{Color, GridBagLayout}
 import java.io.{File, IOException, PrintWriter}
+import java.util
 import java.util.concurrent.ExecutionException
 import javax.swing._
 
@@ -19,7 +20,9 @@ import com.intellij.openapi.projectRoots.SdkTypeId
 import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
+import com.intellij.openapi.util.Pair
 import com.intellij.openapi.util.io.FileUtil
+import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.uiDesigner.core.Spacer
 import org.apache.commons.lang.builder.HashCodeBuilder
 import org.jetbrains.annotations.{NotNull, Nullable}
@@ -32,21 +35,38 @@ import com.haskforce.settings.HaskellBuildSettings
 import com.haskforce.ui.GC
 import com.haskforce.utils.{GuiUtil, Logging}
 
-/**
- * Manages the creation of Haskell modules via interaction with the user.
- */
-class HaskellModuleBuilder extends JavaModuleBuilder with SourcePathsBuilder with ModuleBuilderListener {
+/** Manages the creation of Haskell modules via interaction with the user. */
+class HaskellModuleBuilder extends ModuleBuilder with SourcePathsBuilder with ModuleBuilderListener {
   val LOG = Logger.getInstance(getClass)
 
   @throws(classOf[ConfigurationException])
   override def setupRootModel(rootModel: ModifiableRootModel) {
     addListener(this)
     setupRootModelCallbacks.foreach { _(rootModel) }
-    super.setupRootModel(rootModel)
+    if (rootModel.getSdk == null) rootModel.setSdk(HaskellSdkType.findOrCreateSdk())
+    addContentEntries(rootModel)
+  }
+
+  private def addContentEntries(rootModel: ModifiableRootModel): Unit = {
+    // Adapted from JavaModuleBuilder.setupRootModel
+    lazy val localFS = LocalFileSystem.getInstance()
+    Option(doAddContentEntry(rootModel)).foreach { contentEntry =>
+      getSourcePaths.foreach { path =>
+        val dir = new File(path.first)
+        dir.mkdirs()
+        Option(localFS.refreshAndFindFileByIoFile(dir)).foreach { sourceRoot =>
+          // NOTE: The JavaModuleBuilder supplies 'path.second' as the third argument,
+          // which corresponds to the 'packagePrefix'.  This doesn't seem to be applicable
+          // to use, so let's omit it.
+          contentEntry.addSourceFolder(sourceRoot, false)
+        }
+      }
+    }
   }
 
   /**
    * Method provided so the HaskellCompilerToolsForm can tell us how to update the project settings.
+   * TODO: This can probably be replaced with calls to '.addModuleConfigurationUpdater()'
    */
   def registerSetupRootModelCallback(callback: ModifiableRootModel => Unit): Unit = {
     setupRootModelCallbacks += callback
@@ -91,6 +111,19 @@ class HaskellModuleBuilder extends JavaModuleBuilder with SourcePathsBuilder wit
   override def modifySettingsStep(@NotNull settingsStep: SettingsStep): ModuleWizardStep = {
     new HaskellModifiedSettingsStep(this, settingsStep)
   }
+
+  private[this] val sourcePaths = new util.ArrayList[Pair[String, String]]()
+
+  override def setSourcePaths(paths: util.List[Pair[String, String]]): Unit = {
+    sourcePaths.clear()
+    sourcePaths.addAll(paths)
+  }
+
+  override def addSourcePath(info: Pair[String, String]): Unit = {
+    sourcePaths.add(info)
+  }
+
+  override def getSourcePaths: util.List[Pair[String, String]] = sourcePaths
 
   override def hashCode: Int = HashCodeBuilder.reflectionHashCode(this)
 }
