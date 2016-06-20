@@ -41,15 +41,16 @@ class HaskellCompletionCacheLoader(project: Project) extends ProjectComponent {
   override def getComponentName: String = getClass.getSimpleName
 
   class MyHandler extends FileDocumentManagerAdapter {
-
     override def fileContentLoaded(file: VirtualFile, document: Document): Unit = {
-      val path = file.getCanonicalPath
-      Option(PsiManager.getInstance(project).findFile(file)).collect {
-        case psiFile: HaskellFile =>
-          ApplicationManager.getApplication.invokeLater(SAMUtils.runnable {
-            updateCache(psiFile, force = false)
-          })
-      }
+      val app = ApplicationManager.getApplication
+      app.runReadAction(SAMUtils.runnable {
+        Option(PsiManager.getInstance(project).findFile(file)).collect {
+          case psiFile: HaskellFile =>
+            app.invokeLater(SAMUtils.runnable {
+              updateCache(psiFile, force = false)
+            })
+        }
+      })
     }
   }
 
