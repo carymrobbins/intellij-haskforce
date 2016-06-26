@@ -76,22 +76,24 @@ Haskell File
                 QVARID
                   VARID
                     PsiElement(HaskellTokenType.varidRegexp)('ask')
-            PsiElement(HaskellTokenType.let)('let')
-            FUNORPATDECL
-              PAT
-                VARID
-                  PsiElement(HaskellTokenType.varidRegexp)('m')
-              RHS
-                PsiElement(HaskellTokenType.=)('=')
-                EXP
-                  QVAR
-                    QVARID
-                      VARID
-                        PsiElement(HaskellTokenType.varidRegexp)('f')
-                  QVAR
-                    QVARID
-                      VARID
-                        PsiElement(HaskellTokenType.varidRegexp)('h')
+            EXP
+              LETEXP
+                PsiElement(HaskellTokenType.let)('let')
+                FUNORPATDECL
+                  PAT
+                    VARID
+                      PsiElement(HaskellTokenType.varidRegexp)('m')
+                  RHS
+                    PsiElement(HaskellTokenType.=)('=')
+                    EXP
+                      QVAR
+                        QVARID
+                          VARID
+                            PsiElement(HaskellTokenType.varidRegexp)('f')
+                      QVAR
+                        QVARID
+                          VARID
+                            PsiElement(HaskellTokenType.varidRegexp)('h')
             EXP
               PsiElement(HaskellTokenType.integertoken)('13')
             PsiComment(HaskellTokenType.comment)('--            (,,3) FIXME: Add support for tuple sections.\n')
