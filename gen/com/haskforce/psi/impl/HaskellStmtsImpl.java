@@ -61,4 +61,10 @@ public class HaskellStmtsImpl extends HaskellCompositeElementImpl implements Has
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPpragma.class);
   }
 
+  @Override
+  @NotNull
+  public List<HaskellStmts> getStmtsList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellStmts.class);
+  }
+
 }

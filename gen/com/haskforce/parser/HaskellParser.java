@@ -4911,7 +4911,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ["rec"] "let" decls
+  // "rec" [open stmts close | "let" decls]
   //                       | [pat '<-'] exp
   static boolean partialstmt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "partialstmt")) return false;
@@ -4923,23 +4923,56 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ["rec"] "let" decls
+  // "rec" [open stmts close | "let" decls]
   private static boolean partialstmt_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "partialstmt_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = partialstmt_0_0(b, l + 1);
-    r = r && consumeToken(b, LET);
-    r = r && decls(b, l + 1);
+    r = consumeToken(b, RECTOK);
+    r = r && partialstmt_0_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
-  // ["rec"]
-  private static boolean partialstmt_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "partialstmt_0_0")) return false;
-    consumeToken(b, RECTOK);
+  // [open stmts close | "let" decls]
+  private static boolean partialstmt_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "partialstmt_0_1")) return false;
+    partialstmt_0_1_0(b, l + 1);
     return true;
+  }
+
+  // open stmts close | "let" decls
+  private static boolean partialstmt_0_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "partialstmt_0_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = partialstmt_0_1_0_0(b, l + 1);
+    if (!r) r = partialstmt_0_1_0_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // open stmts close
+  private static boolean partialstmt_0_1_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "partialstmt_0_1_0_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = open(b, l + 1);
+    r = r && stmts(b, l + 1);
+    r = r && close(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // "let" decls
+  private static boolean partialstmt_0_1_0_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "partialstmt_0_1_0_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, LET);
+    r = r && decls(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   // [pat '<-'] exp
@@ -5799,7 +5832,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   public static boolean stmts(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "stmts")) return false;
     boolean r;
-    Marker m = enter_section_(b, l, _NONE_, STMTS, "<stmts>");
+    Marker m = enter_section_(b, l, _COLLAPSE_, STMTS, "<stmts>");
     r = stmts_0(b, l + 1);
     r = r && stmts_1(b, l + 1);
     exit_section_(b, l, m, r, false, null);

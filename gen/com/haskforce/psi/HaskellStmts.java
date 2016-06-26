@@ -25,4 +25,7 @@ public interface HaskellStmts extends HaskellCompositeElement {
   @NotNull
   List<HaskellPpragma> getPpragmaList();
 
+  @NotNull
+  List<HaskellStmts> getStmtsList();
+
 }
