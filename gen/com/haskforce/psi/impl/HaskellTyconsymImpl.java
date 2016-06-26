@@ -16,21 +16,25 @@ public class HaskellTyconsymImpl extends HaskellCompositeElementImpl implements 
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitTyconsym(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitTyconsym(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
   public HaskellConsym getConsym() {
-    return findChildByClass(HaskellConsym.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellConsym.class);
   }
 
   @Override
   @Nullable
   public HaskellVarsym getVarsym() {
-    return findChildByClass(HaskellVarsym.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellVarsym.class);
   }
 
   @Override

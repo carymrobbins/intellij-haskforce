@@ -16,21 +16,25 @@ public class HaskellQtyconopImpl extends HaskellCompositeElementImpl implements 
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitQtyconop(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitQtyconop(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
   public HaskellQtycon getQtycon() {
-    return findChildByClass(HaskellQtycon.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellQtycon.class);
   }
 
   @Override
   @Nullable
   public HaskellQtyconsym getQtyconsym() {
-    return findChildByClass(HaskellQtyconsym.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellQtyconsym.class);
   }
 
 }

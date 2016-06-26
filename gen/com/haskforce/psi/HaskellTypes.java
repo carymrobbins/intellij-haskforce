@@ -126,6 +126,7 @@ public interface HaskellTypes {
   IElementType EQUALS = new HaskellTokenType("=");
   IElementType EXCLAMATION = new HaskellTokenType("!");
   IElementType EXPORTTOKEN = new HaskellTokenType("export");
+  IElementType FALSE = new HaskellTokenType("false");
   IElementType FAMILYTOKEN = new HaskellTokenType("family");
   IElementType FLOATTOKEN = new HaskellTokenType("floattoken");
   IElementType FORALLTOKEN = new HaskellTokenType("forall");
@@ -187,6 +188,7 @@ public interface HaskellTypes {
   IElementType THEN = new HaskellTokenType("then");
   IElementType THQUOTE = new HaskellTokenType("''");
   IElementType TILDE = new HaskellTokenType("~");
+  IElementType TRUE = new HaskellTokenType("true");
   IElementType TYPE = new HaskellTokenType("type");
   IElementType UNDERSCORE = new HaskellTokenType("_");
   IElementType VARIDREGEXP = new HaskellTokenType("varidRegexp");

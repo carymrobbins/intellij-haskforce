@@ -16,21 +16,25 @@ public class HaskellTvBndrImpl extends HaskellCompositeElementImpl implements Ha
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitTvBndr(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitTvBndr(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
   public HaskellKind getKind() {
-    return findChildByClass(HaskellKind.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellKind.class);
   }
 
   @Override
   @NotNull
   public HaskellTyvar getTyvar() {
-    return findNotNullChildByClass(HaskellTyvar.class);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, HaskellTyvar.class));
   }
 
   @Override

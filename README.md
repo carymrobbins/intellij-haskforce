@@ -41,7 +41,7 @@ Be sure that the SDK is named `scala-sdk-2.11.7` to properly match the module co
   * **UI Designer** (without this everything compiles but viewing forms throws NPEs, e.g. when creating a new project.)
   * **PsiViewer 3.28.73** (optional, for viewing parse trees)
   * **JFlex Support 1.5.1** (optional, for generating lexers)
-  * **Grammar Kit 1.2.1** (optional, for generating parsers)
+  * **Grammar Kit 1.4.1** (optional, for generating parsers)
 1. Configure SDK and source files.
   * Go to **File > Project Structure**.  Add SDKs for JDK and IDEA Plugins.
   * For **Project SDK** choose **New > Intellij Platform Plugin SDK**.

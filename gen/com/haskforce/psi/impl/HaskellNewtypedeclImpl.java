@@ -16,21 +16,25 @@ public class HaskellNewtypedeclImpl extends HaskellCompositeElementImpl implemen
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitNewtypedecl(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitNewtypedecl(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
   public HaskellClscontext getClscontext() {
-    return findChildByClass(HaskellClscontext.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellClscontext.class);
   }
 
   @Override
   @Nullable
   public HaskellNewconstr getNewconstr() {
-    return findChildByClass(HaskellNewconstr.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellNewconstr.class);
   }
 
   @Override
@@ -42,7 +46,7 @@ public class HaskellNewtypedeclImpl extends HaskellCompositeElementImpl implemen
   @Override
   @Nullable
   public HaskellTycon getTycon() {
-    return findChildByClass(HaskellTycon.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellTycon.class);
   }
 
   @Override
@@ -60,7 +64,7 @@ public class HaskellNewtypedeclImpl extends HaskellCompositeElementImpl implemen
   @Override
   @NotNull
   public PsiElement getNewtype() {
-    return findNotNullChildByType(NEWTYPE);
+    return notNullChild(findChildByType(NEWTYPE));
   }
 
   @Override

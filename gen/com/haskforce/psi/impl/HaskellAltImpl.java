@@ -16,8 +16,12 @@ public class HaskellAltImpl extends HaskellCompositeElementImpl implements Haske
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitAlt(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitAlt(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -30,13 +34,13 @@ public class HaskellAltImpl extends HaskellCompositeElementImpl implements Haske
   @Override
   @Nullable
   public HaskellFunorpatdecl getFunorpatdecl() {
-    return findChildByClass(HaskellFunorpatdecl.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellFunorpatdecl.class);
   }
 
   @Override
   @Nullable
   public HaskellGendecl getGendecl() {
-    return findChildByClass(HaskellGendecl.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellGendecl.class);
   }
 
   @Override
@@ -48,7 +52,7 @@ public class HaskellAltImpl extends HaskellCompositeElementImpl implements Haske
   @Override
   @NotNull
   public HaskellPat getPat() {
-    return findNotNullChildByClass(HaskellPat.class);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, HaskellPat.class));
   }
 
   @Override

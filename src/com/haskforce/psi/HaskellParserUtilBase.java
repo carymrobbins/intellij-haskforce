@@ -78,7 +78,7 @@ public class HaskellParserUtilBase extends GeneratedParserUtilBase {
         return e != null ? e.getSecond() - 1 : -1;
     }
 
-    public static boolean indented(@NotNull PsiBuilder builder, int level, boolean geq) {
+    public static boolean indented(@NotNull PsiBuilder builder, int level, Parser geq) {
         if (!(builder instanceof Builder)) return false;
         PsiParser wrapper = ((Builder) builder).parser;
         if (!(wrapper instanceof HaskellParserWrapper)) return false;
@@ -101,8 +101,9 @@ public class HaskellParserUtilBase extends GeneratedParserUtilBase {
         int myindentation = offs - thisLineStart;
         // String tokName = builder.getTokenText();
 
-        if (geq && myindentation >= indentation ||
-                !geq && myindentation > indentation) return true;
+        boolean geqVal = geq.parse(builder, level);
+        if (geqVal && myindentation >= indentation ||
+                !geqVal && myindentation > indentation) return true;
         return false;
     }
 

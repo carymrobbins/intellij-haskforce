@@ -16,21 +16,25 @@ public class HaskellCtypeImpl extends HaskellCompositeElementImpl implements Has
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitCtype(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitCtype(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
   public HaskellClscontext getClscontext() {
-    return findChildByClass(HaskellClscontext.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellClscontext.class);
   }
 
   @Override
   @Nullable
   public HaskellCtype getCtype() {
-    return findChildByClass(HaskellCtype.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellCtype.class);
   }
 
   @Override
@@ -42,7 +46,7 @@ public class HaskellCtypeImpl extends HaskellCompositeElementImpl implements Has
   @Override
   @Nullable
   public HaskellTypee getTypee() {
-    return findChildByClass(HaskellTypee.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellTypee.class);
   }
 
   @Override

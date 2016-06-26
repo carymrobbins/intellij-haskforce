@@ -16,21 +16,25 @@ public class HaskellQvaropImpl extends HaskellCompositeElementImpl implements Ha
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitQvarop(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitQvarop(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
   public HaskellQvarid getQvarid() {
-    return findChildByClass(HaskellQvarid.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellQvarid.class);
   }
 
   @Override
   @Nullable
   public HaskellQvarsym getQvarsym() {
-    return findChildByClass(HaskellQvarsym.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellQvarsym.class);
   }
 
 }

@@ -16,21 +16,25 @@ public class HaskellConImpl extends HaskellCompositeElementImpl implements Haske
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitCon(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitCon(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
   public HaskellConid getConid() {
-    return findChildByClass(HaskellConid.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellConid.class);
   }
 
   @Override
   @Nullable
   public HaskellConsym getConsym() {
-    return findChildByClass(HaskellConsym.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellConsym.class);
   }
 
   @Override

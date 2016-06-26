@@ -16,21 +16,25 @@ public class HaskellGendeclImpl extends HaskellCompositeElementImpl implements H
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitGendecl(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitGendecl(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
   public HaskellCtype getCtype() {
-    return findChildByClass(HaskellCtype.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellCtype.class);
   }
 
   @Override
   @Nullable
   public HaskellFixity getFixity() {
-    return findChildByClass(HaskellFixity.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellFixity.class);
   }
 
   @Override
@@ -42,7 +46,7 @@ public class HaskellGendeclImpl extends HaskellCompositeElementImpl implements H
   @Override
   @Nullable
   public HaskellVars getVars() {
-    return findChildByClass(HaskellVars.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellVars.class);
   }
 
   @Override

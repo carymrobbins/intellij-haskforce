@@ -16,21 +16,25 @@ public class HaskellKindImpl extends HaskellCompositeElementImpl implements Hask
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitKind(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitKind(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @NotNull
   public HaskellBkind getBkind() {
-    return findNotNullChildByClass(HaskellBkind.class);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, HaskellBkind.class));
   }
 
   @Override
   @Nullable
   public HaskellKind getKind() {
-    return findChildByClass(HaskellKind.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellKind.class);
   }
 
   @Override

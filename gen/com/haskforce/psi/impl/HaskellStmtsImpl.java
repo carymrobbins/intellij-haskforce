@@ -16,8 +16,12 @@ public class HaskellStmtsImpl extends HaskellCompositeElementImpl implements Has
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitStmts(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitStmts(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -42,7 +46,7 @@ public class HaskellStmtsImpl extends HaskellCompositeElementImpl implements Has
   @Override
   @Nullable
   public HaskellLetexp getLetexp() {
-    return findChildByClass(HaskellLetexp.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellLetexp.class);
   }
 
   @Override

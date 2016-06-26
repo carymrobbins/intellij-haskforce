@@ -16,15 +16,19 @@ public class HaskellInstancedeclImpl extends HaskellCompositeElementImpl impleme
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitInstancedecl(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitInstancedecl(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
   public HaskellCtype getCtype() {
-    return findChildByClass(HaskellCtype.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellCtype.class);
   }
 
   @Override
@@ -36,7 +40,7 @@ public class HaskellInstancedeclImpl extends HaskellCompositeElementImpl impleme
   @Override
   @Nullable
   public HaskellIdecl getIdecl() {
-    return findChildByClass(HaskellIdecl.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellIdecl.class);
   }
 
   @Override
@@ -48,7 +52,7 @@ public class HaskellInstancedeclImpl extends HaskellCompositeElementImpl impleme
   @Override
   @NotNull
   public PsiElement getInstance() {
-    return findNotNullChildByType(INSTANCE);
+    return notNullChild(findChildByType(INSTANCE));
   }
 
   @Override

@@ -16,27 +16,31 @@ public class HaskellTypedeclImpl extends HaskellCompositeElementImpl implements 
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitTypedecl(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitTypedecl(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
   public HaskellCtype getCtype() {
-    return findChildByClass(HaskellCtype.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellCtype.class);
   }
 
   @Override
   @Nullable
   public HaskellFunorpatdecl getFunorpatdecl() {
-    return findChildByClass(HaskellFunorpatdecl.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellFunorpatdecl.class);
   }
 
   @Override
   @Nullable
   public HaskellGendecl getGendecl() {
-    return findChildByClass(HaskellGendecl.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellGendecl.class);
   }
 
   @Override
@@ -90,7 +94,7 @@ public class HaskellTypedeclImpl extends HaskellCompositeElementImpl implements 
   @Override
   @NotNull
   public PsiElement getType() {
-    return findNotNullChildByType(TYPE);
+    return notNullChild(findChildByType(TYPE));
   }
 
   @Override

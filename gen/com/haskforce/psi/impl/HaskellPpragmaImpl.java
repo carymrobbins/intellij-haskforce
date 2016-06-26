@@ -16,21 +16,25 @@ public class HaskellPpragmaImpl extends HaskellCompositeElementImpl implements H
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitPpragma(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitPpragma(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @NotNull
   public PsiElement getClosepragma() {
-    return findNotNullChildByType(CLOSEPRAGMA);
+    return notNullChild(findChildByType(CLOSEPRAGMA));
   }
 
   @Override
   @NotNull
   public PsiElement getOpenpragma() {
-    return findNotNullChildByType(OPENPRAGMA);
+    return notNullChild(findChildByType(OPENPRAGMA));
   }
 
 }

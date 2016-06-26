@@ -17,8 +17,12 @@ public class HaskellQqblobImpl extends HaskellCompositeElementImpl implements Ha
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitQqblob(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitQqblob(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -26,8 +30,8 @@ public class HaskellQqblobImpl extends HaskellCompositeElementImpl implements Ha
     return HaskellPsiImplUtil.isValidHost(this);
   }
 
-  public HaskellQqblob updateText(String p1) {
-    return HaskellPsiImplUtil.updateText(this, p1);
+  public HaskellQqblob updateText(String s) {
+    return HaskellPsiImplUtil.updateText(this, s);
   }
 
   @NotNull

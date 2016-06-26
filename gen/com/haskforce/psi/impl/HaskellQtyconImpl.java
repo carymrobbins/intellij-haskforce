@@ -16,8 +16,12 @@ public class HaskellQtyconImpl extends HaskellCompositeElementImpl implements Ha
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitQtycon(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitQtycon(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -30,7 +34,7 @@ public class HaskellQtyconImpl extends HaskellCompositeElementImpl implements Ha
   @Override
   @NotNull
   public HaskellTycon getTycon() {
-    return findNotNullChildByClass(HaskellTycon.class);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, HaskellTycon.class));
   }
 
 }

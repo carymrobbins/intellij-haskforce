@@ -16,8 +16,12 @@ public class HaskellQvaridImpl extends HaskellCompositeElementImpl implements Ha
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitQvarid(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitQvarid(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -30,7 +34,7 @@ public class HaskellQvaridImpl extends HaskellCompositeElementImpl implements Ha
   @Override
   @NotNull
   public HaskellVarid getVarid() {
-    return findNotNullChildByClass(HaskellVarid.class);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, HaskellVarid.class));
   }
 
 }

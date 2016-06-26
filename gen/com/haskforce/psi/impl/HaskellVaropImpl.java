@@ -16,21 +16,25 @@ public class HaskellVaropImpl extends HaskellCompositeElementImpl implements Has
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitVarop(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitVarop(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
   public HaskellVarid getVarid() {
-    return findChildByClass(HaskellVarid.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellVarid.class);
   }
 
   @Override
   @Nullable
   public HaskellVarsym getVarsym() {
-    return findChildByClass(HaskellVarsym.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellVarsym.class);
   }
 
 }

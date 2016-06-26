@@ -16,15 +16,19 @@ public class HaskellTyclsImpl extends HaskellCompositeElementImpl implements Has
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitTycls(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitTycls(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @NotNull
   public HaskellConid getConid() {
-    return findNotNullChildByClass(HaskellConid.class);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, HaskellConid.class));
   }
 
 }

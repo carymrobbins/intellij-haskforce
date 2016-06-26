@@ -16,27 +16,31 @@ public class HaskellLetexpImpl extends HaskellCompositeElementImpl implements Ha
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitLetexp(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitLetexp(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
   public HaskellExp getExp() {
-    return findChildByClass(HaskellExp.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellExp.class);
   }
 
   @Override
   @Nullable
   public HaskellFunorpatdecl getFunorpatdecl() {
-    return findChildByClass(HaskellFunorpatdecl.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellFunorpatdecl.class);
   }
 
   @Override
   @Nullable
   public HaskellGendecl getGendecl() {
-    return findChildByClass(HaskellGendecl.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellGendecl.class);
   }
 
   @Override
@@ -54,7 +58,7 @@ public class HaskellLetexpImpl extends HaskellCompositeElementImpl implements Ha
   @Override
   @NotNull
   public PsiElement getLet() {
-    return findNotNullChildByType(LET);
+    return notNullChild(findChildByType(LET));
   }
 
   @Override

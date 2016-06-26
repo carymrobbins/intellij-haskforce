@@ -16,8 +16,12 @@ public class HaskellBodyImpl extends HaskellCompositeElementImpl implements Hask
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitBody(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitBody(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -30,49 +34,49 @@ public class HaskellBodyImpl extends HaskellCompositeElementImpl implements Hask
   @Override
   @Nullable
   public HaskellClassdecl getClassdecl() {
-    return findChildByClass(HaskellClassdecl.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellClassdecl.class);
   }
 
   @Override
   @Nullable
   public HaskellDatadecl getDatadecl() {
-    return findChildByClass(HaskellDatadecl.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellDatadecl.class);
   }
 
   @Override
   @Nullable
   public HaskellDefaultdecl getDefaultdecl() {
-    return findChildByClass(HaskellDefaultdecl.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellDefaultdecl.class);
   }
 
   @Override
   @Nullable
   public HaskellDerivingdecl getDerivingdecl() {
-    return findChildByClass(HaskellDerivingdecl.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellDerivingdecl.class);
   }
 
   @Override
   @Nullable
   public HaskellExp getExp() {
-    return findChildByClass(HaskellExp.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellExp.class);
   }
 
   @Override
   @Nullable
   public HaskellForeigndecl getForeigndecl() {
-    return findChildByClass(HaskellForeigndecl.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellForeigndecl.class);
   }
 
   @Override
   @Nullable
   public HaskellFunorpatdecl getFunorpatdecl() {
-    return findChildByClass(HaskellFunorpatdecl.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellFunorpatdecl.class);
   }
 
   @Override
   @Nullable
   public HaskellGendecl getGendecl() {
-    return findChildByClass(HaskellGendecl.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellGendecl.class);
   }
 
   @Override
@@ -84,13 +88,13 @@ public class HaskellBodyImpl extends HaskellCompositeElementImpl implements Hask
   @Override
   @Nullable
   public HaskellInstancedecl getInstancedecl() {
-    return findChildByClass(HaskellInstancedecl.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellInstancedecl.class);
   }
 
   @Override
   @Nullable
   public HaskellLetexp getLetexp() {
-    return findChildByClass(HaskellLetexp.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellLetexp.class);
   }
 
   @Override
@@ -102,7 +106,7 @@ public class HaskellBodyImpl extends HaskellCompositeElementImpl implements Hask
   @Override
   @Nullable
   public HaskellNewtypedecl getNewtypedecl() {
-    return findChildByClass(HaskellNewtypedecl.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellNewtypedecl.class);
   }
 
   @Override
@@ -156,13 +160,13 @@ public class HaskellBodyImpl extends HaskellCompositeElementImpl implements Hask
   @Override
   @Nullable
   public HaskellStmts getStmts() {
-    return findChildByClass(HaskellStmts.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellStmts.class);
   }
 
   @Override
   @Nullable
   public HaskellTypedecl getTypedecl() {
-    return findChildByClass(HaskellTypedecl.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellTypedecl.class);
   }
 
   @Override

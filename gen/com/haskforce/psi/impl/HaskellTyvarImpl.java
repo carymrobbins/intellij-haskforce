@@ -16,15 +16,19 @@ public class HaskellTyvarImpl extends HaskellCompositeElementImpl implements Has
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitTyvar(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitTyvar(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @NotNull
   public HaskellVarid getVarid() {
-    return findNotNullChildByClass(HaskellVarid.class);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, HaskellVarid.class));
   }
 
 }

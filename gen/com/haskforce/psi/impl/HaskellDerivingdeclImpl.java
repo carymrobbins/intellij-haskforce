@@ -16,27 +16,31 @@ public class HaskellDerivingdeclImpl extends HaskellCompositeElementImpl impleme
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitDerivingdecl(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitDerivingdecl(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
   public HaskellCtype getCtype() {
-    return findChildByClass(HaskellCtype.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellCtype.class);
   }
 
   @Override
   @Nullable
   public HaskellPpragma getPpragma() {
-    return findChildByClass(HaskellPpragma.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellPpragma.class);
   }
 
   @Override
   @NotNull
   public PsiElement getDeriving() {
-    return findNotNullChildByType(DERIVING);
+    return notNullChild(findChildByType(DERIVING));
   }
 
   @Override

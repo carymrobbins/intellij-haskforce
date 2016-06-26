@@ -16,39 +16,43 @@ public class HaskellModuledeclImpl extends HaskellCompositeElementImpl implement
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitModuledecl(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitModuledecl(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
   public HaskellExports getExports() {
-    return findChildByClass(HaskellExports.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellExports.class);
   }
 
   @Override
   @Nullable
   public HaskellExportsempty getExportsempty() {
-    return findChildByClass(HaskellExportsempty.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellExportsempty.class);
   }
 
   @Override
   @Nullable
   public HaskellPpragma getPpragma() {
-    return findChildByClass(HaskellPpragma.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellPpragma.class);
   }
 
   @Override
   @Nullable
   public HaskellQconid getQconid() {
-    return findChildByClass(HaskellQconid.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellQconid.class);
   }
 
   @Override
   @NotNull
   public PsiElement getModuletoken() {
-    return findNotNullChildByType(MODULETOKEN);
+    return notNullChild(findChildByType(MODULETOKEN));
   }
 
   @Override

@@ -16,27 +16,31 @@ public class HaskellAkindImpl extends HaskellCompositeElementImpl implements Has
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitAkind(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitAkind(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
   public HaskellKind getKind() {
-    return findChildByClass(HaskellKind.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellKind.class);
   }
 
   @Override
   @Nullable
   public HaskellQtycon getQtycon() {
-    return findChildByClass(HaskellQtycon.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellQtycon.class);
   }
 
   @Override
   @Nullable
   public HaskellTyvar getTyvar() {
-    return findChildByClass(HaskellTyvar.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellTyvar.class);
   }
 
   @Override

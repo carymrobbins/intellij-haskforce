@@ -16,15 +16,19 @@ public class HaskellPatImpl extends HaskellCompositeElementImpl implements Haske
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitPat(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitPat(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
   public HaskellCtype getCtype() {
-    return findChildByClass(HaskellCtype.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellCtype.class);
   }
 
   @Override
@@ -54,7 +58,7 @@ public class HaskellPatImpl extends HaskellCompositeElementImpl implements Haske
   @Override
   @Nullable
   public HaskellQconop getQconop() {
-    return findChildByClass(HaskellQconop.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellQconop.class);
   }
 
   @Override

@@ -11,7 +11,7 @@ public interface HaskellQqblob extends PsiLanguageInjectionHost {
 
   boolean isValidHost();
 
-  HaskellQqblob updateText(String p1);
+  HaskellQqblob updateText(String s);
 
   @NotNull
   StringLiteralEscaper<HaskellQqblob> createLiteralTextEscaper();

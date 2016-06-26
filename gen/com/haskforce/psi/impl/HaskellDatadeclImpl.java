@@ -16,8 +16,12 @@ public class HaskellDatadeclImpl extends HaskellCompositeElementImpl implements 
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitDatadecl(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitDatadecl(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -54,7 +58,7 @@ public class HaskellDatadeclImpl extends HaskellCompositeElementImpl implements 
   @Override
   @Nullable
   public HaskellKind getKind() {
-    return findChildByClass(HaskellKind.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellKind.class);
   }
 
   @Override
@@ -96,7 +100,7 @@ public class HaskellDatadeclImpl extends HaskellCompositeElementImpl implements 
   @Override
   @NotNull
   public PsiElement getData() {
-    return findNotNullChildByType(DATA);
+    return notNullChild(findChildByType(DATA));
   }
 
   @Override

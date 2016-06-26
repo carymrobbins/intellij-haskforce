@@ -16,8 +16,12 @@ public class HaskellListlikeImpl extends HaskellCompositeElementImpl implements 
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitListlike(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitListlike(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -60,13 +64,13 @@ public class HaskellListlikeImpl extends HaskellCompositeElementImpl implements 
   @Override
   @NotNull
   public PsiElement getLbracket() {
-    return findNotNullChildByType(LBRACKET);
+    return notNullChild(findChildByType(LBRACKET));
   }
 
   @Override
   @NotNull
   public PsiElement getRbracket() {
-    return findNotNullChildByType(RBRACKET);
+    return notNullChild(findChildByType(RBRACKET));
   }
 
 }

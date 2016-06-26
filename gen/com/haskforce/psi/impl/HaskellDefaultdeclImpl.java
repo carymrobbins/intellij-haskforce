@@ -16,8 +16,12 @@ public class HaskellDefaultdeclImpl extends HaskellCompositeElementImpl implemen
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitDefaultdecl(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitDefaultdecl(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -30,7 +34,7 @@ public class HaskellDefaultdeclImpl extends HaskellCompositeElementImpl implemen
   @Override
   @NotNull
   public PsiElement getDefault() {
-    return findNotNullChildByType(DEFAULT);
+    return notNullChild(findChildByType(DEFAULT));
   }
 
   @Override

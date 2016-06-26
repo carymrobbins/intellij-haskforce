@@ -16,8 +16,12 @@ public class HaskellIdeclImpl extends HaskellCompositeElementImpl implements Has
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitIdecl(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitIdecl(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -30,7 +34,7 @@ public class HaskellIdeclImpl extends HaskellCompositeElementImpl implements Has
   @Override
   @Nullable
   public HaskellClscontext getClscontext() {
-    return findChildByClass(HaskellClscontext.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellClscontext.class);
   }
 
   @Override
@@ -54,13 +58,13 @@ public class HaskellIdeclImpl extends HaskellCompositeElementImpl implements Has
   @Override
   @Nullable
   public HaskellFunorpatdecl getFunorpatdecl() {
-    return findChildByClass(HaskellFunorpatdecl.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellFunorpatdecl.class);
   }
 
   @Override
   @Nullable
   public HaskellKind getKind() {
-    return findChildByClass(HaskellKind.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellKind.class);
   }
 
   @Override

@@ -16,8 +16,12 @@ public class HaskellFunorpatdeclImpl extends HaskellCompositeElementImpl impleme
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitFunorpatdecl(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitFunorpatdecl(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -54,7 +58,7 @@ public class HaskellFunorpatdeclImpl extends HaskellCompositeElementImpl impleme
   @Override
   @NotNull
   public HaskellRhs getRhs() {
-    return findNotNullChildByClass(HaskellRhs.class);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, HaskellRhs.class));
   }
 
   @Override
@@ -66,7 +70,7 @@ public class HaskellFunorpatdeclImpl extends HaskellCompositeElementImpl impleme
   @Override
   @Nullable
   public HaskellVarop getVarop() {
-    return findChildByClass(HaskellVarop.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellVarop.class);
   }
 
   @Override

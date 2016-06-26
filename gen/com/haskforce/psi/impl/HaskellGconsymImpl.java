@@ -16,15 +16,19 @@ public class HaskellGconsymImpl extends HaskellCompositeElementImpl implements H
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitGconsym(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitGconsym(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
   public HaskellQconsym getQconsym() {
-    return findChildByClass(HaskellQconsym.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellQconsym.class);
   }
 
   @Override

@@ -16,8 +16,12 @@ public class HaskellQtyclsImpl extends HaskellCompositeElementImpl implements Ha
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitQtycls(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitQtycls(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -30,7 +34,7 @@ public class HaskellQtyclsImpl extends HaskellCompositeElementImpl implements Ha
   @Override
   @NotNull
   public HaskellTycls getTycls() {
-    return findNotNullChildByClass(HaskellTycls.class);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, HaskellTycls.class));
   }
 
 }

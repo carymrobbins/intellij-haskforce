@@ -16,8 +16,12 @@ public class HaskellImporttImpl extends HaskellCompositeElementImpl implements H
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitImportt(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitImportt(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -30,7 +34,7 @@ public class HaskellImporttImpl extends HaskellCompositeElementImpl implements H
   @Override
   @Nullable
   public HaskellTycon getTycon() {
-    return findChildByClass(HaskellTycon.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellTycon.class);
   }
 
   @Override
@@ -42,7 +46,7 @@ public class HaskellImporttImpl extends HaskellCompositeElementImpl implements H
   @Override
   @Nullable
   public HaskellVars getVars() {
-    return findChildByClass(HaskellVars.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellVars.class);
   }
 
   @Override

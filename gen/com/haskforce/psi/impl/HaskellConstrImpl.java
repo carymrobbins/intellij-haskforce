@@ -16,8 +16,12 @@ public class HaskellConstrImpl extends HaskellCompositeElementImpl implements Ha
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitConstr(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitConstr(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -30,13 +34,13 @@ public class HaskellConstrImpl extends HaskellCompositeElementImpl implements Ha
   @Override
   @Nullable
   public HaskellCon getCon() {
-    return findChildByClass(HaskellCon.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellCon.class);
   }
 
   @Override
   @Nullable
   public HaskellConop getConop() {
-    return findChildByClass(HaskellConop.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellConop.class);
   }
 
   @Override

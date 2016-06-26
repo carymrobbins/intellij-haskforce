@@ -16,21 +16,25 @@ public class HaskellQopImpl extends HaskellCompositeElementImpl implements Haske
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitQop(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitQop(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
   public HaskellQconop getQconop() {
-    return findChildByClass(HaskellQconop.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellQconop.class);
   }
 
   @Override
   @Nullable
   public HaskellQvarop getQvarop() {
-    return findChildByClass(HaskellQvarop.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellQvarop.class);
   }
 
 }

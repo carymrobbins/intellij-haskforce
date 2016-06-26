@@ -16,8 +16,12 @@ public class HaskellQconsymImpl extends HaskellCompositeElementImpl implements H
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitQconsym(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitQconsym(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -30,7 +34,7 @@ public class HaskellQconsymImpl extends HaskellCompositeElementImpl implements H
   @Override
   @NotNull
   public HaskellConsym getConsym() {
-    return findNotNullChildByClass(HaskellConsym.class);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, HaskellConsym.class));
   }
 
 }

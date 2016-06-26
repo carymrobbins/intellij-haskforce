@@ -16,8 +16,12 @@ public class HaskellGuardImpl extends HaskellCompositeElementImpl implements Has
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitGuard(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitGuard(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -30,25 +34,25 @@ public class HaskellGuardImpl extends HaskellCompositeElementImpl implements Has
   @Override
   @Nullable
   public HaskellExp getExp() {
-    return findChildByClass(HaskellExp.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellExp.class);
   }
 
   @Override
   @Nullable
   public HaskellFunorpatdecl getFunorpatdecl() {
-    return findChildByClass(HaskellFunorpatdecl.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellFunorpatdecl.class);
   }
 
   @Override
   @Nullable
   public HaskellGendecl getGendecl() {
-    return findChildByClass(HaskellGendecl.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellGendecl.class);
   }
 
   @Override
   @Nullable
   public HaskellLetexp getLetexp() {
-    return findChildByClass(HaskellLetexp.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellLetexp.class);
   }
 
   @Override
@@ -60,7 +64,7 @@ public class HaskellGuardImpl extends HaskellCompositeElementImpl implements Has
   @Override
   @Nullable
   public HaskellPat getPat() {
-    return findChildByClass(HaskellPat.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellPat.class);
   }
 
   @Override
@@ -108,7 +112,7 @@ public class HaskellGuardImpl extends HaskellCompositeElementImpl implements Has
   @Override
   @Nullable
   public HaskellStmts getStmts() {
-    return findChildByClass(HaskellStmts.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellStmts.class);
   }
 
   @Override

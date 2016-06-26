@@ -16,8 +16,12 @@ public class HaskellExpImpl extends HaskellCompositeElementImpl implements Haske
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitExp(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitExp(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -30,7 +34,7 @@ public class HaskellExpImpl extends HaskellCompositeElementImpl implements Haske
   @Override
   @Nullable
   public HaskellClscontext getClscontext() {
-    return findChildByClass(HaskellClscontext.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellClscontext.class);
   }
 
   @Override
@@ -108,7 +112,7 @@ public class HaskellExpImpl extends HaskellCompositeElementImpl implements Haske
   @Override
   @Nullable
   public HaskellTypee getTypee() {
-    return findChildByClass(HaskellTypee.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellTypee.class);
   }
 
   @Override

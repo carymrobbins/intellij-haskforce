@@ -16,21 +16,25 @@ public class HaskellOpImpl extends HaskellCompositeElementImpl implements Haskel
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitOp(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitOp(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
   public HaskellConop getConop() {
-    return findChildByClass(HaskellConop.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellConop.class);
   }
 
   @Override
   @Nullable
   public HaskellVarop getVarop() {
-    return findChildByClass(HaskellVarop.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellVarop.class);
   }
 
 }

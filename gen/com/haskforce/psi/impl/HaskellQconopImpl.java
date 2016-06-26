@@ -16,21 +16,25 @@ public class HaskellQconopImpl extends HaskellCompositeElementImpl implements Ha
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitQconop(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitQconop(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
   public HaskellGconsym getGconsym() {
-    return findChildByClass(HaskellGconsym.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellGconsym.class);
   }
 
   @Override
   @Nullable
   public HaskellQconid getQconid() {
-    return findChildByClass(HaskellQconid.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellQconid.class);
   }
 
 }

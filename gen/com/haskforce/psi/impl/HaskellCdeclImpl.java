@@ -16,8 +16,12 @@ public class HaskellCdeclImpl extends HaskellCompositeElementImpl implements Has
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitCdecl(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitCdecl(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -36,13 +40,13 @@ public class HaskellCdeclImpl extends HaskellCompositeElementImpl implements Has
   @Override
   @Nullable
   public HaskellGendecl getGendecl() {
-    return findChildByClass(HaskellGendecl.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellGendecl.class);
   }
 
   @Override
   @Nullable
   public HaskellKind getKind() {
-    return findChildByClass(HaskellKind.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellKind.class);
   }
 
   @Override
@@ -54,7 +58,7 @@ public class HaskellCdeclImpl extends HaskellCompositeElementImpl implements Has
   @Override
   @Nullable
   public HaskellPpragma getPpragma() {
-    return findChildByClass(HaskellPpragma.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellPpragma.class);
   }
 
   @Override
@@ -78,13 +82,13 @@ public class HaskellCdeclImpl extends HaskellCompositeElementImpl implements Has
   @Override
   @Nullable
   public HaskellRhs getRhs() {
-    return findChildByClass(HaskellRhs.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellRhs.class);
   }
 
   @Override
   @Nullable
   public HaskellTypee getTypee() {
-    return findChildByClass(HaskellTypee.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellTypee.class);
   }
 
   @Override
@@ -96,7 +100,7 @@ public class HaskellCdeclImpl extends HaskellCompositeElementImpl implements Has
   @Override
   @Nullable
   public HaskellVarop getVarop() {
-    return findChildByClass(HaskellVarop.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellVarop.class);
   }
 
   @Override

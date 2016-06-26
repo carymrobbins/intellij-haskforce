@@ -16,15 +16,19 @@ public class HaskellImpdeclImpl extends HaskellCompositeElementImpl implements H
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitImpdecl(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitImpdecl(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
   public HaskellImpempty getImpempty() {
-    return findChildByClass(HaskellImpempty.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellImpempty.class);
   }
 
   @Override
@@ -54,7 +58,7 @@ public class HaskellImpdeclImpl extends HaskellCompositeElementImpl implements H
   @Override
   @NotNull
   public PsiElement getImport() {
-    return findNotNullChildByType(IMPORT);
+    return notNullChild(findChildByType(IMPORT));
   }
 
   @Override

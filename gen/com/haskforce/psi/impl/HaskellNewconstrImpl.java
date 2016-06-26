@@ -16,39 +16,43 @@ public class HaskellNewconstrImpl extends HaskellCompositeElementImpl implements
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitNewconstr(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitNewconstr(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
   public HaskellAtype getAtype() {
-    return findChildByClass(HaskellAtype.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellAtype.class);
   }
 
   @Override
   @NotNull
   public HaskellCon getCon() {
-    return findNotNullChildByClass(HaskellCon.class);
+    return notNullChild(PsiTreeUtil.getChildOfType(this, HaskellCon.class));
   }
 
   @Override
   @Nullable
   public HaskellTypee getTypee() {
-    return findChildByClass(HaskellTypee.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellTypee.class);
   }
 
   @Override
   @Nullable
   public HaskellVarid getVarid() {
-    return findChildByClass(HaskellVarid.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellVarid.class);
   }
 
   @Override
   @Nullable
   public HaskellVarsym getVarsym() {
-    return findChildByClass(HaskellVarsym.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellVarsym.class);
   }
 
   @Override

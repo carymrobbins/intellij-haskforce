@@ -24,15 +24,19 @@ public class HaskellConidImpl extends HaskellNamedStubbedPsiElementBase<HaskellC
     super(stub, nodeType);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitConid(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitConid(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @NotNull
   public PsiElement getConidRegexp() {
-    return findNotNullChildByType(CONIDREGEXP);
+    return notNullChild(findChildByType(CONIDREGEXP));
   }
 
   @NotNull
@@ -51,8 +55,8 @@ public class HaskellConidImpl extends HaskellNamedStubbedPsiElementBase<HaskellC
   }
 
   @Nullable
-  public PsiElement setName(String p1) {
-    return HaskellPsiImplUtil.setName(this, p1);
+  public PsiElement setName(String newName) {
+    return HaskellPsiImplUtil.setName(this, newName);
   }
 
   @NotNull

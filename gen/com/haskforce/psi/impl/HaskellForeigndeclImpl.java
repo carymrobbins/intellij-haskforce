@@ -16,8 +16,12 @@ public class HaskellForeigndeclImpl extends HaskellCompositeElementImpl implemen
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitForeigndecl(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitForeigndecl(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -30,25 +34,25 @@ public class HaskellForeigndeclImpl extends HaskellCompositeElementImpl implemen
   @Override
   @Nullable
   public HaskellPstringtoken getPstringtoken() {
-    return findChildByClass(HaskellPstringtoken.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellPstringtoken.class);
   }
 
   @Override
   @Nullable
   public HaskellQtycon getQtycon() {
-    return findChildByClass(HaskellQtycon.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellQtycon.class);
   }
 
   @Override
   @Nullable
   public HaskellVarid getVarid() {
-    return findChildByClass(HaskellVarid.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellVarid.class);
   }
 
   @Override
   @Nullable
   public HaskellVarsym getVarsym() {
-    return findChildByClass(HaskellVarsym.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellVarsym.class);
   }
 
   @Override
@@ -60,7 +64,7 @@ public class HaskellForeigndeclImpl extends HaskellCompositeElementImpl implemen
   @Override
   @NotNull
   public PsiElement getForeign() {
-    return findNotNullChildByType(FOREIGN);
+    return notNullChild(findChildByType(FOREIGN));
   }
 
   @Override

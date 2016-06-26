@@ -16,15 +16,19 @@ public class HaskellAtypeImpl extends HaskellCompositeElementImpl implements Has
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitAtype(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitAtype(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
   @Override
   @Nullable
   public HaskellAtype getAtype() {
-    return findChildByClass(HaskellAtype.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellAtype.class);
   }
 
   @Override
@@ -36,25 +40,25 @@ public class HaskellAtypeImpl extends HaskellCompositeElementImpl implements Has
   @Override
   @Nullable
   public HaskellKind getKind() {
-    return findChildByClass(HaskellKind.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellKind.class);
   }
 
   @Override
   @Nullable
   public HaskellOqtycon getOqtycon() {
-    return findChildByClass(HaskellOqtycon.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellOqtycon.class);
   }
 
   @Override
   @Nullable
   public HaskellPpragma getPpragma() {
-    return findChildByClass(HaskellPpragma.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellPpragma.class);
   }
 
   @Override
   @Nullable
   public HaskellPstringtoken getPstringtoken() {
-    return findChildByClass(HaskellPstringtoken.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellPstringtoken.class);
   }
 
   @Override
@@ -66,19 +70,19 @@ public class HaskellAtypeImpl extends HaskellCompositeElementImpl implements Has
   @Override
   @Nullable
   public HaskellTypee getTypee() {
-    return findChildByClass(HaskellTypee.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellTypee.class);
   }
 
   @Override
   @Nullable
   public HaskellTyvar getTyvar() {
-    return findChildByClass(HaskellTyvar.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellTyvar.class);
   }
 
   @Override
   @Nullable
   public HaskellVars getVars() {
-    return findChildByClass(HaskellVars.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellVars.class);
   }
 
   @Override

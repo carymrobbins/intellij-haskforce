@@ -16,8 +16,12 @@ public class HaskellShebangImpl extends HaskellCompositeElementImpl implements H
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitShebang(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitShebang(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -30,7 +34,7 @@ public class HaskellShebangImpl extends HaskellCompositeElementImpl implements H
   @Override
   @NotNull
   public PsiElement getShebangstart() {
-    return findNotNullChildByType(SHEBANGSTART);
+    return notNullChild(findChildByType(SHEBANGSTART));
   }
 
 }

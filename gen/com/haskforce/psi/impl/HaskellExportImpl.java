@@ -16,8 +16,12 @@ public class HaskellExportImpl extends HaskellCompositeElementImpl implements Ha
     super(node);
   }
 
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitExport(this);
+  }
+
   public void accept(@NotNull PsiElementVisitor visitor) {
-    if (visitor instanceof HaskellVisitor) ((HaskellVisitor)visitor).visitExport(this);
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
     else super.accept(visitor);
   }
 
@@ -30,25 +34,25 @@ public class HaskellExportImpl extends HaskellCompositeElementImpl implements Ha
   @Override
   @Nullable
   public HaskellQconid getQconid() {
-    return findChildByClass(HaskellQconid.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellQconid.class);
   }
 
   @Override
   @Nullable
   public HaskellQtycon getQtycon() {
-    return findChildByClass(HaskellQtycon.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellQtycon.class);
   }
 
   @Override
   @Nullable
   public HaskellQvar getQvar() {
-    return findChildByClass(HaskellQvar.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellQvar.class);
   }
 
   @Override
   @Nullable
   public HaskellQvars getQvars() {
-    return findChildByClass(HaskellQvars.class);
+    return PsiTreeUtil.getChildOfType(this, HaskellQvars.class);
   }
 
   @Override
