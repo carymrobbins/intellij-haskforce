@@ -1,0 +1,8 @@
+Haskell File
+  PPRAGMA
+    PsiElement(HaskellTokenType.{-#)('{-#')
+    PsiElement(HaskellTokenType.PRAGMA)('OPTIONS_GHC')
+    PsiElement(HaskellTokenType.PRAGMA)('-F')
+    PsiElement(HaskellTokenType.PRAGMA)('-pgmF')
+    PsiElement(HaskellTokenType.PRAGMA)('hspec-discover')
+    PsiElement(HaskellTokenType.#-})('#-}')

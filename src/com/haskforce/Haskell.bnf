@@ -195,7 +195,7 @@
 
 // Haskell 2010 Report - http://www.haskell.org/onlinereport/haskell2010/haskellch2.html#x7-140002
 
-module ::= shebang? ppragma* [moduledecl] body
+module ::= shebang? ppragma* [moduledecl] [body]
 
 shebang ::= SHEBANGSTART SHEBANGPATH?
 
