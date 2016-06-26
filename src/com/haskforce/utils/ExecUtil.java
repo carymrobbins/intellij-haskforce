@@ -167,7 +167,7 @@ public class ExecUtil {
                 null
             ).toLeft();
         }
-        return new Right<ExecError, String>(processOutput.getStdout());
+        return EitherUtil.right(processOutput.getStdout());
     }
 
     @NotNull

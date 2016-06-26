@@ -27,7 +27,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import scala.runtime.AbstractFunction1;
 import scala.util.Either;
-import scala.util.Right;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -171,7 +170,7 @@ public class HLint {
                             null
                         ).toLeft();
                     }
-                    return new Right<ExecError, VersionTriple>(new VersionTriple(
+                    return EitherUtil.right(new VersionTriple(
                         Integer.parseInt(m.group(1)),
                         Integer.parseInt(m.group(2)),
                         Integer.parseInt(m.group(3))

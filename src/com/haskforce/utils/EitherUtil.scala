@@ -23,4 +23,8 @@ object EitherUtil {
   def rightFlatMap[A, B, C](e: Either[A, B], f: B => Either[A, C]): Either[A, C] = {
     e.right.flatMap(f)
   }
+
+  def left[A, B](x: A): Either[A, B] = Left(x)
+
+  def right[A, B](x: B): Either[A, B] = Right(x)
 }
