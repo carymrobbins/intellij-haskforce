@@ -245,7 +245,11 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                             indent = yycolumn;
                             return DO;
                         }
-  "rec"                 { return RECTOK; }
+  "rec"                 {
+                            yybegin(FINDINGINDENTATIONCONTEXT);
+                            indent = yycolumn;
+                            return RECTOK;
+                        }
   "else"              { return ELSE; }
   "if"                { return IF; }
   "in"                {

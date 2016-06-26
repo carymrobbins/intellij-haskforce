@@ -486,7 +486,7 @@ stmts ::= stmt* (letexp | partialstmt | exp)
 
 private stmt ::= partialstmt semi
 
-private partialstmt ::= ["rec"] "let" decls
+private partialstmt ::= "rec" [open stmts close | "let" decls]
                       | [pat '<-'] exp
 
 private fbind ::= qvar '=' exp {pin=2}
