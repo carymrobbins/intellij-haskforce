@@ -35,7 +35,7 @@
   <property file="build.properties"/>
   <property name="build.compiler" value="modern"/>
   <dirname property="module.haskforce.basedir" file="${ant.file}"/>
-  <property name="jflex.jar" value="JFlex.jar"/>
+  <property name="jflex.jar" value="jflex-1.7.0-SNAPSHOT.jar"/>
   <property name="jflex.skeleton" value="idea-flex.skeleton"/>
   <property name="lib.dir" value="${module.haskforce.basedir}/lib"/>
   <property name="scala-compiler.jar" location="${lib.dir}/scala-compiler-2.11.7.jar"/>
@@ -728,7 +728,6 @@
     <java jar="${jflex.jar}" fork="true">
       <arg value="--skel"/>
       <arg value="${jflex.skeleton}"/>
-      <arg value="--charat"/>
       <arg value="--nobak"/>
       <arg value="${jflex.haskellHighlight.input.file}"/>
     </java>
@@ -738,7 +737,6 @@
     <java jar="${jflex.jar}" fork="true">
       <arg value="--skel"/>
       <arg value="${jflex.skeleton}"/>
-      <arg value="--charat"/>
       <arg value="--nobak"/>
       <arg value="${jflex.haskellParsing.input.file}"/>
     </java>
@@ -748,7 +746,6 @@
     <java jar="${jflex.jar}" fork="true">
       <arg value="--skel"/>
       <arg value="${jflex.skeleton}"/>
-      <arg value="--charat"/>
       <arg value="--nobak"/>
       <arg value="${jflex.cabalHighlight.input.file}"/>
     </java>
@@ -758,7 +755,6 @@
     <java jar="${jflex.jar}" fork="true">
       <arg value="--skel"/>
       <arg value="${jflex.skeleton}"/>
-      <arg value="--charat"/>
       <arg value="--nobak"/>
       <arg value="${jflex.cabalParsing.input.file}"/>
     </java>
@@ -768,7 +764,6 @@
     <java jar="${jflex.jar}" fork="true">
       <arg value="--skel"/>
       <arg value="${jflex.skeleton}"/>
-      <arg value="--charat"/>
       <arg value="--nobak"/>
       <arg value="${jflex.hamletHighlight.input.file}"/>
     </java>
