@@ -2352,6 +2352,54 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
+  // conid ('.' conid)* (varsym | '..')
+  static boolean explicitqvarsym(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "explicitqvarsym")) return false;
+    if (!nextTokenIs(b, CONIDREGEXP)) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = conid(b, l + 1);
+    r = r && explicitqvarsym_1(b, l + 1);
+    r = r && explicitqvarsym_2(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // ('.' conid)*
+  private static boolean explicitqvarsym_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "explicitqvarsym_1")) return false;
+    int c = current_position_(b);
+    while (true) {
+      if (!explicitqvarsym_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "explicitqvarsym_1", c)) break;
+      c = current_position_(b);
+    }
+    return true;
+  }
+
+  // '.' conid
+  private static boolean explicitqvarsym_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "explicitqvarsym_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, PERIOD);
+    r = r && conid(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // varsym | '..'
+  private static boolean explicitqvarsym_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "explicitqvarsym_2")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = varsym(b, l + 1);
+    if (!r) r = consumeToken(b, DOUBLEPERIOD);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
   // "module" qconid
   //         // Really (qtycon|qtycls) but they are both ::= qconid.
   //         | qtycon [ '(' (".." | cnames | qvars) ')']
@@ -5005,7 +5053,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // lpat (qconop pat | ["::" ctype])
+  // lpat ((qconop|explicitqvarsym) pat | ["::" ctype])
   public static boolean pat(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "pat")) return false;
     boolean r;
@@ -5016,7 +5064,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // qconop pat | ["::" ctype]
+  // (qconop|explicitqvarsym) pat | ["::" ctype]
   private static boolean pat_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "pat_1")) return false;
     boolean r;
@@ -5027,13 +5075,24 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // qconop pat
+  // (qconop|explicitqvarsym) pat
   private static boolean pat_1_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "pat_1_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = qconop(b, l + 1);
+    r = pat_1_0_0(b, l + 1);
     r = r && pat(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // qconop|explicitqvarsym
+  private static boolean pat_1_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "pat_1_0_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = qconop(b, l + 1);
+    if (!r) r = explicitqvarsym(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -5510,60 +5569,14 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // varsym | conid ('.' conid)* (varsym | '..')
+  // varsym | explicitqvarsym
   public static boolean qvarsym(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "qvarsym")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, QVARSYM, "<qvarsym>");
     r = varsym(b, l + 1);
-    if (!r) r = qvarsym_1(b, l + 1);
+    if (!r) r = explicitqvarsym(b, l + 1);
     exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  // conid ('.' conid)* (varsym | '..')
-  private static boolean qvarsym_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "qvarsym_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = conid(b, l + 1);
-    r = r && qvarsym_1_1(b, l + 1);
-    r = r && qvarsym_1_2(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // ('.' conid)*
-  private static boolean qvarsym_1_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "qvarsym_1_1")) return false;
-    int c = current_position_(b);
-    while (true) {
-      if (!qvarsym_1_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "qvarsym_1_1", c)) break;
-      c = current_position_(b);
-    }
-    return true;
-  }
-
-  // '.' conid
-  private static boolean qvarsym_1_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "qvarsym_1_1_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = consumeToken(b, PERIOD);
-    r = r && conid(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // varsym | '..'
-  private static boolean qvarsym_1_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "qvarsym_1_2")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = varsym(b, l + 1);
-    if (!r) r = consumeToken(b, DOUBLEPERIOD);
-    exit_section_(b, m, null, r);
     return r;
   }
 

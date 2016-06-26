@@ -26,6 +26,12 @@ public class HaskellPatImpl extends HaskellCompositeElementImpl implements Haske
   }
 
   @Override
+  @NotNull
+  public List<HaskellConid> getConidList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellConid.class);
+  }
+
+  @Override
   @Nullable
   public HaskellCtype getCtype() {
     return PsiTreeUtil.getChildOfType(this, HaskellCtype.class);
@@ -83,6 +89,12 @@ public class HaskellPatImpl extends HaskellCompositeElementImpl implements Haske
   @Nullable
   public PsiElement getDoublecolon() {
     return findChildByType(DOUBLECOLON);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getDoubleperiod() {
+    return findChildByType(DOUBLEPERIOD);
   }
 
   @Override

@@ -7,6 +7,9 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellPat extends HaskellCompositeElement {
 
+  @NotNull
+  List<HaskellConid> getConidList();
+
   @Nullable
   HaskellCtype getCtype();
 
@@ -36,6 +39,9 @@ public interface HaskellPat extends HaskellCompositeElement {
 
   @Nullable
   PsiElement getDoublecolon();
+
+  @Nullable
+  PsiElement getDoubleperiod();
 
   @Nullable
   PsiElement getMinus();
