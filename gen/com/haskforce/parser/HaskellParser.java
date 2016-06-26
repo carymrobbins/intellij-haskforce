@@ -4477,7 +4477,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // shebang? ppragma* [moduledecl] body
+  // shebang? ppragma* [moduledecl] [body]
   static boolean module(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "module")) return false;
     boolean r;
@@ -4485,7 +4485,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     r = module_0(b, l + 1);
     r = r && module_1(b, l + 1);
     r = r && module_2(b, l + 1);
-    r = r && body(b, l + 1);
+    r = r && module_3(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -4513,6 +4513,13 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   private static boolean module_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "module_2")) return false;
     moduledecl(b, l + 1);
+    return true;
+  }
+
+  // [body]
+  private static boolean module_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "module_3")) return false;
+    body(b, l + 1);
     return true;
   }
 
