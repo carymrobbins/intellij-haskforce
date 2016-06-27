@@ -92,16 +92,6 @@ public class GhcMod {
         return simpleExecToLines(module, workingDirectory, getFlags(module.getProject()), "list");
     }
 
-    @Nullable
-    public static String[] lang(@NotNull Module module, @NotNull String workingDirectory) {
-        return simpleExecToLines(module, workingDirectory, getFlags(module.getProject()), "lang");
-    }
-
-    @Nullable
-    public static String[] flag(@NotNull Module module, @NotNull String workingDirectory) {
-        return simpleExecToLines(module, workingDirectory, getFlags(module.getProject()), "flag");
-    }
-
     public static void displayError(@NotNull Module module, @NotNull String message) {
         if (!message.equals(errorState.get(module))) {
             errorState.put(module, message);
