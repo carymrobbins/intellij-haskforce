@@ -1,7 +1,7 @@
 <idea-plugin version="2" use-idea-classloader="true">
   <id>com.haskforce</id>
   <name>HaskForce</name>
-  <version>0.3-beta.34</version>
+  <version>0.3-beta.35</version>
   <vendor url="https://github.com/carymrobbins/intellij-haskforce">HaskForce on GitHub</vendor>
 
   <description>Plugin for Haskell language support.</description>
@@ -15,6 +15,17 @@
     <p>
       If you encounter any issues, please submit them on our
       <a href="https://github.com/carymrobbins/intellij-haskforce/issues">bug tracker</a>.
+    </p>
+    <p>
+      <b>v0.3-beta.35</b>
+      <ul>
+        <li>Make HLint aware of extensions from Cabal file (#56)</li>
+        <li>Parse qualified operators in patterns (#218)</li>
+        <li>Parse 'do rec' syntax (#264)</li>
+        <li>Parse pragma-only files (#267)</li>
+        <li>Upgraded Grammar-Kit to 1.4.1</li>
+        <li>Upgraded JFlex to 1.7.0</li>
+      </ul>
     </p>
     <p>
       <b>v0.3-beta.34</b>
