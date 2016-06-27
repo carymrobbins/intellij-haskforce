@@ -1,5 +1,7 @@
 package com.haskforce.utils
 
+import java.util.function.{Function => JavaFunction}
+
 /** Simplify Either interop with Java. */
 object EitherUtil {
   def unsafeGetLeft[A, B](e: Either[A, B]): A = {

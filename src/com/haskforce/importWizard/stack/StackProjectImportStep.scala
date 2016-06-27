@@ -13,6 +13,7 @@ import com.intellij.openapi.ui.TextFieldWithBrowseButton
 import com.intellij.projectImport.ProjectImportWizardStep
 
 import com.haskforce.HaskellModuleType
+import com.haskforce.cabal.completion.CabalFileFinder
 import com.haskforce.settings.HaskellBuildSettings
 import com.haskforce.ui.GC
 import com.haskforce.utils.GuiUtil
@@ -71,7 +72,7 @@ extends ProjectImportWizardStep(context) {
     val root = builder.getImportRoot
     val cabalFilePaths =
       HaskellModuleType.findModules(project)
-        .flatMap(HaskellModuleType.findCabalFile).map(_.getCanonicalPath)
+        .flatMap(CabalFileFinder.virtualForModule).map(_.getCanonicalPath)
     packages.filter { pkg =>
       val path = StackYamlUtil.unsafeFindCabalFile(root, pkg).getCanonicalPath
       !cabalFilePaths.contains(path)

@@ -2,17 +2,20 @@ package com.haskforce.highlighting.annotation.external;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.haskforce.cabal.completion.CabalFileFinder;
+import com.haskforce.cabal.lang.psi.CabalFile;
+import com.haskforce.cabal.query.BuildInfo;
+import com.haskforce.cabal.query.BuildInfoUtil;
+import com.haskforce.cabal.query.CabalQuery;
 import com.haskforce.features.intentions.IgnoreHLint;
 import com.haskforce.highlighting.annotation.HaskellAnnotationHolder;
 import com.haskforce.highlighting.annotation.HaskellProblem;
 import com.haskforce.highlighting.annotation.Problems;
+import com.haskforce.psi.HaskellFile;
 import com.haskforce.settings.ToolKey;
 import com.haskforce.ui.tools.HaskellToolsConsole;
-import com.haskforce.utils.EitherUtil;
-import com.haskforce.utils.ExecUtil;
+import com.haskforce.utils.*;
 import com.haskforce.utils.ExecUtil.ExecError;
-import com.haskforce.utils.FunctionUtil;
-import com.haskforce.utils.NotificationUtil;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
 import com.intellij.lang.annotation.Annotation;
@@ -25,9 +28,12 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import scala.Option;
 import scala.runtime.AbstractFunction1;
 import scala.util.Either;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,13 +49,13 @@ public class HLint {
 
     @NotNull
     public static Problems lint(final @NotNull Project project, @NotNull String workingDirectory,
-                                @NotNull String file) {
+                                @NotNull String file, @NotNull HaskellFile haskellFile) {
         final HaskellToolsConsole toolConsole = HaskellToolsConsole.get(project);
         final String hlintPath = ToolKey.HLINT_KEY.getPath(project);
         final String hlintFlags = ToolKey.HLINT_KEY.getFlags(project);
         if (hlintPath == null) return new Problems();
 
-        return parseProblems(toolConsole, workingDirectory, hlintPath, hlintFlags, file).fold(
+        return parseProblems(toolConsole, workingDirectory, hlintPath, hlintFlags, file, haskellFile).fold(
             new AbstractFunction1<ExecError, Problems>() {
                 @Override
                 public Problems apply(ExecError e) {
@@ -69,7 +75,8 @@ public class HLint {
                                                             final @NotNull String workingDirectory,
                                                             final @NotNull String path,
                                                             final @NotNull String flags,
-                                                            final @NotNull String file) {
+                                                            final @NotNull String file,
+                                                            final @NotNull HaskellFile haskellFile) {
         return getVersion(toolConsole, workingDirectory, path).fold(
             new AbstractFunction1<ExecError, Either<ExecError, Problems>>() {
                 @Override
@@ -81,22 +88,34 @@ public class HLint {
                 @Override
                 public Either<ExecError, Problems> apply(VersionTriple version) {
                     final boolean useJson = version.gte(HLINT_MIN_VERSION_WITH_JSON_SUPPORT);
+                    final String[] params = getParams(file, haskellFile, useJson);
                     return EitherUtil.rightMap(runHlint(
-                      toolConsole, workingDirectory, path, flags,
-                        useJson ? new String[]{"--json", file} : new String[]{file}
+                      toolConsole, workingDirectory, path, flags, params
                     ), new AbstractFunction1<String, Problems>() {
                         @Override
                         public Problems apply(String stdout) {
                             toolConsole.writeOutput(ToolKey.HLINT_KEY, stdout);
-                            if (useJson) {
-                                return parseProblemsJson(stdout);
-                            }
+                            if (useJson) return parseProblemsJson(stdout);
                             return parseProblemsFallback(stdout);
                         }
                     });
                 }
             }
         );
+    }
+
+    private static String[] getParams(@NotNull String file,
+                                      @NotNull HaskellFile haskellFile,
+                                      boolean useJson) {
+        final List<String> result = new ArrayList<>(1);
+        result.add(file);
+        if (useJson) result.add("--json");
+        result.addAll(getParamsFromCabal(haskellFile));
+        return result.toArray(new String[0]);
+    }
+
+    private static List<String> getParamsFromCabal(@NotNull HaskellFile haskellFile) {
+        return BuildInfoUtil.getExtensionOpts(BuildInfoUtil.getBuildInfo(haskellFile));
     }
 
     /**

@@ -7,28 +7,31 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 
-import com.haskforce.Implicits._
 import com.haskforce.highlighting.annotation.Problems
-import com.haskforce.highlighting.annotation.external.{ProblemsProvider, HLint}
-import com.haskforce.utils.{WrappedFuture, NotificationUtil, ExecUtil}
+import com.haskforce.highlighting.annotation.external.{HLint, ProblemsProvider}
+import com.haskforce.psi.HaskellFile
+import com.haskforce.utils.parser.CastUtil
+import com.haskforce.utils.{ExecUtil, NotificationUtil, WrappedFuture}
 
 class HLintProblemsProvider private(
   project: Project,
   workDir: String,
-  filePath: String
+  filePath: String,
+  haskellFile: HaskellFile
 ) extends ProblemsProvider {
 
   override def getProblems: Option[Problems] = {
-    Option(HLint.lint(project, workDir, filePath))
+    Option(HLint.lint(project, workDir, filePath, haskellFile))
   }
 }
 
 object HLintProblemsProvider {
   def create(psiFile: PsiFile): Option[HLintProblemsProvider] = for {
+    haskellFile <- CastUtil.down[HaskellFile](psiFile)
     filePath <- Option(psiFile.getVirtualFile.getCanonicalPath)
     workDir = ExecUtil.guessWorkDir(psiFile)
     project = psiFile.getProject
-  } yield new HLintProblemsProvider(project, workDir, filePath)
+  } yield new HLintProblemsProvider(project, workDir, filePath, haskellFile)
 
   val executorService = Executors.newSingleThreadExecutor()
 

@@ -11,8 +11,9 @@ import com.haskforce.cabal.settings.AddCabalPackageOptions
 import com.haskforce.ui.ComboModuleProxy
 import com.haskforce.utils.FileUtil
 import com.intellij.openapi.project.Project
-
 import scala.collection.JavaConversions._
+
+import com.haskforce.cabal.completion.CabalFileFinder
 
 class AddCabalPackageDialog(
   project: Project,
@@ -20,7 +21,7 @@ class AddCabalPackageDialog(
 ) extends AddCabalPackageDialogBase() with AddCabalPackageForm {
 
   private val modules = HaskellModuleType.findModules(project)
-  private val nonCabalizedModules = modules.filter(m => HaskellModuleType.findCabalFile(m).isEmpty)
+  private val nonCabalizedModules = modules.filter(m => CabalFileFinder.virtualForModule(m).isEmpty)
 
   setupUI()
   setupPackageNameAndRootDir()
