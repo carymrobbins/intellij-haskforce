@@ -30,7 +30,7 @@ Be sure that the SDK is named `scala-sdk-2.11.7` to properly match the module co
 
 ## Building with IntelliJ
 
-**Note:** We currently target JDK 6 for building the plugin.
+**Note:** We currently target JDK 8 for building the plugin.
 
 1. Copy the `build.skeleton.properties` to `build.properties` and update the paths to the JDK and IntelliJ installation.
 1. Install and enable additional plugins.
