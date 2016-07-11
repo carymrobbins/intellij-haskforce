@@ -203,7 +203,9 @@ moduledecl ::= "module" qconid [ppragma] [exportsempty|exports] "where" {pin=1}
 
 exportsempty ::= "()" | '(' ')'
 
-exports ::= <<commaSeparate2 export>>
+// Using [export] since you can having extraneous commas.
+exports ::= <<commaSeparate2 [export]>>
+
 export ::= "module" qconid
         // Really (qtycon|qtycls) but they are both ::= qconid.
         | qtycon [ '(' (".." | cnames | qvars) ')']
@@ -220,7 +222,8 @@ private topdecls ::= topdecl [semi topdecls] {pin(".*")=1}
 
 impdecl ::= "import" ["qualified"] qconid ["as" qconid] [impspec] {pin(".*")=1}
 
-private impspec ::= [i "hiding"] '(' [<<sequence importt>>] ')' | impempty {pin(".*")=2}
+// Using <<sequence [importt]>> since you can have extraneous commas.
+private impspec ::= [i "hiding"] '(' [<<sequence [importt]>>] ')' | impempty {pin(".*")=2}
 
 impempty ::= "()"
 
