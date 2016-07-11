@@ -9,6 +9,7 @@ import com.haskforce.settings.ToolKey;
 import com.haskforce.settings.ToolSettings;
 import com.haskforce.ui.tools.HaskellToolsConsole;
 import com.haskforce.utils.ExecUtil;
+import com.haskforce.utils.HtmlUtils;
 import com.haskforce.utils.NotificationUtil;
 import com.haskforce.utils.SystemUtil;
 import com.intellij.execution.ExecutionException;
@@ -408,20 +409,23 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
             if (e.killProcess) {
                 kill();
                 setEnabled(false);
-                messagePrefix = "Killing ghc-modi due to process failure.<br/><br/>You can restart it using " +
-                  "<b>" + XmlUtil.escape(RestartGhcModi.MENU_PATH) + "</b><br/><br/>";
+                messagePrefix = KILLING_MESSAGE_PREFIX;
             } else {
                 messagePrefix = "";
             }
             ApplicationManager.getApplication().invokeLater(new Runnable() {
                 @Override
                 public void run() {
-                    displayError(messagePrefix + e.message);
+                    displayError(messagePrefix + e.message, true);
                 }
             });
             return null;
         }
     }
+
+    public static String KILLING_MESSAGE_PREFIX =
+      "Killing ghc-modi due to process failure.<br/><br/>You can restart it using "
+        + "<b>" + XmlUtil.escape(RestartGhcModi.MENU_PATH) + "</b><br/><br/>";
 
     @Nullable
     private synchronized <T> Future<T> handleGhcModiCall(final GhcModiCallable<T> callable) {
@@ -433,13 +437,23 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         });
     }
 
+    private void displayError(@NotNull String message, boolean stripHtmlTags) {
+        displayError(module.getProject(), message, stripHtmlTags);
+    }
+
     private void displayError(@NotNull String message) {
-        displayError(module.getProject(), message);
+        displayError(message, false);
+    }
+
+    private static void displayError(@NotNull Project project, @NotNull String message, boolean stripHtmlTags) {
+        HaskellToolsConsole.get(project).writeError(ToolKey.GHC_MODI_KEY,
+          stripHtmlTags ? HtmlUtils.stripTags(message) : message
+        );
+        NotificationUtil.displayToolsNotification(NotificationType.ERROR, project, "ghc-modi error", message);
     }
 
     private static void displayError(@NotNull Project project, @NotNull String message) {
-        HaskellToolsConsole.get(project).writeError(ToolKey.GHC_MODI_KEY, message);
-        NotificationUtil.displayToolsNotification(NotificationType.ERROR, project, "ghc-modi error", message);
+        displayError(project, message, false);
     }
 
     interface GhcModiCallable<V> extends Callable<V> {

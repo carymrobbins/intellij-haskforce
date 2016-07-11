@@ -44,6 +44,7 @@ import com.haskforce.projectWizard.NewProjectWizardTest;
 import com.haskforce.refactoring.HaskellRenameTest;
 import com.haskforce.resolve.HaskellResolveTest;
 import com.haskforce.spellchecker.HaskellSpellcheckingTest;
+import com.haskforce.utils.HtmlUtilsTest;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
@@ -77,6 +78,7 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(NewProjectWizardTest.class);
         suite.addTestSuite(GhcModTest.class);
         suite.addTestSuite(StackYamlTest.class);
+        suite.addTestSuite(HtmlUtilsTest.class);
 
         // Cabal parser tests
         suite.addTestSuite(CabalParsingLexerTest.class);
