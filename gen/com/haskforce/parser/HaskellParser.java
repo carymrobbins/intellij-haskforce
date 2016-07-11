@@ -2494,15 +2494,22 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // <<commaSeparate2 export>>
+  // <<commaSeparate2 [export]>>
   public static boolean exports(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "exports")) return false;
     if (!nextTokenIs(b, LPAREN)) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = commaSeparate2(b, l + 1, export_parser_);
+    r = commaSeparate2(b, l + 1, exports_0_0_parser_);
     exit_section_(b, m, EXPORTS, r);
     return r;
+  }
+
+  // [export]
+  private static boolean exports_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "exports_0_0")) return false;
+    export(b, l + 1);
+    return true;
   }
 
   /* ********************************************************** */
@@ -3697,7 +3704,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // [i "hiding"] '(' [<<sequence importt>>] ')' | impempty
+  // [i "hiding"] '(' [<<sequence [importt]>>] ')' | impempty
   static boolean impspec(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "impspec")) return false;
     boolean r;
@@ -3708,7 +3715,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // [i "hiding"] '(' [<<sequence importt>>] ')'
+  // [i "hiding"] '(' [<<sequence [importt]>>] ')'
   private static boolean impspec_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "impspec_0")) return false;
     boolean r, p;
@@ -3740,10 +3747,17 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // [<<sequence importt>>]
+  // [<<sequence [importt]>>]
   private static boolean impspec_0_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "impspec_0_2")) return false;
-    sequence(b, l + 1, importt_parser_);
+    sequence(b, l + 1, impspec_0_2_0_0_parser_);
+    return true;
+  }
+
+  // [importt]
+  private static boolean impspec_0_2_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "impspec_0_2_0_0")) return false;
+    importt(b, l + 1);
     return true;
   }
 
@@ -6572,9 +6586,9 @@ public class HaskellParser implements PsiParser, LightPsiParser {
       return dclass(b, l + 1);
     }
   };
-  final static Parser export_parser_ = new Parser() {
+  final static Parser exports_0_0_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
-      return export(b, l + 1);
+      return exports_0_0(b, l + 1);
     }
   };
   final static Parser fundep_parser_ = new Parser() {
@@ -6582,9 +6596,9 @@ public class HaskellParser implements PsiParser, LightPsiParser {
       return fundep(b, l + 1);
     }
   };
-  final static Parser importt_parser_ = new Parser() {
+  final static Parser impspec_0_2_0_0_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
-      return importt(b, l + 1);
+      return impspec_0_2_0_0(b, l + 1);
     }
   };
   final static Parser op_parser_ = new Parser() {
