@@ -1,12 +1,14 @@
 package com.haskforce.cabal.completion
 
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.module.{Module, ModuleUtilCore}
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.{VirtualFile, VirtualFileManager}
-import com.intellij.psi.{PsiFile, PsiManager}
+import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiManager
 
 import com.haskforce.cabal.lang.psi.CabalFile
 import com.haskforce.psi.HaskellFile
+import com.haskforce.utils.SAMUtils
 
 /** Utility for finding Cabal files. */
 object CabalFileFinder {
@@ -33,9 +35,11 @@ object CabalFileFinder {
   }
 
   private def getPsi(project: Project, cabalVFile: VirtualFile): Option[CabalFile] = {
-    Option(PsiManager.getInstance(project).findFile(cabalVFile)).map {
-      case cabalPsiFile: CabalFile => cabalPsiFile
-      case other => throw new AssertionError(s"Expected CabalFile, got: $other")
-    }
+    ApplicationManager.getApplication.runReadAction(SAMUtils.computable {
+      Option(PsiManager.getInstance(project).findFile(cabalVFile)).map {
+        case cabalPsiFile: CabalFile => cabalPsiFile
+        case other => throw new AssertionError(s"Expected CabalFile, got: $other")
+      }
+    })
   }
 }
