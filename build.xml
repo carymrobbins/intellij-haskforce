@@ -35,6 +35,8 @@
   <property file="build.properties"/>
   <property name="build.compiler" value="modern"/>
   <dirname property="module.haskforce.basedir" file="${ant.file}"/>
+  <property name="jps.jdk.source" value="1.6"/>
+  <property name="jps.jdk.target" value="1.6"/>
   <property name="jflex.jar" value="jflex-1.7.0-SNAPSHOT.jar"/>
   <property name="jflex.skeleton" value="idea-flex.skeleton"/>
   <property name="lib.dir" value="${module.haskforce.basedir}/lib"/>
@@ -253,7 +255,7 @@
       <patternset refid="excluded.from.compilation.jps-shared"/>
     </scalac>
 
-    <javac2 source="${jdk.source}" target="${jdk.target}" destdir="${jps-shared.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jps-shared}/javac">
+    <javac2 source="${jps.jdk.source}" target="${jps.jdk.target}" destdir="${jps-shared.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jps-shared}/javac">
       <compilerarg line="${compiler.args.jps-shared}"/>
       <bootclasspath refid="jps-shared.module.bootclasspath"/>
       <classpath refid="jps-shared.module.production.classpath"/>
@@ -632,7 +634,7 @@
       <patternset refid="excluded.from.compilation.jps-plugin"/>
     </scalac>
 
-    <javac2 source="${jdk.source}" target="${jdk.target}" destdir="${jps-plugin.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jps-plugin}/javac">
+    <javac2 source="${jps.jdk.source}" target="${jps.jdk.target}" destdir="${jps-plugin.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.jps-plugin}/javac">
       <compilerarg line="${compiler.args.jps-plugin}"/>
       <bootclasspath refid="jps-plugin.module.bootclasspath"/>
       <classpath refid="jps-plugin.module.production.classpath"/>
