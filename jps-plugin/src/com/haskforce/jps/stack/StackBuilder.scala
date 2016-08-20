@@ -127,23 +127,38 @@ class StackBuildProcessAdapter(context: CompileContext) extends ProcessAdapter {
   }
 
   private def processCompilerMessage(): Unit = {
-    context.processMessage(buildCompilerMessage(state.mkString("\n")))
+    context.processMessage(buildCompilerMessage(state.toList))
   }
 
-  private def buildCompilerMessage(message: String): CompilerMessage = {
-    val m = StackBuilderRegex.SOURCE_LOC_REGEX.matcher(message.split('\n')(0))
-    if (m.matches()) {
-      val sourcePath = m.group(1)
-      val line = m.group(2).toInt
-      val col = m.group(3).toInt
-      return new CompilerMessage(
-        "stack", BuildMessage.Kind.ERROR, message, sourcePath, -1L, -1L, -1L, line, col
-      )
-    }
-    new CompilerMessage("stack", BuildMessage.Kind.INFO, message)
+  private def stripCommonWhitespace(list: List[String]) = list match {
+    case Nil => Nil
+    case l =>
+      val commonPrefixLen = l.map(_.takeWhile(_ == ' ').length).min
+      list.map(_.drop(commonPrefixLen))
   }
+
+  private def buildCompilerMessage(message: List[String]): CompilerMessage = {
+    import StackBuilderRegex._
+    import BuildMessage.Kind
+
+    val (head :: tail) = message
+
+    def msg(k: Kind, path: String, line: String, col: String, info: String) = {
+      val rebuild = if (info.trim.nonEmpty) info :: tail else tail
+      val joined = stripCommonWhitespace(rebuild).mkString("\n")
+      new CompilerMessage("", k, joined, path, -1L, -1L, -1L, line.toInt, col.toInt)
+    }
+
+    head.trim match {
+      case WarnRegex(sourcePath, line, col, info) => msg(Kind.WARNING, sourcePath, line, col, info)
+      case ErrorRegex(sourcePath, line, col, info) => msg(Kind.ERROR, sourcePath, line, col, info)
+      case _ => new CompilerMessage("stack", Kind.INFO, message.mkString("\n"))
+    }
+  }
+
 }
 
 object StackBuilderRegex {
-  val SOURCE_LOC_REGEX = Pattern.compile("""([^:]+):(\d+):(\d+):""")
+  val WarnRegex = """([^:]+):(\d+):(\d+):(?: warning:| Warning:)(.*)""".r
+  val ErrorRegex = """([^:]+):(\d+):(\d+):(?: error:)?(.*)""".r
 }
