@@ -260,12 +260,12 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
     }
 
     private void validateExecutable(String name, TextAccessor field) throws ConfigurationException {
-        if (new File(field.getText()).canExecute()) return;
+        if (new File(field.getText()).canExecute() || new File(myProject.getBasePath(), field.getText()).exists()) return;
         throw new ConfigurationException("Not a valid '" + name + "' executable: '" + field.getText() + "'");
     }
 
     private void validateFileExists(String name, TextAccessor field) throws ConfigurationException {
-        if (new File(field.getText()).exists()) return;
+        if (new File(field.getText()).exists() || new File(myProject.getBasePath(), field.getText()).exists()) return;
         throw new ConfigurationException("'" + name + "' file does not exist: '" + field.getText() + "'");
     }
 
