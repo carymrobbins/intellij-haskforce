@@ -19,6 +19,7 @@ public class HaskellBuildOptions {
     public static final boolean DEFAULT_INSTALL_CABAL_DEPENDENCIES = false;
     public static final boolean DEFAULT_ENABLE_TESTS = false;
     public static final boolean DEFAULT_USE_STACK = false;
+    public static final String DEFAULT_STACK_FILE = "stack.yaml";
 
     public HaskellBuildOptions() {
     }
@@ -72,7 +73,7 @@ public class HaskellBuildOptions {
     public String myStackFlags = "";
 
     @Tag("stackFile")
-    public String myStackFile = "";
+    public String myStackFile = DEFAULT_STACK_FILE;
 
     @Override
     public String toString() {
