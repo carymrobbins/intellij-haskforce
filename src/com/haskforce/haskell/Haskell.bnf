@@ -1,0 +1,644 @@
+/*
+ * Copyright 2014 Cary M. Robbins
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * WARNING: BE CAREFUL WITH PERFORMANCE WHEN EDITING THIS FILE.
+ *
+ * Pinning might alter what the parser accepts.
+ * Mental model: red cut in logic programming.
+ *
+ * The parser test suite itself with 40 small examples can literally take 500%
+ * longer time.
+ *
+ * Useful patterns and anti-patterns:
+ *
+ * Good: private impdecls ::= impdecl [semi impdecls]
+ *
+ * Bad: private impdecls ::= impdecl semi impdecls
+ *                        | impdecls
+
+ * Good: funorpatdecl ::= (funlhs | pat) rhs
+ *
+ * Bad: funorpatdecl ::= funlhs rhs
+  *                    | pat rhs
+ */
+
+/*
+ * To generate sources from this file -
+ *   Delete the gen/ directory.
+ *   Use Command + Shift + G to generate parser in gen/ directory.
+ *
+ *   The lexer belonging to this parser is located in
+ *   highlighting/_HaskellSyntaxHighlightingLexer.flex. See that file for
+ *   instructions on how to generate it.
+ *
+ *   Be sure to add the gen/ directory to your sources.
+ *   In Intellij, right-click the gen directory and choose Mark Directory As > Sources.
+ */
+
+{
+  parserClass="com.haskforce.haskell.parser.HaskellParser"
+  parserUtilClass="com.haskforce.haskell.psi.HaskellParserUtilBase"
+
+  implements="com.haskforce.haskell.psi.HaskellCompositeElement"
+  extends="com.haskforce.haskell.psi.impl.HaskellCompositeElementImpl"
+
+  psiClassPrefix="Haskell"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.haskforce.haskell.psi"
+  psiImplPackage="com.haskforce.haskell.psi.impl"
+
+  elementTypeHolderClass="com.haskforce.haskell.psi.HaskellTypes"
+  elementTypeClass="com.haskforce.haskell.psi.HaskellElementType"
+  tokenTypeClass="com.haskforce.haskell.psi.HaskellTokenType"
+
+  psiImplUtilClass="com.haskforce.haskell.psi.impl.HaskellPsiImplUtil"
+
+  implements("varid|conid")="com.haskforce.haskell.psi.HaskellNamedElement"
+  implements("qqblob")="com.intellij.psi.PsiLanguageInjectionHost"
+  extends("varid|conid")="com.haskforce.haskell.psi.impl.HaskellNamedStubbedPsiElementBase<?>"
+  elementTypeFactory("varid|conid")="com.haskforce.haskell.psi.impl.HaskellElementTypeFactory.factory"
+
+  generate=[tokenAccessors="yes"]
+
+  tokens=[
+    lparen='('
+    rparen=')'
+    lunboxparen='(#'
+    runboxparen='#)'
+    pipe='|'
+    comma=','
+    semicolon=';'
+    qqopen='Quasi-['
+    qqtext='Quasi-stuff'
+    lthopen='[|'
+    rthclose='|]'
+    lbracket='['
+    rbracket=']'
+    backtick='`'
+    lbrace='{'
+    rbrace='}'
+    opencom='{-'
+    closecom='-}'
+    openpragma='{-#'
+    closepragma='#-}'
+    doublequote='"'
+    thquote="''"
+    singlequote="'"
+    exclamation='!'
+    doublehash='##'
+    hash='#'
+    parensplice="$("
+    idsplice="regexp:\$[a-z_][a-zA-Z_0-9']*"
+    dollar='$'
+    percent='%'
+    ampersand='&'
+    asterisk='*'
+    plus='+'
+    period='.'
+    slash='/'
+    lessthan='<'
+    equals='='
+    greaterthan='>'
+    question='?'
+    ampersat='@'
+    backslash='\'
+    caret='^'
+    minus='-'
+    underscore='_'
+    tilde='~'
+    colon=':'
+    doubleperiod='..'
+    doublecolon='::'
+    leftarrow='<-'
+    rightarrow='->'
+    doublearrow='=>'
+    nullCharacter='\&'
+    classtoken='class'
+    varidRegexp="regexp:[a-z_][a-zA-Z_0-9']*"
+    conidRegexp="regexp:[A-Z][a-zA-Z_0-9']*"
+    chartoken="regexp:'(\\.|[^'])'"
+    integertoken="regexp:(0(o|O)[0-7]+|0(x|X)[0-9a-fA-F]+|[0-9]+)"
+    floattoken="regexp:([0-9]+\.[0-9]+((e|E)(\+|\-)?[0-9]+)?|[0-9]+((e|E)(\+|\-)?[0-9]+))"
+    comment='regexp:--([^\^\r\n][^\r\n]*|[\r\n])'
+    commenttext='regexp:[^{}-]+'
+    dashes='regexp:--(-)?'
+    haddock='regexp:--\^[^\r\n]*'
+    stringtoken='regexp:"(\\\s*\n\s*\\|\\"|[^"\n])*"'
+    badstringtoken='regexp:"(\\\s*\n\s*|\\"|[^"\n])*'
+    // Reserved IDs. Should be tokens for IntelliJ reasons. Gives us a nicer
+    // PSI tree as side effect.
+    DATA='data'
+    DEFAULT='default'
+    DERIVING='deriving'
+    FOREIGN='foreign'
+    INSTANCE='instance'
+    FAMILYTOKEN='family'
+    MODULETOKEN='module'
+    NEWTYPE='newtype'
+    TYPE='type'
+    WHERE='where'
+    AS='as'
+    IMPORT='import'
+    INFIX='infix'
+    INFIXL='infixl'
+    INFIXR='infixr'
+    QUALIFIED='qualified'
+    HIDING='hiding'
+    CASE='case'
+    LCASETOK='\case'
+    MDOTOK='mdo'
+    DO='do'
+    RECTOK='rec'
+    ELSE='else'
+    CPPIFDEF='regexp:#ifdef ([^\r\n]*)'
+    CPPIF='regexp:#if ([^\r\n]*)'
+    CPPELIF='regexp:#elif ([^\r\n]*)'
+    CPPELSE='#else'
+    CPPENDIF='#endif'
+    CPPDEFINE='regexp:#define ([^\r\n]*)'
+    CPPUNDEF='regexp:#undef ([^\r\n]*)'
+    CPPINCLUDE='regexp:#include ([^\r\n]*)'
+    CPPLINE='regexp:#line ([^\r\n]*)'
+    CPPPRAGMA='regexp:#pragma ([^\r\n]*)'
+    IF='if'
+    IN='in'
+    LET='let'
+    OF='of'
+    THEN='then'
+    EXPORTTOKEN='export'
+    CONSYMTOK="Consym"
+    VARSYMTOKPLUS="VarsymPlus"
+    VARSYMTOK="Varsym"
+    FORALLTOKEN='forall'
+    WHITESPACESEMITOK="Synthetic semicolon"
+    WHITESPACELBRACETOK="Synthetic leftbrace"
+    WHITESPACERBRACETOK="Synthetic rightbrace"
+    INFIXVARID='Infix varid'
+    SHEBANGSTART='Synthetic shebang start "#!"'
+    SHEBANGPATH='Synthetic shebang path'
+  ]
+}
+
+// Haskell 2010 Report - http://www.haskell.org/onlinereport/haskell2010/haskellch2.html#x7-140002
+
+module ::= shebang? ppragma* [moduledecl] [body]
+
+shebang ::= SHEBANGSTART SHEBANGPATH?
+
+moduledecl ::= "module" qconid [ppragma] [exportsempty|exports] "where" {pin=1}
+
+exportsempty ::= "()" | '(' ')'
+
+// Using [export] since you can having extraneous commas.
+exports ::= <<commaSeparate2 [export]>>
+
+export ::= "module" qconid
+        // Really (qtycon|qtycls) but they are both ::= qconid.
+        | qtycon [ '(' (".." | cnames | qvars) ')']
+        | qvar {pin(".*")=1}
+
+body ::= ppragma* open bodyaux close {pin=2}
+
+private bodyaux ::= impdecls* ppragma* [[semi] topdecls]
+
+// Do not pin semi in impdecls, that parse-conflicts with the semi in bodyaux.
+private impdecls ::= impdecl [semi impdecls] {pin=1}
+
+private topdecls ::= topdecl [semi topdecls] {pin(".*")=1}
+
+impdecl ::= "import" ["qualified"] qconid ["as" qconid] [impspec] {pin(".*")=1}
+
+// Using <<sequence [importt]>> since you can have extraneous commas.
+private impspec ::= [i "hiding"] '(' [<<sequence [importt]>>] ')' | impempty {pin(".*")=2}
+
+impempty ::= "()"
+
+// Workaround for https://github.com/JetBrains/Grammar-Kit/issues/32.
+importt ::= var
+          // Really (tycon|tycls), but they are both ::= conid.
+          | tycon ['(' (".." | cnames | vars) ')']
+
+private cnames ::= <<sequence cname>>
+private cname ::= var | con
+
+vars ::= <<sequence var>>
+
+private topdecl ::= topdecl1 ppragma*
+
+private topdecl1 ::= typedecl
+                  | datadecl
+                  | newtypedecl
+                  | classdecl
+                  | instancedecl
+                  | defaultdecl
+                  | foreigndecl
+                  | derivingdecl
+                  | decl
+                  | impdecl // From #ifdefs
+                  | infixexp // TH-extension.
+
+typedecl ::= "type" (typedeclclosedfamily | typedeclnorm) {pin=1}
+private typedeclclosedfamily ::= "family" kindedvars 'where' decls {pin=3}
+private kindedvars ::= typee (typee | '(' tyvar kindsig ')')* [kindsig]
+private typedeclnorm ::= ["family" | "instance"] typee ['=' (typee|foralltype)]
+
+// Both data declaration and gadt declaration. The syntactic difference between
+// the two is between typee and [deriving].
+datadecl ::= "data" ["instance"] [clscontext "=>"] typee ['=' ["forall" tv_bndr* '.'] constrs| [kindsig] ["where" gadtconstrs]] [deriving] {pin=1}
+newtypedecl ::= "newtype" [clscontext "=>"] simpletype '=' newconstr [deriving] {pin=1}
+classdecl ::= "class" ctype [fundeps] ["where" ppragma* cdecls] {pin=1}
+instancedecl ::= "instance" ctype ["where" idecls] {pin=1}
+defaultdecl ::= "default" <<commaSeparate typee>> {pin=1}
+foreigndecl ::= "foreign" fdecl {pin=1}
+derivingdecl ::= "deriving" "instance" [ppragma] ctype {pin=1}
+
+private fundeps ::= '|' <<sequence fundep>> {pin=1}
+private fundep ::= tyvar+ "->" tyvar+ {pin=2}
+
+private cdecls ::= open [cdecls1] close {pin=1}
+
+private cdecls1 ::= cdecl [semi cdecls1]
+
+cdecl ::= atdecl
+        | (funlhs | var) rhs
+        | gendecl
+        | ppragma
+
+private atdecl ::= "type" ["instance"] (typee [kindsig] | ctype '=' ctype)
+                 | "data" ["instance"] ctype [kindsig]
+
+private idecls ::= ppragma* open [idecls1] close {pin=2}
+
+private idecls1 ::= [gendecl semi] idecl0 [semi [gendecl semi] idecls1]
+
+private idecl0 ::= ppragma* idecl ppragma*
+
+idecl ::= itdecl
+        | funorpatdecl
+
+private itdecl ::= "type" ctype '=' ctype
+                 | ("data" | "newtype") ctype ([kindsig] gadtconstrs | ['=' constrs]) [deriving]
+
+gendecl ::= gendeclfst
+          | fixity [integertoken] (<<sequence op>>) {pin(".*")=1}
+
+// Type signatures. Useful for go to definition.
+private gendeclfst ::= vars '::' ctype  {pin(".*")=2}
+
+fixity ::= "infix" | "infixr" | "infixl" {pin(".*")=1}
+
+// Type already taken so we get collisions in generated code.
+typee ::= btype [typeeaux] {pin=1}
+
+private typeeaux ::= (singlequote (qconop | varop) | qtyconop) typee
+                   | typeeopt
+
+private typeeopt ::= "->" typee {pin=1}
+
+private strict_mark ::= [ppragma] '!'
+
+ctype ::= foralltype
+        | contexttype
+        | typee
+
+private foralltype ::=  "forall" tv_bndr* '.' ctype {pin=1}
+private contexttype ::= clscontext '=>' ctype {pin=2}
+
+private btype ::= atype [btype]
+
+atype ::= [singlequote] ntgtycon ['##'|'#']
+        | tyvar
+        | strict_mark atype
+        | '{' fielddecls '}'
+        | '(#' <<sequence ctype>> '#)'
+        | '(' ['?'] ctype "::" (kind | ctype)')'
+        | [singlequote] ('(' [<<sequence ctype>>] ')' | '[' <<sequence ctype>> ']')
+        | integertoken
+        | pstringtoken
+        | foralltype
+
+private ntgtycon ::=  '(#' commas '#)'
+                   | '(' ('->' | commas) ')'
+//                   | '[:' ':]'
+                   | '[' ']'
+//                   | '(' '~#' ')'
+                   | oqtycon
+
+private commas ::= ','+
+
+clscontext ::= btype ['~' btype]
+
+private simpletype ::= tycon tyvar*
+
+private gadtconstrs ::= open [gadtconstrs1] close
+
+private gadtconstrs1 ::= gadtconstr semi gadtconstrs1
+                       | gadtconstr
+
+private gadtconstr ::= <<sequence con>> "::" ctype
+                     | oqtycon '{' fielddecls '}' "::" ctype
+
+private constrs ::= [clscontext "=>"] constr ('|' constr)*
+
+constr ::= btype conop btype
+         | con ('{' [(fielddecl ',')* fielddecl] '}' | btype*)
+
+newconstr ::= con (atype | '{' var '::' typee '}') {pin(".*")=1}
+
+private fielddecls ::= fielddecl [',' fielddecls] {pin(".*")=1}
+
+private fielddecl ::= vars "::" (typee | '!' atype) {pin=2}
+
+private deriving ::= "deriving" (dclass  | <<commaSeparate dclass>>) {pin=1}
+private dclass ::= qtycls (dclass|tyvar)*
+
+private fdecl ::= (importdecl | exportdecl) var "::" ftype
+
+private importdecl ::= "import" callconv [safety] impent {pin=1}
+private exportdecl ::= "export" callconv [expent] {pin=1}
+
+private callconv ::= "ccall" | "stdcall" | "cplusplus"
+                   | "jvm" | "dotnet" // FIXME: Add system specific call conv.
+
+// Listed in Section 8.5.1.
+private impent ::= '\"' "wrapper" '\"'
+                 | '\"' "dynamic" '\"'
+                 | pstringtoken
+private expent ::= pstringtoken // FIXME: '\"' [cid] '\"'
+
+// private cid ::= "regexp:[a-zA-Z][a-zA-Z_0-9]*"
+
+private ftype ::= fatype ["->" ftype]
+                | "()"
+
+private fatype ::= qtycon atype*
+
+private safety ::= "unsafe" | "safe" | "interruptible"
+
+private funlhs ::= (var |'(' funlhs ')') apat+
+                 | pat varop pat
+
+private wheredecls ::= "where" decls {pin=1}
+
+rhs ::= ('=' exp | gdrhs+) [wheredecls] {pin(".*")=1}
+
+private gdrhs ::= guards '=' exp {pin=2}
+
+private guards ::= '|' guard (',' guard)* {pin=1}
+
+guard ::= pat '<-' exp
+        | "let" decls
+        | infixexp
+
+exp ::= ppragma* infixexp ["::" [clscontext "=>"] typee]
+
+private infixexp ::= '-'* lexp [qop infixexp]
+
+letexp ::= "let" decls ["in" exp]
+
+private lexp ::= "\\case" altslist
+               | '\' (apat | thaexp)+ "->" exp
+               | letexp
+               | "if" exp [semi] "then" exp [semi] "else" exp
+               | "case" exp "of" altslist
+               | "do" open stmts close
+               | "mdo" open stmts close
+               // proc might just be a variable name.
+               | "proc" (aexp "->" exp | aexp*)
+               | aexp+ {pin(".*")=2}
+
+private aexp ::= parensplice exp i ')'
+               | singlequote i (qvar | qcon)
+               | idsplice
+               | thquote i qcon
+               | literal
+               | thaexp
+               | '(#' i '#)'
+               | listlike
+               | parenlike
+               | [recordlikelhs] i '{' (fbind ',')* [e] (".." | fbind) [e] '}'
+               | gcon
+               | qvar
+
+qqblob ::= qqtext+ {
+    methods=[isValidHost updateText createLiteralTextEscaper]
+}
+
+private thaexp ::= '[|' e (exp [semi])+ e '|]'
+                 // TODO: Enable more precise TH parsing with t/p/d.
+//                 | '[' ("t" '|' ctype | "p" '|' infixexp |  "d" '|' open topdecls close ) '|]'
+                 | qqopen i qvarid i '|' qqblob '|]'
+//               | "[||" exp '||]'
+
+
+listlike ::=  '[' exp [listlike1] ']'
+
+private listlike1 ::= ('|' (squal ',')* squal)+
+                    | [',' exp] '..' [exp]
+                    | (',' exp)+
+
+private parenlike ::= '(' parenlike1
+
+private parenlike1 ::= exp (',' exp)* ')'
+                     | (infixexp qop | qop infixexp) ')'
+
+// Emulate the aexp part of "aexp '{' (fbind ',')* fbind '}'"
+private recordlikelhs ::= qvar
+                        | qcon
+                        | gcon
+                        | '(' recordlikeparen ')'
+
+private recordlikeparen ::= exp
+                          | infixexp qop
+                          | qop infixexp
+
+
+private altslist ::= '{' alt (semi alt)* '}'
+                   | iAlts
+
+private iAlts ::= open (alt|exp) (semi alt)* close?
+
+alt ::= pat i ('->' exp | gdpat) [wheredecls] {pin=3}
+
+private gdpat ::= guards '->' exp [gdpat] {pin=2}
+
+private squal ::= transformqual
+                | qual
+
+private transformqual ::= 'then' ('group' ['by' exp] 'using' exp | exp ['by' exp])
+
+private qual ::= pat '<-' exp
+              | "let" decls
+              | exp
+
+stmts ::= stmt* (letexp | partialstmt | exp)
+
+private stmt ::= partialstmt semi
+
+private partialstmt ::= "rec" [open stmts close | "let" decls]
+                      | [pat '<-'] exp
+
+private fbind ::= qvar '=' exp {pin=2}
+
+pat ::= lpat ((qconop|explicitqvarsym) pat | ["::" ctype])
+
+private lpat ::= '-' (integertoken|floattoken)
+               | gcon apat+
+               | apat
+
+private apat ::= literal
+               | '_'
+               | ('!'|'~') apat
+               | var ('+' integertoken | ['@' apat])
+               | qcon '{' [(fpat ',')* fpat] '}'
+               | '(' pat (apat* "->" pat | [',' (pat ',')* pat]) ')'
+               // Second option is quasiquotes. See TemplateHaskell00002.hs.
+               | '[' (pat (',' pat)* ']' |  exp '|' [semi] exp [semi]'|]')
+               | gcon
+               | qvar
+
+private fpat ::= qvar ['=' pat]
+               | ".."  {pin(".*")=1}
+
+private gcon ::= '[' ']'
+              | '(' [commas] ')'
+              | qcon
+
+private decls ::= open [decls1] close {pin=1}
+
+private decls1 ::= ppragma* decl ppragma* [semi decls1]
+
+private decl ::= funorpatdecl
+               | gendecl
+
+funorpatdecl ::= (funlhs | pat) rhs
+
+private kindsig ::= "::" kind {pin=1}
+
+kind ::= bkind ['->' kind]
+
+bkind ::= akind [bkind]
+
+akind ::= '*'
+        | '!'
+        | '(' kind ')'
+        | pkind
+        | tyvar
+
+private pkind ::= qtycon
+                | '(' [kind ',' comma_kinds1] ')'
+                | '[' kind [',' comma_kinds1] ']'
+
+private comma_kinds1 ::= kind  [',' comma_kinds1]
+
+private literal ::= floattoken | integertoken | chartoken | pstringtoken ['#']
+
+ppragma ::= openpragma PRAGMA+ closepragma {pin(".*")=3}
+
+// private symbol ::= symbol1 | '=' | '|' | '#' |
+
+// Stripped down version of symbol; real definition in comment above.
+private symbol1 ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '>' | '?' | '@'
+         | '\' | '^' | '-' | '~' | ':'
+varid ::= (varidRegexp | "as" | "rec" | "qualified") {
+        methods=[getName getNameIdentifier getReference setName getPresentation]
+        stubClass="com.haskforce.haskell.stubs.HaskellVaridStub"
+    }
+conid ::= conidRegexp {
+        methods=[getName getNameIdentifier getReference setName getPresentation]
+        stubClass="com.haskforce.haskell.stubs.HaskellConidStub"
+    }
+
+varsym ::= VARSYMTOK | symbol1
+consym ::= CONSYMTOK
+
+// Quick documentation of various syntactic categories.
+//
+// special ::= '(' | ')' | ',' | ';' | '[' | ']' | '{' | '}' | thquote | backtick
+//
+// private reservedExpr ::= 'case' | 'do' | 'else' | 'if' | 'in' | 'let' | 'of' | 'then'
+// private reservedDecl ::= 'class' | 'data' | 'default' | 'deriving' | 'foreign' | 'instance'
+//                        | 'newtype' | 'type' | 'where' | 'forall'
+// private reservedMeta ::= 'export' | 'foreign' | 'import' | 'infix'
+//                        | 'infixl' | 'infixr'
+// private reservedVar ::= '_'
+// private reservedid  ::= reservedExpr | reservedDecl | reservedMeta | reservedVar
+// reservedop ::= '..' | '::' | '=' | '\' | '|' | '<-' | '->' | '@' | '~' | '=>'
+
+tyvar ::= varid
+tycon ::= conid
+tycls ::= conid
+private modulePrefix ::= (conid '.')+
+
+qvarid ::= [modulePrefix] varid
+qconid ::= [modulePrefix] conid ['#']
+qtycon ::= [modulePrefix] tycon
+qtycls ::= [modulePrefix] tycls
+qconsym ::= [modulePrefix] consym
+// HACK: There are two unfortunate hacks here.  This bides us time until we have a better parser.
+//  1. The lexer groups Prelude.$ into conid(Prelude) varsym(.$), so we just allow this for now.
+//  2. The .. is considered its own reserved op, so handle something like Control.Category..
+qvarsym ::= varsym | explicitqvarsym
+private explicitqvarsym ::= conid ('.' conid)* (varsym | '..')
+
+private var ::= varid | '(' varsym ')'
+qvars ::= <<sequence qvar>>
+qvar ::= qvarid | '(' qvarsym ')'
+con ::= conid | '(' consym ')'
+qcon ::= qconid | '(' gconsym ')'
+varop ::= varsym | '`' varid '`'
+qvarop ::= qvarsym | '`' qvarid '`'
+conop ::= consym | '`' conid '`'
+qconop ::= gconsym | '`' qconid '`'
+oqtycon ::= '(' ('~' | qtyconsym) ')'        // An "ordinary" qualified tycon;
+          | qtycon                           // These can appear in export lists
+
+qtyconop ::= qtyconsym | '`' qtycon '`'
+qtyconsym ::= qconsym | qvarsym | tyconsym
+tyconsym ::= consym | varsym | '*' | '-'
+op ::= varop | conop
+qop ::= qvarop | qconop
+gconsym ::= ':' | qconsym
+
+tv_bndr ::= '(' tyvar kindsig ')'
+          | tyvar
+
+pstringtoken ::= '"' STRINGTOKEN* '"'
+
+// Misc cross-cutting stuff.
+
+private open ::= '{'
+                | WHITESPACELBRACETOK {pin(".*")=1}
+
+private close ::= '}'
+                | WHITESPACERBRACETOK
+                | [<<stateHackMess>>]
+
+private semi ::= ';'
+               | WHITESPACESEMITOK {pin(".*")=1}
+
+// Meta-Helpers
+
+// Comma-separate a list of the parameter.
+private meta commaSeparate ::= '(' <<p>> (',' <<p>>)* ')' {pin(".*")=1}
+// Comma-separate a list of the parameter with a trailing comma.
+private meta commaSeparate2 ::= '(' <<p>> (',' (<<p>> | &')'))* ')' {pin(".*")=1}
+
+private meta sequence ::= <<p>> (',' <<p>>)*  {pin(".*")=1}
+
+private i ::= <<indented false>>
+private e ::= <<indented true>>

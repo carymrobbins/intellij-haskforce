@@ -1,6 +1,6 @@
 package com.haskforce.settings;
 
-import com.haskforce.HaskellIcons;
+import com.haskforce.haskell.HaskellIcons;
 import com.haskforce.highlighting.HaskellSyntaxHighlighter;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;

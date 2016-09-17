@@ -1,8 +1,8 @@
 package com.haskforce.utils;
 
 import com.google.common.collect.Lists;
-import com.haskforce.index.HaskellModuleIndex;
-import com.haskforce.psi.*;
+import com.haskforce.haskell.index.HaskellModuleIndex;
+import com.haskforce.haskell.psi.HaskellPsiUtil;
 import com.intellij.lang.ASTNode;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
@@ -39,15 +39,15 @@ public class HaskellUtil {
         List<FoundDefinition> results = ContainerUtil.newArrayList();
         final String qPrefix = getQualifiedPrefix(e);
         final PsiFile psiFile = e.getContainingFile().getOriginalFile();
-        if (psiFile instanceof HaskellFile) {
+        if (psiFile instanceof com.haskforce.haskell.psi.HaskellFile) {
             List<PsiNamedElement> result = ContainerUtil.newArrayList();
-            findDefinitionNode((HaskellFile)psiFile, name, e, result);
+            findDefinitionNode((com.haskforce.haskell.psi.HaskellFile)psiFile, name, e, result);
             addFoundDefinition(result, null, results);
         }
         for (HaskellPsiUtil.Import potentialModule : potentialModules) {
             List<PsiNamedElement> result = ContainerUtil.newArrayList();
-            List<HaskellFile> files = HaskellModuleIndex.getFilesByModuleName(project, potentialModule.module, GlobalSearchScope.allScope(project));
-            for (HaskellFile f : files) {
+            List<com.haskforce.haskell.psi.HaskellFile> files = HaskellModuleIndex.getFilesByModuleName(project, potentialModule.module, GlobalSearchScope.allScope(project));
+            for (com.haskforce.haskell.psi.HaskellFile f : files) {
                 final boolean returnAllReferences = name == null;
                 final boolean inLocalModule = f != null && qPrefix == null && f.equals(psiFile);
                 final boolean inImportedModule = f != null && potentialModuleNames.contains(f.getModuleName());
@@ -71,10 +71,10 @@ public class HaskellUtil {
      *   import Baz (foo)
      * </code>
      */
-    private static void findDefinitionNodeInExport(@NotNull Project project, HaskellFile f, @Nullable String name,
+    private static void findDefinitionNodeInExport(@NotNull Project project, com.haskforce.haskell.psi.HaskellFile f, @Nullable String name,
                                                    @Nullable PsiNamedElement e, List<PsiNamedElement> result) {
         List<HaskellPsiUtil.Import> imports = HaskellPsiUtil.parseImports(f);
-        for (HaskellExport export : PsiTreeUtil.findChildrenOfType(f, HaskellExport.class)) {
+        for (com.haskforce.haskell.psi.HaskellExport export : PsiTreeUtil.findChildrenOfType(f, com.haskforce.haskell.psi.HaskellExport.class)) {
             boolean exportFn = export.getQvar() != null && export.getQvar().getQvarid() != null
                     && export.getQvar().getQvarid().getVarid().getName().equals(name);
             String moduleName = exportFn
@@ -86,7 +86,7 @@ public class HaskellUtil {
                 boolean hidden = imprt.getHidingNames() != null && ArrayUtil.contains(name, imprt.getHidingNames());
                 boolean notImported = imprt.getImportedNames() != null && !ArrayUtil.contains(name, imprt.getImportedNames());
                 if (hidden || notImported) continue;
-                for (HaskellFile f2 : HaskellModuleIndex.getFilesByModuleName(project, imprt.module, GlobalSearchScope.allScope(project))) {
+                for (com.haskforce.haskell.psi.HaskellFile f2 : HaskellModuleIndex.getFilesByModuleName(project, imprt.module, GlobalSearchScope.allScope(project))) {
                     findDefinitionNode(f2, name, e, result);
                     findDefinitionNodeInExport(project, f2, name, e, result);
                 }
@@ -98,18 +98,18 @@ public class HaskellUtil {
      * Finds a name definition inside a Haskell file. All definitions are found when name
      * is null.
      */
-    public static void findDefinitionNode(@Nullable HaskellFile file, @Nullable String name, @Nullable PsiNamedElement e, @NotNull List<PsiNamedElement> result) {
+    public static void findDefinitionNode(@Nullable com.haskforce.haskell.psi.HaskellFile file, @Nullable String name, @Nullable PsiNamedElement e, @NotNull List<PsiNamedElement> result) {
         if (file == null) return;
         // We only want to look for classes that match the element we are resolving (e.g. varid, conid, etc.)
         final Class<? extends PsiNamedElement> elementClass;
-        if (e instanceof HaskellVarid) {
-            elementClass = HaskellVarid.class;
-        } else if (e instanceof HaskellConid) {
-            elementClass = HaskellConid.class;
+        if (e instanceof com.haskforce.haskell.psi.HaskellVarid) {
+            elementClass = com.haskforce.haskell.psi.HaskellVarid.class;
+        } else if (e instanceof com.haskforce.haskell.psi.HaskellConid) {
+            elementClass = com.haskforce.haskell.psi.HaskellConid.class;
         } else {
             elementClass = PsiNamedElement.class;
         }
-        final boolean isType = PsiTreeUtil.getParentOfType(e, HaskellGendecl.class) != null;
+        final boolean isType = PsiTreeUtil.getParentOfType(e, com.haskforce.haskell.psi.HaskellGendecl.class) != null;
         Collection<PsiNamedElement> namedElements = PsiTreeUtil.findChildrenOfType(file, elementClass);
         for (PsiNamedElement namedElement : namedElements) {
             if ((name == null || name.equals(namedElement.getName())) && definitionNode(namedElement)) {
@@ -121,26 +121,26 @@ public class HaskellUtil {
     }
 
     private static boolean typeNode(@NotNull String name, @NotNull PsiNamedElement e) {
-        HaskellDatadecl datadecl = PsiTreeUtil.getParentOfType(e, HaskellDatadecl.class);
+        com.haskforce.haskell.psi.HaskellDatadecl datadecl = PsiTreeUtil.getParentOfType(e, com.haskforce.haskell.psi.HaskellDatadecl.class);
         if (datadecl != null) {
             return datadecl.getTypeeList().get(0).getAtypeList().get(0).getText().equals(name);
         }
-        HaskellNewtypedecl newtypedecl = PsiTreeUtil.getParentOfType(e, HaskellNewtypedecl.class);
+        com.haskforce.haskell.psi.HaskellNewtypedecl newtypedecl = PsiTreeUtil.getParentOfType(e, com.haskforce.haskell.psi.HaskellNewtypedecl.class);
         if (newtypedecl != null && newtypedecl.getTycon() != null) {
             return name.equals(newtypedecl.getTycon().getConid().getName());
         }
-        HaskellTypedecl typedecl = PsiTreeUtil.getParentOfType(e, HaskellTypedecl.class);
+        com.haskforce.haskell.psi.HaskellTypedecl typedecl = PsiTreeUtil.getParentOfType(e, com.haskforce.haskell.psi.HaskellTypedecl.class);
         if (typedecl != null) {
             return name.equals(typedecl.getTypeeList().get(0).getAtypeList().get(0).getText());
         }
-        HaskellClassdecl classdecl = PsiTreeUtil.getParentOfType(e, HaskellClassdecl.class);
+        com.haskforce.haskell.psi.HaskellClassdecl classdecl = PsiTreeUtil.getParentOfType(e, com.haskforce.haskell.psi.HaskellClassdecl.class);
         if (classdecl != null && classdecl.getCtype() != null) {
-            HaskellCtype ctype = classdecl.getCtype();
+            com.haskforce.haskell.psi.HaskellCtype ctype = classdecl.getCtype();
             while (ctype.getCtype() != null) {
                 ctype = ctype.getCtype();
             }
             if (ctype.getTypee() == null) return false;
-            HaskellAtype haskellAtype = ctype.getTypee().getAtypeList().get(0);
+            com.haskforce.haskell.psi.HaskellAtype haskellAtype = ctype.getTypee().getAtypeList().get(0);
             return haskellAtype.getOqtycon() != null && haskellAtype.getOqtycon().getQtycon() != null &&
                     name.equals(haskellAtype.getOqtycon().getQtycon().getTycon().getConid().getName());
         }
@@ -152,7 +152,7 @@ public class HaskellUtil {
      * is null.
      */
     @NotNull
-    public static List<PsiNamedElement> findDefinitionNodes(@Nullable HaskellFile haskellFile, @Nullable String name) {
+    public static List<PsiNamedElement> findDefinitionNodes(@Nullable com.haskforce.haskell.psi.HaskellFile haskellFile, @Nullable String name) {
         List<PsiNamedElement> ret = ContainerUtil.newArrayList();
         findDefinitionNode(haskellFile, name, null, ret);
         return ret;
@@ -162,7 +162,7 @@ public class HaskellUtil {
      * Finds name definitions that are within the scope of a file, including imports (to some degree).
      */
     @NotNull
-    public static List<PsiNamedElement> findDefinitionNodes(@NotNull HaskellFile psiFile) {
+    public static List<PsiNamedElement> findDefinitionNodes(@NotNull com.haskforce.haskell.psi.HaskellFile psiFile) {
         return findDefinitionNodes(psiFile, null);
     }
 
@@ -172,64 +172,64 @@ public class HaskellUtil {
      * Precondition: Element is in a Haskell file.
      */
     public static boolean definitionNode(@NotNull PsiNamedElement e) {
-        if (e instanceof HaskellVarid) return definitionNode((HaskellVarid)e);
-        if (e instanceof HaskellConid) return definitionNode((HaskellConid)e);
+        if (e instanceof com.haskforce.haskell.psi.HaskellVarid) return definitionNode((com.haskforce.haskell.psi.HaskellVarid)e);
+        if (e instanceof com.haskforce.haskell.psi.HaskellConid) return definitionNode((com.haskforce.haskell.psi.HaskellConid)e);
         return false;
     }
 
-    public static boolean definitionNode(@NotNull HaskellConid e) {
-        final HaskellConstr constr = PsiTreeUtil.getParentOfType(e, HaskellConstr.class);
-        final HaskellCon con;
+    public static boolean definitionNode(@NotNull com.haskforce.haskell.psi.HaskellConid e) {
+        final com.haskforce.haskell.psi.HaskellConstr constr = PsiTreeUtil.getParentOfType(e, com.haskforce.haskell.psi.HaskellConstr.class);
+        final com.haskforce.haskell.psi.HaskellCon con;
         if (constr != null) {
             con = constr.getCon();
         } else {
-            final HaskellNewconstr newconstr = PsiTreeUtil.getParentOfType(e, HaskellNewconstr.class);
+            final com.haskforce.haskell.psi.HaskellNewconstr newconstr = PsiTreeUtil.getParentOfType(e, com.haskforce.haskell.psi.HaskellNewconstr.class);
             con = newconstr == null ? null : newconstr.getCon();
         }
-        final HaskellConid conid = con == null ? null : con.getConid();
+        final com.haskforce.haskell.psi.HaskellConid conid = con == null ? null : con.getConid();
         return e.equals(conid);
     }
 
-    public static boolean definitionNode(@NotNull HaskellVarid e) {
+    public static boolean definitionNode(@NotNull com.haskforce.haskell.psi.HaskellVarid e) {
         final PsiElement parent = e.getParent();
         if (parent == null) return false;
         // If we are in a variable declaration (which has a type signature), return true.
-        if (HaskellPsiUtil.isType(parent, HaskellTypes.VARS)) return true;
+        if (HaskellPsiUtil.isType(parent, com.haskforce.haskell.psi.HaskellTypes.VARS)) return true;
         // Now we have to figure out if the current varid, e, is the first top-level declaration in the file.
         // Check each top-level declaration.  When we find the first one that matches our element's name we'll return
         // true if the elements are equal, false otherwise.
         final String name = e.getName();
         final PsiFile file = e.getContainingFile();
-        if (!(file instanceof HaskellFile)) return false;
-        final HaskellBody body = ((HaskellFile)file).getBody();
+        if (!(file instanceof com.haskforce.haskell.psi.HaskellFile)) return false;
+        final com.haskforce.haskell.psi.HaskellBody body = ((com.haskforce.haskell.psi.HaskellFile)file).getBody();
         if (body == null) return false;
         for (PsiElement child  : body.getChildren()) {
             // If we hit a declaration with a type signature, this shouldn't match our element's name.
-            if (child instanceof HaskellGendecl) {
-                final HaskellVars vars = ((HaskellGendecl)child).getVars();
+            if (child instanceof com.haskforce.haskell.psi.HaskellGendecl) {
+                final com.haskforce.haskell.psi.HaskellVars vars = ((com.haskforce.haskell.psi.HaskellGendecl)child).getVars();
                 if (vars == null) continue;
                 // If it matches our elements name, return false.
-                for (HaskellVarid varid : vars.getVaridList()) {
+                for (com.haskforce.haskell.psi.HaskellVarid varid : vars.getVaridList()) {
                     if (name.equals(varid.getName())) return false;
                 }
-            } else if (child instanceof HaskellFunorpatdecl) {
-                final HaskellFunorpatdecl f = (HaskellFunorpatdecl)child;
-                final HaskellVarop varop = f.getVarop();
+            } else if (child instanceof com.haskforce.haskell.psi.HaskellFunorpatdecl) {
+                final com.haskforce.haskell.psi.HaskellFunorpatdecl f = (com.haskforce.haskell.psi.HaskellFunorpatdecl)child;
+                final com.haskforce.haskell.psi.HaskellVarop varop = f.getVarop();
                 // Check if the function is defined as infix.
                 if (varop != null) {
-                    final HaskellVarid varid = varop.getVarid();
+                    final com.haskforce.haskell.psi.HaskellVarid varid = varop.getVarid();
                     if (varid != null && name.equals(varid.getName())) {
                         return e.equals(varid);
                     }
                 } else {
                     // If there is a pat in the declaration then there should only be one since the only case of having
                     // more than one is when using a varop, which was already accounted for above.
-                    List<HaskellPat> pats = f.getPatList();
+                    List<com.haskforce.haskell.psi.HaskellPat> pats = f.getPatList();
                     if (pats.size() == 1 && pats.get(0).getVaridList().contains(e)) return true;
                     // There can be multiple varids in a declaration, so we'll need to grab the first one.
-                    List<HaskellVarid> varids = f.getVaridList();
+                    List<com.haskforce.haskell.psi.HaskellVarid> varids = f.getVaridList();
                     if (varids.size() > 0) {
-                        final HaskellVarid varid = varids.get(0);
+                        final com.haskforce.haskell.psi.HaskellVarid varid = varids.get(0);
                         if (name.equals(varid.getName())) {
                             return e.equals(varid);
                         }
@@ -250,7 +250,7 @@ public class HaskellUtil {
 
     @Nullable
     public static String getQualifiedPrefix(@NotNull PsiElement e) {
-        final PsiElement q = getParentOfType(e, HaskellQcon.class, HaskellQvar.class);
+        final PsiElement q = getParentOfType(e, com.haskforce.haskell.psi.HaskellQcon.class, com.haskforce.haskell.psi.HaskellQvar.class);
         if (q == null) { return null; }
         final String qText = q.getText();
         final int lastDotPos = qText.lastIndexOf('.');
@@ -292,20 +292,20 @@ public class HaskellUtil {
          * It will cause problems if we also start taking those into account over here.
          */
 
-        if (element instanceof  HaskellFunorpatdecl &&
-                ! (element.getParent() instanceof HaskellBody)) {
+        if (element instanceof com.haskforce.haskell.psi.HaskellFunorpatdecl &&
+                ! (element.getParent() instanceof com.haskforce.haskell.psi.HaskellBody)) {
             PsiElement[] children = element.getChildren();
             for (PsiElement child : children) {
-                if (child instanceof HaskellVarid) {
+                if (child instanceof com.haskforce.haskell.psi.HaskellVarid) {
                     PsiElement psiElement = checkForMatchingVariable(child,matcher);
                     if (psiElement != null){
                         return psiElement;
                     }
                 }
-                if (child instanceof HaskellPat){
-                    HaskellPat pat = (HaskellPat)child;
-                    List<HaskellVarid> varIds = extractAllHaskellVarids(pat);
-                    for (HaskellVarid varId : varIds) {
+                if (child instanceof com.haskforce.haskell.psi.HaskellPat){
+                    com.haskforce.haskell.psi.HaskellPat pat = (com.haskforce.haskell.psi.HaskellPat)child;
+                    List<com.haskforce.haskell.psi.HaskellVarid> varIds = extractAllHaskellVarids(pat);
+                    for (com.haskforce.haskell.psi.HaskellVarid varId : varIds) {
                         if (varId.getName().matches(matcher)){
                             return varId;
                         };
@@ -316,17 +316,17 @@ public class HaskellUtil {
         return null;
     }
 
-    public static List<HaskellVarid> extractAllHaskellVarids(HaskellPat pat) {
-        List<HaskellVarid> varidList = pat.getVaridList();
-        List<HaskellPat> patList = pat.getPatList();
-        for (HaskellPat haskellPat : patList) {
+    public static List<com.haskforce.haskell.psi.HaskellVarid> extractAllHaskellVarids(com.haskforce.haskell.psi.HaskellPat pat) {
+        List<com.haskforce.haskell.psi.HaskellVarid> varidList = pat.getVaridList();
+        List<com.haskforce.haskell.psi.HaskellPat> patList = pat.getPatList();
+        for (com.haskforce.haskell.psi.HaskellPat haskellPat : patList) {
             varidList.addAll(haskellPat.getVaridList());
         }
         return varidList;
     }
 
     private static PsiElement checkForMatchingVariable(PsiElement child, String matcher) {
-        HaskellVarid haskellVarid = (HaskellVarid) child;
+        com.haskforce.haskell.psi.HaskellVarid haskellVarid = (com.haskforce.haskell.psi.HaskellVarid) child;
         if (haskellVarid.getName().matches(matcher)) {
             return child;
         } else {
@@ -335,7 +335,7 @@ public class HaskellUtil {
     }
 
     public static boolean isInsideBody(@NotNull PsiElement position) {
-        HaskellGendecl haskellGendecl = PsiTreeUtil.getParentOfType(position, HaskellGendecl.class);
+        com.haskforce.haskell.psi.HaskellGendecl haskellGendecl = PsiTreeUtil.getParentOfType(position, com.haskforce.haskell.psi.HaskellGendecl.class);
         return haskellGendecl != null;
     }
 
@@ -356,8 +356,8 @@ public class HaskellUtil {
         List<PsiElement>  results = Lists.newArrayList();
         PsiElement parent = myElement.getParent();
         do {
-            if (parent instanceof HaskellRhs) {
-                HaskellRhs rhs = (HaskellRhs) parent;
+            if (parent instanceof com.haskforce.haskell.psi.HaskellRhs) {
+                com.haskforce.haskell.psi.HaskellRhs rhs = (com.haskforce.haskell.psi.HaskellRhs) parent;
                 PsiElement where = rhs.getWhere();
                 if (where == null) {
                     parent = parent.getParent();
@@ -370,7 +370,7 @@ public class HaskellUtil {
                 }
             }
             parent = parent.getParent();
-        } while (! (parent instanceof  HaskellBody) && ! (parent == null));
+        } while (! (parent instanceof com.haskforce.haskell.psi.HaskellBody) && ! (parent == null));
 
         return results;
     }
@@ -378,7 +378,7 @@ public class HaskellUtil {
     private static @Nullable PsiElement checkWhereClause(@NotNull PsiElement where, String matcher) {
         PsiElement nextSibling = where.getNextSibling();
         while(nextSibling != null){
-            if(nextSibling instanceof HaskellFunorpatdecl) {
+            if(nextSibling instanceof com.haskforce.haskell.psi.HaskellFunorpatdecl) {
                 PsiElement psiElement = HaskellUtil.lookForFunOrPatDeclWithCorrectName(nextSibling, matcher);
                 if (psiElement != null){
                     return psiElement;
@@ -406,11 +406,11 @@ public class HaskellUtil {
              * is getting extremely unclear. There should be tests for all (identified) cases so the refactor
              * should be feasible.
              */
-            if (parent instanceof HaskellNewtypedecl){
-                HaskellNewtypedecl haskellNewtypedecl = (HaskellNewtypedecl) parent;
-                List<HaskellTyvar> tyvarList = haskellNewtypedecl.getTyvarList();
-                for (HaskellTyvar haskellTyvar : tyvarList) {
-                    HaskellVarid varId = haskellTyvar.getVarid();
+            if (parent instanceof com.haskforce.haskell.psi.HaskellNewtypedecl){
+                com.haskforce.haskell.psi.HaskellNewtypedecl haskellNewtypedecl = (com.haskforce.haskell.psi.HaskellNewtypedecl) parent;
+                List<com.haskforce.haskell.psi.HaskellTyvar> tyvarList = haskellNewtypedecl.getTyvarList();
+                for (com.haskforce.haskell.psi.HaskellTyvar haskellTyvar : tyvarList) {
+                    com.haskforce.haskell.psi.HaskellVarid varId = haskellTyvar.getVarid();
                     if (varId.getName().matches(matcher)){
                         results.add(varId);
                     }
@@ -422,16 +422,16 @@ public class HaskellUtil {
                 if (possibleMatch != null) {
                     results.add(possibleMatch);
                 }
-                if (prevSibling instanceof HaskellPat && parent instanceof HaskellExp) {
-                    List<HaskellVarid> varIds = HaskellUtil.extractAllHaskellVarids((HaskellPat) prevSibling);
-                    for (HaskellVarid varId : varIds) {
+                if (prevSibling instanceof com.haskforce.haskell.psi.HaskellPat && parent instanceof com.haskforce.haskell.psi.HaskellExp) {
+                    List<com.haskforce.haskell.psi.HaskellVarid> varIds = HaskellUtil.extractAllHaskellVarids((com.haskforce.haskell.psi.HaskellPat) prevSibling);
+                    for (com.haskforce.haskell.psi.HaskellVarid varId : varIds) {
                         if (varId.getName().matches(matcher)) {
                             results.add(varId);
                         }
                     }
                 }
-                if (prevSibling instanceof HaskellVarid){
-                    HaskellVarid varId = (HaskellVarid) prevSibling;
+                if (prevSibling instanceof com.haskforce.haskell.psi.HaskellVarid){
+                    com.haskforce.haskell.psi.HaskellVarid varId = (com.haskforce.haskell.psi.HaskellVarid) prevSibling;
                     if (varId.getName().matches(matcher)){
                         results.add(varId);
                     }
@@ -473,7 +473,7 @@ public class HaskellUtil {
     }
 
     public static @NotNull String getModuleName(@NotNull PsiElement element) {
-        HaskellFile containingFile = (HaskellFile)element.getContainingFile();
+        com.haskforce.haskell.psi.HaskellFile containingFile = (com.haskforce.haskell.psi.HaskellFile)element.getContainingFile();
         if (containingFile == null){
             return "";
         }
@@ -497,10 +497,10 @@ public class HaskellUtil {
      * eg. From {@code A.B.C.d} return {@code A.B.C}
      */
     @Nullable
-    private static String getModule(@NotNull List<HaskellConid> conids) {
+    private static String getModule(@NotNull List<com.haskforce.haskell.psi.HaskellConid> conids) {
         if (conids.isEmpty()) return null;
         StringBuilder b = new StringBuilder();
-        for (HaskellConid cid : conids) {
+        for (com.haskforce.haskell.psi.HaskellConid cid : conids) {
             b.append(cid.getName());
             b.append(".");
         }
