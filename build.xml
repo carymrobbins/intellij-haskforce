@@ -45,19 +45,19 @@
   <property name="scala-reflect.jar" location="${lib.dir}/scala-reflect-2.11.7.jar"/>
   <property name="paradise.jar" location="${lib.dir}/paradise_2.11.6-2.1.0-M5.jar"/>
   <!-- TODO: Consider using ant-contrib to generalize this pattern into a loop (task generate.sources) -->
-  <property name="jflex.haskellHighlight.target.base" value="src/com/haskforce/highlighting/_HaskellSyntaxHighlightingLexer"/>
+  <property name="jflex.haskellHighlight.target.base" value="src/com/haskforce/haskell/highlighting/_HaskellSyntaxHighlightingLexer"/>
   <property name="jflex.haskellHighlight.input.file" value="${jflex.haskellHighlight.target.base}.flex"/>
   <property name="jflex.haskellHighlight.output.file" value="${jflex.haskellHighlight.target.base}.java"/>
-  <property name="jflex.haskellParsing.target.base" value="src/com/haskforce/parsing/_HaskellParsingLexer"/>
+  <property name="jflex.haskellParsing.target.base" value="src/com/haskforce/haskell/parsing/_HaskellParsingLexer"/>
   <property name="jflex.haskellParsing.input.file" value="${jflex.haskellParsing.target.base}.flex"/>
   <property name="jflex.haskellParsing.output.file" value="${jflex.haskellParsing.target.base}.java"/>
-  <property name="jflex.cabalHighlight.target.base" value="src/com/haskforce/cabal/highlighting/_CabalSyntaxHighlightingLexer"/>
+  <property name="jflex.cabalHighlight.target.base" value="src/com/haskforce/tools/cabal/highlighting/_CabalSyntaxHighlightingLexer"/>
   <property name="jflex.cabalHighlight.input.file" value="${jflex.cabalHighlight.target.base}.flex"/>
   <property name="jflex.cabalHighlight.output.file" value="${jflex.cabalHighlight.target.base}.java"/>
-  <property name="jflex.cabalParsing.target.base" value="src/com/haskforce/cabal/lang/lexer/_CabalParsingLexer"/>
+  <property name="jflex.cabalParsing.target.base" value="src/com/haskforce/tools/cabal/lang/lexer/_CabalParsingLexer"/>
   <property name="jflex.cabalParsing.input.file" value="${jflex.cabalParsing.target.base}.flex"/>
   <property name="jflex.cabalParsing.output.file" value="${jflex.cabalParsing.target.base}.java"/>
-  <property name="jflex.hamletHighlight.target.base" value="src/com/haskforce/yesod/shakespeare/hamlet/highlighting/_HamletSyntaxHighlightingLexer"/>
+  <property name="jflex.hamletHighlight.target.base" value="src/com/haskforce/tools/yesod/shakespeare/hamlet/highlighting/_HamletSyntaxHighlightingLexer"/>
   <property name="jflex.hamletHighlight.input.file" value="${jflex.hamletHighlight.target.base}.flex"/>
   <property name="jflex.hamletHighlight.output.file" value="${jflex.hamletHighlight.target.base}.java"/>
 
