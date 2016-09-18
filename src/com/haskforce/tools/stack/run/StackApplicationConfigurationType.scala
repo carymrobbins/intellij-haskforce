@@ -1,4 +1,4 @@
-package com.haskforce.haskell.run.stack
+package com.haskforce.tools.stack.run
 
 import com.haskforce.haskell.HaskellIcons
 import com.intellij.execution.configurations.{ConfigurationFactory, ConfigurationTypeBase, RunConfiguration}

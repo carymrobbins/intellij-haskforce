@@ -1,4 +1,4 @@
-package com.haskforce.haskell.run.stack
+package com.haskforce.tools.stack.run
 
 import com.haskforce.system.settings.HaskellBuildSettings
 import com.intellij.execution.configurations.{ParametersList, GeneralCommandLine, CommandLineState}

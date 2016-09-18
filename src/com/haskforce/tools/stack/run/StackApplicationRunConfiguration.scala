@@ -1,4 +1,4 @@
-package com.haskforce.haskell.run.stack
+package com.haskforce.tools.stack.run
 
 import java.util
 

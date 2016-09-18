@@ -1,7 +1,7 @@
 package com.haskforce.tools.stack.run;
 
 
-import com.haskforce.haskell.run.stack.StackApplicationRunConfiguration;
+import com.haskforce.tools.stack.run.StackApplicationRunConfiguration;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.ui.RawCommandLineEditor;
