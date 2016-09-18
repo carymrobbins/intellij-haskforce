@@ -1,8 +1,8 @@
 package com.haskforce.tools.cabal.actions
 
-import com.haskforce.HaskellModuleType
+import com.haskforce.haskell.HaskellModuleType
 import com.haskforce.Implicits._
-import com.haskforce.cabal.settings.ui.{AddCabalPackageUtil, DiscoverCabalPackagesDialog}
+import com.haskforce.tools.cabal.settings.ui.{AddCabalPackageUtil, DiscoverCabalPackagesDialog}
 import com.haskforce.utils.{FileUtil, NotificationUtil}
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.{AnAction, AnActionEvent}

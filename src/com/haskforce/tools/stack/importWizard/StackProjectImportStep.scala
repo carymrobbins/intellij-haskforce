@@ -5,8 +5,8 @@ import java.io.File
 import java.util
 import javax.swing._
 
-import com.haskforce.HaskellModuleType
-import com.haskforce.cabal.completion.CabalFileFinder
+import com.haskforce.haskell.HaskellModuleType
+import com.haskforce.tools.cabal.completion.CabalFileFinder
 import com.haskforce.importWizard.stack.{StackYaml, StackYamlUtil}
 import com.haskforce.settings.HaskellBuildSettings
 import com.haskforce.ui.GC

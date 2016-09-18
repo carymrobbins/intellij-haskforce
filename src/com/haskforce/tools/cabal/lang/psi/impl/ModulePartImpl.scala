@@ -1,4 +1,4 @@
-package com.haskforce.cabal.lang.psi.impl
+package com.haskforce.tools.cabal.lang.psi.impl
 
 import java.util.regex.Pattern
 
@@ -9,8 +9,8 @@ import com.intellij.psi.{PsiDirectory, PsiElement, PsiManager, PsiReference}
 import com.intellij.psi.impl.source.tree.LeafPsiElement
 import com.intellij.psi.search.{FileTypeIndex, GlobalSearchScope}
 import com.intellij.util.indexing.FileBasedIndex
-import com.haskforce.cabal.CabalFileType
-import com.haskforce.cabal.lang.psi._
+import com.haskforce.tools.cabal.CabalFileType
+import com.haskforce.tools.cabal.lang.psi._
 import com.haskforce.haskell.HaskellFileType
 import com.haskforce.haskell.index.{HaskellFileIndex, HaskellModuleIndex}
 import com.haskforce.haskell.psi.HaskellFile

@@ -1,4 +1,4 @@
-package com.haskforce.cabal.completion
+package com.haskforce.tools.cabal.completion
 
 import com.google.common.collect.Iterables
 import com.intellij.codeInsight.completion._
@@ -7,9 +7,9 @@ import com.intellij.patterns.PlatformPatterns
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
 
-import com.haskforce.cabal.CabalLanguage
-import com.haskforce.cabal.lang.psi
-import com.haskforce.cabal.lang.psi.CabalPsiUtil
+import com.haskforce.tools.cabal.CabalLanguage
+import com.haskforce.tools.cabal.lang.psi
+import com.haskforce.tools.cabal.lang.psi.CabalPsiUtil
 import com.haskforce.haskell.constants.GhcLanguageExtensions
 import com.haskforce.utils.SAMUtils
 

@@ -1,8 +1,8 @@
-package com.haskforce.cabal.lang.psi
+package com.haskforce.tools.cabal.lang.psi
 
 import com.intellij.lang.ASTNode
 
-import com.haskforce.cabal.lang.psi.CabalTypes._
+import com.haskforce.tools.cabal.lang.psi.CabalTypes._
 
 object CabalElementFactory {
   def createElement(node: ASTNode): CabalCompositeElement = node.getElementType match {

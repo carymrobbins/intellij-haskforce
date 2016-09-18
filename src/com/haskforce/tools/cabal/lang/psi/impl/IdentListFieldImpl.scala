@@ -1,8 +1,8 @@
-package com.haskforce.cabal.lang.psi.impl
+package com.haskforce.tools.cabal.lang.psi.impl
 
 import com.intellij.psi.PsiElement
 
-import com.haskforce.cabal.lang.psi.{CabalTypes, IdentList}
+import com.haskforce.tools.cabal.lang.psi.{CabalTypes, IdentList}
 import com.haskforce.utils.PQ
 
 trait IdentListFieldImpl extends PsiElement {

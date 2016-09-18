@@ -1,4 +1,4 @@
-package com.haskforce.highlighting;
+package com.haskforce.haskell.highlighting;
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import static com.haskforce.haskell.psi.HaskellTypes.*;

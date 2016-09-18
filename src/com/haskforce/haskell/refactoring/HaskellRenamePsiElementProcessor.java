@@ -1,4 +1,4 @@
-package com.haskforce.refactoring;
+package com.haskforce.haskell.refactoring;
 
 import com.haskforce.haskell.psi.*;
 import com.intellij.openapi.editor.Editor;

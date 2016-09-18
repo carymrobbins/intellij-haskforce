@@ -25,25 +25,25 @@ public class HaskellAnnotator implements Annotator {
             @Override
             public void visitPpragma(@NotNull com.haskforce.haskell.psi.HaskellPpragma o) {
                 super.visitPpragma(o);
-                setHighlighting(o, holder, com.haskforce.highlighting.HaskellSyntaxHighlighter.PRAGMA);
+                setHighlighting(o, holder, com.haskforce.haskell.highlighting.HaskellSyntaxHighlighter.PRAGMA);
             }
 
             @Override
             public void visitQvarid(@NotNull com.haskforce.haskell.psi.HaskellQvarid o) {
                 super.visitQvarid(o);
-                setHighlighting(o, holder, com.haskforce.highlighting.HaskellSyntaxHighlighter.VARID);
+                setHighlighting(o, holder, com.haskforce.haskell.highlighting.HaskellSyntaxHighlighter.VARID);
             }
 
             @Override
             public void visitQvarsym(@NotNull com.haskforce.haskell.psi.HaskellQvarsym o) {
                 super.visitQvarsym(o);
-                setHighlighting(o, holder, com.haskforce.highlighting.HaskellSyntaxHighlighter.VARSYM);
+                setHighlighting(o, holder, com.haskforce.haskell.highlighting.HaskellSyntaxHighlighter.VARSYM);
             }
 
             @Override
             public void visitQconsym(@NotNull com.haskforce.haskell.psi.HaskellQconsym o) {
                 super.visitQconsym(o);
-                setHighlighting(o, holder, com.haskforce.highlighting.HaskellSyntaxHighlighter.CONSYM);
+                setHighlighting(o, holder, com.haskforce.haskell.highlighting.HaskellSyntaxHighlighter.CONSYM);
             }
 
             @Override
@@ -55,7 +55,7 @@ public class HaskellAnnotator implements Annotator {
                     final PsiElement prev2 = prev1 == null ? null : prev1.getPrevSibling();
                     final boolean inImport = prev1 instanceof com.haskforce.haskell.psi.HaskellImpdecl || prev2 instanceof com.haskforce.haskell.psi.HaskellImpdecl;
                     if (!inImport) {
-                        setHighlighting(o, holder, com.haskforce.highlighting.HaskellSyntaxHighlighter.CONID);
+                        setHighlighting(o, holder, com.haskforce.haskell.highlighting.HaskellSyntaxHighlighter.CONID);
                     }
                 }
             }
@@ -65,20 +65,20 @@ public class HaskellAnnotator implements Annotator {
                 super.visitAtype(o);
                 // Highlight the () unit type as a CONID.
                 if (o.getText().equals("()")) {
-                    setHighlighting(o, holder, com.haskforce.highlighting.HaskellSyntaxHighlighter.CONID);
+                    setHighlighting(o, holder, com.haskforce.haskell.highlighting.HaskellSyntaxHighlighter.CONID);
                 }
             }
 
             @Override
             public void visitPstringtoken(@NotNull com.haskforce.haskell.psi.HaskellPstringtoken o) {
                 super.visitPstringtoken(o);
-                setHighlighting(o, holder, com.haskforce.highlighting.HaskellSyntaxHighlighter.STRING);
+                setHighlighting(o, holder, com.haskforce.haskell.highlighting.HaskellSyntaxHighlighter.STRING);
             }
 
             @Override
             public void visitShebang(@NotNull com.haskforce.haskell.psi.HaskellShebang o) {
                 super.visitShebang(o);
-                setHighlighting(o, holder, com.haskforce.highlighting.HaskellSyntaxHighlighter.COMMENT);
+                setHighlighting(o, holder, com.haskforce.haskell.highlighting.HaskellSyntaxHighlighter.COMMENT);
             }
 
             @Override
@@ -99,8 +99,8 @@ public class HaskellAnnotator implements Annotator {
                 String fileSuffix = fullFileName.substring(fullFileName.lastIndexOf('.'));
                 String fileName = fullFileName.substring(0, fullFileName.length() - fileSuffix.length());
                 if (!moduleName.equals(fileName) && !"Main".equals(moduleName)) {
-                    com.haskforce.quickfixes.HaskellModuleFilenameFix fixFile = new com.haskforce.quickfixes.HaskellModuleFilenameFix(moduleName + fileSuffix);
-                    com.haskforce.quickfixes.HaskellModuleNameFix fixName = new com.haskforce.quickfixes.HaskellModuleNameFix(lastConid, fileName);
+                    com.haskforce.haskell.quickfixes.HaskellModuleFilenameFix fixFile = new com.haskforce.haskell.quickfixes.HaskellModuleFilenameFix(moduleName + fileSuffix);
+                    com.haskforce.haskell.quickfixes.HaskellModuleNameFix fixName = new com.haskforce.haskell.quickfixes.HaskellModuleNameFix(lastConid, fileName);
                     holder.createErrorAnnotation(qc, MSG).registerFix(fixFile);
                     holder.createErrorAnnotation(qc, MSG).registerFix(fixName);
                 }

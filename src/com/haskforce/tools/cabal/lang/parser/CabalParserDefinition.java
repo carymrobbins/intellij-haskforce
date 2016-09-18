@@ -1,10 +1,10 @@
-package com.haskforce.cabal.lang.parser;
+package com.haskforce.tools.cabal.lang.parser;
 
-import com.haskforce.cabal.CabalLanguage;
-import com.haskforce.cabal.lang.lexer.CabalParsingLexer;
-import com.haskforce.cabal.lang.psi.CabalElementFactory;
-import com.haskforce.cabal.lang.psi.CabalFile;
-import com.haskforce.cabal.lang.psi.CabalTypes;
+import com.haskforce.tools.cabal.CabalLanguage;
+import com.haskforce.tools.cabal.lang.lexer.CabalParsingLexer;
+import com.haskforce.tools.cabal.lang.psi.CabalElementFactory;
+import com.haskforce.tools.cabal.lang.psi.CabalFile;
+import com.haskforce.tools.cabal.lang.psi.CabalTypes;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.lang.PsiParser;

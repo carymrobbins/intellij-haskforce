@@ -1,6 +1,6 @@
 package com.haskforce.haskell.features.intentions;
 
-import com.haskforce.highlighting.annotation.external.GhcMod.*;
+import com.haskforce.haskell.highlighting.annotation.external.GhcMod.*;
 import com.haskforce.haskell.psi.HaskellBody;
 import com.haskforce.haskell.psi.HaskellFunorpatdecl;
 import com.haskforce.haskell.psi.HaskellGendecl;

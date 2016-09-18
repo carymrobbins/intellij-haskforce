@@ -1,6 +1,6 @@
 package com.haskforce.settings;
 
-import com.haskforce.HaskellModuleType;
+import com.haskforce.haskell.HaskellModuleType;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleConfigurationEditor;
 import com.intellij.openapi.module.ModuleType;

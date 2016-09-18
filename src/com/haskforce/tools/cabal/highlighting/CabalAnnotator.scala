@@ -1,11 +1,11 @@
-package com.haskforce.cabal.highlighting
+package com.haskforce.tools.cabal.highlighting
 
 import com.intellij.lang.annotation.{AnnotationHolder, Annotator}
 import com.intellij.openapi.editor.colors.{EditorColorsManager, TextAttributesKey}
 import com.intellij.psi.PsiElement
 
-import com.haskforce.cabal.lang.psi._
-import com.haskforce.cabal.lang.psi.CabalTypes._
+import com.haskforce.tools.cabal.lang.psi._
+import com.haskforce.tools.cabal.lang.psi.CabalTypes._
 
 class CabalAnnotator extends Annotator {
 

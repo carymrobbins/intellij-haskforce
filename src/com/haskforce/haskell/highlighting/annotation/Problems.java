@@ -1,4 +1,4 @@
-package com.haskforce.highlighting.annotation;
+package com.haskforce.haskell.highlighting.annotation;
 
 
 import com.intellij.util.containers.ContainerUtil;

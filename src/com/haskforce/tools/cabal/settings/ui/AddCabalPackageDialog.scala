@@ -1,19 +1,19 @@
-package com.haskforce.cabal.settings.ui
+package com.haskforce.tools.cabal.settings.ui
 
 import java.awt.Dimension
 import java.awt.event.{ItemEvent, KeyEvent}
 import java.io.File
 import java.util.EventObject
 
-import com.haskforce.HaskellModuleType
+import com.haskforce.haskell.HaskellModuleType
 import com.haskforce.Implicits._
-import com.haskforce.cabal.settings.AddCabalPackageOptions
+import com.haskforce.tools.cabal.settings.AddCabalPackageOptions
 import com.haskforce.ui.ComboModuleProxy
 import com.haskforce.utils.FileUtil
 import com.intellij.openapi.project.Project
 import scala.collection.JavaConversions._
 
-import com.haskforce.cabal.completion.CabalFileFinder
+import com.haskforce.tools.cabal.completion.CabalFileFinder
 
 class AddCabalPackageDialog(
   project: Project,

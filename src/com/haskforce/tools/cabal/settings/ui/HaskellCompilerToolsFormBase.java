@@ -1,4 +1,4 @@
-package com.haskforce.cabal.settings.ui;
+package com.haskforce.tools.cabal.settings.ui;
 
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 

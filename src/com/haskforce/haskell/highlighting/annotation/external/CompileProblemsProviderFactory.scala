@@ -1,8 +1,8 @@
-package com.haskforce.highlighting.annotation.external
+package com.haskforce.haskell.highlighting.annotation.external
 
 import com.intellij.psi.PsiFile
 
-import com.haskforce.highlighting.annotation.external.impl.{GhcModiCompileProblemsProvider, GhcModCompileProblemsProvider}
+import com.haskforce.haskell.highlighting.annotation.external.impl.{GhcModiCompileProblemsProvider, GhcModCompileProblemsProvider}
 
 object CompileProblemsProviderFactory extends ProblemsProviderFactory {
   def get(psiFile: PsiFile): Option[ProblemsProvider] = {

@@ -2,7 +2,7 @@ package com.haskforce.haskell.codeInsight
 
 import com.intellij.psi.PsiFile
 
-import com.haskforce.highlighting.annotation.external.GhcModi
+import com.haskforce.haskell.highlighting.annotation.external.GhcModi
 
 object ModuleSymbolsProviderFactory {
   def get(psiFile: PsiFile): Option[ModuleSymbolsProvider] = {

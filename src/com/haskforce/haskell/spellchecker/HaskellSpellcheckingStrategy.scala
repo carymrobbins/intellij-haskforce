@@ -1,6 +1,6 @@
 package com.haskforce.haskell.spellchecker
 
-import com.haskforce.cabal.CabalLanguage
+import com.haskforce.tools.cabal.CabalLanguage
 import com.haskforce.haskell.HaskellLanguage
 import com.intellij.psi.PsiElement
 import com.intellij.spellchecker.tokenizer.{SpellcheckingStrategy, Tokenizer}

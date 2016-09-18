@@ -1,4 +1,4 @@
-package com.haskforce.cabal.settings
+package com.haskforce.tools.cabal.settings
 
 import com.intellij.openapi.module.Module
 

@@ -1,6 +1,6 @@
 package com.haskforce.haskell.actions;
 
-import com.haskforce.highlighting.annotation.external.TypeInfoUtil;
+import com.haskforce.haskell.highlighting.annotation.external.TypeInfoUtil;
 import com.haskforce.haskell.psi.HaskellFile;
 import com.intellij.codeInsight.hint.HintManager;
 import com.intellij.codeInsight.hint.HintManagerImpl;

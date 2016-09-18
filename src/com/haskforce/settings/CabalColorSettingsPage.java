@@ -1,7 +1,7 @@
 package com.haskforce.settings;
 
-import com.haskforce.cabal.CabalIcons;
-import com.haskforce.cabal.highlighting.CabalSyntaxHighlighter;
+import com.haskforce.tools.cabal.CabalIcons;
+import com.haskforce.tools.cabal.highlighting.CabalSyntaxHighlighter;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;
 import com.intellij.openapi.options.colors.AttributesDescriptor;

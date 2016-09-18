@@ -1,4 +1,4 @@
-package com.haskforce
+package com.haskforce.haskell
 
 import com.intellij.openapi.projectRoots.impl.SdkConfigurationUtil
 import com.intellij.openapi.projectRoots.AdditionalDataConfigurable

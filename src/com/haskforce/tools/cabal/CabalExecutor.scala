@@ -2,7 +2,7 @@ package com.haskforce.tools.cabal
 
 import java.io.File
 
-import com.haskforce.highlighting.annotation.external.GhcModUtil
+import com.haskforce.haskell.highlighting.annotation.external.GhcModUtil
 import com.haskforce.settings.HaskellBuildSettings
 import com.haskforce.utils.ExecUtil
 import com.haskforce.utils.ExecUtil.ExecError

@@ -1,8 +1,8 @@
-package com.haskforce.cabal.lang.psi
+package com.haskforce.tools.cabal.lang.psi
 
 import com.intellij.psi.tree.IElementType
 
-import com.haskforce.cabal.CabalLanguage
+import com.haskforce.tools.cabal.CabalLanguage
 
 class CabalTokenType(debugName: String)
   extends IElementType(debugName, CabalLanguage.INSTANCE)

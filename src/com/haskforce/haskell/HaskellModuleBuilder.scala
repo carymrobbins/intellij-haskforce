@@ -1,4 +1,4 @@
-package com.haskforce
+package com.haskforce.haskell
 
 import java.awt.event.ActionEvent
 import java.awt.{Color, GridBagLayout}
@@ -28,8 +28,8 @@ import org.apache.commons.lang.builder.HashCodeBuilder
 import org.jetbrains.annotations.{NotNull, Nullable}
 
 import com.haskforce.Implicits._
-import com.haskforce.cabal.settings.CabalComponentType
-import com.haskforce.cabal.settings.ui.NewCabalProjectForm
+import com.haskforce.tools.cabal.settings.CabalComponentType
+import com.haskforce.tools.cabal.settings.ui.NewCabalProjectForm
 import com.haskforce.macros.string.dedent
 import com.haskforce.settings.HaskellBuildSettings
 import com.haskforce.ui.GC

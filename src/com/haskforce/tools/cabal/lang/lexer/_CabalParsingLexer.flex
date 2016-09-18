@@ -1,11 +1,11 @@
-package com.haskforce.cabal.lang.lexer;
+package com.haskforce.tools.cabal.lang.lexer;
 
 import java.util.regex.*;
 
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 
-import com.haskforce.cabal.lang.psi.CabalTypes;
+import com.haskforce.tools.cabal.lang.psi.CabalTypes;
 
 %%
 

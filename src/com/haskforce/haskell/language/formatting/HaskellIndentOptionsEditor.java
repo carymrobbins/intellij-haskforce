@@ -1,4 +1,4 @@
-package com.haskforce.language.formatting;
+package com.haskforce.haskell.language.formatting;
 
 import com.intellij.application.options.IndentOptionsEditor;
 

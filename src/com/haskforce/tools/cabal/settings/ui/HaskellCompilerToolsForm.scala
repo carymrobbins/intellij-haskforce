@@ -1,8 +1,8 @@
-package com.haskforce.cabal.settings.ui
+package com.haskforce.tools.cabal.settings.ui
 
 import java.io.File
 
-import com.haskforce.HaskellModuleBuilder
+import com.haskforce.haskell.HaskellModuleBuilder
 import com.haskforce.Implicits._
 import com.haskforce.jps.model.HaskellBuildOptions
 import com.haskforce.settings.{HaskellBuildSettings, ToolKey}

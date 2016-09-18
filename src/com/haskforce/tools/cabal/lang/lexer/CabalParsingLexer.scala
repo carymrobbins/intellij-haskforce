@@ -1,4 +1,4 @@
-package com.haskforce.cabal.lang.lexer
+package com.haskforce.tools.cabal.lang.lexer
 
 import com.intellij.lexer.FlexAdapter
 

@@ -1,8 +1,8 @@
-package com.haskforce.cabal.settings.ui
+package com.haskforce.tools.cabal.settings.ui
 
 import javax.swing._
 
-import com.haskforce.cabal.settings.CabalComponentType
+import com.haskforce.tools.cabal.settings.CabalComponentType
 import com.haskforce.ui.SComboBox
 
 /**

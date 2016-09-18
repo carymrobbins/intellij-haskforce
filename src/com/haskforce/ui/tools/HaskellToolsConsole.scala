@@ -20,7 +20,7 @@ import com.intellij.openapi.util.Condition
 import com.intellij.openapi.wm.{ToolWindow, ToolWindowFactory}
 import com.intellij.ui.content.ContentFactory
 
-import com.haskforce.HaskellModuleType
+import com.haskforce.haskell.HaskellModuleType
 import com.haskforce.settings.ToolKey
 import com.haskforce.ui.{GC, SComboBox}
 import com.haskforce.utils.SAMUtils

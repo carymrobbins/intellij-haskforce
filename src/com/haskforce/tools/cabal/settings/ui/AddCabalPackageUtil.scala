@@ -1,4 +1,4 @@
-package com.haskforce.cabal.settings.ui
+package com.haskforce.tools.cabal.settings.ui
 
 import javax.swing.JTextField
 import javax.swing.text.JTextComponent
@@ -6,9 +6,9 @@ import javax.swing.text.JTextComponent
 import scala.annotation.tailrec
 import scalaz.syntax.id._
 import com.intellij.notification.NotificationType
-import com.haskforce.HaskellModuleType
+import com.haskforce.haskell.HaskellModuleType
 import com.haskforce.Implicits._
-import com.haskforce.cabal.settings.{AddCabalPackageOptions, CabalComponentType}
+import com.haskforce.tools.cabal.settings.{AddCabalPackageOptions, CabalComponentType}
 import com.haskforce.tools.cabal.CabalExecutor
 import com.haskforce.ui.SComboBox
 import com.haskforce.utils.{ExecUtil, FileUtil, NotificationUtil}

@@ -1,8 +1,8 @@
-package com.haskforce.cabal.query
+package com.haskforce.tools.cabal.query
 
 import java.util
 
-import com.haskforce.cabal.completion.CabalFileFinder
+import com.haskforce.tools.cabal.completion.CabalFileFinder
 import com.haskforce.haskell.psi.HaskellFile
 
 /** Utility for getting Cabal BuildInfo metadata, particularly from Java. */

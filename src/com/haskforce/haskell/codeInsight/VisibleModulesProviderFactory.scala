@@ -3,7 +3,7 @@ package com.haskforce.haskell.codeInsight
 import com.intellij.openapi.module.{Module, ModuleUtilCore}
 import com.intellij.psi.PsiFile
 
-import com.haskforce.highlighting.annotation.external.{GhcMod, GhcModi}
+import com.haskforce.haskell.highlighting.annotation.external.{GhcMod, GhcModi}
 import com.haskforce.utils.ExecUtil
 
 object VisibleModulesProviderFactory {

@@ -1,8 +1,8 @@
 package com.haskforce.tools.cabal.actions
 
 import com.haskforce.Implicits._
-import com.haskforce.cabal.settings.AddCabalPackageOptions
-import com.haskforce.cabal.settings.ui.{AddCabalPackageDialog, AddCabalPackageUtil}
+import com.haskforce.tools.cabal.settings.AddCabalPackageOptions
+import com.haskforce.tools.cabal.settings.ui.{AddCabalPackageDialog, AddCabalPackageUtil}
 import com.haskforce.tools.cabal.CabalExecutor
 import com.haskforce.utils.{FileUtil, NotificationUtil}
 import com.intellij.notification.NotificationType

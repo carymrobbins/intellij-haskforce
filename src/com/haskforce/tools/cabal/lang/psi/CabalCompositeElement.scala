@@ -1,10 +1,10 @@
-package com.haskforce.cabal.lang.psi
+package com.haskforce.tools.cabal.lang.psi
 
 import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.ASTNode
 import com.intellij.psi.PsiElement
 
-import com.haskforce.cabal.lang.psi.impl._
+import com.haskforce.tools.cabal.lang.psi.impl._
 
 sealed trait CabalCompositeElement extends PsiElement
 

@@ -1,4 +1,4 @@
-package com.haskforce.cabal.query
+package com.haskforce.tools.cabal.query
 
 import java.io.{File, IOException}
 import java.nio.charset.StandardCharsets
@@ -11,9 +11,9 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.{PsiElement, PsiFile, PsiFileFactory}
 import com.intellij.psi.tree.IElementType
 
-import com.haskforce.cabal.CabalLanguage
-import com.haskforce.cabal.lang.psi
-import com.haskforce.cabal.lang.psi.{CabalFile, CabalTypes}
+import com.haskforce.tools.cabal.CabalLanguage
+import com.haskforce.tools.cabal.lang.psi
+import com.haskforce.tools.cabal.lang.psi.{CabalFile, CabalTypes}
 import com.haskforce.utils.{NonEmptySet, PQ}
 
 final class CabalQuery(val psiFile: psi.CabalFile) {

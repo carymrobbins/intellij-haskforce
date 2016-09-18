@@ -1,4 +1,4 @@
-package com.haskforce.refactoring;
+package com.haskforce.haskell.refactoring;
 
 import com.haskforce.haskell.psi.HaskellNamedElement;
 import com.intellij.lang.refactoring.RefactoringSupportProvider;

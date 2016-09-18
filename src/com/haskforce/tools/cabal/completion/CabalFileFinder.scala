@@ -1,4 +1,4 @@
-package com.haskforce.cabal.completion
+package com.haskforce.tools.cabal.completion
 
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.module.{Module, ModuleUtilCore}
@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiManager
 
-import com.haskforce.cabal.lang.psi.CabalFile
+import com.haskforce.tools.cabal.lang.psi.CabalFile
 import com.haskforce.haskell.psi.HaskellFile
 import com.haskforce.utils.SAMUtils
 

@@ -1,8 +1,8 @@
-package com.haskforce.cabal.lang.psi
+package com.haskforce.tools.cabal.lang.psi
 
 import com.intellij.psi.PsiElement
 
-import com.haskforce.cabal.lang.psi
+import com.haskforce.tools.cabal.lang.psi
 import com.haskforce.utils.PQ
 
 /**

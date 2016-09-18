@@ -1,4 +1,4 @@
-package com.haskforce.cabal.lang.parser
+package com.haskforce.tools.cabal.lang.parser
 
 import com.intellij.lang.impl.PsiBuilderAdapter
 import com.intellij.lang.{ASTNode, PsiBuilder, PsiParser}
@@ -7,8 +7,8 @@ import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.resolve.FileContextUtil
 import com.intellij.psi.tree.IElementType
 
-import com.haskforce.cabal.lang.psi.CabalTypes._
-import com.haskforce.cabal.lang.psi._
+import com.haskforce.tools.cabal.lang.psi.CabalTypes._
+import com.haskforce.tools.cabal.lang.psi._
 
 final class CabalParser extends PsiParser {
 

@@ -1,4 +1,4 @@
-package com.haskforce.language;
+package com.haskforce.haskell.language;
 
 import com.intellij.lang.refactoring.NamesValidator;
 import com.intellij.openapi.project.Project;

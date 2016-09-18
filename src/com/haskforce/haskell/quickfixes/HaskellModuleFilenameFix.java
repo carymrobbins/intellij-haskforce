@@ -1,4 +1,4 @@
-package com.haskforce.quickfixes;
+package com.haskforce.haskell.quickfixes;
 
 import com.intellij.codeInsight.CodeInsightBundle;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;

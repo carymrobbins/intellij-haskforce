@@ -1,4 +1,4 @@
-package com.haskforce.cabal;
+package com.haskforce.tools.cabal;
 
 import com.intellij.openapi.util.IconLoader;
 

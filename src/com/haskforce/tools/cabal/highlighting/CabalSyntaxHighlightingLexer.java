@@ -1,4 +1,4 @@
-package com.haskforce.cabal.highlighting;
+package com.haskforce.tools.cabal.highlighting;
 
 import com.intellij.lexer.FlexAdapter;
 

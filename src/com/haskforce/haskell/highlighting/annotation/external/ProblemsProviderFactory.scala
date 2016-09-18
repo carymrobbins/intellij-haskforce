@@ -1,4 +1,4 @@
-package com.haskforce.highlighting.annotation.external
+package com.haskforce.haskell.highlighting.annotation.external
 
 import com.intellij.psi.PsiFile
 

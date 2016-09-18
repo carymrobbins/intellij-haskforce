@@ -1,4 +1,4 @@
-package com.haskforce.highlighting;
+package com.haskforce.haskell.highlighting;
 
 import com.haskforce.haskell.HaskellLanguage;
 import com.intellij.lexer.Lexer;
@@ -84,7 +84,7 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
     @NotNull
     @Override
     public Lexer getHighlightingLexer() {
-        return new com.haskforce.highlighting.HaskellSyntaxHighlightingLexer();
+        return new com.haskforce.haskell.highlighting.HaskellSyntaxHighlightingLexer();
     }
 
     @NotNull

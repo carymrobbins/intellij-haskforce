@@ -1,9 +1,9 @@
-package com.haskforce.cabal.highlighting;
+package com.haskforce.tools.cabal.highlighting;
 
 import com.intellij.lexer.*;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.TokenType;
-import com.haskforce.cabal.lang.psi.CabalTypes;
+import com.haskforce.tools.cabal.lang.psi.CabalTypes;
 
 %%
 

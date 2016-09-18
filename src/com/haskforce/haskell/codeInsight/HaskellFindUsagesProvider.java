@@ -1,7 +1,7 @@
 package com.haskforce.haskell.codeInsight;
 
 import com.haskforce.haskell.HaskellParserDefinition;
-import com.haskforce.highlighting.HaskellSyntaxHighlightingLexer;
+import com.haskforce.haskell.highlighting.HaskellSyntaxHighlightingLexer;
 import com.haskforce.haskell.psi.HaskellTypes;
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordsScanner;

@@ -1,4 +1,4 @@
-package com.haskforce
+package com.haskforce.haskell
 
 import javax.swing.Icon
 

@@ -1,9 +1,9 @@
-package com.haskforce.highlighting.annotation.external;
+package com.haskforce.haskell.highlighting.annotation.external;
 
 import com.haskforce.haskell.actions.RestartGhcModi;
 import com.haskforce.haskell.codeInsight.BrowseItem;
-import com.haskforce.highlighting.annotation.Problems;
-import com.haskforce.highlighting.annotation.external.GhcModUtil.GhcVersionValidation;
+import com.haskforce.haskell.highlighting.annotation.Problems;
+import com.haskforce.haskell.highlighting.annotation.external.GhcModUtil.GhcVersionValidation;
 import com.haskforce.settings.SettingsChangeNotifier;
 import com.haskforce.settings.ToolKey;
 import com.haskforce.settings.ToolSettings;
@@ -188,8 +188,8 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
                 final String command = "type " + canonicalPath + ' ' + startPosition.line + ' ' + startPosition.column;
                 final String stdout = simpleExec(command);
                 try {
-                    return stdout == null ? "Type info not found" : com.haskforce.highlighting.annotation.external.GhcModUtil.handleTypeInfo(startPosition, stopPosition, stdout);
-                } catch (com.haskforce.highlighting.annotation.external.GhcModUtil.TypeInfoParseException e) {
+                    return stdout == null ? "Type info not found" : com.haskforce.haskell.highlighting.annotation.external.GhcModUtil.handleTypeInfo(startPosition, stopPosition, stdout);
+                } catch (com.haskforce.haskell.highlighting.annotation.external.GhcModUtil.TypeInfoParseException e) {
                     NotificationUtil.displayToolsNotification(
                       NotificationType.ERROR, module.getProject(), "Type Info Error",
                       "There was an error when executing the ghc-modi `type` command:\n\n" + stdout);
@@ -201,12 +201,12 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     @Nullable
     private static Problems handleCheck(@NotNull Module module, @NotNull String file, @NotNull String stdout) throws GhcModiError {
-        final Problems problems = com.haskforce.highlighting.annotation.external.GhcMod.parseProblems(module, new Scanner(stdout));
+        final Problems problems = com.haskforce.haskell.highlighting.annotation.external.GhcMod.parseProblems(module, new Scanner(stdout));
         if (problems == null) {
             // parseProblems should have returned something, so let's just dump the output to the user.
             throw new CheckParseError(stdout);
         } else if (problems.size() == 1) {
-            final com.haskforce.highlighting.annotation.external.GhcMod.Problem problem = (com.haskforce.highlighting.annotation.external.GhcMod.Problem)problems.get(0);
+            final com.haskforce.haskell.highlighting.annotation.external.GhcMod.Problem problem = (com.haskforce.haskell.highlighting.annotation.external.GhcMod.Problem)problems.get(0);
             if (problem.startLine == 0 && problem.startColumn == 0) {
                 throw new CheckError(file, problem.message);
             }
@@ -294,12 +294,12 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     private void spawnProcess() throws GhcModiError {
         GeneralCommandLine commandLine = new GeneralCommandLine(
-            com.haskforce.highlighting.annotation.external.GhcModUtil.changedPathIfStack(module.getProject(), path)
+            com.haskforce.haskell.highlighting.annotation.external.GhcModUtil.changedPathIfStack(module.getProject(), path)
         );
-        com.haskforce.highlighting.annotation.external.GhcModUtil.updateEnvironment(module.getProject(), commandLine.getEnvironment());
+        com.haskforce.haskell.highlighting.annotation.external.GhcModUtil.updateEnvironment(module.getProject(), commandLine.getEnvironment());
         ParametersList parametersList = commandLine.getParametersList();
         parametersList.addParametersString(
-            com.haskforce.highlighting.annotation.external.GhcModUtil.changedFlagsIfStack(module.getProject(), path, flags)
+            com.haskforce.haskell.highlighting.annotation.external.GhcModUtil.changedFlagsIfStack(module.getProject(), path, flags)
         );
         // setWorkDirectory is deprecated but is needed to work with IntelliJ 13 which does not have withWorkDirectory.
         commandLine.setWorkDirectory(workingDirectory);
@@ -319,7 +319,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     private boolean validateGhcVersion() {
         if (path == null) throw new RuntimeException("Unexpected GhcModi.path == null");
-        ghcVersionValidation = com.haskforce.highlighting.annotation.external.GhcModUtil.validateGhcVersion(ghcVersionValidation, module.getProject(), path, flags);
+        ghcVersionValidation = com.haskforce.haskell.highlighting.annotation.external.GhcModUtil.validateGhcVersion(ghcVersionValidation, module.getProject(), path, flags);
         return ghcVersionValidation == GhcVersionValidation.VALID;
     }
 

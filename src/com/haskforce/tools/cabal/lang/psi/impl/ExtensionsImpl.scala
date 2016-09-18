@@ -1,3 +1,3 @@
-package com.haskforce.cabal.lang.psi.impl
+package com.haskforce.tools.cabal.lang.psi.impl
 
 trait ExtensionsImpl extends IdentListFieldImpl

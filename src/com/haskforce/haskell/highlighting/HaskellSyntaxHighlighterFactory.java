@@ -1,4 +1,4 @@
-package com.haskforce.highlighting;
+package com.haskforce.haskell.highlighting;
 
 import com.haskforce.haskell.HaskellParserDefinition;
 import com.intellij.openapi.fileTypes.SyntaxHighlighter;

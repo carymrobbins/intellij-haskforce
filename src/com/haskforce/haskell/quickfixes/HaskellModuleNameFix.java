@@ -1,4 +1,4 @@
-package com.haskforce.quickfixes;
+package com.haskforce.haskell.quickfixes;
 
 import com.haskforce.haskell.psi.HaskellConid;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;

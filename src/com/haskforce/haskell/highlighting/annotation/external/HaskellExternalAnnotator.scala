@@ -1,4 +1,4 @@
-package com.haskforce.highlighting.annotation.external
+package com.haskforce.haskell.highlighting.annotation.external
 
 import scala.collection.JavaConverters._
 
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.{NotNull, Nullable}
 
 import com.haskforce.Implicits._
 import com.haskforce.haskell.codeInsight.HaskellCompletionContributor
-import com.haskforce.highlighting.annotation.{HaskellAnnotationHolder, HaskellProblem, Problems}
+import com.haskforce.haskell.highlighting.annotation.{HaskellAnnotationHolder, HaskellProblem, Problems}
 import HaskellExternalAnnotator.State
 import com.haskforce.utils.{SAMUtils, WrappedFuture}
 

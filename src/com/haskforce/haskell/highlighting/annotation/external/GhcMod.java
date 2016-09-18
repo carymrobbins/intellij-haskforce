@@ -1,12 +1,12 @@
-package com.haskforce.highlighting.annotation.external;
+package com.haskforce.haskell.highlighting.annotation.external;
 
 import com.haskforce.haskell.features.intentions.AddLanguagePragma;
 import com.haskforce.haskell.features.intentions.AddTypeSignature;
 import com.haskforce.haskell.features.intentions.RemoveForall;
-import com.haskforce.highlighting.annotation.HaskellAnnotationHolder;
-import com.haskforce.highlighting.annotation.HaskellProblem;
-import com.haskforce.highlighting.annotation.Problems;
-import com.haskforce.highlighting.annotation.external.GhcModUtil.GhcVersionValidation;
+import com.haskforce.haskell.highlighting.annotation.HaskellAnnotationHolder;
+import com.haskforce.haskell.highlighting.annotation.HaskellProblem;
+import com.haskforce.haskell.highlighting.annotation.Problems;
+import com.haskforce.haskell.highlighting.annotation.external.GhcModUtil.GhcVersionValidation;
 import com.haskforce.settings.ToolKey;
 import com.haskforce.ui.tools.HaskellToolsConsole;
 import com.haskforce.utils.ExecUtil;
@@ -50,12 +50,12 @@ public class GhcMod {
 
     @Nullable
     public static String getPath(@NotNull Project project) {
-        return com.haskforce.highlighting.annotation.external.GhcModUtil.changedPathIfStack(project, ToolKey.GHC_MOD_KEY.getPath(project));
+        return com.haskforce.haskell.highlighting.annotation.external.GhcModUtil.changedPathIfStack(project, ToolKey.GHC_MOD_KEY.getPath(project));
     }
 
     @NotNull
     public static String getFlags(@NotNull Project project) {
-        return com.haskforce.highlighting.annotation.external.GhcModUtil.changedFlagsIfStack(
+        return com.haskforce.haskell.highlighting.annotation.external.GhcModUtil.changedFlagsIfStack(
           project,
           ToolKey.GHC_MOD_KEY.getPath(project),
           ToolKey.GHC_MOD_KEY.getFlags(project)
@@ -125,7 +125,7 @@ public class GhcMod {
                               @NotNull String command, @NotNull String ghcModFlags, String... params) {
         if (!validateGhcVersion(project, ghcModPath, ghcModFlags)) return null;
         GeneralCommandLine commandLine = new GeneralCommandLine(ghcModPath);
-        com.haskforce.highlighting.annotation.external.GhcModUtil.updateEnvironment(project, commandLine.getEnvironment());
+        com.haskforce.haskell.highlighting.annotation.external.GhcModUtil.updateEnvironment(project, commandLine.getEnvironment());
         ParametersList parametersList = commandLine.getParametersList();
         parametersList.addParametersString(ghcModFlags);
         parametersList.add(command);
@@ -156,7 +156,7 @@ public class GhcMod {
                                               @NotNull String ghcModPath,
                                               @NotNull String ghcModFlags) {
         GhcVersionValidation v = ghcVersionValidationMap.get(project);
-        GhcVersionValidation newV = com.haskforce.highlighting.annotation.external.GhcModUtil.validateGhcVersion(v, project, ghcModPath, ghcModFlags);
+        GhcVersionValidation newV = com.haskforce.haskell.highlighting.annotation.external.GhcModUtil.validateGhcVersion(v, project, ghcModPath, ghcModFlags);
         ghcVersionValidationMap.put(project, newV);
         return newV == GhcVersionValidation.VALID;
     }
@@ -254,8 +254,8 @@ public class GhcMod {
                 String.valueOf(startPosition.line), String.valueOf(startPosition.column));
         if (stdout == null) return "Type info not found";
         try {
-            return com.haskforce.highlighting.annotation.external.GhcModUtil.handleTypeInfo(startPosition, stopPosition, stdout);
-        } catch (com.haskforce.highlighting.annotation.external.GhcModUtil.TypeInfoParseException e) {
+            return com.haskforce.haskell.highlighting.annotation.external.GhcModUtil.handleTypeInfo(startPosition, stopPosition, stdout);
+        } catch (com.haskforce.haskell.highlighting.annotation.external.GhcModUtil.TypeInfoParseException e) {
               NotificationUtil.displayToolsNotification(
                       NotificationType.ERROR, module.getProject(), "Type Info Error",
                       "There was an error when executing the `ghc-mod type` command:\n\n" + stdout);

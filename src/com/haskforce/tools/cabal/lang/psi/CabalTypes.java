@@ -1,4 +1,4 @@
-package com.haskforce.cabal.lang.psi;
+package com.haskforce.tools.cabal.lang.psi;
 
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IElementType;

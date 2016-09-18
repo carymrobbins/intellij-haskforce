@@ -1,6 +1,6 @@
 package com.haskforce.haskell.run;
 
-import com.haskforce.cabal.CabalIcons;
+import com.haskforce.tools.cabal.CabalIcons;
 import com.intellij.execution.configurations.ConfigurationTypeBase;
 import com.intellij.openapi.extensions.Extensions;
 import com.intellij.util.containers.ContainerUtil;

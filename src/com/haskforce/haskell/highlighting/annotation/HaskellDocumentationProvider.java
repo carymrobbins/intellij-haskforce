@@ -1,6 +1,6 @@
-package com.haskforce.highlighting.annotation;
+package com.haskforce.haskell.highlighting.annotation;
 
-import com.haskforce.highlighting.annotation.external.TypeInfoUtil;
+import com.haskforce.haskell.highlighting.annotation.external.TypeInfoUtil;
 import com.intellij.lang.documentation.AbstractDocumentationProvider;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
