@@ -5,7 +5,6 @@ import java.util
 
 import scala.collection.JavaConversions._
 import scalaz.syntax.id._
-
 import com.intellij.ide.projectWizard.ProjectWizardTestCase
 import com.intellij.ide.util.newProjectWizard.AddModuleWizard
 import com.intellij.openapi.module.Module
@@ -13,9 +12,9 @@ import com.intellij.openapi.roots.{ModuleRootManager, ProjectRootManager}
 import com.intellij.openapi.vfs.VirtualFile
 import org.jetbrains.jps.model.java.JavaSourceRootType
 import org.jetbrains.jps.model.module.JpsModuleSourceRootType
-
 import com.haskforce.test.AssertMixin
-import com.haskforce.{HaskellModuleType, HaskellSdkType}
+import com.haskforce.tools.stack.importWizard.{StackProjectImportBuilder, StackProjectImportProvider}
+import com.haskforce.haskell.{HaskellModuleType, HaskellSdkType}
 
 /** Tests for importing stack projects and modules. */
 class StackImportWizardTest extends ProjectWizardTestCase[AddModuleWizard] with AssertMixin {

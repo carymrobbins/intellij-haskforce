@@ -2,7 +2,7 @@ package com.haskforce.utils
 
 import junit.framework.TestCase
 
-import com.haskforce.highlighting.annotation.external.GhcModi
+import com.haskforce.haskell.highlighting.annotation.external.GhcModi
 import com.haskforce.macros.string.dedent
 import com.haskforce.test.AssertMixin
 
