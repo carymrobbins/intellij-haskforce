@@ -2,7 +2,7 @@
  * Adapted from http://github.com/JetBrains/intellij-community
  * xml/xml-psi-impl/src/com/intellij/lexer/_HtmlLexer.flex
  */
-package com.haskforce.yesod.shakespeare.hamlet.highlighting;
+package com.haskforce.tools.yesod.shakespeare.hamlet.highlighting;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,7 +10,7 @@ import com.intellij.lexer.FlexLexer;
 import com.intellij.psi.tree.IElementType;
 import com.intellij.psi.*;
 import com.intellij.psi.xml.*;
-import com.haskforce.yesod.shakespeare.hamlet.psi.HamletTypes;
+import com.haskforce.tools.yesod.shakespeare.hamlet.psi.HamletTypes;
 
 %%
 
