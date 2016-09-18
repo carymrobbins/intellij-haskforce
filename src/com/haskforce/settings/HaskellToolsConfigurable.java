@@ -68,7 +68,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
         this.propertiesComponent = PropertiesComponent.getInstance(project);
         properties = Arrays.asList(
                 new Tool(project, "stylish-haskell", ToolKey.STYLISH_HASKELL_KEY, stylishPath, stylishFlags,
-                        stylishAutoFind, stylishVersion),
+                        stylishAutoFind, stylishVersion, "--help"),
                 new Tool(project, "hlint", ToolKey.HLINT_KEY, hlintPath, hlintFlags,
                          hlintAutoFind, hlintVersion),
                 new Tool(project, "ghc-mod", ToolKey.GHC_MOD_KEY, ghcModPath, ghcModFlags,
@@ -194,7 +194,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
             if (pathText.isEmpty()) {
                 versionField.setText("");
             } else {
-                versionField.setText(getVersion(pathText, versionParam));
+                versionField.setText(getVersion(pathText, versionParam).split("\r\n|\r|\n")[0]);
             }
         }
 
