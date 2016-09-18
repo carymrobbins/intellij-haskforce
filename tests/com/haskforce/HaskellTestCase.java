@@ -44,7 +44,7 @@ import com.haskforce.projectWizard.NewProjectWizardTest;
 import com.haskforce.haskell.refactoring.HaskellRenameTest;
 import com.haskforce.haskell.resolve.HaskellResolveTest;
 import com.haskforce.haskell.spellchecker.HaskellSpellcheckingTest;
-import com.haskforce.utils.HtmlUtilsTest;
+import com.haskforce.system.utils.HtmlUtilsTest;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 

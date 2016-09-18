@@ -9,9 +9,9 @@ import com.intellij.openapi.roots.{ModuleRootManager, ProjectRootManager}
 import com.haskforce.Implicits._
 import com.haskforce._
 import com.haskforce.haskell.{HaskellBuildToolStep, HaskellCabalPackageSettingsStep, HaskellSdkType}
-import com.haskforce.settings.HaskellBuildSettings
+import com.haskforce.system.settings.HaskellBuildSettings
 import com.haskforce.test.AssertMixin
-import com.haskforce.utils.Logging
+import com.haskforce.system.utils.Logging
 
 /**
  * Tests for creating new Haskell projects.

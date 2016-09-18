@@ -30,7 +30,7 @@ public abstract class HaskellResolveTestCase extends HaskellLightPlatformCodeIns
     }
 
     private Collection<File> getTestDataFiles() {
-        return com.haskforce.utils.FileUtil.findFilesRecursively(new File(getTestDataPath()));
+        return com.haskforce.system.utils.FileUtil.findFilesRecursively(new File(getTestDataPath()));
     }
 
     @Override

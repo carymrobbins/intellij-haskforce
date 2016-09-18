@@ -67,7 +67,7 @@ class CabalCompletionTestBase
   }
 
   private def getTestDataFiles(): util.Collection[File] = {
-    com.haskforce.utils.FileUtil.findFilesRecursively(new File(getTestDataPath()))
+    com.haskforce.system.utils.FileUtil.findFilesRecursively(new File(getTestDataPath()))
   }
 
   var fileWithCaret: Option[PsiFile] = None

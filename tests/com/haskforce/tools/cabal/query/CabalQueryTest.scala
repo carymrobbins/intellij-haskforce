@@ -6,7 +6,7 @@ import scalaz.syntax.id._
 import com.haskforce.tools.cabal.lang.parser.CabalParserTestBase
 import com.haskforce.tools.cabal.lang.psi.CabalFile
 import com.haskforce.test.AssertMixin
-import com.haskforce.utils.NonEmptySet
+import com.haskforce.system.utils.NonEmptySet
 
 class CabalQueryTest extends CabalParserTestBase with AssertMixin {
 

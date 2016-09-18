@@ -1,4 +1,4 @@
-package com.haskforce.utils
+package com.haskforce.system.utils
 
 import junit.framework.TestCase
 
