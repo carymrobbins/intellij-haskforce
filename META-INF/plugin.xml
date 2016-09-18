@@ -407,25 +407,25 @@
     <!-- Project settings -->
 
     <!-- Tab under compiler in IntelliJ -> Preferences -->
-    <projectConfigurable instance="com.haskforce.settings.HaskellCompilerConfigurable"
+    <projectConfigurable instance="com.haskforce.system.settings.HaskellCompilerConfigurable"
                          parentId="project.propCompiler" id="Haskell compiler"
                          displayName="Haskell Compiler"/>
     <!-- Persistent data + build server communication for compiler settings -->
-    <projectService serviceImplementation="com.haskforce.settings.HaskellBuildSettings"/>
+    <projectService serviceImplementation="com.haskforce.system.settings.HaskellBuildSettings"/>
     <!-- Tab in IntelliJ -> Preferences -->
-    <projectConfigurable instance="com.haskforce.settings.HaskellToolsConfigurable"/>
+    <projectConfigurable instance="com.haskforce.system.settings.HaskellToolsConfigurable"/>
     <!-- File -> Project Structure dialogue. -->
     <moduleConfigurationEditorProvider
-        implementation="com.haskforce.settings.HaskellModuleConfigurationEditor" order="first"/>
+            implementation="com.haskforce.system.settings.HaskellModuleConfigurationEditor" order="first"/>
     <!-- Tab in IntelliJ -> Preferences -->
-    <colorSettingsPage implementation="com.haskforce.settings.HaskellColorSettingsPage"/>
-    <colorSettingsPage implementation="com.haskforce.settings.CabalColorSettingsPage"/>
+    <colorSettingsPage implementation="com.haskforce.system.settings.HaskellColorSettingsPage"/>
+    <colorSettingsPage implementation="com.haskforce.tools.cabal.settings.CabalColorSettingsPage"/>
 
     <!-- Tool windows -->
     <toolWindow id="Haskell Tools Console" anchor="bottom"
                 icon="/icons/haskell-13px.png"
-                factoryClass="com.haskforce.ui.tools.HaskellToolsConsoleWindowFactory"
-                conditionClass="com.haskforce.ui.tools.HaskellToolsConsoleWindowFactory"/>
+                factoryClass="com.haskforce.system.ui.tools.HaskellToolsConsoleWindowFactory"
+                conditionClass="com.haskforce.system.ui.tools.HaskellToolsConsoleWindowFactory"/>
 
     <!-- Cabal support -->
     <fileTypeFactory implementation="com.haskforce.tools.cabal.CabalFileTypeFactory"/>
