@@ -41,10 +41,10 @@ import com.haskforce.importWizard.stack.StackYamlTest;
 import com.haskforce.haskell.parser.HaskellParserTest;
 import com.haskforce.haskell.parser.HaskellParsingLexerTest;
 import com.haskforce.projectWizard.NewProjectWizardTest;
-import com.haskforce.haskell.refactoring.HaskellRenameTest;
-import com.haskforce.haskell.resolve.HaskellResolveTest;
-import com.haskforce.haskell.spellchecker.HaskellSpellcheckingTest;
-import com.haskforce.system.utils.HtmlUtilsTest;
+import com.haskforce.refactoring.HaskellRenameTest;
+import com.haskforce.resolve.HaskellResolveTest;
+import com.haskforce.spellchecker.HaskellSpellcheckingTest;
+import com.haskforce.utils.HtmlUtilsTest;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
