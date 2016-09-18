@@ -2,6 +2,7 @@ package com.haskforce.tools.cabal.settings.ui
 
 import java.io.File
 
+//TODO refactor
 import com.haskforce.haskell.HaskellModuleBuilder
 import com.haskforce.Implicits._
 import com.haskforce.jps.model.HaskellBuildOptions

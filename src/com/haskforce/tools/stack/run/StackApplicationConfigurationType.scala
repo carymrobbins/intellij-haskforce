@@ -1,5 +1,6 @@
 package com.haskforce.tools.stack.run
 
+//TODO refactor
 import com.haskforce.haskell.HaskellIcons
 import com.intellij.execution.configurations.{ConfigurationFactory, ConfigurationTypeBase, RunConfiguration}
 import com.intellij.openapi.project.Project

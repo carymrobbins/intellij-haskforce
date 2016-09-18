@@ -2,6 +2,7 @@ package com.haskforce.haskell.highlighting.annotation.external;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+//TODO refactor
 import com.haskforce.tools.cabal.query.BuildInfoUtil;
 import com.haskforce.haskell.features.intentions.IgnoreHLint;
 import com.haskforce.haskell.highlighting.annotation.HaskellAnnotationHolder;

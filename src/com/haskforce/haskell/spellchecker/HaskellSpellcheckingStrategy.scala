@@ -1,5 +1,6 @@
 package com.haskforce.haskell.spellchecker
 
+//TODO refactor
 import com.haskforce.tools.cabal.CabalLanguage
 import com.haskforce.haskell.HaskellLanguage
 import com.intellij.psi.PsiElement

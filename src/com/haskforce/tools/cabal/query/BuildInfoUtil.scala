@@ -3,6 +3,7 @@ package com.haskforce.tools.cabal.query
 import java.util
 
 import com.haskforce.tools.cabal.completion.CabalFileFinder
+//TODO refactor?
 import com.haskforce.haskell.psi.HaskellFile
 
 /** Utility for getting Cabal BuildInfo metadata, particularly from Java. */

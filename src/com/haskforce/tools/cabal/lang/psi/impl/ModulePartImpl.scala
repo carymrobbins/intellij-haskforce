@@ -12,6 +12,7 @@ import com.intellij.util.indexing.FileBasedIndex
 import com.haskforce.tools.cabal.CabalFileType
 import com.haskforce.tools.cabal.lang.psi._
 import com.haskforce.haskell.HaskellFileType
+//TODO refactor?
 import com.haskforce.haskell.index.{HaskellFileIndex, HaskellModuleIndex}
 import com.haskforce.haskell.psi.HaskellFile
 

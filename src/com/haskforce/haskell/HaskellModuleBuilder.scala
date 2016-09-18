@@ -28,6 +28,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder
 import org.jetbrains.annotations.{NotNull, Nullable}
 
 import com.haskforce.Implicits._
+//TODO refactor
 import com.haskforce.tools.cabal.settings.CabalComponentType
 import com.haskforce.tools.cabal.settings.ui.NewCabalProjectForm
 import com.haskforce.macros.string.dedent

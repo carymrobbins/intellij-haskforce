@@ -1,5 +1,6 @@
 package com.haskforce.haskell.run;
 
+//TODO refactor
 import com.haskforce.tools.cabal.CabalIcons;
 import com.intellij.execution.configurations.ConfigurationTypeBase;
 import com.intellij.openapi.extensions.Extensions;

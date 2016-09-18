@@ -7,6 +7,7 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiManager
 
 import com.haskforce.tools.cabal.lang.psi.CabalFile
+//TODO refactor?
 import com.haskforce.haskell.psi.HaskellFile
 import com.haskforce.system.utils.SAMUtils
 

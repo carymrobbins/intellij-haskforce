@@ -6,6 +6,7 @@ import java.util
 import javax.swing._
 
 import com.haskforce.haskell.HaskellModuleType
+//TODO refactor
 import com.haskforce.tools.cabal.completion.CabalFileFinder
 import com.haskforce.importWizard.stack.{StackYaml, StackYamlUtil}
 import com.haskforce.system.settings.HaskellBuildSettings

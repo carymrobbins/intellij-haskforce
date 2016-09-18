@@ -6,6 +6,7 @@ import javax.swing.Icon
 
 import com.haskforce.Implicits._
 import com.haskforce.tools.cabal.query.CabalQuery
+//TODO refactor
 import com.haskforce.haskell.HaskellIcons
 import com.haskforce.importWizard.stack.{StackYaml, StackYamlUtil}
 import com.haskforce.system.settings.HaskellBuildSettings
