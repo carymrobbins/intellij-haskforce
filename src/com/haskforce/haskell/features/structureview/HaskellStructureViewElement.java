@@ -1,7 +1,7 @@
 package com.haskforce.haskell.features.structureview;
 
 import com.haskforce.haskell.psi.HaskellFile;
-import com.haskforce.utils.HaskellUtil;
+import com.haskforce.system.utils.HaskellUtil;
 import com.intellij.ide.structureView.StructureViewTreeElement;
 import com.intellij.ide.util.treeView.smartTree.SortableTreeElement;
 import com.intellij.ide.util.treeView.smartTree.TreeElement;

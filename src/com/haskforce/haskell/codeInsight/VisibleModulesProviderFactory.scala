@@ -4,7 +4,7 @@ import com.intellij.openapi.module.{Module, ModuleUtilCore}
 import com.intellij.psi.PsiFile
 
 import com.haskforce.haskell.highlighting.annotation.external.{GhcMod, GhcModi}
-import com.haskforce.utils.ExecUtil
+import com.haskforce.system.utils.ExecUtil
 
 object VisibleModulesProviderFactory {
   def get(psiFile: PsiFile): Option[VisibleModulesProvider] = {

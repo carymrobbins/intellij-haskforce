@@ -11,7 +11,7 @@ import com.haskforce.tools.cabal.CabalLanguage
 import com.haskforce.tools.cabal.lang.psi
 import com.haskforce.tools.cabal.lang.psi.CabalPsiUtil
 import com.haskforce.haskell.constants.GhcLanguageExtensions
-import com.haskforce.utils.SAMUtils
+import com.haskforce.system.utils.SAMUtils
 
 final class CabalCompletionContributor extends CompletionContributor {
 

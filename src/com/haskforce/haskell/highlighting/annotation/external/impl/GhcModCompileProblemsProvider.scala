@@ -11,7 +11,7 @@ import com.intellij.psi.PsiFile
 import com.haskforce.Implicits._
 import com.haskforce.haskell.highlighting.annotation.Problems
 import com.haskforce.haskell.highlighting.annotation.external.{ProblemsProvider, GhcMod}
-import com.haskforce.utils.{WrappedFuture, NotificationUtil, ExecUtil}
+import com.haskforce.system.utils.{WrappedFuture, NotificationUtil, ExecUtil}
 
 class GhcModCompileProblemsProvider private(
   module: Module,

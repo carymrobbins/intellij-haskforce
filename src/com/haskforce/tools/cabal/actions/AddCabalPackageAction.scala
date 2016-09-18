@@ -4,7 +4,7 @@ import com.haskforce.Implicits._
 import com.haskforce.tools.cabal.settings.AddCabalPackageOptions
 import com.haskforce.tools.cabal.settings.ui.{AddCabalPackageDialog, AddCabalPackageUtil}
 import com.haskforce.tools.cabal.CabalExecutor
-import com.haskforce.utils.{FileUtil, NotificationUtil}
+import com.haskforce.system.utils.{FileUtil, NotificationUtil}
 import com.intellij.notification.NotificationType
 import com.intellij.notification.NotificationType._
 import com.intellij.openapi.actionSystem.{AnAction, AnActionEvent}

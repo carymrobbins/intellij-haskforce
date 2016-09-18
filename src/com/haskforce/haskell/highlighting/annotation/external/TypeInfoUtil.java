@@ -1,7 +1,7 @@
 package com.haskforce.haskell.highlighting.annotation.external;
 
-import com.haskforce.settings.ToolKey;
-import com.haskforce.utils.ExecUtil;
+import com.haskforce.system.settings.ToolKey;
+import com.haskforce.system.utils.ExecUtil;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.VisualPosition;
 import com.intellij.openapi.fileEditor.FileEditorManager;

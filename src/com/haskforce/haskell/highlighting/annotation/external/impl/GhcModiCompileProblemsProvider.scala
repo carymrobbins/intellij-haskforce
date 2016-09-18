@@ -8,7 +8,7 @@ import com.intellij.psi.PsiFile
 
 import com.haskforce.haskell.highlighting.annotation.Problems
 import com.haskforce.haskell.highlighting.annotation.external.{ProblemsProvider, GhcModi}
-import com.haskforce.utils.WrappedFuture
+import com.haskforce.system.utils.WrappedFuture
 
 class GhcModiCompileProblemsProvider private(
   ghcModi: GhcModi,

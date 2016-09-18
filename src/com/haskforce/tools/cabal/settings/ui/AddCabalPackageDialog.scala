@@ -8,8 +8,8 @@ import java.util.EventObject
 import com.haskforce.haskell.HaskellModuleType
 import com.haskforce.Implicits._
 import com.haskforce.tools.cabal.settings.AddCabalPackageOptions
-import com.haskforce.ui.ComboModuleProxy
-import com.haskforce.utils.FileUtil
+import com.haskforce.system.ui.ComboModuleProxy
+import com.haskforce.system.utils.FileUtil
 import com.intellij.openapi.project.Project
 import scala.collection.JavaConversions._
 

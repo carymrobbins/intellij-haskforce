@@ -28,8 +28,8 @@ import org.apache.sanselan.util.IOUtils;
 import org.jetbrains.annotations.NotNull;
 
 import com.haskforce.haskell.psi.HaskellFile;
-import com.haskforce.settings.ToolKey;
-import com.haskforce.utils.HaskellToolsNotificationListener;
+import com.haskforce.system.settings.ToolKey;
+import com.haskforce.system.utils.HaskellToolsNotificationListener;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.CapturingProcessAdapter;
 import com.intellij.execution.process.OSProcessHandler;

@@ -8,9 +8,9 @@ import javax.swing._
 import com.haskforce.haskell.HaskellModuleType
 import com.haskforce.tools.cabal.completion.CabalFileFinder
 import com.haskforce.importWizard.stack.{StackYaml, StackYamlUtil}
-import com.haskforce.settings.HaskellBuildSettings
-import com.haskforce.ui.GC
-import com.haskforce.utils.GuiUtil
+import com.haskforce.system.settings.HaskellBuildSettings
+import com.haskforce.system.ui.GC
+import com.haskforce.system.utils.GuiUtil
 import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.TextFieldWithBrowseButton

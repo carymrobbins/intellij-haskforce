@@ -10,8 +10,8 @@ import com.intellij.psi.PsiFile
 import com.haskforce.haskell.highlighting.annotation.Problems
 import com.haskforce.haskell.highlighting.annotation.external.{HLint, ProblemsProvider}
 import com.haskforce.haskell.psi.HaskellFile
-import com.haskforce.utils.parser.CastUtil
-import com.haskforce.utils.{ExecUtil, NotificationUtil, WrappedFuture}
+import com.haskforce.system.utils.parser.CastUtil
+import com.haskforce.system.utils.{ExecUtil, NotificationUtil, WrappedFuture}
 
 class HLintProblemsProvider private(
   project: Project,

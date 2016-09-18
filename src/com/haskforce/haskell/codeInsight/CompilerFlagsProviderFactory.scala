@@ -5,7 +5,7 @@ import com.intellij.psi.PsiFile
 
 import com.haskforce.haskell.constants.GhcFlags
 import com.haskforce.haskell.highlighting.annotation.external.{GhcMod, GhcModi}
-import com.haskforce.utils.ExecUtil
+import com.haskforce.system.utils.ExecUtil
 
 object CompilerFlagsProviderFactory {
   def get(psiFile: PsiFile): Option[CompilerFlagsProvider] = {

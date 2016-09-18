@@ -1,8 +1,8 @@
 package com.haskforce.tools.cabal.settings.ui;
 
-import com.haskforce.ui.ComboModuleProxy;
+import com.haskforce.system.ui.ComboModuleProxy;
 import com.haskforce.tools.cabal.settings.CabalComponentType;
-import com.haskforce.ui.SComboBox;
+import com.haskforce.system.ui.SComboBox;
 
 import javax.swing.*;
 import java.awt.event.*;

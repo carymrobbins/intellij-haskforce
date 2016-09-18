@@ -3,9 +3,9 @@ package com.haskforce.tools.cabal
 import java.io.File
 
 import com.haskforce.haskell.highlighting.annotation.external.GhcModUtil
-import com.haskforce.settings.HaskellBuildSettings
-import com.haskforce.utils.ExecUtil
-import com.haskforce.utils.ExecUtil.ExecError
+import com.haskforce.system.settings.HaskellBuildSettings
+import com.haskforce.system.utils.ExecUtil
+import com.haskforce.system.utils.ExecUtil.ExecError
 import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.CapturingProcessHandler

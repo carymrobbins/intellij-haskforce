@@ -8,7 +8,7 @@ import com.intellij.psi.PsiManager
 
 import com.haskforce.tools.cabal.lang.psi.CabalFile
 import com.haskforce.haskell.psi.HaskellFile
-import com.haskforce.utils.SAMUtils
+import com.haskforce.system.utils.SAMUtils
 
 /** Utility for finding Cabal files. */
 object CabalFileFinder {

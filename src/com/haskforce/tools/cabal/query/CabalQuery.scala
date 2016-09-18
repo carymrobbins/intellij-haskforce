@@ -14,7 +14,7 @@ import com.intellij.psi.tree.IElementType
 import com.haskforce.tools.cabal.CabalLanguage
 import com.haskforce.tools.cabal.lang.psi
 import com.haskforce.tools.cabal.lang.psi.{CabalFile, CabalTypes}
-import com.haskforce.utils.{NonEmptySet, PQ}
+import com.haskforce.system.utils.{NonEmptySet, PQ}
 
 final class CabalQuery(val psiFile: psi.CabalFile) {
 

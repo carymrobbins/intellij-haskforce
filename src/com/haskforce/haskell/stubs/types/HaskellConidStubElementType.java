@@ -3,7 +3,7 @@ package com.haskforce.haskell.stubs.types;
 import com.haskforce.haskell.psi.HaskellConid;
 import com.haskforce.haskell.psi.impl.HaskellConidImpl;
 import com.haskforce.haskell.stubs.HaskellConidStub;
-import com.haskforce.utils.HaskellUtil;
+import com.haskforce.system.utils.HaskellUtil;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.stubs.StubElement;
 import com.intellij.psi.stubs.StubInputStream;

@@ -10,8 +10,8 @@ import com.haskforce.haskell.HaskellModuleType
 import com.haskforce.Implicits._
 import com.haskforce.tools.cabal.settings.{AddCabalPackageOptions, CabalComponentType}
 import com.haskforce.tools.cabal.CabalExecutor
-import com.haskforce.ui.SComboBox
-import com.haskforce.utils.{ExecUtil, FileUtil, NotificationUtil}
+import com.haskforce.system.ui.SComboBox
+import com.haskforce.system.utils.{ExecUtil, FileUtil, NotificationUtil}
 import com.intellij.openapi.module.{Module, ModuleManager}
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile

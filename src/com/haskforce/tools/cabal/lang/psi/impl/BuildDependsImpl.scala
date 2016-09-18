@@ -3,7 +3,7 @@ package com.haskforce.tools.cabal.lang.psi.impl
 import com.intellij.psi.PsiElement
 
 import com.haskforce.tools.cabal.lang.psi._
-import com.haskforce.utils.PQ
+import com.haskforce.system.utils.PQ
 
 trait BuildDependsImpl extends PsiElement {
 

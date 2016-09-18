@@ -8,7 +8,7 @@ import com.haskforce.Implicits._
 import com.haskforce.tools.cabal.query.CabalQuery
 import com.haskforce.haskell.HaskellIcons
 import com.haskforce.importWizard.stack.{StackYaml, StackYamlUtil}
-import com.haskforce.settings.HaskellBuildSettings
+import com.haskforce.system.settings.HaskellBuildSettings
 import com.haskforce.haskell.{HaskellModuleBuilder, HaskellModuleType, HaskellSdkType}
 import com.intellij.ide.util.projectWizard.ModuleBuilder
 import com.intellij.openapi.application.ApplicationManager

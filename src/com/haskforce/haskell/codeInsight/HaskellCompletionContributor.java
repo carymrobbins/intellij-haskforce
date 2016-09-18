@@ -6,7 +6,7 @@ import com.haskforce.haskell.HaskellLanguage;
 import com.haskforce.haskell.codeInsight.HaskellCompletionCacheLoader.Cache;
 import com.haskforce.haskell.codeInsight.HaskellCompletionCacheLoader.LookupElementWrapper;
 import com.haskforce.haskell.psi.*;
-import com.haskforce.utils.HaskellUtil;
+import com.haskforce.system.utils.HaskellUtil;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;

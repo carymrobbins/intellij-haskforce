@@ -3,7 +3,7 @@ package com.haskforce.tools.cabal.actions
 import com.haskforce.haskell.HaskellModuleType
 import com.haskforce.Implicits._
 import com.haskforce.tools.cabal.settings.ui.{AddCabalPackageUtil, DiscoverCabalPackagesDialog}
-import com.haskforce.utils.{FileUtil, NotificationUtil}
+import com.haskforce.system.utils.{FileUtil, NotificationUtil}
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.{AnAction, AnActionEvent}
 import com.intellij.openapi.application.ApplicationManager

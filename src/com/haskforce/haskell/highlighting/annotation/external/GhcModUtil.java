@@ -1,9 +1,9 @@
 package com.haskforce.haskell.highlighting.annotation.external;
 
-import com.haskforce.settings.HaskellBuildSettings;
-import com.haskforce.utils.ExecUtil;
-import com.haskforce.utils.NotificationUtil;
-import com.haskforce.utils.EitherUtil;
+import com.haskforce.system.settings.HaskellBuildSettings;
+import com.haskforce.system.utils.ExecUtil;
+import com.haskforce.system.utils.NotificationUtil;
+import com.haskforce.system.utils.EitherUtil;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
 import com.intellij.notification.NotificationType;
@@ -19,7 +19,6 @@ import scala.util.Either;
 
 import java.io.File;
 import java.util.*;
-import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

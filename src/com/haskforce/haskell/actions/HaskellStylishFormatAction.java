@@ -20,14 +20,14 @@ package com.haskforce.haskell.actions;
  * Adapted from the Emacs-formatter in the Erlang plugin. 17 May 2014.
  */
 
-import com.haskforce.settings.ToolKey;
+import com.haskforce.system.settings.ToolKey;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.psi.PsiFile;
 import com.haskforce.haskell.psi.HaskellFile;
-import com.haskforce.utils.HaskellToolsNotificationListener;
+import com.haskforce.system.utils.HaskellToolsNotificationListener;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.process.CapturingProcessAdapter;
 import com.intellij.execution.process.OSProcessHandler;

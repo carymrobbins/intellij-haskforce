@@ -5,8 +5,8 @@ import java.awt.{Dimension, GridBagLayout}
 import javax.swing._
 
 import com.haskforce.Implicits._
-import com.haskforce.ui.GC
-import com.haskforce.utils.FileUtil
+import com.haskforce.system.ui.GC
+import com.haskforce.system.utils.FileUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.uiDesigner.core.Spacer

@@ -17,7 +17,7 @@ import com.intellij.psi.{PsiFile, PsiManager}
 import com.haskforce.Implicits._
 import com.haskforce.haskell.codeInsight.HaskellCompletionCacheLoader.LookupElementWrapper
 import com.haskforce.haskell.psi.{HaskellFile, HaskellPsiUtil}
-import com.haskforce.utils.SAMUtils
+import com.haskforce.system.utils.SAMUtils
 
 /** Loads the completion cache for any Haskell files we have open. */
 class HaskellCompletionCacheLoader(project: Project) extends ProjectComponent {

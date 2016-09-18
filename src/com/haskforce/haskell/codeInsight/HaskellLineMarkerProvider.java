@@ -1,7 +1,7 @@
 package com.haskforce.haskell.codeInsight;
 
 import com.haskforce.haskell.HaskellIcons;
-import com.haskforce.utils.HaskellUtil;
+import com.haskforce.system.utils.HaskellUtil;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;
 import com.intellij.codeInsight.navigation.NavigationGutterIconBuilder;

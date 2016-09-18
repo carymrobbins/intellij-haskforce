@@ -7,7 +7,7 @@ import javax.swing._
 import com.intellij.uiDesigner.core.Spacer
 
 import com.haskforce.Implicits._
-import com.haskforce.ui.GC
+import com.haskforce.system.ui.GC
 
 /**
  * Form presented to user to configure Cabal initialization when creating a new project.

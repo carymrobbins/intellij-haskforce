@@ -13,7 +13,7 @@ import com.haskforce.Implicits._
 import com.haskforce.haskell.codeInsight.HaskellCompletionContributor
 import com.haskforce.haskell.highlighting.annotation.{HaskellAnnotationHolder, HaskellProblem, Problems}
 import HaskellExternalAnnotator.State
-import com.haskforce.utils.{SAMUtils, WrappedFuture}
+import com.haskforce.system.utils.{SAMUtils, WrappedFuture}
 
 /** Single annotator that calls all external tools used for annotations. */
 class HaskellExternalAnnotator extends ExternalAnnotator[PsiFile, State] {

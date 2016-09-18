@@ -1,7 +1,7 @@
 package com.haskforce.haskell.features.intentions;
 
 import com.haskforce.haskell.highlighting.annotation.external.GhcMod.*;
-import com.haskforce.utils.FileUtil;
+import com.haskforce.system.utils.FileUtil;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;

@@ -1,6 +1,6 @@
 package com.haskforce.haskell.run.stack
 
-import com.haskforce.settings.HaskellBuildSettings
+import com.haskforce.system.settings.HaskellBuildSettings
 import com.intellij.execution.configurations.{ParametersList, GeneralCommandLine, CommandLineState}
 import com.intellij.execution.process.{OSProcessHandler}
 import com.intellij.execution.runners.ExecutionEnvironment

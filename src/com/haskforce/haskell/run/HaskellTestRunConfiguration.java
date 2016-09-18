@@ -1,6 +1,6 @@
 package com.haskforce.haskell.run;
 
-import com.haskforce.settings.HaskellBuildSettings;
+import com.haskforce.system.settings.HaskellBuildSettings;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.Executor;
 import com.intellij.execution.configurations.ConfigurationFactory;

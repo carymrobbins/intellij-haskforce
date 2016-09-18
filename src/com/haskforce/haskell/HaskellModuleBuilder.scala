@@ -31,9 +31,9 @@ import com.haskforce.Implicits._
 import com.haskforce.tools.cabal.settings.CabalComponentType
 import com.haskforce.tools.cabal.settings.ui.NewCabalProjectForm
 import com.haskforce.macros.string.dedent
-import com.haskforce.settings.HaskellBuildSettings
-import com.haskforce.ui.GC
-import com.haskforce.utils.{GuiUtil, Logging}
+import com.haskforce.system.settings.HaskellBuildSettings
+import com.haskforce.system.ui.GC
+import com.haskforce.system.utils.{GuiUtil, Logging}
 
 /** Manages the creation of Haskell modules via interaction with the user. */
 class HaskellModuleBuilder extends ModuleBuilder with SourcePathsBuilder with ModuleBuilderListener {

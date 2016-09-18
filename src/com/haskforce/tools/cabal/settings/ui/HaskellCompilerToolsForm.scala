@@ -5,8 +5,8 @@ import java.io.File
 import com.haskforce.haskell.HaskellModuleBuilder
 import com.haskforce.Implicits._
 import com.haskforce.jps.model.HaskellBuildOptions
-import com.haskforce.settings.{HaskellBuildSettings, ToolKey}
-import com.haskforce.utils.{ExecUtil, GuiUtil}
+import com.haskforce.system.settings.{HaskellBuildSettings, ToolKey}
+import com.haskforce.system.utils.{ExecUtil, GuiUtil}
 import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.DefaultProjectFactory

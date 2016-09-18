@@ -1,9 +1,9 @@
 package com.haskforce.haskell.run;
 
-import com.haskforce.settings.HaskellBuildSettings;
-import com.haskforce.utils.ExecUtil;
-import com.haskforce.utils.NotificationUtil;
-import com.haskforce.utils.EitherUtil;
+import com.haskforce.system.settings.HaskellBuildSettings;
+import com.haskforce.system.utils.ExecUtil;
+import com.haskforce.system.utils.NotificationUtil;
+import com.haskforce.system.utils.EitherUtil;
 import com.intellij.execution.configuration.AbstractRunConfiguration;
 import com.intellij.execution.configurations.ConfigurationFactory;
 import com.intellij.execution.configurations.GeneralCommandLine;

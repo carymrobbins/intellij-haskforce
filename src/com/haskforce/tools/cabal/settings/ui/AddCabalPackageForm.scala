@@ -3,7 +3,7 @@ package com.haskforce.tools.cabal.settings.ui
 import javax.swing._
 
 import com.haskforce.tools.cabal.settings.CabalComponentType
-import com.haskforce.ui.SComboBox
+import com.haskforce.system.ui.SComboBox
 
 /**
  * Simple trait to share code via AddCabalPackageUtil between various forms
