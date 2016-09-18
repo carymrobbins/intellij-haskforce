@@ -808,7 +808,7 @@
         <pathelement location="${haskforce.testoutput.dir}"/>
       </classpath>
       <formatter type="brief" usefile="false"/>
-      <test name="com.haskforce.HaskellTestCase"/>
+      <test name="com.haskforce.haskell.highlightingTestCase"/>
     </junit>
   </target>
 
