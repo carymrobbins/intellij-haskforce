@@ -194,9 +194,16 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
             if (pathText.isEmpty()) {
                 versionField.setText("");
             } else {
-                versionField.setText(getVersion(pathText, versionParam).split("\r\n|\r|\n")[0]);
+                // Get the first line reported from `getVersion`
+                String v = getVersion(pathText, versionParam);
+                if (v == null) return;
+                String[] lines = NEWLINE_REGEX.split(v);
+                if (lines.length == 0) return;
+                versionField.setText(lines[0]);
             }
         }
+
+        private Pattern NEWLINE_REGEX = Pattern.compile("\r\n|\r|\n");
 
         public boolean isModified() {
             for (PropertyField propertyField : propertyFields) {
