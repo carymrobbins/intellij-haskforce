@@ -3,14 +3,13 @@ package com.haskforce.highlighting.annotation.external
 import java.util
 
 import scala.collection.JavaConverters._
-
 import junit.framework.TestCase
-
 import com.haskforce.HaskellLightPlatformCodeInsightFixtureTestCase
 import com.haskforce.highlighting.annotation.HaskellAnnotationHolder
 import com.haskforce.psi.impl.HaskellElementFactory
 import com.intellij.codeInsight.daemon.impl.AnnotationHolderImpl
 import com.intellij.lang.annotation.AnnotationSession
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.util.text.StringUtil
 
 /**
@@ -58,7 +57,9 @@ class GhcModTest extends HaskellLightPlatformCodeInsightFixtureTestCase("ghc-mod
                   "main ="
           ), "\n")
         )
-        file.setName("src/Main.hs")
+        ApplicationManager.getApplication.runWriteAction(new Runnable() {
+          def run() = file.setName("src/Main.hs")
+        })
 
         // Intentionally leaving both paths to /src/Main.hs the same to ensure that
         // createAnnotations sees both as the same file and handles the duplicate properly.
