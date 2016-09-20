@@ -14,20 +14,32 @@ object ProjectManager {
   /**
     * adds the Project to the Set
     * @param project the project to add
+    * @return true if added, false if not
     */
-  def addProject (project : Project) : Unit = {
+  def addProject (project : Project) : Boolean = {
     this.synchronized {
-      projects = projects + project
+      if (projects.contains(project)) {
+        return false
+      } else {
+        projects = projects + project
+        return true
+      }
     }
   }
 
   /**
     * removes the Project from the Set
     * @param project the project to remove
+    * @return true if removed, false if not
     */
-  def removeProject (project : Project) : Unit = {
+  def removeProject (project : Project) : Boolean = {
     this.synchronized {
-      projects = projects - project
+      if (!projects.contains(project)) {
+        return false
+      } else {
+        projects = projects - project
+        return true
+      }
     }
   }
 }

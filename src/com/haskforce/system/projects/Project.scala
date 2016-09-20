@@ -1,7 +1,7 @@
 package com.haskforce.system.projects
 
 /**
-  * Holds information about the project
+  * Holds information about a (PackageManager, not Intellij) project (essentially a stack or cabal file)
   */
 trait Project {
 

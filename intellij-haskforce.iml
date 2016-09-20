@@ -63,6 +63,7 @@
           <root url="jar://$USER_HOME$/.ivy2/cache/org.ow2.asm/asm-tree/javadocs/asm-tree-5.0.2-javadoc.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.ow2.asm/asm/javadocs/asm-5.0.2-javadoc.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/jaxen/jaxen/javadocs/jaxen-1.1.6-javadoc.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/commons-lang/commons-lang/javadocs/commons-lang-2.6-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
           <root url="jar://$USER_HOME$/.ivy2/cache/org.scalamacros/paradise_2.11.6/sources/paradise_2.11.6-2.1.0-M5-sources.jar!/" />
@@ -79,9 +80,11 @@
           <root url="jar://$USER_HOME$/.ivy2/cache/org.ow2.asm/asm/sources/asm-5.0.2-sources.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/jaxen/jaxen/sources/jaxen-1.1.6-sources.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.apache.ant/ant/sources/ant-1.7.1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/commons-lang/commons-lang/sources/commons-lang-2.6-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
+    <orderEntry type="library" name="scala-sdk-2.11.8" level="application" />
   </component>
   <component name="org.twodividedbyzero.idea.findbugs">
     <option name="_basePreferences">
