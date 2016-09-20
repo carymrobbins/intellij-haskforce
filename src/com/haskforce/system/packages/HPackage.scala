@@ -1,14 +1,21 @@
-package com.haskforce.system.projects
+package com.haskforce.system.packages
+
+import com.intellij.openapi.vfs.VirtualFile
 
 /**
-  * Holds information about a (PackageManager, not Intellij) project (essentially a stack or cabal file)
+  * Holds information about a haskell package (essentially a stack or cabal file)
   */
-trait Project {
+trait HPackage {
 
   /**
-    * Returns the name of the project
+    * Returns the name of the package
     */
   def getName: Option[String]
+
+  /**
+    * Returns the location of the package
+    */
+  def getLocation: VirtualFile
 
   /**
     * Returns the associated BuildInfos
