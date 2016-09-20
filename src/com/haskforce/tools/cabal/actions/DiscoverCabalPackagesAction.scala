@@ -1,9 +1,10 @@
 package com.haskforce.tools.cabal.actions
 
 import com.haskforce.haskell.HaskellModuleType
-import com.haskforce.Implicits._
+import com.haskforce.system.packages.HPackage
 import com.haskforce.tools.cabal.settings.ui.{AddCabalPackageUtil, DiscoverCabalPackagesDialog}
 import com.haskforce.system.utils.{FileUtil, NotificationUtil}
+import com.haskforce.tools.cabal.packages.{AlreadyRegistered, CabalPackagesManager, FileError}
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.{AnAction, AnActionEvent}
 import com.intellij.openapi.application.ApplicationManager
@@ -11,6 +12,7 @@ import com.intellij.openapi.project.{DumbAware, Project}
 import com.intellij.openapi.vfs.VirtualFile
 
 import scala.collection.JavaConversions._
+import com.haskforce.Implicits._
 
 /**
  * Finds Cabal packages within project which are lacking an IntelliJ modules and creates modules for them.
@@ -47,17 +49,52 @@ object DiscoverCabalPackagesAction {
     )
   }
 
-  private def onSuccess(packageNames: Seq[String]): Unit = {
-    packageNames match {
+  private def onSuccess(cabalFiles: Seq[VirtualFile]): Unit = {
+    cabalFiles match {
       case Nil =>
         NotificationUtil.displaySimpleNotification(
           NotificationType.WARNING, null, TITLE,
           "No Cabal packages imported."
         )
       case _ =>
+        val (fileErrors, regErrors, successes) = cabalFiles
+          .map(file => CabalPackagesManager.registerNewPackage(file))
+          .foldRight((List[(String, String, String)](), List[HPackage](), List[HPackage]()))((either, akk) => {
+            val (fileAkk, regAkk, projAkk) = akk
+            either match {
+              case Left(FileError(x, y, z)) => ((x, y, z) :: fileAkk, regAkk, projAkk)
+              case Left(AlreadyRegistered(x)) => (fileAkk, x :: regAkk, projAkk)
+              case Right(x) => (fileAkk, regAkk, x :: projAkk)
+            }
+          })
+
+        fileErrors match {
+          case Nil =>
+          case _ =>
+            val f: ((String, String, String)) => String = tupel => {
+              val (location, name, error) = tupel
+              s"$location failed: $error"
+            }
+            NotificationUtil.displaySimpleNotification(
+              NotificationType.ERROR, null, TITLE,
+              "Unable to register the following Cabal packages: <br/>" + fileErrors.map(f).mkString("<br/>")
+            )
+        }
+
+        val successesDisplay: String = successes
+          .map(project => project.getName.getOrElse(project.getLocation.getNameWithoutExtension))
+          .mkString("<br/>")
+
+        val regErrorsDisplay: String = regErrors match {
+          case Nil => ""
+          case _ => "<br/>The following Cabal packages were already registered: <br/>" + regErrors
+            .map(project => project.getName.getOrElse(project.getLocation.getNameWithoutExtension))
+            .mkString("<br/>")
+        }
+
         NotificationUtil.displaySimpleNotification(
           NotificationType.INFORMATION, null, TITLE,
-          "Successfully imported Cabal packages:<br/>" + packageNames.mkString("<br/>")
+          "Successfully imported Cabal packages:<br/>" + successesDisplay + regErrorsDisplay
         )
     }
   }
@@ -88,7 +125,7 @@ object DiscoverCabalPackagesAction {
   private def importCabalPackages(project: Project)(files: Seq[VirtualFile]): Unit = {
     ApplicationManager.getApplication.runWriteAction({ () =>
       files.foreach(AddCabalPackageUtil.importCabalPackage(project))
-      onSuccess(files.map(_.getNameWithoutExtension))
-    }: Runnable)
+      onSuccess(files)
+    } : Runnable)
   }
 }
