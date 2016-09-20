@@ -1,25 +1,31 @@
-package com.haskforce.tools.cabal.projects
+package com.haskforce.tools.cabal.packages
 
-import com.haskforce.system.projects.BuildType.{Benchmark, Executable, Library, TestSuite}
-import com.haskforce.system.projects.PackageManager.Cabal
-import com.haskforce.system.projects.{PackageManager, Project => BaseProject}
+import com.haskforce.system.packages.BuildType.{Benchmark, Executable, Library, TestSuite}
+import com.haskforce.system.packages.PackageManager.Cabal
+import com.haskforce.system.packages.{PackageManager, HPackage => BaseHPackage}
 import com.haskforce.system.utils.PQ
 import com.haskforce.tools.cabal.lang.psi
 import com.haskforce.tools.cabal.lang.psi.{Benchmark, Executable, TestSuite}
+import com.intellij.openapi.vfs.VirtualFile
 
 /**
-  * A Cabal Project
+  * A Cabal Package
   */
-class CabalProject(val psiFile: psi.CabalFile) extends BaseProject {
+class CabalPackage(val psiFile: psi.CabalFile) extends BaseHPackage {
   val defaultSourceRoot : String = "."
 
   /**
-    * Returns the name of the project
+    * Returns the name of the package
     */
   override def getName: Option[String] = for {
     pkgName <- PQ.getChildOfType(psiFile, classOf[psi.PkgName])
     ff <- PQ.getChildOfType(pkgName, classOf[psi.Freeform])
   } yield ff.getText
+
+  /**
+    * Returns the name of the package
+    */
+  override def getLocation: VirtualFile = psiFile.getOriginalFile.getVirtualFile
 
   /**
     * If 'library' stanza exists, returns it; otherwise, implicitly uses root stanza.
@@ -47,10 +53,10 @@ class CabalProject(val psiFile: psi.CabalFile) extends BaseProject {
   override def getPackageManager: PackageManager = Cabal
 
 
-  def canEqual(other: Any): Boolean = other.isInstanceOf[CabalProject]
+  def canEqual(other: Any): Boolean = other.isInstanceOf[CabalPackage]
 
   override def equals(other: Any): Boolean = other match {
-    case that: CabalProject =>
+    case that: CabalPackage =>
       (that canEqual this) &&
         psiFile.getOriginalFile == that.psiFile.getOriginalFile
     case _ => false
