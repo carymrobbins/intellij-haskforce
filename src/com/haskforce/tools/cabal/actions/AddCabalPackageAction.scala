@@ -7,7 +7,7 @@ import com.haskforce.tools.cabal.settings.AddCabalPackageOptions
 import com.haskforce.tools.cabal.settings.ui.{AddCabalPackageDialog, AddCabalPackageUtil}
 import com.haskforce.tools.cabal.CabalExecutor
 import com.haskforce.system.utils.{FileUtil, NotificationUtil}
-import com.haskforce.tools.cabal.packages.{AlreadyRegistered, CabalPackagesManager, FileError}
+import com.haskforce.tools.cabal.projects.{AlreadyRegistered, CabalProjectManager, FileError}
 import com.intellij.notification.NotificationType
 import com.intellij.notification.NotificationType._
 import com.intellij.openapi.actionSystem.{AnAction, AnActionEvent}
@@ -58,7 +58,7 @@ object AddCabalPackageAction {
       Option(LocalFileSystem.getInstance.refreshAndFindFileByPath(newCabalFilePath)) match {
         case None => display(WARNING, s"Could not find new cabal file at $newCabalFilePath - may not have been created.")
         case Some(cabalFile) =>
-          CabalPackagesManager.registerNewPackage(new File(newCabalFilePath)) match {
+          CabalProjectManager.registerNewProject(new File(newCabalFilePath)) match {
             case Left(FileError(location, name, message)) => display(ERROR, s"registering $name failed with error message: $message")
             case Left(AlreadyRegistered(x)) => display(INFORMATION, s"Project ${x.getName.getOrElse(x.getLocation.getNameWithoutExtension)} is already registered")
             case Right(_) => new OpenFileDescriptor(project, cabalFile).navigate(true)
