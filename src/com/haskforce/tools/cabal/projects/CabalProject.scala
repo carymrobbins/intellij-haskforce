@@ -71,19 +71,4 @@ class CabalProject(val psiFile: psi.CabalFile) extends BaseProject {
     path
       .right.flatMap(path => GHCVersion.getGHCVersion(null, path))
   }
-
-
-  def canEqual(other: Any): Boolean = other.isInstanceOf[CabalProject]
-
-  override def equals(other: Any): Boolean = other match {
-    case that: CabalProject =>
-      (that canEqual this) &&
-        psiFile.getOriginalFile == that.psiFile.getOriginalFile
-    case _ => false
-  }
-
-  override def hashCode(): Int = {
-    val state = Seq(psiFile.getOriginalFile)
-    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
-  }
 }
