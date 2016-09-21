@@ -1,4 +1,4 @@
-package com.haskforce.system.packages
+package com.haskforce.system.projects
 
 import com.haskforce.system.utils.NonEmptySet
 
