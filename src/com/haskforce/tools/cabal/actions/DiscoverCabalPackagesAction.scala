@@ -1,7 +1,7 @@
 package com.haskforce.tools.cabal.actions
 
 import com.haskforce.haskell.HaskellModuleType
-import com.haskforce.system.projects.Project
+import com.haskforce.system.projects.{Project => HProject}
 import com.haskforce.tools.cabal.settings.ui.{AddCabalPackageUtil, DiscoverCabalPackagesDialog}
 import com.haskforce.system.utils.{FileUtil, NotificationUtil}
 import com.haskforce.tools.cabal.projects.{AlreadyRegistered, CabalProjectManager, FileError}
@@ -59,7 +59,7 @@ object DiscoverCabalPackagesAction {
       case _ =>
         val (fileErrors, regErrors, successes) = cabalFiles
           .map(file => CabalProjectManager.registerNewProject(file))
-          .foldRight((List[(String, String, String)](), List[Project](), List[Project]()))((either, akk) => {
+          .foldRight((List[(String, String, String)](), List[HProject](), List[HProject]()))((either, akk) => {
             val (fileAkk, regAkk, projAkk) = akk
             either match {
               case Left(FileError(x, y, z)) => ((x, y, z) :: fileAkk, regAkk, projAkk)
