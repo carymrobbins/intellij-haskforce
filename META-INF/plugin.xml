@@ -283,6 +283,10 @@
         com.haskforce.haskell.codeInsight.HaskellCompletionCacheLoader
       </implementation-class>
     </component>
+      <component>
+          <interface-class>com.haskforce.system.projects.ProjectManager</interface-class>
+          <implementation-class>com.haskforce.system.projects.ProjectManagerImpl</implementation-class>
+      </component>
   </project-components>
 
   <actions>
@@ -353,7 +357,7 @@
                        implementationClass="com.haskforce.haskell.highlighting.annotation.external.HaskellExternalAnnotator"/>
     <configurationType implementation="com.haskforce.haskell.run.HaskellApplicationConfigurationType"/>
     <configurationType implementation="com.haskforce.haskell.run.HaskellTestConfigurationType"/>
-    <configurationType implementation="com.haskforce.haskell.run.stack.StackApplicationConfigurationType"/>
+    <configurationType implementation="com.haskforce.tools.stack.run.StackApplicationConfigurationType"/>
     <programRunner implementation="com.haskforce.haskell.run.HaskellRunner"/>
     <codeStyleSettingsProvider
         implementation="com.haskforce.haskell.language.formatting.HaskellCodeStyleSettingsProvider"/>
