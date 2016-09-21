@@ -1,21 +1,21 @@
-package com.haskforce.tools.cabal.packages
+package com.haskforce.tools.cabal.projects
 
-import com.haskforce.system.packages.BuildType.{Benchmark, Executable, Library, TestSuite}
-import com.haskforce.system.packages.PackageManager.Cabal
-import com.haskforce.system.packages.{PackageManager, HPackage => BaseHPackage}
+import com.haskforce.system.projects.BuildType.{Benchmark, Executable, Library, TestSuite}
+import com.haskforce.system.projects.PackageManager.Cabal
+import com.haskforce.system.projects.{PackageManager, Project => BaseHPackage}
 import com.haskforce.system.utils.PQ
 import com.haskforce.tools.cabal.lang.psi
 import com.haskforce.tools.cabal.lang.psi.{Benchmark, Executable, TestSuite}
 import com.intellij.openapi.vfs.VirtualFile
 
 /**
-  * A Cabal Package
+  * A Cabal Project
   */
-class CabalPackage(val psiFile: psi.CabalFile) extends BaseHPackage {
+class CabalProject(val psiFile: psi.CabalFile) extends BaseHPackage {
   val defaultSourceRoot : String = "."
 
   /**
-    * Returns the name of the package
+    * Returns the name of the project
     */
   override def getName: Option[String] = for {
     pkgName <- PQ.getChildOfType(psiFile, classOf[psi.PkgName])
@@ -23,7 +23,7 @@ class CabalPackage(val psiFile: psi.CabalFile) extends BaseHPackage {
   } yield ff.getText
 
   /**
-    * Returns the name of the package
+    * Returns the name of the project
     */
   override def getLocation: VirtualFile = psiFile.getOriginalFile.getVirtualFile
 
@@ -53,10 +53,10 @@ class CabalPackage(val psiFile: psi.CabalFile) extends BaseHPackage {
   override def getPackageManager: PackageManager = Cabal
 
 
-  def canEqual(other: Any): Boolean = other.isInstanceOf[CabalPackage]
+  def canEqual(other: Any): Boolean = other.isInstanceOf[CabalProject]
 
   override def equals(other: Any): Boolean = other match {
-    case that: CabalPackage =>
+    case that: CabalProject =>
       (that canEqual this) &&
         psiFile.getOriginalFile == that.psiFile.getOriginalFile
     case _ => false
