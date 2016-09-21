@@ -1,8 +1,13 @@
 package com.haskforce.system.projects
 
+import java.io.File
+
+import com.haskforce.system.projects.PackageManager.{Cabal, Stack}
 import com.haskforce.system.settings.HaskellBuildSettings
-import com.haskforce.system.utils.ExecUtil
+import com.haskforce.system.utils.{ExecUtil, NotificationUtil}
 import com.haskforce.system.utils.ExecUtil.ExecError
+import com.haskforce.tools.cabal.projects.CabalProjectManager
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.{Project => IProject}
 import com.intellij.openapi.vfs.{VfsUtilCore, VirtualFile}
 
@@ -30,6 +35,36 @@ class ProjectManagerImpl(intellijProject: IProject) extends ProjectManager {
   def setMainProject(project: Project) = {
     addProject(project)
     mainProject = project
+  }
+
+  /**
+    * sets the main Project and adds it to the projects if not already registered
+    */
+  override def setMainProject(packageManager: PackageManager, file: String): Either[FileError, Project] = {
+    val handleFunc = (registerResult: Either[RegisterError, Project]) => {
+      if (registerResult.isRight) {
+        val project: Project = registerResult.right.get
+        setMainProject(project)
+        Right(project)
+      } else {
+        registerResult.left.get match {
+          case AlreadyRegistered(project) => {
+            setMainProject(project)
+            Right(project)
+          }
+          case FileError(location, fileName, errorMsg) => Left(FileError(location, fileName, errorMsg))
+        }
+      }
+    }
+    packageManager match {
+      case Cabal => {
+        val registerResult: Either[RegisterError, Project] = CabalProjectManager.registerNewProject(new File(file), intellijProject)
+        handleFunc(registerResult)
+      }
+      case Stack => {
+        ??? //TODO: impl for stack
+      }
+    }
   }
 
   /**
@@ -104,12 +139,34 @@ class ProjectManagerImpl(intellijProject: IProject) extends ProjectManager {
 
   override def projectClosed(): Unit = {}
 
-  override def initComponent(): Unit = {}
+  override def initComponent(): Unit = {
+    val settings: HaskellBuildSettings = HaskellBuildSettings.getInstance(intellijProject)
+    val printError = (msg : String) => {
+      NotificationUtil.displaySimpleNotification(NotificationType.ERROR,
+        intellijProject,
+        "Unable to initialized Haskforce properly, please reset the compiler settings",
+        msg)
+    }
+    if (settings.isCabalEnabled) {
+      val result: Either[FileError, Project] = setMainProject(Cabal, settings.getCabalPath)
+      if (result.isLeft) {
+        printError(result.left.get.errorMsg)
+        settings.setUseCabal(false)
+      }
+    } else if (settings.isStackEnabled) {
+      //TODO impl stack
+    }
+  }
 
   override def disposeComponent(): Unit = {}
 
   override def getComponentName: String = ProjectManagerImpl.NAME
 }
+
 object ProjectManagerImpl {
   val NAME = "haskforce.projectManager"
 }
+
+sealed trait RegisterError
+case class FileError(location: String, fileName : String, errorMsg: String) extends RegisterError
+case class AlreadyRegistered(project: Project) extends RegisterError

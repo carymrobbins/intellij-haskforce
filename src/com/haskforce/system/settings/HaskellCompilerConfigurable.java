@@ -1,5 +1,8 @@
 package com.haskforce.system.settings;
 
+import com.haskforce.system.projects.FileError;
+import com.haskforce.system.projects.PackageManager;
+import com.haskforce.system.projects.ProjectManager;
 import com.haskforce.system.utils.ExecUtil;
 import com.haskforce.system.utils.GuiUtil;
 import com.haskforce.system.utils.NotificationUtil;
@@ -15,6 +18,7 @@ import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import scala.runtime.AbstractFunction1;
+import scala.util.Either;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -212,6 +216,13 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
     @Override
     public void apply() throws ConfigurationException {
         validate();
+        String file;
+        if (buildWithStack.isSelected()) {
+            file = stackPath.getText();
+        } else {
+            file = cabalPath.getText();
+        }
+        setMainProject(buildWithStack.isSelected(), buildWithCabal.isSelected() && !buildWithStack.isSelected(), file, myProject);
         saveState();
         updateVersionInfoFields();
     }
@@ -246,6 +257,18 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         mySettings.setStackPath(stackPath.getText());
         mySettings.setStackFlags(stackFlags.getText());
         mySettings.setStackFile(stackFile.getText());
+    }
+
+    private void setMainProject(boolean stack, boolean cabal, String file, Project project) throws ConfigurationException {
+        if (stack) {
+            //TODO: stack support
+        } else if (cabal) {
+            ProjectManager projectManager = project.getComponent(ProjectManager.class);
+            Either<FileError, com.haskforce.system.projects.Project> result = projectManager.setMainProject(PackageManager.Stack$.MODULE$, file);
+            if (result.isLeft()) {
+                throw new ConfigurationException("Unable to set Main Project to Cabal. " + result.left().get().errorMsg());
+            }
+        }
     }
 
     private void validate() throws ConfigurationException {

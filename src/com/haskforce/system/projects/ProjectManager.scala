@@ -1,5 +1,6 @@
 package com.haskforce.system.projects
 
+import com.haskforce.system.settings.HaskellBuildSettings
 import com.haskforce.system.utils.ExecUtil
 import com.intellij.openapi.components.ProjectComponent
 import com.intellij.openapi.project.{Project => IProject}
@@ -24,6 +25,11 @@ trait ProjectManager extends ProjectComponent {
     * sets the main Project and adds it to the projects if not already registered
     */
   def setMainProject(project: Project)
+
+  /**
+    * sets the main Project and adds it to the projects if not already registered
+    */
+  def setMainProject(packageManager: PackageManager, file: String) : Either[FileError, Project]
 
   /**
     * returns the Default GHC-Version
