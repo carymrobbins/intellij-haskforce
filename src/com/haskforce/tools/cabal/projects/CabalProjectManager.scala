@@ -2,7 +2,7 @@ package com.haskforce.tools.cabal.projects
 
 import java.io.File
 
-import com.haskforce.system.projects.{ProjectManager, Project}
+import com.haskforce.system.projects.{Project, ProjectManager}
 import com.haskforce.tools.cabal.lang.psi.CabalFile
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.{Project => IProject, ProjectManager => IProjectManager}
@@ -37,10 +37,11 @@ object CabalProjectManager {
     */
   def registerNewProject(file : VirtualFile) : Either[RegisterError, Project] = {
     val defaultProject: IProject = IProjectManager.getInstance().getDefaultProject
+    val projectManager: ProjectManager = defaultProject.getComponent(classOf[ProjectManager])
     PsiManager.getInstance(defaultProject).findFile(file) match {
       case psiFile: CabalFile => {
         val cabalProject: CabalProject = new CabalProject(psiFile)
-        val added: Boolean = ProjectManager.addProject(cabalProject)
+        val added: Boolean = projectManager.addProject(cabalProject)
         if (added) {
           Right(cabalProject)
         } else {
