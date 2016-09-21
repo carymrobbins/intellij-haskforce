@@ -37,6 +37,20 @@ trait Project {
     * Returns the active GHCVersion for the project or an error
     */
   def getGHCVersion : Either[ExecUtil.ExecError, GHCVersion]
+
+  def canEqual(other: Any): Boolean = other.isInstanceOf[Project]
+
+  override def equals(other: Any): Boolean = other match {
+    case that: Project =>
+      (that canEqual this) &&
+        getLocation == that.getLocation
+    case _ => false
+  }
+
+  override def hashCode(): Int = {
+    val state = Seq(getLocation)
+    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+  }
 }
 
 sealed trait PackageManager
