@@ -27,9 +27,9 @@ trait BuildInfo {
   def getGhcOptions: Set[String]
 
   /**
-    * Get hs-source-dirs listed, defaulting to "." if not present.
+    * Get hs-source-dirs listed, defaulting to the directory of the stack/cabal file if not present
     */
-  def getSourceDirs: NonEmptySet[String]
+  def getSourceDirs: Set[String]
 }
 
 /**
