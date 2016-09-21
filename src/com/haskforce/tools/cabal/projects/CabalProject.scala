@@ -2,17 +2,22 @@ package com.haskforce.tools.cabal.projects
 
 import com.haskforce.system.projects.BuildType.{Benchmark, Executable, Library, TestSuite}
 import com.haskforce.system.projects.PackageManager.Cabal
-import com.haskforce.system.projects.{PackageManager, Project => BaseHPackage}
-import com.haskforce.system.utils.PQ
+import com.haskforce.system.projects.{GHCVersion, PackageManager, Project => BaseProject}
+import com.haskforce.system.settings.HaskellBuildSettings
+import com.haskforce.system.utils.ExecUtil.ExecError
+import com.haskforce.system.utils.{ExecUtil, PQ}
 import com.haskforce.tools.cabal.lang.psi
 import com.haskforce.tools.cabal.lang.psi.{Benchmark, Executable, TestSuite}
+import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 
 /**
   * A Cabal Project
   */
-class CabalProject(val psiFile: psi.CabalFile) extends BaseHPackage {
-  val defaultSourceRoot : String = "."
+class CabalProject(val psiFile: psi.CabalFile) extends BaseProject {
+  private val LOG = Logger.getInstance(classOf[CabalProject])
+  private val defaultSourceRoot : String = "."
 
   /**
     * Returns the name of the project
@@ -51,6 +56,22 @@ class CabalProject(val psiFile: psi.CabalFile) extends BaseHPackage {
     * Returns the corresponding PackageManager
     */
   override def getPackageManager: PackageManager = Cabal
+
+  /**
+    * Returns the active GHCVersion for the
+    */
+  override def getGHCVersion: Either[ExecUtil.ExecError, GHCVersion] = {
+    val project: Project = psiFile.getProject
+    val settings: HaskellBuildSettings = HaskellBuildSettings.getInstance(project)
+    val path: Either[ExecUtil.ExecError, String] = settings.getGhcPath match {
+      case null => Left(new ExecError("No GHC-path configured", null))
+      case "" => Left(new ExecError("GHC path is empty", null))
+      case x => Right(x)
+    }
+
+    path
+      .right.flatMap(path => GHCVersion.getGHCVersion(null, path))
+  }
 
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[CabalProject]
