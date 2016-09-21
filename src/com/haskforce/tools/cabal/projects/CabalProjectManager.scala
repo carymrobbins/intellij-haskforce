@@ -2,10 +2,10 @@ package com.haskforce.tools.cabal.projects
 
 import java.io.File
 
-import com.haskforce.system.projects.{Project, ProjectManager}
+import com.haskforce.system.projects._
 import com.haskforce.tools.cabal.lang.psi.CabalFile
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.project.{Project => IProject, ProjectManager => IProjectManager}
+import com.intellij.openapi.project.{Project => IProject}
 import com.intellij.openapi.vfs.{LocalFileSystem, VirtualFile}
 import com.intellij.psi.PsiManager
 
@@ -19,26 +19,27 @@ object CabalProjectManager {
   /**
     * registers the new Cabal-projects
     * @param file the file pointing to the cabal-file
+    * @param project the Intellij Project
     * @return either the RegisterError or the project
     */
-  def registerNewProject(file: File) : Either[RegisterError, Project] = {
+  def registerNewProject(file: File, project: IProject) : Either[RegisterError, Project] = {
     val virtualFile: VirtualFile = LocalFileSystem.getInstance().findFileByIoFile(file)
     if (virtualFile == null) {
       Left(FileError(file.getCanonicalPath, file.getName, s"unable to obtain VirtualFile for file ${file.getAbsolutePath}"))
     } else {
-      registerNewProject(virtualFile)
+      registerNewProject(virtualFile, project)
     }
   }
 
   /**
     * registers the new Cabal-projects
     * @param file the VirtualFile pointing to the cabal-file
+    * @param project the Intellij Project
     * @return either the RegisterError or the project
     */
-  def registerNewProject(file : VirtualFile) : Either[RegisterError, Project] = {
-    val defaultProject: IProject = IProjectManager.getInstance().getDefaultProject
-    val projectManager: ProjectManager = defaultProject.getComponent(classOf[ProjectManager])
-    PsiManager.getInstance(defaultProject).findFile(file) match {
+  def registerNewProject(file : VirtualFile, project: IProject) : Either[RegisterError, Project] = {
+    val projectManager: ProjectManager = project.getComponent(classOf[ProjectManager])
+    PsiManager.getInstance(project).findFile(file) match {
       case psiFile: CabalFile => {
         val cabalProject: CabalProject = new CabalProject(psiFile)
         val added: Boolean = projectManager.addProject(cabalProject)
@@ -53,8 +54,4 @@ object CabalProjectManager {
     }
   }
 }
-
-sealed trait RegisterError
-case class FileError(location: String, fileName : String, errorMsg: String) extends RegisterError
-case class AlreadyRegistered(project: Project) extends RegisterError
 

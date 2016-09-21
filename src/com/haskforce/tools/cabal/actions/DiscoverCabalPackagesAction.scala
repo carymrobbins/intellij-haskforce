@@ -1,10 +1,10 @@
 package com.haskforce.tools.cabal.actions
 
 import com.haskforce.haskell.HaskellModuleType
-import com.haskforce.system.projects.{Project => HProject}
+import com.haskforce.system.projects.{AlreadyRegistered, FileError, Project => HProject}
 import com.haskforce.tools.cabal.settings.ui.{AddCabalPackageUtil, DiscoverCabalPackagesDialog}
 import com.haskforce.system.utils.{FileUtil, NotificationUtil}
-import com.haskforce.tools.cabal.projects.{AlreadyRegistered, CabalProjectManager, FileError}
+import com.haskforce.tools.cabal.projects.CabalProjectManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.{AnAction, AnActionEvent}
 import com.intellij.openapi.application.ApplicationManager
@@ -49,7 +49,7 @@ object DiscoverCabalPackagesAction {
     )
   }
 
-  private def onSuccess(cabalFiles: Seq[VirtualFile]): Unit = {
+  private def onSuccess(cabalFiles: Seq[VirtualFile], project: Project): Unit = {
     cabalFiles match {
       case Nil =>
         NotificationUtil.displaySimpleNotification(
@@ -58,7 +58,7 @@ object DiscoverCabalPackagesAction {
         )
       case _ =>
         val (fileErrors, regErrors, successes) = cabalFiles
-          .map(file => CabalProjectManager.registerNewProject(file))
+          .map(file => CabalProjectManager.registerNewProject(file, project))
           .foldRight((List[(String, String, String)](), List[HProject](), List[HProject]()))((either, akk) => {
             val (fileAkk, regAkk, projAkk) = akk
             either match {
@@ -125,7 +125,7 @@ object DiscoverCabalPackagesAction {
   private def importCabalPackages(project: Project)(files: Seq[VirtualFile]): Unit = {
     ApplicationManager.getApplication.runWriteAction({ () =>
       files.foreach(AddCabalPackageUtil.importCabalPackage(project))
-      onSuccess(files)
+      onSuccess(files, project)
     } : Runnable)
   }
 }
