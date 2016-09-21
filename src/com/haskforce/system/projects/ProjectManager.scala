@@ -5,11 +5,26 @@ package com.haskforce.system.projects
   */
 object ProjectManager {
   private var projects : Set[Project] = Set()
+  private var mainProject : Project = null
 
   /**
     * returns the active Projects
     */
   def getProjects : Set[Project] = projects
+
+  /**
+    * the main Project (used for ghci etc.)
+    * @return the main Project or empty if not configured
+    */
+  def getMainProject : Option[Project] = Option(mainProject)
+
+  /**
+    * sets the main Project and adds it to the projects if not already registered
+    */
+  def setMainProject(project: Project) = {
+    addProject(project)
+    mainProject = project
+  }
 
   /**
     * adds the project to the Set

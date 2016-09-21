@@ -1,0 +1,24 @@
+package com.haskforce.system.projects;
+
+import org.junit.Test;
+import scala.Option;
+
+import static org.junit.Assert.*;
+
+/**
+ */
+public class GHCVersion$Test {
+    @Test
+    public void getGHCVersion8() throws Exception {
+        Option<GHCVersion> ghcVersion = GHCVersion.getGHCVersion("The Glorious Glasgow Haskell Compilation System, version 8.0.1");
+        assertTrue(ghcVersion.isDefined());
+        assertEquals(ghcVersion.get(), GHCVersion.apply(8, 0, 1));
+    }
+
+    @Test
+    public void getGHCVersion7() throws Exception {
+        Option<GHCVersion> ghcVersion = GHCVersion.getGHCVersion("The Glorious Glasgow Haskell Compilation System, version 7.10.3");
+        assertTrue(ghcVersion.isDefined());
+        assertEquals(ghcVersion.get(), GHCVersion.apply(7, 10, 3));
+    }
+}
