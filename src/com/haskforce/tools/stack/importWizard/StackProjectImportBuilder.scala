@@ -5,12 +5,11 @@ import java.util
 import javax.swing.Icon
 
 import com.haskforce.Implicits._
+import com.haskforce.system.ui.HaskellIcons
 import com.haskforce.tools.cabal.query.CabalQuery
-//TODO refactor
-import com.haskforce.haskell.HaskellIcons
 import com.haskforce.importWizard.stack.{StackYaml, StackYamlUtil}
 import com.haskforce.system.settings.HaskellBuildSettings
-import com.haskforce.haskell.{HaskellModuleBuilder, HaskellModuleType, HaskellSdkType}
+import com.haskforce.haskell.{HaskellModuleBuilder, HaskellModuleType, HaskellSdkType}//TODO refactor
 import com.intellij.ide.util.projectWizard.ModuleBuilder
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger

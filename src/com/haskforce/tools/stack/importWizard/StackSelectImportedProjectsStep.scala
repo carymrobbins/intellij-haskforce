@@ -2,8 +2,8 @@ package com.haskforce.tools.stack.importWizard
 
 import javax.swing.Icon
 
-//TODO refactor
-import com.haskforce.haskell.HaskellIcons
+import com.haskforce.system.ui.HaskellIcons
+
 import com.haskforce.importWizard.stack.StackYaml
 import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.projectImport.SelectImportedProjectsStep

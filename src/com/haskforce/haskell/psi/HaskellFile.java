@@ -1,6 +1,6 @@
 package com.haskforce.haskell.psi;
 
-import com.haskforce.haskell.HaskellIcons;
+import com.haskforce.system.ui.HaskellIcons;
 import com.haskforce.haskell.stubs.HaskellFileStub;
 import com.intellij.extapi.psi.PsiFileBase;
 import com.intellij.openapi.fileTypes.FileType;
