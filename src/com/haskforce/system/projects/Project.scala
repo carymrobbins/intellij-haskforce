@@ -43,12 +43,12 @@ trait Project {
   override def equals(other: Any): Boolean = other match {
     case that: Project =>
       (that canEqual this) &&
-        getLocation == that.getLocation
+        getLocation.getParent == that.getLocation.getParent
     case _ => false
   }
 
   override def hashCode(): Int = {
-    val state = Seq(getLocation)
+    val state = Seq(getLocation.getParent)
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
   }
 }
