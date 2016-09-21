@@ -4,12 +4,13 @@ import com.haskforce.system.projects.{BuildType, BuildInfo => BaseBuildInfo}
 import com.haskforce.system.utils.{NonEmptySet, PQ}
 import com.haskforce.tools.cabal.lang.psi
 import com.haskforce.tools.cabal.lang.psi.CabalTypes
+import com.haskforce.tools.cabal.lang.psi.impl.SourceDirsImpl
 import com.intellij.psi.PsiElement
 
 /**
   * A Cabal BuildInfo
   */
-class cabalBuildInfo(val el: PsiElement, val bType : BuildType, val defaultSourceRoot : String) extends BaseBuildInfo {
+class cabalBuildInfo(val el: PsiElement, val bType : BuildType) extends BaseBuildInfo {
   override val typ: BuildType = bType
 
   /**
@@ -42,9 +43,8 @@ class cabalBuildInfo(val el: PsiElement, val bType : BuildType, val defaultSourc
   /**
     * Get hs-source-dirs listed, defaulting to "." if not present.
     */
-  override def getSourceDirs: NonEmptySet[String] = {
-    NonEmptySet.fromSets[String](
-      PQ.streamChildren(el, classOf[psi.impl.SourceDirsImpl]).map(_.getValue.toSet)
-    ).getOrElse(NonEmptySet(defaultSourceRoot))
+  override def getSourceDirs: Set[String] = {
+    val map: Stream[Set[String]] = PQ.streamChildren(el, classOf[SourceDirsImpl]).map(_.getValue.toSet)
+    map.foldRight(Set.empty[String])((s, acc) => acc ++ s)
   }
 }

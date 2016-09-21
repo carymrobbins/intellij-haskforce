@@ -17,7 +17,6 @@ import com.intellij.openapi.vfs.VirtualFile
   */
 class CabalProject(val psiFile: psi.CabalFile) extends BaseProject {
   private val LOG = Logger.getInstance(classOf[CabalProject])
-  private val defaultSourceRoot : String = "."
 
   /**
     * Returns the name of the project
@@ -37,8 +36,8 @@ class CabalProject(val psiFile: psi.CabalFile) extends BaseProject {
     */
   def getLibrary: cabalBuildInfo = {
     psiFile.getChildren.collectFirst {
-      case c: psi.Library => new cabalBuildInfo(c, Library, defaultSourceRoot)
-    }.getOrElse(new cabalBuildInfo(psiFile, Library, defaultSourceRoot))
+      case c: psi.Library => new cabalBuildInfo(c, Library)
+    }.getOrElse(new cabalBuildInfo(psiFile, Library))
   }
 
   /**
@@ -46,9 +45,9 @@ class CabalProject(val psiFile: psi.CabalFile) extends BaseProject {
     */
   override def getBuildInfo: List[cabalBuildInfo] = {
     getLibrary +: psiFile.getChildren.collect {
-      case c: Executable => new cabalBuildInfo(c, Executable, defaultSourceRoot)
-      case c: TestSuite => new cabalBuildInfo(c, TestSuite, defaultSourceRoot)
-      case c: Benchmark => new cabalBuildInfo(c, Benchmark, defaultSourceRoot)
+      case c: Executable => new cabalBuildInfo(c, Executable)
+      case c: TestSuite => new cabalBuildInfo(c, TestSuite)
+      case c: Benchmark => new cabalBuildInfo(c, Benchmark)
     }.toList
   }
 
