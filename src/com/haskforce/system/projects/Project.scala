@@ -52,20 +52,6 @@ trait Project {
     * @param projectEvent the Event to emit
     */
   private[projects] def emitEvent(projectEvent: ProjectEvent) = eventSource.onNext(projectEvent)
-
-  def canEqual(other: Any): Boolean = other.isInstanceOf[Project]
-
-  override def equals(other: Any): Boolean = other match {
-    case that: Project =>
-      (that canEqual this) &&
-        getLocation.getParent == that.getLocation.getParent
-    case _ => false
-  }
-
-  override def hashCode(): Int = {
-    val state = Seq(getLocation.getParent)
-    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
-  }
 }
 
 sealed trait PackageManager
@@ -99,19 +85,5 @@ object GHCVersion {
     } else {
       None
     }
-  }
-
-  /**
-    * Returns the active GHCVersion for the
-    */
-  def getGHCVersion(workingDir: String, path: String) : Either[ExecUtil.ExecError, GHCVersion] = {
-    ExecUtil.readCommandLine(workingDir, path, "--numeric-version")
-      .right.flatMap(input => {
-      GHCVersion.getGHCVersion(input) match {
-        case Some(x) => Right(x)
-        case None => Left(new ExecError("Unable to parse GHC version input", null))
-      }
-    })
-
   }
 }
