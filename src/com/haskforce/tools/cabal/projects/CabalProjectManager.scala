@@ -2,6 +2,7 @@ package com.haskforce.tools.cabal.projects
 
 import java.io.File
 
+import com.haskforce.system.projects.PackageManager.Cabal
 import com.haskforce.system.projects._
 import com.haskforce.tools.cabal.lang.psi.CabalFile
 import com.intellij.openapi.diagnostic.Logger
@@ -47,6 +48,37 @@ object CabalProjectManager {
           Right(cabalProject)
         } else {
           Left(AlreadyRegistered(cabalProject))
+        }
+      }
+      case other =>
+        Left(FileError(file.getCanonicalPath, file.getNameWithoutExtension, s"Expected CabalFile, got: ${other.getClass}"))
+    }
+  }
+
+  /**
+    * registers the new Cabal-projects, replaces existing if not equal
+    * @param file the VirtualFile pointing to the cabal-file
+    * @param project the Intellij Project
+    * @return either the RegisterError or the project
+    */
+  def replaceAndRegisterNewProject(file : VirtualFile, project: IProject) : Either[FileError, Project] = {
+    val projectManager: ProjectManager = project.getComponent(classOf[ProjectManager])
+    PsiManager.getInstance(project).findFile(file) match {
+      case psiFile: CabalFile => {
+        val cabalProject: CabalProject = new CabalProject(psiFile)
+        projectManager.getProject(file) match {
+          case None => {
+            projectManager.addProject(cabalProject)
+            Right(cabalProject)
+          }
+          case Some(existing) => {
+            if (existing.getPackageManager == Cabal) {
+              Right(existing)
+            } else {
+              projectManager.replaceProject(cabalProject)
+              Right(existing)
+            }
+          }
         }
       }
       case other =>
