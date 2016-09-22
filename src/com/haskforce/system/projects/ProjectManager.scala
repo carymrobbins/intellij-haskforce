@@ -13,7 +13,7 @@ trait ProjectManager extends ProjectComponent {
   /**
     * returns the active Projects
     */
-  def getProjects : Set[Project]
+  def getProjects : Iterable[Project]
 
   /**
     * the main Project (used for ghci etc.)
@@ -22,14 +22,14 @@ trait ProjectManager extends ProjectComponent {
   def getMainProject : Option[Project]
 
   /**
-    * sets the main Project and adds it to the projects if not already registered
+    * sets the main Project
     */
   def setMainProject(project: Project)
 
   /**
-    * sets the main Project and adds it to the projects if not already registered
+    * sets the main Project and adds the project to the Set, replacing if an already registered is found
     */
-  def setMainProject(packageManager: PackageManager, file: String) : Either[FileError, Project]
+  def replaceMainProject(packageManager: PackageManager, file: String) : Either[FileError, Project]
 
   /**
     * returns the Default GHC-Version
@@ -37,11 +37,18 @@ trait ProjectManager extends ProjectComponent {
   def getDefaultGHCVersion(project: IProject): Either[ExecUtil.ExecError, GHCVersion]
 
   /**
-    * adds the project to the Set
+    * adds the project to the Set, given that there is no other project registered with the same Location
     * @param project the project to add
     * @return true if added, false if not
     */
   def addProject(project : Project) : Boolean
+
+  /**
+    * adds the project to the Set, replacing if an already registered is found
+    * @param project the project to add
+    * @return true if replaced, false if not
+    */
+  def replaceProject(project : Project) : Boolean
 
   /**
     * removes the project from the Set

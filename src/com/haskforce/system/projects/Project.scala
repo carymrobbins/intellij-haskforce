@@ -2,17 +2,16 @@ package com.haskforce.system.projects
 
 import java.util.regex.{Matcher, Pattern}
 
-import com.haskforce.system.settings.HaskellBuildSettings
 import com.haskforce.system.utils.ExecUtil
 import com.haskforce.system.utils.ExecUtil.ExecError
-import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
+import rx.lang.scala.Subject
 
 /**
   * Holds information about a haskell (not intellij) project (essentially a stack or cabal file)
   */
 trait Project {
-
+  private val eventSource : Subject[ProjectEvent] = Subject()
   /**
     * Returns the name of the project
     */
@@ -36,7 +35,23 @@ trait Project {
   /**
     * Returns the active GHCVersion for the project or an error
     */
-  def getGHCVersion : Either[ExecUtil.ExecError, GHCVersion]
+  def getGHCVersion: Either[ExecUtil.ExecError, GHCVersion]
+
+  /**
+    * use this Subject to subscribe to events.
+    * ==example usage==
+    * {{{
+    * val subscription = project.getEvents.subscribe(event => println(event))
+    * subscription.unsubscribe()
+    * }}}
+    */
+  def getEvents: Subject[ProjectEvent] = eventSource
+
+  /**
+    * emits a new ProjectEvent to all the Observers
+    * @param projectEvent the Event to emit
+    */
+  private[projects] def emitEvent(projectEvent: ProjectEvent) = eventSource.onNext(projectEvent)
 
   def canEqual(other: Any): Boolean = other.isInstanceOf[Project]
 
@@ -58,6 +73,10 @@ object PackageManager {
   case object Cabal extends PackageManager
   case object Stack extends PackageManager
 }
+
+sealed trait ProjectEvent
+case class Remove() extends ProjectEvent
+case class Replace(newProject: Project) extends ProjectEvent
 
 case class GHCVersion(major: Int, minor: Int, patch: Int)
 

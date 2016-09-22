@@ -15,13 +15,13 @@ import com.intellij.openapi.vfs.{VfsUtilCore, VirtualFile}
   * this class retrieve, add and remove the active projects
   */
 class ProjectManagerImpl(intellijProject: IProject) extends ProjectManager {
-  private var projects : Set[Project] = Set()
+  private var projects : Map[VirtualFile, Project] = Map()
   private var mainProject : Project = _
 
   /**
     * returns the active Projects
     */
-  def getProjects : Set[Project] = projects
+  def getProjects : Iterable[Project] = projects.values
 
   /**
     * the main Project (used for ghci etc.)
@@ -30,28 +30,27 @@ class ProjectManagerImpl(intellijProject: IProject) extends ProjectManager {
   def getMainProject : Option[Project] = Option(mainProject)
 
   /**
-    * sets the main Project and adds it to the projects if not already registered
+    * sets the main Project
     */
-  def setMainProject(project: Project) = {
-    addProject(project)
+  override def setMainProject(project: Project) = {
     mainProject = project
   }
 
   /**
     * sets the main Project and adds it to the projects if not already registered
     */
-  override def setMainProject(packageManager: PackageManager, file: String): Either[FileError, Project] = {
+  override def replaceMainProject(packageManager: PackageManager, file: String): Either[FileError, Project] = {
+    val set = (project: Project) => {
+      replaceProject(project)
+      setMainProject(project)
+      Right(project)
+    }
     val handleFunc = (registerResult: Either[RegisterError, Project]) => {
       if (registerResult.isRight) {
-        val project: Project = registerResult.right.get
-        setMainProject(project)
-        Right(project)
+        set(registerResult.right.get)
       } else {
         registerResult.left.get match {
-          case AlreadyRegistered(project) => {
-            setMainProject(project)
-            Right(project)
-          }
+          case AlreadyRegistered(project) => set(project)
           case FileError(location, fileName, errorMsg) => Left(FileError(location, fileName, errorMsg))
         }
       }
@@ -92,12 +91,32 @@ class ProjectManagerImpl(intellijProject: IProject) extends ProjectManager {
       return false
     }
     this.synchronized {
-      if (projects.contains(project)) {
+      if (projects.contains(project.getLocation)) {
         return false
       } else {
-        projects = projects + project
+        projects = projects + ((project.getLocation, project))
         return true
       }
+    }
+  }
+
+  /**
+    * adds the project to the Set, replacing if an already registered is found
+    *
+    * @param project the project to add
+    * @return true if replaced, false if not
+    */
+  override def replaceProject(project: Project): Boolean = {
+    if (project.getLocation == null || project.getLocation.isDirectory) {
+      return false
+    }
+    this.synchronized {
+      val toReplace = projects.get(project.getLocation)
+      projects = projects + ((project.getLocation, project))
+      toReplace match {
+        case Some(existing) => existing.emitEvent(Replace(project))
+      }
+      toReplace.isDefined
     }
   }
 
@@ -108,10 +127,11 @@ class ProjectManagerImpl(intellijProject: IProject) extends ProjectManager {
     */
   def removeProject (project : Project) : Boolean = {
     this.synchronized {
-      if (!projects.contains(project)) {
+      if (!projects.contains(project.getLocation)) {
         return false
       } else {
-        projects = projects - project
+        projects = projects - project.getLocation
+        project.emitEvent(Remove())
         return true
       }
     }
@@ -123,16 +143,16 @@ class ProjectManagerImpl(intellijProject: IProject) extends ProjectManager {
     * @return the Project if found
     */
   def getProjectForFile(file: VirtualFile): Option[Project] = {
-    projects.map(project => (project, project.getLocation.getParent))
-      .filter(tuple => VfsUtilCore.isAncestor(tuple._2, file, false))
+    projects.toList.map(tuple => (tuple._1.getParent, tuple._2))
+      .filter(tuple => VfsUtilCore.isAncestor(tuple._1, file, false))
       .reduceOption((tuple1, tuple2) => {
-        if (VfsUtilCore.isAncestor(tuple1._2, tuple2._2, false)) {
+        if (VfsUtilCore.isAncestor(tuple1._1, tuple2._1, false)) {
           tuple2
         } else {
           tuple1
         }
       })
-      .map(tuple => tuple._1)
+      .map(tuple => tuple._2)
   }
 
   override def projectOpened(): Unit = {}
@@ -148,7 +168,7 @@ class ProjectManagerImpl(intellijProject: IProject) extends ProjectManager {
         msg)
     }
     if (settings.isCabalEnabled) {
-      val result: Either[FileError, Project] = setMainProject(Cabal, settings.getCabalPath)
+      val result: Either[FileError, Project] = replaceMainProject(Cabal, settings.getCabalPath)
       if (result.isLeft) {
         printError(result.left.get.errorMsg)
         settings.setUseCabal(false)
