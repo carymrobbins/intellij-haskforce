@@ -28,8 +28,9 @@ trait ProjectManager extends ProjectComponent {
 
   /**
     * sets the main Project and adds the project to the Set, replacing if an already registered is found
+    * @return an Error, or an tuple with the optional replaced project and the created one
     */
-  def replaceMainProject(packageManager: PackageManager, file: String) : Either[FileError, Project]
+  def replaceMainProject(packageManager: PackageManager, file: String) : Either[FileError, (Option[Project], Project)]
 
   /**
     * returns the Default GHC-Version
@@ -46,9 +47,9 @@ trait ProjectManager extends ProjectComponent {
   /**
     * adds the project to the Set, replacing if an already registered is found
     * @param project the project to add
-    * @return true if replaced, false if not
+    * @return the old project if replace, or Empty
     */
-  def replaceProject(project : Project) : Boolean
+  def replaceProject(project : Project) : Option[Project]
 
   /**
     * removes the project from the Set

@@ -39,11 +39,11 @@ class ProjectManagerImpl(intellijProject: IProject) extends ProjectManager {
   /**
     * sets the main Project and adds it to the projects if not already registered
     */
-  override def replaceMainProject(packageManager: PackageManager, file: String): Either[FileError, Project] = {
+  override def replaceMainProject(packageManager: PackageManager, file: String): Either[FileError, (Option[Project], Project)] = {
     val set = (project: Project) => {
-      replaceProject(project)
+      val replaced: Option[Project] = replaceProject(project)
       setMainProject(project)
-      Right(project)
+      Right((replaced, project))
     }
     val handleFunc = (registerResult: Either[RegisterError, Project]) => {
       if (registerResult.isRight) {
@@ -106,9 +106,9 @@ class ProjectManagerImpl(intellijProject: IProject) extends ProjectManager {
     * @param project the project to add
     * @return true if replaced, false if not
     */
-  override def replaceProject(project: Project): Boolean = {
+  override def replaceProject(project: Project): Option[Project] = {
     if (project.getLocation == null || project.getLocation.isDirectory) {
-      return false
+      return None
     }
     this.synchronized {
       val toReplace = projects.get(project.getLocation)
@@ -116,7 +116,7 @@ class ProjectManagerImpl(intellijProject: IProject) extends ProjectManager {
       toReplace match {
         case Some(existing) => existing.emitEvent(Replace(project))
       }
-      toReplace.isDefined
+      toReplace
     }
   }
 

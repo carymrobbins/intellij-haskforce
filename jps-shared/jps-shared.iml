@@ -22,7 +22,6 @@
       <library name="IvyIDEA">
         <CLASSES>
           <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-compiler/jars/scala-compiler-2.11.7.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.11.7.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-reflect/jars/scala-reflect-2.11.7.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang.modules/scala-xml_2.11/bundles/scala-xml_2.11-1.0.4.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang.modules/scala-parser-combinators_2.11/bundles/scala-parser-combinators_2.11-1.0.4.jar!/" />
@@ -30,16 +29,59 @@
           <root url="jar://$USER_HOME$/.ivy2/cache/org.scalamacros/paradise_2.11.6/jars/paradise_2.11.6-2.1.0-M5.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.scalaz/scalaz-core_2.11/bundles/scalaz-core_2.11-7.1.4.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.yaml/snakeyaml/bundles/snakeyaml-1.16.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/io.reactivex/rxscala_2.11/jars/rxscala_2.11-0.26.2.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.11.8.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/io.reactivex/rxjava/jars/rxjava-1.1.6.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/com.google.code.findbugs/findbugs/jars/findbugs-3.0.1.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/net.jcip/jcip-annotations/jars/jcip-annotations-1.0.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/com.google.code.findbugs/jsr305/jars/jsr305-2.0.1.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/com.google.code.findbugs/bcel-findbugs/jars/bcel-findbugs-6.0.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/com.google.code.findbugs/jFormatString/jars/jFormatString-2.0.1.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/dom4j/dom4j/jars/dom4j-1.6.1.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/xml-apis/xml-apis/jars/xml-apis-1.0.b2.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.ow2.asm/asm-debug-all/jars/asm-debug-all-5.0.2.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.ow2.asm/asm-commons/jars/asm-commons-5.0.2.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.ow2.asm/asm-tree/jars/asm-tree-5.0.2.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.ow2.asm/asm/jars/asm-5.0.2.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/commons-lang/commons-lang/jars/commons-lang-2.6.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/com.apple/AppleJavaExtensions/jars/AppleJavaExtensions-1.4.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/jaxen/jaxen/bundles/jaxen-1.1.6.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.apache.ant/ant/jars/ant-1.7.1.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.apache.ant/ant-launcher/jars/ant-launcher-1.7.1.jar!/" />
         </CLASSES>
         <JAVADOC>
           <root url="jar://$USER_HOME$/.ivy2/cache/org.scalamacros/paradise_2.11.6/javadocs/paradise_2.11.6-2.1.0-M5-javadoc.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.scalaz/scalaz-core_2.11/javadocs/scalaz-core_2.11-7.1.4-javadoc.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.yaml/snakeyaml/javadocs/snakeyaml-1.16-javadoc.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/io.reactivex/rxscala_2.11/javadocs/rxscala_2.11-0.26.2-javadoc.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/io.reactivex/rxjava/javadocs/rxjava-1.1.6-javadoc.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/com.google.code.findbugs/findbugs/javadocs/findbugs-3.0.1-javadoc.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/com.google.code.findbugs/bcel-findbugs/javadocs/bcel-findbugs-6.0-javadoc.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.ow2.asm/asm-debug-all/javadocs/asm-debug-all-5.0.2-javadoc.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.ow2.asm/asm-commons/javadocs/asm-commons-5.0.2-javadoc.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.ow2.asm/asm-tree/javadocs/asm-tree-5.0.2-javadoc.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.ow2.asm/asm/javadocs/asm-5.0.2-javadoc.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/commons-lang/commons-lang/javadocs/commons-lang-2.6-javadoc.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/jaxen/jaxen/javadocs/jaxen-1.1.6-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
           <root url="jar://$USER_HOME$/.ivy2/cache/org.scalamacros/paradise_2.11.6/sources/paradise_2.11.6-2.1.0-M5-sources.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.scalaz/scalaz-core_2.11/sources/scalaz-core_2.11-7.1.4-sources.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.yaml/snakeyaml/sources/snakeyaml-1.16-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/io.reactivex/rxscala_2.11/sources/rxscala_2.11-0.26.2-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/io.reactivex/rxjava/sources/rxjava-1.1.6-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/com.google.code.findbugs/findbugs/sources/findbugs-3.0.1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/net.jcip/jcip-annotations/sources/jcip-annotations-1.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/com.google.code.findbugs/bcel-findbugs/sources/bcel-findbugs-6.0-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/dom4j/dom4j/sources/dom4j-1.6.1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/xml-apis/xml-apis/sources/xml-apis-1.0.b2-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.ow2.asm/asm-debug-all/sources/asm-debug-all-5.0.2-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.ow2.asm/asm-commons/sources/asm-commons-5.0.2-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.ow2.asm/asm-tree/sources/asm-tree-5.0.2-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.ow2.asm/asm/sources/asm-5.0.2-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/commons-lang/commons-lang/sources/commons-lang-2.6-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/jaxen/jaxen/sources/jaxen-1.1.6-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.apache.ant/ant/sources/ant-1.7.1-sources.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
