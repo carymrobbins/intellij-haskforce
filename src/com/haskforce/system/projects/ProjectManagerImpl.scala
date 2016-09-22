@@ -24,6 +24,11 @@ class ProjectManagerImpl(intellijProject: IProject) extends ProjectManager {
   def getProjects : Iterable[Project] = projects.values
 
   /**
+    * returns the Project at the location
+    */
+  override def getProject(file: VirtualFile): Option[Project] = projects.get(file)
+
+  /**
     * the main Project (used for ghci etc.)
     * @return the main Project or empty if not configured
     */
@@ -168,7 +173,7 @@ class ProjectManagerImpl(intellijProject: IProject) extends ProjectManager {
         msg)
     }
     if (settings.isCabalEnabled) {
-      val result: Either[FileError, Project] = replaceMainProject(Cabal, settings.getCabalPath)
+      val result = replaceMainProject(Cabal, settings.getCabalPath)
       if (result.isLeft) {
         printError(result.left.get.errorMsg)
         settings.setUseCabal(false)

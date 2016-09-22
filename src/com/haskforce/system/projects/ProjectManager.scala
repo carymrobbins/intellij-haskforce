@@ -16,6 +16,11 @@ trait ProjectManager extends ProjectComponent {
   def getProjects : Iterable[Project]
 
   /**
+    * returns the Project at the location
+    */
+  def getProject(file: VirtualFile) : Option[Project]
+
+  /**
     * the main Project (used for ghci etc.)
     * @return the main Project or empty if not configured
     */
