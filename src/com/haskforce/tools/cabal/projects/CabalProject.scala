@@ -15,7 +15,7 @@ import com.intellij.openapi.vfs.VirtualFile
 /**
   * A Cabal Project
   */
-class CabalProject(val psiFile: psi.CabalFile) extends BaseProject {
+class CabalProject(psiFile: psi.CabalFile) extends BaseProject {
   private val LOG = Logger.getInstance(classOf[CabalProject])
 
   /**
@@ -69,6 +69,12 @@ class CabalProject(val psiFile: psi.CabalFile) extends BaseProject {
     }
 
     path
-      .right.flatMap(path => GHCVersion.getGHCVersion(null, path))
+      .right.flatMap(path => ExecUtil.readCommandLine(null, path, "--numeric-version"))
+      .right.flatMap(input => {
+      GHCVersion.getGHCVersion(input) match {
+        case Some(x) => Right(x)
+        case None => Left(new ExecError("Unable to parse GHC version input", null))
+      }
+    })
   }
 }
