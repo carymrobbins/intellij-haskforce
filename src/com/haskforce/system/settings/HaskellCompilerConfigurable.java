@@ -17,6 +17,8 @@ import com.intellij.ui.TextAccessor;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import scala.Option;
+import scala.Tuple2;
 import scala.runtime.AbstractFunction1;
 import scala.util.Either;
 
@@ -264,7 +266,8 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
             //TODO: stack support
         } else if (cabal) {
             ProjectManager projectManager = project.getComponent(ProjectManager.class);
-            Either<FileError, com.haskforce.system.projects.Project> result = projectManager.setMainProject(PackageManager.Stack$.MODULE$, file);
+            Either<FileError, ?> result =
+                    projectManager.replaceMainProject(PackageManager.Stack$.MODULE$, file);
             if (result.isLeft()) {
                 throw new ConfigurationException("Unable to set Main Project to Cabal. " + result.left().get().errorMsg());
             }
