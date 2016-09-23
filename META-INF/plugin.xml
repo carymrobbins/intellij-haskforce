@@ -284,8 +284,8 @@
       </implementation-class>
     </component>
       <component>
-          <interface-class>com.haskforce.system.projects.ProjectManager</interface-class>
-          <implementation-class>com.haskforce.system.projects.ProjectManagerImpl</implementation-class>
+          <interface-class>com.haskforce.system.packages.HPackageManager</interface-class>
+          <implementation-class>com.haskforce.system.packages.HPackageManagerImpl</implementation-class>
       </component>
   </project-components>
 
