@@ -1,11 +1,16 @@
 package com.haskforce.system.settings;
 
 import com.haskforce.system.packages.FileError;
+import com.haskforce.system.packages.HPackage;
 import com.haskforce.system.packages.PackageManager;
 import com.haskforce.system.packages.HPackageManager;
+import com.haskforce.system.utils.EitherUtil;
 import com.haskforce.system.utils.ExecUtil;
 import com.haskforce.system.utils.GuiUtil;
 import com.haskforce.system.utils.NotificationUtil;
+import com.haskforce.tools.cabal.packages.CabalPackageManager;
+import com.haskforce.tools.stack.packages.StackPackage;
+import com.haskforce.tools.stack.packages.StackPackageManager;
 import com.intellij.compiler.options.CompilerConfigurable;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.options.ConfigurationException;
@@ -17,6 +22,12 @@ import com.intellij.ui.TextAccessor;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import scala.Option;
+import scala.Tuple2;
+import scala.collection.JavaConversions;
+import scala.collection.JavaConverters;
+import scala.collection.JavaConverters$;
+import scala.collection.immutable.List;
 import scala.runtime.AbstractFunction1;
 import scala.util.Either;
 
@@ -25,6 +36,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * The "Haskell Compiler" section in Preferences->Compiler.
@@ -260,10 +273,50 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
     }
 
     private void setMainProject(boolean stack, boolean cabal, String file, Project project) throws ConfigurationException {
+        HPackageManager packageManager = project.getComponent(HPackageManager.class);
         if (stack) {
-            //TODO: stack support
+            Either<FileError, List<Either<FileError, Tuple2<StackPackage, Option<HPackage>>>>> replacedPackaged =
+                    StackPackageManager.replacePackages(file, project);
+            Either<FileError, List<FileError>> errors = EitherUtil.getErrorsNested(replacedPackaged);
+            if (errors.isLeft()) {
+                throw new ConfigurationException("Unable to set Main Project to Stack. " + errors.left().get().errorMsg());
+            } else {
+                List<FileError> fileErrorList = errors.right().get();
+                if (!fileErrorList.isEmpty()) {
+                    String errorMessages = JavaConversions.seqAsJavaList(fileErrorList).stream()
+                            .map(error -> "in package: " + error.fileName() + " error: " + error.errorMsg())
+                            .collect(Collectors.joining("<br/>"));
+                    NotificationUtil.displaySimpleNotification(
+                            NotificationType.ERROR, myProject, "unable to set up all packages correctly", errorMessages
+                    );
+                }
+                Optional<StackPackage> anyPackage = JavaConversions.seqAsJavaList(replacedPackaged.right().get()).stream()
+                        .map(either -> either.right().toOption())
+                        .filter(Option::isDefined)
+                        .map(Option::get)
+                        .map(Tuple2::_1)
+                        .findAny();
+                if (anyPackage.isPresent()) {
+                    packageManager.setMainPackage(anyPackage.get());
+                } else {
+                    throw new ConfigurationException("Error: Could not retrieve any Stack Packages from the Project. This should not happen!");
+                }
+            }
         } else if (cabal) {
-            HPackageManager packageManager = project.getComponent(HPackageManager.class);
+            Option<HPackage> mainPackage = packageManager.getMainPackage();
+            if (mainPackage.isDefined() && mainPackage.get() instanceof StackPackage) {
+                StackPackage stackPackage = (StackPackage) mainPackage.get();
+                String errorMessages = JavaConversions.seqAsJavaList(stackPackage.getAllPackages()).stream()
+                        .map(onePackage -> CabalPackageManager.replaceAndRegisterNewPackage(onePackage.getLocation(), project))
+                        .map(either -> either.left().toOption())
+                        .filter(Option::isDefined)
+                        .map(Option::get)
+                        .map(error -> "in package: " + error.fileName() + " error: " + error.errorMsg())
+                        .collect(Collectors.joining("<br/>"));
+                NotificationUtil.displaySimpleNotification(
+                        NotificationType.ERROR, myProject, "unable to set up all packages correctly", errorMessages
+                );
+            }
             Either<FileError, ?> result =
                     packageManager.replaceMainPackage(PackageManager.Stack$.MODULE$, file);
             if (result.isLeft()) {

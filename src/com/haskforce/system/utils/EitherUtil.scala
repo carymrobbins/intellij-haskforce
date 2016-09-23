@@ -29,4 +29,12 @@ object EitherUtil {
   def left[A, B](x: A): Either[A, B] = Left(x)
 
   def right[A, B](x: B): Either[A, B] = Right(x)
+
+  def getErrorsNested[A, B, C](e: Either[A, List[Either[B, C]]]): Either[A, List[B]]= {
+    e.right.map(list => {
+      list.map(either => either.left.toOption)
+        .filter(_.isDefined)
+        .map(_.get)
+    })
+  }
 }
