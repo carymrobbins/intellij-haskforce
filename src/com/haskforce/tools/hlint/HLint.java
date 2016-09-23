@@ -1,10 +1,9 @@
-package com.haskforce.haskell.highlighting.annotation.external;
+package com.haskforce.tools.hlint;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 //TODO refactor
 import com.haskforce.tools.cabal.query.BuildInfoUtil;
-import com.haskforce.haskell.features.intentions.IgnoreHLint;
 import com.haskforce.haskell.highlighting.annotation.HaskellAnnotationHolder;
 import com.haskforce.haskell.highlighting.annotation.HaskellProblem;
 import com.haskforce.haskell.highlighting.annotation.Problems;
@@ -13,6 +12,7 @@ import com.haskforce.system.settings.ToolKey;
 import com.haskforce.system.ui.tools.HaskellToolsConsole;
 import com.haskforce.system.utils.*;
 import com.haskforce.system.utils.ExecUtil.ExecError;
+import com.haskforce.tools.hlint.intentions.IgnoreHLint;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
 import com.intellij.lang.annotation.Annotation;

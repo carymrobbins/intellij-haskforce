@@ -1,17 +1,16 @@
-package com.haskforce.haskell.highlighting.annotation.external.impl
+package com.haskforce.tools.hlint
 
 import java.util.concurrent.{ExecutionException, Executors, Future}
 
+import com.haskforce.haskell.highlighting.annotation.Problems
+import com.haskforce.haskell.highlighting.annotation.external.ProblemsProvider
+import com.haskforce.haskell.psi.HaskellFile
+import com.haskforce.system.utils.parser.CastUtil
+import com.haskforce.system.utils.{ExecUtil, NotificationUtil, WrappedFuture}
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
-
-import com.haskforce.haskell.highlighting.annotation.Problems
-import com.haskforce.haskell.highlighting.annotation.external.{HLint, ProblemsProvider}
-import com.haskforce.haskell.psi.HaskellFile
-import com.haskforce.system.utils.parser.CastUtil
-import com.haskforce.system.utils.{ExecUtil, NotificationUtil, WrappedFuture}
 
 class HLintProblemsProvider private(
   project: Project,

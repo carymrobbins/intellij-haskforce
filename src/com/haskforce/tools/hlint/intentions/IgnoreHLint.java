@@ -1,4 +1,4 @@
-package com.haskforce.haskell.features.intentions;
+package com.haskforce.tools.hlint.intentions;
 
 import com.haskforce.haskell.psi.HaskellPpragma;
 import com.haskforce.haskell.psi.HaskellTypes;
