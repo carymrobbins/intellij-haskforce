@@ -9,8 +9,12 @@ import com.haskforce.system.ui.HaskellIcons
 import com.haskforce.tools.cabal.query.CabalQuery
 import com.haskforce.importWizard.stack.{StackYaml, StackYamlUtil}
 import com.haskforce.system.settings.HaskellBuildSettings
-import com.haskforce.haskell.{HaskellModuleBuilder, HaskellModuleType, HaskellSdkType}//TODO refactor
+import com.haskforce.haskell.{HaskellModuleBuilder, HaskellModuleType, HaskellSdkType}
+import com.haskforce.system.packages.{FileError, HPackage, HPackageManager}
+import com.haskforce.system.utils.NotificationUtil
+import com.haskforce.tools.stack.packages.{StackPackage, StackPackageManager}
 import com.intellij.ide.util.projectWizard.ModuleBuilder
+import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.{ModifiableModuleModel, Module, ModuleManager}
@@ -30,6 +34,7 @@ import scala.collection.JavaConversions._
 /**
  * Imports a Stack project and configures modules from the stack.yaml file.
  */
+//TODO this class can be improved with the information now obtainable through the packageManager
 class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] {
   override def getName: String = "Stack"
   override def getIcon: Icon = HaskellIcons.FILE
@@ -62,7 +67,9 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
     }
     ApplicationManager.getApplication.runWriteAction { () =>
       commitSdk(project)
-      setProjectSettings(project, stackPath, stackYamlPath)
+      if (initPackages(stackYamlPath, project)) {
+        setProjectSettings(project, stackPath, stackYamlPath)
+      }
       buildModules(project, moduleModel, stackYaml)
     }
   }
@@ -76,6 +83,46 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
     buildSettings.setUseStack(true)
     buildSettings.setStackPath(stackPath)
     buildSettings.setStackFile(stackYamlPath)
+  }
+
+  private def initPackages(stackYamlPath: String, project: Project): Boolean = {
+    //TODO similiar code in haskell compiler-configuration. Maybe factor out?
+    val result = StackPackageManager.replacePackages(stackYamlPath, project)
+    if (result.isLeft) {
+      NotificationUtil.displaySimpleNotification(
+        NotificationType.ERROR, project,
+        "unable to set Haskell Compiler", s"unable to parse $stackYamlPath, error: ${result.left.get.errorMsg}"
+      )
+      false
+    } else {
+      val errors: List[FileError] = result.right.get
+        .filter(either => either.isLeft)
+        .map(either => either.left.get)
+      if (errors.nonEmpty) {
+        val messages: String = errors
+          .map(error => s"in package: ${error.fileName} error: ${error.errorMsg}")
+          .mkString("<br/>")
+        NotificationUtil.displaySimpleNotification(
+          NotificationType.ERROR, project,
+          "unable to register all packages", messages
+        )
+      }
+      val mainPackage: Option[StackPackage] = result.right.get
+        .filter(either => either.isRight)
+        .map(either => either.right.get)
+        .map(tuple => tuple._1)
+        .headOption
+      if (mainPackage.isDefined) {
+        project.getComponent(classOf[HPackageManager]).setMainPackage(mainPackage.get)
+        true
+      } else {
+        NotificationUtil.displaySimpleNotification(
+          NotificationType.ERROR, project,
+          "unable set Haskell Compiler", "unable to retrieve any package from the stack-file"
+        )
+        false
+      }
+    }
   }
 
   private def buildModules(

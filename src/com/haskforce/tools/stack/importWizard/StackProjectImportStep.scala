@@ -5,16 +5,15 @@ import java.io.File
 import java.util
 import javax.swing._
 
-import com.haskforce.haskell.HaskellModuleType
-//TODO refactor
-import com.haskforce.tools.cabal.completion.CabalFileFinder
 import com.haskforce.importWizard.stack.{StackYaml, StackYamlUtil}
+import com.haskforce.system.packages.HPackageManager
 import com.haskforce.system.settings.HaskellBuildSettings
 import com.haskforce.system.ui.GC
 import com.haskforce.system.utils.GuiUtil
 import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
+import com.intellij.openapi.vfs.{LocalFileSystem, VirtualFile}
 import com.intellij.projectImport.ProjectImportWizardStep
 
 import scala.collection.JavaConversions._
@@ -70,14 +69,21 @@ extends ProjectImportWizardStep(context) {
     // If this is a project import, allow importing all packages.
     if (project == null) return packages
     // Otherwise, filter this import for packages not already imported.
-    val root = builder.getImportRoot
-    val cabalFilePaths =
-      HaskellModuleType.findModules(project)
-        .flatMap(CabalFileFinder.virtualForModule).map(_.getCanonicalPath)
-    packages.filter { pkg =>
-      val path = StackYamlUtil.unsafeFindCabalFile(root, pkg).getCanonicalPath
-      !cabalFilePaths.contains(path)
-    }
+
+    val packageManager = project.getComponent(classOf[HPackageManager])
+
+    packages.filter(pkg => {
+      val virtualFile: VirtualFile = LocalFileSystem.getInstance().findFileByPath(pkg.path)
+      if (virtualFile == null) {
+        //TODO decide!
+        false
+        /*NotificationUtil.displaySimpleNotification(
+          NotificationType.ERROR, project, "unable to get VirtualFile", s"unable to obtain VirtualFile for ${pkg.path}"
+        )*/
+      } else {
+        packageManager.getPackage(virtualFile).isEmpty
+      }
+    })
   }
 
   private def setError(label: JLabel, err: String) = {
