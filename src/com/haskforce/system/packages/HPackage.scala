@@ -63,6 +63,7 @@ object PackageManager {
 sealed trait PackageEvent
 case class Remove() extends PackageEvent
 case class Replace(newPackage: HPackage) extends PackageEvent
+case class Update(newPackage: HPackage) extends PackageEvent
 
 case class GHCVersion(major: Int, minor: Int, patch: Int)
 

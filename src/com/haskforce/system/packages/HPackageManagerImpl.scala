@@ -90,7 +90,13 @@ class HPackageManagerImpl(intellijProject: Project) extends HPackageManager {
       val toReplace = packages.get(hPackage.getLocation)
       packages = packages + ((hPackage.getLocation, hPackage))
       toReplace match {
-        case Some(existing) => existing.emitEvent(Replace(hPackage))
+        case Some(existing) => {
+          if (existing.getPackageManager == hPackage.getPackageManager) {
+            existing.emitEvent(Update(hPackage))
+          } else {
+            existing.emitEvent(Replace(hPackage))
+          }
+        }
       }
       toReplace
     }

@@ -16,6 +16,7 @@ trait HPackageManager extends ProjectComponent {
 
   /**
     * returns the package at the location
+    * @param file the location of the package-defining file (e.g. Cabal-file)
     */
   def getPackage(file: VirtualFile) : Option[HPackage]
 
@@ -63,7 +64,7 @@ trait HPackageManager extends ProjectComponent {
   def removePackage(hPackage : HPackage) : Boolean
 
   /**
-    * returns the Associated package for the file
+    * returns the package the file belongs to
     * @param file the File to query for
     * @return the package if found
     */
