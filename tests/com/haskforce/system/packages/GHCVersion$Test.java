@@ -1,4 +1,4 @@
-package com.haskforce.system.projects;
+package com.haskforce.system.packages;
 
 import org.junit.Test;
 import scala.Option;
