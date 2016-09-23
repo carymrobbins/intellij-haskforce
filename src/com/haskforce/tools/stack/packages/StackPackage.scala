@@ -1,25 +1,23 @@
-package com.haskforce.tools.stack.projects
+package com.haskforce.tools.stack.packages
 
-import com.haskforce.system.projects.{GHCVersion, PackageManager}
+import com.haskforce.system.packages.{GHCVersion, PackageManager}
 import com.haskforce.system.settings.HaskellBuildSettings
 import com.haskforce.system.utils.ExecUtil
 import com.haskforce.system.utils.ExecUtil.ExecError
 import com.haskforce.tools.cabal.lang.psi
-import com.haskforce.tools.cabal.projects.CabalProject
+import com.haskforce.tools.cabal.packages.CabalPackage
 import com.intellij.openapi.vfs.VirtualFile
+
+import scala.collection.mutable
 
 /**
   * A Stack Project
   */
-class StackProject(psiFile: psi.CabalFile, stackFile: VirtualFile) extends CabalProject(psiFile) {
-  /**
-    * Returns the corresponding PackageManager
-    */
+class StackPackage(psiFile: psi.CabalFile, stackFile: VirtualFile, allPackages: mutable.MutableList[StackPackage]) extends CabalPackage(psiFile) {
+  lazy val immutableAllPackagesList = allPackages.toList
+
   override def getPackageManager: PackageManager = PackageManager.Stack
 
-  /**
-    * Returns the active GHCVersion for the
-    */
   override def getGHCVersion: Either[ExecError, GHCVersion] = {
     val buildSettings: HaskellBuildSettings = HaskellBuildSettings.getInstance(psiFile.getProject)
     ExecUtil.readCommandLine(stackFile.getParent.getPath, buildSettings.getStackPath, "ghc", "--", "--numeric-version")
@@ -30,4 +28,10 @@ class StackProject(psiFile: psi.CabalFile, stackFile: VirtualFile) extends Cabal
       }
     })
   }
+
+  /**
+    * returns all the packages of the associated Stack project
+    * @return a list of packages
+    */
+  def getAllPackages: List[StackPackage] = immutableAllPackagesList
 }
