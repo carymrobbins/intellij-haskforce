@@ -5,9 +5,8 @@ import java.util.concurrent.Future
 import com.intellij.openapi.module.{Module, ModuleUtilCore}
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
-
-import com.haskforce.haskell.highlighting.annotation.Problems
-import com.haskforce.haskell.highlighting.annotation.external.{ProblemsProvider, GhcModi}
+import com.haskforce.haskell.highlighting.annotation.external.GhcModi
+import com.haskforce.system.integrations.highlighting.{Problems, ProblemsProvider}
 import com.haskforce.system.utils.WrappedFuture
 
 class GhcModiCompileProblemsProvider private(

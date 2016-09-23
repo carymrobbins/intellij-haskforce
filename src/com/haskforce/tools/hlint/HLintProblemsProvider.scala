@@ -2,9 +2,8 @@ package com.haskforce.tools.hlint
 
 import java.util.concurrent.{ExecutionException, Executors, Future}
 
-import com.haskforce.haskell.highlighting.annotation.Problems
-import com.haskforce.haskell.highlighting.annotation.external.ProblemsProvider
 import com.haskforce.haskell.psi.HaskellFile
+import com.haskforce.system.integrations.highlighting.{Problems, ProblemsProvider}
 import com.haskforce.system.utils.parser.CastUtil
 import com.haskforce.system.utils.{ExecUtil, NotificationUtil, WrappedFuture}
 import com.intellij.notification.NotificationType

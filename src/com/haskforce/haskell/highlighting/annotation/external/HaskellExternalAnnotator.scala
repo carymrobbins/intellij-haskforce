@@ -1,19 +1,19 @@
 package com.haskforce.haskell.highlighting.annotation.external
 
 import scala.collection.JavaConverters._
-
 import com.intellij.lang.annotation.{AnnotationHolder, ExternalAnnotator}
 import com.intellij.openapi.application.{ApplicationManager, ModalityState}
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.PsiFile
 import org.jetbrains.annotations.{NotNull, Nullable}
-
 import com.haskforce.Implicits._
 import com.haskforce.haskell.codeInsight.HaskellCompletionContributor
-import com.haskforce.haskell.highlighting.annotation.{HaskellAnnotationHolder, HaskellProblem, Problems}
+import com.haskforce.haskell.highlighting.annotation.HaskellAnnotationHolder
 import HaskellExternalAnnotator.State
+import com.haskforce.system.integrations.highlighting.{HaskellProblem, Problems, ProblemsProviderFactory}
 import com.haskforce.system.utils.{SAMUtils, WrappedFuture}
+import com.haskforce.tools.hlint.LintProblemsProviderFactory
 
 /** Single annotator that calls all external tools used for annotations. */
 class HaskellExternalAnnotator extends ExternalAnnotator[PsiFile, State] {

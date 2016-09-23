@@ -5,8 +5,8 @@ import com.google.gson.GsonBuilder;
 //TODO refactor
 import com.haskforce.tools.cabal.query.BuildInfoUtil;
 import com.haskforce.haskell.highlighting.annotation.HaskellAnnotationHolder;
-import com.haskforce.haskell.highlighting.annotation.HaskellProblem;
-import com.haskforce.haskell.highlighting.annotation.Problems;
+import com.haskforce.system.integrations.highlighting.HaskellProblem;
+import com.haskforce.system.integrations.highlighting.Problems;
 import com.haskforce.haskell.psi.HaskellFile;
 import com.haskforce.system.settings.ToolKey;
 import com.haskforce.system.ui.tools.HaskellToolsConsole;

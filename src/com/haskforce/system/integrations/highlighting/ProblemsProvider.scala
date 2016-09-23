@@ -1,6 +1,4 @@
-package com.haskforce.haskell.highlighting.annotation.external
-
-import com.haskforce.haskell.highlighting.annotation.Problems
+package com.haskforce.system.integrations.highlighting
 
 /** A component which provides problems to be highlighted in the editor. */
 trait ProblemsProvider {

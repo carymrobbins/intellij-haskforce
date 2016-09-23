@@ -2,7 +2,7 @@ package com.haskforce.haskell.highlighting.annotation.external;
 
 import com.haskforce.haskell.actions.RestartGhcModi;
 import com.haskforce.haskell.codeInsight.BrowseItem;
-import com.haskforce.haskell.highlighting.annotation.Problems;
+import com.haskforce.system.integrations.highlighting.Problems;
 import com.haskforce.haskell.highlighting.annotation.external.GhcModUtil.GhcVersionValidation;
 import com.haskforce.system.settings.SettingsChangeNotifier;
 import com.haskforce.system.settings.ToolKey;

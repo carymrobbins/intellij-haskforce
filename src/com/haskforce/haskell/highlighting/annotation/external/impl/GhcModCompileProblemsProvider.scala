@@ -7,11 +7,10 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.{Module, ModuleUtilCore}
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
-
 import com.haskforce.Implicits._
-import com.haskforce.haskell.highlighting.annotation.Problems
-import com.haskforce.haskell.highlighting.annotation.external.{ProblemsProvider, GhcMod}
-import com.haskforce.system.utils.{WrappedFuture, NotificationUtil, ExecUtil}
+import com.haskforce.haskell.highlighting.annotation.external.GhcMod
+import com.haskforce.system.integrations.highlighting.{Problems, ProblemsProvider}
+import com.haskforce.system.utils.{ExecUtil, NotificationUtil, WrappedFuture}
 
 class GhcModCompileProblemsProvider private(
   module: Module,
