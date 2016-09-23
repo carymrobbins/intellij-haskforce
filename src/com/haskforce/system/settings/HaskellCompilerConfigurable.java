@@ -1,8 +1,8 @@
 package com.haskforce.system.settings;
 
-import com.haskforce.system.projects.FileError;
-import com.haskforce.system.projects.PackageManager;
-import com.haskforce.system.projects.ProjectManager;
+import com.haskforce.system.packages.FileError;
+import com.haskforce.system.packages.PackageManager;
+import com.haskforce.system.packages.HPackageManager;
 import com.haskforce.system.utils.ExecUtil;
 import com.haskforce.system.utils.GuiUtil;
 import com.haskforce.system.utils.NotificationUtil;
@@ -17,8 +17,6 @@ import com.intellij.ui.TextAccessor;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import scala.Option;
-import scala.Tuple2;
 import scala.runtime.AbstractFunction1;
 import scala.util.Either;
 
@@ -265,9 +263,9 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         if (stack) {
             //TODO: stack support
         } else if (cabal) {
-            ProjectManager projectManager = project.getComponent(ProjectManager.class);
+            HPackageManager packageManager = project.getComponent(HPackageManager.class);
             Either<FileError, ?> result =
-                    projectManager.replaceMainProject(PackageManager.Stack$.MODULE$, file);
+                    packageManager.replaceMainPackage(PackageManager.Stack$.MODULE$, file);
             if (result.isLeft()) {
                 throw new ConfigurationException("Unable to set Main Project to Cabal. " + result.left().get().errorMsg());
             }

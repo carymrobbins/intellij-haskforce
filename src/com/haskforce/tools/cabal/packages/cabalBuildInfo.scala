@@ -1,6 +1,6 @@
-package com.haskforce.tools.cabal.projects
+package com.haskforce.tools.cabal.packages
 
-import com.haskforce.system.projects.{BuildType, BuildInfo => BaseBuildInfo}
+import com.haskforce.system.packages.{BuildType, BuildInfo => BaseBuildInfo}
 import com.haskforce.system.utils.{NonEmptySet, PQ}
 import com.haskforce.tools.cabal.lang.psi
 import com.haskforce.tools.cabal.lang.psi.CabalTypes

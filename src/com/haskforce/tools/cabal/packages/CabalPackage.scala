@@ -1,8 +1,8 @@
-package com.haskforce.tools.cabal.projects
+package com.haskforce.tools.cabal.packages
 
-import com.haskforce.system.projects.BuildType.{Benchmark, Executable, Library, TestSuite}
-import com.haskforce.system.projects.PackageManager.Cabal
-import com.haskforce.system.projects.{GHCVersion, PackageManager, Project => BaseProject}
+import com.haskforce.system.packages.BuildType.{Benchmark, Executable, Library, TestSuite}
+import com.haskforce.system.packages.PackageManager.Cabal
+import com.haskforce.system.packages.{GHCVersion, PackageManager, HPackage => BaseProject}
 import com.haskforce.system.settings.HaskellBuildSettings
 import com.haskforce.system.utils.ExecUtil.ExecError
 import com.haskforce.system.utils.{ExecUtil, PQ}
@@ -13,22 +13,16 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 
 /**
-  * A Cabal Project
+  * A Cabal Package
   */
-class CabalProject(psiFile: psi.CabalFile) extends BaseProject {
-  private val LOG = Logger.getInstance(classOf[CabalProject])
+class CabalPackage(psiFile: psi.CabalFile) extends BaseProject {
+  private val LOG = Logger.getInstance(classOf[CabalPackage])
 
-  /**
-    * Returns the name of the project
-    */
   override def getName: Option[String] = for {
     pkgName <- PQ.getChildOfType(psiFile, classOf[psi.PkgName])
     ff <- PQ.getChildOfType(pkgName, classOf[psi.Freeform])
   } yield ff.getText
 
-  /**
-    * Returns the name of the project
-    */
   override def getLocation: VirtualFile = psiFile.getOriginalFile.getVirtualFile
 
   /**
@@ -51,14 +45,8 @@ class CabalProject(psiFile: psi.CabalFile) extends BaseProject {
     }.toList
   }
 
-  /**
-    * Returns the corresponding PackageManager
-    */
   override def getPackageManager: PackageManager = Cabal
 
-  /**
-    * Returns the active GHCVersion for the
-    */
   override def getGHCVersion: Either[ExecUtil.ExecError, GHCVersion] = {
     val project: Project = psiFile.getProject
     val settings: HaskellBuildSettings = HaskellBuildSettings.getInstance(project)
@@ -69,12 +57,6 @@ class CabalProject(psiFile: psi.CabalFile) extends BaseProject {
     }
 
     path
-      .right.flatMap(path => ExecUtil.readCommandLine(null, path, "--numeric-version"))
-      .right.flatMap(input => {
-      GHCVersion.getGHCVersion(input) match {
-        case Some(x) => Right(x)
-        case None => Left(new ExecError("Unable to parse GHC version input", null))
-      }
-    })
+      .right.flatMap(path => GHCVersion.getGHCVersion(null, path))
   }
 }

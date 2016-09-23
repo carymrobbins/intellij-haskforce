@@ -1,10 +1,10 @@
 package com.haskforce.tools.cabal.actions
 
 import com.haskforce.haskell.HaskellModuleType
-import com.haskforce.system.projects.{AlreadyRegistered, FileError, Project => HProject}
+import com.haskforce.system.packages.{AlreadyRegistered, FileError, HPackage => HProject}
 import com.haskforce.tools.cabal.settings.ui.{AddCabalPackageUtil, DiscoverCabalPackagesDialog}
 import com.haskforce.system.utils.{FileUtil, NotificationUtil}
-import com.haskforce.tools.cabal.projects.CabalProjectManager
+import com.haskforce.tools.cabal.packages.CabalPackageManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.{AnAction, AnActionEvent}
 import com.intellij.openapi.application.ApplicationManager
@@ -58,13 +58,13 @@ object DiscoverCabalPackagesAction {
         )
       case _ =>
         val (fileErrors, regErrors, successes) = cabalFiles
-          .map(file => CabalProjectManager.registerNewProject(file, project))
+          .map(file => CabalPackageManager.registerNewPackage(file, project))
           .foldRight((List[(String, String, String)](), List[HProject](), List[HProject]()))((either, akk) => {
-            val (fileAkk, regAkk, projAkk) = akk
+            val (fileAkk, regAkk, packAkk) = akk
             either match {
-              case Left(FileError(x, y, z)) => ((x, y, z) :: fileAkk, regAkk, projAkk)
-              case Left(AlreadyRegistered(x)) => (fileAkk, x :: regAkk, projAkk)
-              case Right(x) => (fileAkk, regAkk, x :: projAkk)
+              case Left(FileError(x, y, z)) => ((x, y, z) :: fileAkk, regAkk, packAkk)
+              case Left(AlreadyRegistered(x)) => (fileAkk, x :: regAkk, packAkk)
+              case Right(x) => (fileAkk, regAkk, x :: packAkk)
             }
           })
 
