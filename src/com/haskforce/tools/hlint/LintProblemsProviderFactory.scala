@@ -1,6 +1,6 @@
-package com.haskforce.haskell.highlighting.annotation.external
+package com.haskforce.tools.hlint
 
-import com.haskforce.tools.hlint.HLintProblemsProvider
+import com.haskforce.haskell.highlighting.annotation.external.{ProblemsProvider, ProblemsProviderFactory}
 import com.intellij.psi.PsiFile
 
 object LintProblemsProviderFactory extends ProblemsProviderFactory {
