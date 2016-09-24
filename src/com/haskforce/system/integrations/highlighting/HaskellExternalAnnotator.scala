@@ -1,8 +1,8 @@
 package com.haskforce.system.integrations.highlighting
 
 import com.haskforce.Implicits._
-import com.haskforce.haskell.highlighting.annotation.external.CompileProblemsProviderFactory
 import com.haskforce.system.integrations.highlighting.HaskellExternalAnnotator.State
+import com.haskforce.tools.ghcmod.modi.highlighting.CompileProblemsProviderFactory
 import com.haskforce.tools.hlint.LintProblemsProviderFactory
 import com.intellij.lang.annotation.{AnnotationHolder, ExternalAnnotator}
 import com.intellij.openapi.application.{ApplicationManager, ModalityState}
