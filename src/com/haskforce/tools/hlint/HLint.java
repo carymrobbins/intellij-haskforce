@@ -2,9 +2,10 @@ package com.haskforce.tools.hlint;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-//TODO refactor
-import com.haskforce.tools.cabal.query.BuildInfoUtil;
-import com.haskforce.haskell.highlighting.annotation.HaskellAnnotationHolder;
+import com.haskforce.system.packages.BuildInfo;
+import com.haskforce.system.packages.HPackage;
+import com.haskforce.system.packages.HPackageManager;
+import com.haskforce.system.integrations.highlighting.HaskellAnnotationHolder;
 import com.haskforce.system.integrations.highlighting.HaskellProblem;
 import com.haskforce.system.integrations.highlighting.Problems;
 import com.haskforce.haskell.psi.HaskellFile;
@@ -21,10 +22,12 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import scala.Option;
 import scala.runtime.AbstractFunction1;
 import scala.util.Either;
 
@@ -50,7 +53,7 @@ public class HLint {
         final String hlintFlags = ToolKey.HLINT_KEY.getFlags(project);
         if (hlintPath == null) return new Problems();
 
-        return parseProblems(toolConsole, workingDirectory, hlintPath, hlintFlags, file, haskellFile).fold(
+        return parseProblems(toolConsole, workingDirectory, hlintPath, hlintFlags, file, haskellFile, project).fold(
             new AbstractFunction1<ExecError, Problems>() {
                 @Override
                 public Problems apply(ExecError e) {
@@ -71,7 +74,8 @@ public class HLint {
                                                             final @NotNull String path,
                                                             final @NotNull String flags,
                                                             final @NotNull String file,
-                                                            final @NotNull HaskellFile haskellFile) {
+                                                            final @NotNull HaskellFile haskellFile,
+                                                            final @NotNull Project project) {
         return getVersion(toolConsole, workingDirectory, path).fold(
             new AbstractFunction1<ExecError, Either<ExecError, Problems>>() {
                 @Override
@@ -83,7 +87,7 @@ public class HLint {
                 @Override
                 public Either<ExecError, Problems> apply(VersionTriple version) {
                     final boolean useJson = version.gte(HLINT_MIN_VERSION_WITH_JSON_SUPPORT);
-                    final String[] params = getParams(file, haskellFile, useJson);
+                    final String[] params = getParams(file, haskellFile, useJson, project);
                     return EitherUtil.rightMap(runHlint(
                       toolConsole, workingDirectory, path, flags, params
                     ), new AbstractFunction1<String, Problems>() {
@@ -101,17 +105,28 @@ public class HLint {
 
     private static String[] getParams(@NotNull String file,
                                       @NotNull HaskellFile haskellFile,
-                                      boolean useJson) {
+                                      boolean useJson,
+                                      @NotNull Project project) {
         final List<String> result = new ArrayList<>(1);
         result.add(file);
         if (useJson) result.add("--json");
-        result.addAll(getParamsFromCabal(haskellFile));
+        result.addAll(getParamsFromPackage(haskellFile, project));
         return result.toArray(new String[0]);
     }
 
-    //TODO: refactor architecture
-    private static List<String> getParamsFromCabal(@NotNull HaskellFile haskellFile) {
-        return BuildInfoUtil.getExtensionOpts(BuildInfoUtil.getBuildInfo(haskellFile));
+    private static List<String> getParamsFromPackage(@NotNull HaskellFile haskellFile, @NotNull Project project) {
+        HPackageManager packageManager = project.getComponent(HPackageManager.class);
+        Option<HPackage> hPackage = packageManager.getPackageForFile(haskellFile.getVirtualFile());
+        if (hPackage.isEmpty()) {
+            LOG.warn("unable to find corresponding package for: " + haskellFile.getVirtualFile().getCanonicalPath());
+            return new ArrayList<>();
+        } else {
+            return Option.apply(haskellFile.getVirtualFile())
+                    .map(VirtualFile::getCanonicalPath)
+                    .map(path -> hPackage.get().getBestMatchingBuildInfo(path))
+                    .map(BuildInfo::getExtensions)
+                    .getOrElse(ArrayList::new);
+        }
     }
 
     /**
