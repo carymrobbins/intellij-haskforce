@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.haskforce.haskell.actions;
+package com.haskforce.tools.hindent.actions;
 
 /*
  * Adapted from the Stylish Haskell formatter
