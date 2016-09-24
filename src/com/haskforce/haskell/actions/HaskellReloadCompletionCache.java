@@ -13,7 +13,7 @@ import com.intellij.openapi.project.DumbAware;
 import com.intellij.psi.PsiFile;
 
 public class HaskellReloadCompletionCache extends AnAction implements DumbAware {
-    private static final Logger LOG = Logger.getInstance(HaskellStylishFormatAction.class);
+    private static final Logger LOG = Logger.getInstance(HaskellReloadCompletionCache.class);
 
     @Override
     public void update(AnActionEvent e) {
