@@ -7,7 +7,7 @@ import com.haskforce.haskell.HaskellLightPlatformCodeInsightFixtureTestCase
 import scala.collection.JavaConverters._
 import junit.framework.TestCase
 import com.haskforce.haskell.psi.impl.HaskellElementFactory
-import com.haskforce.system.integrations.highlighting.HaskellAnnotationHolder
+import com.haskforce.system.integrations.highlighting.{HaskellAnnotationHolder, HaskellExternalAnnotator}
 import com.intellij.codeInsight.daemon.impl.AnnotationHolderImpl
 import com.intellij.lang.annotation.AnnotationSession
 import com.intellij.openapi.application.ApplicationManager
