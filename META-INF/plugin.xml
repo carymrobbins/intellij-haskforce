@@ -315,7 +315,7 @@
       <add-to-group group-id="CodeMenu" anchor="last"/>
       <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl SPACE"/>
     </action>
-    <action id="com.haskforce.haskell.highlighting.actions.RestartGhcModi" class="com.haskforce.haskell.actions.RestartGhcModi"
+    <action id="com.haskforce.haskell.highlighting.actions.RestartGhcModi" class="com.haskforce.tools.ghcmod.modi.actions.RestartGhcModi"
             text="Restart ghc-modi" description="Restarts a disabled ghc-modi process">
       <add-to-group group-id="ToolsMenu" anchor="last"/>
     </action>
@@ -470,8 +470,8 @@
   </extensions>
   <module-components>
     <component>
-      <implementation-class>com.haskforce.haskell.highlighting.annotation.external.GhcModi</implementation-class>
-      <interface-class>com.haskforce.haskell.highlighting.annotation.external.GhcModi</interface-class>
+      <implementation-class>com.haskforce.tools.ghcmod.modi.GhcModi</implementation-class>
+      <interface-class>com.haskforce.tools.ghcmod.modi.GhcModi</interface-class>
     </component>
   </module-components>
 </idea-plugin>
