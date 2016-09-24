@@ -28,7 +28,7 @@ trait HPackage {
   /**
     * Returns the corresponding PackageManager
     */
-  def getPackageManager: PackageManager
+  def getPackageManager: BackingPackageManager
 
   /**
     * Returns the active GHCVersion for the package or an error
@@ -64,16 +64,27 @@ trait HPackage {
   }
 
   /**
+    * returns information about the project (if existing)
+    */
+  def getProjectInformation: Option[ProjectInformation]
+
+  /**
     * emits a new PackageEvent to all the Observers
     * @param packageEvent the Event to emit
     */
   private[packages] def emitEvent(packageEvent: PackageEvent) = eventSource.onNext(packageEvent)
 }
 
-sealed trait PackageManager
-object PackageManager {
-  case object Cabal extends PackageManager
-  case object Stack extends PackageManager
+trait ProjectInformation {
+  /**
+    * returns a List of directories that can be marked as excluded (if existing)
+    */
+  def getBuildDirectories: List[VirtualFile]
+
+  /**
+    * returns a List of related packages
+    */
+  def getRelatedPackages: List[HPackage]
 }
 
 sealed trait PackageEvent
