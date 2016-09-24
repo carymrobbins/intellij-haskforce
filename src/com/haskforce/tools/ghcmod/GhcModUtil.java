@@ -1,4 +1,4 @@
-package com.haskforce.haskell.highlighting.annotation.external;
+package com.haskforce.tools.ghcmod;
 
 import com.haskforce.system.settings.HaskellBuildSettings;
 import com.haskforce.system.utils.ExecUtil;

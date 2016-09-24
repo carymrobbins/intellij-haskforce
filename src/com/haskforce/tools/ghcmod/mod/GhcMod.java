@@ -1,4 +1,4 @@
-package com.haskforce.haskell.highlighting.annotation.external;
+package com.haskforce.tools.ghcmod.mod;
 
 import com.haskforce.haskell.features.intentions.AddLanguagePragma;
 import com.haskforce.haskell.features.intentions.AddTypeSignature;
@@ -6,7 +6,8 @@ import com.haskforce.haskell.features.intentions.RemoveForall;
 import com.haskforce.system.integrations.highlighting.HaskellAnnotationHolder;
 import com.haskforce.system.integrations.highlighting.HaskellProblem;
 import com.haskforce.system.integrations.highlighting.Problems;
-import com.haskforce.haskell.highlighting.annotation.external.GhcModUtil.GhcVersionValidation;
+import com.haskforce.tools.ghcmod.GhcModUtil;
+import com.haskforce.tools.ghcmod.GhcModUtil.GhcVersionValidation;
 import com.haskforce.system.settings.ToolKey;
 import com.haskforce.system.ui.tools.HaskellToolsConsole;
 import com.haskforce.system.utils.ExecUtil;
@@ -50,12 +51,12 @@ public class GhcMod {
 
     @Nullable
     public static String getPath(@NotNull Project project) {
-        return com.haskforce.haskell.highlighting.annotation.external.GhcModUtil.changedPathIfStack(project, ToolKey.GHC_MOD_KEY.getPath(project));
+        return GhcModUtil.changedPathIfStack(project, ToolKey.GHC_MOD_KEY.getPath(project));
     }
 
     @NotNull
     public static String getFlags(@NotNull Project project) {
-        return com.haskforce.haskell.highlighting.annotation.external.GhcModUtil.changedFlagsIfStack(
+        return GhcModUtil.changedFlagsIfStack(
           project,
           ToolKey.GHC_MOD_KEY.getPath(project),
           ToolKey.GHC_MOD_KEY.getFlags(project)
@@ -125,7 +126,7 @@ public class GhcMod {
                               @NotNull String command, @NotNull String ghcModFlags, String... params) {
         if (!validateGhcVersion(project, ghcModPath, ghcModFlags)) return null;
         GeneralCommandLine commandLine = new GeneralCommandLine(ghcModPath);
-        com.haskforce.haskell.highlighting.annotation.external.GhcModUtil.updateEnvironment(project, commandLine.getEnvironment());
+        GhcModUtil.updateEnvironment(project, commandLine.getEnvironment());
         ParametersList parametersList = commandLine.getParametersList();
         parametersList.addParametersString(ghcModFlags);
         parametersList.add(command);
@@ -156,7 +157,7 @@ public class GhcMod {
                                               @NotNull String ghcModPath,
                                               @NotNull String ghcModFlags) {
         GhcVersionValidation v = ghcVersionValidationMap.get(project);
-        GhcVersionValidation newV = com.haskforce.haskell.highlighting.annotation.external.GhcModUtil.validateGhcVersion(v, project, ghcModPath, ghcModFlags);
+        GhcVersionValidation newV = GhcModUtil.validateGhcVersion(v, project, ghcModPath, ghcModFlags);
         ghcVersionValidationMap.put(project, newV);
         return newV == GhcVersionValidation.VALID;
     }
@@ -254,8 +255,8 @@ public class GhcMod {
                 String.valueOf(startPosition.line), String.valueOf(startPosition.column));
         if (stdout == null) return "Type info not found";
         try {
-            return com.haskforce.haskell.highlighting.annotation.external.GhcModUtil.handleTypeInfo(startPosition, stopPosition, stdout);
-        } catch (com.haskforce.haskell.highlighting.annotation.external.GhcModUtil.TypeInfoParseException e) {
+            return GhcModUtil.handleTypeInfo(startPosition, stopPosition, stdout);
+        } catch (GhcModUtil.TypeInfoParseException e) {
               NotificationUtil.displayToolsNotification(
                       NotificationType.ERROR, module.getProject(), "Type Info Error",
                       "There was an error when executing the `ghc-mod type` command:\n\n" + stdout);

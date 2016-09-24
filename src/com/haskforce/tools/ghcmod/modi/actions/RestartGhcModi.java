@@ -1,7 +1,7 @@
-package com.haskforce.haskell.actions;
+package com.haskforce.tools.ghcmod.modi.actions;
 
 import com.haskforce.haskell.HaskellModuleType;
-import com.haskforce.haskell.highlighting.annotation.external.GhcModi;
+import com.haskforce.tools.ghcmod.modi.GhcModi;
 import com.haskforce.system.settings.ToolKey;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;

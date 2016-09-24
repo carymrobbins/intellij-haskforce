@@ -1,10 +1,9 @@
 package com.haskforce.system.utils
 
 import junit.framework.TestCase
-
-import com.haskforce.haskell.highlighting.annotation.external.GhcModi
 import com.haskforce.macros.string.dedent
 import com.haskforce.test.AssertMixin
+import com.haskforce.tools.ghcmod.modi.GhcModi
 
 class HtmlUtilsTest extends TestCase with AssertMixin {
 

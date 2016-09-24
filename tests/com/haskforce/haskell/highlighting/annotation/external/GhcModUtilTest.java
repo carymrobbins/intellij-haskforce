@@ -1,11 +1,9 @@
 package com.haskforce.haskell.highlighting.annotation.external;
 
+import com.haskforce.tools.ghcmod.GhcModUtil;
 import com.intellij.openapi.editor.VisualPosition;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.testFramework.UsefulTestCase;
 import org.junit.Assert;
-
-import java.util.Arrays;
 
 /**
  * Test class for GhcModUtil, which should contain the actions common to GhcMod and GhcModi
