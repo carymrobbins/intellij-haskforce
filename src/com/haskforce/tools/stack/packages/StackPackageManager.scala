@@ -52,9 +52,20 @@ object StackPackageManager {
           if (virtualFile == null) {
             Left(FileError(stackPackage.path, virtualFile.getNameWithoutExtension, s"unable to obtain VirtualFile for stack package ${stackPackage.path}"))
           } else {
-            PsiManager.getInstance(project).findFile(virtualFile) match {
-              case psiFile: CabalFile => Right(new StackPackage(psiFile, stackFile, allPackagesMut))
-              case other => Left(FileError(stackPackage.path, virtualFile.getNameWithoutExtension, s"Expected CabalFile, got: ${other.getClass}"))
+            val children: Array[VirtualFile] = virtualFile.getChildren
+            if (children == null) {
+              Left(FileError(stackPackage.path, virtualFile.getNameWithoutExtension, s"unable to get children for ${stackPackage.path}"))
+            } else {
+              children.toStream
+                .map(child => PsiManager.getInstance(project).findFile(virtualFile) match {
+                  case psiFile: CabalFile => Some(psiFile)
+                  case other => None
+                })
+                .flatMap(option => option.toList)
+                .headOption match {
+                case Some(psiFile) => Right(new StackPackage(psiFile, stackFile, allPackagesMut))
+                case None => Left(FileError(stackPackage.path, virtualFile.getNameWithoutExtension, s"no Cabal-file found for package ${stackPackage.path}"))
+              }
             }
           }
         }).toList
