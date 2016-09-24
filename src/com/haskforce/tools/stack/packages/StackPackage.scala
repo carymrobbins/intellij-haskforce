@@ -1,6 +1,6 @@
 package com.haskforce.tools.stack.packages
 
-import com.haskforce.system.packages.{GHCVersion, PackageManager}
+import com.haskforce.system.packages.{BackingPackageManager, GHCVersion, HPackage, ProjectInformation}
 import com.haskforce.system.settings.HaskellBuildSettings
 import com.haskforce.system.utils.ExecUtil
 import com.haskforce.system.utils.ExecUtil.ExecError
@@ -13,10 +13,16 @@ import scala.collection.mutable
 /**
   * A Stack Project
   */
-class StackPackage(psiFile: psi.CabalFile, stackFile: VirtualFile, allPackages: mutable.MutableList[StackPackage]) extends CabalPackage(psiFile) {
-  lazy val immutableAllPackagesList = allPackages.toList
+class StackPackage(
+                    psiFile: psi.CabalFile,
+                    stackFile: VirtualFile,
+                    allPackages: mutable.MutableList[StackPackage],
+                    buildDir: List[VirtualFile]
+                  ) extends CabalPackage(psiFile) {
 
-  override def getPackageManager: PackageManager = PackageManager.Stack
+  lazy val StackProjectInformation = StackProjectInformation(allPackages.toList, buildDir)
+
+  override def getPackageManager: BackingPackageManager = StackPackageManager
 
   override def getGHCVersion: Either[ExecError, GHCVersion] = {
     val buildSettings: HaskellBuildSettings = HaskellBuildSettings.getInstance(psiFile.getProject)
@@ -29,9 +35,12 @@ class StackPackage(psiFile: psi.CabalFile, stackFile: VirtualFile, allPackages: 
     })
   }
 
-  /**
-    * returns all the packages of the associated Stack project
-    * @return a list of packages
-    */
-  def getAllPackages: List[StackPackage] = immutableAllPackagesList
+  override def getProjectInformation: Option[ProjectInformation] = Some(StackProjectInformation)
+}
+
+class StackProjectInformation(packages: List[StackPackage], buildDir: List[VirtualFile]) extends ProjectInformation {
+
+  override def getBuildDirectories: List[VirtualFile] = buildDir
+
+  override def getRelatedPackages: List[HPackage] = packages
 }

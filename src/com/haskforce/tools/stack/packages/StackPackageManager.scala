@@ -3,7 +3,6 @@ package com.haskforce.tools.stack.packages
 import java.io.File
 
 import com.haskforce.importWizard.stack.StackYaml
-import com.haskforce.system.packages.PackageManager.Stack
 import com.haskforce.system.packages._
 import com.haskforce.tools.cabal.lang.psi.CabalFile
 import com.intellij.openapi.diagnostic.Logger
@@ -17,8 +16,42 @@ import scala.collection.mutable
 /**
   * utility class used to create/delete Stack packages
   */
-object StackPackageManager {
+object StackPackageManager extends BackingPackageManager {
   private val LOG = Logger.getInstance(StackPackageManager.getClass)
+
+  override def sameBacking(other: BackingPackageManager): Boolean = other == StackPackageManager
+
+  override def replaceMain(file: VirtualFile, old: Option[HPackage], project: Project): Either[FileError, List[FileError]] = {
+    val packageManager: HPackageManager = project.getComponent(classOf[HPackageManager])
+    StackPackageManager.getPackages(file, project)
+      .right.flatMap(list => {
+      val packages: List[Either[FileError, (StackPackage, Option[HPackage])]] = list.map(either => {
+        either.right.map(stackPackage => {
+          (stackPackage, StackPackageManager.replacePackage(stackPackage, project))
+        })
+      })
+
+      packages.toStream
+        .map(_.right.toOption)
+        .filter(_.isDefined)
+        .map(_.get)
+        .map(_._1)
+        .headOption match {
+        case None => Left(FileError(
+          file.getCanonicalPath,
+          file.getNameWithoutExtension,
+          s"unable to retrieve any packages from the stackFile ${file.getCanonicalPath}")
+        )
+        case Some(pkg) => {
+          packageManager.setMainPackage(pkg)
+          val errors: List[FileError] = packages.map(_.left.toOption)
+            .filter(_.isDefined)
+            .map(_.get)
+          Right(errors)
+        }
+      }
+    })
+  }
 
   /**
     * returns the
@@ -42,6 +75,10 @@ object StackPackageManager {
     * @return either a FileError if the stack-file is not found/illegal or a list of StackPackages (or errors if they are not found)
     */
   def getPackages(stackFile : VirtualFile, project: Project): Either[FileError, List[Either[FileError, StackPackage]]] = {
+    val parent: VirtualFile = stackFile.getParent
+    if (parent == null)
+      Left(FileError(stackFile.getCanonicalPath, stackFile.getNameWithoutExtension, s"stack file is root directory"))
+    val buildDir = Option(parent.getChildren).flatMap(_.find(file => file.getName == ".stack-work")).toList
     StackYaml.fromFile(stackFile.getPath)
       .leftMap(errorMsg => FileError(stackFile.getCanonicalPath, stackFile.getNameWithoutExtension, errorMsg))
       .map(yaml => yaml.packages)
@@ -63,7 +100,7 @@ object StackPackageManager {
                 })
                 .flatMap(option => option.toList)
                 .headOption match {
-                case Some(psiFile) => Right(new StackPackage(psiFile, stackFile, allPackagesMut))
+                case Some(psiFile) => Right(new StackPackage(psiFile, stackFile, allPackagesMut, buildDir))
                 case None => Left(FileError(stackPackage.path, virtualFile.getNameWithoutExtension, s"no Cabal-file found for package ${stackPackage.path}"))
               }
             }
@@ -86,12 +123,11 @@ object StackPackageManager {
     val added: Boolean = packageManager.addPackage(stackPackage)
     if (!added) {
       val registered: Option[HPackage] = packageManager.getPackage(stackPackage.getLocation)
-      val alreadyRegistered: Boolean = registered.exists(hPackage => hPackage.getPackageManager == Stack)
-      if (alreadyRegistered) {
-        Left(AlreadyRegistered(registered.get))
-      } else {
-        Right(stackPackage)
+      if (registered.isEmpty) {
+        LOG.error("unable to register and getPackage returned empty!")
+        Left(AlreadyRegistered(stackPackage))
       }
+      Left(AlreadyRegistered(registered.get))
     } else {
       Right(stackPackage)
     }
