@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.haskforce.haskell.actions;
+package com.haskforce.tools.stylishhaskell.actions;
 
 /*
  * Adapted from the Emacs-formatter in the Erlang plugin. 17 May 2014.
