@@ -9,9 +9,8 @@ import com.intellij.psi.PsiFile
 import org.jetbrains.annotations.{NotNull, Nullable}
 import com.haskforce.Implicits._
 import com.haskforce.haskell.codeInsight.HaskellCompletionContributor
-import com.haskforce.haskell.highlighting.annotation.HaskellAnnotationHolder
 import HaskellExternalAnnotator.State
-import com.haskforce.system.integrations.highlighting.{HaskellProblem, Problems, ProblemsProviderFactory}
+import com.haskforce.system.integrations.highlighting.{HaskellAnnotationHolder, HaskellProblem, Problems, ProblemsProviderFactory}
 import com.haskforce.system.utils.{SAMUtils, WrappedFuture}
 import com.haskforce.tools.hlint.LintProblemsProviderFactory
 

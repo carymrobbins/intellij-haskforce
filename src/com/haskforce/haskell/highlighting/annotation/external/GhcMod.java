@@ -3,7 +3,7 @@ package com.haskforce.haskell.highlighting.annotation.external;
 import com.haskforce.haskell.features.intentions.AddLanguagePragma;
 import com.haskforce.haskell.features.intentions.AddTypeSignature;
 import com.haskforce.haskell.features.intentions.RemoveForall;
-import com.haskforce.haskell.highlighting.annotation.HaskellAnnotationHolder;
+import com.haskforce.system.integrations.highlighting.HaskellAnnotationHolder;
 import com.haskforce.system.integrations.highlighting.HaskellProblem;
 import com.haskforce.system.integrations.highlighting.Problems;
 import com.haskforce.haskell.highlighting.annotation.external.GhcModUtil.GhcVersionValidation;
