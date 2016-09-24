@@ -10,6 +10,8 @@ final case class NonEmptySet[A] private(toSet: Set[A]) extends AnyVal {
   def append(ss: NonEmptySet[A]*): NonEmptySet[A] = {
     new NonEmptySet(ss.foldRight(toSet: Set[A])((s, acc) => acc ++ s.toSet))
   }
+
+  def append(s: Set[A]): NonEmptySet[A] = NonEmptySet(toSet ++ s)
 }
 
 object NonEmptySet {

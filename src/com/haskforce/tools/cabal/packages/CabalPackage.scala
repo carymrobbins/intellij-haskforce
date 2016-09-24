@@ -5,7 +5,7 @@ import com.haskforce.system.packages.PackageManager.Cabal
 import com.haskforce.system.packages.{GHCVersion, PackageManager, HPackage => BaseProject}
 import com.haskforce.system.settings.HaskellBuildSettings
 import com.haskforce.system.utils.ExecUtil.ExecError
-import com.haskforce.system.utils.{ExecUtil, PQ}
+import com.haskforce.system.utils.{ExecUtil, NonEmptySet, PQ}
 import com.haskforce.tools.cabal.lang.psi
 import com.haskforce.tools.cabal.lang.psi.{Benchmark, Executable, TestSuite}
 import com.intellij.openapi.diagnostic.Logger
@@ -37,12 +37,12 @@ class CabalPackage(psiFile: psi.CabalFile) extends BaseProject {
   /**
     * Returns the associated BuildInfos
     */
-  override def getBuildInfo: List[cabalBuildInfo] = {
-    getLibrary +: psiFile.getChildren.collect {
+  override def getBuildInfo: NonEmptySet[cabalBuildInfo] = {
+    NonEmptySet(getLibrary).append(psiFile.getChildren.collect {
       case c: Executable => new cabalBuildInfo(c, Executable)
       case c: TestSuite => new cabalBuildInfo(c, TestSuite)
       case c: Benchmark => new cabalBuildInfo(c, Benchmark)
-    }.toList
+    }.toSet)
   }
 
   override def getPackageManager: PackageManager = Cabal

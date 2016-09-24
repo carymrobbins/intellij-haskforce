@@ -1,6 +1,7 @@
 package com.haskforce.system.packages
 
-import com.haskforce.system.utils.ExecUtil
+import com.haskforce.system.utils.{ExecUtil, NonEmptySet}
+import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.VirtualFile
 import rx.lang.scala.Subject
 
@@ -22,7 +23,7 @@ trait HPackage {
   /**
     * Returns the associated BuildInfos
     */
-  def getBuildInfo: List[BuildInfo]
+  def getBuildInfo: NonEmptySet[BuildInfo]
 
   /**
     * Returns the corresponding PackageManager
@@ -43,6 +44,24 @@ trait HPackage {
     * }}}
     */
   def getEvents: Subject[PackageEvent] = eventSource
+
+  /**
+    * returns the best Matching BuildInfo
+    * @param sourcePath the sourcePath
+    * @return
+    */
+  def getBestMatchingBuildInfo(sourcePath: String): Option[BuildInfo] = {
+    val parent: VirtualFile = getLocation.getParent
+    if (parent == null) return None
+    val baseDir: String = parent.getCanonicalPath
+    if (baseDir == null) return None
+    getBuildInfo.toSet.toStream
+      .find(info => {
+        info.getSourceDirs.toStream
+          .exists(sourceDir => FileUtil.isAncestor(FileUtil.join(baseDir, sourceDir), sourcePath, true))
+      })
+      .getOrElse(getBuildInfo.toSet.head)
+  }
 
   /**
     * emits a new PackageEvent to all the Observers
