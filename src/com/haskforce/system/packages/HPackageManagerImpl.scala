@@ -1,15 +1,13 @@
 package com.haskforce.system.packages
 
-import java.io.File
-
-import com.haskforce.system.packages.PackageManager.{Cabal, Stack}
 import com.haskforce.system.settings.HaskellBuildSettings
-import com.haskforce.system.utils.{ExecUtil, NotificationUtil}
 import com.haskforce.system.utils.ExecUtil.ExecError
+import com.haskforce.system.utils.{ExecUtil, NotificationUtil}
 import com.haskforce.tools.cabal.packages.CabalPackageManager
+import com.haskforce.tools.stack.packages.StackPackageManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.{VfsUtilCore, VirtualFile}
+import com.intellij.openapi.vfs.{LocalFileSystem, VfsUtilCore, VirtualFile}
 
 /**
   * this class retrieve, add and remove the active package
@@ -28,31 +26,12 @@ class HPackageManagerImpl(intellijProject: Project) extends HPackageManager {
     mainPackage = hPackage
   }
 
-  override def replaceMainPackage(packageManager: PackageManager, file: String): Either[FileError, (Option[HPackage], HPackage)] = {
-    val set = (hPackage: HPackage) => {
-      val replaced: Option[HPackage] = replacePackage(hPackage)
-      setMainPackage(hPackage)
-      Right((replaced, hPackage))
-    }
-    val handleFunc = (registerResult: Either[RegisterError, HPackage]) => {
-      if (registerResult.isRight) {
-        set(registerResult.right.get)
-      } else {
-        registerResult.left.get match {
-          case AlreadyRegistered(hPackage) => set(hPackage)
-          case FileError(location, fileName, errorMsg) => Left(FileError(location, fileName, errorMsg))
-        }
-      }
-    }
-    packageManager match {
-      case Cabal => {
-        //TODO is this right???
-        val registerResult: Either[RegisterError, HPackage] = CabalPackageManager.registerNewPackage(new File(file), intellijProject)
-        handleFunc(registerResult)
-      }
-      case Stack => {
-        ??? //TODO: impl for stack
-      }
+  override def replaceMainPackage(packageManager: BackingPackageManager, file: String): Either[FileError, List[FileError]] = {
+    val virtualFile: VirtualFile = LocalFileSystem.getInstance().findFileByPath(file)
+    if (virtualFile == null) {
+      Left(FileError(file, "unknown", s"unable to obtain VirtualFile for file $file"))
+    } else {
+      packageManager.replaceMain(virtualFile, getMainPackage, intellijProject)
     }
   }
 
@@ -133,20 +112,41 @@ class HPackageManagerImpl(intellijProject: Project) extends HPackageManager {
 
   override def initComponent(): Unit = {
     val settings: HaskellBuildSettings = HaskellBuildSettings.getInstance(intellijProject)
-    val printError = (msg : String) => {
-      NotificationUtil.displaySimpleNotification(NotificationType.ERROR,
-        intellijProject,
-        "Unable to initialized Haskforce properly, please reset the compiler settings",
-        msg)
-    }
-    if (settings.isCabalEnabled) {
-      val result = replaceMainPackage(Cabal, settings.getCabalPath)
+    val handleResult = (result: Either[FileError, List[FileError]]) => {
       if (result.isLeft) {
-        printError(result.left.get.errorMsg)
+        settings.setUseStack(false)
+        val error: FileError = result.left.get
+        NotificationUtil.displaySimpleNotification(NotificationType.ERROR,
+          intellijProject,
+          "Error while initializing Haskforce",
+          s"Unable to initialized Haskforce properly, please reset the compiler settings." +
+            s"<br/>Error in File ${error.location}, Message: ${error.errorMsg}")
+      } else {
+        val errors: List[FileError] = result.right.get
+        if (errors.nonEmpty) {
+          NotificationUtil.displaySimpleNotification(NotificationType.ERROR,
+            intellijProject,
+            "Error while initializing Haskforce",
+            "Unable to register all packages correctly.<br/>Errors:<br/>"
+              + errors.map(error => s"in package: ${error.location} error: ${error.errorMsg}")
+              .mkString("<br/>")
+          )
+        }
+      }
+    }
+    if (settings.isStackEnabled) {
+      settings.setUseCabal(false)
+      val result: Either[FileError, List[FileError]] = replaceMainPackage(StackPackageManager, settings.getStackFile)
+      if (result.isLeft) {
+        settings.setUseStack(false)
+      }
+      handleResult(result)
+    } else if (settings.isCabalEnabled) {
+      val result: Either[FileError, List[FileError]] = replaceMainPackage(CabalPackageManager, settings.getStackFile)
+      if (result.isLeft) {
         settings.setUseCabal(false)
       }
-    } else if (settings.isStackEnabled) {
-      //TODO impl stack
+      handleResult(result)
     }
   }
 

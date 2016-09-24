@@ -35,7 +35,7 @@ trait HPackageManager extends ProjectComponent {
     * sets the main packages and adds the packages to the Set, replacing if an already registered is found
     * @return an Error, or an tuple with the optional replaced packages and the created one
     */
-  def replaceMainPackage(packageManager: PackageManager, file: String) : Either[FileError, (Option[HPackage], HPackage)]
+  def replaceMainPackage(packageManager: BackingPackageManager, file: String) : Either[FileError, List[FileError]]
 
   /**
     * returns the Default GHC-Version
