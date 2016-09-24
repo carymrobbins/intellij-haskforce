@@ -46,15 +46,15 @@ trait HPackage {
   def getEvents: Subject[PackageEvent] = eventSource
 
   /**
-    * returns the best Matching BuildInfo
+    * returns the best Matching BuildInfo (if none matches, simply head of getBuildInfo)
     * @param sourcePath the sourcePath
     * @return
     */
-  def getBestMatchingBuildInfo(sourcePath: String): Option[BuildInfo] = {
+  def getBestMatchingBuildInfo(sourcePath: String): BuildInfo = {
     val parent: VirtualFile = getLocation.getParent
-    if (parent == null) return None
+    if (parent == null) return getBuildInfo.toSet.head
     val baseDir: String = parent.getCanonicalPath
-    if (baseDir == null) return None
+    if (baseDir == null) return getBuildInfo.toSet.head
     getBuildInfo.toSet.toStream
       .find(info => {
         info.getSourceDirs.toStream
