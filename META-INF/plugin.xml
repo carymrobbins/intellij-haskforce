@@ -295,14 +295,14 @@
       <add-to-group group-id="NewGroup" anchor="before" relative-to-action="NewFile"/>
     </action>
     <action id="HaskForce.StylishFormat"
-            class="com.haskforce.haskell.actions.HaskellStylishFormatAction"
+            class="com.haskforce.tools.stylishhaskell.actions.HaskellStylishFormatAction"
             text="Reformat code with Stylish Haskell"
             description="Format current file with Stylish-Haskell formatter">
       <add-to-group group-id="CodeFormatGroup" anchor="last"/>
       <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl alt E"/>
     </action>
     <action id="HaskForce.HindentFormat"
-            class="com.haskforce.haskell.actions.HaskellHindentFormatAction"
+            class="com.haskforce.tools.hindent.actions.HaskellHindentFormatAction"
             text="Reformat code with Hindent"
             description="Format current file with Hindent">
       <add-to-group group-id="CodeFormatGroup" anchor="last"/>
