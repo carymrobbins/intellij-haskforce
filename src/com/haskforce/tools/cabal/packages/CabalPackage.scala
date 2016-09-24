@@ -1,8 +1,7 @@
 package com.haskforce.tools.cabal.packages
 
 import com.haskforce.system.packages.BuildType.{Benchmark, Executable, Library, TestSuite}
-import com.haskforce.system.packages.PackageManager.Cabal
-import com.haskforce.system.packages.{GHCVersion, PackageManager, HPackage => BaseProject}
+import com.haskforce.system.packages.{BackingPackageManager, GHCVersion, ProjectInformation, HPackage => BaseProject}
 import com.haskforce.system.settings.HaskellBuildSettings
 import com.haskforce.system.utils.ExecUtil.ExecError
 import com.haskforce.system.utils.{ExecUtil, NonEmptySet, PQ}
@@ -45,7 +44,7 @@ class CabalPackage(psiFile: psi.CabalFile) extends BaseProject {
     }.toSet)
   }
 
-  override def getPackageManager: PackageManager = Cabal
+  override def getPackageManager: BackingPackageManager = CabalPackageManager
 
   override def getGHCVersion: Either[ExecUtil.ExecError, GHCVersion] = {
     val project: Project = psiFile.getProject
@@ -59,4 +58,9 @@ class CabalPackage(psiFile: psi.CabalFile) extends BaseProject {
     path
       .right.flatMap(path => GHCVersion.getGHCVersion(null, path))
   }
+
+  /**
+    * returns information about the project (if existing)
+    */
+  override def getProjectInformation: Option[ProjectInformation] = None
 }

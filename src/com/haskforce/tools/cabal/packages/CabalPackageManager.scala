@@ -1,8 +1,6 @@
 package com.haskforce.tools.cabal.packages
 
 import java.io.File
-
-import com.haskforce.system.packages.PackageManager.Cabal
 import com.haskforce.system.packages._
 import com.haskforce.tools.cabal.lang.psi.CabalFile
 import com.intellij.openapi.diagnostic.Logger
@@ -13,8 +11,27 @@ import com.intellij.psi.PsiManager
 /**
   * utility class used to create/delete Cabal packages
   */
-object CabalPackageManager {
+object CabalPackageManager extends BackingPackageManager {
   private val LOG = Logger.getInstance(CabalPackageManager.getClass)
+
+  override def sameBacking(other: BackingPackageManager): Boolean = other == CabalPackageManager
+
+  override def replaceMain(file : VirtualFile, old: Option[HPackage], project: Project): Either[FileError, List[FileError]] = {
+    val packageManager = project.getComponent(classOf[HPackageManager])
+    CabalPackageManager.replaceAndRegisterNewPackage(file, project)
+      .right.map(pkg => {
+      packageManager.setMainPackage(pkg)
+      if (old.isDefined && old.get.getProjectInformation.isDefined) {
+        old.get.getProjectInformation.get.getRelatedPackages
+          .map(onePackage => CabalPackageManager.replaceAndRegisterNewPackage(onePackage.getLocation, project))
+          .map(either => either.left.toOption)
+          .filter(_.isDefined)
+          .map(_.get)
+      } else {
+        Nil
+      }
+    })
+  }
 
   /**
     * registers the new Cabal-packages
@@ -46,14 +63,18 @@ object CabalPackageManager {
         if (added) {
           Right(cabalPackage)
         } else {
-          Left(AlreadyRegistered(cabalPackage))
+          val registered: Option[HPackage] = packageManager.getPackage(file)
+          if (registered.isEmpty) {
+            LOG.error("unable to register and getPackage returned empty!")
+            Left(AlreadyRegistered(cabalPackage))
+          }
+          Left(AlreadyRegistered(registered.get))
         }
       }
       case other =>
         Left(FileError(file.getCanonicalPath, file.getNameWithoutExtension, s"Expected CabalFile, got: ${other.getClass}"))
     }
   }
-
   /**
     * registers the new Cabal-packages, replaces existing if not equal
     * @param file the VirtualFile pointing to the cabal-file
