@@ -65,20 +65,8 @@ object CabalPackageManager {
     PsiManager.getInstance(project).findFile(file) match {
       case psiFile: CabalFile => {
         val cabalPackage: CabalPackage = new CabalPackage(psiFile)
-        packageManager.getPackage(file) match {
-          case None => {
-            packageManager.addPackage(cabalPackage)
-            Right(cabalPackage)
-          }
-          case Some(existing) => {
-            if (existing.getPackageManager == Cabal) {
-              Right(existing)
-            } else {
-              packageManager.replacePackage(cabalPackage)
-              Right(existing)
-            }
-          }
-        }
+        packageManager.replacePackage(cabalPackage)
+        Right(cabalPackage)
       }
       case other =>
         Left(FileError(file.getCanonicalPath, file.getNameWithoutExtension, s"Expected CabalFile, got: ${other.getClass}"))
