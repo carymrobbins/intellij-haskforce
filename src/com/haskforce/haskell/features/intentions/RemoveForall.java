@@ -1,6 +1,6 @@
 package com.haskforce.haskell.features.intentions;
 
-import com.haskforce.haskell.highlighting.annotation.external.GhcMod.*;
+import com.haskforce.tools.ghcmod.mod.GhcMod.*;
 import com.haskforce.system.utils.FileUtil;
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction;
 import com.intellij.openapi.editor.Editor;
@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Pattern;
 
+//TODO refactor for GHCMod abstraction
 public class RemoveForall extends BaseIntentionAction {
     public final Problem problem;
 

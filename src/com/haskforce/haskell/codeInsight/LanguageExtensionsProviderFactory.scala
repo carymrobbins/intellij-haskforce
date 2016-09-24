@@ -1,11 +1,7 @@
 package com.haskforce.haskell.codeInsight
 
-import com.intellij.openapi.module.{Module, ModuleUtilCore}
-import com.intellij.psi.PsiFile
-
 import com.haskforce.haskell.constants.GhcLanguageExtensions
-import com.haskforce.haskell.highlighting.annotation.external.{GhcMod, GhcModi}
-import com.haskforce.system.utils.ExecUtil
+import com.intellij.psi.PsiFile
 
 object LanguageExtensionsProviderFactory {
   def get(psiFile: PsiFile): Option[LanguageExtensionsProvider] = {

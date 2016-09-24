@@ -1,6 +1,6 @@
 package com.haskforce.haskell.features.intentions;
 
-import com.haskforce.haskell.highlighting.annotation.external.GhcMod.*;
+import com.haskforce.tools.ghcmod.mod.GhcMod.*;
 import com.haskforce.haskell.psi.HaskellBody;
 import com.haskforce.haskell.psi.HaskellFunorpatdecl;
 import com.haskforce.haskell.psi.HaskellGendecl;
@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Pattern;
 
+//TODO refactor for GHC-Mod abstraction
 public class AddTypeSignature extends BaseIntentionAction {
     public final Problem problem;
 

@@ -3,7 +3,6 @@ package com.haskforce.haskell.codeInsight
 import java.util
 
 import scala.annotation.tailrec
-
 import com.intellij.AppTopics
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.application.ApplicationManager
@@ -13,10 +12,10 @@ import com.intellij.openapi.fileEditor._
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs._
 import com.intellij.psi.{PsiFile, PsiManager}
-
 import com.haskforce.Implicits._
 import com.haskforce.haskell.codeInsight.HaskellCompletionCacheLoader.LookupElementWrapper
 import com.haskforce.haskell.psi.{HaskellFile, HaskellPsiUtil}
+import com.haskforce.system.integrations.codeinsight.{ModuleSymbolsProviderFactory, VisibleModulesProviderFactory}
 import com.haskforce.system.utils.SAMUtils
 
 /** Loads the completion cache for any Haskell files we have open. */
