@@ -61,6 +61,7 @@ class HaskellExternalAnnotator extends ExternalAnnotator[PsiFile, State] {
 
 object HaskellExternalAnnotator {
 
+  //TODO refactor -> make project specific (makes it possible to tackle #304)
   /** Registered problem providers for our configured tools. */
   val problemsProviderFactories: List[ProblemsProviderFactory] = List(
     LintProblemsProviderFactory,

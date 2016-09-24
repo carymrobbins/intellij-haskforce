@@ -12,6 +12,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashSet;
 import java.util.regex.Pattern;
 
+//TODO Document
 public class HaskellAnnotationHolder {
     public final AnnotationHolder holder;
 

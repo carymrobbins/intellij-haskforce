@@ -4,6 +4,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 
+//TODO document
 public abstract class HaskellProblem {
     public int startLine;
     public int startColumn;

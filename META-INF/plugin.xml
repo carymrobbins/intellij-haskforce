@@ -354,7 +354,7 @@
     <annotator language="Haskell"
                implementationClass="com.haskforce.haskell.highlighting.HaskellAnnotator"/>
     <externalAnnotator language="Haskell"
-                       implementationClass="com.haskforce.haskell.highlighting.annotation.external.HaskellExternalAnnotator"/>
+                       implementationClass="com.haskforce.system.integrations.highlighting.HaskellExternalAnnotator"/>
     <configurationType implementation="com.haskforce.haskell.run.HaskellApplicationConfigurationType"/>
     <configurationType implementation="com.haskforce.haskell.run.HaskellTestConfigurationType"/>
     <configurationType implementation="com.haskforce.tools.stack.run.StackApplicationConfigurationType"/>

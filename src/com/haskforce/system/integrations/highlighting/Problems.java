@@ -7,6 +7,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+//TODO document
 public class Problems extends ArrayList<HaskellProblem> {
     public Problems() {
         super();
