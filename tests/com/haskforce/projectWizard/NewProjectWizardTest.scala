@@ -1,18 +1,17 @@
 package com.haskforce.projectWizard
 
 import scala.concurrent.duration._
-
-import com.intellij.ide.projectWizard.{ProjectSettingsStep, NewProjectWizardTestCase, ProjectTypeStep}
+import com.intellij.ide.projectWizard.{NewProjectWizardTestCase, ProjectSettingsStep, ProjectTypeStep}
 import com.intellij.ide.wizard.Step
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.{ModuleRootManager, ProjectRootManager}
-
 import com.haskforce.Implicits._
 import com.haskforce._
-import com.haskforce.settings.HaskellBuildSettings
+import com.haskforce.haskell.{HaskellBuildToolStep, HaskellCabalPackageSettingsStep, HaskellSdkType}
+import com.haskforce.system.settings.HaskellBuildSettings
 import com.haskforce.test.AssertMixin
-import com.haskforce.utils.Logging
+import com.haskforce.system.utils.Logging
 
 /**
  * Tests for creating new Haskell projects.

@@ -1,7 +1,7 @@
 package com.haskforce.jps;
 
 import com.haskforce.jps.stack.StackBuilder;
-import com.haskforce.utils.JavaVersionUtil;
+import com.haskforce.system.utils.JavaVersionUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.jps.incremental.BuilderService;
 import org.jetbrains.jps.incremental.ModuleLevelBuilder;

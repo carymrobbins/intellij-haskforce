@@ -23,7 +23,7 @@ package com.haskforce.jps;
 import com.haskforce.jps.model.HaskellBuildOptions;
 import com.haskforce.jps.model.JpsHaskellBuildOptionsExtension;
 import com.haskforce.jps.model.JpsHaskellModuleType;
-import com.haskforce.utils.SystemUtil;
+import com.haskforce.system.utils.SystemUtil;
 import com.intellij.execution.ExecutionException;
 import org.jetbrains.jps.incremental.BuilderCategory;
 import org.jetbrains.jps.incremental.ModuleLevelBuilder;

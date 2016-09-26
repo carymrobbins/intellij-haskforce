@@ -4,19 +4,19 @@
     <Class name="~.*\._.*Lexer"/>
   </Match>
   <Match>
-    <Class name="~com\.haskforce\.parsing\.jsonParser\..*"/>
+    <Class name="~com\.haskforce\.haskell\.parsing\.jsonParser\..*"/>
   </Match>
   <Match>
-    <Class name="~com\.haskforce\.parsing\.srcExtsDatatypes\..*"/>
+    <Class name="~com\.haskforce\.haskell\.parsing\.srcExtsDatatypes\..*"/>
   </Match>
   <!-- For efficiency reasons, we want to return the array here. -->
   <Match>
-    <Class name="com.haskforce.features.HaskellBraceMatcher"/>
+    <Class name="com.haskforce.haskell.features.HaskellBraceMatcher"/>
     <Bug pattern="EI_EXPOSE_REP"/>
   </Match>
   <!-- Ignore certain bugs for JSON serialized classes. -->
   <Match>
-    <Class name="com.haskforce.highlighting.annotation.external.HLint$Problem"/>
+    <Class name="com.haskforce.haskell.highlighting.annotation.external.HLint$Problem"/>
     <Or>
       <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
       <Bug pattern="EI_EXPOSE_REP2"/>
