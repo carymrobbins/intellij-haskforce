@@ -28,11 +28,14 @@ import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import scala.Option;
+import scala.collection.JavaConversions;
+import scala.collection.JavaConversions$;
 import scala.runtime.AbstractFunction1;
 import scala.util.Either;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -121,11 +124,12 @@ public class HLint {
             LOG.warn("unable to find corresponding package for: " + haskellFile.getVirtualFile().getCanonicalPath());
             return new ArrayList<>();
         } else {
-            return Option.apply(haskellFile.getVirtualFile())
+            return Optional.ofNullable(haskellFile.getVirtualFile())
                     .map(VirtualFile::getCanonicalPath)
                     .map(path -> hPackage.get().getBestMatchingBuildInfo(path))
                     .map(BuildInfo::getExtensions)
-                    .getOrElse(ArrayList::new);
+                    .map(set -> JavaConversions.seqAsJavaList(set.toList()))
+                    .orElseGet(() -> new ArrayList<String>());
         }
     }
 
