@@ -73,6 +73,7 @@ extends ProjectImportWizardStep(context) {
     val packageManager = project.getComponent(classOf[HPackageManager])
 
     packages.filter(pkg => {
+      //TODO check for correctness!
       val virtualFile: VirtualFile = LocalFileSystem.getInstance().findFileByPath(pkg.path)
       if (virtualFile == null) {
         //TODO decide!
