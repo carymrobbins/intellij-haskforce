@@ -1,5 +1,7 @@
 package com.haskforce.system.packages
 
+import java.io.File
+
 import com.haskforce.system.settings.HaskellBuildSettings
 import com.haskforce.system.utils.ExecUtil.ExecError
 import com.haskforce.system.utils.{ExecUtil, NotificationUtil}
@@ -15,8 +17,16 @@ import com.intellij.openapi.vfs.{LocalFileSystem, VfsUtilCore, VirtualFile}
 class HPackageManagerImpl(intellijProject: Project) extends HPackageManager {
   private var packages : Map[VirtualFile, HPackage] = Map()
   private var mainPackage : HPackage = _
+  private var listeners: List[Project => Unit] = Nil
 
   override def getPackages : Iterable[HPackage] = packages.values
+
+  override def clearPackages: Unit = {
+    this.synchronized {
+      packages = Map()
+      mainPackage = _: HPackage
+    }
+  }
 
   override def getPackage(file: VirtualFile): Option[HPackage] = packages.get(file)
 
@@ -27,7 +37,8 @@ class HPackageManagerImpl(intellijProject: Project) extends HPackageManager {
   }
 
   override def replaceMainPackage(packageManager: BackingPackageManager, file: String): Either[FileError, List[FileError]] = {
-    val virtualFile: VirtualFile = LocalFileSystem.getInstance().findFileByPath(file)
+    val ioFile = new File(intellijProject.getBaseDir.getCanonicalPath, file)
+    val virtualFile: VirtualFile = LocalFileSystem.getInstance().findFileByIoFile(ioFile)
     if (virtualFile == null) {
       Left(FileError(file, "unknown", s"unable to obtain VirtualFile for file $file"))
     } else {
@@ -68,15 +79,13 @@ class HPackageManagerImpl(intellijProject: Project) extends HPackageManager {
     this.synchronized {
       val toReplace = packages.get(hPackage.getLocation)
       packages = packages + ((hPackage.getLocation, hPackage))
-      toReplace match {
-        case Some(existing) => {
-          if (existing.getPackageManager == hPackage.getPackageManager) {
-            existing.emitEvent(Update(hPackage))
-          } else {
-            existing.emitEvent(Replace(hPackage))
-          }
+      toReplace foreach(existing => {
+        if (existing.getPackageManager == hPackage.getPackageManager) {
+          existing.emitEvent(Update(hPackage))
+        } else {
+          existing.emitEvent(Replace(hPackage))
         }
-      }
+      })
       toReplace
     }
   }
@@ -88,6 +97,18 @@ class HPackageManagerImpl(intellijProject: Project) extends HPackageManager {
       } else {
         packages = packages - hPackage.getLocation
         hPackage.emitEvent(Remove())
+        return true
+      }
+    }
+  }
+  override def removePackage(file: VirtualFile): Boolean = {
+    this.synchronized {
+      val contained: Option[HPackage] = packages.get(file)
+      if (contained.isEmpty) {
+        return false
+      } else {
+        packages = packages - file
+        contained.get.emitEvent(Remove())
         return true
       }
     }
@@ -106,7 +127,9 @@ class HPackageManagerImpl(intellijProject: Project) extends HPackageManager {
       .map(tuple => tuple._2)
   }
 
-  override def projectOpened(): Unit = {}
+  override def projectOpened(): Unit = {
+    listeners.foreach(_.apply(intellijProject))
+  }
 
   override def projectClosed(): Unit = {}
 
@@ -153,6 +176,14 @@ class HPackageManagerImpl(intellijProject: Project) extends HPackageManager {
   override def disposeComponent(): Unit = {}
 
   override def getComponentName: String = HPackageManagerImpl.NAME
+
+  override def addHaskellProjectListener(listener: Project => Unit): Unit = {
+    listeners ::= listener
+  }
+
+  override def removeHaskellProjectListener(listener: Project => Unit): Unit = {
+    listeners = listeners.filterNot(_ == listener)
+  }
 }
 
 object HPackageManagerImpl {
