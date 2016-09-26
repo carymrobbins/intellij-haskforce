@@ -7,13 +7,12 @@ import scala.annotation.tailrec
 import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 import scala.language.implicitConversions
-
 import com.haskforce.Implicits._
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
-import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.{LocalFileSystem, VirtualFile}
 import com.intellij.psi.{PsiDirectory, PsiDocumentManager, PsiFile}
 import com.intellij.util.Function
 import org.jetbrains.annotations.{NotNull, Nullable}
@@ -106,6 +105,22 @@ object FileUtil {
   def toRelativePath(project: Project, file: VirtualFile): String = {
     val path = file.getCanonicalPath
     Option(project.getBasePath).map(toRelativePath(_, path)).getOrElse(path)
+  }
+
+  /**
+    * returns the virtualFile for the path that if relative, is relative not to the current working Directory.
+    * For example when parsing stack.yaml, "." denotes the directory of the stack.yaml-File
+    * @param path the Path
+    * @param workDir the working-directory
+    * @return an VirtualFile if able to obtain
+    */
+  def getVirtualFileDifferentWorkingDir(path: String, workDir: String): Option[VirtualFile] = {
+    val fileSystem: LocalFileSystem = LocalFileSystem.getInstance()
+    if (new File(path).isAbsolute) {
+      Option(fileSystem.findFileByIoFile(new File(path)))
+    } else {
+      Option(fileSystem.findFileByIoFile(new File(workDir, path).getCanonicalFile))
+    }
   }
 }
 

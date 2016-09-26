@@ -4,3 +4,4 @@ build.properties
 .ackrc
 .dist-buildwrapper/
 lib/
+/.idea/

@@ -16,7 +16,7 @@
   </Match>
   <!-- Ignore certain bugs for JSON serialized classes. -->
   <Match>
-    <Class name="com.haskforce.haskell.highlighting.annotation.external.HLint$Problem"/>
+    <Class name="com.haskforce.tools.hlint.HLint$Problem"/>
     <Or>
       <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
       <Bug pattern="EI_EXPOSE_REP2"/>
