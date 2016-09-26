@@ -2,8 +2,8 @@ package com.haskforce.tools.cabal.settings.ui
 
 import java.io.File
 
-//TODO refactor
-import com.haskforce.haskell.HaskellModuleBuilder
+
+import com.haskforce.haskell.HaskellModuleBuilder//TODO refactor
 import com.haskforce.Implicits._
 import com.haskforce.jps.model.HaskellBuildOptions
 import com.haskforce.system.settings.{HaskellBuildSettings, ToolKey}

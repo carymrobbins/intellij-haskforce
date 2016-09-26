@@ -2,19 +2,15 @@ package com.haskforce.tools.cabal.lang.psi.impl
 
 import java.util.regex.Pattern
 
-import scala.collection.JavaConverters._
+import com.haskforce.tools.cabal.lang.psi._
 import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.util.TextRange
-import com.intellij.psi.{PsiDirectory, PsiElement, PsiManager, PsiReference}
 import com.intellij.psi.impl.source.tree.LeafPsiElement
-import com.intellij.psi.search.{FileTypeIndex, GlobalSearchScope}
-import com.intellij.util.indexing.FileBasedIndex
-import com.haskforce.tools.cabal.CabalFileType
-import com.haskforce.tools.cabal.lang.psi._
-import com.haskforce.haskell.HaskellFileType
-//TODO refactor?
+import com.intellij.psi.search.GlobalSearchScope
+import com.intellij.psi.{PsiDirectory, PsiElement, PsiReference}
+
+import scala.collection.JavaConverters._
 import com.haskforce.haskell.index.{HaskellFileIndex, HaskellModuleIndex}
-import com.haskforce.haskell.psi.HaskellFile
 
 trait ModulePartImpl extends CabalNamedElementImpl {
 

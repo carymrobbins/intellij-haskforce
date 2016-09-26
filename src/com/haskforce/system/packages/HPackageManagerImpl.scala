@@ -30,6 +30,7 @@ class HPackageManagerImpl(intellijProject: Project) extends HPackageManager {
 
   override def getPackage(file: VirtualFile): Option[HPackage] = packages.get(file)
 
+  //TODO the Main Package should probably be deleted
   override def getMainPackage : Option[HPackage] = Option(mainPackage)
 
   override def setMainPackage(hPackage: HPackage) = {
@@ -134,6 +135,7 @@ class HPackageManagerImpl(intellijProject: Project) extends HPackageManager {
   override def projectClosed(): Unit = {}
 
   override def initComponent(): Unit = {
+    //TODO correct init
     val settings: HaskellBuildSettings = HaskellBuildSettings.getInstance(intellijProject)
     val handleResult = (result: Either[FileError, List[FileError]]) => {
       if (result.isLeft) {

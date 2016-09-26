@@ -222,8 +222,9 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         validate();
         String file;
         if (buildWithStack.isSelected()) {
-            file = stackPath.getText();
+            file = stackFile.getText();
         } else {
+            //TODO fix bug
             file = cabalPath.getText();
         }
         setMainProject(buildWithStack.isSelected(), buildWithCabal.isSelected() && !buildWithStack.isSelected(), file, myProject);

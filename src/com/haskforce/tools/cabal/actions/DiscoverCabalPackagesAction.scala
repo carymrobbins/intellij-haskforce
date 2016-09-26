@@ -17,6 +17,7 @@ import com.haskforce.Implicits._
 /**
  * Finds Cabal packages within project which are lacking an IntelliJ modules and creates modules for them.
  */
+//TODO use Project-Setup here
 class DiscoverCabalPackagesAction extends AnAction with DumbAware {
   import DiscoverCabalPackagesAction._
 

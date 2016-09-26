@@ -19,6 +19,7 @@ import com.intellij.openapi.vfs.{LocalFileSystem, VirtualFileManager}
 
 import scala.util.{Failure, Success, Try}
 
+//TODO use ProjectSetup here
 class AddCabalPackageAction extends AnAction with DumbAware {
   def actionPerformed(e: AnActionEvent) {
     Option(e.getProject).fold {

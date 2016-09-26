@@ -10,7 +10,6 @@ import com.intellij.util.ProcessingContext
 import com.haskforce.tools.cabal.CabalLanguage
 import com.haskforce.tools.cabal.lang.psi
 import com.haskforce.tools.cabal.lang.psi.CabalPsiUtil
-//TODO refactor?
 import com.haskforce.haskell.constants.GhcLanguageExtensions
 import com.haskforce.system.utils.SAMUtils
 

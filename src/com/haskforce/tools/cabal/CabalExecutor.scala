@@ -2,8 +2,7 @@ package com.haskforce.tools.cabal
 
 import java.io.File
 
-//TODO refactor
-import com.haskforce.haskell.highlighting.annotation.external.GhcModUtil
+import com.haskforce.tools.ghcmod.GhcModUtil//TODO refactor
 import com.haskforce.system.settings.HaskellBuildSettings
 import com.haskforce.system.utils.ExecUtil
 import com.haskforce.system.utils.ExecUtil.ExecError

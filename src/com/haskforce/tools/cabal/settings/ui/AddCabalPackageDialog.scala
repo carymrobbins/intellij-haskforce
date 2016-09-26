@@ -13,7 +13,8 @@ import com.haskforce.system.utils.FileUtil
 import com.intellij.openapi.project.Project
 import scala.collection.JavaConversions._
 
-import com.haskforce.tools.cabal.completion.CabalFileFinder
+
+import com.haskforce.tools.cabal.completion.CabalFileFinder//TODO refactor!
 
 class AddCabalPackageDialog(
   project: Project,
