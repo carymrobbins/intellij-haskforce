@@ -15,12 +15,13 @@ import scala.collection.mutable
   */
 class StackPackage(
                     psiFile: psi.CabalFile,
+                    location: VirtualFile,
                     stackFile: VirtualFile,
-                    allPackages: mutable.MutableList[StackPackage],
+                    allPackages: mutable.ListBuffer[StackPackage],
                     buildDir: List[VirtualFile]
-                  ) extends CabalPackage(psiFile) {
+                  ) extends CabalPackage(psiFile, location) {
 
-  lazy val StackProjectInformation = StackProjectInformation(allPackages.toList, buildDir)
+  lazy val stackInfo: StackProjectInformation = new StackProjectInformation(allPackages.toList, buildDir)
 
   override def getPackageManager: BackingPackageManager = StackPackageManager
 
@@ -35,7 +36,7 @@ class StackPackage(
     })
   }
 
-  override def getProjectInformation: Option[ProjectInformation] = Some(StackProjectInformation)
+  override def getProjectInformation: Option[ProjectInformation] = Some(stackInfo)
 }
 
 class StackProjectInformation(packages: List[StackPackage], buildDir: List[VirtualFile]) extends ProjectInformation {

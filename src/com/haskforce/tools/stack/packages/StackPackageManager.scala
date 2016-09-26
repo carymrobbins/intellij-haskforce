@@ -4,11 +4,11 @@ import java.io.File
 
 import com.haskforce.importWizard.stack.StackYaml
 import com.haskforce.system.packages._
-import com.haskforce.tools.cabal.lang.psi.CabalFile
+import com.haskforce.system.utils.FileUtil
+import com.haskforce.tools.cabal.packages.CabalPackageManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.{LocalFileSystem, VirtualFile}
-import com.intellij.psi.PsiManager
 
 import scala.collection.JavaConverters._
 import scala.collection.mutable
@@ -79,34 +79,29 @@ object StackPackageManager extends BackingPackageManager {
     if (parent == null)
       Left(FileError(stackFile.getCanonicalPath, stackFile.getNameWithoutExtension, s"stack file is root directory"))
     val buildDir = Option(parent.getChildren).flatMap(_.find(file => file.getName == ".stack-work")).toList
+    val allPackagesMut = mutable.ListBuffer[StackPackage]()
     StackYaml.fromFile(stackFile.getPath)
       .leftMap(errorMsg => FileError(stackFile.getCanonicalPath, stackFile.getNameWithoutExtension, errorMsg))
       .map(yaml => yaml.packages)
       .map(packages => {
-        val allPackagesMut = mutable.MutableList[StackPackage]()
         val stackPackages = packages.asScala.map(stackPackage => {
-          val virtualFile: VirtualFile = LocalFileSystem.getInstance().findFileByPath(stackPackage.path)
-          if (virtualFile == null) {
-            Left(FileError(stackPackage.path, virtualFile.getNameWithoutExtension, s"unable to obtain VirtualFile for stack package ${stackPackage.path}"))
-          } else {
-            val children: Array[VirtualFile] = virtualFile.getChildren
-            if (children == null) {
-              Left(FileError(stackPackage.path, virtualFile.getNameWithoutExtension, s"unable to get children for ${stackPackage.path}"))
-            } else {
-              children.toStream
-                .map(child => PsiManager.getInstance(project).findFile(virtualFile) match {
-                  case psiFile: CabalFile => Some(psiFile)
-                  case other => None
-                })
-                .flatMap(option => option.toList)
-                .headOption match {
-                case Some(psiFile) => Right(new StackPackage(psiFile, stackFile, allPackagesMut, buildDir))
-                case None => Left(FileError(stackPackage.path, virtualFile.getNameWithoutExtension, s"no Cabal-file found for package ${stackPackage.path}"))
+          FileUtil.getVirtualFileDifferentWorkingDir(stackFile.getParent.getCanonicalPath, stackPackage.path)
+            .map(virtualFile => {
+              val children: Array[VirtualFile] = virtualFile.getChildren
+              if (children == null) {
+                Left(FileError(stackPackage.path, virtualFile.getNameWithoutExtension, s"unable to get children for ${stackPackage.path}"))
+              } else {
+                children.toStream
+                  .flatMap(child => CabalPackageManager.getCabalFile(child, project).map((_, child)))
+                  .headOption match {
+                  case Some(tuple) => Right(new StackPackage(tuple._1, tuple._2, stackFile, allPackagesMut, buildDir))
+                  case None => Left(FileError(stackPackage.path, virtualFile.getNameWithoutExtension, s"no Cabal-file found for package ${stackPackage.path}"))
+                }
               }
-            }
-          }
+            })
+            .getOrElse(Left(FileError(stackPackage.path, new File(stackPackage.path).getName, s"unable to obtain VirtualFile for stack package ${stackPackage.path}")))
         }).toList
-        allPackagesMut ++ stackPackages
+        allPackagesMut ++= stackPackages.flatMap(_.right.toOption)
         stackPackages
       })
       .toEither
