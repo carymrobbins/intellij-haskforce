@@ -1,12 +1,15 @@
 package com.haskforce.tools.cabal.packages
 
-import java.io.File
+import java.io.{File, IOException}
+import java.nio.charset.StandardCharsets
+
 import com.haskforce.system.packages._
+import com.haskforce.tools.cabal.CabalLanguage
 import com.haskforce.tools.cabal.lang.psi.CabalFile
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.{Project, ProjectManager}
 import com.intellij.openapi.vfs.{LocalFileSystem, VirtualFile}
-import com.intellij.psi.PsiManager
+import com.intellij.psi.{PsiFileFactory, PsiManager}
 
 /**
   * utility class used to create/delete Cabal packages
@@ -39,7 +42,7 @@ object CabalPackageManager extends BackingPackageManager {
     * @param project the Intellij Project
     * @return either the RegisterError or the package
     */
-  def registerNewPackage(file: File, project: Project) : Either[RegisterError, HPackage] = {
+  def registerNewPackage(file: File, project: Project): Either[RegisterError, HPackage] = {
     val virtualFile: VirtualFile = LocalFileSystem.getInstance().findFileByIoFile(file)
     if (virtualFile == null) {
       Left(FileError(file.getCanonicalPath, file.getName, s"unable to obtain VirtualFile for file ${file.getAbsolutePath}"))
@@ -54,11 +57,11 @@ object CabalPackageManager extends BackingPackageManager {
     * @param project the Intellij Project
     * @return either the RegisterError or the package
     */
-  def registerNewPackage(file : VirtualFile, project: Project) : Either[RegisterError, HPackage] = {
+  def registerNewPackage(file : VirtualFile, project: Project): Either[RegisterError, HPackage] = {
     val packageManager: HPackageManager = project.getComponent(classOf[HPackageManager])
-    PsiManager.getInstance(project).findFile(file) match {
-      case psiFile: CabalFile => {
-        val cabalPackage: CabalPackage = new CabalPackage(psiFile)
+    getCabalFile(file, project) match {
+      case Some(psiFile) => {
+        val cabalPackage: CabalPackage = new CabalPackage(psiFile, file)
         val added: Boolean = packageManager.addPackage(cabalPackage)
         if (added) {
           Right(cabalPackage)
@@ -81,11 +84,11 @@ object CabalPackageManager extends BackingPackageManager {
     * @param project the Intellij Project
     * @return either the RegisterError or the package
     */
-  def replaceAndRegisterNewPackage(file : VirtualFile, project: Project) : Either[FileError, HPackage] = {
+  def replaceAndRegisterNewPackage(file : VirtualFile, project: Project): Either[FileError, HPackage] = {
     val packageManager: HPackageManager = project.getComponent(classOf[HPackageManager])
-    PsiManager.getInstance(project).findFile(file) match {
-      case psiFile: CabalFile => {
-        val cabalPackage: CabalPackage = new CabalPackage(psiFile)
+    getCabalFile(file, project) match {
+      case Some(psiFile) => {
+        val cabalPackage: CabalPackage = new CabalPackage(psiFile, file)
         packageManager.replacePackage(cabalPackage)
         Right(cabalPackage)
       }
@@ -93,5 +96,37 @@ object CabalPackageManager extends BackingPackageManager {
         Left(FileError(file.getCanonicalPath, file.getNameWithoutExtension, s"Expected CabalFile, got: ${other.getClass}"))
     }
   }
-}
 
+  /**
+    * returns the (optional) Cabal-File for the VirtualFile
+    */
+  def getCabalFile(virtualFile: VirtualFile, project: Project): Option[CabalFile] = {
+    if (project.isInitialized) {
+      PsiManager.getInstance(project).findFile(virtualFile) match {
+        case cabalFile: CabalFile => Some(cabalFile)
+        case other => None
+      }
+    } else {
+      val packageManager: HPackageManager = project.getComponent(classOf[HPackageManager])
+      val defaultProject: Project = ProjectManager.getInstance().getDefaultProject
+      if (virtualFile.getExtension != "cabal") {
+        return None
+      }
+      val text = try {
+        new String(virtualFile.contentsToByteArray(), StandardCharsets.UTF_8)
+      } catch {
+        case e: IOException =>
+          LOG.warn(s"Could not read CabalFile $virtualFile: $e", e)
+          return None
+      }
+      PsiFileFactory.getInstance(defaultProject).createFileFromText(
+        virtualFile.getName, CabalLanguage.INSTANCE, text
+      ) match {
+        case psiFile: CabalFile => Some(psiFile)
+        case other =>
+          LOG.warn(new AssertionError(s"Expected CabalFile, got: ${other.getClass}"))
+          None
+      }
+    }
+  }
+}

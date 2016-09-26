@@ -1,7 +1,7 @@
 package com.haskforce.tools.cabal.packages
 
 import com.haskforce.system.packages.BuildType.{Benchmark, Executable, Library, TestSuite}
-import com.haskforce.system.packages.{BackingPackageManager, GHCVersion, ProjectInformation, HPackage => BaseProject}
+import com.haskforce.system.packages.{BackingPackageManager, BuildInfo, GHCVersion, ProjectInformation, HPackage => BaseProject}
 import com.haskforce.system.settings.HaskellBuildSettings
 import com.haskforce.system.utils.ExecUtil.ExecError
 import com.haskforce.system.utils.{ExecUtil, NonEmptySet, PQ}
@@ -14,7 +14,7 @@ import com.intellij.openapi.vfs.VirtualFile
 /**
   * A Cabal Package
   */
-class CabalPackage(psiFile: psi.CabalFile) extends BaseProject {
+class CabalPackage(psiFile: psi.CabalFile, location: VirtualFile) extends BaseProject {
   private val LOG = Logger.getInstance(classOf[CabalPackage])
 
   override def getName: Option[String] = for {
@@ -22,7 +22,7 @@ class CabalPackage(psiFile: psi.CabalFile) extends BaseProject {
     ff <- PQ.getChildOfType(pkgName, classOf[psi.Freeform])
   } yield ff.getText
 
-  override def getLocation: VirtualFile = psiFile.getOriginalFile.getVirtualFile
+  override def getLocation: VirtualFile = location
 
   /**
     * If 'library' stanza exists, returns it; otherwise, implicitly uses root stanza.
@@ -36,11 +36,11 @@ class CabalPackage(psiFile: psi.CabalFile) extends BaseProject {
   /**
     * Returns the associated BuildInfos
     */
-  override def getBuildInfo: NonEmptySet[cabalBuildInfo] = {
-    NonEmptySet(getLibrary).append(psiFile.getChildren.collect {
-      case c: Executable => new cabalBuildInfo(c, Executable)
-      case c: TestSuite => new cabalBuildInfo(c, TestSuite)
-      case c: Benchmark => new cabalBuildInfo(c, Benchmark)
+  override def getBuildInfo: NonEmptySet[BuildInfo] = {
+    NonEmptySet(getLibrary: BuildInfo).append(psiFile.getChildren.collect {
+      case c: Executable => new cabalBuildInfo(c, Executable): BuildInfo
+      case c: TestSuite => new cabalBuildInfo(c, TestSuite): BuildInfo
+      case c: Benchmark => new cabalBuildInfo(c, Benchmark): BuildInfo
     }.toSet)
   }
 
