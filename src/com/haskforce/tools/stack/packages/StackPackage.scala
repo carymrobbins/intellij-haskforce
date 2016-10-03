@@ -1,6 +1,8 @@
 package com.haskforce.tools.stack.packages
 
-import com.haskforce.system.packages.{BackingPackageManager, GHCVersion, HPackage, ProjectInformation}
+import java.util
+
+import com.haskforce.system.packages._
 import com.haskforce.system.settings.HaskellBuildSettings
 import com.haskforce.system.utils.ExecUtil
 import com.haskforce.system.utils.ExecUtil.ExecError
@@ -17,6 +19,7 @@ class StackPackage(
                     psiFile: psi.CabalFile,
                     location: VirtualFile,
                     stackFile: VirtualFile,
+                    stackPathFromProject: String,
                     allPackages: mutable.ListBuffer[StackPackage],
                     buildDir: List[VirtualFile]
                   ) extends CabalPackage(psiFile, location) {
@@ -37,6 +40,10 @@ class StackPackage(
   }
 
   override def getProjectInformation: Option[ProjectInformation] = Some(stackInfo)
+
+  override def getState: HPackageState = {
+    new StackPackageState(stackPathFromProject, location.getName)
+  }
 }
 
 class StackProjectInformation(packages: List[StackPackage], buildDir: List[VirtualFile]) extends ProjectInformation {
@@ -44,4 +51,11 @@ class StackProjectInformation(packages: List[StackPackage], buildDir: List[Virtu
   override def getBuildDirectories: List[VirtualFile] = buildDir
 
   override def getRelatedPackages: List[HPackage] = packages
+}
+
+//be careful when editing this file, it gets serialized
+class StackPackageState(stackPath: String, cabalName: String) extends HPackageState with Serializable {
+  override def getPackageManager: String = StackPackageManager.getName
+  def getStackPath = stackPath
+  def getCabalName = cabalName
 }

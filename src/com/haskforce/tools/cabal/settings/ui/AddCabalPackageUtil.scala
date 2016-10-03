@@ -239,6 +239,7 @@ object AddCabalPackageUtil {
    * Create a Haskell module from a Cabal package.
    * TODO: Parse Cabal file and provide source directories.
    */
+  //TODO replace with ProjectSetup
   def importCabalPackage(project: Project, rootDir: String, packageName: String): Unit = {
     val moduleName = determineProperModuleName(project, packageName)
     val moduleManager = ModuleManager.getInstance(project)

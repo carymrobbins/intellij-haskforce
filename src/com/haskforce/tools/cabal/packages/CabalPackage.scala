@@ -1,10 +1,10 @@
 package com.haskforce.tools.cabal.packages
 
 import com.haskforce.system.packages.BuildType.{Benchmark, Executable, Library, TestSuite}
-import com.haskforce.system.packages.{BackingPackageManager, BuildInfo, GHCVersion, ProjectInformation, HPackage => BaseProject}
+import com.haskforce.system.packages.{BackingPackageManager, BuildInfo, GHCVersion, HPackageState, ProjectInformation, HPackage}
 import com.haskforce.system.settings.HaskellBuildSettings
 import com.haskforce.system.utils.ExecUtil.ExecError
-import com.haskforce.system.utils.{ExecUtil, NonEmptySet, PQ}
+import com.haskforce.system.utils.{ExecUtil, FileUtil, NonEmptySet, PQ}
 import com.haskforce.tools.cabal.lang.psi
 import com.haskforce.tools.cabal.lang.psi.{Benchmark, Executable, TestSuite}
 import com.intellij.openapi.diagnostic.Logger
@@ -14,7 +14,7 @@ import com.intellij.openapi.vfs.VirtualFile
 /**
   * A Cabal Package
   */
-class CabalPackage(psiFile: psi.CabalFile, location: VirtualFile) extends BaseProject {
+class CabalPackage(psiFile: psi.CabalFile, location: VirtualFile) extends HPackage {
   private val LOG = Logger.getInstance(classOf[CabalPackage])
 
   override def getName: Option[String] = for {
@@ -63,4 +63,14 @@ class CabalPackage(psiFile: psi.CabalFile, location: VirtualFile) extends BasePr
     * returns information about the project (if existing)
     */
   override def getProjectInformation: Option[ProjectInformation] = None
+
+  override def getState: HPackageState = {
+    new CabalPackageState(location.getName)
+  }
+}
+
+//be careful when editing this file, it gets serialized
+class CabalPackageState(cabalFile: String) extends HPackageState with Serializable {
+  def getPackageManager = CabalPackageManager.getName
+  def getCabalFile = cabalFile
 }

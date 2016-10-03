@@ -1,7 +1,7 @@
 package com.haskforce.tools.cabal.actions
 
 import com.haskforce.haskell.HaskellModuleType
-import com.haskforce.system.packages.{AlreadyRegistered, FileError, HPackage => HProject}
+import com.haskforce.system.packages.{AlreadyRegistered, AlreadyRegisteredResult, FileError, HPackage => HProject}
 import com.haskforce.tools.cabal.settings.ui.{AddCabalPackageUtil, DiscoverCabalPackagesDialog}
 import com.haskforce.system.utils.{FileUtil, NotificationUtil}
 import com.haskforce.tools.cabal.packages.CabalPackageManager
@@ -17,7 +17,6 @@ import com.haskforce.Implicits._
 /**
  * Finds Cabal packages within project which are lacking an IntelliJ modules and creates modules for them.
  */
-//TODO use Project-Setup here
 class DiscoverCabalPackagesAction extends AnAction with DumbAware {
   import DiscoverCabalPackagesAction._
 
@@ -59,7 +58,7 @@ object DiscoverCabalPackagesAction {
         )
       case _ =>
         val (fileErrors, regErrors, successes) = cabalFiles
-          .map(file => CabalPackageManager.registerNewPackage(file, project))
+          .map(file => CabalPackageManager.registerNewPackage(file, project, replace = false))
           .foldRight((List[(String, String, String)](), List[HProject](), List[HProject]()))((either, akk) => {
             val (fileAkk, regAkk, packAkk) = akk
             either match {
@@ -125,7 +124,6 @@ object DiscoverCabalPackagesAction {
 
   private def importCabalPackages(project: Project)(files: Seq[VirtualFile]): Unit = {
     ApplicationManager.getApplication.runWriteAction({ () =>
-      files.foreach(AddCabalPackageUtil.importCabalPackage(project))
       onSuccess(files, project)
     } : Runnable)
   }

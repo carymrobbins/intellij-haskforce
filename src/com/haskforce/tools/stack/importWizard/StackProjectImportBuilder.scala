@@ -21,7 +21,7 @@ import com.intellij.openapi.projectRoots.Sdk
 import com.intellij.openapi.projectRoots.impl.SdkConfigurationUtil
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider
-import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.openapi.vfs.{LocalFileSystem, VirtualFile, VirtualFileSystem}
 import com.intellij.packaging.artifacts.ModifiableArtifactModel
 import com.intellij.projectImport.ProjectImportBuilder
 
@@ -31,7 +31,7 @@ import scala.collection.JavaConverters._
 /**
  * Imports a Stack project and configures modules from the stack.yaml file.
  */
-//TODO this class can be improved with the information now obtainable through the packageManager
+//TODO replace existing!
 class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] {
   override def getName: String = "Stack"
   override def getIcon: Icon = HaskellIcons.FILE
@@ -58,16 +58,17 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
       artifactModel: ModifiableArtifactModel): util.List[Module] = {
     val stackPath = unsafeGetParam(_.stackPath, "stackPath")
     val stackYamlPath = unsafeGetParam(_.stackYamlPath, "stackYamlPath")
-    val stackYaml = StackYaml.unsafeFromFile(stackYamlPath)
+    //provided model may be null
     val moduleModel = Option(model).getOrElse {
       ModuleManager.getInstance(project).getModifiableModel
     }
     ApplicationManager.getApplication.runWriteAction { () =>
       commitSdk(project)
-      if (initPackages(stackYamlPath, project)) {
+      val packages: Option[List[Module]] = initPackages(stackYamlPath, project, moduleModel)
+      if (packages.isDefined) {
         setProjectSettings(project, stackPath, stackYamlPath)
       }
-      buildModules(project, moduleModel, stackYaml)
+      packages.map(_.asJava).getOrElse(new util.ArrayList[Module]())
     }
   }
 
@@ -82,16 +83,23 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
     buildSettings.setStackFile(stackYamlPath)
   }
 
-  private def initPackages(stackYamlPath: String, project: Project): Boolean = {
-    val packageManager: HPackageManager = project.getComponent(classOf[HPackageManager])
-    packageManager.clearPackages
-    val result = StackPackageManager.getPackages(new File(stackYamlPath), project)
+  private def initPackages(stackYamlPath: String, project: Project, model: ModifiableModuleModel): Option[List[Module]] = {
+    val projectRoot = getImportRoot
+    val virtualStackFile: VirtualFile = LocalFileSystem.getInstance().findFileByIoFile(new File(stackYamlPath))
+    if (virtualStackFile == null) {
+      NotificationUtil.displaySimpleNotification(
+        NotificationType.ERROR, project,
+        "unable to set Haskell Compiler", s"unable to obtain VirtualFile for $stackYamlPath"
+      )
+      return None
+    }
+    val result = StackPackageManager.getPackages(virtualStackFile, project)
     if (result.isLeft) {
       NotificationUtil.displaySimpleNotification(
         NotificationType.ERROR, project,
         "unable to set Haskell Compiler", s"unable to parse $stackYamlPath, error: ${result.left.get.errorMsg}"
       )
-      false
+      None
     } else {
       val errors: List[FileError] = result.right.get
         .flatMap(_.left.toOption)
@@ -105,35 +113,23 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
         )
       }
 
-      val marked: Set[VirtualFile] = getList.flatMap(pkg => FileUtil.getVirtualFileDifferentWorkingDir(pkg.path, new File(stackYamlPath).getParent)).toSet
+      val marked: Set[VirtualFile] = getList.flatMap(pkg => FileUtil.fromRelativePath(pkg.path, new File(stackYamlPath).getParent)).toSet
 
-      val chosenPackages: List[StackPackage] = result.right.get
+      val chosenPackages: List[HPackage] = result.right.get
         .flatMap(_.right.toOption)
         .filter(pkg => marked.contains(pkg.getLocation.getParent))
 
       if (chosenPackages.nonEmpty) {
-        chosenPackages.foreach(StackPackageManager.replacePackage(_, project))
-        packageManager.setMainPackage(chosenPackages.head)
-        true
+        val createdModules: List[Module] = ProjectSetup.setUp(chosenPackages, project, model, projectRoot, isUpdate)
+        Some(createdModules)
       } else {
         NotificationUtil.displaySimpleNotification(
           NotificationType.ERROR, project,
           "unable to set Haskell Compiler", s"unable to set up any Package"
         )
-        false
+        None
       }
     }
-  }
-
-  private def buildModules(
-      project: Project,
-      moduleModel: ModifiableModuleModel,
-      stackYaml: StackYaml): util.List[Module] = {
-    val projectRoot = getImportRoot
-    val packageManager: HPackageManager = project.getComponent(classOf[HPackageManager])
-    val packages: Iterable[HPackage] = packageManager.getPackages
-    val modules: List[Module] = ProjectSetup.setUp(packages.toList, project, moduleModel, projectRoot, isUpdate)
-    modules.asJava
   }
 
   // Helper to be called only after validation.

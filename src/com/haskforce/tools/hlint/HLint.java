@@ -4,11 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.haskforce.system.packages.BuildInfo;
 import com.haskforce.system.packages.HPackage;
-import com.haskforce.system.packages.HPackageManager;
 import com.haskforce.system.integrations.highlighting.HaskellAnnotationHolder;
 import com.haskforce.system.integrations.highlighting.HaskellProblem;
 import com.haskforce.system.integrations.highlighting.Problems;
 import com.haskforce.haskell.psi.HaskellFile;
+import com.haskforce.system.packages.HPackageModule;
 import com.haskforce.system.settings.ToolKey;
 import com.haskforce.system.ui.tools.HaskellToolsConsole;
 import com.haskforce.system.utils.*;
@@ -118,8 +118,7 @@ public class HLint {
     }
 
     private static List<String> getParamsFromPackage(@NotNull HaskellFile haskellFile, @NotNull Project project) {
-        HPackageManager packageManager = project.getComponent(HPackageManager.class);
-        Option<HPackage> hPackage = packageManager.getPackageForFile(haskellFile.getVirtualFile());
+        Option<HPackage> hPackage = HPackageModule.getBestHPackage(haskellFile.getVirtualFile(), project);
         if (hPackage.isEmpty()) {
             LOG.warn("unable to find corresponding package for: " + haskellFile.getVirtualFile().getCanonicalPath());
             return new ArrayList<>();

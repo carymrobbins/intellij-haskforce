@@ -6,11 +6,13 @@ import java.util
 import javax.swing._
 
 import com.haskforce.importWizard.stack.{StackYaml, StackYamlUtil}
-import com.haskforce.system.packages.HPackageManager
+import com.haskforce.system.packages.{HPackage, HPackageManager$, Shadowed}
 import com.haskforce.system.settings.HaskellBuildSettings
 import com.haskforce.system.ui.GC
-import com.haskforce.system.utils.GuiUtil
+import com.haskforce.system.utils.{GuiUtil, NotificationUtil}
 import com.intellij.ide.util.projectWizard.WizardContext
+import com.intellij.notification.NotificationType
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
 import com.intellij.openapi.vfs.{LocalFileSystem, VirtualFile}
@@ -70,19 +72,23 @@ extends ProjectImportWizardStep(context) {
     if (project == null) return packages
     // Otherwise, filter this import for packages not already imported.
 
-    val packageManager = project.getComponent(classOf[HPackageManager])
-
+    val hPackageManager: HPackageManager = HPackageManager.getInstance(project)
     packages.filter(pkg => {
-      //TODO check for correctness!
       val virtualFile: VirtualFile = LocalFileSystem.getInstance().findFileByPath(pkg.path)
       if (virtualFile == null) {
-        //TODO decide!
-        false
-        /*NotificationUtil.displaySimpleNotification(
+        NotificationUtil.displaySimpleNotification(
           NotificationType.ERROR, project, "unable to get VirtualFile", s"unable to obtain VirtualFile for ${pkg.path}"
-        )*/
+        )
+        false
       } else {
-        packageManager.getPackage(virtualFile).isEmpty
+        hPackageManager.getPackageForConfigFile(virtualFile).fold(
+          error => error match {
+            //unable to import
+            case Shadowed(x) => false
+            case other => true
+          },
+          success => true
+        )
       }
     })
   }

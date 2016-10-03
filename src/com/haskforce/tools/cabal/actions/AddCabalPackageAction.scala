@@ -4,11 +4,11 @@ import java.io.File
 
 import com.haskforce.Implicits._
 import com.haskforce.system.packages.{AlreadyRegistered, FileError}
+import com.haskforce.system.utils.{FileUtil, NotificationUtil}
+import com.haskforce.tools.cabal.CabalExecutor
+import com.haskforce.tools.cabal.packages.CabalPackageManager
 import com.haskforce.tools.cabal.settings.AddCabalPackageOptions
 import com.haskforce.tools.cabal.settings.ui.{AddCabalPackageDialog, AddCabalPackageUtil}
-import com.haskforce.tools.cabal.CabalExecutor
-import com.haskforce.system.utils.{FileUtil, NotificationUtil}
-import com.haskforce.tools.cabal.packages.CabalPackageManager
 import com.intellij.notification.NotificationType
 import com.intellij.notification.NotificationType._
 import com.intellij.openapi.actionSystem.{AnAction, AnActionEvent}
@@ -19,7 +19,6 @@ import com.intellij.openapi.vfs.{LocalFileSystem, VirtualFileManager}
 
 import scala.util.{Failure, Success, Try}
 
-//TODO use ProjectSetup here
 class AddCabalPackageAction extends AnAction with DumbAware {
   def actionPerformed(e: AnActionEvent) {
     Option(e.getProject).fold {
@@ -48,7 +47,6 @@ object AddCabalPackageAction {
         return
       }
       Try {
-        maybeCreateModule(project, options)
         cabal.init(project, AddCabalPackageUtil.buildArgs(options))
       } match {
         case Success(message) => display(INFORMATION, message)
@@ -60,20 +58,12 @@ object AddCabalPackageAction {
       Option(LocalFileSystem.getInstance.refreshAndFindFileByPath(newCabalFilePath)) match {
         case None => display(WARNING, s"Could not find new cabal file at $newCabalFilePath - may not have been created.")
         case Some(cabalFile) =>
-          CabalPackageManager.registerNewPackage(new File(newCabalFilePath), project) match {
+          CabalPackageManager.registerNewPackage(new File(newCabalFilePath), project, replace = true) match {
             case Left(FileError(location, name, message)) => display(ERROR, s"registering $name failed with error message: $message")
             case Left(AlreadyRegistered(x)) => display(INFORMATION, s"Package ${x.getName.getOrElse(x.getLocation.getNameWithoutExtension)} is already registered")
             case Right(_) => new OpenFileDescriptor(project, cabalFile).navigate(true)
           }
       }
     }
-  }
-
-  /**
-   * If we are creating a cabal package where a module does not currently exist, create it as a Haskell module.
-   */
-  private def maybeCreateModule(project: Project, options: AddCabalPackageOptions) {
-    if (options.maybeModule.isDefined) return
-    AddCabalPackageUtil.importCabalPackage(project, options.rootDir, options.packageName)
   }
 }
