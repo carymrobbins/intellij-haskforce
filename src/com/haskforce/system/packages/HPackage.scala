@@ -72,19 +72,18 @@ trait HPackage {
     * emits a new PackageEvent to all the Observers
     * @param packageEvent the Event to emit
     */
+  //TODO check emit usage!
   private[packages] def emitEvent(packageEvent: PackageEvent) = eventSource.onNext(packageEvent)
+
+  def getState: HPackageState
 }
 
-trait ProjectInformation {
+@SerialVersionUID(1L)
+trait HPackageState extends Serializable {
   /**
-    * returns a List of directories that can be marked as excluded (if existing)
+    * the name of the PackageManager
     */
-  def getBuildDirectories: List[VirtualFile]
-
-  /**
-    * returns a List of related packages
-    */
-  def getRelatedPackages: List[HPackage]
+  def getPackageManager: String
 }
 
 sealed trait PackageEvent

@@ -1,88 +1,118 @@
 package com.haskforce.system.packages
 
-import com.haskforce.system.utils.ExecUtil
-import com.intellij.openapi.components.ProjectComponent
+import com.haskforce.system.settings.HaskellBuildSettings
+import com.haskforce.system.utils.ExecUtil.ExecError
+import com.haskforce.system.utils.{ExecUtil, ModulesUtil}
+import com.haskforce.tools.cabal.packages.CabalPackageManager
+import com.haskforce.tools.stack.packages.StackPackageManager
+import com.intellij.openapi.components.ServiceManager
+import com.intellij.openapi.module.{Module, ModuleManager}
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
-
+import com.intellij.openapi.roots.ModuleRootManager
+import com.intellij.openapi.vfs.{LocalFileSystem, VfsUtilCore, VirtualFile}
 /**
-  * this class retrieve, add and remove the active packages
+  * common functionality to interact with the packages
   */
-trait HPackageManager extends ProjectComponent {
-  /**
-    * returns the active packages
-    */
-  def getPackages: Iterable[HPackage]
+class HPackageManager(intellijProject: Project) {
+  //not for API-Access!
+  private[packages] var mainPackage: Option[HPackage] = initMainPackage()
 
-  /**
-    * resets the packages and Main
-    */
-  def clearPackages
+  private def initMainPackage(): Option[HPackage] = {
+    val settings: HaskellBuildSettings = HaskellBuildSettings.getInstance(intellijProject)
+    if (settings.isStackEnabled) {
+      for {
+        stackFile <- Option(LocalFileSystem.getInstance().findFileByPath(settings.getStackFile))
+        results <- StackPackageManager.getPackages(stackFile, intellijProject).right.toOption
+        hPackage <- results.flatMap(_.right.toOption).headOption
+      } yield hPackage
+    } else if (settings.isCabalEnabled) {
+      for {
+        stackFile <- Option(LocalFileSystem.getInstance().findFileByPath(settings.getStackFile))
+        results <- CabalPackageManager.getPackages(stackFile, intellijProject).right.toOption
+        hPackage <- results.flatMap(_.right.toOption).headOption
+      } yield hPackage
+    } else {
+      None
+    }
+  }
 
-  /**
-    * returns the package at the location
-    * @param file the location of the package-defining file (e.g. Cabal-file)
-    */
-  def getPackage(file: VirtualFile): Option[HPackage]
+  def getPackage(state: HPackageState, moduleDirectory: VirtualFile, project: Project): Option[HPackage] = {
+    HPackageManager.packageManagers.find(pkgMngr => pkgMngr.getName == state.getPackageManager)
+      .flatMap(pkgMngr => pkgMngr.getPackageFromState(state, moduleDirectory, project))
+  }
 
-  /**
-    * the main package (used for ghci etc.)
-    * @return the main package or empty if not configured
-    */
-  def getMainPackage: Option[HPackage]
+  def getExistingPackages: List[(HPackage, Module)] = {
+    ModuleManager.getInstance(intellijProject).getModules.toList
+      .flatMap(module => HPackageModule.getInstance(module).getPackage.map(pkg => (pkg, module)))
+  }
 
-  /**
-    * sets the main package
-    */
-  def setMainPackage(hPackage: HPackage)
+  def getPackageForConfigFile(file: VirtualFile): Either[SearchResultError, (HPackage, Module)] = {
+    val findMatching: (Module, Option[HPackage]) => Option[Either[SearchResultError, (HPackage, Module)]] = (module: Module, optPackage: Option[HPackage]) => {
+      if (optPackage.isDefined) {
+        val hPackage = optPackage.get
+        if (hPackage.getLocation == file) {
+          Some(Right((hPackage, module)))
+        } else if (hPackage.getLocation.getParent == file.getParent) {
+          Some(Left(AlreadyRegisteredResult(hPackage, module)))
+        } else {
+          val roots: Set[VirtualFile] = ModuleRootManager.getInstance(module).getContentRoots.toSet
+          if (roots.exists(root => VfsUtilCore.isAncestor(root, file, false))) {
+            Some(Left(Shadowed(module))): Option[Either[SearchResultError, HPackage]]
+          }
+          roots
+            .map(root => root.getParent)
+            .find(root => root == file.getParent)
+            .map(_ => Left(NotYetRegistered(module)))
+        }
+      } else {
+        val roots: Set[VirtualFile] = ModuleRootManager.getInstance(module).getContentRoots.toSet
+        if (roots.exists(root => VfsUtilCore.isAncestor(root, file, false))) {
+          Some(Left(Shadowed(module)))
+        } else {
+          None
+        }
+      }
+    }
+    val headOption: Option[Either[SearchResultError, (HPackage, Module)]] = ModuleManager.getInstance(intellijProject).getModules.toList
+      .map(module => (module, HPackageModule.getInstance(module).getPackage))
+      .flatMap(tuple => findMatching(tuple._1, tuple._2))
+      .headOption
+    headOption match {
+      case Some(x) => x
+      case None => Left(NoModuleYet())
+    }
+  }
 
-  /**
-    * sets the main packages and adds the packages to the List, replacing if an already registered is found
-    * @return an Error, or an tuple with the optional replaced packages and the created one
-    */
-  def replaceMainPackage(packageManager: BackingPackageManager, file: String): Either[FileError, List[FileError]]
+  def retrieveDefaultGHCVersion(): Either[ExecUtil.ExecError, GHCVersion] = {
+    val settings: HaskellBuildSettings = HaskellBuildSettings.getInstance(intellijProject)
+    val path: Either[ExecUtil.ExecError, String] = settings.getGhcPath match {
+      case null => Left(new ExecError("No GHC-path configured", null))
+      case "" => Left(new ExecError("GHC path is empty", null))
+      case x => Right(x)
+    }
 
-  /**
-    * returns the Default GHC-Version
-    */
-  def getDefaultGHCVersion(project: Project): Either[ExecUtil.ExecError, GHCVersion]
+    path
+      .right.flatMap(path => GHCVersion.getGHCVersion(null, path))
+  }
 
-  /**
-    * adds the package to the List, given that there is no other package registered with the same Location
-    * @param hPackage the package to add
-    * @return true if added, false if not
-    */
-  def addPackage(hPackage : HPackage): Boolean
-
-  /**
-    * adds the package to the List, replacing if an already registered is found
-    * @param hPackage the package to add
-    * @return the old package if replace, or Empty
-    */
-  def replacePackage(hPackage : HPackage): Option[HPackage]
-
-  /**
-    * removes the package from the List
-    * @param hPackage the package to remove
-    * @return true if removed, false if not
-    */
-  def removePackage(hPackage : HPackage): Boolean
-
-  /**
-    * removes the package from the List
-    * @param file the file pointing to the package
-    * @return true if removed, false if not
-    */
-  def removePackage(file : VirtualFile): Boolean
-
-  /**
-    * returns the package the file belongs to
-    * @param file the File to query for
-    * @return the package if found
-    */
-  def getPackageForFile(file: VirtualFile): Option[HPackage]
-
-  def addHaskellProjectListener(listener: Project => Unit) : Unit
-
-  def removeHaskellProjectListener(listener: Project => Unit) : Unit
+  def setMainPackage(hPackage: HPackage): Unit = {
+    this.mainPackage = Some(hPackage)
+  }
 }
+object HPackageManager {
+  private val packageManagers = List(CabalPackageManager, StackPackageManager)
+
+  def getInstance(project: Project) = {
+    ServiceManager.getService(project, classOf[HPackageManager])
+  }
+}
+
+sealed trait SearchResultError
+case class Shadowed(module: Module) extends SearchResultError
+case class NotYetRegistered(module: Module) extends SearchResultError
+case class AlreadyRegisteredResult(other: HPackage, module: Module) extends SearchResultError
+case class NoModuleYet() extends SearchResultError
+
+sealed trait RegisterError
+case class FileError(location: String, fileName : String, errorMsg: String) extends RegisterError
+case class AlreadyRegistered(hPackage: HPackage) extends RegisterError

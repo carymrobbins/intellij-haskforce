@@ -114,7 +114,7 @@ object FileUtil {
     * @param workDir the working-directory
     * @return an VirtualFile if able to obtain
     */
-  def getVirtualFileDifferentWorkingDir(path: String, workDir: String): Option[VirtualFile] = {
+  def fromRelativePath(path: String, workDir: String): Option[VirtualFile] = {
     val fileSystem: LocalFileSystem = LocalFileSystem.getInstance()
     if (new File(path).isAbsolute) {
       Option(fileSystem.findFileByIoFile(new File(path)))

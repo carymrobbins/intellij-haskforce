@@ -7,15 +7,27 @@ import com.intellij.openapi.vfs.VirtualFile
   * the Backing package-Manager (e.g. stack or cabal)
   */
 trait BackingPackageManager {
+
+  /**
+    * a unique name of the Package-Manager
+    */
+  def getName: String
+
+  /**
+    * a unique name of the Package-Manager
+    */
+  def getPackageFromState(hPackageState: HPackageState, moduleDirectory: VirtualFile, project: Project): Option[HPackage]
+
   /**
     * returns true if the backing PackageManager is the same (e.g. both stack)
     */
   def sameBacking(other: BackingPackageManager): Boolean
 
   /**
-    * replaces the Main-Package
+    * returns the Packages
+    * @param file the cabal/stack file.
     * @return the left Error is an Critical Error,
-    *         the right is successful replacement with a list of Errors that will be displayed as notifications
+    *         the right is a list of parsed Packages, where the left packages that are not found etc
     */
-  def replaceMain(file : VirtualFile, old: Option[HPackage], project: Project): Either[FileError, List[FileError]]
+  def getPackages(file : VirtualFile, project: Project): Either[FileError, List[Either[FileError, HPackage]]]
 }

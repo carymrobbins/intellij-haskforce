@@ -1,23 +1,26 @@
 package com.haskforce.system.settings;
 
 import com.haskforce.system.packages.FileError;
+import com.haskforce.system.packages.HPackage;
 import com.haskforce.system.packages.HPackageManager;
 import com.haskforce.system.utils.ExecUtil;
 import com.haskforce.system.utils.GuiUtil;
 import com.haskforce.system.utils.NotificationUtil;
-import com.haskforce.tools.cabal.packages.CabalPackageManager$;
-import com.haskforce.tools.stack.packages.StackPackageManager$;
+import com.haskforce.tools.cabal.packages.CabalPackageManager;
+import com.haskforce.tools.stack.packages.StackPackageManager;
 import com.intellij.compiler.options.CompilerConfigurable;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.util.Condition;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.TextAccessor;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import scala.Option;
 import scala.collection.JavaConversions;
 import scala.collection.immutable.List;
 import scala.runtime.AbstractFunction1;
@@ -227,7 +230,7 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
             //TODO fix bug
             file = cabalPath.getText();
         }
-        setMainProject(buildWithStack.isSelected(), buildWithCabal.isSelected() && !buildWithStack.isSelected(), file, myProject);
+        setCompiler(buildWithStack.isSelected(), buildWithCabal.isSelected() && !buildWithStack.isSelected(), file, myProject);
         saveState();
         updateVersionInfoFields();
     }
@@ -264,37 +267,44 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
         mySettings.setStackFile(stackFile.getText());
     }
 
-    private void setMainProject(boolean stack, boolean cabal, String file, Project project) throws ConfigurationException {
-        HPackageManager packageManager = project.getComponent(HPackageManager.class);
+    private void setCompiler(boolean stack, boolean cabal, String file, Project project) throws ConfigurationException {
+        //TODO this Setting does not make sense anymore, we need real framework-support for cabal/intellij!
+        VirtualFile virtualFile = LocalFileSystem.getInstance().findFileByPath(file);
         if (stack) {
-            Either<FileError, List<FileError>> result = packageManager.replaceMainPackage(StackPackageManager$.MODULE$, file);
-            if (result.isLeft()) {
-                throw new ConfigurationException("Unable to set Main Project to Stack. " + result.left().get().errorMsg());
-            } else {
-                List<FileError> fileErrorList = result.right().get();
-                if (!fileErrorList.isEmpty()) {
-                    String errorMessages = JavaConversions.seqAsJavaList(fileErrorList).stream()
-                            .map(error -> "in package: " + error.fileName() + " error: " + error.errorMsg())
-                            .collect(Collectors.joining("<br/>"));
-                    NotificationUtil.displaySimpleNotification(
-                            NotificationType.ERROR, myProject, "unable to set up all packages correctly", errorMessages
-                    );
-                }
-            }
+            Either<FileError, List<Either<FileError, HPackage>>> result = StackPackageManager.getPackages(virtualFile, project);
+            handleGetPackagesResult(result, project);
         } else if (cabal) {
-            Either<FileError, List<FileError>> result = packageManager.replaceMainPackage(CabalPackageManager$.MODULE$, file);
-            if (result.isLeft()) {
-                throw new ConfigurationException("Unable to set Main Project to Cabal. " + result.left().get().errorMsg());
+            Either<FileError, List<Either<FileError, HPackage>>> result = CabalPackageManager.getPackages(virtualFile, project);
+            handleGetPackagesResult(result, project);
+        }
+    }
+
+    private void handleGetPackagesResult(Either<FileError, List<Either<FileError, HPackage>>> result, Project project) throws ConfigurationException {
+        if (result.isLeft()) {
+            throw new ConfigurationException("Unable to set Main Project. " + result.left().get().errorMsg());
+        } else {
+            java.util.List<FileError> fileErrorList = JavaConversions.seqAsJavaList(result.right().get()).stream()
+                    .map(either -> either.left().toOption())
+                    .filter(Option::isDefined)
+                    .map(Option::get)
+                    .collect(Collectors.toList());
+            if (!fileErrorList.isEmpty()) {
+                String errorMessages = fileErrorList.stream()
+                        .map(error -> "in package: " + error.fileName() + " error: " + error.errorMsg())
+                        .collect(Collectors.joining("<br/>"));
+                NotificationUtil.displaySimpleNotification(
+                        NotificationType.ERROR, myProject, "unable to set up all packages correctly", errorMessages
+                );
+            }
+            java.util.List<HPackage> packages = JavaConversions.seqAsJavaList(result.right().get()).stream()
+                    .map(either -> either.right().toOption())
+                    .filter(Option::isDefined)
+                    .map(Option::get)
+                    .collect(Collectors.toList());
+            if (packages.isEmpty()) {
+                throw new ConfigurationException("Unable to set Main Project. No valid packages could be found");
             } else {
-                List<FileError> fileErrorList = result.right().get();
-                if (!fileErrorList.isEmpty()) {
-                    String errorMessages = JavaConversions.seqAsJavaList(fileErrorList).stream()
-                            .map(error -> "in package: " + error.fileName() + " error: " + error.errorMsg())
-                            .collect(Collectors.joining("<br/>"));
-                    NotificationUtil.displaySimpleNotification(
-                            NotificationType.ERROR, myProject, "unable to set up all packages correctly", errorMessages
-                    );
-                }
+                HPackageManager.getInstance(project).setMainPackage(packages.get(0));
             }
         }
     }

@@ -283,10 +283,10 @@
         com.haskforce.haskell.codeInsight.HaskellCompletionCacheLoader
       </implementation-class>
     </component>
-      <component>
-          <interface-class>com.haskforce.system.packages.HPackageManager</interface-class>
-          <implementation-class>com.haskforce.system.packages.HPackageManagerImpl</implementation-class>
-      </component>
+      <!--<component>-->
+          <!--<interface-class>com.haskforce.system.packages.HPackageManager</interface-class>-->
+          <!--<implementation-class>com.haskforce.system.packages.HPackageManagerImpl</implementation-class>-->
+      <!--</component>-->
   </project-components>
 
   <actions>
@@ -416,6 +416,12 @@
                          displayName="Haskell Compiler"/>
     <!-- Persistent data + build server communication for compiler settings -->
     <projectService serviceImplementation="com.haskforce.system.settings.HaskellBuildSettings"/>
+    <!-- Module HPackage -->
+    <moduleService serviceImplementation="com.haskforce.system.packages.HPackageModule"/>
+    <!-- Project HPackageManager -->
+    <projectService serviceImplementation="com.haskforce.system.packages.HPackageManager"/>
+    <!-- Project StackManager -->
+    <projectService serviceImplementation="com.haskforce.tools.stack.packages.StackProjectManager"/>
     <!-- Tab in IntelliJ -> Preferences -->
     <projectConfigurable instance="com.haskforce.system.settings.HaskellToolsConfigurable"/>
     <!-- File -> Project Structure dialogue. -->
