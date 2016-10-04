@@ -72,7 +72,6 @@ trait HPackage {
     * emits a new PackageEvent to all the Observers
     * @param packageEvent the Event to emit
     */
-  //TODO check emit usage!
   private[packages] def emitEvent(packageEvent: PackageEvent) = eventSource.onNext(packageEvent)
 
   /**
