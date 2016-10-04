@@ -6,6 +6,7 @@ import com.haskforce.system.utils.ExecUtil
 import com.haskforce.system.utils.ExecUtil.ExecError
 
 /**
+  * represents an specifiv, numerical GHC-version
   */
 case class GHCVersion(major: Int, minor: Int, patch: Int)
 

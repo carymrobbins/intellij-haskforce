@@ -14,7 +14,7 @@ import com.intellij.openapi.vfs.{LocalFileSystem, VfsUtilCore, VirtualFile}
   * common functionality to interact with the packages
   */
 class HPackageManager(intellijProject: Project) {
-  //not for API-Access!
+  //no public API-Access! this functionality should be replaced by proper project-management
   private[packages] var mainPackage: Option[HPackage] = initMainPackage()
 
   private def initMainPackage(): Option[HPackage] = {
@@ -36,16 +36,29 @@ class HPackageManager(intellijProject: Project) {
     }
   }
 
-  def getPackage(state: HPackageState, moduleDirectory: VirtualFile, project: Project): Option[HPackage] = {
+  /**
+    * loads a package from a state
+    * @param state the state to load from
+    * @param moduleRoots the roots of the module
+    * @return the recovered HPackage
+    */
+  def loadPackage(state: HPackageState, moduleRoots: List[VirtualFile]): Option[HPackage] = {
     HPackageManager.packageManagers.find(pkgMngr => pkgMngr.getName == state.getPackageManager)
-      .flatMap(pkgMngr => pkgMngr.getPackageFromState(state, moduleDirectory, project))
+      .flatMap(pkgMngr => pkgMngr.getPackageFromState(state, moduleRoots, intellijProject))
   }
 
+  /**
+    * returns all existing packages and their modules
+    */
   def getExistingPackages: List[(HPackage, Module)] = {
     ModuleManager.getInstance(intellijProject).getModules.toList
       .flatMap(module => HPackageModule.getInstance(module).getPackage.map(pkg => (pkg, module)))
   }
 
+
+  /**
+    * returns either a package for the config-file or an SearchResultError
+    */
   def getPackageForConfigFile(file: VirtualFile): Either[SearchResultError, (HPackage, Module)] = {
     val findMatching: (Module, Option[HPackage]) => Option[Either[SearchResultError, (HPackage, Module)]] = (module: Module, optPackage: Option[HPackage]) => {
       if (optPackage.isDefined) {
@@ -83,6 +96,9 @@ class HPackageManager(intellijProject: Project) {
     }
   }
 
+  /**
+    * fallback GHC version
+    */
   def retrieveDefaultGHCVersion(): Either[ExecUtil.ExecError, GHCVersion] = {
     val settings: HaskellBuildSettings = HaskellBuildSettings.getInstance(intellijProject)
     val path: Either[ExecUtil.ExecError, String] = settings.getGhcPath match {
@@ -95,13 +111,20 @@ class HPackageManager(intellijProject: Project) {
       .right.flatMap(path => GHCVersion.getGHCVersion(null, path))
   }
 
+  /**
+    * sets the main Package (used for fallback if the module has no package associated)
+    */
   def setMainPackage(hPackage: HPackage): Unit = {
     this.mainPackage = Some(hPackage)
   }
 }
+
 object HPackageManager {
   private val packageManagers = List(CabalPackageManager, StackPackageManager)
 
+  /**
+    * returns the matching instance
+    */
   def getInstance(project: Project) = {
     ServiceManager.getService(project, classOf[HPackageManager])
   }

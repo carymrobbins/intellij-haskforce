@@ -14,9 +14,9 @@ trait BackingPackageManager {
   def getName: String
 
   /**
-    * a unique name of the Package-Manager
+    * returns the hPackage from the persisted state
     */
-  def getPackageFromState(hPackageState: HPackageState, moduleDirectory: VirtualFile, project: Project): Option[HPackage]
+  def getPackageFromState(hPackageState: HPackageState, moduleRoots: List[VirtualFile], project: Project): Option[HPackage]
 
   /**
     * returns true if the backing PackageManager is the same (e.g. both stack)

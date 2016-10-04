@@ -4,6 +4,7 @@ import com.haskforce.system.utils.ModulesUtil
 import com.intellij.openapi.components._
 import com.intellij.openapi.module.{Module, ModuleServiceManager}
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.vfs.{VfsUtilCore, VirtualFile}
 
 /**
@@ -13,15 +14,14 @@ import com.intellij.openapi.vfs.{VfsUtilCore, VirtualFile}
   name = "haskforceModuleHPackage",
   storages = Array(new Storage(StoragePathMacros.MODULE_FILE))
 )
-//TODO fallback to main!
 class HPackageModule(var optPackage: Option[HPackage], module: Module) extends PersistentStateComponent[PersistentStateWrapper] {
   def this(module: Module) = this(None, module)
 
   override def loadState(state: PersistentStateWrapper): Unit = {
     this.synchronized {
+      val roots: List[VirtualFile] = ModuleRootManager.getInstance(module).getContentRoots.toList
       optPackage = state.getState
-        .flatMap(state => HPackageManager.getInstance(module.getProject).getPackage(state, module.getModuleFile.getParent, module.getProject))
-      //TODO load cabal-file? what when it fails?
+        .flatMap(state => HPackageManager.getInstance(module.getProject).loadPackage(state, roots))
     }
   }
 
@@ -31,9 +31,13 @@ class HPackageModule(var optPackage: Option[HPackage], module: Module) extends P
   }
 
   /**
-    * returns the associated Package
+    * returns the associated Package, falling back to the mainPackage if initialized
     */
-  def getPackage: Option[HPackage] = optPackage
+  def getPackage: Option[HPackage] = {
+    optPackage.orElse {
+      HPackageManager.getInstance(module.getProject).mainPackage
+    }
+  }
 
   /**
     * removes the associated Package
@@ -70,10 +74,16 @@ class HPackageModule(var optPackage: Option[HPackage], module: Module) extends P
 }
 
 object HPackageModule {
+  /**
+    * returns the instance associated to the module
+    */
   def getInstance(module: Module): HPackageModule = {
     ModuleServiceManager.getService(module, classOf[HPackageModule])
   }
 
+  /**
+    * returns the best matching module that also has an HPackage associated
+    */
   def getInstance(virtualFile: VirtualFile, project: Project): Option[(Module, HPackage)] = {
     ModulesUtil.getMatchingModules(virtualFile, project)
       .flatMap(module => HPackageModule.getInstance(module).getPackage.map(pkg => (module, pkg)))
@@ -86,6 +96,9 @@ object HPackageModule {
       })
   }
 
+  /**
+    * returns the best matching HPackage, falling back to main if not found
+    */
   def getBestHPackage(virtualFile: VirtualFile, project: Project): Option[HPackage] = {
     ModulesUtil.getMatchingModules(virtualFile, project)
       .flatMap(module => HPackageModule.getInstance(module).getPackage.map(pkg => (module, pkg)))
@@ -101,6 +114,9 @@ object HPackageModule {
   }
 }
 
+/**
+  * used for persisting the state
+  */
 @SerialVersionUID(32L)
 class PersistentStateWrapper(hPackageState: HPackageState) extends Serializable {
   def this() = this(null)

@@ -75,6 +75,9 @@ trait HPackage {
   //TODO check emit usage!
   private[packages] def emitEvent(packageEvent: PackageEvent) = eventSource.onNext(packageEvent)
 
+  /**
+    * returns the state, used to persists the package
+    */
   def getState: HPackageState
 }
 
@@ -86,7 +89,22 @@ trait HPackageState extends Serializable {
   def getPackageManager: String
 }
 
+/**
+  * the different Events for the HPackage
+  */
 sealed trait PackageEvent
+
+/**
+  * if the package got completely removed
+  */
 case class Remove() extends PackageEvent
+
+/**
+  * if the package got replaced by a new package from a different Package-Manager
+  */
 case class Replace(newPackage: HPackage) extends PackageEvent
+
+/**
+  * if the package got replaced by a package from the same Package-Manager
+  */
 case class Update(newPackage: HPackage) extends PackageEvent

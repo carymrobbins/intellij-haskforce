@@ -1,7 +1,5 @@
 package com.haskforce.system.packages
 
-import com.haskforce.system.utils.NonEmptySet
-
 /**
   * Holds information about a particular build
   */
