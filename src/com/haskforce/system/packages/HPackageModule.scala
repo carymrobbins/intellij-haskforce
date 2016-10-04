@@ -63,9 +63,9 @@ class HPackageModule(var optPackage: Option[HPackage], module: Module) extends P
       if (oldOptional.isDefined) {
         val old: HPackage = oldOptional.get
         if (old.getPackageManager == newPackage.getPackageManager) {
-          old.emitEvent(Replace(newPackage))
-        } else {
           old.emitEvent(Update(newPackage))
+        } else {
+          old.emitEvent(Replace(newPackage))
         }
       }
       oldOptional
