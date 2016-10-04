@@ -15,6 +15,7 @@ import scala.collection.JavaConverters._
 @State(
   name = "haskforceStackProjectManager"
 )
+//TODO remove if none active
 class StackProjectManager(project: Project, var stackFiles: Set[VirtualFile]) extends PersistentStateComponent[StackProjectsState] {
   override def loadState(state: StackProjectsState): Unit = {
     this.synchronized {

@@ -20,6 +20,7 @@ object HaskellModuleType {
     ModuleUtil.getModulesOfType(project, HaskellModuleType.getInstance)
   }
 
+  //TODO review ModuleFile
   def findModule(location: VirtualFile, project: Project): Option[Module] = {
     ModuleUtil.getModulesOfType(project, HaskellModuleType.getInstance)
       .asScala.filter(module => VfsUtilCore.isAncestor(module.getModuleFile.getParent, location, false))
