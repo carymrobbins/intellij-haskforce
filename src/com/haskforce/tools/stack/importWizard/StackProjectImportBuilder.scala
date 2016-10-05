@@ -120,8 +120,20 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
         .filter(pkg => marked.contains(pkg.getLocation.getParent))
 
       if (chosenPackages.nonEmpty) {
-        val createdModules: List[Module] = ProjectSetup.setUp(chosenPackages, project, model, projectRoot, isUpdate)
-        Some(createdModules)
+        val (shadowed, updated, created) =
+          ProjectSetup.setUpWithUpdate(chosenPackages, project, model, projectRoot, setupRoot = isUpdate)
+
+        if (shadowed.nonEmpty) {
+          NotificationUtil.displaySimpleNotification(
+            NotificationType.ERROR, project,
+            "unable to register all packages", s"some packages are shadowed by existing packages:<br/>" + shadowed
+              .map(shadowedPackage => s"sourceDir ${shadowedPackage.matchingSourceDir} from package ${shadowedPackage.module}" +
+                s"is shadowed by content-root ${shadowedPackage.matchingContentRoot} of module ${shadowedPackage.module}")
+              .mkString("<br/>")
+          )
+        }
+
+        Some(created ++ updated)
       } else {
         NotificationUtil.displaySimpleNotification(
           NotificationType.ERROR, project,

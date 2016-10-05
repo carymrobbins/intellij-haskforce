@@ -6,7 +6,7 @@ import java.util
 import javax.swing._
 
 import com.haskforce.importWizard.stack.{StackYaml, StackYamlUtil}
-import com.haskforce.system.packages.{HPackage, HPackageManager$, Shadowed}
+import com.haskforce.system.packages.{HPackage, HPackageManager, HPackageManager$, Shadowed}
 import com.haskforce.system.settings.HaskellBuildSettings
 import com.haskforce.system.ui.GC
 import com.haskforce.system.utils.{GuiUtil, NotificationUtil}
