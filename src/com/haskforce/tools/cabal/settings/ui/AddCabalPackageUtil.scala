@@ -3,18 +3,16 @@ package com.haskforce.tools.cabal.settings.ui
 import javax.swing.JTextField
 import javax.swing.text.JTextComponent
 
-import scala.annotation.tailrec
-import scalaz.syntax.id._
 import com.intellij.notification.NotificationType
-import com.haskforce.haskell.HaskellModuleType
+
+import scalaz.syntax.id._
 import com.haskforce.Implicits._
-import com.haskforce.tools.cabal.settings.{AddCabalPackageOptions, CabalComponentType}
-import com.haskforce.tools.cabal.CabalExecutor
 import com.haskforce.system.ui.SComboBox
-import com.haskforce.system.utils.{ExecUtil, FileUtil, NotificationUtil}
-import com.intellij.openapi.module.{Module, ModuleManager}
+import com.haskforce.system.utils.{ExecUtil, NotificationUtil}
+import com.haskforce.tools.cabal.CabalExecutor
+import com.haskforce.tools.cabal.settings.{AddCabalPackageOptions, CabalComponentType}
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.VirtualFile
 
 /**
  * Helper utility to share functionality between the various forms which create Cabal packages.
@@ -229,40 +227,5 @@ object AddCabalPackageUtil {
   private def asArg(buildType: CabalComponentType): String = buildType match {
     case CabalComponentType.Executable => "--is-executable"
     case CabalComponentType.Library => "--is-library"
-  }
-
-  def importCabalPackage(project: Project)(file: VirtualFile): Unit = {
-    importCabalPackage(project, file.getParent.getPath, file.getNameWithoutExtension)
-  }
-
-  /**
-   * Create a Haskell module from a Cabal package.
-   * TODO: Parse Cabal file and provide source directories.
-   */
-  //TODO replace with ProjectSetup
-  def importCabalPackage(project: Project, rootDir: String, packageName: String): Unit = {
-    val moduleName = determineProperModuleName(project, packageName)
-    val moduleManager = ModuleManager.getInstance(project)
-    val moduleBuilder = HaskellModuleType.getInstance.createModuleBuilder()
-    moduleBuilder.setModuleFilePath(FileUtil.join(rootDir, moduleName + ".iml"))
-    moduleBuilder.setContentEntryPath(rootDir)
-    moduleBuilder.setName(moduleName)
-    moduleBuilder.createModule(moduleManager.getModifiableModel)
-    moduleBuilder.commit(project)
-  }
-
-  /**
-   * Determines a proper module name that doesn't clash with existing modules.
-   */
-  private def determineProperModuleName(project: Project, name: String): String = {
-    val moduleNames = ModuleManager.getInstance(project).getModules.map(_.getName.toLowerCase)
-    @tailrec
-    def loop(suffix: Int): String = {
-      // Append "-suffix" to name if there are conflicts.
-      val newName = name + (if (suffix == 0) "" else "-" + suffix)
-      if (moduleNames.contains(newName)) loop(suffix + 1)
-      else newName
-    }
-    loop(0)
   }
 }

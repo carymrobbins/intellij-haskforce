@@ -1,18 +1,19 @@
 package com.haskforce.tools.cabal.actions
 
-import com.haskforce.haskell.HaskellModuleType
-import com.haskforce.system.packages.{AlreadyRegistered, AlreadyRegisteredResult, FileError, HPackage => HProject}
-import com.haskforce.tools.cabal.settings.ui.{AddCabalPackageUtil, DiscoverCabalPackagesDialog}
+import com.haskforce.Implicits._
+import com.haskforce.system.packages._
 import com.haskforce.system.utils.{FileUtil, NotificationUtil}
 import com.haskforce.tools.cabal.packages.CabalPackageManager
+import com.haskforce.tools.cabal.settings.ui.DiscoverCabalPackagesDialog
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.actionSystem.{AnAction, AnActionEvent}
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.{DumbAware, Project}
+import com.intellij.openapi.util.Computable
 import com.intellij.openapi.vfs.VirtualFile
 
 import scala.collection.JavaConversions._
-import com.haskforce.Implicits._
 
 /**
  * Finds Cabal packages within project which are lacking an IntelliJ modules and creates modules for them.
@@ -49,52 +50,66 @@ object DiscoverCabalPackagesAction {
     )
   }
 
-  private def onSuccess(cabalFiles: Seq[VirtualFile], project: Project): Unit = {
+  private def importPackages(cabalFiles: Seq[VirtualFile], project: Project): Unit = {
     cabalFiles match {
       case Nil =>
         NotificationUtil.displaySimpleNotification(
           NotificationType.WARNING, null, TITLE,
-          "No Cabal packages imported."
+          "No Cabal packages to import."
         )
       case _ =>
-        val (fileErrors, regErrors, successes) = cabalFiles
-          .map(file => CabalPackageManager.registerNewPackage(file, project, replace = false))
-          .foldRight((List[(String, String, String)](), List[HProject](), List[HProject]()))((either, akk) => {
-            val (fileAkk, regAkk, packAkk) = akk
+        val (fileErrors, regErrors, shadowed, successes) = cabalFiles
+          .map(file => CabalPackageManager.registerNewPackage(file, project, update = true))
+          .foldRight((List[FileError](), List[AlreadyRegistered](), List[ShadowedByRegistered](), List[HPackage]()))((either, akk) => {
+            val (fileAkk, regAkk, shadowAkk, packAkk) = akk
             either match {
-              case Left(FileError(x, y, z)) => ((x, y, z) :: fileAkk, regAkk, packAkk)
-              case Left(AlreadyRegistered(x)) => (fileAkk, x :: regAkk, packAkk)
-              case Right(x) => (fileAkk, regAkk, x :: packAkk)
+              case Left(f: FileError) => (f :: fileAkk, regAkk, shadowAkk, packAkk)
+              case Left(a: AlreadyRegistered) => (fileAkk, a :: regAkk, shadowAkk, packAkk)
+              case Left(s: ShadowedByRegistered) => (fileAkk, regAkk, s :: shadowAkk, packAkk)
+              case Right(x) => (fileAkk, regAkk, shadowAkk, x :: packAkk)
             }
           })
 
         fileErrors match {
           case Nil =>
           case _ =>
-            val f: ((String, String, String)) => String = tupel => {
-              val (location, name, error) = tupel
-              s"$location failed: $error"
-            }
+            val errorToString = (fileError: FileError) => s"${fileError.location} failed: ${fileError.errorMsg}"
+
             NotificationUtil.displaySimpleNotification(
               NotificationType.ERROR, null, TITLE,
-              "Unable to register the following Cabal packages: <br/>" + fileErrors.map(f).mkString("<br/>")
+              "Unable to register the following Cabal packages:<br/>" + fileErrors.map(errorToString).mkString("<br/>")
             )
         }
+
+        val regErrorsDisplay: String = regErrors match {
+          case Nil => ""
+          case _ => "<br/>Unable to update the modules: <br/>" + regErrors
+            .map(regError => s"module ${regError.module.getName} to package ${regError.toRegister.getName.getOrElse(regError.toRegister.getLocation.getNameWithoutExtension)}")
+            .mkString("<br/>")
+        }
+
+        val shadowedDisplay: String = shadowed match {
+          case Nil => ""
+          case _ =>
+            val errorToString = (shadowedError: ShadowedByRegistered) => {
+              val toRegister: HPackage = shadowedError.toRegister
+              s"the source-directory ${shadowedError.violatingSourceDir} of package " +
+                s"${toRegister.getName.getOrElse(toRegister.getLocation.getNameWithoutExtension)} is shadowed by the" +
+                s"content-root ${shadowedError.shadowingContentRoot} of module ${shadowedError.shadowing.getName}"
+            }
+            "<br/>Unable to create the some modules, since they are shadowed by existing modules: <br/>" + shadowed
+            .map(errorToString)
+            .mkString("<br/>")
+        }
+
 
         val successesDisplay: String = successes
           .map(project => project.getName.getOrElse(project.getLocation.getNameWithoutExtension))
           .mkString("<br/>")
 
-        val regErrorsDisplay: String = regErrors match {
-          case Nil => ""
-          case _ => "<br/>The following Cabal packages were already registered: <br/>" + regErrors
-            .map(project => project.getName.getOrElse(project.getLocation.getNameWithoutExtension))
-            .mkString("<br/>")
-        }
-
         NotificationUtil.displaySimpleNotification(
           NotificationType.INFORMATION, null, TITLE,
-          "Successfully imported Cabal packages:<br/>" + successesDisplay + regErrorsDisplay
+          "Successfully imported Cabal packages:<br/>" + successesDisplay + regErrorsDisplay + shadowedDisplay
         )
     }
   }
@@ -103,19 +118,32 @@ object DiscoverCabalPackagesAction {
    * Finds Cabal files which do not belong to a module.
    */
   private def findDiscoverableCabalFiles(project: Project): Seq[VirtualFile] = {
+    val hPackageManager: HPackageManager = HPackageManager.getInstance(project)
     Option(project.getBaseDir).map(
-      FileUtil.findFilesRecursively(_, _.getExtension == "cabal").filter(isDiscoverable(project))
+      FileUtil.findFilesRecursively(_, _.getExtension == "cabal").filter(isDiscoverable(project, hPackageManager))
     ).getOrElse(Seq())
   }
 
   /**
-   * Determines whether a package can be discovered.  If is has an associated module, it is not discoverable.
-   * Packages are associated with modules if the module file is in the same directory as the Cabal file.
-   */
-  private def isDiscoverable(project: Project)(file: VirtualFile): Boolean = {
-    !HaskellModuleType.findModules(project).exists(m =>
-      Option(m.getModuleFile).map(_.getParent.getCanonicalPath).contains(file.getParent.getCanonicalPath)
-    )
+    * its not shadowed or already existing
+    */
+  private def isDiscoverable(project: Project, hPackageManager: HPackageManager)(configFile: VirtualFile): Boolean = {
+    ApplicationManager.getApplication.runReadAction(new Computable[Boolean] {
+      override def compute(): Boolean = {
+        val result: Either[SearchResultError, (HPackage, Module)] = hPackageManager.getPackageForConfigFile(configFile)
+        if (result.isRight) {
+          val (existingPackage, existingModule) = result.right.get
+          existingPackage.getLocation != configFile || existingPackage.getPackageManager != CabalPackageManager
+        } else {
+          result.left.get match {
+            //unable to handle
+            case Shadowed(_) => false
+            //can handle
+            case other  => true
+          }
+        }
+      }
+    })
   }
 
   private def displayForm(project: Project, cabalFiles: Seq[VirtualFile]): Unit = {
@@ -124,7 +152,7 @@ object DiscoverCabalPackagesAction {
 
   private def importCabalPackages(project: Project)(files: Seq[VirtualFile]): Unit = {
     ApplicationManager.getApplication.runWriteAction({ () =>
-      onSuccess(files, project)
+      importPackages(files, project)
     } : Runnable)
   }
 }

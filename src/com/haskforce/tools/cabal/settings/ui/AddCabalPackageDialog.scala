@@ -5,24 +5,23 @@ import java.awt.event.{ItemEvent, KeyEvent}
 import java.io.File
 import java.util.EventObject
 
-import com.haskforce.haskell.HaskellModuleType
+import com.haskforce.system.packages.HPackageModule
+import com.haskforce.tools.cabal.packages.CabalPackageManager
+import com.intellij.openapi.module.ModuleManager
+
 import com.haskforce.Implicits._
-import com.haskforce.tools.cabal.settings.AddCabalPackageOptions
 import com.haskforce.system.ui.ComboModuleProxy
 import com.haskforce.system.utils.FileUtil
+import com.haskforce.tools.cabal.settings.AddCabalPackageOptions
 import com.intellij.openapi.project.Project
-import scala.collection.JavaConversions._
-
-
-import com.haskforce.tools.cabal.completion.CabalFileFinder//TODO refactor!
 
 class AddCabalPackageDialog(
   project: Project,
   callback: (Project => AddCabalPackageOptions) => Unit
 ) extends AddCabalPackageDialogBase() with AddCabalPackageForm {
 
-  private val modules = HaskellModuleType.findModules(project)
-  private val nonCabalizedModules = modules.filter(m => CabalFileFinder.virtualForModule(m).isEmpty)
+  private val modules = ModuleManager.getInstance(project).getModules.toList
+  private val nonCabalizedModules = modules.filter(m => HPackageModule.getInstance(m).optPackage.forall(_.getPackageManager != CabalPackageManager))
 
   setupUI()
   setupPackageNameAndRootDir()
@@ -59,6 +58,7 @@ class AddCabalPackageDialog(
    */
   def onPackageNameChange(e: EventObject): Unit = {
     rootDir.setText(packageName.getSelectedItem match {
+      //TODO getModuleFile probably not right
       case ComboModuleProxy(m) => relativeToProjectRoot(m.getModuleFile.getParent.getPath)
       case o =>
         val text = Option(packageName.getEditor.getItem).getOrElse("")

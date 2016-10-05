@@ -3,7 +3,7 @@ package com.haskforce.tools.cabal.actions
 import java.io.File
 
 import com.haskforce.Implicits._
-import com.haskforce.system.packages.{AlreadyRegistered, FileError}
+import com.haskforce.system.packages.{AlreadyRegistered, FileError, ShadowedByRegistered}
 import com.haskforce.system.utils.{FileUtil, NotificationUtil}
 import com.haskforce.tools.cabal.CabalExecutor
 import com.haskforce.tools.cabal.packages.CabalPackageManager
@@ -59,8 +59,12 @@ object AddCabalPackageAction {
         case None => display(WARNING, s"Could not find new cabal file at $newCabalFilePath - may not have been created.")
         case Some(cabalFile) =>
           CabalPackageManager.registerNewPackage(new File(newCabalFilePath), project, replace = true) match {
-            case Left(FileError(location, name, message)) => display(ERROR, s"registering $name failed with error message: $message")
-            case Left(AlreadyRegistered(x)) => display(INFORMATION, s"Package ${x.getName.getOrElse(x.getLocation.getNameWithoutExtension)} is already registered")
+            case Left(FileError(location, name, message)) =>
+              display(ERROR, s"registering $name failed with error message: $message")
+            case Left(ShadowedByRegistered(violatingSourceDir, shadowing, shadowingContentRoot, toRegister)) =>
+              display(ERROR, s"unable to create Module, package source root: ${violatingSourceDir.getCanonicalPath} is shadowed by content root: ${shadowingContentRoot.getCanonicalPath} of module ${shadowing.getName}")
+            //should not happen
+            case Left(AlreadyRegistered(existing, toRegister)) => display(ERROR, s"unable to update module ${existing.getName}")
             case Right(_) => new OpenFileDescriptor(project, cabalFile).navigate(true)
           }
       }

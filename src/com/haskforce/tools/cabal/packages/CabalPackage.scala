@@ -1,14 +1,16 @@
 package com.haskforce.tools.cabal.packages
 
 import com.haskforce.system.packages.BuildType.{Benchmark, Executable, Library, TestSuite}
-import com.haskforce.system.packages.{BackingPackageManager, BuildInfo, GHCVersion, HPackageState, ProjectInformation, HPackage}
+import com.haskforce.system.packages.{BackingPackageManager, BuildInfo, GHCVersion, HPackage, HPackageState, ProjectInformation}
 import com.haskforce.system.settings.HaskellBuildSettings
 import com.haskforce.system.utils.ExecUtil.ExecError
 import com.haskforce.system.utils.{ExecUtil, FileUtil, NonEmptySet, PQ}
 import com.haskforce.tools.cabal.lang.psi
 import com.haskforce.tools.cabal.lang.psi.{Benchmark, Executable, TestSuite}
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Computable
 import com.intellij.openapi.vfs.VirtualFile
 
 /**
@@ -17,21 +19,24 @@ import com.intellij.openapi.vfs.VirtualFile
 class CabalPackage(psiFile: psi.CabalFile, location: VirtualFile) extends HPackage {
   private val LOG = Logger.getInstance(classOf[CabalPackage])
 
-  override def getName: Option[String] = for {
-    pkgName <- PQ.getChildOfType(psiFile, classOf[psi.PkgName])
-    ff <- PQ.getChildOfType(pkgName, classOf[psi.Freeform])
-  } yield ff.getText
+  override def getName: Option[String] = runReadAction(() =>
+    for {
+      pkgName <- PQ.getChildOfType(psiFile, classOf[psi.PkgName])
+      ff <- PQ.getChildOfType(pkgName, classOf[psi.Freeform])
+    } yield ff.getText
+  )
+
 
   override def getLocation: VirtualFile = location
 
   /**
     * If 'library' stanza exists, returns it; otherwise, implicitly uses root stanza.
     */
-  def getLibrary: cabalBuildInfo = {
+  def getLibrary: cabalBuildInfo = runReadAction(() =>
     psiFile.getChildren.collectFirst {
       case c: psi.Library => new cabalBuildInfo(c, Library)
     }.getOrElse(new cabalBuildInfo(psiFile, Library))
-  }
+  )
 
   /**
     * Returns the associated BuildInfos
@@ -67,8 +72,15 @@ class CabalPackage(psiFile: psi.CabalFile, location: VirtualFile) extends HPacka
   override def getState: HPackageState = {
     new CabalPackageState(location.getName)
   }
+
+  private def runReadAction[A](f: () => A): A = {
+    ApplicationManager.getApplication.runReadAction(new Computable[A] {
+      override def compute(): A = f()
+    })
+  }
 }
 
+@SerialVersionUID(23L)
 //be careful when editing this file, it gets serialized
 class CabalPackageState(cabalFile: String) extends HPackageState with Serializable {
   def getPackageManager = CabalPackageManager.getName

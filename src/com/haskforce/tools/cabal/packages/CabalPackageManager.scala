@@ -3,14 +3,11 @@ package com.haskforce.tools.cabal.packages
 import java.io.{File, IOException}
 import java.nio.charset.StandardCharsets
 
-import com.haskforce.haskell.HaskellModuleType
 import com.haskforce.system.packages._
 import com.haskforce.tools.cabal.CabalLanguage
 import com.haskforce.tools.cabal.lang.psi.CabalFile
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.module.{Module, ModuleManager, ModuleUtil}
 import com.intellij.openapi.project.{Project, ProjectManager}
-import com.intellij.openapi.roots.ModuleRootModificationUtil
 import com.intellij.openapi.vfs.{LocalFileSystem, VirtualFile}
 import com.intellij.psi.{PsiFileFactory, PsiManager}
 
@@ -30,15 +27,10 @@ object CabalPackageManager extends BackingPackageManager {
       .right.map(cabalFile => List(Right(new CabalPackage(cabalFile, file))))
   }
 
-  override def getPackageFromState(hPackageState: HPackageState, moduleDirectory: VirtualFile, project: Project): Option[HPackage] = {
+  override def getPackageFromState(hPackageState: HPackageState, packageLocation: VirtualFile, project: Project): Option[HPackage] = {
     if (hPackageState.getPackageManager == NAME) {
       try {
-        val state: CabalPackageState = hPackageState.asInstanceOf[CabalPackageState]
-        for {
-          children <- Option(moduleDirectory.getChildren)
-          file <- children.find(file => file.getName == state.getCabalFile)
-          cabalFile <- getCabalFile(file, project).right.toOption.map(cabalFile => new CabalPackage(cabalFile, file))
-        } yield cabalFile
+        getCabalFile(packageLocation, project).right.toOption.map(cabalFile => new CabalPackage(cabalFile, packageLocation))
       } catch {
         case exception: ClassCastException => LOG.error(s"hPackageState is not from type CabalPackageState", exception)
           None
@@ -69,114 +61,20 @@ object CabalPackageManager extends BackingPackageManager {
     * registers the new Cabal-packages
     * @param file the VirtualFile pointing to the cabal-file
     * @param project the Intellij Project
-    * @param replace true to replace an already existing package
+    * @param update true to update an already existing package
     * @return either the RegisterError or the package
     */
-  def registerNewPackage(file : VirtualFile, project: Project, replace: Boolean): Either[RegisterError, HPackage] = {
+  def registerNewPackage(file : VirtualFile, project: Project, update: Boolean): Either[RegisterError, HPackage] = {
     getCabalFile(file, project).right.flatMap[RegisterError, CabalPackage](psiFile => {
       val cabalPackage: CabalPackage = new CabalPackage(psiFile, file)
-      HaskellModuleType.findModule(file, project)
-        .map(module => {
-          val packageModule = HPackageModule.getInstance(module)
-          packageModule.getPackage match {
-            case None => {
-              ProjectSetup.replaceModule(cabalPackage, module)
-              Right(cabalPackage)
-            }
-            case Some(x) =>
-              if (replace) {
-                ProjectSetup.replaceModule(cabalPackage, module)
-                Right(cabalPackage)
-              } else {
-                Left(AlreadyRegistered(x))
-              }
-          }
-        })
-        .getOrElse[Either[AlreadyRegistered, CabalPackage]] {
-        ProjectSetup.createMissingModule(cabalPackage, project)
-        Right(cabalPackage)
+      ProjectSetup.addPackage(cabalPackage, project, update)
+        .right.map(_ => cabalPackage)
+        .left.map {
+        case PackageShadowed(shadowedSourceDir, module, shadowingContentRoot) => ShadowedByRegistered(shadowedSourceDir, module, shadowingContentRoot, cabalPackage)
+        case Existing(module) => AlreadyRegistered(module, cabalPackage)
       }
     })
   }
-
-
-  //  override def replaceMain(file : VirtualFile, old: Option[HPackage], project: Project): Either[FileError, List[FileError]] = {
-//    val packageManager = project.getComponent(classOf[HPackageManager])
-//    CabalPackageManager.replaceAndRegisterNewPackage(file, project)
-//      .right.map(pkg => {
-//      packageManager.setMainPackage(pkg)
-//      if (old.isDefined && old.get.getProjectInformation.isDefined) {
-//        old.get.getProjectInformation.get.getRelatedPackages
-//          .map(onePackage => CabalPackageManager.replaceAndRegisterNewPackage(onePackage.getLocation, project))
-//          .map(either => either.left.toOption)
-//          .filter(_.isDefined)
-//          .map(_.get)
-//      } else {
-//        Nil
-//      }
-//    })
-//  }
-
-//  /**
-//    * registers the new Cabal-packages
-//    * @param file the file pointing to the cabal-file
-//    * @param project the Intellij Project
-//    * @return either the RegisterError or the package
-//    */
-//  def registerNewPackage(file: File, project: Project): Either[RegisterError, HPackage] = {
-//    val virtualFile: VirtualFile = LocalFileSystem.getInstance().findFileByIoFile(file)
-//    if (virtualFile == null) {
-//      Left(FileError(file.getCanonicalPath, file.getName, s"unable to obtain VirtualFile for file ${file.getAbsolutePath}"))
-//    } else {
-//      registerNewPackage(virtualFile, project)
-//    }
-//  }
-//
-//  /**
-//    * registers the new Cabal-packages
-//    * @param file the VirtualFile pointing to the cabal-file
-//    * @param project the Intellij Project
-//    * @return either the RegisterError or the package
-//    */
-//  def registerNewPackage(file : VirtualFile, project: Project): Either[RegisterError, HPackage] = {
-//    val packageManager: HPackageManager = project.getComponent(classOf[HPackageManager])
-//    getCabalFile(file, project) match {
-//      case Some(psiFile) => {
-//        val cabalPackage: CabalPackage = new CabalPackage(psiFile, file)
-//        val added: Boolean = packageManager.addPackage(cabalPackage)
-//        if (added) {
-//          Right(cabalPackage)
-//        } else {
-//          val registered: Option[HPackage] = packageManager.getPackage(file)
-//          if (registered.isEmpty) {
-//            LOG.error("unable to register and getPackage returned empty!")
-//            Left(AlreadyRegistered(cabalPackage))
-//          }
-//          Left(AlreadyRegistered(registered.get))
-//        }
-//      }
-//      case other =>
-//        Left(FileError(file.getCanonicalPath, file.getNameWithoutExtension, s"Expected CabalFile, got: ${other.getClass}"))
-//    }
-//  }
-//  /**
-//    * registers the new Cabal-packages, replaces existing if not equal
-//    * @param file the VirtualFile pointing to the cabal-file
-//    * @param project the Intellij Project
-//    * @return either the RegisterError or the package
-//    */
-//  def replaceAndRegisterNewPackage(file : VirtualFile, project: Project): Either[FileError, HPackage] = {
-//    val packageManager: HPackageManager = project.getComponent(classOf[HPackageManager])
-//    getCabalFile(file, project) match {
-//      case Some(psiFile) => {
-//        val cabalPackage: CabalPackage = new CabalPackage(psiFile, file)
-//        packageManager.replacePackage(cabalPackage)
-//        Right(cabalPackage)
-//      }
-//      case other =>
-//        Left(FileError(file.getCanonicalPath, file.getNameWithoutExtension, s"Expected CabalFile, got: ${other.getClass}"))
-//    }
-//  }
 
   /**
     * returns the (optional) Cabal-File for the VirtualFile
