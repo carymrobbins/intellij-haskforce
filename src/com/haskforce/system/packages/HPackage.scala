@@ -78,6 +78,21 @@ trait HPackage {
     * returns the state, used to persists the package
     */
   def getState: HPackageState
+
+  def canEqual(other: Any): Boolean = other.isInstanceOf[HPackage]
+
+  override def equals(other: Any): Boolean = other match {
+    case that: HPackage =>
+      (that canEqual this) &&
+        getLocation == that.getLocation &&
+        getPackageManager == that.getPackageManager
+    case _ => false
+  }
+
+  override def hashCode(): Int = {
+    val state = Seq(getLocation, getPackageManager)
+    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+  }
 }
 
 @SerialVersionUID(1L)

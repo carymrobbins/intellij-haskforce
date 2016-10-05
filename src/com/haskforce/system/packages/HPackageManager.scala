@@ -76,8 +76,8 @@ class HPackageManager(intellijProject: Project) {
         } else if (hPackage.getLocation.getParent == file.getParent) {
           Some(Left(AlreadyRegisteredResult(hPackage, module)))
         } else {
-          val roots: Set[VirtualFile] = ModuleRootManager.getInstance(module).getContentRoots.toSet
-          if (roots.exists(root => VfsUtilCore.isAncestor(root, file, false))) {
+          val roots: Set[VirtualFile] = ModuleRootManager.getInstance(module).getSourceRoots(true).toSet
+          if (module.getModuleScope.contains(file)) {
             Some(Left(Shadowed(module))): Option[Either[SearchResultError, HPackage]]
           }
           roots
@@ -86,8 +86,7 @@ class HPackageManager(intellijProject: Project) {
             .map(_ => Left(NotYetRegistered(module)))
         }
       } else {
-        val roots: Set[VirtualFile] = ModuleRootManager.getInstance(module).getContentRoots.toSet
-        if (roots.exists(root => VfsUtilCore.isAncestor(root, file, false))) {
+        if (module.getModuleScope.contains(file)) {
           Some(Left(Shadowed(module)))
         } else {
           None
@@ -146,5 +145,5 @@ case class NoModuleYet() extends SearchResultError
 
 sealed trait RegisterError
 case class FileError(location: String, fileName : String, errorMsg: String) extends RegisterError
-case class AlreadyRegistered(module: Module) extends RegisterError
-case class ShadowedByRegistered(violatingSourceDir: VirtualFile, shadowing: Module, shadowingContentRoot: VirtualFile) extends RegisterError
+case class AlreadyRegistered(module: Module, toRegister: HPackage) extends RegisterError
+case class ShadowedByRegistered(violatingSourceDir: VirtualFile, shadowing: Module, shadowingContentRoot: VirtualFile, toRegister: HPackage) extends RegisterError

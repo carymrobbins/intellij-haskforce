@@ -10,10 +10,14 @@ import com.intellij.openapi.vfs.{VfsUtilCore, VirtualFile}
   * represents the Associated HPackage for an Module
   */
 @State(
-  name = "haskforceModuleHPackage",
-  storages = Array(new Storage(StoragePathMacros.MODULE_FILE))
+  name = "HaskforceHPackageModule",
+  storages = Array(
+    new Storage(StoragePathMacros.MODULE_FILE),
+    new Storage("hpackage_module.xml")
+  )
 )
-class HPackageModule(private[packages] var optPackage: Option[HPackage], module: Module) extends PersistentStateComponent[PersistentStateWrapper] {
+//TODO make optPackage private after implementing #308, getPackage should then just return the optPackage
+class HPackageModule(var optPackage: Option[HPackage], module: Module) extends PersistentStateComponent[PersistentStateWrapper] {
   def this(module: Module) = this(None, module)
 
   override def loadState(state: PersistentStateWrapper): Unit = {
@@ -118,7 +122,7 @@ object HPackageModule {
 /**
   * used for persisting the state
   */
-@SerialVersionUID(32L)
+@SerialVersionUID(230L)
 class PersistentStateWrapper(hPackageState: HPackageState, location: String) extends Serializable {
   def this() = this(null, null)
   def getState: Option[(String, HPackageState)] = {

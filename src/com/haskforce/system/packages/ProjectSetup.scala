@@ -3,53 +3,67 @@ package com.haskforce.system.packages
 import java.io.File
 import java.util
 
+import com.intellij.openapi.components.ServiceManager
+
+//TODO don't depend on type
 import com.haskforce.haskell.{HaskellModuleBuilder, HaskellModuleType}
 import com.haskforce.system.packages.BuildType.{Benchmark, Executable, Library, TestSuite}
 import com.intellij.ide.util.projectWizard.ModuleBuilder
-import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.{ModifiableModuleModel, Module, ModuleManager, ModuleServiceManager}
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.{ContentEntry, ModifiableRootModel, ModuleRootManager, ModuleRootModificationUtil}
+import com.intellij.openapi.util.Pair
 import com.intellij.openapi.util.io.FileUtil
-import com.intellij.openapi.util.{Computable, Pair}
 import com.intellij.openapi.vfs.{VfsUtilCore, VirtualFile, VirtualFileManager}
 import com.intellij.util.Consumer
 
 import scala.annotation.tailrec
-import scala.collection.JavaConverters._
 
 /**
   * sets up an Intellij-Project based on the HPackages
   */
-//TODO set service even if module is missing!
+//TODO set module type
 object ProjectSetup {
   private val LOG = Logger.getInstance(ProjectSetup.getClass)
 
   /**
-    * Sets up an Intellij Project. Must be run within a write action.
+    * Sets up an Intellij Project, updating existing modules. Must be run within a write action.
+    * This method will for example change the package-manager of a package if it was managed by cabal before.
     * @param packages the packages
     * @param project the active project
-    * @param updateExistingModules whether its an creation or an update
+    * @param setupRoot whether to create a
+    * @return a List of shadowed Packages(packages that are contained, but are not equal to other packages),
+    *         a List of updated Modules and a List of created Modules
+    */
+  def setUpWithUpdate(packages: List[HPackage], project: Project,
+                      moduleModel: ModifiableModuleModel, projectRoot: String, setupRoot: Boolean)
+                                                                  : (List[ExistingModule], List[Module], List[Module]) = {
+    val (shadowed, existing, created) = setUpWithoutUpdate(packages, project, moduleModel, projectRoot, setupRoot)
+
+    val updated: List[Module] = existing.map(existingModule => updateModule(existingModule.hPackage, existingModule.module, moduleModel, project))
+
+    (shadowed, updated, created)
+  }
+
+  /**
+    * Sets up an Intellij Project without updating existing modules. Must be run within a write action.
+    * @param packages the packages
+    * @param project the active project
     * @param setupRoot whether to create a
     * @return a List of shadowed Packages(packages that are contained, but are not equal to other packages),
     *         a List of existing Modules and a List of created Modules
     */
-  //TODO changed update => setupRoot
-  def setUp(packages: List[HPackage], project: Project,
-            moduleModel: ModifiableModuleModel, projectRoot: String, updateExistingModules: Boolean, setupRoot: Boolean)
+  def setUpWithoutUpdate(packages: List[HPackage], project: Project,
+            moduleModel: ModifiableModuleModel, projectRoot: String, setupRoot: Boolean)
                                                         : (List[ExistingModule], List[ExistingModule], List[Module]) = {
     val (shadowed, existing, newPackages) = resolveModuleStatusForPackages(packages, project)
 
-    if (setupRoot) {
-      existing.foreach(existingModule => updateModule(existingModule.hPackage, existingModule.module, moduleModel, project))
-    }
     var createdModules: List[Module] = newPackages.map(hPackage => createMissingModule(hPackage, moduleModel, project))
     // If we aren't updating an existing project AND the project root isn't a module,
     // let's create it as the "root" module.
     val existingModules: Set[File] = moduleModel.getModules
       .flatMap(module => ModuleRootManager.getInstance(module).getContentRoots)
-      .flatMap(root => Option(root.getParent))
       .filter(_.isInLocalFileSystem)
       .map(file => new File(file.getCanonicalPath))
       .toSet
@@ -79,18 +93,21 @@ object ProjectSetup {
       .flatMap(info => info.getSourceDirs)
       .flatMap(dir => com.haskforce.system.utils.FileUtil.fromRelativePath(dir, hPackage.getLocation.getParent.getPath))
 
-    val contentRootsModuleList: Array[(VirtualFile, Module)] = ModuleManager.getInstance(project).getModules
-      .flatMap(module => ModuleRootManager.getInstance(module).getContentRoots.zip(Stream.continually(module)))
+    val sourceRootsModuleList: Array[(VirtualFile, Module)] = ModuleManager.getInstance(project).getModules
+      .flatMap(module => ModuleRootManager.getInstance(module).getSourceRoots(true).zip(Stream.continually(module)))
 
-    val shadowed: Option[PackageShadowed] = getShadowed(contentRootsModuleList, hPackage, sourceDirs)
+    val moduleDirectories: Array[(VirtualFile, Module)] = ModuleManager.getInstance(project).getModules
+      .flatMap(module => Option(module.getModuleFile).map(_.getParent).zip(Stream.continually(module)))
+
+    val shadowed: Option[PackageShadowed] = getShadowed(sourceRootsModuleList, hPackage, sourceDirs)
       .map(existingModule => PackageShadowed(existingModule.matchingSourceDir, existingModule.module, existingModule.matchingContentRoot))
     if (shadowed.isDefined) {
       return Left(shadowed.get)
     }
 
     val modifiableModel: ModifiableModuleModel = ModuleManager.getInstance(project).getModifiableModel
-    val matching: Option[Existing] = getExisting(contentRootsModuleList, hPackage, sourceDirs)
-      .map(existingModule => Existing(existingModule.matchingSourceDir, existingModule.module))
+    val matching: Option[Existing] = getExisting(moduleDirectories, hPackage)
+      .map(existingModule => Existing(existingModule.module))
     if (matching.isDefined) {
       if (update) {
         Right(updateModule(hPackage, matching.get.module, modifiableModel, project))
@@ -100,6 +117,21 @@ object ProjectSetup {
     } else {
       Right(createMissingModule(hPackage, modifiableModel, project))
     }
+  }
+
+  /**
+    * a package is shadowed if at least one of the source-directories is part of another module, but not equal
+    * e.g. a subfolder in the src-content root of another module
+    */
+  def isShadowed(hPackage: HPackage, project: Project): Option[ExistingModule] = {
+    val locations: Set[VirtualFile] = hPackage.getBuildInfo.toSet
+      .flatMap(buildInfo => buildInfo.getSourceDirs)
+      .flatMap(dir => com.haskforce.system.utils.FileUtil.fromRelativePath(dir, hPackage.getLocation.getParent.getPath))
+
+    val sourceRootsModuleList: Array[(VirtualFile, Module)] = ModuleManager.getInstance(project).getModules
+      .flatMap(module => ModuleRootManager.getInstance(module).getSourceRoots(true).zip(Stream.continually(module)))
+
+    getShadowed(sourceRootsModuleList, hPackage, locations)
   }
 
 
@@ -115,14 +147,14 @@ object ProjectSetup {
       (hPackage, sourceDirs)
     })
 
-    val contentRootsModuleList: Array[(VirtualFile, Module)] = ModuleManager.getInstance(project).getModules
-      .flatMap(module => ModuleRootManager.getInstance(module).getContentRoots.zip(Stream.continually(module)))
+    val sourceRootsModuleList: Array[(VirtualFile, Module)] = ModuleManager.getInstance(project).getModules
+      .flatMap(module => ModuleRootManager.getInstance(module).getSourceRoots(true).zip(Stream.continually(module)))
 
 
     //shadowed packageSourceDir, package, shadowing moduleContent, module
     val shadowed: List[ExistingModule] = packageSourceDirList.flatMap(tuple => {
       val (hPackage, locations) = tuple
-      getShadowed(contentRootsModuleList, hPackage, locations)
+      getShadowed(sourceRootsModuleList, hPackage, locations)
     })
 
     val shadowedPackages: Set[HPackage] = shadowed.map(existingModule => existingModule.hPackage).toSet
@@ -131,7 +163,7 @@ object ProjectSetup {
       .filter(tuple => !shadowedPackages.contains(tuple._1))
       .flatMap(tuple => {
         val (hPackage, locations) = tuple
-        getExisting(contentRootsModuleList, hPackage, locations)
+        getExisting(sourceRootsModuleList, hPackage)
       })
 
     val existingPackages = existing.map(existingModule => existingModule.hPackage).toSet
@@ -141,13 +173,13 @@ object ProjectSetup {
     (shadowed, existing, newPackages)
   }
 
-  private def getExisting(contentRootsModuleList: Array[(VirtualFile, Module)], hPackage: HPackage, locations: Set[VirtualFile]): Option[ExistingModule] = {
-    //a package is shadowed if at least one of the source-locations is equal to another content-root
-    contentRootsModuleList.flatMap(tuple => {
+  private def getExisting(moduleDirectories: Array[(VirtualFile, Module)], hPackage: HPackage): Option[ExistingModule] = {
+    moduleDirectories.toStream.filter(tuple => {
       val (contentRoot, module) = tuple
-      locations.find(location => contentRoot == location)
-        .map(packageContentRoot => ExistingModule(packageContentRoot, hPackage, contentRoot, module))
-    }).headOption
+      contentRoot == hPackage.getLocation.getParent
+    })
+      .map(tuple => ExistingModule(hPackage.getLocation, hPackage, hPackage.getLocation, tuple._2))
+      .headOption
   }
 
   private def getShadowed(contentRootsModuleList: Array[(VirtualFile, Module)], hPackage: HPackage, locations: Set[VirtualFile]): Option[ExistingModule] = {
@@ -165,7 +197,7 @@ object ProjectSetup {
   private def createMissingModule(hPackage: HPackage, moduleModel: ModifiableModuleModel, project: Project) : Module = {
     val name: String = hPackage.getName.getOrElse(hPackage.getLocation.getNameWithoutExtension)
     val moduleDir: String = hPackage.getLocation.getParent.getPath
-    val moduleName = determineProperModuleName(project, name)
+    val moduleName = determineProperModuleName(project, name, Set())
     val moduleBuilder = HaskellModuleType.getInstance.createModuleBuilder()
     moduleBuilder.setModuleFilePath(FileUtil.join(moduleDir, moduleName + ".iml"))
     moduleBuilder.setContentEntryPath(moduleDir)
@@ -185,12 +217,13 @@ object ProjectSetup {
     val oldPackage: Option[HPackage] = packageModule.optPackage
     ModuleRootModificationUtil.updateModel(module, new Consumer[ModifiableRootModel] {
       override def consume(modifiableRootModel: ModifiableRootModel): Unit = {
-        modifiableRootModel.clear()
+        //modifiableRootModel.clear()
         updateModifiableRootModel(modifiableRootModel, newPackage)
       }
     })
     if (module.getName != newPackage.getName.getOrElse(newPackage.getLocation.getNameWithoutExtension)) {
-      moduleModel.renameModule(module, newPackage.getName.getOrElse(newPackage.getLocation.getNameWithoutExtension))
+      val newModuleName = determineProperModuleName(project, newPackage.getName.getOrElse(newPackage.getLocation.getNameWithoutExtension), Set(module.getName))
+      moduleModel.renameModule(module, newModuleName)
       moduleModel.commit()
     }
     packageModule.replacePackage(newPackage)
@@ -270,15 +303,6 @@ object ProjectSetup {
       case ce if ce.getFile.getPath == moduleDir => ce
     } match {
       case Some(ce) =>
-        //setup TestDirs
-        val testDirs: Set[String] = hPackage.getBuildInfo
-          .toSet
-          .filter(info => info.typ match {
-            case TestSuite => true
-            case Benchmark => true
-            case other => false
-          })
-          .flatMap(info => info.getSourceDirs)
         val sourceDirs: Set[String] = hPackage.getBuildInfo
           .toSet
           .filter(info => info.typ match {
@@ -287,6 +311,16 @@ object ProjectSetup {
             case other => false
           })
           .flatMap(info => info.getSourceDirs)
+
+        val testDirs: Set[String] = hPackage.getBuildInfo
+          .toSet
+          .filter(info => info.typ match {
+            case TestSuite => true
+            case Benchmark => true
+            case other => false
+          })
+          .flatMap(info => info.getSourceDirs)
+          .filter(dir => !(sourceDirs.contains(dir)))
         markDirectories(ce, testDirs, path => ce.addSourceFolder(path, /* isTestSource */ true))
         markDirectories(ce, sourceDirs, path => ce.addSourceFolder(path, /* isTestSource */ false))
       case None =>
@@ -299,8 +333,11 @@ object ProjectSetup {
   /**
     * Determines a proper module name that doesn't clash with existing modules.
     */
-  private def determineProperModuleName(project: Project, name: String): String = {
-    val moduleNames = ModuleManager.getInstance(project).getModules.map(_.getName.toLowerCase)
+  private def determineProperModuleName(project: Project, name: String, exclude: Set[String]): String = {
+    val moduleNames = ModuleManager.getInstance(project).getModules
+      .map(_.getName)
+      .filter(name => !exclude.contains(name))
+      .map(_.toLowerCase)
     @tailrec
     def loop(suffix: Int): String = {
       // Append "-suffix" to name if there are conflicts.
@@ -316,4 +353,4 @@ case class ExistingModule(matchingSourceDir: VirtualFile, hPackage: HPackage, ma
 
 sealed trait AddPackageError
 case class PackageShadowed(shadowedSourceDir: VirtualFile, module: Module, shadowingContentRoot: VirtualFile) extends AddPackageError
-case class Existing(violatingSourceDir: VirtualFile, module: Module) extends AddPackageError
+case class Existing(module: Module) extends AddPackageError
