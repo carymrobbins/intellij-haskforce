@@ -182,7 +182,7 @@ object ProjectSetup {
     */
   private def updateModule(newPackage: HPackage, module: Module, moduleModel: ModifiableModuleModel, project: Project): Module = {
     val packageModule: HPackageModule = ModuleServiceManager.getService(module, classOf[HPackageModule])
-    val oldPackage: Option[HPackage] = packageModule.getPackage
+    val oldPackage: Option[HPackage] = packageModule.optPackage
     ModuleRootModificationUtil.updateModel(module, new Consumer[ModifiableRootModel] {
       override def consume(modifiableRootModel: ModifiableRootModel): Unit = {
         modifiableRootModel.clear()
@@ -196,28 +196,6 @@ object ProjectSetup {
     packageModule.replacePackage(newPackage)
     oldPackage.foreach(pkg => pkg.emitEvent(Replace(newPackage)))
     module
-  }
-
-  /**
-    * replaces a module by deleting it first and then creating a new one
-    */
-  def replaceModule(newPackage: HPackage, oldModule: Module): Module = {
-    val project: Project = oldModule.getProject
-    val moduleManager: ModuleManager = ModuleManager.getInstance(project)
-    val packageModule: HPackageModule = ModuleServiceManager.getService(oldModule, classOf[HPackageModule])
-    val oldPackage: Option[HPackage] = packageModule.getPackage
-    val newModule: Module = ApplicationManager.getApplication.runWriteAction(new Computable[Module] {
-      override def compute(): Module = {
-        moduleManager.disposeModule(oldModule)
-        val modifiableModel: ModifiableModuleModel = moduleManager.getModifiableModel
-        createMissingModule(newPackage, modifiableModel, project)
-      }
-    })
-    packageModule.replacePackage(newPackage)
-    oldPackage.foreach(pkg => {
-      pkg.emitEvent(Replace(newPackage))
-    })
-    newModule
   }
 
   private def createDummyModule(project: Project, moduleModel: ModifiableModuleModel, moduleDir: String, moduleName: String): Module = {

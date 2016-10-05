@@ -16,7 +16,7 @@ trait BackingPackageManager {
   /**
     * returns the hPackage from the persisted state
     */
-  def getPackageFromState(hPackageState: HPackageState, moduleRoots: List[VirtualFile], project: Project): Option[HPackage]
+  def getPackageFromState(hPackageState: HPackageState, packageLocation: VirtualFile, project: Project): Option[HPackage]
 
   /**
     * returns true if the backing PackageManager is the same (e.g. both stack)

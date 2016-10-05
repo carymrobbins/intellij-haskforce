@@ -2,10 +2,11 @@ package com.haskforce.system.packages
 
 import com.haskforce.system.settings.HaskellBuildSettings
 import com.haskforce.system.utils.ExecUtil.ExecError
-import com.haskforce.system.utils.{ExecUtil, ModulesUtil}
+import com.haskforce.system.utils.{ExecUtil, FileUtil, ModulesUtil}
 import com.haskforce.tools.cabal.packages.CabalPackageManager
 import com.haskforce.tools.stack.packages.StackPackageManager
 import com.intellij.openapi.components.ServiceManager
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.{Module, ModuleManager}
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ModuleRootManager
@@ -14,6 +15,7 @@ import com.intellij.openapi.vfs.{LocalFileSystem, VfsUtilCore, VirtualFile}
   * common functionality to interact with the packages
   */
 class HPackageManager(intellijProject: Project) {
+  private val LOG = Logger.getInstance(HPackageManager.getClass)
   //no public API-Access! this functionality should be replaced by proper project-management
   private[packages] var mainPackage: Option[HPackage] = initMainPackage()
 
@@ -39,12 +41,18 @@ class HPackageManager(intellijProject: Project) {
   /**
     * loads a package from a state
     * @param state the state to load from
-    * @param moduleRoots the roots of the module
+    * @param location the location of the config-file, relative to the project root
     * @return the recovered HPackage
     */
-  def loadPackage(state: HPackageState, moduleRoots: List[VirtualFile]): Option[HPackage] = {
+  def loadPackage(state: HPackageState, location: String): Option[HPackage] = {
     HPackageManager.packageManagers.find(pkgMngr => pkgMngr.getName == state.getPackageManager)
-      .flatMap(pkgMngr => pkgMngr.getPackageFromState(state, moduleRoots, intellijProject))
+      .flatMap(pkgMngr => {
+        val resolvedLocation: Option[VirtualFile] = FileUtil.fromRelativePath(location, intellijProject)
+        if (resolvedLocation.isEmpty) {
+          LOG.error(s"unable to resolve location for $location, cannot load module")
+        }
+        resolvedLocation.flatMap(file => pkgMngr.getPackageFromState(state, file, intellijProject))
+      })
   }
 
   /**
@@ -52,7 +60,7 @@ class HPackageManager(intellijProject: Project) {
     */
   def getExistingPackages: List[(HPackage, Module)] = {
     ModuleManager.getInstance(intellijProject).getModules.toList
-      .flatMap(module => HPackageModule.getInstance(module).getPackage.map(pkg => (pkg, module)))
+      .flatMap(module => HPackageModule.getInstance(module).optPackage.map(pkg => (pkg, module)))
   }
 
 
@@ -87,7 +95,7 @@ class HPackageManager(intellijProject: Project) {
       }
     }
     val headOption: Option[Either[SearchResultError, (HPackage, Module)]] = ModuleManager.getInstance(intellijProject).getModules.toList
-      .map(module => (module, HPackageModule.getInstance(module).getPackage))
+      .map(module => (module, HPackageModule.getInstance(module).optPackage))
       .flatMap(tuple => findMatching(tuple._1, tuple._2))
       .headOption
     headOption match {
@@ -138,4 +146,5 @@ case class NoModuleYet() extends SearchResultError
 
 sealed trait RegisterError
 case class FileError(location: String, fileName : String, errorMsg: String) extends RegisterError
-case class AlreadyRegistered(hPackage: HPackage) extends RegisterError
+case class AlreadyRegistered(module: Module) extends RegisterError
+case class ShadowedByRegistered(violatingSourceDir: VirtualFile, shadowing: Module, shadowingContentRoot: VirtualFile) extends RegisterError

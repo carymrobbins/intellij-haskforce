@@ -107,6 +107,7 @@ public class ExecUtil {
 
     @NotNull
     public static String guessWorkDir(@NotNull Module module) {
+        //TODO getModuleFile probably not right
         final VirtualFile moduleFile = module.getModuleFile();
         final VirtualFile moduleDir = moduleFile == null ? null : moduleFile.getParent();
         if (moduleDir != null) return moduleDir.getPath();

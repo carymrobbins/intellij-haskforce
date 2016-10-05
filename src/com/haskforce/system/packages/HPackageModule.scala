@@ -1,10 +1,9 @@
 package com.haskforce.system.packages
 
-import com.haskforce.system.utils.ModulesUtil
+import com.haskforce.system.utils.{FileUtil, ModulesUtil}
 import com.intellij.openapi.components._
 import com.intellij.openapi.module.{Module, ModuleServiceManager}
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.roots.ModuleRootManager
 import com.intellij.openapi.vfs.{VfsUtilCore, VirtualFile}
 
 /**
@@ -14,19 +13,21 @@ import com.intellij.openapi.vfs.{VfsUtilCore, VirtualFile}
   name = "haskforceModuleHPackage",
   storages = Array(new Storage(StoragePathMacros.MODULE_FILE))
 )
-class HPackageModule(var optPackage: Option[HPackage], module: Module) extends PersistentStateComponent[PersistentStateWrapper] {
+class HPackageModule(private[packages] var optPackage: Option[HPackage], module: Module) extends PersistentStateComponent[PersistentStateWrapper] {
   def this(module: Module) = this(None, module)
 
   override def loadState(state: PersistentStateWrapper): Unit = {
     this.synchronized {
-      val roots: List[VirtualFile] = ModuleRootManager.getInstance(module).getContentRoots.toList
       optPackage = state.getState
-        .flatMap(state => HPackageManager.getInstance(module.getProject).loadPackage(state, roots))
+        .flatMap(tuple => {
+          val (location, state) = tuple
+          HPackageManager.getInstance(module.getProject).loadPackage(state, location)
+        })
     }
   }
 
   override def getState: PersistentStateWrapper = {
-    optPackage.map(pkg => new PersistentStateWrapper(pkg.getState))
+    optPackage.map(pkg => new PersistentStateWrapper(pkg.getState, FileUtil.toRelativePath(module.getProject, pkg.getLocation)))
       .getOrElse(new PersistentStateWrapper())
   }
 
@@ -86,7 +87,7 @@ object HPackageModule {
     */
   def getInstance(virtualFile: VirtualFile, project: Project): Option[(Module, HPackage)] = {
     ModulesUtil.getMatchingModules(virtualFile, project)
-      .flatMap(module => HPackageModule.getInstance(module).getPackage.map(pkg => (module, pkg)))
+      .flatMap(module => HPackageModule.getInstance(module).optPackage.map(pkg => (module, pkg)))
       .reduceOption((tuple1, tuple2) => {
         if (VfsUtilCore.isAncestor(tuple1._2.getLocation, tuple2._2.getLocation, false)) {
           tuple2
@@ -101,7 +102,7 @@ object HPackageModule {
     */
   def getBestHPackage(virtualFile: VirtualFile, project: Project): Option[HPackage] = {
     ModulesUtil.getMatchingModules(virtualFile, project)
-      .flatMap(module => HPackageModule.getInstance(module).getPackage.map(pkg => (module, pkg)))
+      .flatMap(module => HPackageModule.getInstance(module).optPackage.map(pkg => (module, pkg)))
       .reduceOption((tuple1, tuple2) => {
         if (VfsUtilCore.isAncestor(tuple1._2.getLocation, tuple2._2.getLocation, false)) {
           tuple2
@@ -118,7 +119,9 @@ object HPackageModule {
   * used for persisting the state
   */
 @SerialVersionUID(32L)
-class PersistentStateWrapper(hPackageState: HPackageState) extends Serializable {
-  def this() = this(null)
-  def getState: Option[HPackageState] = Option(hPackageState)
+class PersistentStateWrapper(hPackageState: HPackageState, location: String) extends Serializable {
+  def this() = this(null, null)
+  def getState: Option[(String, HPackageState)] = {
+    for {state <- Option(hPackageState); optLocation <- Option(location)} yield (optLocation, state)
+  }
 }

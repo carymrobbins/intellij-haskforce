@@ -52,7 +52,7 @@ object FileUtil {
   }
 
   @Nullable
-  def getSourceRoot(project: Project, file: VirtualFile): VirtualFile = {
+  private def getSourceRoot(project: Project, file: VirtualFile): VirtualFile = {
     @tailrec
     def loop(maybeFile: Option[VirtualFile], rootPath: String): Option[VirtualFile] = {
       maybeFile match {
@@ -120,6 +120,24 @@ object FileUtil {
       Option(fileSystem.findFileByIoFile(new File(path)))
     } else {
       Option(fileSystem.findFileByIoFile(new File(workDir, path).getCanonicalFile))
+    }
+  }
+
+  /**
+    * returns the virtualFile for the path that if relative, is relative not to the project root.
+    * @param path the Path
+    * @param project the current project
+    * @return an VirtualFile if able to obtain
+    */
+  def fromRelativePath(path: String, project: Project): Option[VirtualFile] = {
+    val fileSystem: LocalFileSystem = LocalFileSystem.getInstance()
+    if (new File(path).isAbsolute) {
+      Option(fileSystem.findFileByIoFile(new File(path)))
+    } else {
+      for {
+        baseDir <- Option(project.getBasePath)
+        virtualFile <- Option(fileSystem.findFileByIoFile(new File(baseDir, path).getCanonicalFile))
+      } yield virtualFile
     }
   }
 }
