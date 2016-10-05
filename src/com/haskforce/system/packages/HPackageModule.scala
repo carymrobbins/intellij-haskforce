@@ -12,8 +12,7 @@ import com.intellij.openapi.vfs.{VfsUtilCore, VirtualFile}
 @State(
   name = "HaskforceHPackageModule",
   storages = Array(
-    new Storage(StoragePathMacros.MODULE_FILE),
-    new Storage("hpackage_module.xml")
+    new Storage(StoragePathMacros.MODULE_FILE)
   )
 )
 //TODO make optPackage private after implementing #308, getPackage should then just return the optPackage
