@@ -32,7 +32,7 @@ class CabalPackage(psiFile: psi.CabalFile, location: VirtualFile) extends HPacka
   /**
     * If 'library' stanza exists, returns it; otherwise, implicitly uses root stanza.
     */
-  def getLibrary: cabalBuildInfo = runReadAction(() =>
+  override def getLibrary: cabalBuildInfo = runReadAction(() =>
     psiFile.getChildren.collectFirst {
       case c: psi.Library => new cabalBuildInfo(c, Library)
     }.getOrElse(new cabalBuildInfo(psiFile, Library))
