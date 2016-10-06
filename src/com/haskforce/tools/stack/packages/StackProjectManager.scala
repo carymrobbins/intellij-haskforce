@@ -2,7 +2,9 @@ package com.haskforce.tools.stack.packages
 
 import java.util
 
-import com.haskforce.system.utils.FileUtil
+import com.haskforce.importWizard.stack.{StackYaml, StackYamlUtil}
+import com.haskforce.system.utils.{FileUtil, SAMUtils}
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.{PersistentStateComponent, ServiceManager, State}
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
@@ -15,13 +17,20 @@ import scala.collection.JavaConverters._
 @State(
   name = "haskforceStackProjectManager"
 )
-//TODO remove if none active
 class StackProjectManager(project: Project, var stackFiles: Set[VirtualFile]) extends PersistentStateComponent[StackProjectsState] {
+  def this(project: Project) = this(project, Set())
+
   override def loadState(state: StackProjectsState): Unit = {
     this.synchronized {
       stackFiles = state.stackFiles.asScala
-        .flatMap(location => FileUtil.fromRelativePath(location, project.getBasePath))
-        //TODO validate
+        .flatMap(location => {
+          ApplicationManager.getApplication.runReadAction(SAMUtils.runnable(() => {
+            if (StackYaml.fromFile(location).isLeft) {
+              None
+            }
+          }))
+          FileUtil.fromRelativePath(location, project.getBasePath)
+        })
         .toSet
     }
 

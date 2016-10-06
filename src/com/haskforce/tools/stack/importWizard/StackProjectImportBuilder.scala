@@ -31,7 +31,6 @@ import scala.collection.JavaConverters._
 /**
  * Imports a Stack project and configures modules from the stack.yaml file.
  */
-//TODO replace existing!
 class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] {
   override def getName: String = "Stack"
   override def getIcon: Icon = HaskellIcons.FILE
@@ -121,7 +120,7 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
 
       if (chosenPackages.nonEmpty) {
         val (shadowed, updated, created) =
-          ProjectSetup.setUpWithUpdate(chosenPackages, project, model, projectRoot, setupRoot = isUpdate)
+          ProjectSetup.setUpWithUpdate(chosenPackages, project, model, projectRoot, setupRoot = !isUpdate)
 
         if (shadowed.nonEmpty) {
           NotificationUtil.displaySimpleNotification(
