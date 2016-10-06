@@ -54,7 +54,9 @@ class cabalBuildInfo(val el: PsiElement, val bType : BuildType) extends BaseBuil
   override def getSourceDirs: Set[String] = {
     runReadAction(() => {
       val map: Stream[Set[String]] = PQ.streamChildren(el, classOf[SourceDirsImpl]).map(_.getValue.toSet)
-      map.foldRight(Set.empty[String])((s, acc) => acc ++ s)
+      val result: Set[String] = map.foldRight(Set.empty[String])((s, acc) => acc ++ s)
+      if (map.isEmpty) Set(".")
+      else result
     })
   }
 
