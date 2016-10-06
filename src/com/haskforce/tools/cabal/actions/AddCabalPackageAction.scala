@@ -41,16 +41,27 @@ object AddCabalPackageAction {
     def display(notificationType: NotificationType, message: String) = {
       NotificationUtil.displaySimpleNotification(notificationType, project, TITLE, message)
     }
+    val file = new File(options.rootDir)
+    if (!file.isDirectory) {
+      display(ERROR, s"Cabal directory: ${options.rootDir} is not an directory")
+    }
     ApplicationManager.getApplication.runWriteAction({ () =>
       val cabal = CabalExecutor.create(project, Some(options.rootDir)).right.getOrElse {
-        display(ERROR, "Could not generate cabal file, path to cabal not configured in compiler settings.")
+        display(ERROR, s"")
+        return
+      }
+      if (!file.exists() && !file.mkdirs()) {
+        display(ERROR, s"Unable to create directory for file ${options.rootDir} ")
         return
       }
       Try {
         cabal.init(project, AddCabalPackageUtil.buildArgs(options))
       } match {
         case Success(message) => display(INFORMATION, message)
-        case Failure(e) => display(ERROR, e.getMessage)
+        case Failure(e) => {
+          display(ERROR, e.getMessage)
+          return
+        }
       }
     }: Runnable)
     VirtualFileManager.getInstance.asyncRefresh { () =>
