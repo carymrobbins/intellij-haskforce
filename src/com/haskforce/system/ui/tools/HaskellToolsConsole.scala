@@ -2,28 +2,26 @@ package com.haskforce.system.ui.tools
 
 import java.awt.event.ItemEvent
 import java.awt.{GridBagLayout, GridLayout}
-import java.util.regex.Pattern
 import javax.swing.{JComponent, JPanel}
 
-import scala.collection.mutable
-
+import com.haskforce.system.packages.HPackageModule
+import com.haskforce.system.settings.ToolKey
+import com.haskforce.system.ui.{GC, SComboBox}
+import com.haskforce.system.utils.SAMUtils
 import com.intellij.execution.filters.TextConsoleBuilderFactory
 import com.intellij.execution.ui.{ConsoleView, ConsoleViewContentType}
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.{ActionManager, DefaultActionGroup}
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.module.ModuleUtil
+import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Condition
 import com.intellij.openapi.wm.{ToolWindow, ToolWindowFactory}
 import com.intellij.ui.content.ContentFactory
 
-import com.haskforce.haskell.HaskellModuleType
-import com.haskforce.system.settings.ToolKey
-import com.haskforce.system.ui.{GC, SComboBox}
-import com.haskforce.system.utils.SAMUtils
+import scala.collection.mutable
 
 /**
   * Manages the Haskell Tools Console "tool window" for a project.
@@ -206,9 +204,11 @@ class HaskellToolsConsoleWindowFactory extends ToolWindowFactory with Condition[
 
   /**
    * Implemented for Condition[Project] to specify if we should display this tool window.
-   * Only display this tool window if our project has at least one Haskell module.
+   * Only display this tool window if our project has at least one HaskellPackage is present.
    */
   override def value(project: Project): Boolean = {
-    !ModuleUtil.getModulesOfType(project, HaskellModuleType.getInstance).isEmpty
+    ModuleManager.getInstance(project)
+      .getModules
+      .flatMap(module => HPackageModule.getInstance(module).optPackage).nonEmpty
   }
 }
