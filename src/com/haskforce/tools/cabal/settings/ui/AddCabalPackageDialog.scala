@@ -58,7 +58,6 @@ class AddCabalPackageDialog(
    */
   def onPackageNameChange(e: EventObject): Unit = {
     rootDir.setText(packageName.getSelectedItem match {
-      //TODO getModuleFile probably not right
       case ComboModuleProxy(m) => relativeToProjectRoot(m.getModuleFile.getParent.getPath)
       case o =>
         val text = Option(packageName.getEditor.getItem).getOrElse("")
