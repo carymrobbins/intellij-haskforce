@@ -1,8 +1,8 @@
 package com.haskforce.tools.ghcmod.modi.actions;
 
-import com.haskforce.haskell.HaskellModuleType;
-import com.haskforce.tools.ghcmod.modi.GhcModi;
+import com.haskforce.system.packages.HPackageModule;
 import com.haskforce.system.settings.ToolKey;
+import com.haskforce.tools.ghcmod.modi.GhcModi;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
@@ -16,6 +16,7 @@ import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.ui.components.JBList;
 import org.jetbrains.annotations.NotNull;
+import scala.collection.JavaConversions;
 
 import javax.swing.*;
 import java.util.Collection;
@@ -34,7 +35,8 @@ public class RestartGhcModi extends AnAction implements DumbAware {
         final Project project = getEventProject(e);
         if (project == null) return false;
         final String ghcModiPath = ToolKey.GHC_MODI_KEY.getPath(project);
-        return ghcModiPath != null && !ghcModiPath.isEmpty() && HaskellModuleType.findModules(project).size() > 0;
+        boolean existsActiveModule = HPackageModule.getModulesWithPackage(project).nonEmpty();
+        return ghcModiPath != null && !ghcModiPath.isEmpty() && existsActiveModule;
     }
 
     @Override
@@ -42,7 +44,7 @@ public class RestartGhcModi extends AnAction implements DumbAware {
         final String prefix = "Unable to restart ghc-modi - ";
         Project project = e.getProject();
         if (project == null) { displayError(e, prefix + "No active project."); return; }
-        Collection<Module> modules = HaskellModuleType.findModules(project);
+        Collection<Module> modules = JavaConversions.asJavaCollection(HPackageModule.getModulesWithPackage(project));
         int size = modules.size();
         if (size == 0) displayError(e, prefix + "No Haskell modules are used in this project.");
         else if (size == 1) restartGhcModi(e, modules.iterator().next());

@@ -1,5 +1,6 @@
 package com.haskforce.tools.ghcmod.modi;
 
+import com.haskforce.system.packages.HPackageModule;
 import com.haskforce.tools.ghcmod.GhcModUtil;
 import com.haskforce.tools.ghcmod.mod.GhcMod;
 import com.haskforce.tools.ghcmod.modi.actions.RestartGhcModi;
@@ -40,7 +41,6 @@ import java.util.regex.Pattern;
 /**
  * Process wrapper for GhcModi.  Implements ModuleComponent so destruction of processes coincides with closing projects.
  */
-//TODO refactor architecture
 public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     public static Option<GhcModi> get(PsiElement element) {
@@ -426,7 +426,6 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         }
     }
 
-    //TODO refactor architecture
     public static String KILLING_MESSAGE_PREFIX =
       "Killing ghc-modi due to process failure.<br/><br/>You can restart it using "
         + "<b>" + XmlUtil.escape(RestartGhcModi.MENU_PATH) + "</b><br/><br/>";
@@ -510,7 +509,6 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     /**
      * Private constructor used during module component initialization.
      */
-    //TODO refactor architecture
     public GhcModi(@NotNull Module module) {
         this.module = module;
         this.path = lookupPath();
@@ -522,7 +520,6 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     }
 
     @Override
-    //TODO refactor architecture
     public void onSettingsChanged(@NotNull ToolSettings settings) {
         this.path = settings.getPath();
         this.flags = settings.getFlags();

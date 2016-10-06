@@ -27,7 +27,6 @@ import java.util.regex.Pattern;
  * This class should contain the common code between GhcMod and GhcModi. Right now this class
  * only contains static methods, as there is no 'state' in common between GhcMod and GhcModi.
  */
-//TODO refactor architecture
 public class GhcModUtil {
     private static Logger LOG = Logger.getInstance(GhcModUtil.class);
 

@@ -121,7 +121,6 @@ public class GhcMod {
     }
 
     @Nullable
-    //TODO refactor architecture
     public static String exec(@NotNull Project project, @NotNull String workingDirectory, @NotNull String ghcModPath,
                               @NotNull String command, @NotNull String ghcModFlags, String... params) {
         if (!validateGhcVersion(project, ghcModPath, ghcModFlags)) return null;
@@ -241,6 +240,7 @@ public class GhcMod {
     private static String inferAbsolutePath(@NotNull Module module, @NotNull String path) {
         File file = new File(path);
         if (file.exists()) return file.getAbsolutePath();
+        //TODO getModuleFile probably not right
         final VirtualFile moduleFile = module.getModuleFile();
         if (moduleFile == null) return null;
         final String inferredPath = FileUtil.join(moduleFile.getParent().getCanonicalPath(), path);
