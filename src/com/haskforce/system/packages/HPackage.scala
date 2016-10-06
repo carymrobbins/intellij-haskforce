@@ -1,5 +1,6 @@
 package com.haskforce.system.packages
 
+import com.haskforce.system.packages.BuildType.{Benchmark, Executable, Library, TestSuite}
 import com.haskforce.system.utils.{ExecUtil, NonEmptySet}
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.VirtualFile
@@ -24,6 +25,37 @@ trait HPackage {
     * Returns the associated BuildInfos
     */
   def getBuildInfo: NonEmptySet[BuildInfo]
+
+  /**
+    * returns the Library BuildInfo
+    */
+  def getLibrary: BuildInfo
+
+  /**
+    * returns the Library + Executable BuildInfos
+    */
+  def getSources: Set[BuildInfo] = {
+    getBuildInfo
+      .toSet
+      .filter(info => info.typ match {
+        case Library => true
+        case Executable => true
+        case other => false
+      })
+  }
+
+  /**
+    * returns the TestSuite + Benchmark BuildInfos
+    */
+  def getTests: Set[BuildInfo] = {
+    getBuildInfo
+      .toSet
+      .filter(info => info.typ match {
+        case TestSuite => true
+        case Benchmark => true
+        case other => false
+      })
+  }
 
   /**
     * Returns the corresponding PackageManager
@@ -60,7 +92,7 @@ trait HPackage {
         info.getSourceDirs.toStream
           .exists(sourceDir => FileUtil.isAncestor(FileUtil.join(baseDir, sourceDir), sourcePath, true))
       })
-      .getOrElse(getBuildInfo.toSet.head)
+      .getOrElse(getLibrary)
   }
 
   /**

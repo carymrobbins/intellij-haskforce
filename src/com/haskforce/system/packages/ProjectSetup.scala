@@ -3,9 +3,6 @@ package com.haskforce.system.packages
 import java.io.File
 import java.util
 
-import com.intellij.openapi.components.ServiceManager
-
-//TODO don't depend on type
 import com.haskforce.haskell.{HaskellModuleBuilder, HaskellModuleType}
 import com.haskforce.system.packages.BuildType.{Benchmark, Executable, Library, TestSuite}
 import com.intellij.ide.util.projectWizard.ModuleBuilder
@@ -303,24 +300,12 @@ object ProjectSetup {
       case ce if ce.getFile.getPath == moduleDir => ce
     } match {
       case Some(ce) =>
-        val sourceDirs: Set[String] = hPackage.getBuildInfo
-          .toSet
-          .filter(info => info.typ match {
-            case Library => true
-            case Executable => true
-            case other => false
-          })
+        val sourceDirs: Set[String] = hPackage.getSources
           .flatMap(info => info.getSourceDirs)
 
-        val testDirs: Set[String] = hPackage.getBuildInfo
-          .toSet
-          .filter(info => info.typ match {
-            case TestSuite => true
-            case Benchmark => true
-            case other => false
-          })
+        val testDirs: Set[String] = hPackage.getTests
           .flatMap(info => info.getSourceDirs)
-          .filter(dir => !(sourceDirs.contains(dir)))
+          .diff(sourceDirs)
         markDirectories(ce, testDirs, path => ce.addSourceFolder(path, /* isTestSource */ true))
         markDirectories(ce, sourceDirs, path => ce.addSourceFolder(path, /* isTestSource */ false))
       case None =>

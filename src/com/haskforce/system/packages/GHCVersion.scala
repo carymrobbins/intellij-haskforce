@@ -14,8 +14,8 @@ object GHCVersion {
   private val GHC_VERSION_REGEX: Pattern = Pattern.compile("(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)")
   /**
     * Used for parsing the GHC version from `ghc --numeric-version`.
-    * for example {@code $ stack ghc -- --numeric-version}<br/>
-    * 7.10.3
+    * for example: <br/>`stack ghc -- --numeric-version`<br/>
+    * `7.10.3`
     * @param input the ghc output
     * @return the version if parsed
     */

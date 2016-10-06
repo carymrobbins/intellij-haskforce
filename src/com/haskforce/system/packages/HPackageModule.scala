@@ -2,7 +2,7 @@ package com.haskforce.system.packages
 
 import com.haskforce.system.utils.{FileUtil, ModulesUtil}
 import com.intellij.openapi.components._
-import com.intellij.openapi.module.{Module, ModuleServiceManager}
+import com.intellij.openapi.module.{Module, ModuleManager, ModuleServiceManager}
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.{VfsUtilCore, VirtualFile}
 
@@ -115,5 +115,14 @@ object HPackageModule {
       })
       .map(_._2)
       .orElse (HPackageManager.getInstance(project).mainPackage)
+  }
+
+  /**
+    * returns a list of modules where that have an hPackage
+    */
+  def getModulesWithPackage(project: Project): List[Module] = {
+    ModuleManager.getInstance(project).getModules
+      .filter(module => HPackageModule.getInstance(module).optPackage.isDefined)
+      .toList
   }
 }
