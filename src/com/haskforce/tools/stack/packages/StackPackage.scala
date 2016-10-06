@@ -42,7 +42,7 @@ class StackPackage(
   override def getProjectInformation: Option[ProjectInformation] = Some(stackInfo)
 
   override def getState: HPackageState = {
-    new StackPackageState(stackPathFromProject, location.getName)
+    new StackPackageState(stackPathFromProject)
   }
 }
 
@@ -51,11 +51,4 @@ class StackProjectInformation(packages: List[StackPackage], buildDir: List[Virtu
   override def getBuildDirectories: List[VirtualFile] = buildDir
 
   override def getRelatedPackages: List[HPackage] = packages
-}
-
-//be careful when editing this file, it gets serialized
-class StackPackageState(stackPath: String, cabalName: String) extends HPackageState with Serializable {
-  override def getPackageManager: String = StackPackageManager.getName
-  def getStackPath = stackPath
-  def getCabalName = cabalName
 }

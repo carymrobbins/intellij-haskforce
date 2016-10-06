@@ -117,14 +117,3 @@ object HPackageModule {
       .orElse (HPackageManager.getInstance(project).mainPackage)
   }
 }
-
-/**
-  * used for persisting the state
-  */
-@SerialVersionUID(230L)
-class PersistentStateWrapper(hPackageState: HPackageState, location: String) extends Serializable {
-  def this() = this(null, null)
-  def getState: Option[(String, HPackageState)] = {
-    for {state <- Option(hPackageState); optLocation <- Option(location)} yield (optLocation, state)
-  }
-}

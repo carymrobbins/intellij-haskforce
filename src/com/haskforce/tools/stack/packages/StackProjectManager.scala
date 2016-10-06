@@ -19,7 +19,7 @@ import scala.collection.JavaConverters._
 class StackProjectManager(project: Project, var stackFiles: Set[VirtualFile]) extends PersistentStateComponent[StackProjectsState] {
   override def loadState(state: StackProjectsState): Unit = {
     this.synchronized {
-      stackFiles = state.getStackFiles.asScala
+      stackFiles = state.stackFiles.asScala
         .flatMap(location => FileUtil.fromRelativePath(location, project.getBasePath))
         //TODO validate
         .toSet
@@ -47,12 +47,6 @@ object StackProjectManager {
   def getInstance(project: Project) = {
     ServiceManager.getService(project, classOf[StackProjectManager])
   }
-}
-
-@SerialVersionUID(64L)
-class StackProjectsState(stackFiles: java.util.List[String]) extends Serializable {
-  def this() = this(new util.ArrayList[String]())
-  def getStackFiles = stackFiles
 }
 
 

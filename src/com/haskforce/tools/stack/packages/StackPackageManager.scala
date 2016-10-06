@@ -168,19 +168,18 @@ object StackPackageManager extends BackingPackageManager {
   override def getName: String = NAME
 
 
-  override def getPackageFromState(hPackageState: HPackageState, moduleDirectory: VirtualFile, project: Project): Option[HPackage] = {
+  override def getPackageFromState(hPackageState: HPackageState, packageLocation: VirtualFile, project: Project): Option[HPackage] = {
     if (hPackageState.getPackageManager == NAME) {
       try {
         val state: StackPackageState = hPackageState.asInstanceOf[StackPackageState]
         val stackProjectManager: StackProjectManager = StackProjectManager.getInstance(project)
-        val optStackFile: Option[VirtualFile] = stackProjectManager.getStackFileFromPath(state.getStackPath)
+        val optStackFile: Option[VirtualFile] = stackProjectManager.getStackFileFromPath(state.stackPath)
         if (optStackFile.isEmpty) {
           return None
         }
-        Option(moduleDirectory.getChildren)
-          .flatMap(children => children.find(file => file.getName == state.getCabalName))
-          .flatMap(file => CabalPackageManager.getCabalFile(file, project).right.toOption.map((_, file)))
-          .map(tuple => new StackPackage(tuple._1, tuple._2, optStackFile.get, state.getStackPath, ListBuffer(), null))
+        //TODO register/check stack
+        CabalPackageManager.getCabalFile(packageLocation, project).right.toOption
+          .map(cabal => new StackPackage(cabal, packageLocation, optStackFile.get, state.stackPath, ListBuffer(), null))
       } catch {
         case exception: ClassCastException => LOG.error(s"hPackageState is not from type StackPackageState", exception)
           None

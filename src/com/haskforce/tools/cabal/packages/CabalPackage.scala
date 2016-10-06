@@ -70,7 +70,7 @@ class CabalPackage(psiFile: psi.CabalFile, location: VirtualFile) extends HPacka
   override def getProjectInformation: Option[ProjectInformation] = None
 
   override def getState: HPackageState = {
-    new CabalPackageState(location.getName)
+    new CabalPackageState()
   }
 
   private def runReadAction[A](f: () => A): A = {
@@ -78,11 +78,4 @@ class CabalPackage(psiFile: psi.CabalFile, location: VirtualFile) extends HPacka
       override def compute(): A = f()
     })
   }
-}
-
-@SerialVersionUID(23L)
-//be careful when editing this file, it gets serialized
-class CabalPackageState(cabalFile: String) extends HPackageState with Serializable {
-  def getPackageManager = CabalPackageManager.getName
-  def getCabalFile = cabalFile
 }

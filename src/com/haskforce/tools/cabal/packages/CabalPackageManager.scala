@@ -4,6 +4,7 @@ import java.io.{File, IOException}
 import java.nio.charset.StandardCharsets
 
 import com.haskforce.system.packages._
+import com.haskforce.system.utils.FileUtil
 import com.haskforce.tools.cabal.CabalLanguage
 import com.haskforce.tools.cabal.lang.psi.CabalFile
 import com.intellij.openapi.diagnostic.Logger
