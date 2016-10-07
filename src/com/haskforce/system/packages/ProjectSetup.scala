@@ -35,10 +35,10 @@ object ProjectSetup {
     */
   def setUpWithUpdate(packages: List[HPackage], project: Project,
                       moduleModel: ModifiableModuleModel, projectRoot: String, setupRoot: Boolean)
-                                                                  : (List[ExistingModule], List[Module], List[Module]) = {
+                                                                  : (List[ExistingModule], List[ChangedModule], List[ChangedModule]) = {
     val (shadowed, existing, created) = setUpWithoutUpdate(packages, project, moduleModel, projectRoot, setupRoot)
 
-    val updated: List[Module] = existing.map(existingModule => updateModule(existingModule.hPackage, existingModule.module, moduleModel, project))
+    val updated: List[ChangedModule] = existing.map(existingModule => updateModule(existingModule.hPackage, existingModule.module, moduleModel, project))
 
     (shadowed, updated, created)
   }
@@ -53,10 +53,10 @@ object ProjectSetup {
     */
   def setUpWithoutUpdate(packages: List[HPackage], project: Project,
             moduleModel: ModifiableModuleModel, projectRoot: String, setupRoot: Boolean)
-                                                        : (List[ExistingModule], List[ExistingModule], List[Module]) = {
+                                                        : (List[ExistingModule], List[ExistingModule], List[ChangedModule]) = {
     val (shadowed, existing, newPackages) = resolveModuleStatusForPackages(packages, project)
 
-    var createdModules: List[Module] = newPackages.map(hPackage => createMissingModule(hPackage, moduleModel, project))
+    var createdModules: List[ChangedModule] = newPackages.map(hPackage => createMissingModule(hPackage, moduleModel, project))
     // If we aren't updating an existing project AND the project root isn't a module,
     // let's create it as the "root" module.
     val existingModules: Set[File] = moduleModel.getModules
@@ -71,7 +71,7 @@ object ProjectSetup {
           && new File(pkg.getLocation.getParent.getCanonicalPath).equals(new File(projectRoot)))
       val projectModule = rootPackage match {
         case Some(pkg) => createMissingModule(pkg, moduleModel, project)
-        case None => createDummyModule(project, moduleModel, projectRoot, projectName + " (root)")
+        case None => new ChangedModule(createDummyModule(project, moduleModel, projectRoot, projectName + " (root)"), None)
       }
       createdModules = projectModule +: createdModules
     }
@@ -85,7 +85,7 @@ object ProjectSetup {
     * @param update whether the existing should be updated
     * @return either an AddPackageError (won't return Existing if update is true) or the module
     */
-  def addPackage(hPackage: HPackage, project: Project, update: Boolean): Either[AddPackageError, Module] = {
+  def addPackage(hPackage: HPackage, project: Project, update: Boolean): Either[AddPackageError, ChangedModule] = {
     val sourceDirs: Set[VirtualFile] = hPackage.getBuildInfo.toSet
       .flatMap(info => info.getSourceDirs)
       .flatMap(dir => com.haskforce.system.utils.FileUtil.fromRelativePath(dir, hPackage.getLocation.getParent.getPath))
@@ -191,7 +191,7 @@ object ProjectSetup {
   /**
     * creates a Module for the package and registers the package, must be run within an write-action
     */
-  private def createMissingModule(hPackage: HPackage, moduleModel: ModifiableModuleModel, project: Project) : Module = {
+  private def createMissingModule(hPackage: HPackage, moduleModel: ModifiableModuleModel, project: Project) : ChangedModule = {
     val name: String = hPackage.getName.getOrElse(hPackage.getLocation.getNameWithoutExtension)
     val moduleDir: String = hPackage.getLocation.getParent.getPath
     val moduleName = determineProperModuleName(project, name, Set())
@@ -201,15 +201,15 @@ object ProjectSetup {
     moduleBuilder.setName(moduleName)
     markDirectories(hPackage, moduleBuilder)
     val module = moduleBuilder.createModule(moduleModel)
-    HPackageModule.getInstance(module).replacePackage(hPackage)
-    moduleBuilder.commit(project)
-    module
+    val commited: util.List[Module] = moduleBuilder.commit(project)
+    HPackageModule.getInstance(commited.get(0)).replacePackage(hPackage)
+    new ChangedModule(module, Some(hPackage))
   }
 
   /**
     * updates the Module,
     */
-  private def updateModule(newPackage: HPackage, module: Module, moduleModel: ModifiableModuleModel, project: Project): Module = {
+  private def updateModule(newPackage: HPackage, module: Module, moduleModel: ModifiableModuleModel, project: Project): ChangedModule = {
     val packageModule: HPackageModule = ModuleServiceManager.getService(module, classOf[HPackageModule])
     val oldPackage: Option[HPackage] = packageModule.optPackage
     ModuleRootModificationUtil.updateModel(module, new Consumer[ModifiableRootModel] {
@@ -225,7 +225,7 @@ object ProjectSetup {
     }
     packageModule.replacePackage(newPackage)
     oldPackage.foreach(pkg => pkg.emitEvent(Replace(newPackage)))
-    module
+    new ChangedModule(module, Some(newPackage))
   }
 
   private def createDummyModule(project: Project, moduleModel: ModifiableModuleModel, moduleDir: String, moduleName: String): Module = {
@@ -335,6 +335,7 @@ object ProjectSetup {
 }
 
 case class ExistingModule(matchingSourceDir: VirtualFile, hPackage: HPackage, matchingContentRoot: VirtualFile, module: Module)
+case class ChangedModule(module: Module, hPackage: Option[HPackage])
 
 sealed trait AddPackageError
 case class PackageShadowed(shadowedSourceDir: VirtualFile, module: Module, shadowingContentRoot: VirtualFile) extends AddPackageError

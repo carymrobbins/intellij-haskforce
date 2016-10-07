@@ -70,7 +70,7 @@ class CabalPackage(psiFile: psi.CabalFile, location: VirtualFile) extends HPacka
   override def getProjectInformation: Option[ProjectInformation] = None
 
   override def getState: HPackageState = {
-    new CabalPackageState()
+    HPackageState(null, CabalPackageManager.getName)
   }
 
   private def runReadAction[A](f: () => A): A = {

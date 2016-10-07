@@ -127,13 +127,7 @@ trait HPackage {
   }
 }
 
-@SerialVersionUID(1L)
-trait HPackageState extends Serializable {
-  /**
-    * the name of the PackageManager
-    */
-  def getPackageManager: String
-}
+case class HPackageState(state: String, packageManager: String);
 
 /**
   * the different Events for the HPackage

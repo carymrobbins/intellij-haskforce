@@ -1,6 +1,6 @@
 package com.haskforce.tools.stack.importWizard
 
-import java.io.File
+import java.io.{File, Serializable}
 import java.util
 import javax.swing.Icon
 
@@ -10,8 +10,8 @@ import com.haskforce.importWizard.stack.StackYaml
 import com.haskforce.system.packages._
 import com.haskforce.system.settings.HaskellBuildSettings
 import com.haskforce.system.ui.HaskellIcons
-import com.haskforce.system.utils.{FileUtil, NotificationUtil}
-import com.haskforce.tools.stack.packages.{StackPackage, StackPackageManager}
+import com.haskforce.system.utils.{FileUtil, NotificationUtil, SAMUtils}
+import com.haskforce.tools.stack.packages.{StackPackage, StackPackageManager, StackProjectManager}
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
@@ -21,6 +21,7 @@ import com.intellij.openapi.projectRoots.Sdk
 import com.intellij.openapi.projectRoots.impl.SdkConfigurationUtil
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider
+import com.intellij.openapi.startup.StartupManager
 import com.intellij.openapi.vfs.{LocalFileSystem, VirtualFile, VirtualFileSystem}
 import com.intellij.packaging.artifacts.ModifiableArtifactModel
 import com.intellij.projectImport.ProjectImportBuilder
@@ -61,14 +62,19 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
     val moduleModel = Option(model).getOrElse {
       ModuleManager.getInstance(project).getModifiableModel
     }
-    ApplicationManager.getApplication.runWriteAction { () =>
+    val packagesOpt: Option[(VirtualFile, List[ChangedModule])] = ApplicationManager.getApplication.runWriteAction { () =>
       commitSdk(project)
-      val packages: Option[List[Module]] = initPackages(stackYamlPath, project, moduleModel)
-      if (packages.isDefined) {
+      val packagesOpt = initPackages(stackYamlPath, project, moduleModel)
+      if (packagesOpt.isDefined) {
         setProjectSettings(project, stackPath, stackYamlPath)
       }
-      packages.map(_.asJava).getOrElse(new util.ArrayList[Module]())
+      packagesOpt
     }
+    packagesOpt.map(tuple => {
+      val (stackFile, changedModules) = tuple
+      StackProjectManager.getInstance(project).addStackFile(stackFile)
+      changedModules.map(_.module).asJava
+    }).getOrElse(new util.ArrayList[Module]())
   }
 
   private def setProjectSettings(
@@ -82,7 +88,7 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
     buildSettings.setStackFile(stackYamlPath)
   }
 
-  private def initPackages(stackYamlPath: String, project: Project, model: ModifiableModuleModel): Option[List[Module]] = {
+  private def initPackages(stackYamlPath: String, project: Project, model: ModifiableModuleModel): Option[(VirtualFile, List[ChangedModule])] = {
     val projectRoot = getImportRoot
     val virtualStackFile: VirtualFile = LocalFileSystem.getInstance().findFileByIoFile(new File(stackYamlPath))
     if (virtualStackFile == null) {
@@ -132,7 +138,8 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
           )
         }
 
-        Some(created ++ updated)
+        val changedModules: List[ChangedModule] = created ++ updated
+        Some((virtualStackFile, changedModules))
       } else {
         NotificationUtil.displaySimpleNotification(
           NotificationType.ERROR, project,

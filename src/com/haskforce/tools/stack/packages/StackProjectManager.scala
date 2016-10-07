@@ -22,7 +22,7 @@ class StackProjectManager(project: Project, var stackFiles: Set[VirtualFile]) ex
 
   override def loadState(state: StackProjectsState): Unit = {
     this.synchronized {
-      stackFiles = state.stackFiles.asScala
+      stackFiles = state.getFiles.asScala
         .flatMap(location => {
           ApplicationManager.getApplication.runReadAction(SAMUtils.runnable(() => {
             if (StackYaml.fromFile(location).isLeft) {
@@ -49,6 +49,15 @@ class StackProjectManager(project: Project, var stackFiles: Set[VirtualFile]) ex
   def getStackFileFromPath(relativePath: String): Option[VirtualFile] = {
     FileUtil.fromRelativePath(relativePath, project.getBasePath)
       .filter(file => stackFiles.contains(file))
+  }
+
+  /**
+    * adds an stackfile
+    */
+  def addStackFile(virtualFile: VirtualFile): Unit = {
+    this.synchronized {
+      stackFiles = stackFiles + virtualFile
+    }
   }
 }
 

@@ -7,8 +7,10 @@ import com.haskforce.system.packages._
 import com.haskforce.system.utils.FileUtil
 import com.haskforce.tools.cabal.CabalLanguage
 import com.haskforce.tools.cabal.lang.psi.CabalFile
+import com.intellij.openapi.components.{State, Storage, StoragePathMacros}
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.{Project, ProjectManager}
+import com.intellij.openapi.roots.impl.storage.ClasspathStorage
 import com.intellij.openapi.vfs.{LocalFileSystem, VirtualFile}
 import com.intellij.psi.{PsiFileFactory, PsiManager}
 
@@ -29,7 +31,7 @@ object CabalPackageManager extends BackingPackageManager {
   }
 
   override def getPackageFromState(hPackageState: HPackageState, packageLocation: VirtualFile, project: Project): Option[HPackage] = {
-    if (hPackageState.getPackageManager == NAME) {
+    if (hPackageState.packageManager == NAME) {
       try {
         getCabalFile(packageLocation, project).right.toOption.map(cabalFile => new CabalPackage(cabalFile, packageLocation))
       } catch {
@@ -37,7 +39,7 @@ object CabalPackageManager extends BackingPackageManager {
           None
       }
     } else {
-      LOG.error(s"received hPackageState from PackageManager ${hPackageState.getPackageManager}")
+      LOG.error(s"received hPackageState from PackageManager ${hPackageState.packageManager}")
       None
     }
   }
@@ -84,7 +86,10 @@ object CabalPackageManager extends BackingPackageManager {
     if (project.isInitialized) {
       PsiManager.getInstance(project).findFile(file) match {
         case cabalFile: CabalFile => Right(cabalFile)
-        case other => Left(FileError(file.getCanonicalPath, file.getNameWithoutExtension, s"Expected CabalFile, got: ${other.getClass}"))
+        case other => {
+          val otherClass = if (other == null) "null" else other.getClass.toString
+          Left(FileError(file.getCanonicalPath, file.getNameWithoutExtension, s"Expected CabalFile, got: $otherClass"))
+        }
       }
     } else {
       val defaultProject: Project = ProjectManager.getInstance().getDefaultProject

@@ -4,6 +4,7 @@ import com.haskforce.system.utils.{FileUtil, ModulesUtil}
 import com.intellij.openapi.components._
 import com.intellij.openapi.module.{Module, ModuleManager, ModuleServiceManager}
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.roots.impl.storage.ClasspathStorage
 import com.intellij.openapi.vfs.{VfsUtilCore, VirtualFile}
 
 /**
@@ -13,13 +14,14 @@ import com.intellij.openapi.vfs.{VfsUtilCore, VirtualFile}
   name = "HaskforceHPackageModule",
   storages = Array(
     new Storage(StoragePathMacros.MODULE_FILE)
+//    , new Storage(storageClass = classOf[ClasspathStorage])
   )
 )
 //TODO make optPackage private after implementing #308, getPackage should then just return the optPackage
-class HPackageModule(var optPackage: Option[HPackage], module: Module) extends PersistentStateComponent[PersistentStateWrapper] {
+class HPackageModule(var optPackage: Option[HPackage], module: Module) extends PersistentStateComponent[HPackageModuleState] {
   def this(module: Module) = this(None, module)
 
-  override def loadState(state: PersistentStateWrapper): Unit = {
+  override def loadState(state: HPackageModuleState): Unit = {
     this.synchronized {
       optPackage = state.getState
         .flatMap(tuple => {
@@ -29,9 +31,9 @@ class HPackageModule(var optPackage: Option[HPackage], module: Module) extends P
     }
   }
 
-  override def getState: PersistentStateWrapper = {
-    optPackage.map(pkg => new PersistentStateWrapper(pkg.getState, FileUtil.toRelativePath(module.getProject, pkg.getLocation)))
-      .getOrElse(new PersistentStateWrapper())
+  override def getState: HPackageModuleState = {
+    optPackage.map(pkg => new HPackageModuleState(pkg.getState.state, pkg.getState.packageManager,  FileUtil.toRelativePath(module.getProject, pkg.getLocation)))
+      .getOrElse(new HPackageModuleState())
   }
 
   /**

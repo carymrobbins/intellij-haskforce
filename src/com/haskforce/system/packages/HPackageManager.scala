@@ -45,7 +45,7 @@ class HPackageManager(intellijProject: Project) {
     * @return the recovered HPackage
     */
   def loadPackage(state: HPackageState, location: String): Option[HPackage] = {
-    HPackageManager.packageManagers.find(pkgMngr => pkgMngr.getName == state.getPackageManager)
+    HPackageManager.packageManagers.find(pkgMngr => pkgMngr.getName == state.packageManager)
       .flatMap(pkgMngr => {
         val resolvedLocation: Option[VirtualFile] = FileUtil.fromRelativePath(location, intellijProject)
         if (resolvedLocation.isEmpty) {

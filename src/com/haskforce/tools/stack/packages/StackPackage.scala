@@ -42,7 +42,7 @@ class StackPackage(
   override def getProjectInformation: Option[ProjectInformation] = Some(stackInfo)
 
   override def getState: HPackageState = {
-    new StackPackageState(stackPathFromProject)
+    HPackageState(stackPathFromProject, StackPackageManager.getName)
   }
 }
 

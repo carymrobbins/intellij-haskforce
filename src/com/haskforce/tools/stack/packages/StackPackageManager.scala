@@ -32,22 +32,24 @@ object StackPackageManager extends BackingPackageManager {
 
 
   override def getPackageFromState(hPackageState: HPackageState, packageLocation: VirtualFile, project: Project): Option[HPackage] = {
-    if (hPackageState.getPackageManager == NAME) {
+    if (hPackageState.packageManager == NAME) {
       try {
-        val state: StackPackageState = hPackageState.asInstanceOf[StackPackageState]
-        val stackProjectManager: StackProjectManager = StackProjectManager.getInstance(project)
-        val optStackFile: Option[VirtualFile] = stackProjectManager.getStackFileFromPath(state.stackPath)
-        if (optStackFile.isEmpty) {
-          return None
-        }
-        CabalPackageManager.getCabalFile(packageLocation, project).right.toOption
-          .map(cabal => new StackPackage(cabal, packageLocation, optStackFile.get, state.stackPath, ListBuffer(), null))
+        Option(hPackageState.state)
+          .flatMap(stackPath => {
+            val stackProjectManager: StackProjectManager = StackProjectManager.getInstance(project)
+            val optStackFile: Option[VirtualFile] = stackProjectManager.getStackFileFromPath(stackPath)
+            if (optStackFile.isEmpty) {
+              return None
+            }
+            CabalPackageManager.getCabalFile(packageLocation, project).right.toOption
+              .map(cabal => new StackPackage(cabal, packageLocation, optStackFile.get, stackPath, ListBuffer(), null))
+          })
       } catch {
         case exception: ClassCastException => LOG.error(s"hPackageState is not from type StackPackageState", exception)
           None
       }
     } else {
-      LOG.error(s"received hPackageState from PackageManager ${hPackageState.getPackageManager}")
+      LOG.error(s"received hPackageState from PackageManager ${hPackageState.packageManager}")
       None
     }
   }
