@@ -32,6 +32,12 @@ public abstract class HaskellLightPlatformCodeInsightFixtureTestCase extends Lig
      */
     protected HaskellLightPlatformCodeInsightFixtureTestCase(String srcName, String expectName) {
         super();
+        srcPath = getDirPath() + "/haskell/" + srcName;
+        expectPath = getDirPath() + "/haskell/" + expectName;
+    }
+
+    protected HaskellLightPlatformCodeInsightFixtureTestCase(String srcName, String expectName, boolean noHaskellBaseDirectory) {
+        super();
         srcPath = getDirPath() + '/' + srcName;
         expectPath = getDirPath() + '/' + expectName;
     }

@@ -16,7 +16,7 @@ import scalaz.syntax.id._
 /** Tests for importing stack projects and modules. */
 class StackImportWizardTest extends ProjectWizardTestCase[AddModuleWizard] with AssertMixin {
 
-  val testDir = "tests/gold/importWizard/stack"
+  val testDir = "tests/gold/tools/stack/importWizard"
 
   def testImportProjectDirectory(): Unit = {
     val projectDir = s"$testDir/stack-ide"

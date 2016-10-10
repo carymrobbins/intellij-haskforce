@@ -56,7 +56,7 @@ class HPackageTest extends CabalParserTestBase with AssertMixin {
 
   def loadHPackage(name: String): CabalPackage = {
     val fullName = name + "." + myFileExt
-    val fullPath = "tests/gold/cabal/parser/" + fullName
+    val fullPath = "tests/gold/tools/cabal/parser/" + fullName
     val path: VirtualFile = LocalFileSystem.getInstance().findFileByPath(fullPath)
     if (path == null) throw new AssertionError(s"VirtualFile for file is null")
     val file: CabalFile = createPsiFile(fullName, loadFile(fullName)) match {

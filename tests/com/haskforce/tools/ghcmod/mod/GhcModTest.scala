@@ -1,18 +1,17 @@
-package com.haskforce.haskell.highlighting.annotation.external
+package com.haskforce.tools.ghcmod.mod
 
 import java.util
 
 import com.haskforce.haskell.HaskellLightPlatformCodeInsightFixtureTestCase
-
-import scala.collection.JavaConverters._
-import junit.framework.TestCase
 import com.haskforce.haskell.psi.impl.HaskellElementFactory
 import com.haskforce.system.integrations.highlighting.{HaskellAnnotationHolder, HaskellExternalAnnotator}
-import com.haskforce.tools.ghcmod.mod.GhcMod
 import com.intellij.codeInsight.daemon.impl.AnnotationHolderImpl
 import com.intellij.lang.annotation.AnnotationSession
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.util.text.StringUtil
+import junit.framework.TestCase
+
+import scala.collection.JavaConverters._
 
 /**
  * Tests for consuming output from ghc-mod.

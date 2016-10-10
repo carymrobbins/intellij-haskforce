@@ -6,7 +6,7 @@ import com.haskforce.haskell.parser.HaskellParserTestBase
 
 abstract class CabalParserTestBase
   extends HaskellParserTestBase(
-    FileUtil.join("cabal", "parser"),
+    FileUtil.join("tools", "cabal", "parser"),
     "cabal",
     /* lowercaseFirstLetter = */ true,
     new CabalParserDefinition

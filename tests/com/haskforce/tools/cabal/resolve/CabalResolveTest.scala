@@ -5,7 +5,7 @@ import com.intellij.openapi.util.io.FileUtil
 import com.haskforce.haskell.resolve.HaskellResolveTestCase
 
 class CabalResolveTest
-  extends HaskellResolveTestCase(FileUtil.join("cabal", "resolve")) {
+  extends HaskellResolveTestCase(FileUtil.join("tools", "cabal", "resolve"), true) {
 
   def testModule00001() = doTest()
   def testModule00002() = doTestResolvedDir("Yesod", "Routes")

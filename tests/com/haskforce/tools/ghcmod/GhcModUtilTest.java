@@ -1,4 +1,4 @@
-package com.haskforce.haskell.highlighting.annotation.external;
+package com.haskforce.tools.ghcmod;
 
 import com.haskforce.tools.ghcmod.GhcModUtil;
 import com.intellij.openapi.editor.VisualPosition;

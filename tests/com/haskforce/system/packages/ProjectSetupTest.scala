@@ -22,7 +22,7 @@ import scalaz.syntax.id._
 
 class ProjectSetupTest extends PlatformTestCase with AssertMixin {
 
-  val testDir = "tests/gold/importWizard/stack"
+  val testDir = "tests/gold/tools/stack/importWizard"
 
   def setupModules() = {
     val project: Project = getProject

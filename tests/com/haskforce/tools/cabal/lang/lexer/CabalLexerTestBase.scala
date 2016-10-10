@@ -20,7 +20,7 @@ abstract class CabalLexerTestBase extends LexerTestCase {
   protected def getExpectedPath: String
 
   override lazy val getDirPath: String = {
-    FileUtil.join("tests", "gold", "cabal", "parser")
+    FileUtil.join("tests", "gold", "tools", "cabal", "parser")
   }
 
   def doTest(): Unit = {

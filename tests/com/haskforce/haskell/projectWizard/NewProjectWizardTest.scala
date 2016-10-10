@@ -1,4 +1,4 @@
-package com.haskforce.projectWizard
+package com.haskforce.haskell.projectWizard
 
 import scala.concurrent.duration._
 import com.intellij.ide.projectWizard.{NewProjectWizardTestCase, ProjectSettingsStep, ProjectTypeStep}

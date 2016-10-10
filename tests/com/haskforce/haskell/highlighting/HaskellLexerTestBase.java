@@ -53,7 +53,7 @@ public abstract class HaskellLexerTestBase extends LexerTestCase {
 
     @Override
     protected String getDirPath() {
-        return "tests" + File.separator + "gold";
+        return "tests" + File.separator + "gold"+ File.separator + "haskell";
     }
 
     /**

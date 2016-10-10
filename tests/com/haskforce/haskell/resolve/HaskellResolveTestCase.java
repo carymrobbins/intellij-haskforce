@@ -20,6 +20,10 @@ public abstract class HaskellResolveTestCase extends HaskellLightPlatformCodeIns
         super(srcName, srcName);
     }
 
+    public HaskellResolveTestCase(String srcName, boolean noHaskellBaseDirectory) {
+        super(srcName, srcName, noHaskellBaseDirectory);
+    }
+
     public HaskellResolveTestCase() {
         this("resolve");
     }
