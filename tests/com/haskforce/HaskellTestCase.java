@@ -26,6 +26,7 @@ import com.haskforce.tools.cabal.AddCabalPackageTest;
 import com.haskforce.tools.cabal.lang.parser.CabalParserTest;
 import com.haskforce.tools.cabal.lang.lexer.CabalParsingLexerTest;
 import com.haskforce.tools.cabal.resolve.CabalResolveTest;
+import com.haskforce.tools.cabal.packages.CabalPackageTest;
 import com.haskforce.haskell.codeInsight.HaskellCompletionTest;
 import com.haskforce.haskell.codeInsight.HaskellFindUsagesTest;
 import com.haskforce.haskell.codeInsight.HaskellGoToSymbolTest;
@@ -35,8 +36,8 @@ import com.haskforce.haskell.features.HaskellTypedHandlerTest;
 import com.haskforce.haskell.highlighting.HaskellLexerTest;
 import com.haskforce.haskell.highlighting.annotation.external.GhcModTest;
 import com.haskforce.haskell.highlighting.annotation.external.GhcModUtilTest;
-import com.haskforce.importWizard.stack.StackImportWizardTest;
-import com.haskforce.importWizard.stack.StackYamlTest;
+import com.haskforce.tools.stack.importWizard.StackImportWizardTest;
+import com.haskforce.tools.stack.importWizard.StackYamlTest;
 import com.haskforce.haskell.parser.HaskellParserTest;
 import com.haskforce.haskell.parser.HaskellParsingLexerTest;
 import com.haskforce.projectWizard.NewProjectWizardTest;
@@ -82,8 +83,7 @@ public class HaskellTestCase extends TestCase {
         // Cabal parser tests
         suite.addTestSuite(CabalParsingLexerTest.class);
         suite.addTestSuite(CabalParserTest.class);
-        //TODO rewrite for new API
-        //suite.addTestSuite(CabalQueryTest.class);
+        suite.addTestSuite(CabalPackageTest.class);
         suite.addTestSuite(CabalResolveTest.class);
         return suite;
     }

@@ -1,13 +1,13 @@
-package com.haskforce.importWizard.stack
+package com.haskforce.tools.stack.importWizard
 
 import java.util
 
-import scalaz.\/
-import scalaz.syntax.either._
-
+import com.haskforce.importWizard.stack.StackYaml
+import com.haskforce.macros.string.dedent
 import junit.framework.TestCase
 
-import com.haskforce.macros.string.dedent
+import scalaz.\/
+import scalaz.syntax.either._
 
 /** Tests for parsing stack.yaml files. */
 class StackYamlTest extends TestCase {
