@@ -23,24 +23,6 @@ class CabalPackageTest extends CabalParserTestBase with AssertMixin {
     if00002.getName === Some("Test1")
   }
 
-  def testBuildInfoFromSourceFile(): Unit = {
-    def assertBuildInfo(hPackage: HPackage, string: String, buildType: BuildType) = {
-      hPackage.getBestMatchingBuildInfo(string).typ == buildType
-    }
-
-    assertBuildInfo(example00001, "/foo.hs", Library)
-
-    assertBuildInfo(example00001, "/tests/foo.hs", TestSuite)
-
-    example00005.getBestMatchingBuildInfo("/tests/foo.hs") == example00005.getLibrary
-
-    assertBuildInfo(example00005, "/src/foo.hs", Library)
-
-    assertBuildInfo(example00005, "/tests/foo.hs", TestSuite)
-
-    assertBuildInfo(example00005, "/examples/foo.hs", Library)
-  }
-
   def testExtensions(): Unit = {
     braces00001.getLibrary.getExtensions === Set(
       "CPP"
@@ -112,10 +94,11 @@ class CabalPackageTest extends CabalParserTestBase with AssertMixin {
     )
   }
 
-  def testSourceDirs(): Unit = {
+  def testLibrary(): Unit = {
     sourceDirs00001.getLibrary.getSourceDirs === Set(".")
-    sourceDirs00001.getSources.flatMap(_.getSourceDirs) === Set(".", "app")
-    sourceDirs00001.getTests.flatMap(_.getSourceDirs) === Set("tests", "bench1", "bench2")
+    assertTrue(example00001.getSources.nonEmpty)
+    assertTrue(example00002.getSources.nonEmpty)
+    example00005.getLibrary.getSourceDirs === Set("src","examples")
   }
 
   lazy val blank00001 = getQuery("blank00001")

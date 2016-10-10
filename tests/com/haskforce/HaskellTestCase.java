@@ -22,6 +22,9 @@
 
 package com.haskforce;
 
+import com.haskforce.system.packages.GHCVersionTest;
+import com.haskforce.system.packages.HPackageTest;
+import com.haskforce.system.packages.ProjectSetupTest;
 import com.haskforce.tools.cabal.AddCabalPackageTest;
 import com.haskforce.tools.cabal.lang.parser.CabalParserTest;
 import com.haskforce.tools.cabal.lang.lexer.CabalParsingLexerTest;
@@ -70,21 +73,33 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(HaskellFindUsagesTest.class);
         suite.addTestSuite(HaskellRenameTest.class);
         suite.addTestSuite(HaskellResolveTest.class);
-        suite.addTestSuite(GhcModUtilTest.class);
         suite.addTestSuite(HaskellGoToSymbolTest.class);
-        suite.addTestSuite(AddCabalPackageTest.class);
         suite.addTestSuite(HaskellSpellcheckingTest.class);
-        suite.addTestSuite(StackImportWizardTest.class);
         suite.addTestSuite(NewProjectWizardTest.class);
-        suite.addTestSuite(GhcModTest.class);
-        suite.addTestSuite(StackYamlTest.class);
-        suite.addTestSuite(HtmlUtilsTest.class);
 
-        // Cabal parser tests
+
+        //system
+        suite.addTestSuite(GHCVersionTest.class);
+        suite.addTestSuite(HPackageTest.class);
+        suite.addTestSuite(HtmlUtilsTest.class);
+        suite.addTestSuite(ProjectSetupTest.class);
+
+        //tools
+
+        // Cabal
+        suite.addTestSuite(AddCabalPackageTest.class);
         suite.addTestSuite(CabalParsingLexerTest.class);
         suite.addTestSuite(CabalParserTest.class);
         suite.addTestSuite(CabalPackageTest.class);
         suite.addTestSuite(CabalResolveTest.class);
+
+        //stack
+        suite.addTestSuite(StackYamlTest.class);
+        suite.addTestSuite(StackImportWizardTest.class);
+
+        //ghcmod
+        suite.addTestSuite(GhcModUtilTest.class);
+        suite.addTestSuite(GhcModTest.class);
         return suite;
     }
 }
