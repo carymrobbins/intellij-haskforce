@@ -142,6 +142,19 @@ public class HaskellBuildSettings implements PersistentStateComponent<HaskellBui
         myBuildOptions.myStackFile = file;
     }
 
+    public int getSettingsVersion() {
+        Integer buildOptsVersion = myBuildOptions.buildOptsVersion;
+        if (buildOptsVersion == null) {
+            return 0;
+        } else {
+            return buildOptsVersion;
+        }
+    }
+
+    public void setSettingsVersion(int version) {
+        myBuildOptions.buildOptsVersion = version;
+    }
+
     public void updatePaths() {
         myBuildOptions.myGhcPath = guessGhcPath();
         myBuildOptions.myCabalPath = guessCabalPath();

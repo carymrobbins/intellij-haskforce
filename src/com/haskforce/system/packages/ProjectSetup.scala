@@ -20,7 +20,8 @@ import scala.annotation.tailrec
 /**
   * sets up an Intellij-Project based on the HPackages
   */
-//TODO set module type
+//TODO maybe set module type
+//TODO set exclude (obtainable via ProjectInformation)
 object ProjectSetup {
   private val LOG = Logger.getInstance(ProjectSetup.getClass)
 
@@ -120,7 +121,7 @@ object ProjectSetup {
     * a package is shadowed if at least one of the source-directories is part of another module, but not equal
     * e.g. a subfolder in the src-content root of another module
     */
-  def isShadowed(hPackage: HPackage, project: Project): Option[ExistingModule] = {
+  def getShadowed(hPackage: HPackage, project: Project): Option[ExistingModule] = {
     val locations: Set[VirtualFile] = hPackage.getBuildInfo.toSet
       .flatMap(buildInfo => buildInfo.getSourceDirs)
       .flatMap(dir => com.haskforce.system.utils.FileUtil.fromRelativePath(dir, hPackage.getLocation.getParent.getPath))
@@ -129,6 +130,55 @@ object ProjectSetup {
       .flatMap(module => ModuleRootManager.getInstance(module).getSourceRoots(true).zip(Stream.continually(module)))
 
     getShadowed(sourceRootsModuleList, hPackage, locations)
+  }
+
+  /**
+    * returns the (optional) existing Module for the HPackage
+    */
+  def getExisting(hPackage: HPackage, project: Project): Option[ExistingModule] = {
+    val sourceRootsModuleList: Array[(VirtualFile, Module)] = ModuleManager.getInstance(project).getModules
+      .flatMap(module => ModuleRootManager.getInstance(module).getSourceRoots(true).zip(Stream.continually(module)))
+
+    getExisting(sourceRootsModuleList, hPackage)
+  }
+
+  /**
+    * returns either a package for the config-file or an SearchResultError
+    */
+  def getPackageForConfigFile(file: VirtualFile, project: Project): Either[SearchResultError, (HPackage, Module)] = {
+    val findMatching: (Module, Option[HPackage]) => Option[Either[SearchResultError, (HPackage, Module)]] = (module: Module, optPackage: Option[HPackage]) => {
+      if (optPackage.isDefined) {
+        val hPackage = optPackage.get
+        if (hPackage.getLocation == file) {
+          Some(Right((hPackage, module)))
+        } else if (hPackage.getLocation.getParent == file.getParent) {
+          Some(Left(AlreadyRegisteredResult(hPackage, module)))
+        } else {
+          val roots: Set[VirtualFile] = ModuleRootManager.getInstance(module).getSourceRoots(true).toSet
+          if (module.getModuleScope.contains(file)) {
+            Some(Left(Shadowed(module))): Option[Either[SearchResultError, HPackage]]
+          }
+          roots
+            .map(root => root.getParent)
+            .find(root => root == file.getParent)
+            .map(_ => Left(NotYetRegistered(module)))
+        }
+      } else {
+        if (module.getModuleScope.contains(file)) {
+          Some(Left(Shadowed(module)))
+        } else {
+          None
+        }
+      }
+    }
+    val headOption: Option[Either[SearchResultError, (HPackage, Module)]] = ModuleManager.getInstance(project).getModules.toList
+      .map(module => (module, HPackageModule.getInstance(module).optPackage))
+      .flatMap(tuple => findMatching(tuple._1, tuple._2))
+      .headOption
+    headOption match {
+      case Some(x) => x
+      case None => Left(NoModuleYet())
+    }
   }
 
 

@@ -63,46 +63,6 @@ class HPackageManager(intellijProject: Project) {
       .flatMap(module => HPackageModule.getInstance(module).optPackage.map(pkg => (pkg, module)))
   }
 
-
-  /**
-    * returns either a package for the config-file or an SearchResultError
-    */
-  def getPackageForConfigFile(file: VirtualFile): Either[SearchResultError, (HPackage, Module)] = {
-    val findMatching: (Module, Option[HPackage]) => Option[Either[SearchResultError, (HPackage, Module)]] = (module: Module, optPackage: Option[HPackage]) => {
-      if (optPackage.isDefined) {
-        val hPackage = optPackage.get
-        if (hPackage.getLocation == file) {
-          Some(Right((hPackage, module)))
-        } else if (hPackage.getLocation.getParent == file.getParent) {
-          Some(Left(AlreadyRegisteredResult(hPackage, module)))
-        } else {
-          val roots: Set[VirtualFile] = ModuleRootManager.getInstance(module).getSourceRoots(true).toSet
-          if (module.getModuleScope.contains(file)) {
-            Some(Left(Shadowed(module))): Option[Either[SearchResultError, HPackage]]
-          }
-          roots
-            .map(root => root.getParent)
-            .find(root => root == file.getParent)
-            .map(_ => Left(NotYetRegistered(module)))
-        }
-      } else {
-        if (module.getModuleScope.contains(file)) {
-          Some(Left(Shadowed(module)))
-        } else {
-          None
-        }
-      }
-    }
-    val headOption: Option[Either[SearchResultError, (HPackage, Module)]] = ModuleManager.getInstance(intellijProject).getModules.toList
-      .map(module => (module, HPackageModule.getInstance(module).optPackage))
-      .flatMap(tuple => findMatching(tuple._1, tuple._2))
-      .headOption
-    headOption match {
-      case Some(x) => x
-      case None => Left(NoModuleYet())
-    }
-  }
-
   /**
     * fallback GHC version
     */
