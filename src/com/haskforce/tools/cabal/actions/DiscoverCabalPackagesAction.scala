@@ -118,19 +118,18 @@ object DiscoverCabalPackagesAction {
    * Finds Cabal files which do not belong to a module.
    */
   private def findDiscoverableCabalFiles(project: Project): Seq[VirtualFile] = {
-    val hPackageManager: HPackageManager = HPackageManager.getInstance(project)
     Option(project.getBaseDir).map(
-      FileUtil.findFilesRecursively(_, _.getExtension == "cabal").filter(isDiscoverable(project, hPackageManager))
+      FileUtil.findFilesRecursively(_, _.getExtension == "cabal").filter(isDiscoverable(project))
     ).getOrElse(Seq())
   }
 
   /**
     * its not shadowed or already existing
     */
-  private def isDiscoverable(project: Project, hPackageManager: HPackageManager)(configFile: VirtualFile): Boolean = {
+  private def isDiscoverable(project: Project)(configFile: VirtualFile): Boolean = {
     ApplicationManager.getApplication.runReadAction(new Computable[Boolean] {
       override def compute(): Boolean = {
-        val result: Either[SearchResultError, (HPackage, Module)] = hPackageManager.getPackageForConfigFile(configFile)
+        val result: Either[SearchResultError, (HPackage, Module)] = ProjectSetup.getPackageForConfigFile(configFile, project)
         if (result.isRight) {
           val (existingPackage, existingModule) = result.right.get
           existingPackage.getLocation != configFile || existingPackage.getPackageManager != CabalPackageManager

@@ -6,7 +6,7 @@ import java.util
 import javax.swing._
 
 import com.haskforce.importWizard.stack.{StackYaml, StackYamlUtil}
-import com.haskforce.system.packages.{HPackage, HPackageManager, HPackageManager$, Shadowed}
+import com.haskforce.system.packages._
 import com.haskforce.system.settings.HaskellBuildSettings
 import com.haskforce.system.ui.GC
 import com.haskforce.system.utils.{GuiUtil, NotificationUtil}
@@ -72,7 +72,6 @@ extends ProjectImportWizardStep(context) {
     if (project == null) return packages
     // Otherwise, filter this import for packages not already imported.
 
-    val hPackageManager: HPackageManager = HPackageManager.getInstance(project)
     packages.filter(pkg => {
       val virtualFile: VirtualFile = LocalFileSystem.getInstance().findFileByPath(pkg.path)
       if (virtualFile == null) {
@@ -81,7 +80,7 @@ extends ProjectImportWizardStep(context) {
         )
         false
       } else {
-        hPackageManager.getPackageForConfigFile(virtualFile).fold(
+        ProjectSetup.getPackageForConfigFile(virtualFile, project).fold(
           error => error match {
             //unable to import
             case Shadowed(x) => false
