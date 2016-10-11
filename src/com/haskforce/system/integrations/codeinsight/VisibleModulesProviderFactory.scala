@@ -4,7 +4,10 @@ import com.haskforce.tools.ghcmod.mod.codeInsight.GhcModVisibleModulesProvider
 import com.haskforce.tools.ghcmod.modi.codeInsight.GhcModiVisibleModulesProvider
 import com.intellij.psi.PsiFile
 
-//TODO document
+
+/**
+  * Factory for getting the VisibleModulesProvider for the PsiFile
+  */
 object VisibleModulesProviderFactory {
   def get(psiFile: PsiFile): Option[VisibleModulesProvider] = {
     GhcModiVisibleModulesProvider.create(psiFile).orElse(
@@ -13,6 +16,12 @@ object VisibleModulesProviderFactory {
   }
 }
 
+/**
+  * returns the currently visible Modules for the CodeCompletion
+  */
 trait VisibleModulesProvider {
+  /**
+    * the currently visible Modules for this PsiFile
+    */
   def getVisibleModules: Array[String]
 }

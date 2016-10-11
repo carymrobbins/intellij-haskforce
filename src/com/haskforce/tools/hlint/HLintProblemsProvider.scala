@@ -3,7 +3,7 @@ package com.haskforce.tools.hlint
 import java.util.concurrent.{ExecutionException, Executors, Future}
 
 import com.haskforce.haskell.psi.HaskellFile
-import com.haskforce.system.integrations.highlighting.{Problems, ProblemsProvider}
+import com.haskforce.system.integrations.highlighting.{HaskellProblem, ProblemsProvider}
 import com.haskforce.system.utils.parser.CastUtil
 import com.haskforce.system.utils.{ExecUtil, NotificationUtil, WrappedFuture}
 import com.intellij.notification.NotificationType
@@ -18,7 +18,7 @@ class HLintProblemsProvider private(
   haskellFile: HaskellFile
 ) extends ProblemsProvider {
 
-  override def getProblems: Option[Problems] = {
+  override def getProblems: Option[java.util.List[HaskellProblem]] = {
     Option(HLint.lint(project, workDir, filePath, haskellFile))
   }
 }
@@ -38,10 +38,10 @@ object HLintProblemsProvider {
 
 class HLintFutureProblems(
   project: Project,
-  underlying: Future[Problems]
-) extends WrappedFuture[Option[Problems]] {
+  underlying: Future[java.util.List[HaskellProblem]]
+) extends WrappedFuture[Option[java.util.List[HaskellProblem]]] {
 
-  override def get: Option[Problems] = {
+  override def get: Option[java.util.List[HaskellProblem]] = {
     try {
       Option(underlying.get())
     } catch {

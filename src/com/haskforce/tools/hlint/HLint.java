@@ -6,7 +6,6 @@ import com.haskforce.system.packages.BuildInfo;
 import com.haskforce.system.packages.HPackage;
 import com.haskforce.system.integrations.highlighting.HaskellAnnotationHolder;
 import com.haskforce.system.integrations.highlighting.HaskellProblem;
-import com.haskforce.system.integrations.highlighting.Problems;
 import com.haskforce.haskell.psi.HaskellFile;
 import com.haskforce.system.packages.HPackageModule;
 import com.haskforce.system.settings.ToolKey;
@@ -34,6 +33,7 @@ import scala.runtime.AbstractFunction1;
 import scala.util.Either;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -49,30 +49,30 @@ public class HLint {
     private static final Gson gson = new GsonBuilder().create();
 
     @NotNull
-    public static Problems lint(final @NotNull Project project, @NotNull String workingDirectory,
+    public static List<HaskellProblem> lint(final @NotNull Project project, @NotNull String workingDirectory,
                                 @NotNull String file, @NotNull HaskellFile haskellFile) {
         final HaskellToolsConsole toolConsole = HaskellToolsConsole.get(project);
         final String hlintPath = ToolKey.HLINT_KEY.getPath(project);
         final String hlintFlags = ToolKey.HLINT_KEY.getFlags(project);
-        if (hlintPath == null) return new Problems();
+        if (hlintPath == null) return new ArrayList<>();
 
         return parseProblems(toolConsole, workingDirectory, hlintPath, hlintFlags, file, haskellFile, project).fold(
-            new AbstractFunction1<ExecError, Problems>() {
+            new AbstractFunction1<ExecError, List<HaskellProblem>>() {
                 @Override
-                public Problems apply(ExecError e) {
+                public List<HaskellProblem> apply(ExecError e) {
                     toolConsole.writeError(ToolKey.HLINT_KEY, e.getMessage());
                     NotificationUtil.displayToolsNotification(
                         NotificationType.ERROR, project, "hlint", e.getMessage()
                     );
-                    return new Problems();
+                    return new ArrayList<>();
                 }
             },
-            FunctionUtil.<Problems>identity()
+            FunctionUtil.<List<HaskellProblem>>identity()
         );
     }
 
     @NotNull
-    public static Either<ExecError, Problems> parseProblems(final HaskellToolsConsole toolConsole,
+    public static Either<ExecError, List<HaskellProblem>> parseProblems(final HaskellToolsConsole toolConsole,
                                                             final @NotNull String workingDirectory,
                                                             final @NotNull String path,
                                                             final @NotNull String flags,
@@ -80,22 +80,22 @@ public class HLint {
                                                             final @NotNull HaskellFile haskellFile,
                                                             final @NotNull Project project) {
         return getVersion(toolConsole, workingDirectory, path).fold(
-            new AbstractFunction1<ExecError, Either<ExecError, Problems>>() {
+            new AbstractFunction1<ExecError, Either<ExecError, List<HaskellProblem>>>() {
                 @Override
-                public Either<ExecError, Problems> apply(ExecError e) {
+                public Either<ExecError, List<HaskellProblem>> apply(ExecError e) {
                     return e.toLeft();
                 }
             },
-            new AbstractFunction1<VersionTriple, Either<ExecError, Problems>>() {
+            new AbstractFunction1<VersionTriple, Either<ExecError, List<HaskellProblem>>>() {
                 @Override
-                public Either<ExecError, Problems> apply(VersionTriple version) {
+                public Either<ExecError, List<HaskellProblem>> apply(VersionTriple version) {
                     final boolean useJson = version.gte(HLINT_MIN_VERSION_WITH_JSON_SUPPORT);
                     final String[] params = getParams(file, haskellFile, useJson, project);
                     return EitherUtil.rightMap(runHlint(
                       toolConsole, workingDirectory, path, flags, params
-                    ), new AbstractFunction1<String, Problems>() {
+                    ), new AbstractFunction1<String, List<HaskellProblem>>() {
                         @Override
-                        public Problems apply(String stdout) {
+                        public List<HaskellProblem> apply(String stdout) {
                             toolConsole.writeOutput(ToolKey.HLINT_KEY, stdout);
                             if (useJson) return parseProblemsJson(stdout);
                             return parseProblemsFallback(stdout);
@@ -136,13 +136,13 @@ public class HLint {
      * Parse problems from the hlint --json output.
      */
     @NotNull
-    public static Problems parseProblemsJson(@NotNull String stdout) {
+    public static List<HaskellProblem> parseProblemsJson(@NotNull String stdout) {
         final Problem[] problems = gson.fromJson(stdout, Problem[].class);
         if (problems == null) {
             LOG.warn("Unable to parse hlint json output: " + stdout);
-            return new Problems();
+            return new ArrayList<>();
         }
-        return new Problems(problems);
+        return Arrays.asList(problems);
     }
 
     /**
@@ -178,9 +178,9 @@ public class HLint {
      * Parse problems from the old hlint output if json is not supported.
      */
     @NotNull
-    public static Problems parseProblemsFallback(String stdout) {
+    public static List<HaskellProblem> parseProblemsFallback(String stdout) {
         final List<String> lints = StringUtil.split(stdout, "\n\n");
-        Problems problems = new Problems();
+        List<HaskellProblem> problems = new ArrayList<>();
         for (String lint : lints) {
             ContainerUtil.addIfNotNull(problems, parseProblemFallback(lint));
         }

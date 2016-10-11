@@ -2,7 +2,7 @@ package com.haskforce.tools.ghcmod.mod.highlighting
 
 import java.util.concurrent.{ExecutionException, Executors, Future}
 
-import com.haskforce.system.integrations.highlighting.{Problems, ProblemsProvider}
+import com.haskforce.system.integrations.highlighting.{HaskellProblem, ProblemsProvider}
 import com.haskforce.system.utils.{ExecUtil, NotificationUtil, WrappedFuture}
 import com.haskforce.tools.ghcmod.mod.GhcMod
 import com.intellij.notification.NotificationType
@@ -17,7 +17,7 @@ class GhcModCompileProblemsProvider private(
   filePath: String
 ) extends ProblemsProvider {
 
-  override def getProblems: Option[Problems] = {
+  override def getProblems: Option[java.util.List[HaskellProblem]] = {
     Option(GhcMod.check(module, workDir, filePath))
   }
 }
@@ -36,10 +36,10 @@ object GhcModCompileProblemsProvider {
 
 class GhcModFutureProblems(
   project: Project,
-  underlying: Future[Problems]
-) extends WrappedFuture[Option[Problems]] {
+  underlying: Future[List[HaskellProblem]]
+) extends WrappedFuture[Option[List[HaskellProblem]]] {
 
-  override def get: Option[Problems] = {
+  override def get: Option[List[HaskellProblem]] = {
     try {
       Option(underlying.get())
     } catch {

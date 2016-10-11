@@ -1,12 +1,7 @@
 package com.haskforce.tools.ghcmod.modi;
 
-import com.haskforce.system.packages.HPackageModule;
-import com.haskforce.tools.ghcmod.GhcModUtil;
-import com.haskforce.tools.ghcmod.mod.GhcMod;
-import com.haskforce.tools.ghcmod.modi.actions.RestartGhcModi;
 import com.haskforce.haskell.codeInsight.BrowseItem;
-import com.haskforce.system.integrations.highlighting.Problems;
-import com.haskforce.tools.ghcmod.GhcModUtil.GhcVersionValidation;
+import com.haskforce.system.integrations.highlighting.HaskellProblem;
 import com.haskforce.system.settings.SettingsChangeNotifier;
 import com.haskforce.system.settings.ToolKey;
 import com.haskforce.system.settings.ToolSettings;
@@ -15,6 +10,10 @@ import com.haskforce.system.utils.ExecUtil;
 import com.haskforce.system.utils.HtmlUtils;
 import com.haskforce.system.utils.NotificationUtil;
 import com.haskforce.system.utils.SystemUtil;
+import com.haskforce.tools.ghcmod.GhcModUtil;
+import com.haskforce.tools.ghcmod.GhcModUtil.GhcVersionValidation;
+import com.haskforce.tools.ghcmod.mod.GhcMod;
+import com.haskforce.tools.ghcmod.modi.actions.RestartGhcModi;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
@@ -34,7 +33,9 @@ import org.jetbrains.annotations.Nullable;
 import scala.Option;
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
 
@@ -72,7 +73,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     // Keep track of error messages so we don't output the same ones multiple times.
     public static final Pattern TYPE_SPLIT_REGEX = Pattern.compile(" :: ");
 
-    public static Problems getFutureProblems(@NotNull Project project, @NotNull Future<Problems> problemsFuture) {
+    public static List<HaskellProblem> getFutureProblems(@NotNull Project project, @NotNull Future<List<HaskellProblem>> problemsFuture) {
         return getFuture(project, problemsFuture);
     }
 
@@ -111,29 +112,29 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
      * Checks the module with ghc-modi and returns Problems to be annotated in the source.
      */
     @Nullable
-    public Future<Problems> check(final @NotNull String file) {
-        return handleGhcModiCall(new GhcModiCallable<Problems>() {
+    public Future<List<HaskellProblem>> check(final @NotNull String file) {
+        return handleGhcModiCall(new GhcModiCallable<List<HaskellProblem>>() {
             @Override
-            public Problems call() throws GhcModiError {
+            public List<HaskellProblem> call() throws GhcModiError {
                 return unsafeCheck(file);
             }
         });
     }
 
     @Nullable
-    public Problems syncCheck(final @NotNull String file) {
-        return runSync(new GhcModiCallable<Problems>() {
+    public List<HaskellProblem> syncCheck(final @NotNull String file) {
+        return runSync(new GhcModiCallable<List<HaskellProblem>>() {
             @Override
-            public Problems call() throws GhcModiError {
+            public List<HaskellProblem> call() throws GhcModiError {
                 return unsafeCheck(file);
             }
         });
     }
 
     @Nullable
-    private Problems unsafeCheck(final @NotNull String file) throws GhcModiError {
+    private List<HaskellProblem> unsafeCheck(final @NotNull String file) throws GhcModiError {
         final String stdout = simpleExec("check " + file);
-        return stdout == null ? new Problems() : handleCheck(module, file, stdout);
+        return stdout == null ? new ArrayList<>() : handleCheck(module, file, stdout);
     }
 
     @Nullable
@@ -202,8 +203,8 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     }
 
     @Nullable
-    private static Problems handleCheck(@NotNull Module module, @NotNull String file, @NotNull String stdout) throws GhcModiError {
-        final Problems problems = GhcMod.parseProblems(module, new Scanner(stdout));
+    private static List<HaskellProblem> handleCheck(@NotNull Module module, @NotNull String file, @NotNull String stdout) throws GhcModiError {
+        final List<HaskellProblem> problems = GhcMod.parseProblems(module, new Scanner(stdout));
         if (problems == null) {
             // parseProblems should have returned something, so let's just dump the output to the user.
             throw new CheckParseError(stdout);

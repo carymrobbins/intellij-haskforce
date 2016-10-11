@@ -1,6 +1,9 @@
 package com.haskforce.system.integrations.highlighting
 
-/** A component which provides problems to be highlighted in the editor. */
+/** A component which provides problems to be highlighted for an PsiFile in the editor. */
 trait ProblemsProvider {
-  def getProblems: Option[Problems]
+  /**
+    * returns the Problems for the PsiFile
+    */
+  def getProblems: Option[java.util.List[HaskellProblem]]
 }

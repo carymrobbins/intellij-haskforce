@@ -5,7 +5,6 @@ import com.haskforce.haskell.features.intentions.AddTypeSignature;
 import com.haskforce.haskell.features.intentions.RemoveForall;
 import com.haskforce.system.integrations.highlighting.HaskellAnnotationHolder;
 import com.haskforce.system.integrations.highlighting.HaskellProblem;
-import com.haskforce.system.integrations.highlighting.Problems;
 import com.haskforce.tools.ghcmod.GhcModUtil;
 import com.haskforce.tools.ghcmod.GhcModUtil.GhcVersionValidation;
 import com.haskforce.system.settings.ToolKey;
@@ -64,14 +63,14 @@ public class GhcMod {
     }
 
     @Nullable
-    public static Problems check(@NotNull Module module, @NotNull String workingDirectory, @NotNull String file) {
+    public static List<HaskellProblem> check(@NotNull Module module, @NotNull String workingDirectory, @NotNull String file) {
         final String stdout = simpleExec(module, workingDirectory, getFlags(module.getProject()), "check", file);
-        return stdout == null ? new Problems() : handleCheck(module, stdout);
+        return stdout == null ? new ArrayList<>() : handleCheck(module, stdout);
     }
 
     @Nullable
-    public static Problems handleCheck(@NotNull Module module, @NotNull String stdout) {
-        final Problems problems = parseProblems(module, new Scanner(stdout));
+    public static List<HaskellProblem> handleCheck(@NotNull Module module, @NotNull String stdout) {
+        final List<HaskellProblem> problems = parseProblems(module, new Scanner(stdout));
         if (problems == null) {
             // parseProblems should have returned something, so let's just dump the output to the user.
             displayError(module, stdout);
@@ -163,9 +162,9 @@ public class GhcMod {
 
     /** Similar to parseProblems(Scanner), except also resolves absolute file paths. */
     @Nullable
-    public static Problems parseProblems(@NotNull Module module, @NotNull Scanner scanner) {
+    public static List<HaskellProblem> parseProblems(@NotNull Module module, @NotNull Scanner scanner) {
         List<Problem> problems = parseProblems(scanner);
-        Problems result = new Problems();
+        List<HaskellProblem> result = new ArrayList<>();
         if (problems == null) return null;
         for (Problem problem : problems) {
             String absPath = inferAbsolutePath(module, problem.file);

@@ -79,7 +79,7 @@ object HaskellExternalAnnotator {
   }
 
   /** Wraps the problems provided by external tools. */
-  final case class State(problems: List[Option[Problems]]) {
+  final case class State(problems: List[Option[java.util.List[HaskellProblem]]]) {
 
     /** Streams the problems in the order they were provided to the State. */
     def getProblems: Stream[HaskellProblem] = {
