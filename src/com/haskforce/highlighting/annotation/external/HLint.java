@@ -7,6 +7,7 @@ import com.haskforce.cabal.lang.psi.CabalFile;
 import com.haskforce.cabal.query.BuildInfo;
 import com.haskforce.cabal.query.BuildInfoUtil;
 import com.haskforce.cabal.query.CabalQuery;
+import com.haskforce.features.intentions.ApplyHLint;
 import com.haskforce.features.intentions.IgnoreHLint;
 import com.haskforce.highlighting.annotation.HaskellAnnotationHolder;
 import com.haskforce.highlighting.annotation.HaskellProblem;
@@ -268,9 +269,19 @@ public class HLint {
             return hint + (to == null || to.isEmpty() ? "" : ", why not: " + to);
         }
 
-        protected void createAnnotation(@NotNull HaskellAnnotationHolder holder, int start, int end, @NotNull String message) {
-            Annotation ann = holder.createWarningAnnotation(TextRange.create(start, end), message);
-            if (ann != null) ann.registerFix(new IgnoreHLint(hint));
+        protected void createAnnotation(
+                @NotNull HaskellAnnotationHolder holder,
+                @NotNull String message,
+                int highLightStart,
+                int highLightEnd,
+                int fixStart,
+                int fixEnd) {
+            Annotation ann = holder.createWarningAnnotation(TextRange.create(highLightStart, highLightEnd), message);
+            if (ann != null) {
+                if (to != null && !to.isEmpty())
+                    ann.registerFix(new ApplyHLint(hint, to, fixStart, fixEnd));
+                ann.registerFix(new IgnoreHLint(hint));
+            }
         }
 
         @Override
@@ -295,7 +306,7 @@ public class HLint {
             Matcher m = NON_CAMEL_CASE_REGEX.matcher(section);
             if (m.find()) {
                 do {
-                    createAnnotation(holder, start + m.start(), start + m.end(), "Use camelCase");
+                    createAnnotation(holder, "Use camelCase", start + m.start(), start + m.end(), start, end);
                 } while (m.find());
             } else {
                 createDefaultAnnotations(start, end, holder);
@@ -303,7 +314,7 @@ public class HLint {
         }
 
         public void createDefaultAnnotations(int start, int end, @NotNull HaskellAnnotationHolder holder) {
-            createAnnotation(holder, start, end, getMessage());
+            createAnnotation(holder, getMessage(), start, end, start, end);
         }
 
         public int getOffsetEnd(int offsetStart, String fileText) {
