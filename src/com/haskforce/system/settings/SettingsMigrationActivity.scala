@@ -30,7 +30,7 @@ class SettingsMigrationActivity extends StartupActivity {
         val packagesEither = StackPackageManager.getPackages(path, project)
         val success: Boolean = addAndNotifyUser(project, s"stackfile: $stackYamlPath", packagesEither)
         if (success) {
-          settings.setSettingsVersion(HaskellBuildOptions.currentVersion)
+          settings.setSettingsVersion(HaskellBuildOptions.CURRENT_VERSION)
         }
       } else if (settings.isCabalEnabled) {
         NotificationUtil.displaySimpleNotification(
@@ -38,7 +38,7 @@ class SettingsMigrationActivity extends StartupActivity {
           "Haskforce Version migration",
           s"if there are undiscovered cabal packages, please run Tools -> ${DiscoverCabalPackagesAction.TITLE} for full support in newer haskforce versions"
         )
-        settings.setSettingsVersion(HaskellBuildOptions.currentVersion)
+        settings.setSettingsVersion(HaskellBuildOptions.CURRENT_VERSION)
       }
     }
   }

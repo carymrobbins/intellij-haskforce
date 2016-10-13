@@ -25,7 +25,7 @@ public class HaskellBuildSettings implements PersistentStateComponent<HaskellBui
 
     public HaskellBuildSettings() {
         myBuildOptions = new HaskellBuildOptions();
-        myBuildOptions.buildOptsVersion = HaskellBuildOptions.currentVersion;
+        myBuildOptions.buildOptsVersion = HaskellBuildOptions.CURRENT_VERSION;
     }
 
     @Nullable
