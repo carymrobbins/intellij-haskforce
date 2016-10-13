@@ -4,8 +4,9 @@ import java.io.File
 import java.util
 
 import com.haskforce.haskell.{HaskellModuleBuilder, HaskellModuleType}
-import com.haskforce.system.packages.BuildType.{Benchmark, Executable, Library, TestSuite}
+import com.haskforce.system.utils.SAMUtils
 import com.intellij.ide.util.projectWizard.ModuleBuilder
+import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.{ModifiableModuleModel, Module, ModuleManager, ModuleServiceManager}
 import com.intellij.openapi.project.Project
@@ -41,6 +42,7 @@ object ProjectSetup {
 
     val updated: List[ChangedModule] = existing.map(existingModule => updateModule(existingModule.hPackage, existingModule.module, moduleModel, project))
 
+    moduleModel.commit()
     (shadowed, updated, created)
   }
 
@@ -76,6 +78,7 @@ object ProjectSetup {
       }
       createdModules = projectModule +: createdModules
     }
+    moduleModel.commit()
     (shadowed, existing, createdModules)
   }
 
@@ -106,14 +109,18 @@ object ProjectSetup {
     val modifiableModel: ModifiableModuleModel = ModuleManager.getInstance(project).getModifiableModel
     val matching: Option[Existing] = getExisting(moduleDirectories, hPackage)
       .map(existingModule => Existing(existingModule.module))
-    if (matching.isDefined) {
-      if (update) {
-        Right(updateModule(hPackage, matching.get.module, modifiableModel, project))
+    try {
+      if (matching.isDefined) {
+        if (update) {
+          Right(updateModule(hPackage, matching.get.module, modifiableModel, project))
+        } else {
+          Left(matching.get)
+        }
       } else {
-        Left(matching.get)
+        Right(createMissingModule(hPackage, modifiableModel, project))
       }
-    } else {
-      Right(createMissingModule(hPackage, modifiableModel, project))
+    } finally {
+      modifiableModel.commit()
     }
   }
 
@@ -270,8 +277,10 @@ object ProjectSetup {
     })
     if (module.getName != newPackage.getName.getOrElse(newPackage.getLocation.getNameWithoutExtension)) {
       val newModuleName = determineProperModuleName(project, newPackage.getName.getOrElse(newPackage.getLocation.getNameWithoutExtension), Set(module.getName))
-      moduleModel.renameModule(module, newModuleName)
-      moduleModel.commit()
+      ApplicationManager.getApplication.runWriteAction(SAMUtils.runnable(() => {
+        moduleModel.renameModule(module, newModuleName)
+        moduleModel.commit()
+      }))
     }
     packageModule.replacePackage(newPackage)
     oldPackage.foreach(pkg => pkg.emitEvent(Replace(newPackage)))
@@ -295,14 +304,7 @@ object ProjectSetup {
     */
   private def markDirectories(hPackage: HPackage, moduleBuilder: HaskellModuleBuilder): Unit = {
     val moduleDir: String = hPackage.getLocation.getParent.getPath
-    val sourcePaths: Set[String] = hPackage.getBuildInfo
-      .toSet
-      .filter(info => info.typ match {
-        case Library => true
-        case Executable => true
-        case other => false
-      })
-      .flatMap(info => info.getSourceDirs)
+    val sourcePaths: Set[String] = hPackage.getSources.flatMap(info => info.getSourceDirs)
 
     //to avoid the Java default 'src/'
     moduleBuilder.setSourcePaths(util.Collections.emptyList())

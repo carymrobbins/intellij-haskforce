@@ -21,7 +21,12 @@ import java.util.List;
         }
 )
 public class HaskellBuildSettings implements PersistentStateComponent<HaskellBuildOptions> {
-    private HaskellBuildOptions myBuildOptions = new HaskellBuildOptions();
+    private HaskellBuildOptions myBuildOptions;
+
+    public HaskellBuildSettings() {
+        myBuildOptions = new HaskellBuildOptions();
+        myBuildOptions.buildOptsVersion = HaskellBuildOptions.currentVersion;
+    }
 
     @Nullable
     @Override

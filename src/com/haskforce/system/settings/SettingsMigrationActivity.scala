@@ -8,7 +8,7 @@ import com.haskforce.tools.stack.packages.StackPackageManager
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.module.ModuleManager
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.startup.StartupActivity
+import com.intellij.openapi.startup.{StartupActivity, StartupManager}
 import com.intellij.openapi.vfs.{LocalFileSystem, VirtualFile}
 
 class SettingsMigrationActivity extends StartupActivity {

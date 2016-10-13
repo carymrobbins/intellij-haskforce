@@ -33,7 +33,7 @@ public class HaskellBuildOptions {
         myCabalPath = options.myCabalPath;
         myCabalFlags = options.myCabalFlags;
         myInstallCabalDependencies = options.myInstallCabalDependencies;
-        buildOptsVersion = currentVersion;
+        buildOptsVersion = options.buildOptsVersion;
     }
 
     @Tag("useCabal")
@@ -78,7 +78,7 @@ public class HaskellBuildOptions {
     public String myStackFile = DEFAULT_STACK_FILE;
 
     @Tag("version")
-    public Integer buildOptsVersion = 0;
+    public Integer buildOptsVersion = currentVersion;
 
     @Override
     public String toString() {
@@ -94,6 +94,7 @@ public class HaskellBuildOptions {
                 ", myEnableTests=" + myEnableTests +
                 ", myUseStack=" + myUseStack +
                 ", myStackPath=" + myStackPath +
+                ", myVersion=" + buildOptsVersion +
                 '}';
     }
 }

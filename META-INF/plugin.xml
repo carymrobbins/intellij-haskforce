@@ -414,8 +414,12 @@
     <projectConfigurable instance="com.haskforce.system.settings.HaskellCompilerConfigurable"
                          parentId="project.propCompiler" id="Haskell compiler"
                          displayName="Haskell Compiler"/>
+
     <!-- Persistent data + build server communication for compiler settings -->
     <projectService serviceImplementation="com.haskforce.system.settings.HaskellBuildSettings"/>
+    <!-- Persistent data version migration -->
+    <project.converterProvider implementation="com.haskforce.system.settings.SettingsMigrationConverterProvider"/>
+    <postStartupActivity implementation="com.haskforce.system.settings.SettingsMigrationActivity"/>
     <!-- Module HPackage -->
     <moduleService serviceImplementation="com.haskforce.system.packages.HPackageModule"/>
     <!-- Project HPackageManager -->

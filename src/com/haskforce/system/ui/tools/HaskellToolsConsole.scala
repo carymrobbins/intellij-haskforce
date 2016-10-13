@@ -209,6 +209,6 @@ class HaskellToolsConsoleWindowFactory extends ToolWindowFactory with Condition[
   override def value(project: Project): Boolean = {
     ModuleManager.getInstance(project)
       .getModules
-      .flatMap(module => HPackageModule.getInstance(module).optPackage).nonEmpty
+      .flatMap(module => HPackageModule.getInstance(module).getPackage).nonEmpty
   }
 }
