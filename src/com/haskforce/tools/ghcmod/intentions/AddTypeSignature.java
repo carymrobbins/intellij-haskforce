@@ -1,4 +1,4 @@
-package com.haskforce.haskell.features.intentions;
+package com.haskforce.tools.ghcmod.intentions;
 
 import com.haskforce.tools.ghcmod.mod.GhcMod.*;
 import com.haskforce.haskell.psi.HaskellBody;
@@ -17,7 +17,8 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Pattern;
 
-//TODO refactor for GHC-Mod abstraction
+//with the current level of abstractions i don't see how this class could move to the haskell package
+//(it would probably produce much boilerplate and little gain with an nearly emtpy class)
 public class AddTypeSignature extends BaseIntentionAction {
     public final Problem problem;
 

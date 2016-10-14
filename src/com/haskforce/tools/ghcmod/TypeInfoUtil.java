@@ -24,8 +24,9 @@ import com.intellij.psi.util.PsiUtilBase;
  * Next to this offset correction, this class just calls GhcMod and returns the type info. In case no type info can be found
  * it will report the error encountered instead of the type info.
  */
-public class TypeInfoUtil {
-    public static String getTypeInfo(Project project) {
+public class TypeInfoUtil implements com.haskforce.system.integrations.typeInfo.TypeInfoProvider {
+    @Override
+    public String getTypeInfo(Project project) {
         FileEditorManager fileEditorManager = FileEditorManager.getInstance(
                 project);
         if (fileEditorManager == null){
@@ -52,10 +53,18 @@ public class TypeInfoUtil {
         }
         Module module = ModuleUtilCore.findModuleForFile(projectFile, project);
 
-        return getTypeInfo(module, blockStart, blockEnd, projectFile);
+        return getTypeInfoIntern(module, blockStart, blockEnd, projectFile);
     }
 
-    public static String getTypeInfo(Module module, VisualPosition blockStart, VisualPosition blockEnd, VirtualFile projectFile) {
+    @Override
+    public String getTypeInfo(Module module, VisualPosition blockStart, VisualPosition blockEnd, VirtualFile projectFile) {
+        // and also correct them for (0,0) vs (1,1) leftmost coordinate (intellij -> ghc)
+        VisualPosition startPosition = TypeInfoUtil.correctFor0BasedVS1Based(blockStart);
+        VisualPosition endPosition = TypeInfoUtil.correctFor0BasedVS1Based(blockEnd);
+        return getTypeInfoIntern(module,startPosition,endPosition, projectFile);
+    }
+
+    public String getTypeInfoIntern(Module module, VisualPosition blockStart, VisualPosition blockEnd, VirtualFile projectFile) {
         final String canonicalPath = projectFile.getCanonicalPath();
         if (canonicalPath == null){
             return "canonical path is null";

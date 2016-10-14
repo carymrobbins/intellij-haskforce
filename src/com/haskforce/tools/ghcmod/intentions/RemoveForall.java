@@ -1,4 +1,4 @@
-package com.haskforce.haskell.features.intentions;
+package com.haskforce.tools.ghcmod.intentions;
 
 import com.haskforce.tools.ghcmod.mod.GhcMod.*;
 import com.haskforce.system.utils.FileUtil;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Pattern;
 
-//TODO refactor for GHCMod abstraction
+//See AddTypeSignature why this is located in the ghcmod package
 public class RemoveForall extends BaseIntentionAction {
     public final Problem problem;
 

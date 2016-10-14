@@ -2,7 +2,7 @@ package com.haskforce.haskell
 
 import javax.swing.Icon
 
-import com.haskforce.system.ui.HaskellIcons
+import com.haskforce.haskell.ui.HaskellIcons
 import com.intellij.openapi.module._
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.{VfsUtilCore, VirtualFile}

@@ -13,8 +13,8 @@ import org.jetbrains.annotations.Nullable
 import javax.swing._
 
 import com.haskforce.Implicits._
+import com.haskforce.haskell.ui.HaskellIcons
 import com.haskforce.jps.model.JpsHaskellModelSerializerExtension
-import com.haskforce.system.ui.HaskellIcons
 
 /**
  * Responsible for the mechanics when pressing "+" in the SDK configuration,

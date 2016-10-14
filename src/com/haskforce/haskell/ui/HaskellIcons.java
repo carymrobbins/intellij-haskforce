@@ -1,4 +1,4 @@
-package com.haskforce.system.ui;
+package com.haskforce.haskell.ui;
 
 import com.intellij.openapi.util.IconLoader;
 

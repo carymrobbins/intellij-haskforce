@@ -1,7 +1,7 @@
 package com.haskforce.haskell.actions;
 
-import com.haskforce.tools.ghcmod.TypeInfoUtil;
 import com.haskforce.haskell.psi.HaskellFile;
+import com.haskforce.system.integrations.typeInfo.TypeInfo;
 import com.intellij.codeInsight.hint.HintManager;
 import com.intellij.codeInsight.hint.HintManagerImpl;
 import com.intellij.codeInsight.hint.HintUtil;
@@ -43,8 +43,7 @@ public class TypeInfoAction extends AnAction {
             return;
         }
         FileEditorManager fileEditorManager = FileEditorManager.getInstance(project);
-        //TODO refactor for GHC-Mod abstraction
-        String typeInfo = TypeInfoUtil.getTypeInfo(project);
+        String typeInfo = TypeInfo.getTypeInfo(project);
         if (typeInfo == null) {
             // TODO: getTypeInfo should probably be @NotNull
             return;

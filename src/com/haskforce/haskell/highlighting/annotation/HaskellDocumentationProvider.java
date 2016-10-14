@@ -1,6 +1,6 @@
 package com.haskforce.haskell.highlighting.annotation;
 
-import com.haskforce.tools.ghcmod.TypeInfoUtil;
+import com.haskforce.system.integrations.typeInfo.TypeInfo;
 import com.intellij.lang.documentation.AbstractDocumentationProvider;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.VisualPosition;
@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
  * This is the first version of the DocumentationProvider, the tooltip that can be shown on
  * hovering (and is also bound to an action). Right now, it just tries to get the type info.
  */
-//TODO refactor for GHCMod abstraction
 public class HaskellDocumentationProvider extends AbstractDocumentationProvider {
     @Override
     public String generateDoc(PsiElement element, @Nullable PsiElement originalElement) {
@@ -33,11 +32,8 @@ public class HaskellDocumentationProvider extends AbstractDocumentationProvider 
         int startColumn = startOffset - cachedDocument.getLineStartOffset(startLineNumber);
         int endColumn = endOffset - cachedDocument.getLineStartOffset(endLineNumber);
 
-        //TODO refactor
         // and also correct them for (0,0) vs (1,1) leftmost coordinate (intellij -> ghc)
-        VisualPosition startPosition = TypeInfoUtil.correctFor0BasedVS1Based(new VisualPosition(startLineNumber, startColumn));
-        VisualPosition endPosition = TypeInfoUtil.correctFor0BasedVS1Based(new VisualPosition(endLineNumber, endColumn));
-        return TypeInfoUtil.getTypeInfo(module,startPosition,endPosition, projectFile);
+        return TypeInfo.getTypeInfo(module,new VisualPosition(startLineNumber, startColumn),new VisualPosition(endLineNumber, endColumn), projectFile);
     }
 
 }

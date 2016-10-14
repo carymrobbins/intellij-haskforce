@@ -1,6 +1,6 @@
 package com.haskforce.haskell.actions;
 
-import com.haskforce.system.ui.HaskellIcons;
+import com.haskforce.haskell.ui.HaskellIcons;
 import com.haskforce.system.utils.FileUtil;
 import com.intellij.ide.actions.CreateFileAction;
 import com.intellij.ide.actions.CreateFileFromTemplateAction;

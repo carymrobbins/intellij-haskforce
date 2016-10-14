@@ -1,6 +1,6 @@
 package com.haskforce.tools.stack.run
 
-import com.haskforce.system.ui.HaskellIcons
+import com.haskforce.haskell.ui.HaskellIcons
 import com.intellij.execution.configurations.{ConfigurationFactory, ConfigurationTypeBase, RunConfiguration}
 import com.intellij.openapi.project.Project
 

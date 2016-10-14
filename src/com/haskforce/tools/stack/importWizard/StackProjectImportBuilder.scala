@@ -6,10 +6,10 @@ import javax.swing.Icon
 
 import com.haskforce.Implicits._
 import com.haskforce.haskell.HaskellSdkType
+import com.haskforce.haskell.ui.HaskellIcons
 import com.haskforce.importWizard.stack.StackYaml
 import com.haskforce.system.packages._
 import com.haskforce.system.settings.HaskellBuildSettings
-import com.haskforce.system.ui.HaskellIcons
 import com.haskforce.system.utils.{FileUtil, NotificationUtil, SAMUtils}
 import com.haskforce.tools.stack.packages.{StackPackage, StackPackageManager, StackProjectManager}
 import com.intellij.notification.NotificationType

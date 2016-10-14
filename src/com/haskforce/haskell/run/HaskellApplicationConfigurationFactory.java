@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * to Haskell under the run configuration types - Run->Edit Configurations->[+]->Haskell
  */
 public class HaskellApplicationConfigurationFactory extends ConfigurationFactory {
-    protected HaskellApplicationConfigurationFactory(@NotNull ConfigurationType type) {
+    public HaskellApplicationConfigurationFactory(@NotNull ConfigurationType type) {
         super(type);
     }
 

@@ -1,8 +1,8 @@
 package com.haskforce.tools.ghcmod.mod;
 
 import com.haskforce.haskell.features.intentions.AddLanguagePragma;
-import com.haskforce.haskell.features.intentions.AddTypeSignature;
-import com.haskforce.haskell.features.intentions.RemoveForall;
+import com.haskforce.tools.ghcmod.intentions.AddTypeSignature;
+import com.haskforce.tools.ghcmod.intentions.RemoveForall;
 import com.haskforce.system.integrations.highlighting.HaskellAnnotationHolder;
 import com.haskforce.system.integrations.highlighting.HaskellProblem;
 import com.haskforce.tools.ghcmod.GhcModUtil;

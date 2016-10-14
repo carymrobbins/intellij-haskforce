@@ -1,6 +1,6 @@
 package com.haskforce.haskell;
 
-import com.haskforce.system.ui.HaskellIcons;
+import com.haskforce.haskell.ui.HaskellIcons;
 import com.intellij.openapi.fileTypes.LanguageFileType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

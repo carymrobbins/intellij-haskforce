@@ -1,6 +1,6 @@
 package com.haskforce.haskell.psi.impl;
 
-import com.haskforce.system.ui.HaskellIcons;
+import com.haskforce.haskell.ui.HaskellIcons;
 import com.haskforce.haskell.psi.HaskellFile;
 import com.haskforce.haskell.psi.HaskellQqblob;
 import com.haskforce.haskell.psi.references.HaskellReference;

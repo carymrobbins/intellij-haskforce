@@ -3,7 +3,7 @@ package com.haskforce.haskell.codeInsight
 import com.intellij.codeInsight.lookup.{LookupElement, LookupElementBuilder}
 import com.intellij.util.containers.ContainerUtil
 import com.haskforce.Implicits._
-import com.haskforce.system.ui.HaskellIcons
+import com.haskforce.haskell.ui.HaskellIcons
 
 object LookupElementUtil {
   def create(name: String, module: String, typ: String): LookupElement = {
