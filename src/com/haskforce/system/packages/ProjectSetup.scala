@@ -259,7 +259,9 @@ object ProjectSetup {
     markDirectories(hPackage, moduleBuilder)
     val module = moduleBuilder.createModule(moduleModel)
     val commited: util.List[Module] = moduleBuilder.commit(project)
+    //depending whether we are importing or updating we need to initialize different module instances
     HPackageModule.getInstance(commited.get(0)).replacePackage(hPackage)
+    HPackageModule.getInstance(module).replacePackage(hPackage)
     new ChangedModule(module, Some(hPackage))
   }
 
