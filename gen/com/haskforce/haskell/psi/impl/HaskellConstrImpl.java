@@ -1,0 +1,70 @@
+// This is a generated file. Not intended for manual editing.
+package com.haskforce.haskell.psi.impl;
+
+import java.util.List;
+import org.jetbrains.annotations.*;
+import com.intellij.lang.ASTNode;
+import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiElementVisitor;
+import com.intellij.psi.util.PsiTreeUtil;
+import static com.haskforce.haskell.psi.HaskellTypes.*;
+import com.haskforce.haskell.psi.*;
+
+public class HaskellConstrImpl extends HaskellCompositeElementImpl implements HaskellConstr {
+
+  public HaskellConstrImpl(ASTNode node) {
+    super(node);
+  }
+
+  public void accept(@NotNull HaskellVisitor visitor) {
+    visitor.visitConstr(this);
+  }
+
+  public void accept(@NotNull PsiElementVisitor visitor) {
+    if (visitor instanceof HaskellVisitor) accept((HaskellVisitor)visitor);
+    else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public List<HaskellAtype> getAtypeList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellAtype.class);
+  }
+
+  @Override
+  @Nullable
+  public HaskellCon getCon() {
+    return PsiTreeUtil.getChildOfType(this, HaskellCon.class);
+  }
+
+  @Override
+  @Nullable
+  public HaskellConop getConop() {
+    return PsiTreeUtil.getChildOfType(this, HaskellConop.class);
+  }
+
+  @Override
+  @NotNull
+  public List<HaskellTypee> getTypeeList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTypee.class);
+  }
+
+  @Override
+  @NotNull
+  public List<HaskellVars> getVarsList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVars.class);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getLbrace() {
+    return findChildByType(LBRACE);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRbrace() {
+    return findChildByType(RBRACE);
+  }
+
+}

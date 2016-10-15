@@ -22,29 +22,32 @@
 
 package com.haskforce;
 
-import com.haskforce.cabal.AddCabalPackageTest;
-import com.haskforce.cabal.lang.parser.CabalParserTest;
-import com.haskforce.cabal.lang.lexer.CabalParsingLexerTest;
-import com.haskforce.cabal.query.CabalQueryTest;
-import com.haskforce.cabal.resolve.CabalResolveTest;
-import com.haskforce.codeInsight.HaskellCompletionTest;
-import com.haskforce.codeInsight.HaskellFindUsagesTest;
-import com.haskforce.codeInsight.HaskellGoToSymbolTest;
-import com.haskforce.features.HaskellCommenterTest;
-import com.haskforce.features.HaskellFoldingBuilderTest;
-import com.haskforce.features.HaskellTypedHandlerTest;
-import com.haskforce.highlighting.HaskellLexerTest;
-import com.haskforce.highlighting.annotation.external.GhcModTest;
-import com.haskforce.highlighting.annotation.external.GhcModUtilTest;
-import com.haskforce.importWizard.stack.StackImportWizardTest;
-import com.haskforce.importWizard.stack.StackYamlTest;
-import com.haskforce.parser.HaskellParserTest;
-import com.haskforce.parser.HaskellParsingLexerTest;
-import com.haskforce.projectWizard.NewProjectWizardTest;
-import com.haskforce.refactoring.HaskellRenameTest;
-import com.haskforce.resolve.HaskellResolveTest;
-import com.haskforce.spellchecker.HaskellSpellcheckingTest;
-import com.haskforce.utils.HtmlUtilsTest;
+import com.haskforce.system.packages.GHCVersionTest;
+import com.haskforce.system.packages.HPackageTest;
+import com.haskforce.system.packages.ProjectSetupTest;
+import com.haskforce.tools.cabal.AddCabalPackageTest;
+import com.haskforce.tools.cabal.lang.parser.CabalParserTest;
+import com.haskforce.tools.cabal.lang.lexer.CabalParsingLexerTest;
+import com.haskforce.tools.cabal.resolve.CabalResolveTest;
+import com.haskforce.tools.cabal.packages.CabalPackageTest;
+import com.haskforce.haskell.codeInsight.HaskellCompletionTest;
+import com.haskforce.haskell.codeInsight.HaskellFindUsagesTest;
+import com.haskforce.haskell.codeInsight.HaskellGoToSymbolTest;
+import com.haskforce.haskell.features.HaskellCommenterTest;
+import com.haskforce.haskell.features.HaskellFoldingBuilderTest;
+import com.haskforce.haskell.features.HaskellTypedHandlerTest;
+import com.haskforce.haskell.highlighting.HaskellLexerTest;
+import com.haskforce.tools.ghcmod.mod.GhcModTest;
+import com.haskforce.tools.ghcmod.GhcModUtilTest;
+import com.haskforce.tools.stack.importWizard.StackImportWizardTest;
+import com.haskforce.tools.stack.importWizard.StackYamlTest;
+import com.haskforce.haskell.parser.HaskellParserTest;
+import com.haskforce.haskell.parser.HaskellParsingLexerTest;
+import com.haskforce.haskell.projectWizard.NewProjectWizardTest;
+import com.haskforce.haskell.refactoring.HaskellRenameTest;
+import com.haskforce.haskell.resolve.HaskellResolveTest;
+import com.haskforce.haskell.spellchecker.HaskellSpellcheckingTest;
+import com.haskforce.system.utils.HtmlUtilsTest;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
@@ -70,21 +73,33 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(HaskellFindUsagesTest.class);
         suite.addTestSuite(HaskellRenameTest.class);
         suite.addTestSuite(HaskellResolveTest.class);
-        suite.addTestSuite(GhcModUtilTest.class);
         suite.addTestSuite(HaskellGoToSymbolTest.class);
-        suite.addTestSuite(AddCabalPackageTest.class);
         suite.addTestSuite(HaskellSpellcheckingTest.class);
-        suite.addTestSuite(StackImportWizardTest.class);
         suite.addTestSuite(NewProjectWizardTest.class);
-        suite.addTestSuite(GhcModTest.class);
-        suite.addTestSuite(StackYamlTest.class);
-        suite.addTestSuite(HtmlUtilsTest.class);
 
-        // Cabal parser tests
+
+        //system
+        suite.addTestSuite(GHCVersionTest.class);
+        suite.addTestSuite(HPackageTest.class);
+        suite.addTestSuite(HtmlUtilsTest.class);
+        suite.addTestSuite(ProjectSetupTest.class);
+
+        //tools
+
+        // Cabal
+        suite.addTestSuite(AddCabalPackageTest.class);
         suite.addTestSuite(CabalParsingLexerTest.class);
         suite.addTestSuite(CabalParserTest.class);
-        suite.addTestSuite(CabalQueryTest.class);
+        suite.addTestSuite(CabalPackageTest.class);
         suite.addTestSuite(CabalResolveTest.class);
+
+        //stack
+        suite.addTestSuite(StackYamlTest.class);
+        suite.addTestSuite(StackImportWizardTest.class);
+
+        //ghcmod
+        suite.addTestSuite(GhcModUtilTest.class);
+        suite.addTestSuite(GhcModTest.class);
         return suite;
     }
 }

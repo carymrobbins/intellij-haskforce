@@ -20,6 +20,7 @@ public class HaskellBuildOptions {
     public static final boolean DEFAULT_ENABLE_TESTS = false;
     public static final boolean DEFAULT_USE_STACK = false;
     public static final String DEFAULT_STACK_FILE = "stack.yaml";
+    public static final int CURRENT_VERSION = 1;
 
     public HaskellBuildOptions() {
     }
@@ -32,6 +33,7 @@ public class HaskellBuildOptions {
         myCabalPath = options.myCabalPath;
         myCabalFlags = options.myCabalFlags;
         myInstallCabalDependencies = options.myInstallCabalDependencies;
+        buildOptsVersion = options.buildOptsVersion;
     }
 
     @Tag("useCabal")
@@ -75,6 +77,9 @@ public class HaskellBuildOptions {
     @Tag("stackFile")
     public String myStackFile = DEFAULT_STACK_FILE;
 
+    @Tag("version")
+    public Integer buildOptsVersion = CURRENT_VERSION;
+
     @Override
     public String toString() {
         return "HaskellBuildOptions{" +
@@ -89,6 +94,7 @@ public class HaskellBuildOptions {
                 ", myEnableTests=" + myEnableTests +
                 ", myUseStack=" + myUseStack +
                 ", myStackPath=" + myStackPath +
+                ", myVersion=" + buildOptsVersion +
                 '}';
     }
 }

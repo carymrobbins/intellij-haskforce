@@ -7,6 +7,7 @@
     <dependency org="org.scalamacros" name="paradise_2.11.6" rev="2.1.0-M5"/>
     <dependency org="org.scalaz" name="scalaz-core_2.11" rev="7.1.4"/>
     <dependency org="org.yaml" name="snakeyaml" rev="1.16"/>
+    <dependency org="io.reactivex" name="rxscala_2.11" rev="0.26.2" />
     <!-- Avoid scalac warning for missing class javax.annotation.Nullable -->
     <dependency org="com.google.code.findbugs" name="findbugs" rev="3.0.1" />
   </dependencies>
