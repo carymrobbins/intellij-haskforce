@@ -4,14 +4,13 @@ package com.haskforce.psi;
 import java.util.List;
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.PsiLanguageInjectionHost;
 import com.intellij.psi.impl.source.tree.injected.StringLiteralEscaper;
 
-public interface HaskellQqblob extends PsiLanguageInjectionHost {
+public interface HaskellQqblob extends HaskellLanguageInjectionElement {
 
   boolean isValidHost();
 
-  HaskellQqblob updateText(String s);
+  HaskellQqblob updateText(String p1);
 
   @NotNull
   StringLiteralEscaper<HaskellQqblob> createLiteralTextEscaper();

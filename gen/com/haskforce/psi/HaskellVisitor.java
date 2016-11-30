@@ -3,7 +3,6 @@ package com.haskforce.psi;
 
 import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElementVisitor;
-import com.intellij.psi.PsiLanguageInjectionHost;
 
 public class HaskellVisitor extends PsiElementVisitor {
 
@@ -44,7 +43,7 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitConid(@NotNull HaskellConid o) {
-    visitNamedElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitConop(@NotNull HaskellConop o) {
@@ -200,7 +199,7 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitQqblob(@NotNull HaskellQqblob o) {
-    visitPsiLanguageInjectionHost(o);
+    visitLanguageInjectionElement(o);
   }
 
   public void visitQtycls(@NotNull HaskellQtycls o) {
@@ -280,7 +279,7 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitVarid(@NotNull HaskellVarid o) {
-    visitNamedElement(o);
+    visitCompositeElement(o);
   }
 
   public void visitVarop(@NotNull HaskellVarop o) {
@@ -295,12 +294,8 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitCompositeElement(o);
   }
 
-  public void visitNamedElement(@NotNull HaskellNamedElement o) {
+  public void visitLanguageInjectionElement(@NotNull HaskellLanguageInjectionElement o) {
     visitCompositeElement(o);
-  }
-
-  public void visitPsiLanguageInjectionHost(@NotNull PsiLanguageInjectionHost o) {
-    visitElement(o);
   }
 
   public void visitCompositeElement(@NotNull HaskellCompositeElement o) {

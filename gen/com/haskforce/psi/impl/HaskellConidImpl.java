@@ -16,12 +16,12 @@ import com.intellij.psi.stubs.IStubElementType;
 
 public class HaskellConidImpl extends HaskellNamedStubbedPsiElementBase<HaskellConidStub> implements HaskellConid {
 
-  public HaskellConidImpl(ASTNode node) {
-    super(node);
+  public HaskellConidImpl(HaskellConidStub stub, IStubElementType type) {
+    super(stub, type);
   }
 
-  public HaskellConidImpl(HaskellConidStub stub, IStubElementType nodeType) {
-    super(stub, nodeType);
+  public HaskellConidImpl(ASTNode node) {
+    super(node);
   }
 
   public void accept(@NotNull HaskellVisitor visitor) {
@@ -55,8 +55,8 @@ public class HaskellConidImpl extends HaskellNamedStubbedPsiElementBase<HaskellC
   }
 
   @Nullable
-  public PsiElement setName(String newName) {
-    return HaskellPsiImplUtil.setName(this, newName);
+  public PsiElement setName(String p1) {
+    return HaskellPsiImplUtil.setName(this, p1);
   }
 
   @NotNull

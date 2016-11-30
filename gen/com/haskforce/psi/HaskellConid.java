@@ -24,7 +24,7 @@ public interface HaskellConid extends HaskellNamedElement, StubBasedPsiElement<H
   PsiReference getReference();
 
   @Nullable
-  PsiElement setName(String newName);
+  PsiElement setName(String p1);
 
   @NotNull
   ItemPresentation getPresentation();
