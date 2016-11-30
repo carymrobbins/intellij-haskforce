@@ -258,7 +258,7 @@ private typedeclnorm ::= ["family" | "instance"] typee ['=' (typee|foralltype)]
 
 // Both data declaration and gadt declaration. The syntactic difference between
 // the two is between typee and [deriving].
-datadecl ::= "data" ["instance"] [clscontext "=>"] typee ['=' ["forall" tv_bndr* '.'] constrs| [kindsig] ["where" gadtconstrs]] [deriving] {pin=1}
+datadecl ::= "data" ["instance"] [clscontext "=>"] [ppragma] typee ['=' ["forall" tv_bndr* '.'] constrs| [kindsig] ["where" gadtconstrs]] [deriving] {pin=1}
 newtypedecl ::= "newtype" [clscontext "=>"] simpletype '=' newconstr [deriving] {pin=1}
 classdecl ::= "class" ctype [fundeps] ["where" ppragma* cdecls] {pin=1}
 instancedecl ::= "instance" ctype ["where" idecls] {pin=1}
@@ -366,13 +366,15 @@ private fielddecl ::= vars "::" (typee | '!' atype) {pin=2}
 private deriving ::= "deriving" (dclass  | <<commaSeparate dclass>>) {pin=1}
 private dclass ::= qtycls (dclass|tyvar)*
 
-private fdecl ::= (importdecl | exportdecl) var "::" ftype
+private fdecl ::= (importdecl | exportdecl) var "::" [clscontext "=>"] ftype
 
 private importdecl ::= "import" callconv [safety] impent {pin=1}
 private exportdecl ::= "export" callconv [expent] {pin=1}
 
 private callconv ::= "ccall" | "stdcall" | "cplusplus"
-                   | "jvm" | "dotnet" // FIXME: Add system specific call conv.
+                   | "jvm" | "dotnet"
+                   | "java" // Eta support
+                   // FIXME: Add system specific call conv.
 
 // Listed in Section 8.5.1.
 private impent ::= '\"' "wrapper" '\"'
@@ -385,7 +387,7 @@ private expent ::= pstringtoken // FIXME: '\"' [cid] '\"'
 private ftype ::= fatype ["->" ftype]
                 | "()"
 
-private fatype ::= qtycon atype*
+private fatype ::= (qtycon|tyvar) atype*
 
 private safety ::= "unsafe" | "safe" | "interruptible"
 
