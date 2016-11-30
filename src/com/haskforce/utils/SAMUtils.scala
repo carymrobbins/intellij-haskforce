@@ -37,10 +37,4 @@ object SAMUtils {
   def ijFunction[A, B](f: A => B): com.intellij.util.Function[A, B] = new com.intellij.util.Function[A, B] {
     override def fun(param: A): B = f(param)
   }
-
-  object guava {
-    def predicate[A](f: A => Boolean) = new com.google.common.base.Predicate[A] {
-      override def apply(t: A): Boolean = f(t)
-    }
-  }
 }

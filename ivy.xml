@@ -9,5 +9,6 @@
     <dependency org="org.yaml" name="snakeyaml" rev="1.16"/>
     <!-- Avoid scalac warning for missing class javax.annotation.Nullable -->
     <dependency org="com.google.code.findbugs" name="findbugs" rev="3.0.1" />
+    <dependency org="com.google.guava" name="guava" rev="20.0" />
   </dependencies>
 </ivy-module>

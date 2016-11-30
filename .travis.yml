@@ -12,7 +12,7 @@ before_install:
   - export PATH=~/.local/bin:$PATH
   - travis_retry curl -L https://github.com/commercialhaskell/stack/releases/download/v0.1.4.0/stack-0.1.4.0-x86_64-linux.tar.gz | tar xz -C ~/.local/bin
 install:
-  - IDEA_VERSION=2016.2.2
+  - IDEA_VERSION=2016.3-no-jdk
   - IDEA_TAR=ideaIC-${IDEA_VERSION}.tar.gz
   - IDEA_PARENT_DIR=$HOME/idea
   - IDEA_DIR=$IDEA_PARENT_DIR/$IDEA_VERSION

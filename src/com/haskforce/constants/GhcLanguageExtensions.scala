@@ -18,13 +18,7 @@ object GhcLanguageExtensions extends Enumeration {
   }
 
   /** Retrieve the extensions as LookupElements for completion contributors. */
-  lazy val asLookupElements: java.lang.Iterable[LookupElement] = {
-    val list = new util.ArrayList[LookupElement](values.size)
-    values.foreach { x =>
-      list.add(LookupElementUtil.fromString(x.toString))
-    }
-    list
-  }
+  lazy val asLookupElements: Set[LookupElement] = values.map(x => LookupElementUtil.fromString(x.toString))
 
   /** Pre-computed names as an array. */
   lazy val stringArray: Array[String] = values.view.map(_.toString).toArray
