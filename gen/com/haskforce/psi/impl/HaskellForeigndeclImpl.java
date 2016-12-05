@@ -33,6 +33,12 @@ public class HaskellForeigndeclImpl extends HaskellCompositeElementImpl implemen
 
   @Override
   @Nullable
+  public HaskellClscontext getClscontext() {
+    return PsiTreeUtil.getChildOfType(this, HaskellClscontext.class);
+  }
+
+  @Override
+  @Nullable
   public HaskellPstringtoken getPstringtoken() {
     return PsiTreeUtil.getChildOfType(this, HaskellPstringtoken.class);
   }
@@ -41,6 +47,12 @@ public class HaskellForeigndeclImpl extends HaskellCompositeElementImpl implemen
   @Nullable
   public HaskellQtycon getQtycon() {
     return PsiTreeUtil.getChildOfType(this, HaskellQtycon.class);
+  }
+
+  @Override
+  @Nullable
+  public HaskellTyvar getTyvar() {
+    return PsiTreeUtil.getChildOfType(this, HaskellTyvar.class);
   }
 
   @Override
@@ -71,6 +83,12 @@ public class HaskellForeigndeclImpl extends HaskellCompositeElementImpl implemen
   @Nullable
   public PsiElement getImport() {
     return findChildByType(IMPORT);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getDoublearrow() {
+    return findChildByType(DOUBLEARROW);
   }
 
   @Override

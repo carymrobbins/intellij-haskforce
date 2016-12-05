@@ -28,6 +28,9 @@ public interface HaskellDatadecl extends HaskellCompositeElement {
   @NotNull
   List<HaskellOqtycon> getOqtyconList();
 
+  @Nullable
+  HaskellPpragma getPpragma();
+
   @NotNull
   List<HaskellQtycls> getQtyclsList();
 

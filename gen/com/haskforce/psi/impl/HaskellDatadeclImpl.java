@@ -68,6 +68,12 @@ public class HaskellDatadeclImpl extends HaskellCompositeElementImpl implements 
   }
 
   @Override
+  @Nullable
+  public HaskellPpragma getPpragma() {
+    return PsiTreeUtil.getChildOfType(this, HaskellPpragma.class);
+  }
+
+  @Override
   @NotNull
   public List<HaskellQtycls> getQtyclsList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellQtycls.class);

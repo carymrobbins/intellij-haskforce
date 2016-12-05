@@ -43,7 +43,7 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitConid(@NotNull HaskellConid o) {
-    visitCompositeElement(o);
+    visitNamedElement(o);
   }
 
   public void visitConop(@NotNull HaskellConop o) {
@@ -279,7 +279,7 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitVarid(@NotNull HaskellVarid o) {
-    visitCompositeElement(o);
+    visitNamedElement(o);
   }
 
   public void visitVarop(@NotNull HaskellVarop o) {
@@ -295,6 +295,10 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitLanguageInjectionElement(@NotNull HaskellLanguageInjectionElement o) {
+    visitCompositeElement(o);
+  }
+
+  public void visitNamedElement(@NotNull HaskellNamedElement o) {
     visitCompositeElement(o);
   }
 

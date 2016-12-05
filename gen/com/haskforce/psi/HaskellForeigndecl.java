@@ -11,10 +11,16 @@ public interface HaskellForeigndecl extends HaskellCompositeElement {
   List<HaskellAtype> getAtypeList();
 
   @Nullable
+  HaskellClscontext getClscontext();
+
+  @Nullable
   HaskellPstringtoken getPstringtoken();
 
   @Nullable
   HaskellQtycon getQtycon();
+
+  @Nullable
+  HaskellTyvar getTyvar();
 
   @Nullable
   HaskellVarid getVarid();
@@ -30,6 +36,9 @@ public interface HaskellForeigndecl extends HaskellCompositeElement {
 
   @Nullable
   PsiElement getImport();
+
+  @Nullable
+  PsiElement getDoublearrow();
 
   @Nullable
   PsiElement getDoublecolon();
