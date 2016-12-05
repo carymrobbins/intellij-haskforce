@@ -280,6 +280,10 @@ public class HaskellCompilerConfigurable extends CompilerConfigurable {
 
     private void updateVersionInfoField(final String name, String exePath, String versionFlag,
                                         final JLabel versionField) {
+        if (exePath.isEmpty()) {
+            versionField.setText("");
+            return;
+        }
         ExecUtil.readCommandLine(null, exePath, versionFlag).fold(
             new AbstractFunction1<ExecUtil.ExecError, Void>() {
                 @Override
