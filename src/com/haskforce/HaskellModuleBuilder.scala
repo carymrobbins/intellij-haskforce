@@ -8,7 +8,6 @@ import java.util.concurrent.ExecutionException
 import javax.swing._
 
 import scala.collection.mutable
-
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.ide.util.projectWizard._
 import com.intellij.openapi.diagnostic.Logger
@@ -26,9 +25,8 @@ import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.uiDesigner.core.Spacer
 import org.apache.commons.lang.builder.HashCodeBuilder
 import org.jetbrains.annotations.{NotNull, Nullable}
-
 import com.haskforce.Implicits._
-import com.haskforce.cabal.settings.CabalComponentType
+import com.haskforce.cabal.settings.{CabalComponentType, CabalPackageSettingsStep, CabalPackageTemplate}
 import com.haskforce.cabal.settings.ui.NewCabalProjectForm
 import com.haskforce.macros.string.dedent
 import com.haskforce.settings.HaskellBuildSettings
@@ -37,7 +35,14 @@ import com.haskforce.utils.{GuiUtil, Logging}
 
 /** Manages the creation of Haskell modules via interaction with the user. */
 class HaskellModuleBuilder extends ModuleBuilder with SourcePathsBuilder with ModuleBuilderListener {
+
   val LOG = Logger.getInstance(getClass)
+
+  /**
+   * Hack to avoid this builder appearing in the top-level project wizard.
+   * Prefer HaskellProjectTemplatesFactory
+   */
+  override def isAvailable: Boolean = false
 
   @throws(classOf[ConfigurationException])
   override def setupRootModel(rootModel: ModifiableRootModel) {
@@ -116,7 +121,7 @@ class HaskellModuleBuilder extends ModuleBuilder with SourcePathsBuilder with Mo
 
   @Nullable
   override def modifySettingsStep(@NotNull settingsStep: SettingsStep): ModuleWizardStep = {
-    new HaskellModifiedSettingsStep(this, settingsStep)
+    HaskellModifiedSettingsStep(this, settingsStep)
   }
 
   private[this] val sourcePaths = new util.ArrayList[Pair[String, String]]()
@@ -278,28 +283,13 @@ class HaskellBuildToolStepForm(wizardContext: WizardContext) {
 case class HaskellCabalPackageSettingsStep(
   moduleBuilder: HaskellModuleBuilder,
   wizardContext: WizardContext
-) extends ModuleWizardStep with Logging {
+) extends CabalPackageSettingsStep with Logging {
 
   val form = new NewCabalProjectForm
 
-  override def getComponent: JComponent = form.getContentPane
-
-  override def updateDataModel(): Unit = {
-    moduleBuilder.registerSetupRootModelCallback { rootModel: ModifiableRootModel =>
-      val project = rootModel.getProject
-      if (wizardContext.isCreatingNewProject && form.shouldInitializeCabalPackage) {
-        val baseDir = project.getBasePath
-        val name = project.getName
-        createCabalFile(baseDir, name)
-        createSetupFile(baseDir)
-        if (wizardContext.isCreatingNewProject) {
-          // Initialize the project and create the stack.yaml file.
-          runStackInitIfEnabled(project)
-          val buildSettings = HaskellBuildSettings.getInstance(project)
-          buildSettings.setStackFile(FileUtil.join(project.getBasePath, "stack.yaml"))
-        }
-      }
-    }
+  override protected def updateModule(module: Module, rootModel: ModifiableRootModel): Unit = {
+    super.updateModule(module, rootModel)
+    if (wizardContext.isCreatingNewProject) runStackInitIfEnabled(rootModel.getProject)
   }
 
   private def runStackInitIfEnabled(project: Project): Unit = {
@@ -309,82 +299,13 @@ case class HaskellCabalPackageSettingsStep(
       command.withWorkDirectory(project.getBasePath)
       try {
         command.createProcess()
+        val buildSettings = HaskellBuildSettings.getInstance(project)
+        buildSettings.setStackFile(FileUtil.join(project.getBasePath, "stack.yaml"))
       } catch {
         case e@(_: ExecutionException | _: IOException) =>
           LOG.error("Error when running `stack init`", e)
       }
     }
-  }
-
-  private def createSetupFile(baseDir: String): Unit = {
-    val newSetupFile = new File(baseDir, "Setup.hs")
-    if (newSetupFile.exists()) {
-      LOG.warn(s"File '${newSetupFile.getAbsolutePath}' already exists, skipping")
-      return
-    }
-    val writer = new PrintWriter(newSetupFile, "UTF-8")
-    writer.println(dedent("""
-      import Distribution.Simple
-      main = defaultMain
-    """))
-    writer.close()
-  }
-
-  private def createCabalFile(baseDir: String, name: String): Unit = {
-    val newCabalFile = new File(baseDir, name + ".cabal")
-    if (newCabalFile.exists()) {
-      LOG.warn(s"File '${newCabalFile.getAbsolutePath}' already exists, skipping")
-      return
-    }
-    val writer = new PrintWriter(newCabalFile, "UTF-8")
-    writer.println(createCabalFileText(name))
-    writer.close()
-  }
-
-  private def createCabalFileText(name: String): String = {
-    val baseText = dedent(s"""
-      name:                 $name
-      version:              ${form.packageVersionField.getText}
-      synopsis:             ${form.synopsisField.getText}
-      -- description:
-      -- license:
-      -- license-file:
-      homepage:             ${form.homepageField.getText}
-      author:               ${form.authorNameField.getText}
-      maintainer:           ${form.maintainerEmailField.getText}
-      category:             ${form.categoryField.getSelectedItem}
-      -- copyright:
-      build-type:           Simple
-      -- extra-source-files:
-      cabal-version:        ${form.cabalVersionField.getText}
-    """)
-
-    val componentHeader = form.componentTypeField.getSelectedItem match {
-      case CabalComponentType.Library =>
-        dedent("""
-          library
-            -- exposed-modules:
-        """)
-      case CabalComponentType.Executable =>
-        dedent(s"""
-          executable $name
-            main-is:              Main.hs
-        """)
-    }
-    val componentText = dedent(s"""
-      $componentHeader
-        -- other-modules:
-        -- other-extensions:
-        build-depends:        base >= 4.7 && < 5
-        hs-source-dirs:       ${form.sourceDirField.getText}
-        default-language:     ${form.languageField.getSelectedItem}
-    """)
-
-    dedent(s"""
-      $baseText
-
-      $componentText
-    """)
   }
 }
 

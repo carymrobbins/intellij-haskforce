@@ -1,5 +1,7 @@
 package com.haskforce.jps.model;
 
+import com.haskforce.eta.jps.model.JpsEtaBuildOptionsSerializer;
+import com.haskforce.eta.jps.model.JpsEtlasModuleType;
 import com.intellij.util.xmlb.SkipDefaultValuesSerializationFilters;
 import com.intellij.util.xmlb.XmlSerializer;
 import org.jdom.Element;
@@ -17,6 +19,7 @@ import org.jetbrains.jps.model.serialization.module.JpsModulePropertiesSerialize
 import org.jetbrains.jps.model.serialization.module.JpsModuleSourceRootDummyPropertiesSerializer;
 import org.jetbrains.jps.model.serialization.module.JpsModuleSourceRootPropertiesSerializer;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -35,16 +38,10 @@ public class JpsHaskellModelSerializerExtension extends JpsModelSerializerExtens
     @NotNull
     @Override
     public List<? extends JpsModulePropertiesSerializer<?>> getModulePropertiesSerializers() {
-        return Collections.singletonList(new JpsModulePropertiesSerializer<JpsDummyElement>(JpsHaskellModuleType.INSTANCE, "HASKELL_MODULE", null) {
-            @Override
-            public JpsDummyElement loadProperties(@Nullable Element componentElement) {
-                return JpsElementFactory.getInstance().createDummyElement();
-            }
-
-            @Override
-            public void saveProperties(@NotNull JpsDummyElement properties, @NotNull Element componentElement) {
-            }
-        });
+        return Arrays.asList(
+            new JpsDummyModulePropertiesSerializer(JpsHaskellModuleType.INSTANCE, "HASKELL_MODULE"),
+            new JpsDummyModulePropertiesSerializer(JpsEtlasModuleType.INSTANCE(), "ETLAS_MODULE")
+        );
     }
 
     @NotNull
@@ -83,6 +80,9 @@ public class JpsHaskellModelSerializerExtension extends JpsModelSerializerExtens
     @NotNull
     @Override
     public List<? extends JpsProjectExtensionSerializer> getProjectExtensionSerializers() {
-        return Collections.singletonList(new JpsHaskellBuildOptionsSerializer());
+        return Arrays.asList(
+            new JpsHaskellBuildOptionsSerializer(),
+            new JpsEtaBuildOptionsSerializer()
+        );
     }
 }

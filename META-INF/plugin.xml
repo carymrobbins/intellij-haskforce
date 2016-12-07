@@ -346,6 +346,7 @@
 
   <extensions defaultExtensionNs="com.intellij">
     <!-- Haskell support -->
+    <projectTemplatesFactory implementation="com.haskforce.haskell.project.template.HaskellProjectTemplatesFactory"/>
     <internalFileTemplate name="Haskell Module"/>
     <moduleType id="HASKELL_MODULE" implementationClass="com.haskforce.HaskellModuleType"/>
     <sdkType implementation="com.haskforce.HaskellSdkType"/>
@@ -368,6 +369,13 @@
         implementation="com.haskforce.language.formatting.HaskellCodeStyleSettingsProvider"/>
     <langCodeStyleSettingsProvider
         implementation="com.haskforce.language.formatting.HaskellLanguageCodeStyleSettingsProvider"/>
+
+    <!-- Eta support -->
+    <moduleType id="ETLAS_MODULE" implementationClass="com.haskforce.eta.project.module.EtlasModuleType"/>
+    <projectConfigurable instance="com.haskforce.eta.settings.EtaCompilerConfigurable"
+                         parentId="project.propCompiler" id="Eta compiler"
+                         displayName="Eta Compiler"/>
+    <projectService serviceImplementation="com.haskforce.eta.settings.EtaBuildSettings"/>
 
     <!-- Language injections -->
     <lang.elementManipulator forClass="com.haskforce.psi.HaskellQqblob"
@@ -423,9 +431,13 @@
     <projectService serviceImplementation="com.haskforce.settings.HaskellBuildSettings"/>
     <!-- Tab in IntelliJ -> Preferences -->
     <projectConfigurable instance="com.haskforce.settings.HaskellToolsConfigurable"/>
+
     <!-- File -> Project Structure dialogue. -->
     <moduleConfigurationEditorProvider
         implementation="com.haskforce.settings.HaskellModuleConfigurationEditor" order="first"/>
+    <moduleConfigurationEditorProvider
+        implementation="com.haskforce.eta.project.module.EtlasModuleConfigurationEditor" />
+
     <!-- Tab in IntelliJ -> Preferences -->
     <colorSettingsPage implementation="com.haskforce.settings.HaskellColorSettingsPage"/>
     <colorSettingsPage implementation="com.haskforce.settings.CabalColorSettingsPage"/>

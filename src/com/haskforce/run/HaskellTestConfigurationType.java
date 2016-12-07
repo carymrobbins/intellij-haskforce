@@ -1,6 +1,5 @@
 package com.haskforce.run;
 
-import com.haskforce.HaskellIcons;
 import com.haskforce.cabal.CabalIcons;
 import com.intellij.execution.configurations.ConfigurationTypeBase;
 import com.intellij.openapi.extensions.Extensions;

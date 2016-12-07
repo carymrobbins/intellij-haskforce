@@ -2,26 +2,16 @@ package com.haskforce.codeInsight;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
-import com.haskforce.HaskellIcons;
 import com.haskforce.HaskellLanguage;
 import com.haskforce.codeInsight.HaskellCompletionCacheLoader.Cache;
 import com.haskforce.codeInsight.HaskellCompletionCacheLoader.LookupElementWrapper;
-import com.haskforce.highlighting.annotation.external.GhcMod;
-import com.haskforce.highlighting.annotation.external.GhcModi;
 import com.haskforce.psi.*;
-import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.HaskellUtil;
 import com.intellij.codeInsight.completion.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
-import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.module.Module;
-import com.intellij.openapi.module.ModuleUtilCore;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Key;
-import com.intellij.openapi.util.UserDataHolder;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -33,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
-import java.util.concurrent.Future;
 
 /**
  * Fills the list of completions available on ctrl-space.

@@ -5,14 +5,13 @@ import java.awt.event.ActionEvent
 import javax.swing._
 
 import com.intellij.uiDesigner.core.Spacer
-
 import com.haskforce.Implicits._
+import com.haskforce.cabal.settings.{CabalComponentType, CabalFileData}
 import com.haskforce.ui.GC
 
-/**
- * Form presented to user to configure Cabal initialization when creating a new project.
- */
+/** Form presented to user to configure Cabal initialization when creating a new project */
 class NewCabalProjectForm {
+
   val initializeCabalPackageField = new JCheckBox("Initialize Cabal package", true)
   val packageVersionField = new JTextField("0.1.0.0")
   val synopsisField = new JTextField()
@@ -59,6 +58,21 @@ class NewCabalProjectForm {
     fieldMap.foreach(_._2.setEnabled(shouldInitializeCabalPackage))
   }
 
-  def getContentPane = contentPane
+  def getContentPane: JPanel = contentPane
+
   def shouldInitializeCabalPackage: Boolean = initializeCabalPackageField.isSelected
+
+  def getData: CabalFileData = CabalFileData(
+    packageVersion = packageVersionField.getText,
+    synopsis = synopsisField.getText,
+    homepage = homepageField.getText,
+    author = authorNameField.getText,
+    maintainer = maintainerEmailField.getText,
+    category = categoryField.getSelectedItem.toString,
+    cabalVersion = cabalVersionField.getText,
+    // The .asInstanceOf should be ok since the user can only pick a CabalComponentType.
+    componentType = componentTypeField.getSelectedItem.asInstanceOf[CabalComponentType],
+    sourceDir = sourceDirField.getText,
+    language = languageField.getSelectedItem.toString
+  )
 }

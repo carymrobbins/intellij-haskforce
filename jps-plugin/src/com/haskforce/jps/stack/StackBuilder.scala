@@ -157,9 +157,9 @@ class StackBuildProcessAdapter(context: CompileContext) extends ProcessAdapter {
       case _ => new CompilerMessage("stack", Kind.INFO, (head :: tail).mkString("\n"))
     }
   }
-
 }
 
+// TODO: Remove in favor of GhcMessageParser
 object StackBuilderRegex {
   val WarnRegex = """([^:]+):(\d+):(\d+):(?: warning:| Warning:)(.*)""".r
   val ErrorRegex = """([^:]+):(\d+):(\d+):(?: error:)?(.*)""".r

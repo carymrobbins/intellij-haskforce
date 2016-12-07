@@ -38,6 +38,7 @@ import com.haskforce.highlighting.annotation.external.GhcModTest;
 import com.haskforce.highlighting.annotation.external.GhcModUtilTest;
 import com.haskforce.importWizard.stack.StackImportWizardTest;
 import com.haskforce.importWizard.stack.StackYamlTest;
+import com.haskforce.jps.ghc.GhcMessageParserTest;
 import com.haskforce.parser.HaskellParserTest;
 import com.haskforce.parser.HaskellParsingLexerTest;
 import com.haskforce.projectWizard.NewProjectWizardTest;
@@ -70,6 +71,7 @@ public class HaskellTestCase extends TestCase {
         suite.addTestSuite(HaskellFindUsagesTest.class);
         suite.addTestSuite(HaskellRenameTest.class);
         suite.addTestSuite(HaskellResolveTest.class);
+        suite.addTestSuite(GhcMessageParserTest.class);
         suite.addTestSuite(GhcModUtilTest.class);
         suite.addTestSuite(HaskellGoToSymbolTest.class);
         suite.addTestSuite(AddCabalPackageTest.class);

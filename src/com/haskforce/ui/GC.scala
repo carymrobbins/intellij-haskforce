@@ -49,5 +49,8 @@ sealed case class GC(
   lazy val fillNone = copy(fill_ = NONE)
 }
 
-// For some reason, we're not allowed to use the default arguments here, so done explicitly.
-object GC extends GC(RELATIVE, RELATIVE, 1, 1, 0, 0, CENTER, NONE, new Insets(0, 0, 0, 0), 0, 0)
+object GC {
+  /** Allow us to refer to [[GC]] globally with the default values. */
+  implicit def toDefault(c: GC.type): GC = default
+  val default = GC()
+}

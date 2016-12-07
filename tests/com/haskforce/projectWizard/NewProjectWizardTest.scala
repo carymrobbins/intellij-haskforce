@@ -73,7 +73,7 @@ class NewProjectWizardTest extends NewProjectWizardTestCase with AssertMixin wit
   }
 
   def runWizard(projectName: String): Project = {
-   createProject { step: Step =>
+    createProject { step: Step =>
       val projectTypeStep = assertInstanceOf[ProjectTypeStep](step)
       assertTrue(projectTypeStep.setSelectedTemplate("Haskell", null))
       assertEquals(5, myWizard.getSequence.getSelectedSteps.size)

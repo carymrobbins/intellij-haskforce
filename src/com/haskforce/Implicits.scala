@@ -67,11 +67,15 @@ object Implicits {
     override def consume(a: A): Unit = f(a)
   }
 
-  implicit class BooleanToOption(b: Boolean) {
+  implicit final class BooleanToOption(val b: Boolean) extends AnyVal {
     def option[A](a: => A): Option[A] = if (b) Some(a) else None
   }
 
-  implicit class RichJavaCollection[A](val underlying: util.Collection[A]) {
+  implicit final class RichString(val repr: String) extends AnyVal {
+    def rtrim: String = repr.reverse.dropWhile(_ <= ' ').reverse
+  }
+
+  implicit final class RichJavaCollection[A](val underlying: util.Collection[A]) extends AnyVal {
     def foreach[U](f: A => U): Unit = underlying.iterator().asScala.foreach(f)
   }
 
@@ -82,7 +86,7 @@ object Implicits {
    *   Option(foo).nullMap(_.getBar()).nullMap(_.getBaz()) <- returns None if any value was null.
    */
   // TODO: Should we create Scala interfaces around the Java ones to replace null with Option entirely?
-  implicit class ToOptionNullMap[A](private val o: Option[A]) extends AnyVal {
+  implicit final class ToOptionNullMap[A](private val o: Option[A]) extends AnyVal {
     def nullMap[B](f: A => B): Option[B] = o.flatMap(a => Option(f(a)))
   }
 }

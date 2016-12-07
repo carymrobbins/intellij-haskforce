@@ -1,9 +1,8 @@
 package com.haskforce.codeInsight
 
+import com.haskforce.HaskellIcons
 import com.intellij.codeInsight.lookup.{LookupElement, LookupElementBuilder}
 import com.intellij.util.containers.ContainerUtil
-
-import com.haskforce.HaskellIcons
 import com.haskforce.Implicits._
 
 object LookupElementUtil {

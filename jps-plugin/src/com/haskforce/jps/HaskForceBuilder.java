@@ -1,5 +1,6 @@
 package com.haskforce.jps;
 
+import com.haskforce.eta.jps.etlas.EtlasBuilder;
 import com.haskforce.jps.stack.StackBuilder;
 import com.haskforce.utils.JavaVersionUtil;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +23,10 @@ public class HaskForceBuilder extends BuilderService {
         // When we are compiling a Haskell project, the JDK should be at least Java 8.
         // Only Java projects will use something older.
         if (!JavaVersionUtil.isAtLeastJava8()) return Collections.emptyList();
-        return Collections.singletonList(new CabalBuilder());
+        return Arrays.asList(
+            new CabalBuilder(),
+            new EtlasBuilder()
+        );
     }
 
     @NotNull

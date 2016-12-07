@@ -9,9 +9,7 @@ import com.intellij.openapi.roots.ui.configuration.DefaultModuleEditorsProvider;
 import com.intellij.openapi.roots.ui.configuration.JavaContentEntriesEditor;
 import com.intellij.openapi.roots.ui.configuration.ModuleConfigurationState;
 
-/**
- * Project Settings->Module panel.
- */
+/** Provides the editors available in Project Structure > Modules. */
 public class HaskellModuleConfigurationEditor extends DefaultModuleEditorsProvider {
     public ModuleConfigurationEditor[] createEditors(ModuleConfigurationState state) {
         Module module = state.getRootModel().getModule();

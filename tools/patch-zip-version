@@ -1,0 +1,64 @@
+#!/bin/bash
+
+set -e
+
+usage() {
+  cat <<HERE
+Patch the version in an haskforce plugin archive.
+
+Usage: $0 <intellij-haskforce.zip>
+HERE
+}
+
+failWithUsage() {
+  [ $# -eq 0 ] || >&2 echo "$@"
+  >&2 usage
+  exit 1
+}
+
+epoch() { date +%s; }
+
+[ -n "$1" ] || failWithUsage
+[ -f "$1" ] || failWithUsage "File does not exist: $1"
+zip=$1
+zipBaseName=$(basename $zip)
+patch_plugin_version=$(cd "$(dirname "$0")"; echo "$(pwd)/patch-plugin-version")
+[ -x "$patch_plugin_version" ] || failWithUsage "Not executable: $patch_plugin_version"
+
+tmp_dir=$(echo "/tmp/haskforce-patch-version-$(epoch)")
+mkdir -p "$tmp_dir"
+cp "$zip" "$tmp_dir"
+[ $? -eq 0 ] || failWithUsage "Failed to copy archive $zip"
+
+set -x
+
+# Extract the zip, then the jar containing our plugin.xml
+(
+  cd "$tmp_dir"
+  unzip "$zipBaseName"
+  cd intellij-haskforce/lib
+  mkdir intellij-haskforce-jar
+  mv intellij-haskforce.jar intellij-haskforce-jar
+  cd intellij-haskforce-jar
+  jar xf intellij-haskforce.jar
+)
+
+# Patch the plugin.xml
+"$patch_plugin_version" -i \
+  "$tmp_dir/intellij-haskforce/lib/intellij-haskforce-jar/META-INF/plugin.xml"
+
+# Rebuild the jar, then the zip archive
+(
+  cd "$tmp_dir/intellij-haskforce/lib/intellij-haskforce-jar"
+  jar cf intellij-haskforce.jar *
+  mv intellij-haskforce.jar ..
+  cd ..
+  rm -r intellij-haskforce-jar
+  cd "$tmp_dir"
+  zip -r intellij-haskforce.zip intellij-haskforce
+)
+
+mv "$tmp_dir/intellij-haskforce.zip" "$zip"
+rm -r "$tmp_dir"
+
+echo "Done!"

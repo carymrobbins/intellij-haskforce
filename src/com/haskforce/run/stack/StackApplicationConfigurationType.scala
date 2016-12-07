@@ -1,7 +1,7 @@
 package com.haskforce.run.stack
 
 import com.haskforce.HaskellIcons
-import com.intellij.execution.configurations.{RunConfiguration, ConfigurationFactory, ConfigurationTypeBase}
+import com.intellij.execution.configurations.{ConfigurationFactory, ConfigurationTypeBase, RunConfiguration}
 import com.intellij.openapi.project.Project
 
 class StackApplicationConfigurationType extends ConfigurationTypeBase("Stack Run Configuration", "Haskell Stack Run", "Execute a `stack exec` task.", HaskellIcons.FILE) {

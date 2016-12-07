@@ -1,7 +1,6 @@
 package com.haskforce.codeInsight;
 
 import com.haskforce.HaskellIcons;
-import com.haskforce.psi.HaskellTypes;
 import com.haskforce.utils.HaskellUtil;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerInfo;
 import com.intellij.codeInsight.daemon.RelatedItemLineMarkerProvider;

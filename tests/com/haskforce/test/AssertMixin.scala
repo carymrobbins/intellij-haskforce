@@ -24,6 +24,10 @@ trait AssertMixin {
 
   def assertFalse(msg: String, c: Boolean): Unit = TestCase.assertFalse(msg, c)
 
+  def assertEquals(message: String, expected: Any, actual: Any): Unit = {
+    TestCase.assertEquals(message, expected, actual)
+  }
+
   def assertEquals(expected: Any, actual: Any): Unit = TestCase.assertEquals(expected, actual)
 
   def assertNotEquals(x: Any, y: Any): Unit = {
@@ -98,7 +102,7 @@ trait AssertMixin {
 
   def assertExecutable(s: String): File = {
     val file = assertFileExists(s)
-    assertTrue("File ", file.canExecute)
+    assertTrue(s"File '$s' is not executable", file.canExecute)
     file
   }
 

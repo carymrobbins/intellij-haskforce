@@ -2,10 +2,9 @@ package com.haskforce.importWizard.stack
 
 import javax.swing.Icon
 
+import com.haskforce.HaskellIcons
 import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.projectImport.SelectImportedProjectsStep
-
-import com.haskforce.HaskellIcons
 
 /**
  * Provides a list of stack packages that the user can import as modules.
