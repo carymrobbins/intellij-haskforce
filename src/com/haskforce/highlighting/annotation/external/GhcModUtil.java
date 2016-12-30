@@ -88,11 +88,11 @@ public class GhcModUtil {
     }
 
     /**
-     * Updates the environment with path hacks so that ghc-mod(i) can find ghc, cabal, etc.
+     * Updates the environment with path hacks so that ghc-mod(i) can find ghc, cabal, and stack.
      */
     public static void updateEnvironment(@NotNull Project project, @NotNull Map<String, String> env) {
         HaskellBuildSettings settings = HaskellBuildSettings.getInstance(project);
-        updateEnvironment(env, settings.getGhcPath(), settings.getCabalPath());
+        updateEnvironment(env, settings.getGhcPath(), settings.getCabalPath(), settings.getStackPath());
     }
 
     public static void updateEnvironment(@NotNull Map<String, String> env, String... paths) {

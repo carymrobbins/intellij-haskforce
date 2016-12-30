@@ -370,7 +370,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
             } catch (InterruptedException ignored) {
                 // Ignored
             }
-            if (message == null) message = e.toString();
+            if (message == null || message.trim().isEmpty()) message = e.toString();
             throw new ExecError(command, messagePrefix + message);
         }
     }
