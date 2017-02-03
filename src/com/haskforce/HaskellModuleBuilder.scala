@@ -45,6 +45,7 @@ class HaskellModuleBuilder extends ModuleBuilder with SourcePathsBuilder with Mo
     setupRootModelCallbacks.foreach { _(rootModel) }
     if (rootModel.getSdk == null) rootModel.setSdk(HaskellSdkType.findOrCreateSdk())
     addContentEntries(rootModel)
+    addExcludedRoots(rootModel)
   }
 
   private def addContentEntries(rootModel: ModifiableRootModel): Unit = {
@@ -61,6 +62,12 @@ class HaskellModuleBuilder extends ModuleBuilder with SourcePathsBuilder with Mo
           contentEntry.addSourceFolder(sourceRoot, false)
         }
       }
+    }
+  }
+
+  private def addExcludedRoots(rootModel: ModifiableRootModel): Unit = {
+    rootModel.getContentEntries.foreach { contentEntry =>
+      contentEntry.addExcludeFolder(contentEntry.getFile.getUrl + "/.stack-work")
     }
   }
 

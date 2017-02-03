@@ -5,17 +5,16 @@ import java.util
 
 import scala.collection.JavaConversions._
 import scalaz.syntax.id._
-
 import com.intellij.ide.projectWizard.ProjectWizardTestCase
 import com.intellij.ide.util.newProjectWizard.AddModuleWizard
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.roots.{ModuleRootManager, ProjectRootManager}
+import com.intellij.openapi.roots.{ContentEntry, ModuleRootManager, ProjectRootManager}
 import com.intellij.openapi.vfs.VirtualFile
 import org.jetbrains.jps.model.java.JavaSourceRootType
 import org.jetbrains.jps.model.module.JpsModuleSourceRootType
-
 import com.haskforce.test.AssertMixin
 import com.haskforce.{HaskellModuleType, HaskellSdkType}
+import org.jetbrains.jps.model.JpsElement
 
 /** Tests for importing stack projects and modules. */
 class StackImportWizardTest extends ProjectWizardTestCase[AddModuleWizard] with AssertMixin {
@@ -109,18 +108,29 @@ class StackImportWizardTest extends ProjectWizardTestCase[AddModuleWizard] with 
         getTestSourceDirPaths(m),
         s"$canonicalProjectDir/test"
       )
+      assertSameElements(
+        getExcludePaths(m),
+        s"$canonicalProjectDir/.stack-work",
+        s"$canonicalProjectDir/out"
+      )
     }
   }
+
+  private type SourceRootType = JpsModuleSourceRootType[_ <: JpsElement]
 
   private def newImportProvider() = {
     new StackProjectImportProvider(new StackProjectImportBuilder)
   }
 
-  private def getSourceRoots(m: Module, typ: JpsModuleSourceRootType[_]): util.List[VirtualFile] = {
+  private def getContentRoots(m: Module): util.List[ContentEntry] = {
+    util.Arrays.asList(ModuleRootManager.getInstance(m).getContentEntries: _*)
+  }
+
+  private def getSourceRoots(m: Module, typ: SourceRootType): util.List[VirtualFile] = {
     ModuleRootManager.getInstance(m).getSourceRoots(typ)
   }
 
-  private def getSourceRootPaths(m: Module, typ: JpsModuleSourceRootType[_]): util.List[String] = {
+  private def getSourceRootPaths(m: Module, typ: SourceRootType): util.List[String] = {
     getSourceRoots(m, typ).map(_.getPath)
   }
 
@@ -130,5 +140,9 @@ class StackImportWizardTest extends ProjectWizardTestCase[AddModuleWizard] with 
 
   private def getTestSourceDirPaths(m: Module): util.List[String] = {
     getSourceRootPaths(m, JavaSourceRootType.TEST_SOURCE)
+  }
+
+  private def getExcludePaths(m: Module): util.List[String] = {
+    getContentRoots(m).flatMap(_.getExcludeFolderUrls).map(_.stripPrefix("file://"))
   }
 }
