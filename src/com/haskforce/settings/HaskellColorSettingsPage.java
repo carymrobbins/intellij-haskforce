@@ -18,25 +18,29 @@ import java.util.Map;
 public class HaskellColorSettingsPage implements ColorSettingsPage {
     private static final AttributesDescriptor[] DESCRIPTORS = new AttributesDescriptor[] {
             new AttributesDescriptor("Pragma", HaskellSyntaxHighlighter.PRAGMA),
-            new AttributesDescriptor("Reserved IDs", HaskellSyntaxHighlighter.RESERVEDID),
+            new AttributesDescriptor("Reserved IDs", HaskellSyntaxHighlighter.RESERVED_ID),
             new AttributesDescriptor("Constructor", HaskellSyntaxHighlighter.CONID),
             new AttributesDescriptor("Variable", HaskellSyntaxHighlighter.VARID),
             new AttributesDescriptor("Infix Function", HaskellSyntaxHighlighter.INFIXVARID),
             new AttributesDescriptor("Symbol", HaskellSyntaxHighlighter.VARSYM),
             new AttributesDescriptor("Cons Symbol", HaskellSyntaxHighlighter.CONSYM),
-            new AttributesDescriptor("Reserved Symbol", HaskellSyntaxHighlighter.RESERVEDOP),
+            new AttributesDescriptor("Reserved Symbol", HaskellSyntaxHighlighter.RESERVED_OP),
             new AttributesDescriptor("Comma", HaskellSyntaxHighlighter.COMMA),
             new AttributesDescriptor("Semicolon", HaskellSyntaxHighlighter.SEMICOLON),
             new AttributesDescriptor("Brackets", HaskellSyntaxHighlighter.BRACKETS),
+            new AttributesDescriptor("Parentheses", HaskellSyntaxHighlighter.PARENTHESES),
+            new AttributesDescriptor("Braces", HaskellSyntaxHighlighter.BRACES),
             new AttributesDescriptor("String", HaskellSyntaxHighlighter.STRING),
             new AttributesDescriptor("Integer", HaskellSyntaxHighlighter.INTEGER),
             new AttributesDescriptor("Float", HaskellSyntaxHighlighter.FLOAT),
             new AttributesDescriptor("Char", HaskellSyntaxHighlighter.CHAR),
             new AttributesDescriptor("Line Comment", HaskellSyntaxHighlighter.COMMENT),
-            new AttributesDescriptor("Block Comment", HaskellSyntaxHighlighter.NCOMMENT),
+            new AttributesDescriptor("Block Comment", HaskellSyntaxHighlighter.NESTED_COMMENT),
             new AttributesDescriptor("Doc Comment", HaskellSyntaxHighlighter.HADDOCK),
             new AttributesDescriptor("Escape", HaskellSyntaxHighlighter.ESCAPE),
-            new AttributesDescriptor("Quasi Quotes", HaskellSyntaxHighlighter.QQTEXT),
+            new AttributesDescriptor("Quasi Quotes", HaskellSyntaxHighlighter.QUASIQUOTE),
+            new AttributesDescriptor("Signature", HaskellSyntaxHighlighter.SIGNATURE),
+            new AttributesDescriptor("Parameter", HaskellSyntaxHighlighter.PARAMETER),
     };
 
     @Nullable
@@ -81,14 +85,14 @@ public class HaskellColorSettingsPage implements ColorSettingsPage {
                 "(<vs><~></vs>) <ro>=</ro> <vi>mzip</vi>\n" +
                 '\n' +
                 "<vi>bar</vi> <ro>::</ro> [<vi>a</vi>] <ro>-></ro> Int <ro>-></ro> <br>[</br><vi>a</vi><br>]</br>\n" +
-                "<vi>bar</vi> <vi>xs</vi> 0 <ro>=</ro> <br>[</br><br>]</br>\n" +
-                "<vi>bar</vi> <vi>xs</vi> <vi>n</vi> <ro>=</ro> <vi>xs</vi> <vs>++</vs> <br>(</br><vi>bar</vi> <vi>xs</vi> <br>(</br><vi>n</vi> <vs>-</vs> 1<br>)</br><br>)</br>\n" +
+                "<vi>bar</vi> <pa>xs</pa> 0 <ro>=</ro> <br>[</br><br>]</br>\n" +
+                "<vi>bar</vi> <pa>xs</pa> <pa>n</pa> <ro>=</ro> <vi>xs</vi> <vs>++</vs> <br>(</br><vi>bar</vi> <vi>xs</vi> <br>(</br><vi>n</vi> <vs>-</vs> 1<br>)</br><br>)</br>\n" +
                 '\n' +
-                "<vi>listToBool</vi> <ro>::</ro> <br>[</br><vi>a</vi><br>]</br> <ro>-></ro> Bool\n" +
+                "<si>listToBool</si> <ro>::</ro> <br>[</br><vi>a</vi><br>]</br> <ro>-></ro> Bool\n" +
                 "<vi>listToBool</vi> <br>[</br><br>]</br> <ro>=</ro> False\n" +
                 "<vi>listToBool</vi> <ri>_</ri> <ro>=</ro> True\n" +
                 '\n' +
-                "<vi>listToBool'</vi> <vi>xs</vi> <ro>=</ro> <ri>if</ri> <vi>length</vi> <vi>xs</vi> <vs>></vs> 0 <ri>then</ri> True <ri>else</ri> False\n" +
+                "<vi>listToBool'</vi> <pa>xs</pa> <ro>=</ro> <ri>if</ri> <vi>length</vi> <vi>xs</vi> <vs>></vs> 0 <ri>then</ri> True <ri>else</ri> False\n" +
                 '\n' +
                 "<vi>listToBool''</vi> <ro>=</ro> <vi>not</vi> <vs>.</vs> <vi>null</vi>\n" +
                 '\n' +
@@ -114,16 +118,18 @@ public class HaskellColorSettingsPage implements ColorSettingsPage {
     public Map<String, TextAttributesKey> getAdditionalHighlightingTagToDescriptorMap() {
         @NonNls
         final Map<String, TextAttributesKey> map = new THashMap<String, TextAttributesKey>();
-        map.put("ri", HaskellSyntaxHighlighter.RESERVEDID);
-        map.put("ro", HaskellSyntaxHighlighter.RESERVEDOP);
+        map.put("ri", HaskellSyntaxHighlighter.RESERVED_ID);
+        map.put("ro", HaskellSyntaxHighlighter.RESERVED_OP);
         map.put("vs", HaskellSyntaxHighlighter.VARSYM);
         map.put("cs", HaskellSyntaxHighlighter.CONSYM);
         map.put("vi", HaskellSyntaxHighlighter.VARID);
         map.put("iv", HaskellSyntaxHighlighter.INFIXVARID);
-        map.put("nc", HaskellSyntaxHighlighter.NCOMMENT);
+        map.put("nc", HaskellSyntaxHighlighter.NESTED_COMMENT);
         map.put("co", HaskellSyntaxHighlighter.COMMA);
         map.put("br", HaskellSyntaxHighlighter.BRACKETS);
-        map.put("qq", HaskellSyntaxHighlighter.QQTEXT);
+        map.put("qq", HaskellSyntaxHighlighter.QUASIQUOTE);
+        map.put("pa", HaskellSyntaxHighlighter.PARAMETER);
+        map.put("si", HaskellSyntaxHighlighter.SIGNATURE);
         return map;
     }
 
