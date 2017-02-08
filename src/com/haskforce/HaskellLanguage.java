@@ -6,6 +6,7 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.util.containers.HashSet;
 
 import java.util.Arrays;
+import java.util.Set;
 
 import static com.haskforce.psi.HaskellTypes.*;
 
@@ -28,8 +29,22 @@ public class HaskellLanguage extends Language {
     /**
      * Tokens of bracket symbols.
      */
-    public static final HashSet<IElementType> BRACKET_TOKENS = new HashSet<IElementType>(
-            Arrays.asList(LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE, PARENSPLICE, LTHOPEN, RTHCLOSE, QQOPEN));
+    public static final HashSet<IElementType> BRACKET_TOKENS = new HashSet<>(
+            Arrays.asList(LBRACKET, RBRACKET, LTHOPEN, RTHCLOSE, QQOPEN));
+
+    /**
+     * Parens tokens
+     */
+    public static final Set<IElementType> PARENS_TOKENS = new HashSet<>(
+            Arrays.asList(LPAREN, RPAREN, PARENSPLICE)
+    );
+
+    /**
+     * Brace tokens
+     */
+    public static final Set<IElementType> BRACE_TOKENS = new HashSet<>(
+            Arrays.asList(LBRACE, RBRACE)
+    );
 
     /**
      * Tokens of reserved IDs.
