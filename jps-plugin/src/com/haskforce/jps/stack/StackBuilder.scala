@@ -2,11 +2,9 @@ package com.haskforce.jps.stack
 
 import java.io.File
 import java.util
-import java.util.concurrent.ExecutionException
-import java.util.regex.Pattern
+import java.util.concurrent.{ConcurrentLinkedQueue, ExecutionException}
 
 import scala.collection.JavaConversions._
-
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.{BaseOSProcessHandler, ProcessAdapter, ProcessEvent}
 import com.intellij.openapi.util.Key
@@ -15,7 +13,6 @@ import org.jetbrains.jps.builders.{BuildOutputConsumer, DirtyFilesHolder}
 import org.jetbrains.jps.incremental.messages.{BuildMessage, CompilerMessage}
 import org.jetbrains.jps.incremental.{CompileContext, ProjectBuildException, TargetBuilder}
 import org.jetbrains.jps.model.serialization.JpsModelSerializationDataService
-
 import com.haskforce.importWizard.stack.StackYaml
 import com.haskforce.jps.model.{HaskellBuildOptions, JpsHaskellBuildOptionsExtension}
 import com.haskforce.jps.{HaskellSourceRootDescriptor, HaskellTarget, HaskellTargetType}
@@ -37,7 +34,6 @@ class StackBuilder extends TargetBuilder[HaskellSourceRootDescriptor, HaskellTar
        outputConsumer: BuildOutputConsumer,
        context: CompileContext)
       : Unit = {
-    target.getHaskellTargetType
     val jpsProject = context.getProjectDescriptor.getProject
     val opts = JpsHaskellBuildOptionsExtension.getOrCreateExtension(jpsProject).getOptions
 
@@ -106,6 +102,8 @@ class StackBuilder extends TargetBuilder[HaskellSourceRootDescriptor, HaskellTar
     handler.addProcessListener(adapter)
     handler.startNotify()
     handler.waitFor()
+    // Ensure any remaining messages get processed.
+    adapter.flush()
     if (process.exitValue() != 0) {
       throw new ProjectBuildException("Stack build failed with nonzero exit status")
     }
@@ -114,20 +112,23 @@ class StackBuilder extends TargetBuilder[HaskellSourceRootDescriptor, HaskellTar
 
 class StackBuildProcessAdapter(context: CompileContext) extends ProcessAdapter {
 
-  private[this] val state = new util.ArrayList[String]()
+  private[this] val state = new ConcurrentLinkedQueue[String]()
+
+  /** Process any remaining messages in our adapter state. */
+  def flush(): Unit = {
+    Iterator.continually(state.poll()).takeWhile(_ != null).toList match {
+      case Nil => // noop
+      case head :: tail => context.processMessage(buildCompilerMessage(head, tail))
+    }
+  }
 
   override def onTextAvailable(event: ProcessEvent, outputType: Key[_]): Unit = {
     val text = event.getText
     if (text == null || text.trim.isEmpty) {
-      processCompilerMessage()
-      state.clear()
+      flush()
     } else {
       state.add(text)
     }
-  }
-
-  private def processCompilerMessage(): Unit = {
-    context.processMessage(buildCompilerMessage(state.toList))
   }
 
   private def stripCommonWhitespace(list: List[String]) = list match {
@@ -137,11 +138,9 @@ class StackBuildProcessAdapter(context: CompileContext) extends ProcessAdapter {
       list.map(_.drop(commonPrefixLen))
   }
 
-  private def buildCompilerMessage(message: List[String]): CompilerMessage = {
+  private def buildCompilerMessage(head: String, tail: List[String]): CompilerMessage = {
     import StackBuilderRegex._
     import BuildMessage.Kind
-
-    val (head :: tail) = message
 
     def msg(k: Kind, path: String, line: String, col: String, info: String) = {
       val rebuild = if (info.trim.nonEmpty) info :: tail else tail
@@ -152,7 +151,7 @@ class StackBuildProcessAdapter(context: CompileContext) extends ProcessAdapter {
     head.trim match {
       case WarnRegex(sourcePath, line, col, info) => msg(Kind.WARNING, sourcePath, line, col, info)
       case ErrorRegex(sourcePath, line, col, info) => msg(Kind.ERROR, sourcePath, line, col, info)
-      case _ => new CompilerMessage("stack", Kind.INFO, message.mkString("\n"))
+      case _ => new CompilerMessage("stack", Kind.INFO, (head :: tail).mkString("\n"))
     }
   }
 
