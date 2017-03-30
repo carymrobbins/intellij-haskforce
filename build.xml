@@ -35,6 +35,7 @@
   <property file="build.properties"/>
   <property name="build.compiler" value="modern"/>
   <dirname property="module.haskforce.basedir" file="${ant.file}"/>
+  <property name="plugin.xml" value="${module.haskforce.basedir}/META-INF/plugin.xml" />
   <property name="jps.jdk.source" value="1.6"/>
   <property name="jps.jdk.target" value="1.6"/>
   <property name="jflex.jar" value="jflex-1.7.0-SNAPSHOT.jar"/>
@@ -510,7 +511,7 @@
   <target name="plugin.build.jar.haskforce" depends="compile.module.haskforce" description="Build plugin archive for module &#39;HaskForce&#39;">
     <jar destfile="${haskforce.plugin.path.jar}" duplicate="preserve">
       <zipfileset dir="${module.haskforce.basedir}/out/production/HaskForce"/>
-      <zipfileset file="${module.haskforce.basedir}/META-INF/plugin.xml" prefix="META-INF"/>
+      <zipfileset file="${plugin.xml}" prefix="META-INF"/>
       <manifest>
         <attribute name="Created-By" value="IntelliJ IDEA"/>
         <attribute name="Manifest-Version" value="1.0"/>
