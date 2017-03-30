@@ -15,12 +15,12 @@ public class HaskellNamesValidator implements NamesValidator {
      * Slight overapproximation of keywords, but they are keyword in some
      * Haskell variant.
      */
-    public static final HashSet<String> HASKELL_KEYWORDS = new HashSet<String>(
-            Arrays.asList(new String[]{"as", "case", "class", "data", "default"
+    public static final HashSet<String> HASKELL_KEYWORDS = new HashSet<>(
+            Arrays.asList("as", "case", "class", "data", "default"
                     , "deriving", "do", "else", "export", "forall", "foreign"
                     , "hiding", "if", "import", "in", "infix", "infixl", "infixr"
                     , "instance", "let", "module", "newtype", "of", "qualified"
-                    , "safe", "then", "type", "where"}));
+                    , "safe", "then", "type", "where"));
 
     /**
      * Checks if the specified string is a keyword in the language.

@@ -8,7 +8,6 @@ import com.intellij.lang.annotation.Annotator;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
 import com.intellij.psi.PsiElement;
-import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -46,6 +45,30 @@ public class HaskellAnnotator implements Annotator {
             public void visitQconsym(@NotNull HaskellQconsym o) {
                 super.visitQconsym(o);
                 setHighlighting(o, holder, HaskellSyntaxHighlighter.CONSYM);
+            }
+
+            /**
+             * Highlight the type signature as such.
+             */
+            @Override
+            public void visitGendecl(@NotNull HaskellGendecl o) {
+                super.visitGendecl(o);
+                HaskellVars vars = o.getVars();
+                if (vars != null) {
+                    vars.getVaridList().forEach(varid -> setHighlighting(varid, holder, HaskellSyntaxHighlighter.SIGNATURE));
+                }
+            }
+
+            /**
+             * Highlight function arguments as such.
+             */
+            @Override
+            public void visitFunorpatdecl(@NotNull HaskellFunorpatdecl o) {
+                super.visitFunorpatdecl(o);
+                o.getVaridList()
+                        .stream()
+                        .skip(1) //Skip first, as it is the name of the function.
+                        .forEach(varid -> setHighlighting(varid, holder, HaskellSyntaxHighlighter.PARAMETER));
             }
 
             @Override
