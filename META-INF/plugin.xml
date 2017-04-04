@@ -464,6 +464,10 @@
     <spellchecker.bundledDictionaryProvider
         implementation="com.haskforce.spellchecker.HaskellBundledDictionaryProvider"/>
 
+    <!-- Frameworks -->
+    <framework.type implementation="com.haskforce.project.template.stack.StackFrameworkType"/>
+
+    <!-- Import Wizards -->
     <projectImportProvider
         implementation="com.haskforce.importWizard.stack.StackProjectImportProvider"/>
     <projectImportBuilder
