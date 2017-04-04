@@ -207,6 +207,11 @@ public class ExecUtil {
             return result.toString();
         }
 
+        @Nullable
+        public Throwable getCause() {
+            return cause;
+        }
+
         public <A> Left<ExecError, A> toLeft() {
             return new Left<ExecError, A>(this);
         }

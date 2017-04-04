@@ -5,15 +5,14 @@ import javax.swing.text.JTextComponent
 
 import scala.annotation.tailrec
 import scalaz.syntax.id._
-
-import com.intellij.notification.NotificationType
-
 import com.haskforce.HaskellModuleType
 import com.haskforce.Implicits._
-import com.haskforce.cabal.settings.{CabalComponentType, AddCabalPackageOptions}
+import com.haskforce.cabal.settings.{AddCabalPackageOptions, CabalComponentType}
 import com.haskforce.ui.SComboBox
-import com.haskforce.utils.{NotificationUtil, FileUtil, CabalExecutor, ExecUtil}
-import com.intellij.openapi.module.{ModuleManager, Module}
+import com.haskforce.utils.{CabalExecutor, ExecUtil, FileUtil}
+import com.intellij.execution.configurations.ParametersList
+import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.module.{Module, ModuleManager}
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 
@@ -22,6 +21,9 @@ import com.intellij.openapi.vfs.VirtualFile
  * TODO: The `cabal init` stuff can probably go away soon, so look into removing most of this.
  */
 object AddCabalPackageUtil {
+
+  private val LOGGER = Logger.getInstance(AddCabalPackageUtil.getClass)
+
   def buildOptions
       (maybeProject: Option[Project],
        form: AddCabalPackageForm,
@@ -168,9 +170,10 @@ object AddCabalPackageUtil {
   def maybeSetTextFromCommandLine(workDir: Option[String], component: JTextComponent,
                                   command: String, args: String*): Unit = {
     ExecUtil.readCommandLine(workDir.orNull, command, args: _*).fold(
-      e => NotificationUtil.displaySimpleNotification(
-        NotificationType.ERROR, null, "exec", e.getMessage
-      ),
+      e => {
+        val fullCmd = ParametersList.join(command +: args: _*)
+        LOGGER.warn(s"Failed to execute command: $fullCmd; ${e.getMessage}", e.getCause)
+      },
       stdout => maybeSetText(component, stdout)
     )
   }
