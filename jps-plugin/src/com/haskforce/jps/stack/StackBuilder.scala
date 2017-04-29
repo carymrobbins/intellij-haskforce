@@ -104,8 +104,11 @@ class StackBuilder extends TargetBuilder[HaskellSourceRootDescriptor, HaskellTar
     handler.waitFor()
     // Ensure any remaining messages get processed.
     adapter.flush()
+    // Report if the stack build failed.
     if (process.exitValue() != 0) {
-      throw new ProjectBuildException("Stack build failed with nonzero exit status")
+      context.processMessage(new CompilerMessage(
+        "stack", BuildMessage.Kind.ERROR, "Stack build failed with nonzero exit status"
+      ))
     }
   }
 }
