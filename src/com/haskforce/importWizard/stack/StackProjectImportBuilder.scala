@@ -131,9 +131,14 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
       // Otherwise, explicitly set an empty set of source paths (to avoid the Java default 'src/')
       case None => moduleBuilder.setSourcePaths(util.Collections.emptyList())
     }
-    val module = moduleBuilder.createModule(moduleModel)
-    moduleBuilder.commit(project)
-    module
+    // Originally we were using moduleBuilder.createModule(); however, that caused issues
+    // with listeners not getting disposed. Instead, we'll use moduleBuilder.commit() which
+    // will return a list of newly created modules. In our case, it should be only 1.
+    val modules = moduleBuilder.commit(project)
+    if (modules.size != 1) {
+      throw new AssertionError(s"Expected 1 new module, got: ${modules.size}: $modules")
+    }
+    modules.get(0)
   }
 
   private def setupSourceRoots
