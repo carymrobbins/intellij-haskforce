@@ -1,7 +1,7 @@
 <idea-plugin use-idea-classloader="true">
   <id>com.haskforce</id>
   <name>HaskForce</name>
-  <version>0.3-beta.38-SNAPSHOT</version>
+  <version>0.3-beta.38</version>
   <vendor url="https://github.com/carymrobbins/intellij-haskforce">HaskForce on GitHub</vendor>
 
   <description>Plugin for Haskell language support.</description>
@@ -15,6 +15,14 @@
     <p>
       If you encounter any issues, please submit them on our
       <a href="https://github.com/carymrobbins/intellij-haskforce/issues">bug tracker</a>.
+    </p>
+    <p>
+      <b>v0.3-beta.38</b>
+      <ul>
+        <li>Ensure all output gets processed when building with stack (#325)</li>
+        <li>Don't notify for git errors (#324)</li>
+        <li>Create Etlas project and builder (#302)</li>
+      </ul>
     </p>
     <p>
       <b>v0.3-beta.37</b>
