@@ -31,6 +31,10 @@ def main():
     plugin_xml = os.path.join(tmp_dir, 'plugin.xml')
     tree.write(plugin_xml)
     ant_build_modules(plugin_xml)
+    os.rename(
+        'out/intellij-haskforce.zip',
+        'out/intellij-haskforce-{}.zip'.format(version_text)
+    )
 
 
 def ant_build_modules(plugin_xml):
