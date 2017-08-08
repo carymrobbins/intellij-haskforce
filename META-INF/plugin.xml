@@ -384,6 +384,7 @@
                          parentId="project.propCompiler" id="Eta compiler"
                          displayName="Eta Compiler"/>
     <projectService serviceImplementation="com.haskforce.eta.settings.EtaBuildSettings"/>
+    <configurationType implementation="com.haskforce.eta.run.EtlasConfigurationType"/>
 
     <!-- Language injections -->
     <lang.elementManipulator forClass="com.haskforce.psi.HaskellQqblob"

@@ -22,12 +22,13 @@
     <orderEntry type="module-library">
       <library name="IvyIDEA">
         <CLASSES>
-          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-compiler/jars/scala-compiler-2.11.7.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.11.7.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-reflect/jars/scala-reflect-2.11.7.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/com.chuusai/shapeless_2.11/bundles/shapeless_2.11-2.3.2.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/jars/scala-library-2.11.8.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.typelevel/macro-compat_2.11/jars/macro-compat_2.11-1.1.1.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-compiler/jars/scala-compiler-2.11.8.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-reflect/jars/scala-reflect-2.11.8.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang.modules/scala-xml_2.11/bundles/scala-xml_2.11-1.0.4.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang.modules/scala-parser-combinators_2.11/bundles/scala-parser-combinators_2.11-1.0.4.jar!/" />
-          <root url="jar://$USER_HOME$/.ivy2/cache/jline/jline/jars/jline-2.12.1.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.scalamacros/paradise_2.11.6/jars/paradise_2.11.6-2.1.0-M5.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.scalaz/scalaz-core_2.11/bundles/scalaz-core_2.11-7.1.4.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.yaml/snakeyaml/bundles/snakeyaml-1.16.jar!/" />
@@ -53,6 +54,11 @@
           <root url="jar://$USER_HOME$/.ivy2/cache/org.codehaus.mojo/animal-sniffer-annotations/jars/animal-sniffer-annotations-1.14.jar!/" />
         </CLASSES>
         <JAVADOC>
+          <root url="jar://$USER_HOME$/.ivy2/cache/com.chuusai/shapeless_2.11/javadocs/shapeless_2.11-2.3.2-javadoc.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/javadocs/scala-library-2.11.8-javadoc.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.typelevel/macro-compat_2.11/javadocs/macro-compat_2.11-1.1.1-javadoc.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-compiler/javadocs/scala-compiler-2.11.8-javadoc.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-reflect/javadocs/scala-reflect-2.11.8-javadoc.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.scalamacros/paradise_2.11.6/javadocs/paradise_2.11.6-2.1.0-M5-javadoc.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.scalaz/scalaz-core_2.11/javadocs/scalaz-core_2.11-7.1.4-javadoc.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.yaml/snakeyaml/javadocs/snakeyaml-1.16-javadoc.jar!/" />
@@ -70,6 +76,11 @@
           <root url="jar://$USER_HOME$/.ivy2/cache/org.codehaus.mojo/animal-sniffer-annotations/javadocs/animal-sniffer-annotations-1.14-javadoc.jar!/" />
         </JAVADOC>
         <SOURCES>
+          <root url="jar://$USER_HOME$/.ivy2/cache/com.chuusai/shapeless_2.11/sources/shapeless_2.11-2.3.2-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-library/sources/scala-library-2.11.8-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.typelevel/macro-compat_2.11/sources/macro-compat_2.11-1.1.1-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-compiler/sources/scala-compiler-2.11.8-sources.jar!/" />
+          <root url="jar://$USER_HOME$/.ivy2/cache/org.scala-lang/scala-reflect/sources/scala-reflect-2.11.8-sources.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.scalamacros/paradise_2.11.6/sources/paradise_2.11.6-2.1.0-M5-sources.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.scalaz/scalaz-core_2.11/sources/scalaz-core_2.11-7.1.4-sources.jar!/" />
           <root url="jar://$USER_HOME$/.ivy2/cache/org.yaml/snakeyaml/sources/snakeyaml-1.16-sources.jar!/" />
