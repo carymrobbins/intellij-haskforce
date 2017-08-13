@@ -385,6 +385,7 @@
                          displayName="Eta Compiler"/>
     <projectService serviceImplementation="com.haskforce.eta.settings.EtaBuildSettings"/>
     <configurationType implementation="com.haskforce.eta.run.EtlasConfigurationType"/>
+    <runConfigurationProducer implementation="com.haskforce.eta.run.EtlasRunConfigurationProducer"/>
 
     <!-- Language injections -->
     <lang.elementManipulator forClass="com.haskforce.psi.HaskellQqblob"
@@ -445,7 +446,7 @@
     <moduleConfigurationEditorProvider
         implementation="com.haskforce.settings.HaskellModuleConfigurationEditor" order="first"/>
     <moduleConfigurationEditorProvider
-        implementation="com.haskforce.eta.project.module.EtlasModuleConfigurationEditor" />
+        implementation="com.haskforce.eta.project.module.EtlasModuleConfigurationEditor"/>
 
     <!-- Tab in IntelliJ -> Preferences -->
     <colorSettingsPage implementation="com.haskforce.settings.HaskellColorSettingsPage"/>

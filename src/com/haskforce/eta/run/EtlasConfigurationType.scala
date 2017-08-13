@@ -1,7 +1,8 @@
 package com.haskforce.eta.run
 
 import com.haskforce.HaskellIcons
-import com.intellij.execution.configurations.{ConfigurationFactory, ConfigurationTypeBase, RunConfiguration}
+import com.intellij.execution.configurations.{ConfigurationFactory, ConfigurationType, ConfigurationTypeBase, RunConfiguration}
+import com.intellij.openapi.extensions.Extensions
 import com.intellij.openapi.project.Project
 
 class EtlasConfigurationType extends ConfigurationTypeBase(
@@ -15,4 +16,11 @@ class EtlasConfigurationType extends ConfigurationTypeBase(
       new EtlasRunConfiguration(project, this)
     }
   })
+}
+
+object EtlasConfigurationType {
+  val INSTANCE = Extensions.findExtension(
+    ConfigurationType.CONFIGURATION_TYPE_EP,
+    classOf[EtlasConfigurationType]
+  )
 }

@@ -10,7 +10,6 @@ import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.{PsiElement, PsiFile, PsiFileFactory}
 import com.intellij.psi.tree.IElementType
-
 import com.haskforce.cabal.CabalLanguage
 import com.haskforce.cabal.lang.psi
 import com.haskforce.cabal.lang.psi.{CabalFile, CabalTypes}
@@ -158,6 +157,15 @@ sealed trait Named extends ElementWrapper {
   }
 }
 
+sealed trait ExecLike extends ElementWrapper {
+
+  def getMainIs: Option[String] = {
+    PQ.getChildOfType(el, classOf[psi.MainIs]).flatMap(
+      PQ.getChildOfType(_, classOf[psi.Freeform])
+    ).map(_.getText)
+  }
+}
+
 sealed trait BuildInfo extends ElementWrapper  {
 
   val typ: BuildInfo.Type
@@ -212,18 +220,18 @@ object BuildInfo {
   final class ExplicitLibrary(val el: psi.Library) extends Library
 
   val EXECUTABLE_TYPE_NAME = "executable"
-  final class Executable(val el: psi.Executable) extends BuildInfo with Named {
+  final class Executable(val el: psi.Executable) extends BuildInfo with Named with ExecLike {
     override val typ = Type.Executable
     override val NAME_ELEMENT_TYPE = CabalTypes.EXECUTABLE_NAME
   }
 
   val TEST_SUITE_TYPE_NAME = "test-suite"
-  final class TestSuite(val el: psi.TestSuite) extends BuildInfo with Named {
+  final class TestSuite(val el: psi.TestSuite) extends BuildInfo with Named with ExecLike {
     override val typ = Type.TestSuite
     override val NAME_ELEMENT_TYPE = CabalTypes.TEST_SUITE_NAME
   }
 
-  final class Benchmark(val el: psi.Benchmark) extends BuildInfo with Named {
+  final class Benchmark(val el: psi.Benchmark) extends BuildInfo with Named with ExecLike {
     override val typ = Type.Benchmark
     override val NAME_ELEMENT_TYPE = CabalTypes.BENCHMARK_NAME
   }
