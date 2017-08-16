@@ -1,0 +1,70 @@
+#!/bin/bash
+
+set -e
+
+cd "$(dirname "$0")/.."
+
+jflex_jar=$(echo jflex*.jar)
+jflex_skeleton=idea-flex.skeleton
+
+if [ ! -f "$jflex_jar" ]; then
+  >&2 echo "JFlex jar does not exist: $jflex_jar"
+  exit 1
+fi
+
+usage() {
+  echo "Usage: $0 [clean]"
+}
+
+# Names without extensions, this way we can add .java or .flex as needed.
+names=(
+src/com/haskforce/cabal/highlighting/_CabalSyntaxHighlightingLexer
+src/com/haskforce/cabal/lang/lexer/_CabalParsingLexer
+src/com/haskforce/highlighting/_HaskellSyntaxHighlightingLexer
+src/com/haskforce/parsing/_HaskellParsingLexer
+src/com/haskforce/yesod/shakespeare/hamlet/highlighting/_HamletSyntaxHighlightingLexer
+)
+
+main() {
+  case $# in
+    0) do_run; exit;;
+    1)
+      case "$1" in
+        --help|-h) usage; exit;;
+        clean) do_clean; exit;;
+        *)
+          >&2 "Unexpected arguments: $@"
+          >&2 usage
+          exit 1
+          ;;
+      esac
+      ;;
+    *)
+      >&2 echo "Unexpected arguments: $@"
+      >&2 usage
+      exit 1
+      ;;
+  esac
+}
+
+do_clean() {
+  for name in "${names[@]}"; do
+    echo "Removing file $name.java"
+    rm -f $name.java
+  done
+}
+
+do_run() {
+  for name in "${names[@]}"; do
+    flex_file=$name.flex
+    java_file=$name.java
+    # Check if java_file is up-to-date with flex_file
+    if [ "$java_file" -nt "$flex_file" ]; then
+      echo "$java_file is up to date, skipping JFlex task"
+    else
+      java -jar "$jflex_jar" --skel "$jflex_skeleton" --nobak "$flex_file"
+    fi
+  done
+}
+
+main "$@"

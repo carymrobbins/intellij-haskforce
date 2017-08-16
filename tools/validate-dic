@@ -33,6 +33,7 @@ case "$1" in
       done <<< "$INVALID"
       exit 1
     fi
+    echo "$DIC is valid"
     ;;
   *)
     >&2 echo "Usage: $0 [--overwrite]"

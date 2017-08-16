@@ -42,7 +42,7 @@ class CabalCompletionTest extends CabalCompletionTestBase {
   )
 }
 
-class CabalCompletionTestBase
+abstract class CabalCompletionTestBase
   extends HaskellCompletionTestBase(FileUtil.join("cabal", "completion")) {
 
   override protected def getFileType = CabalFileType.INSTANCE
@@ -76,7 +76,7 @@ class CabalCompletionTestBase
   override protected def setUp(): Unit = {
     super.setUp()
     getTestDataFiles().iterator().asScala.foreach { file =>
-      if (!file.isDirectory) {
+      if (file.exists && !file.isDirectory) {
         val text = StringUtil.convertLineSeparators(
           FileUtil.loadFile(file, CharsetToolkit.UTF8)
         )

@@ -1,6 +1,11 @@
+.idea/
+*.iml
 out
 build.properties
 *.swp
 .ackrc
 .dist-buildwrapper/
+.gradle/
+.gradletasknamecache
+build/
 lib/

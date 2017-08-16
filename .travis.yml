@@ -1,35 +1,25 @@
 language: java
+
 sudo: false
+
 jdk:
   - oraclejdk8
+
+# Avoid caching more than we need to.
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
 cache:
   directories:
-    - $HOME/idea
-    - $HOME/.ant
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+
 before_install:
-  # stack
+  # Download and unpack the haskell stack executable, used for tests.
   - mkdir -p ~/.local/bin
-  - export PATH=~/.local/bin:$PATH
-  - travis_retry curl -L https://github.com/commercialhaskell/stack/releases/download/v0.1.4.0/stack-0.1.4.0-x86_64-linux.tar.gz | tar xz -C ~/.local/bin
-install:
-  - IDEA_VERSION=2017.2
-  - IDEA_TAR=ideaIC-${IDEA_VERSION}.tar.gz
-  - IDEA_PARENT_DIR=$HOME/idea
-  - IDEA_DIR=$IDEA_PARENT_DIR/$IDEA_VERSION
-  - |
-    if [ -d $IDEA_DIR ]; then
-        echo "Using existing IDEA installation at $IDEA_DIR"
-    else
-        echo "Removing any existing IDEA installation."
-        rm -rf $IDEA_PARENT_DIR
-        mkdir -p $IDEA_PARENT_DIR
-        echo "Downloading IDEA archive."
-        travis_retry wget http://download.jetbrains.com/idea/$IDEA_TAR -P $HOME
-        echo "Installing IDEA to $IDEA_DIR"
-        tar xzvf $HOME/$IDEA_TAR -C $IDEA_PARENT_DIR
-        mv $IDEA_PARENT_DIR/idea-IC-* $IDEA_DIR
-    fi
-  - echo "Creating build.properties file for ant."
-  - cp .travis.properties build.properties
-  - echo "idea.home=$IDEA_DIR" >> build.properties
-script: ant
+  - export PATH=$HOME/.local/bin:$PATH
+  - travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
+
+# Travis will automatically run ./gradlew assemble, so no need to run it again.
+script: ./gradlew test

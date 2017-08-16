@@ -1,0 +1,139 @@
+plugins {
+    id "org.jetbrains.intellij" version "0.2.16"
+}
+
+version = file('version.txt').text.trim()
+
+// On travis, we don't want to deploy to Jetbrains that requires credentials
+if (project.file('gradle.properties').exists()) {
+    apply from: "gradle.properties"
+}
+
+task validateDic(type: Exec) {
+    commandLine './tools/validate-dic'
+}
+
+task runJFlex(type: Exec) {
+    commandLine './tools/run-jflex'
+}
+
+task cleanJFlex(type: Exec) {
+    commandLine './tools/run-jflex', 'clean'
+}
+
+ext {
+    javaVersion = '1.8'
+    scalaVersion = '2.11.7'
+    scalaBinaryVersion = '2.11'
+}
+
+allprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'scala'
+    apply plugin: 'org.jetbrains.intellij'
+
+    intellij {
+        version = '2017.2'
+        pluginName = 'HaskForce'
+        // Makes it easy to support multiple intellij versions.
+        // If we want to set this to true, we should find a way to cross build
+        // against multiple intellij versions.
+        updateSinceUntilBuild = false
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    configurations {
+        provided
+        compile.extendsFrom provided
+    }
+
+    dependencies {
+
+        // Scala support
+        compileOnly "org.scala-lang:scala-compiler:${scalaVersion}"
+        compileOnly "org.scala-lang:scala-reflect:${scalaVersion}"
+        compile "org.scala-lang:scala-library:${scalaVersion}"
+
+        compile "org.scalaz:scalaz-core_${scalaBinaryVersion}:7.1.4"
+        compile "com.chuusai:shapeless_${scalaBinaryVersion}:2.3.2"
+        compile "org.yaml:snakeyaml:1.16"
+
+        // Compile-time-only deps.
+        compileOnly "com.google.code.findbugs:findbugs:3.0.1"
+        compileOnly "com.google.guava:guava:21.0"
+    }
+
+    // NOTE: We have Scala and Java sources that depend on each other, and the java.srcDirs
+    // will try to be compiled first, so instead we're just setting the scala.srcDirs.
+    sourceSets {
+        main {
+            scala.srcDirs 'src', 'gen'
+            resources.srcDirs 'resources'
+        }
+        test {
+            scala.srcDirs 'tests'
+            resources.srcDirs 'tests'
+        }
+    }
+}
+
+assemble.dependsOn(validateDic, runJFlex)
+
+project(':jps-plugin') {
+    dependencies {
+        compile project(':jps-shared')
+    }
+}
+
+dependencies {
+    compile project(':macros')
+    compile project(':jps-shared')
+    compile project(':jps-plugin')
+}
+
+static def getGitRev() {
+    def proc = "git rev-parse --short HEAD".execute()
+    proc.waitFor()
+    return proc.text.trim()
+}
+
+static def isGitDirty() {
+    return "git diff-index --quiet HEAD".execute().waitFor() != 0
+}
+
+def getPluginVersion() {
+    if (version.endsWith('SNAPSHOT')) {
+        if (isGitDirty()) {
+            return "$version-${getGitRev()}-dirty"
+        } else {
+            return "$version-${getGitRev()}"
+        }
+    } else {
+        return version
+    }
+}
+
+clean.dependsOn cleanJFlex
+
+compileJava.dependsOn runJFlex
+
+patchPluginXml {
+    version = getPluginVersion()
+}
+
+prepareSandbox.doLast {
+
+    def baseDir = "${intellij.sandboxDirectory}/plugins/${intellij.pluginName}"
+
+    // jps-plugin needs to be in the jps directory
+    mkdir("$baseDir/lib/jps")
+    file("$baseDir/lib/jps-plugin.jar").renameTo("$baseDir/lib/jps/jps-plugin.jar")
+}
+
+buildPlugin {
+    archiveName = "haskforce-${patchPluginXml.version}.zip"
+}

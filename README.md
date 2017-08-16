@@ -18,76 +18,48 @@ Start a discussion on our [gitter channel](https://gitter.im/carymrobbins/intell
 
 Do you IRC?  Join **#haskforce** on freenode!
 
-## Prerequisites for building
+## Building
 
-You will need Scala 2.11.7 on your system.  You can use the IvyIDEA plugin to resolve all dependencies,
-including Scala (see **Building with IntelliJ** below).
+Clone the repo -
 
-You can configure Scala manually in IntelliJ; however, this is **not recommended**.
-Ignoring forewarning, you can download it directly via IntelliJ by going to -
-  * **File > Project Structure > Global Libraries > + > Scala SDK > Download > 2.11.7**
-Be sure that the SDK is named `scala-sdk-2.11.7` to properly match the module configurations.
+```
+% git clone https://github.com/carymrobbins/intellij-haskforce
+% cd intellij-haskforce
+```
 
-## Building with IntelliJ
+Build with Gradle -
 
-**Note:** We currently target JDK 8 for building the plugin.
+```
+% ./gradlew assemble
+```
 
-1. Copy the `build.skeleton.properties` to `build.properties` and update the paths to the JDK and IntelliJ installation.
-1. Install and enable additional plugins.
-  * **Plugin DevKit**
-  * **Scala**
-  * **Ant Support**
-  * **IvyIDEA** (resolve dependencies via **Tools > IvyIDEA > Resolve for all modules**)
-  * **UI Designer** (without this everything compiles but viewing forms throws NPEs, e.g. when creating a new project.)
-  * **PsiViewer 3.28.73** (optional, for viewing parse trees)
-  * **JFlex Support 1.5.1** (optional, for generating lexers)
-  * **Grammar Kit 1.4.3** (optional, for generating parsers)
-1. Configure SDK and source files.
-  * Go to **File > Project Structure**.  Add SDKs for JDK and IDEA Plugins.
-  * For **Project SDK** choose **New > Intellij Platform Plugin SDK**.
-  * Update the **Project compiler output**, e.g. `path/to/intellij-haskforce/out`
-1. Generate lexers by hovering over the opening the **Ant Build** tool and choosing **generate.sources**.
-  * Alternatively, if you have the `ant` command line tool you can run `ant generate.sources` from the project root.
-1. Choose **Build > Prepare Plugin Module 'intellij-haskforce' for Deployment**.
+You can then find your plugin zip archive in `build/distributions` -
 
-## Adding IntelliJ Sources (Optional)
-
-1. Check out the Community Edition source files.
-  * `$ git clone https://github.com/JetBrains/intellij-community.git idea`
-  * Check the build version of your IntelliJ installation.  There are two ways to do this.
-    1. Look for a `build.txt` file in your IntelliJ installation directory.
-       It's contents should be something like `IU-141.178.9`
-    1. Alternatively, you can go to **About** in the menu and look at the build number.  This might not have the minor
-       number, e.g. instead of `IU-141.178.9` it might just say `IU-141.178`
-  * Check out the appropriate tag for your build number.
-    * `$ git fetch --tags && git checkout idea/141.178.9`
-  * Be sure to `git checkout` the new tag each time you upgrade IntelliJ.
-2. Under **File > Project Structure > SDKs** find your **IntelliJ Platform Plugin SDK**.
-3. Under the **Sourcepath** tab, add the directory where you cloned the IntelliJ sources.
+```
+% ls build/distributions
+```
 
 ## Running the plugin
 
-1. From the menu go to **Run > Edit Configurations**
-1. Click on the `+` sign and choose **Plugin**, name the configuration something evocative like **Haskforce**, click **OK**, then run your new configuration.
-1. Intellij will open a copy of itself, with default settings, and the plugin installed.
+You can use the `runIde` Gradle task from the command line or directly
+from IntelliJ -
 
-### Debugging the plugin
+<img src="resources/screenshots/haskforce-gradle-runide.png" width="300px"/>
 
-If you simply want to debug the files in `src`, running the plugin with Debug is enough. However, to enable breakpoints in `jps-shared` or `jps-plugin`, follow the instructions from [the IntelliJ SDK DevGuide](http://www.jetbrains.org/intellij/sdk/docs/reference_guide/frameworks_and_external_apis/external_builder_api.html#debugging-a-plugin-for-external-builder)
+## Debugging the plugin
 
+You can run the plugin as described above via IntelliJ to enable setting
+breakpoints and stepping through code.
+
+If you wish to debug the external builder (e.g. the `jps-plugin` sub-project),
+you'll need to use the remote debugger.
+See the [IntelliJ SDK DevGuide](http://www.jetbrains.org/intellij/sdk/docs/reference_guide/frameworks_and_external_apis/external_builder_api.html#debugging-a-plugin-for-external-builder)
+for more info.
 
 ## Testing the plugin
 
-To run the tests, you'll need to create a run configuration:
+You can run all tests using the standard Gradle task -
 
-1. Go to **Run > Edit Configurations**
-1. Click on the `+` sign and choose **JUnit**
-1. In the Class field enter **HaskellTestCase**, which should auto-complete for you.
-1. Click **OK** and run your new test configuration.
-
-
-To add more tests:
-
-* Edit Haskell\*Test.java files to add more tests of the same kind that already exists.
-* Edit HaskellTestCase.java if you need to add tests of a different kind.
-
+```
+./gradlew test
+```
