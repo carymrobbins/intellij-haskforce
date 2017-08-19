@@ -490,7 +490,7 @@
 
     <!-- External builder support -->
     <!-- Note that the classpath is needed for plugin deployment to export a zip archive. -->
-    <compileServer.plugin classpath="jps/jps-plugin.jar;jps-shared.jar;scala-library-2.11.7.jar;scalaz-core_2.11-7.1.4.jar;snakeyaml-1.16.jar"/>
+    <compileServer.plugin classpath="jps-plugin.jar;jps-shared.jar;scala-library-2.11.7.jar;scalaz-core_2.11-7.1.4.jar;snakeyaml-1.16.jar"/>
   </extensions>
   <module-components>
     <component>

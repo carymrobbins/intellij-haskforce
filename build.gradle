@@ -125,15 +125,6 @@ patchPluginXml {
     version = getPluginVersion()
 }
 
-prepareSandbox.doLast {
-
-    def baseDir = "${intellij.sandboxDirectory}/plugins/${intellij.pluginName}"
-
-    // jps-plugin needs to be in the jps directory
-    mkdir("$baseDir/lib/jps")
-    file("$baseDir/lib/jps-plugin.jar").renameTo("$baseDir/lib/jps/jps-plugin.jar")
-}
-
 buildPlugin {
     archiveName = "haskforce-${patchPluginXml.version}.zip"
 }
