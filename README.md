@@ -48,6 +48,15 @@ When hacking on HaskForce, you may need the following plugins -
 * **JFlex Support 1.5.1** - Generate lexers
 * **Grammar Kit 1.4.3** - Generate parsers
 
+To import this project in IntelliJ, use `File > Open`, navigate to
+the project directory, then click `OK`.
+
+A Gradle configuration prompt will appear. **Be sure to uncheck
+_Create a separate module per source set_**. Below is a recommended
+setup -
+
+<img src="resources/screenshots/intellij-gradle-import.png" width="500px"/>
+
 ## Running the plugin
 
 You can use the `runIde` Gradle task from the command line or directly
