@@ -61,6 +61,7 @@ public class HaskellLexerTest extends HaskellLexerTestBase {
     public void testLayout00022()       { doTest(true, true); }
     public void testLayout00023()       { doTest(true, true); }
     public void testLayout00024()       { doTest(true, true); }
+    public void testLayout00025()       { doTest(true, true); }
     public void testList00001()         { doTest(true, true); }
     public void testComment00001()      { doTest(true, true); }
     public void testComment00002()      { doTest(true, true); }
@@ -86,6 +87,7 @@ public class HaskellLexerTest extends HaskellLexerTestBase {
     public void testTempHask00002()     { doTest(true, true); }
     public void testTempHask00003()     { doTest(true, true); }
     public void testTempHask00004()     { doTest(true, true); }
+    public void testTempHask00005()     { doTest(true, true); }
     public void testUnicode00001()      { doTest(true, true); }
     public void testQuote00001()        { doTest(true, true); }
     public void testInternalLexer()     { doTest(true, true); }

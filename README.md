@@ -39,6 +39,15 @@ You can then find your plugin zip archive in `build/distributions` -
 % ls build/distributions
 ```
 
+## Developing
+
+When hacking on HaskForce, you may need the following plugins -
+
+* **Scala**
+* **PsiViewer** - Useful for viewing parse trees
+* **JFlex Support 1.5.1** - Generate lexers
+* **Grammar Kit 1.4.3** - Generate parsers
+
 ## Running the plugin
 
 You can use the `runIde` Gradle task from the command line or directly

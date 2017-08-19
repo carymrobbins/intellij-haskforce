@@ -415,8 +415,27 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
 }
 
 <ININDENTATION> {
-    [\ \f]          {
+    // We need to look ahead for an operator before lexing the indent.
+    // If an operator is indeed next but we haven't actually indented or dedented
+    // (i.e. equal indent) then we should exit this state.
+    // The difference is that we shouldn't do this for something that
+    // looks like a TemplateHaskell splice $(
+    // While this is somewhat ambiguous because we don't know really know if the user
+    // has enabled TemplateHaskell, we'll just guess in this case that they are.
+    // See https://github.com/carymrobbins/intellij-haskforce/issues/333
+    [\ \f]("$("|{ASCSYMBOL})?
+                    {
                         indent++;
+                        // We looked ahead and found a splice or operator.
+                        if (yylength() > 1) {
+                            CharSequence lookahead = yytext().subSequence(1, yytext().length());
+                            // Only consume the first space char, we just needed to look ahead.
+                            yypushback(yylength() - 1);
+                            boolean equalIndent = !indentationStack.isEmpty() && indent == indentationStack.peek().getSecond();
+                            // If the next token is an operator, is not a splice, and we haven't
+                            // changed indentation level, don't process this as an indent/dedent.
+                            if (!lookahead.toString().equals("$(") && equalIndent) yybegin(REALLYYINITIAL);
+                        }
                         return com.intellij.psi.TokenType.WHITE_SPACE;
                     }
     [\t]            {
