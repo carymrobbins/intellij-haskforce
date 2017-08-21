@@ -5,6 +5,10 @@ sudo: false
 jdk:
   - oraclejdk8
 
+branches:
+  only:
+    - master
+
 # Avoid caching more than we need to.
 before_cache:
   - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
