@@ -144,7 +144,8 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
   private def setupSourceRoots
       (q: CabalQuery, moduleBuilder: HaskellModuleBuilder, moduleDir: String)
       : Unit = {
-    q.getSourceRoots.foreach { dir =>
+    val app = ApplicationManager.getApplication
+    q.getSourceRoots.run(app).foreach { dir =>
       moduleBuilder.addSourcePath(Pair.create(FileUtil.join(moduleDir, dir), ""))
     }
     // '.addSourcePath' doesn't support test sources, so we must do this manually.
@@ -155,7 +156,7 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
         } match {
           case Some(ce) =>
             val vFileMgr = VirtualFileManager.getInstance()
-            q.getTestSourceRoots.foreach { _.foreach { dir =>
+            q.getTestSourceRoots.run(app).foreach { _.foreach { dir =>
               if (!new File(s"${ce.getFile.getCanonicalPath}/$dir").mkdirs()) {
                 StackProjectImportBuilder.LOG.warn(new AssertionError(
                   s"Could not create directory: ${ce.getFile.getCanonicalPath}/$dir"

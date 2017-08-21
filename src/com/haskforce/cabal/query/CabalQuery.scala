@@ -1,92 +1,103 @@
 package com.haskforce.cabal.query
 
+import prelude._
+
 import java.io.{File, IOException}
 import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 
-import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.project.{Project, ProjectManager}
-import com.intellij.openapi.util.io.FileUtil
-import com.intellij.openapi.vfs.VirtualFile
-import com.intellij.psi.{PsiElement, PsiFile, PsiFileFactory}
-import com.intellij.psi.tree.IElementType
-
 import com.haskforce.cabal.CabalLanguage
 import com.haskforce.cabal.lang.psi
 import com.haskforce.cabal.lang.psi.{CabalFile, CabalTypes}
-import com.haskforce.utils.{NonEmptySet, PQ}
+import com.haskforce.utils.{IJReadAction, NonEmptySet}
+import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.project.{Project, ProjectManager}
+import com.intellij.openapi.util.io.FileUtil
+import com.intellij.psi.tree.IElementType
+import com.intellij.psi.{PsiElement, PsiFileFactory}
 
-final class CabalQuery(val psiFile: psi.CabalFile) {
+final class CabalQuery(val cabalFile: SPsiFile[CabalFile]) {
 
-  lazy val getVirtualFile = Option(psiFile.getVirtualFile)
+  lazy val getVirtualFile: Option[SVirtualFile] = cabalFile.getVirtualFile
 
-  lazy val getFilePath = getVirtualFile.flatMap(f => Option(f.getCanonicalPath))
+  lazy val getFilePath: Option[String] = getVirtualFile.flatMap(_.getCanonicalPath)
 
   lazy val getDirPath = for {
     f <- getVirtualFile
-    d <- Option(f.getParent)
-    p <- Option(d.getCanonicalPath)
+    d <- f.getParent
+    p <- d.getCanonicalPath
   } yield p
 
-  def getPackageName: Option[String] = for {
-    pkgName <- PQ.getChildOfType(psiFile, classOf[psi.PkgName])
-    ff <- PQ.getChildOfType(pkgName, classOf[psi.Freeform])
-  } yield ff.getText
+  def getPackageName: IJReadAction[Option[String]] = (for {
+    pkgName <- OptionT(cabalFile.getChildOfType[psi.PkgName])
+    ff <- OptionT(pkgName.getChildOfType[psi.Freeform])
+    text <- ff.getText.liftM[OptionT]
+  } yield text).run
 
   /** If 'library' stanza exists, returns it; otherwise, implicitly uses root stanza. */
-  def getLibrary: BuildInfo.Library = {
-    psiFile.getChildren.collectFirst {
-      case c: psi.Library => new BuildInfo.ExplicitLibrary(c)
-    }.getOrElse(new BuildInfo.ImplicitLibrary(psiFile))
+  def getLibrary: IJReadAction[BuildInfo.Library] = cabalFile.getChildOfType[psi.Library].map {
+    case Some(c) => new BuildInfo.ExplicitLibrary(c)
+    case None => new BuildInfo.ImplicitLibrary(cabalFile.asElement)
   }
 
-  def getExecutables: Stream[BuildInfo.Executable] = {
-    PQ.streamChildren(psiFile, classOf[psi.Executable]).map(new BuildInfo.Executable(_))
+  def getExecutables: IJReadAction[Vector[BuildInfo.Executable]] = {
+    cabalFile.getChildrenOfType[psi.Executable].map(_.map(new BuildInfo.Executable(_)))
   }
 
-  def getTestSuites: Stream[BuildInfo.TestSuite] = {
-    PQ.streamChildren(psiFile, classOf[psi.TestSuite]).map(new BuildInfo.TestSuite(_))
+  def getTestSuites: IJReadAction[Vector[BuildInfo.TestSuite]] = {
+    cabalFile.getChildrenOfType[psi.TestSuite].map(_.map(new BuildInfo.TestSuite(_)))
   }
 
-  def getBenchmarks: Stream[BuildInfo.Benchmark] = {
-    PQ.streamChildren(psiFile, classOf[psi.Benchmark]).map(new BuildInfo.Benchmark(_))
+  def getBenchmarks: IJReadAction[Vector[BuildInfo.Benchmark]] = {
+    cabalFile.getChildrenOfType[psi.Benchmark].map(_.map(new BuildInfo.Benchmark(_)))
   }
 
-  def getBuildInfo: Array[BuildInfo] = {
-    getLibrary +: psiFile.getChildren.collect {
-      case c: psi.Executable => new BuildInfo.Executable(c)
-      case c: psi.TestSuite => new BuildInfo.TestSuite(c)
-      case c: psi.Benchmark => new BuildInfo.Benchmark(c)
+  def getBuildInfo: IJReadAction[Array[BuildInfo]] = getLibrary.map { library =>
+    // Since we're in a .map, the .getChildren access is safe.
+    val others = cabalFile.toPsiFile.getChildren.collect {
+      case c: psi.Executable => new BuildInfo.Executable(SPsiElement(c))
+      case c: psi.TestSuite => new BuildInfo.TestSuite(SPsiElement(c))
+      case c: psi.Benchmark => new BuildInfo.Benchmark(SPsiElement(c))
     }
+    library +: others
   }
 
-  def findBuildInfoForSourceFile(sourceFilePath: String): Option[BuildInfo] = {
-    getDirPath.flatMap(baseDir =>
-      CabalQuery.findBuildInfoForSourceFile(getBuildInfo, baseDir, sourceFilePath)
+  def findBuildInfoForFilePath(sourceFilePath: String): IJReadAction[Option[BuildInfo]] = {
+    for {
+      baseDir <- OptionT(IJReadAction(getDirPath))
+      infos <- getBuildInfo.liftM[OptionT]
+      info <- OptionT(CabalQuery.findBuildInfoForSourceFile(infos, baseDir, sourceFilePath))
+    } yield info
+  }.run
+
+  def findBuildInfoForPsiFile(psiFile: SPsiFile.Top): IJReadAction[Option[BuildInfo]] = {
+    psiFile.getVirtualFile.cata(
+      findBuildInfoForVirtualFile,
+      IJReadAction(None)
     )
   }
 
-  def findBuildInfoForSourceFile(psiFile: PsiFile): Option[BuildInfo] = {
-    Option(psiFile.getVirtualFile).flatMap(findBuildInfoForSourceFile)
-  }
-
-  def findBuildInfoForSourceFile(vFile: VirtualFile): Option[BuildInfo] = {
-    Option(vFile.getCanonicalPath).flatMap(findBuildInfoForSourceFile)
+  def findBuildInfoForVirtualFile(vFile: SVirtualFile): IJReadAction[Option[BuildInfo]] = {
+    vFile.getCanonicalPath.cata(
+      findBuildInfoForFilePath,
+      IJReadAction(None)
+    )
   }
 
   /** Determined from 'library' and 'executable' or root stanza; defaults to "." */
-  def getSourceRoots: NonEmptySet[String] = {
-    getLibrary.getSourceDirs.append(
-      getExecutables.map(_.getSourceDirs): _*
-    )
-  }
+  def getSourceRoots: IJReadAction[NonEmptySet[String]] = for {
+    lib <- getLibrary
+    libSourceDirs <- lib.getSourceDirs
+    exes <- getExecutables
+    exeSourceDirSets <- exes.traverse(_.getSourceDirs)
+  } yield libSourceDirs.append(exeSourceDirSets: _*)
 
   /** Determined from 'test-suite' or 'benchmark' stanzas, if any exist. */
-  def getTestSourceRoots: Option[NonEmptySet[String]] = {
-    (getTestSuites ++ getBenchmarks).map(_.getSourceDirs).reduceRightOption(
-      (s1, s2) => s1.append(s2)
-    )
-  }
+  def getTestSourceRoots: IJReadAction[Option[NonEmptySet[String]]] = for {
+    ts <- getTestSuites
+    bs <- getBenchmarks
+    roots <- (ts ++ bs).traverse(_.getSourceDirs)
+  } yield NonEmptySet.fromNonEmptySets(roots)
 }
 
 object CabalQuery {
@@ -105,7 +116,7 @@ object CabalQuery {
     PsiFileFactory.getInstance(project).createFileFromText(
       file.getName, CabalLanguage.INSTANCE, text
     ) match {
-      case psiFile: CabalFile => Some(new CabalQuery(psiFile))
+      case psiFile: CabalFile => Some(new CabalQuery(SPsiFile(psiFile)))
       case other =>
         LOG.warn(new AssertionError(s"Expected CabalFile, got: ${other.getClass}"))
         None
@@ -123,72 +134,83 @@ object CabalQuery {
    * of having VirtualFile instances which correspond to real files.  In real code,
    * prefer the instance method provided in the 'CabalQuery' class.
    */
-  def findBuildInfoForSourceFile
-      (infos: Array[BuildInfo],
-       baseDir: String,
-       sourcePath: String)
-      : Option[BuildInfo] = {
-    if (!sourcePath.startsWith(baseDir)) return None
-    var result: Option[(String, BuildInfo)] = None
-    infos.toStream.foreach { info =>
-      info.getSourceDirs.foreach { sourceDir =>
-        if (FileUtil.isAncestor(FileUtil.join(baseDir, sourceDir), sourcePath, true)) {
-          if (!result.exists(_._1.length >= sourceDir.length)) {
-            result = Some((sourceDir, info))
-          }
-        }
-      }
+  def findBuildInfoForSourceFile(
+    infos: Array[BuildInfo],
+    baseDir: String,
+    sourcePath: String
+  ): IJReadAction[Option[BuildInfo]] = {
+    if (!sourcePath.startsWith(baseDir)) {
+      IJReadAction(None)
+    } else {
+      infos.toVector.traverse(
+        info => info.getSourceDirs.map(_.iterator.map((_, info)).toVector)
+      ).map(xss => lookupMostSpecificBuildInfo(baseDir, sourcePath, xss.flatten))
     }
-    result.map(_._2)
+  }
+
+  private def lookupMostSpecificBuildInfo(
+    baseDir: String,
+    sourcePath: String,
+    xs: Vector[(String, BuildInfo)]
+  ): Option[BuildInfo] = {
+    xs.foldLeft(Option.empty[(String, BuildInfo)]) { case (acc, t@(sourceDir, _)) =>
+      if (
+        FileUtil.isAncestor(FileUtil.join(baseDir, sourceDir), sourcePath, true)
+          && !acc.exists(_._1.length >= sourceDir.length)
+      ) Some(t) else {
+        acc
+      }
+    }.map(_._2)
   }
 
   val defaultSourceRoots = NonEmptySet(".")
 }
 
 trait ElementWrapper {
-  val el: PsiElement
+  type PsiType <: PsiElement
+  val el: SPsiElement[PsiType]
 }
 
 sealed trait Named extends ElementWrapper {
 
   val NAME_ELEMENT_TYPE: IElementType
 
-  def getName: Option[String] = {
-    PQ.getChildNodes(el, NAME_ELEMENT_TYPE).headOption.map(_.getText)
-  }
+  def getName: IJReadAction[Option[String]]
+    = el.getChildNodes(NAME_ELEMENT_TYPE).map(_.headOption.map(_.getText))
 }
 
 sealed trait BuildInfo extends ElementWrapper  {
 
   val typ: BuildInfo.Type
 
-  val el: PsiElement
-
   /** Returns all listed extensions. */
-  def getExtensions: Set[String] = {
-    PQ.streamChildren(el, classOf[psi.impl.ExtensionsImpl]).flatMap(
-      PQ.getChildOfType(_, classOf[psi.IdentList])
-    ).flatMap(
-      PQ.getChildNodes(_, CabalTypes.IDENT).map(_.getText)
-    ).toSet
-  }
+  def getExtensions: IJReadAction[Set[String]] = for {
+    exts <- el.getChildrenOfType[psi.impl.ExtensionsImpl]
+    idents <- exts.traverse(_.getChildOfType[psi.IdentList]).map(_.flatten)
+    nodes <- idents.traverse(_.getChildNodes(CabalTypes.IDENT)).map(_.flatten)
+  } yield nodes.iterator.map(_.getText).toSet
 
   /** Returns the listed dependencies' package names. */
-  def getDependencies: Set[String] = {
-    PQ.getChildOfType(el, classOf[psi.BuildDepends]).map(
-      _.getPackageNames.toSet
-    ).getOrElse(Set.empty)
+  def getDependencies: IJReadAction[Set[String]] = {
+    el.getChildOfType[psi.BuildDepends].map {
+      case Some(e) => e.toPsiElement.getPackageNames.toSet
+      case None => Set.empty
+    }
   }
 
-  def getGhcOptions: Set[String] = {
-    PQ.streamChildren(el, classOf[psi.impl.GhcOptionsImpl]).flatMap(_.getValue).toSet
+  def getGhcOptions: IJReadAction[Set[String]] = {
+    el.getChildrenOfType[psi.impl.GhcOptionsImpl].map(children =>
+      children.flatMap(_.toPsiElement.getValue).toSet
+    )
   }
 
   /** Get hs-source-dirs listed, defaulting to "." if not present. */
-  def getSourceDirs: NonEmptySet[String] = {
-    NonEmptySet.fromSets[String](
-      PQ.streamChildren(el, classOf[psi.impl.SourceDirsImpl]).map(_.getValue.toSet)
-    ).getOrElse(CabalQuery.defaultSourceRoots)
+  def getSourceDirs: IJReadAction[NonEmptySet[String]] = {
+    el.getChildrenOfType[psi.impl.SourceDirsImpl].map(children =>
+      NonEmptySet.fromSets[String](
+        children.map(_.toPsiElement.getValue.toSet)
+      ).getOrElse(CabalQuery.defaultSourceRoots)
+    )
   }
 }
 
@@ -206,24 +228,33 @@ object BuildInfo {
   sealed trait Library extends BuildInfo {
     override val typ = Type.Library
   }
+
   /** Library implicitly from root stanza when no 'library' stanza exists. */
-  final class ImplicitLibrary(val el: psi.CabalFile) extends Library
+  final class ImplicitLibrary(val el: SPsiElement[psi.CabalFile]) extends Library {
+    override type PsiType = psi.CabalFile
+  }
+
   /** Library explicitly listed as 'library'. */
-  final class ExplicitLibrary(val el: psi.Library) extends Library
+  final class ExplicitLibrary(val el: SPsiElement[psi.Library]) extends Library {
+    override type PsiType = psi.Library
+  }
 
   val EXECUTABLE_TYPE_NAME = "executable"
-  final class Executable(val el: psi.Executable) extends BuildInfo with Named {
+  final class Executable(val el: SPsiElement[psi.Executable]) extends BuildInfo with Named {
+    override type PsiType = psi.Executable
     override val typ = Type.Executable
     override val NAME_ELEMENT_TYPE = CabalTypes.EXECUTABLE_NAME
   }
 
   val TEST_SUITE_TYPE_NAME = "test-suite"
-  final class TestSuite(val el: psi.TestSuite) extends BuildInfo with Named {
+  final class TestSuite(val el: SPsiElement[psi.TestSuite]) extends BuildInfo with Named {
+    override type PsiType = psi.TestSuite
     override val typ = Type.TestSuite
     override val NAME_ELEMENT_TYPE = CabalTypes.TEST_SUITE_NAME
   }
 
-  final class Benchmark(val el: psi.Benchmark) extends BuildInfo with Named {
+  final class Benchmark(val el: SPsiElement[psi.Benchmark]) extends BuildInfo with Named {
+    override type PsiType = psi.Benchmark
     override val typ = Type.Benchmark
     override val NAME_ELEMENT_TYPE = CabalTypes.BENCHMARK_NAME
   }

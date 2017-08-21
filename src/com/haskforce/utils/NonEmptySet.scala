@@ -3,6 +3,8 @@ package com.haskforce.utils
 /** NonEmptyList for Sets. */
 final case class NonEmptySet[A] private(toSet: Set[A]) extends AnyVal {
 
+  def iterator: Iterator[A] = toSet.iterator
+
   def map[B](f: A => B): NonEmptySet[B] = new NonEmptySet[B](toSet.map(f))
 
   def foreach[U](f: A => U): Unit = toSet.foreach[U](f)
@@ -20,8 +22,12 @@ object NonEmptySet {
     if (s.isEmpty) None else Some(new NonEmptySet(s))
   }
 
-  def fromSets[A](ss: Traversable[Set[A]]): Option[NonEmptySet[A]] = {
-    fromSet(ss.foldRight(Set.empty[A])((s, acc) => acc ++ s))
+  def fromSets[A](ss: TraversableOnce[Set[A]]): Option[NonEmptySet[A]] = {
+    fromSet(ss.foldLeft(Set.empty[A])((acc, s) => acc ++ s))
+  }
+
+  def fromNonEmptySets[A](ss: TraversableOnce[NonEmptySet[A]]): Option[NonEmptySet[A]] = {
+    fromSets(ss.toIterator.map(_.toSet))
   }
 
   def fromTraversable[A](s: Traversable[A]): Option[NonEmptySet[A]] = {

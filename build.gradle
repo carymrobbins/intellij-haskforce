@@ -58,6 +58,7 @@ allprojects {
         compileOnly "org.scala-lang:scala-reflect:${scalaVersion}"
         compile "org.scala-lang:scala-library:${scalaVersion}"
 
+        compile "io.estatico:newtype_${scalaBinaryVersion}:0.1.0"
         compile "org.scalaz:scalaz-core_${scalaBinaryVersion}:7.1.4"
         compile "com.chuusai:shapeless_${scalaBinaryVersion}:2.3.2"
         compile "org.yaml:snakeyaml:1.16"
