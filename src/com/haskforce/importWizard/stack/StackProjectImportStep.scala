@@ -1,17 +1,16 @@
 package com.haskforce.importWizard.stack
 
+import prelude._
+
 import java.awt.GridBagLayout
 import java.io.File
 import javax.swing._
 import java.util
 
-import scala.collection.JavaConversions._
-
 import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.openapi.project.ProjectManager
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
 import com.intellij.projectImport.ProjectImportWizardStep
-
 import com.haskforce.HaskellModuleType
 import com.haskforce.cabal.completion.CabalFileFinder
 import com.haskforce.settings.HaskellBuildSettings
@@ -72,11 +71,11 @@ extends ProjectImportWizardStep(context) {
     val root = builder.getImportRoot
     val cabalFilePaths =
       HaskellModuleType.findModules(project)
-        .flatMap(CabalFileFinder.virtualForModule).map(_.getCanonicalPath)
-    packages.filter { pkg =>
+        .asScala.flatMap(CabalFileFinder.virtualForModule).map(_.getCanonicalPath).toSet
+    packages.asScala.filter { pkg =>
       val path = StackYamlUtil.unsafeFindCabalFile(root, pkg).getCanonicalPath
       !cabalFilePaths.contains(path)
-    }
+    }.asJava
   }
 
   private def setError(label: JLabel, err: String) = {
@@ -114,7 +113,7 @@ extends ProjectImportWizardStep(context) {
           false
         },
         stackYaml => {
-          stackYaml.packages.foreach { pkg =>
+          stackYaml.packages.asScala.foreach { pkg =>
             StackYamlUtil.findCabalFile(projectRoot.getPath, pkg).orElse {
               setError(stackYamlInfoLabel, s"Could not find cabal file in package '${pkg.path}'")
               return false

@@ -20,6 +20,7 @@ import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
 import com.intellij.lang.annotation.Annotation;
 import com.intellij.notification.NotificationType;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.TextRange;
@@ -115,7 +116,9 @@ public class HLint {
     }
 
     private static List<String> getParamsFromCabal(@NotNull HaskellFile haskellFile) {
-        return BuildInfoUtil.getExtensionOpts(BuildInfoUtil.getBuildInfo(haskellFile));
+        return BuildInfoUtil.getExtensionOpts(haskellFile).run(
+                ApplicationManager.getApplication()
+        );
     }
 
     /**

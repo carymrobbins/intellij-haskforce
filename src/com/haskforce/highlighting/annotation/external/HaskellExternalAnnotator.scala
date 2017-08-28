@@ -1,7 +1,8 @@
 package com.haskforce.highlighting.annotation.external
 
-import scala.collection.JavaConverters._
-
+import com.haskforce.Implicits._
+import com.haskforce.highlighting.annotation.external.HaskellExternalAnnotator.State
+import com.haskforce.highlighting.annotation.{HaskellAnnotationHolder, HaskellProblem, Problems}
 import com.intellij.lang.annotation.{AnnotationHolder, ExternalAnnotator}
 import com.intellij.openapi.application.{ApplicationManager, ModalityState}
 import com.intellij.openapi.editor.Editor
@@ -9,11 +10,7 @@ import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.PsiFile
 import org.jetbrains.annotations.{NotNull, Nullable}
 
-import com.haskforce.Implicits._
-import com.haskforce.codeInsight.HaskellCompletionContributor
-import com.haskforce.highlighting.annotation.{HaskellAnnotationHolder, HaskellProblem, Problems}
-import HaskellExternalAnnotator.State
-import com.haskforce.utils.{SAMUtils, WrappedFuture}
+import scala.collection.JavaConverters._
 
 /** Single annotator that calls all external tools used for annotations. */
 class HaskellExternalAnnotator extends ExternalAnnotator[PsiFile, State] {
@@ -56,7 +53,9 @@ class HaskellExternalAnnotator extends ExternalAnnotator[PsiFile, State] {
   private def saveAllFiles(): Unit = {
     ApplicationManager.getApplication.invokeAndWait(
       () => FileDocumentManager.getInstance.saveAllDocuments(),
-      ModalityState.any()
+      // We cannot use ModalityState.any(); see issue #288
+      // https://github.com/carymrobbins/intellij-haskforce/issues/288#issuecomment-319835496
+      ModalityState.defaultModalityState()
     )
   }
 }

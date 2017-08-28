@@ -1,56 +1,58 @@
 package com.haskforce.cabal.query
 
-import scalaz.syntax.id._
-
+import prelude._
 
 import com.haskforce.cabal.lang.parser.CabalParserTestBase
 import com.haskforce.cabal.lang.psi.CabalFile
 import com.haskforce.test.AssertMixin
-import com.haskforce.utils.NonEmptySet
+import com.haskforce.utils.{IJReadAction, NonEmptySet}
 
 class CabalQueryTest extends CabalParserTestBase with AssertMixin {
 
+  // Adds the ! postfix operator for IJReadAction to simplify calling .unsafeRunReadAction()
+  import CabalQueryTest._
+
   def testPackageName(): Unit = {
-    blank00001.getPackageName === None
-    braces00001.getPackageName === Some("Test1")
-    example00001.getPackageName === Some("example-lib")
-    example00002.getPackageName === Some("svm")
-    example00003.getPackageName === Some("foo-bar")
-    example00004.getPackageName === Some("HUnit")
-    example00005.getPackageName === Some("feldspar-language")
-    if00001.getPackageName === Some("Foo")
-    if00002.getPackageName === Some("Test1")
+    blank00001.getPackageName.! === None
+    braces00001.getPackageName.! === Some("Test1")
+    example00001.getPackageName.! === Some("example-lib")
+    example00002.getPackageName.! === Some("svm")
+    example00003.getPackageName.! === Some("foo-bar")
+    example00004.getPackageName.! === Some("HUnit")
+    example00005.getPackageName.! === Some("feldspar-language")
+    if00001.getPackageName.! === Some("Foo")
+    if00002.getPackageName.! === Some("Test1")
   }
 
   def testBuildInfoFromSourceFile(): Unit = {
     def findBuildInfo(q: CabalQuery, sourcePath: String) = {
-      CabalQuery.findBuildInfoForSourceFile(q.getBuildInfo, "/", sourcePath)
+      CabalQuery.findBuildInfoForSourceFile(q.getBuildInfo.!, "/", sourcePath)
     }
-    findBuildInfo(example00001, "/foo.hs").get |> { bi =>
+    findBuildInfo(example00001, "/foo.hs").!.get |> { bi =>
       assertInstanceOf[BuildInfo.Library](bi)
     }
-    findBuildInfo(example00001, "/tests/foo.hs").get |> { bi =>
+    findBuildInfo(example00001, "/tests/foo.hs").!.get |> { bi =>
       val ts = assertInstanceOf[BuildInfo.TestSuite](bi)
-      ts.getName === Some("test")
+      ts.getName.! === Some("test")
     }
-    findBuildInfo(example00005, "/foo.hs") === None
-    findBuildInfo(example00005, "/src/foo.hs").get |> { bi =>
+    findBuildInfo(example00005, "/foo.hs").! === None
+    findBuildInfo(example00005, "/src/foo.hs").!.get |> { bi =>
       assertInstanceOf[BuildInfo.Library](bi)
     }
-    findBuildInfo(example00005, "/tests/foo.hs").get |> { bi =>
+    findBuildInfo(example00005, "/tests/foo.hs").!.get |> { bi =>
       val ts = assertInstanceOf[BuildInfo.TestSuite](bi)
-      ts.getName === Some("range")
+      ts.getName.! === Some("range")
     }
-    findBuildInfo(example00005, "/examples/foo.hs").get |> { bi =>
+    findBuildInfo(example00005, "/examples/foo.hs").!.get |> { bi =>
       assertInstanceOf[BuildInfo.Library](bi)
     }
   }
 
   def testExtensions(): Unit = {
-    braces00001.getLibrary.getExtensions === Set(
+    braces00001.getLibrary.!.getExtensions.! === Set(
       "CPP"
     )
-    example00001.getTestSuites.head.getExtensions === Set(
+    example00001.getTestSuites.!.head.getExtensions.! === Set(
       "NoImplicitPrelude",
       "OverloadedStrings",
       "PackageImports",
@@ -77,7 +79,7 @@ class CabalQueryTest extends CabalParserTestBase with AssertMixin {
   }
 
   def testDependencies(): Unit = {
-    example00005.getLibrary.getDependencies === Set(
+    example00005.getLibrary.!.getDependencies.! === Set(
       "array",
       "base",
       "containers",
@@ -97,7 +99,7 @@ class CabalQueryTest extends CabalParserTestBase with AssertMixin {
   }
 
   def testGhcOptions(): Unit = {
-    example00001.getLibrary.getGhcOptions === Set(
+    example00001.getLibrary.!.getGhcOptions.! === Set(
       "-fcontext-stack=30",
       "-Wall",
       "-fno-warn-missing-signatures",
@@ -105,7 +107,7 @@ class CabalQueryTest extends CabalParserTestBase with AssertMixin {
       "-fno-warn-type-defaults",
       "-fno-warn-partial-type-signatures"
     )
-    example00001.getTestSuites.head.getGhcOptions === Set(
+    example00001.getTestSuites.!.head.getGhcOptions.! === Set(
       "-Wall",
       "-fno-warn-missing-signatures",
       "-fno-warn-orphans",
@@ -118,13 +120,13 @@ class CabalQueryTest extends CabalParserTestBase with AssertMixin {
   }
 
   def testBuildInfoNames(): Unit = {
-    example00001.getTestSuites.head.getName === Some("test")
+    example00001.getTestSuites.!.head.getName.! === Some("test")
   }
 
   def testSourceDirs(): Unit = {
-    sourceDirs00001.getLibrary.getSourceDirs === NonEmptySet(".")
-    sourceDirs00001.getSourceRoots === NonEmptySet(".", "app")
-    sourceDirs00001.getTestSourceRoots === Some(NonEmptySet("tests", "bench1", "bench2"))
+    sourceDirs00001.getLibrary.!.getSourceDirs.! === NonEmptySet(".")
+    sourceDirs00001.getSourceRoots.! === NonEmptySet(".", "app")
+    sourceDirs00001.getTestSourceRoots.! === Some(NonEmptySet("tests", "bench1", "bench2"))
   }
 
   lazy val blank00001 = getQuery("blank00001")
@@ -138,7 +140,7 @@ class CabalQueryTest extends CabalParserTestBase with AssertMixin {
   lazy val if00001 = getQuery("if00001")
   lazy val if00002 = getQuery("if00002")
 
-  protected def getQuery(name: String) = new CabalQuery(getFile(name))
+  protected def getQuery(name: String) = new CabalQuery(SPsiFile(getFile(name)))
 
   protected def getFile(name: String): CabalFile = {
     createPsiFile(name, loadFile(name + "." + myFileExt)) match {
@@ -147,3 +149,12 @@ class CabalQueryTest extends CabalParserTestBase with AssertMixin {
     }
   }
 }
+
+object CabalQueryTest {
+
+  /** Extension methods to avoid having to call .unsafeRunReadAction() everywhere in the tests. */
+  implicit final class IJReadActionTestOps[A](val repr: IJReadAction[A]) extends AnyVal {
+    def ! : A = repr.unsafeRunReadAction()
+  }
+}
+
