@@ -1,4 +1,4 @@
-module Spelling where
+module Unique where
 
 import Control.Monoid
 

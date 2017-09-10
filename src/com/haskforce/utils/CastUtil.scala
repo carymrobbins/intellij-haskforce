@@ -1,4 +1,4 @@
-package com.haskforce.utils.parser
+package com.haskforce.utils
 
 import scala.reflect.ClassTag
 
@@ -13,4 +13,8 @@ object CastUtil {
     }
   }
   private lazy val _down = new _Down[Nothing]
+
+  implicit final class Ops[A](val repr: A) extends AnyVal {
+    def cast[B](implicit ct: ClassTag[B], ev: B <:< A): Option[B] = ct.unapply(repr)
+  }
 }

@@ -5,10 +5,18 @@ import com.intellij.spellchecker.inspections.SpellCheckingInspection
 
 import scala.collection.JavaConverters._
 
-/**
- * Tests for the Haskell spellchecker.
- */
+/** Tests for the Haskell spellchecker. */
 class HaskellSpellcheckingTest extends HaskellLightPlatformCodeInsightFixtureTestCase("spellchecker") {
+
+  def testUnique() = {
+    doTest()
+    assertUniqueElements()
+  }
+
+  def testComments() = doTest()
+
+  def testOnlyDefinitionNodes() = doTest()
+
   override protected def setUp(): Unit = {
     super.setUp()
     myFixture.enableInspections(new SpellCheckingInspection)
@@ -18,7 +26,6 @@ class HaskellSpellcheckingTest extends HaskellLightPlatformCodeInsightFixtureTes
 
   private def doTest(): Unit = {
     myFixture.testHighlighting(false, false, true, getTestName(false) + ".hs")
-    assertUniqueElements()
   }
 
   /**
@@ -37,6 +44,4 @@ class HaskellSpellcheckingTest extends HaskellLightPlatformCodeInsightFixtureTes
     }
     assert(duplicates.isEmpty, s"Duplicate warnings found: $duplicates")
   }
-
-  def testSpelling() = doTest()
 }
