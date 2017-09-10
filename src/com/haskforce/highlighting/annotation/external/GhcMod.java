@@ -7,11 +7,13 @@ import com.haskforce.highlighting.annotation.HaskellAnnotationHolder;
 import com.haskforce.highlighting.annotation.HaskellProblem;
 import com.haskforce.highlighting.annotation.Problems;
 import com.haskforce.highlighting.annotation.external.GhcModUtil.GhcVersionValidation;
+import com.haskforce.psi.HaskellImpdecl;
 import com.haskforce.settings.ToolKey;
 import com.haskforce.ui.tools.HaskellToolsConsole;
 import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.NotificationUtil;
 import com.haskforce.utils.EitherUtil;
+import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
 import com.intellij.lang.annotation.Annotation;
@@ -25,7 +27,9 @@ import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import scala.util.Either;
@@ -266,6 +270,9 @@ public class GhcMod {
         public String file;
         public String message;
         public boolean isError;
+        public boolean isUnknownSymbol;
+        public boolean isUnusedSymbol;
+        public boolean isUnusedImport;
 
         public Problem(String file, int startLine, int startColumn, String message) {
             this.file = file;
@@ -278,6 +285,9 @@ public class GhcMod {
             } else {
                 this.message = message.substring("Warning: ".length());
             }
+            isUnknownSymbol = message.contains("Variable not in scope");
+            isUnusedSymbol = message.contains("Defined but not used");
+            isUnusedImport = message.contains("import of") && message.contains("is redundant");
         }
 
         abstract static class RegisterFixHandler {
@@ -328,18 +338,11 @@ public class GhcMod {
             }
         }
 
-        public static final Pattern WHITESPACE_REGEX = Pattern.compile("\\s");
-
         /**
          * Create an annotation from this problem and add it to the annotation holder.
          */
         @Override
         public void createAnnotations(@NotNull PsiFile psiFile, @NotNull HaskellAnnotationHolder holder) {
-            final String text = psiFile.getText();
-            final int offsetStart = getOffsetStart(text);
-            if (offsetStart == -1) {
-                return;
-            }
             // TODO: There is probably a better way to compare these two file paths.
             // The problem might not be ours; ignore this problem in that case.
             // Note that Windows paths end up with different slashes, so getPresentableUrl() normalizes them.
@@ -347,10 +350,8 @@ public class GhcMod {
             if (!(file.equals(vFile.getCanonicalPath()) || file.equals(vFile.getPresentableUrl()))) {
                 return;
             }
-            // Since we don't have ending regions from ghc-mod, highlight until the first whitespace.
-            Matcher matcher = WHITESPACE_REGEX.matcher(text.substring(offsetStart));
-            final int offsetEnd = matcher.find() ? offsetStart + matcher.start() : text.length();
-            final TextRange range = TextRange.create(offsetStart, offsetEnd);
+            final TextRange range = getTextRange(psiFile);
+            if (range == null) return;
             final Annotation annotation;
             if (isError) {
                 annotation = holder.createErrorAnnotation(range, message);
@@ -358,7 +359,27 @@ public class GhcMod {
                 annotation = holder.createWeakWarningAnnotation(range, message);
             }
             if (annotation == null) return;
+            if (isUnknownSymbol) {
+                annotation.setHighlightType(ProblemHighlightType.LIKE_UNKNOWN_SYMBOL);
+            } else if (isUnusedSymbol) {
+                annotation.setHighlightType(ProblemHighlightType.LIKE_UNUSED_SYMBOL);
+            } else if (isUnusedImport) {
+                annotation.setHighlightType(ProblemHighlightType.LIKE_UNUSED_SYMBOL);
+            }
             registerFix(annotation);
+        }
+
+        /** The text range of our annotation should be based on the element at that offset. */
+        @Nullable
+        private TextRange getTextRange(@NotNull PsiFile psiFile) {
+            final String text = psiFile.getText();
+            final int offsetStart = getOffsetStart(text);
+            if (offsetStart == -1) return null;
+            PsiElement el = PsiTreeUtil.findElementOfClassAtOffset(psiFile, offsetStart, PsiElement.class, false);
+            if (el == null) return null;
+            // It's prettier to show the entire import line as unused instead of just the `import` keyword.
+            if (isUnusedImport && el.getParent() instanceof HaskellImpdecl) return el.getParent().getTextRange();
+            return el.getTextRange();
         }
     }
 }
