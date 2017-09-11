@@ -59,6 +59,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
                         if (completeModuleImport(position, cache, result)) return;
                         if (completeQualifiedNames(position, imports, cache, result)) return;
                         if (completeNameImport(position, cache, result)) return;
+                        completeFunctionDeclName(position, result);
                         completeExpressionKeywords(position, result);
                         completeLocalNames(position, imports, cache, result);
                         completeFunctionLocalNames(position,result);
@@ -219,8 +220,47 @@ public class HaskellCompletionContributor extends CompletionContributor {
         return true;
     }
 
-    public static boolean completeFunctionLocalNames(@NotNull final PsiElement position,
-                                                     @NotNull final CompletionResultSet result){
+    /** Used for completing a function name after its type signature or definition. */
+    public static void completeFunctionDeclName(@NotNull final PsiElement position,
+                                                @NotNull final CompletionResultSet result) {
+        // Find the root node at the current offset so we can find the previous element.
+        PsiElement e = position;
+        while (true) {
+            if (e.getParent() == null) return;
+            if (e.getParent().getTextOffset() != position.getTextOffset()) break;
+            e = e.getParent();
+        }
+        // Now find the previous sibling until we don't have a whitespace.
+        e = e.getPrevSibling();
+        while (e != null) {
+            if (!(e instanceof PsiWhiteSpace)) break;
+            e = e.getPrevSibling();
+        }
+        if (e == null) return;
+        String name = null;
+        // Now check if the previous node is a function type signature or definition,
+        // obtaining the function name if possible.
+        if (e instanceof HaskellGendecl) {
+            HaskellGendecl g = (HaskellGendecl)e;
+            HaskellVars v = g.getVars();
+            if (v == null) return;
+            List<HaskellVarid> vs = v.getVaridList();
+            if (vs.size() == 0) return;
+            name = vs.get(0).getName();
+        } else if (e instanceof HaskellFunorpatdecl) {
+            HaskellFunorpatdecl f = (HaskellFunorpatdecl)e;
+            List<HaskellPat> ps = f.getPatList();
+            if (ps.size() == 0) return;
+            List<HaskellVarid> vs = ps.get(0).getVaridList();
+            if (vs.size() == 0) return;
+            name = vs.get(0).getName();
+        }
+        if (name == null) return;
+        addAllElements(result, Collections.singletonList(LookupElementBuilder.create(name)));
+    }
+
+    public static void completeFunctionLocalNames(@NotNull final PsiElement position,
+                                                  @NotNull final CompletionResultSet result){
         List<PsiElement> allDefinitionsInScope = HaskellUtil.getAllDefinitionsInScope(position);
         for (PsiElement psiElement : allDefinitionsInScope) {
             result.addElement(LookupElementBuilder.create((PsiNamedElement)psiElement));
@@ -229,7 +269,6 @@ public class HaskellCompletionContributor extends CompletionContributor {
         for (PsiElement psiElement : allDefinitionsInWhereClausesInScope) {
             result.addElement(LookupElementBuilder.create((PsiNamedElement)psiElement));
         }
-        return true;
     }
 
     public static boolean completeQualifiedNames(@NotNull final PsiElement position,
