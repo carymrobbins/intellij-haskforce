@@ -320,13 +320,6 @@
       <add-to-group group-id="CodeFormatGroup" anchor="last"/>
       <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl alt D"/>
     </action>
-    <action id="com.haskforce.actions.HaskellReloadCompletionCache"
-            class="com.haskforce.actions.HaskellReloadCompletionCache"
-            text="Haskell Completion Cache Reload"
-            description="Reloads completion cache for a Haskell module.  Generally, this involves calling out to an external process.">
-      <add-to-group group-id="CodeMenu" anchor="last"/>
-      <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl SPACE"/>
-    </action>
     <action id="com.haskforce.actions.RestartGhcModi" class="com.haskforce.actions.RestartGhcModi"
             text="Restart ghc-modi" description="Restarts a disabled ghc-modi process">
       <add-to-group group-id="ToolsMenu" anchor="last"/>

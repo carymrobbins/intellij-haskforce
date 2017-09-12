@@ -42,6 +42,10 @@ public class HaskellCompletionContributor extends CompletionContributor {
     public HaskellCompletionContributor() {
         extend(CompletionType.BASIC,
                 PlatformPatterns.psiElement().withLanguage(HaskellLanguage.INSTANCE),
+                new HaskellCacheReloadCompletionProvider()
+        );
+        extend(CompletionType.BASIC,
+                PlatformPatterns.psiElement().withLanguage(HaskellLanguage.INSTANCE),
                 new CompletionProvider<CompletionParameters>() {
                     public void addCompletions(@NotNull CompletionParameters parameters,
                                                ProcessingContext context,
