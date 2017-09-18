@@ -117,7 +117,8 @@ public class HLint {
 
     private static List<String> getParamsFromCabal(@NotNull HaskellFile haskellFile) {
         return BuildInfoUtil.getExtensionOpts(haskellFile).run(
-                ApplicationManager.getApplication()
+                ApplicationManager.getApplication(),
+                IJReadActionRunner$.MODULE$.app()
         );
     }
 

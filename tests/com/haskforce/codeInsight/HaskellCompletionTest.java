@@ -6,12 +6,10 @@ import com.haskforce.psi.impl.HaskellElementFactory;
 import static com.haskforce.codeInsight.HaskellCompletionContributor.*;
 import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.psi.PsiFile;
-import com.intellij.util.Function;
 import com.intellij.util.containers.ContainerUtil;
 import org.junit.Assert;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -225,6 +223,22 @@ public class HaskellCompletionTest extends HaskellCompletionTestBase {
                 "foo :: String -> String\n" +
                 "foo = A.<caret>",
                     "foo");
+    }
+
+    public void testFunctionDeclCompletion() throws Throwable {
+        // Complete the function name after its type signature.
+        doTestInclude(
+                "foo :: String -> String\n" +
+                "<caret>",
+                    "foo"
+        );
+
+        // Complete the function name after one of its definitions.
+        doTestInclude(
+                "foo = 1\n" +
+                "<caret>",
+                    "foo"
+        );
     }
 
     private static class FakeBrowseCacheBuilder {
