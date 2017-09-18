@@ -16,6 +16,18 @@
       <a href="https://github.com/carymrobbins/intellij-haskforce/issues">bug tracker</a>.
     </p>
     <p>
+      <b>v0.3.39</b>
+      <ul>
+        <li>Fix indentation parsing (#334)</li>
+        <li>Fix errors in HaskellExternalAnnotator (#288)</li>
+        <li>Improve spellchecking (#339)</li>
+        <li>Added run configs for Etlas (#302)</li>
+        <li>Highlight unknown or unused symbols with ghc-mod</li>
+        <li>Complete function names in declaration position</li>
+        <li>Reload completion cache on user invocation</li>
+      </ul>
+    </p>
+    <p>
       <b>v0.3-beta.38</b>
       <ul>
         <li>Ensure all output gets processed when building with stack (#325)</li>
