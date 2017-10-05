@@ -16,6 +16,12 @@
       <a href="https://github.com/carymrobbins/intellij-haskforce/issues">bug tracker</a>.
     </p>
     <p>
+      <b>v0.3.40</b>
+      <ul>
+        <li>Fix builder classpath (#342)</li>
+      </ul>
+    </p>
+    <p>
       <b>v0.3.39</b>
       <ul>
         <li>Fix indentation parsing (#334)</li>
