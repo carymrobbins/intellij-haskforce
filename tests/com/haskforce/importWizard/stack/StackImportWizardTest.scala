@@ -2,7 +2,6 @@ package com.haskforce.importWizard.stack
 
 import java.io.File
 import java.util
-
 import scala.collection.JavaConversions._
 import scalaz.syntax.id._
 import com.intellij.ide.projectWizard.ProjectWizardTestCase
@@ -14,6 +13,7 @@ import org.jetbrains.jps.model.java.JavaSourceRootType
 import org.jetbrains.jps.model.module.JpsModuleSourceRootType
 import com.haskforce.test.AssertMixin
 import com.haskforce.{HaskellModuleType, HaskellSdkType}
+import com.haskforce.projectWizard.SDKCleanupUtil
 import org.jetbrains.jps.model.JpsElement
 
 /** Tests for importing stack projects and modules. */
@@ -114,6 +114,11 @@ class StackImportWizardTest extends ProjectWizardTestCase[AddModuleWizard] with 
         s"$canonicalProjectDir/out"
       )
     }
+  }
+
+  override def tearDown(): Unit = {
+    SDKCleanupUtil.cleanupHaskellSDK()
+    super.tearDown()
   }
 
   private type SourceRootType = JpsModuleSourceRootType[_ <: JpsElement]

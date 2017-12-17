@@ -4,7 +4,6 @@ import java.io.File
 import java.util
 
 import scala.annotation.tailrec
-import scala.collection.JavaConversions._
 import scala.collection.JavaConverters._
 import scala.language.implicitConversions
 

@@ -1,6 +1,7 @@
 <idea-plugin use-idea-classloader="true">
   <id>com.haskforce</id>
   <name>HaskForce</name>
+  <idea-version since-build="173"/>
   <vendor url="https://github.com/carymrobbins/intellij-haskforce">HaskForce on GitHub</vendor>
 
   <description>Plugin for Haskell language support.</description>
@@ -14,6 +15,12 @@
     <p>
       If you encounter any issues, please submit them on our
       <a href="https://github.com/carymrobbins/intellij-haskforce/issues">bug tracker</a>.
+    </p>
+    <p>
+      <b>v0.3.41</b>
+      <ul>
+        <li>Use Scala 2.12 runtime (#348)</li>
+      </ul>
     </p>
     <p>
       <b>v0.3.40</b>
@@ -298,9 +305,6 @@
     ]]>
   </change-notes>
 
-  <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Build+Number+Ranges for description -->
-  <idea-version since-build="131.0"/>
-
   <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
        on how to target different products -->
   <!-- uncomment to enable plugin in all products
@@ -503,7 +507,7 @@
 
     <!-- External builder support -->
     <!-- Note that the classpath is needed for plugin deployment to export a zip archive. -->
-    <compileServer.plugin classpath="jps-plugin.jar;jps-shared.jar;scala-library-2.11.11.jar;scala-reflect-2.11.11.jar;scalaz-core_2.11-7.1.4.jar;snakeyaml-1.16.jar;newtype_2.11-0.1.0.jar"/>
+    <compileServer.plugin classpath="jps-plugin.jar;jps-shared.jar;scala-library-2.12.4.jar;scala-reflect-2.12.4.jar;scalaz-core_2.12-7.2.17.jar;snakeyaml-1.16.jar;newtype_2.12-0.1.0.jar"/>
   </extensions>
   <module-components>
     <component>

@@ -3,9 +3,7 @@ package com.haskforce.importWizard.stack
 import java.io.File
 import java.util
 import javax.swing.Icon
-
 import scala.collection.JavaConversions._
-
 import com.intellij.ide.util.projectWizard.ModuleBuilder
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
@@ -15,12 +13,11 @@ import com.intellij.openapi.projectRoots.Sdk
 import com.intellij.openapi.projectRoots.impl.SdkConfigurationUtil
 import com.intellij.openapi.roots.{ModifiableRootModel, ProjectRootManager}
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider
-import com.intellij.openapi.util.Pair
+import com.intellij.openapi.util.{Computable, Pair}
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.packaging.artifacts.ModifiableArtifactModel
 import com.intellij.projectImport.ProjectImportBuilder
-
 import com.haskforce.Implicits._
 import com.haskforce.cabal.query.CabalQuery
 import com.haskforce.settings.HaskellBuildSettings
@@ -59,11 +56,11 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
     val moduleModel = Option(model).getOrElse {
       ModuleManager.getInstance(project).getModifiableModel
     }
-    ApplicationManager.getApplication.runWriteAction { () =>
+    ApplicationManager.getApplication.runWriteAction({ () =>
       commitSdk(project)
       setProjectSettings(project, stackPath, stackYamlPath)
       buildModules(project, moduleModel, stackYaml)
-    }
+    }: Computable[util.List[Module]])
   }
 
   private def setProjectSettings(

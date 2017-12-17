@@ -72,6 +72,11 @@ class NewProjectWizardTest extends NewProjectWizardTestCase with AssertMixin wit
     }
   }
 
+  override def tearDown(): Unit = {
+    SDKCleanupUtil.cleanupHaskellSDK()
+    super.tearDown()
+  }
+
   def runWizard(projectName: String): Project = {
     createProject { step: Step =>
       val projectTypeStep = assertInstanceOf[ProjectTypeStep](step)

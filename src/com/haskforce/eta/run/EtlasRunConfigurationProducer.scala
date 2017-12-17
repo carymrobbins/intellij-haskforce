@@ -73,10 +73,9 @@ object EtlasRunConfigurationProducer {
     for {
       name <- OptionT(ex.getName)
       mainPath <- OptionT(ex.getMainIs)
-      sourceDirs <- ex.getSourceDirs.liftM[OptionT]
-      if sourceDirs.toSet.exists(d =>
+      _ <- ex.getSourceDirs.liftM[OptionT].filter(_.toSet.exists(d =>
         new File(FileUtil.join(cabalDirPath, d, mainPath)).getCanonicalPath == mainFilePath
-      )
+      ))
     } yield Result(name, cabalDirPath)
   }.run
 }
