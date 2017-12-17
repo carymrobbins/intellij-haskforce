@@ -4,11 +4,6 @@ plugins {
 
 version = file('version.txt').text.trim()
 
-// On travis, we don't want to deploy to Jetbrains that requires credentials
-if (project.file('gradle.properties').exists()) {
-    apply from: "gradle.properties"
-}
-
 task validateDic(type: Exec) {
     commandLine './tools/validate-dic'
 }
@@ -23,8 +18,8 @@ task cleanJFlex(type: Exec) {
 
 ext {
     javaVersion = '1.8'
-    scalaVersion = '2.11.11'
-    scalaBinaryVersion = '2.11'
+    scalaVersion = '2.12.4'
+    scalaBinaryVersion = '2.12'
 }
 
 allprojects {
@@ -34,11 +29,8 @@ allprojects {
     apply plugin: 'org.jetbrains.intellij'
 
     intellij {
-        version = '2017.2'
+        version = '2017.3'
         pluginName = 'HaskForce'
-        // Makes it easy to support multiple intellij versions.
-        // If we want to set this to true, we should find a way to cross build
-        // against multiple intellij versions.
         updateSinceUntilBuild = false
     }
 
@@ -59,7 +51,7 @@ allprojects {
         compile "org.scala-lang:scala-library:${scalaVersion}"
 
         compile "io.estatico:newtype_${scalaBinaryVersion}:0.1.0"
-        compile "org.scalaz:scalaz-core_${scalaBinaryVersion}:7.1.4"
+        compile "org.scalaz:scalaz-core_${scalaBinaryVersion}:7.2.17"
         compile "org.yaml:snakeyaml:1.16"
 
         // Compile-time-only deps.
@@ -123,6 +115,8 @@ compileJava.dependsOn runJFlex
 
 patchPluginXml {
     version = getPluginVersion()
+    // Requiring >= 2017.3 to ensure compatibility with the Scala plugin (which uses 2.12)
+    sinceBuild = '173'
 }
 
 buildPlugin {
