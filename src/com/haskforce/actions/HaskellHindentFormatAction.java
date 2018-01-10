@@ -24,7 +24,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
-import org.apache.sanselan.util.IOUtils;
 import org.jetbrains.annotations.NotNull;
 
 import com.haskforce.psi.HaskellFile;
@@ -46,6 +45,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.DumbAware;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
@@ -107,7 +107,9 @@ public class HaskellHindentFormatAction extends AnAction implements DumbAware {
             // Pipe file into the process
             final InputStream fileContents = backingFile.getInputStream();
             final OutputStream processStdin = handler.getProcessInput();
-            IOUtils.copyStreamToStream(fileContents, processStdin);
+            FileUtil.copy(fileContents, processStdin);
+            fileContents.close();
+            processStdin.close();
 
             handler.addProcessListener(new CapturingProcessAdapter() {
                 @Override
