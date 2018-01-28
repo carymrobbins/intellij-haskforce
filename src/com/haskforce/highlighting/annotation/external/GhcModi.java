@@ -198,6 +198,16 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         });
     }
 
+    public String[] find(@NotNull final String symbol) {
+        return runSync(new GhcModiCallable<String[]>() {
+            @Override
+            public String[] call() throws GhcModiError {
+                final String command = "find " + symbol;
+                return simpleExecToLinesOrEmpty(command);
+            }
+        });
+    }
+
     @Nullable
     private static Problems handleCheck(@NotNull Module module, @NotNull String file, @NotNull String stdout) throws GhcModiError {
         final Problems problems = GhcMod.parseProblems(module, new Scanner(stdout));

@@ -1,6 +1,7 @@
 package com.haskforce.highlighting.annotation.external;
 
 import com.haskforce.features.intentions.AddLanguagePragma;
+import com.haskforce.features.intentions.AddToImports;
 import com.haskforce.features.intentions.AddTypeSignature;
 import com.haskforce.features.intentions.RemoveForall;
 import com.haskforce.highlighting.annotation.HaskellAnnotationHolder;
@@ -322,6 +323,13 @@ public class GhcMod {
                                 @Override
                                 public void apply(Matcher matcher, Annotation annotation, Problem problem) {
                                     annotation.registerFix(new AddLanguagePragma(matcher.group(1)));
+                                }
+                            }),
+                    Pair.create(Pattern.compile("Variable not in scope: ([^ ]+) "),
+                            new RegisterFixHandler() {
+                                @Override
+                                public void apply(Matcher matcher, Annotation annotation, Problem problem) {
+                                    annotation.registerFix(new AddToImports(matcher.group(1)));
                                 }
                             })
             ));
