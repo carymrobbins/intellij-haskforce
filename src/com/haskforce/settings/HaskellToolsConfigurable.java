@@ -56,7 +56,8 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     private JButton ghcModiAutoFind;
     private JTextField ghcModiVersion;
     private RawCommandLineEditor ghcModiFlags;
-    private JTextAccessorField ghcModiTimeout;
+    private JTextAccessorField ghcModiResponseTimeout;
+    private JTextAccessorField ghcModiKillIdleTimeout;
     private TextFieldWithBrowseButton hindentPath;
     private JButton hindentAutoFind;
     private JTextField hindentVersion;
@@ -75,13 +76,19 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
                          ghcModAutoFind, ghcModVersion, "version"),
                 new Tool(project, "ghc-modi", ToolKey.GHC_MODI_KEY, ghcModiPath, ghcModiFlags,
                          ghcModiAutoFind, ghcModiVersion, "version", SettingsChangeNotifier.GHC_MODI_TOPIC),
-                new PropertyField(ToolKey.GHC_MODI_TIMEOUT_KEY, ghcModiTimeout, Long.toString(ToolKey.getGhcModiTimeout(project))),
+                new PropertyField(ToolKey.GHC_MODI_RESPONSE_TIMEOUT_KEY, ghcModiResponseTimeout, Long.toString(ToolKey.getGhcModiResponseTimeout(project))),
+                new PropertyField(ToolKey.GHC_MODI_KILL_IDLE_TIMEOUT_KEY, ghcModiKillIdleTimeout, Long.toString(ToolKey.getGhcModiKillIdleTimeout(project))),
                 new Tool(project, "hindent", ToolKey.HINDENT_KEY, hindentPath, hindentFlags,
                     hindentAutoFind, hindentVersion)
         );
-        // Validate that we can only enter numbers in the timeout field.
-        final Color originalBackground = ghcModiTimeout.getBackground();
-        ghcModiTimeout.setInputVerifier(new InputVerifier() {
+
+        setNumericInputVerifier(ghcModiResponseTimeout);
+        setNumericInputVerifier(ghcModiKillIdleTimeout);
+    }
+
+    private void setNumericInputVerifier(JComponent component) {
+        final Color originalBackground = component.getBackground();
+        component.setInputVerifier(new InputVerifier() {
             @Override
             public boolean verify(JComponent input) {
                 JTextAccessorField field = (JTextAccessorField)input;

@@ -23,6 +23,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.xml.util.XmlUtil;
@@ -31,6 +32,9 @@ import org.jetbrains.annotations.Nullable;
 import scala.Option;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
@@ -83,7 +87,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     @Nullable
     public static <T> T getFuture(@NotNull Project project, @NotNull Future<T> future) {
-        long timeout = ToolKey.getGhcModiTimeout(project);
+        long timeout = ToolKey.getGhcModiResponseTimeout(project);
         try {
             return future.get(timeout, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
@@ -101,7 +105,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     }
 
     public boolean isConfigured() {
-        return path != null;
+        return path != null && !path.trim().isEmpty();
     }
 
     /**
@@ -129,9 +133,29 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     @Nullable
     private Problems unsafeCheck(final @NotNull String file) throws GhcModiError {
+        // Check the file content so only call out to ghc-mod when the file changes.
+        final String fileContent;
+        try {
+            fileContent = new String(Files.readAllBytes(Paths.get(file)), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new CheckError(file, e.getMessage());
+        }
+
+        // Check the cache to determine if the file changed.
+        Pair<String, Problems> item = checkCache.get(file);
+        if (item != null && item.first.equals(fileContent)) return item.second;
+
+        // Call out to ghc-mod.
         final String stdout = simpleExec("check " + file);
-        return stdout == null ? new Problems() : handleCheck(module, file, stdout);
+        Problems result = stdout == null ? new Problems() : handleCheck(module, file, stdout);
+
+        // Update the cache.
+        checkCache.put(file, new Pair<>(fileContent, result));
+        return result;
     }
+
+    private ConcurrentHashMap<String, Pair<String, Problems>> checkCache = new ConcurrentHashMap<>();
 
     @Nullable
     public String[] syncLang() {
@@ -175,8 +199,12 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     @NotNull
     private String[] unsafeList() throws GhcModiError {
-        return simpleExecToLinesOrEmpty("list");
+        if (listCache != null) return listCache;
+        listCache = simpleExecToLinesOrEmpty("list");
+        return listCache;
     }
+
+    private String[] listCache = null;
 
     public Future<String> type(final @NotNull String canonicalPath,
                                @NotNull final VisualPosition startPosition,
@@ -197,6 +225,25 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
             }
         });
     }
+
+    public String[] find(@NotNull final String symbol) {
+        // Check to see if we've already found this symbol.
+        String[] item = findCache.get(symbol);
+        if (item != null && item.length > 0) return item;
+
+        return runSync(new GhcModiCallable<String[]>() {
+            @Override
+            public String[] call() throws GhcModiError {
+                final String command = "find " + symbol;
+                String[] result = simpleExecToLinesOrEmpty(command);
+                // Update the cache so we don't have to find this symbol again.
+                findCache.put(symbol, result);
+                return result;
+            }
+        });
+    }
+
+    private ConcurrentHashMap<String, String[]> findCache = new ConcurrentHashMap<>();
 
     @Nullable
     private static Problems handleCheck(@NotNull Module module, @NotNull String file, @NotNull String stdout) throws GhcModiError {
@@ -238,6 +285,10 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     @NotNull
     private BrowseItem[] unsafeBrowse(@NotNull final String module) throws GhcModiError {
+        // Check the cache to avoid calling out to ghc-mod if we don't have to.
+        BrowseItem[] item = browseCache.get(module);
+        if (item != null && item.length > 0) return item;
+
         String[] lines = simpleExecToLines("browse -d " + module);
         if (lines == null) return new BrowseItem[0];
         BrowseItem[] result = new BrowseItem[lines.length];
@@ -246,8 +297,13 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
             //noinspection ObjectAllocationInLoop
             result[i] = new BrowseItem(parts[0], module, parts.length == 2 ? parts[1] : "");
         }
+
+        // Update the cache in case we browse this module again.
+        browseCache.put(module, result);
         return result;
     }
+
+    private ConcurrentHashMap<String, BrowseItem[]> browseCache = new ConcurrentHashMap<>();
 
     /**
      * A wrapper to exec that checks stdout and returns null if there was no output.
@@ -282,6 +338,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
      */
     @Nullable
     public synchronized String exec(@NotNull String command) throws GhcModiError {
+        lastCallTimeMillis = System.currentTimeMillis();
         if (!enabled) { return null; }
         if (path == null) { return null; }
         if (!validateGhcVersion()) { return null; }
@@ -289,6 +346,30 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         if (output == null) { throw new InitError("Output stream was unexpectedly null."); }
         if (input == null) { throw new InitError("Input stream was unexpectedly null."); }
         return interact(command, input, output);
+    }
+
+    /** Wraps toolConsole.writeInput and prepends the message with the module name. */
+    private void writeInputToConsole(String message) {
+        toolConsole.writeInput(ToolKey.GHC_MODI_KEY, prependWithModuleName(message));
+    }
+
+    /** Wraps toolConsole.writeError and prepends the message with the module name. */
+    private void writeErrorToConsole(String message) {
+        toolConsole.writeInput(ToolKey.GHC_MODI_KEY, prependWithModuleName(message));
+    }
+
+    /** Wraps toolConsole.writeOutput except, unlike the other helpers, does NOT prepend the
+     *  message with the module name (because this is usually unnecessary and visually jarring, but a better UI
+     *  is really in order here). This helper is mostly here for consistency so we can avoid using toolConsole
+     *  directly outside of the helpers.
+     */
+    private void writeOutputToConsole(String message) {
+        toolConsole.writeOutput(ToolKey.GHC_MODI_KEY, message);
+    }
+
+    /** Used by the write*ToConsole helpers for updating the log message with the module name. */
+    private String prependWithModuleName(String message) {
+        return "[" + module.getName() + "] " + message;
     }
 
     private void spawnProcess() throws GhcModiError {
@@ -304,16 +385,51 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         commandLine.setWorkDirectory(workingDirectory);
         // Make sure we can actually see the errors.
         commandLine.setRedirectErrorStream(true);
-        toolConsole.writeInput(ToolKey.GHC_MODI_KEY, "Using working directory: " + workingDirectory);
-        toolConsole.writeInput(ToolKey.GHC_MODI_KEY, "Starting ghc-modi process: " + commandLine.getCommandLineString());
+        writeInputToConsole("Using working directory: " + workingDirectory);
+        writeInputToConsole("Starting ghc-modi process: " + commandLine.getCommandLineString());
         try {
             process = commandLine.createProcess();
         } catch (ExecutionException e) {
-            toolConsole.writeError(ToolKey.GHC_MODI_KEY, "Failed to initialize process");
+            writeErrorToConsole("Failed to initialize process");
             throw new InitError(e.toString());
         }
         input = new BufferedReader(new InputStreamReader(process.getInputStream()));
         output = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+        startIdleKillerThread();
+    }
+
+    // Initialized by `startIdleKillerThread`
+    private long lastCallTimeMillis;
+
+    private void startIdleKillerThread() {
+        lastCallTimeMillis = System.currentTimeMillis();
+        long timeout = ToolKey.getGhcModiKillIdleTimeout(this.module.getProject());
+        // Disable the idle killer if the configured timeout is zero or negative.
+        if (timeout <= 0) return;
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        // Task to kill process if it's been running idle for longer than the configured timeout.
+        Runnable idleKiller = () -> {
+            long diff = System.currentTimeMillis() - lastCallTimeMillis;
+            if (diff > timeout) {
+                writeErrorToConsole(
+                    "ghc-modi in module '" + module.getName() + "'" +
+                    " has been idle for " + diff + " ms, killing");
+                // Shut down the scheduler, no longer needs to run.
+                scheduler.shutdown();
+                // Kill the ghc-modi process.
+                kill();
+            } else {
+                LOG.debug(
+                        "ghc-modi in module '" + module.getName() + "'" +
+                        " has only been idle for " + diff + " ms, allowed to stay alive");
+            }
+        };
+        // Start the killer, delaying for the timeout to give ghc-modi time to be called, but then checking
+        // every time out in case it needs to be killed in case it's been idle for too long.
+        LOG.debug(
+                "Starting scheduler to check ghc-modi idle time for module '" + module.getName() + "'" +
+                "every " + timeout + " ms");
+        scheduler.scheduleAtFixedRate(idleKiller, timeout, timeout, TimeUnit.MILLISECONDS);
     }
 
     private boolean validateGhcVersion() {
@@ -337,19 +453,15 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     @Nullable
     private String interact(@NotNull String command, @NotNull BufferedReader input, @NotNull BufferedWriter output) throws GhcModiError {
-        toolConsole.writeInput(ToolKey.GHC_MODI_KEY, command);
+        writeInputToConsole(command);
         write(command, input, output);
         try {
             final String result = read(command, input);
-            toolConsole.writeOutput(ToolKey.GHC_MODI_KEY, result);
+            writeOutputToConsole(result);
             return result;
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | IOException e) {
             final ExecError err = new ExecError(command, e.toString());
-            toolConsole.writeError(ToolKey.GHC_MODI_KEY, err.message);
-            throw err;
-        } catch (IOException e) {
-            final ExecError err = new ExecError(command, e.toString());
-            toolConsole.writeError(ToolKey.GHC_MODI_KEY, err.message);
+            writeErrorToConsole(err.message);
             throw err;
         }
     }
@@ -365,9 +477,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
             try {
                 // Attempt to read error from ghc-modi.
                 message = read(command, input);
-            } catch (IOException ignored) {
-                // Ignored
-            } catch (InterruptedException ignored) {
+            } catch (IOException | InterruptedException ignored) {
                 // Ignored
             }
             if (message == null || message.trim().isEmpty()) message = e.toString();
@@ -392,6 +502,13 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
      * Restarts the ghc-modi process and runs the check command on file to ensure the process starts successfully.
      */
     public synchronized void restart() {
+        // Clear the caches.
+        browseCache.clear();
+        findCache.clear();
+        checkCache.clear();
+        listCache = null;
+
+        // Kill the process, allowing it to be started up again.
         kill();
         setEnabled(true);
     }
@@ -520,13 +637,8 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     public void onSettingsChanged(@NotNull ToolSettings settings) {
         this.path = settings.getPath();
         this.flags = settings.getFlags();
-        toolConsole.writeError(ToolKey.GHC_MODI_KEY, "Settings changed, reloading ghc-modi");
+        writeErrorToConsole("Settings changed, reloading ghc-modi, will spawn once invoked");
         kill();
-        try {
-            spawnProcess();
-        } catch (GhcModiError e) {
-            displayError(e.message);
-        }
     }
 
     @Nullable
