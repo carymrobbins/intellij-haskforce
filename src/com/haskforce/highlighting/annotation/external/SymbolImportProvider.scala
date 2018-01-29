@@ -5,5 +5,7 @@ trait SymbolImportProvider {
 }
 
 object SymbolImportProvider {
-  final case class Result(importText: String, symbolText: String)
+  final case class Result(importText: String, symbolText: String) {
+    override def toString: String = s"$importText ($symbolText)"
+  }
 }
