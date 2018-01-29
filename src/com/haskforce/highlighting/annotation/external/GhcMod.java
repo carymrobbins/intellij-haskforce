@@ -324,7 +324,7 @@ public class GhcMod {
                                     annotation.registerFix(new AddLanguagePragma(matcher.group(1)));
                                 }
                             }),
-                    Pair.create(Pattern.compile("Variable not in scope: ([^ ]+) "),
+                    Pair.create(Pattern.compile("Variable not in scope:\\s+([^ ]+) "),
                             new RegisterFixHandler() {
                                 @Override
                                 public void apply(Matcher matcher, Annotation annotation, Problem problem) {
