@@ -194,7 +194,7 @@ public class ExecUtil {
         private final @NotNull String message;
         private final @Nullable Throwable cause;
 
-        public ExecError(@NotNull String message, @Nullable Exception cause) {
+        public ExecError(@NotNull String message, @Nullable Throwable cause) {
             this.cause = cause;
             this.message = message;
             // Use .warn() instead of .error() since the latter causes unit test failures.

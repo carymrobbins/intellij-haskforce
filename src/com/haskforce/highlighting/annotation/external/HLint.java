@@ -88,7 +88,7 @@ public class HLint {
             new AbstractFunction1<VersionTriple, Either<ExecError, Problems>>() {
                 @Override
                 public Either<ExecError, Problems> apply(VersionTriple version) {
-                    final boolean useJson = version.gte(HLINT_MIN_VERSION_WITH_JSON_SUPPORT);
+                    final boolean useJson = version.$greater$eq(HLINT_MIN_VERSION_WITH_JSON_SUPPORT);
                     final String[] params = getParams(file, haskellFile, useJson);
                     return EitherUtil.rightMap(runHlint(
                       toolConsole, workingDirectory, path, flags, params
@@ -177,37 +177,16 @@ public class HLint {
         return problems;
     }
 
-    private static final Pattern HLINT_VERSION_REGEX = Pattern.compile("(\\d+)\\.(\\d+)\\.(\\d+)");
-
     @NotNull
     private static Either<ExecError, VersionTriple> getVersion(HaskellToolsConsole toolConsole, String workingDirectory, String hlintPath) {
-        return EitherUtil.rightFlatMap(
-            runHlint(toolConsole, workingDirectory, hlintPath, "--version"),
-            new AbstractFunction1<String, Either<ExecError, VersionTriple>>() {
-                @Override
-                public Either<ExecError, VersionTriple> apply(String version) {
-                    Matcher m = HLINT_VERSION_REGEX.matcher(version);
-                    if (!m.find()) {
-                        return new ExecError(
-                            "Could not parse version from hlint: '" + version + "'",
-                            null
-                        ).toLeft();
-                    }
-                    return EitherUtil.right(new VersionTriple(
-                        Integer.parseInt(m.group(1)),
-                        Integer.parseInt(m.group(2)),
-                        Integer.parseInt(m.group(3))
-                    ));
-                }
-            }
-        );
+        return HLintUtil.runHLintNumericVersion(toolConsole, workingDirectory, hlintPath);
     }
 
     /**
      * Runs hlintProg with parameters if hlintProg can be executed.
      */
     @NotNull
-    private static Either<ExecError, String> runHlint(HaskellToolsConsole toolConsole,
+    public static Either<ExecError, String> runHlint(HaskellToolsConsole toolConsole,
                                                       @NotNull String workingDirectory,
                                                       @NotNull String hlintProg,
                                                       @NotNull String hlintFlags,
@@ -339,39 +318,6 @@ public class HLint {
                 }
             }
             return offsetStart + width;
-        }
-    }
-
-    // TODO: VersionTriple may be useful in a util module or there may be an better existing implementation.
-    public static class VersionTriple {
-        private final int x;
-        private final int y;
-        private final int z;
-
-        VersionTriple(final int x_, final int y_, final int z_) {
-            x = x_;
-            y = y_;
-            z = z_;
-        }
-
-        public boolean eq(VersionTriple v) {
-            return v != null && x == v.x && y == v.y && z == v.z;
-        }
-
-        public boolean gt(VersionTriple v) {
-            return v != null && (x > v.x || x == v.x && (y > v.y || y == v.y && z > v.z));
-        }
-
-        public boolean lt(VersionTriple v) {
-            return v != null && (x < v.x || x == v.x && (y < v.y || y == v.y && z < v.z));
-        }
-
-        public boolean gte(VersionTriple v) {
-            return eq(v) || gt(v);
-        }
-
-        public boolean lte(VersionTriple v) {
-            return eq(v) || lt(v);
         }
     }
 }
