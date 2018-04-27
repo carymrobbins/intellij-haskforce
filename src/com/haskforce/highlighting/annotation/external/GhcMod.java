@@ -274,18 +274,16 @@ public class GhcMod {
         public boolean isUnusedSymbol;
         public boolean isUnusedImport;
 
+        private static Pattern notInScopeRegex = Pattern.compile("(?i)not in scope");
+
         public Problem(String file, int startLine, int startColumn, String message) {
             this.file = file;
             this.startLine = startLine;
             this.startColumn = startColumn;
             this.message = message;
             this.isError = !message.startsWith("Warning: ");
-            if (this.isError) {
-                this.message = message;
-            } else {
-                this.message = message.substring("Warning: ".length());
-            }
-            isUnknownSymbol = message.contains("Variable not in scope");
+            if (!this.isError) this.message = message.substring("Warning: ".length());
+            isUnknownSymbol = notInScopeRegex.matcher(message).find();
             isUnusedSymbol = message.contains("Defined but not used");
             isUnusedImport = message.contains("import of") && message.contains("is redundant");
         }
