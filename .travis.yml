@@ -19,7 +19,14 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
+# Handle the submodules manually to convert ssh to https
+git:
+  submodules: false
+
 before_install:
+  # Convert ssh submodules to https
+  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+  - git submodule update --init --recursive
   # Download and unpack the haskell stack executable, used for tests.
   - mkdir -p ~/.local/bin
   - export PATH=$HOME/.local/bin:$PATH

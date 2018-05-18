@@ -14,7 +14,9 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Wraps the entry-point for the Grammar-Kit parser to register
@@ -53,7 +55,7 @@ public class HaskellParserWrapper extends HaskellParser {
             if (!HaskellTypes.VARSYMTOKPLUS.equals(source)) return source;
 
             String token = text.toString();
-            if (HaskellLanguage.RESERVEDOPS.contains(token)) {
+            if (RESERVEDOPS.contains(token)) {
                 // Lexer somehow missed lexing the op if we end up here.
                 throw new RuntimeException("Internal Error: Unexpected reservedop: " + token);
             }
@@ -100,4 +102,10 @@ public class HaskellParserWrapper extends HaskellParser {
         debtPoints.put(offset, newValue);
         return true;
     }
+
+    /**
+     * Strings of reserved ops.
+     */
+    public static final HashSet<String> RESERVEDOPS = new HashSet<String>(
+      Arrays.asList("..", ":", "::", "=", "\\", "|", "<-", "->", "@", "~", "=>"));
 }

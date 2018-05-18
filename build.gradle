@@ -35,6 +35,7 @@ allprojects {
     }
 
     repositories {
+        mavenLocal()
         mavenCentral()
     }
 
@@ -63,7 +64,7 @@ allprojects {
     // will try to be compiled first, so instead we're just setting the scala.srcDirs.
     sourceSets {
         main {
-            scala.srcDirs 'src', 'gen'
+            scala.srcDirs 'src', 'gen', 'build/generated-src/java'
             resources.srcDirs 'resources'
         }
         test {
@@ -82,6 +83,7 @@ project(':jps-plugin') {
 }
 
 dependencies {
+    compile project(':core')
     compile project(':macros')
     compile project(':jps-shared')
     compile project(':jps-plugin')
@@ -122,3 +124,20 @@ patchPluginXml {
 buildPlugin {
     archiveName = "haskforce-${patchPluginXml.version}.zip"
 }
+
+// Export our expected core version so we can validate it at runtime.
+task genHaskForceMeta {
+    doLast {
+        mkdir("build/generated-src/java/com/haskforce")
+        def f = file("build/generated-src/java/com/haskforce/HaskForceMeta.java")
+        f.write("""
+          package com.haskforce;
+
+          public interface HaskForceMeta {
+            String CORE_VERSION = \"${project(':core').version}\";
+          }
+        """.stripIndent().trim())
+    }
+}
+
+compileJava.dependsOn(genHaskForceMeta)
