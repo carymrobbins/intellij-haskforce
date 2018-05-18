@@ -1,6 +1,6 @@
 package com.haskforce.highlighting;
 
-import com.haskforce.HaskellLanguage;
+import static com.haskforce.psi.HaskellTypes.*;
 import com.intellij.lexer.Lexer;
 import com.intellij.openapi.editor.DefaultLanguageHighlighterColors;
 import com.intellij.openapi.editor.colors.TextAttributesKey;
@@ -10,11 +10,43 @@ import org.jetbrains.annotations.NotNull;
 
 import com.haskforce.psi.HaskellTypes;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
+
+    /**
+     * Tokens of bracket symbols.
+     */
+    public static final HashSet<IElementType> BRACKET_TOKENS = new HashSet<>(
+      Arrays.asList(LBRACKET, RBRACKET, LTHOPEN, RTHCLOSE, QQOPEN));
+
+    /**
+     * Parens tokens
+     */
+    public static final Set<IElementType> PARENS_TOKENS = new HashSet<>(
+      Arrays.asList(LPAREN, RPAREN, PARENSPLICE)
+    );
+
+    /**
+     * Brace tokens
+     */
+    public static final Set<IElementType> BRACE_TOKENS = new HashSet<>(
+      Arrays.asList(LBRACE, RBRACE)
+    );
+
+    /**
+     * Tokens of reserved IDs.
+     */
+    public static final HashSet<IElementType> RESERVED_IDS_TOKENS = new HashSet<IElementType>(
+      Arrays.asList(AS, CASE, CLASSTOKEN, DATA, DEFAULT
+        , DERIVING, DO, ELSE, FORALLTOKEN, FOREIGN, HIDING, IF, IMPORT, IN, INFIX
+        , INFIXL, INFIXR, HaskellTypes.INSTANCE, LET, MDOTOK, MODULETOKEN
+        , NEWTYPE, OF, QUALIFIED, RECTOK, THEN, TYPE, WHERE));
+
+    public static final HashSet<IElementType> RESERVED_OPS_TOKENS = new HashSet<IElementType>(
+      Arrays.asList(DOUBLEPERIOD, COLON, DOUBLECOLON, EQUALS, BACKSLASH, PIPE, LEFTARROW, RIGHTARROW
+        , AMPERSAT, TILDE, DOUBLEARROW));
+
     /*
      * Constructors, type classes, data types, .., are nice to distinguish
      * from the keywords. Borrow the color of INSTANCE_FIELD since it stands
@@ -87,11 +119,11 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
 
     static {
         keys = new HashMap<>(0);
-        keysPutEach(HaskellLanguage.RESERVED_IDS_TOKENS, RESERVED_ID);
-        keysPutEach(HaskellLanguage.RESERVED_OPS_TOKENS, RESERVED_OP);
-        keysPutEach(HaskellLanguage.BRACKET_TOKENS, BRACKETS);
-        keysPutEach(HaskellLanguage.PARENS_TOKENS, PARENTHESES);
-        keysPutEach(HaskellLanguage.BRACE_TOKENS, BRACES);
+        keysPutEach(RESERVED_IDS_TOKENS, RESERVED_ID);
+        keysPutEach(RESERVED_OPS_TOKENS, RESERVED_OP);
+        keysPutEach(BRACKET_TOKENS, BRACKETS);
+        keysPutEach(PARENS_TOKENS, PARENTHESES);
+        keysPutEach(BRACE_TOKENS, BRACES);
         keysPutEach(Arrays.asList(HaskellTypes.DOUBLEQUOTE, HaskellTypes.STRINGTOKEN), STRING);
         keysPutEach(Arrays.asList(HaskellTypes.COMMENTTEXT, HaskellTypes.OPENCOM, HaskellTypes.CLOSECOM), NESTED_COMMENT);
         keysPutEach(Arrays.asList(HaskellTypes.PRAGMA, HaskellTypes.OPENPRAGMA, HaskellTypes.CLOSEPRAGMA), PRAGMA);
@@ -122,4 +154,5 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
     public TextAttributesKey[] getTokenHighlights(IElementType tokenType) {
         return pack(keys.get(tokenType), EMPTY);
     }
+
 }

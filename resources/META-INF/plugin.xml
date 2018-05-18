@@ -312,7 +312,9 @@
   -->
 
   <application-components>
-    <!-- Add your application components here -->
+    <component>
+      <implementation-class>com.haskforce.HaskForcePluginVerifier</implementation-class>
+    </component>
   </application-components>
 
   <project-components>
