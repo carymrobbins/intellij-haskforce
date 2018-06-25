@@ -2,6 +2,7 @@ package com.haskforce.highlighting.annotation.external;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import com.haskforce.cabal.completion.CabalFileFinder;
 import com.haskforce.cabal.lang.psi.CabalFile;
 import com.haskforce.cabal.query.BuildInfo;
@@ -96,7 +97,7 @@ public class HLint {
                         @Override
                         public Problems apply(String stdout) {
                             toolConsole.writeOutput(ToolKey.HLINT_KEY, stdout);
-                            if (useJson) return parseProblemsJson(stdout);
+                            if (useJson) return parseProblemsJson(toolConsole, stdout);
                             return parseProblemsFallback(stdout);
                         }
                     });
@@ -126,10 +127,23 @@ public class HLint {
      * Parse problems from the hlint --json output.
      */
     @NotNull
-    public static Problems parseProblemsJson(@NotNull String stdout) {
-        final Problem[] problems = gson.fromJson(stdout, Problem[].class);
+    public static Problems parseProblemsJson(@NotNull HaskellToolsConsole toolsConsole, @NotNull String stdout) {
+        final Problem[] problems;
+        try {
+            problems = gson.fromJson(stdout, Problem[].class);
+        } catch (JsonSyntaxException e) {
+            String msg =
+                "Unable to decode problem from HLint json output:\n"
+                + e.getMessage()
+                + "\nJSON was: " + stdout;
+            toolsConsole.writeError(ToolKey.HLINT_KEY, msg);
+            LOG.error(msg, e);
+            return new Problems();
+        }
         if (problems == null) {
-            LOG.warn("Unable to parse hlint json output: " + stdout);
+            String msg = "Unable to decode problem from HLint json output, decoded as null; json was: " + stdout;
+            toolsConsole.writeError(ToolKey.HLINT_KEY, msg);
+            LOG.warn(msg);
             return new Problems();
         }
         return new Problems(problems);
