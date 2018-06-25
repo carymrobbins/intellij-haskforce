@@ -4,13 +4,15 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiFile;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class HaskellProblem {
-    public int startLine;
-    public int startColumn;
+public interface HaskellProblem {
 
-    public abstract void createAnnotations(@NotNull PsiFile file, @NotNull HaskellAnnotationHolder holder);
+  int getStartLine();
 
-    public int getOffsetStart(final String fileText) {
-        return StringUtil.lineColToOffset(fileText, startLine - 1, startColumn - 1);
-    }
+  int getStartColumn();
+
+  void createAnnotations(@NotNull PsiFile file, @NotNull HaskellAnnotationHolder holder);
+
+  default int getOffsetStart(String fileText) {
+    return StringUtil.lineColToOffset(fileText, getStartLine() - 1, getStartColumn() - 1);
+  }
 }
