@@ -1,9 +1,8 @@
 package com.haskforce.utils
 
-import java.util.function.{Function => JavaFunction}
-
 /** Simplify Either interop with Java. */
 object EitherUtil {
+
   def unsafeGetLeft[A, B](e: Either[A, B]): A = {
     e.fold(
       left => left,
@@ -18,22 +17,9 @@ object EitherUtil {
     )
   }
 
-  def rightMap[A, B, C](e: Either[A, B], f: B => C): Either[A, C] = {
-    e.right.map(f)
-  }
-
-  def rightFlatMap[A, B, C](e: Either[A, B], f: B => Either[A, C]): Either[A, C] = {
-    e.right.flatMap(f)
-  }
-
   def left[A, B](x: A): Either[A, B] = Left(x)
 
   def right[A, B](x: B): Either[A, B] = Right(x)
-
-//  def valueOr[A, B](e: Either[A, B], f: JavaFunction[A, B]): B = e match {
-//    case Left(a) => f(a)
-//    case Right(b) => b
-//  }
 
   def valueOr[A, B](e: Either[A, B], f: A => B): B = e match {
     case Left(a) => f(a)

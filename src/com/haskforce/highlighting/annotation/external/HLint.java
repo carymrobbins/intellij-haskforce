@@ -1,11 +1,7 @@
 package com.haskforce.highlighting.annotation.external;
 
 import com.google.gson.*;
-import com.haskforce.cabal.completion.CabalFileFinder;
-import com.haskforce.cabal.lang.psi.CabalFile;
-import com.haskforce.cabal.query.BuildInfo;
 import com.haskforce.cabal.query.BuildInfoUtil;
-import com.haskforce.cabal.query.CabalQuery;
 import com.haskforce.features.intentions.IgnoreHLint;
 import com.haskforce.highlighting.annotation.HaskellAnnotationHolder;
 import com.haskforce.highlighting.annotation.HaskellProblem;
@@ -28,12 +24,13 @@ import com.intellij.psi.PsiFile;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import scala.Option;
-import scala.runtime.AbstractFunction1;
 import scala.util.Either;
 
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,18 +54,15 @@ public class HLint {
         final String hlintFlags = ToolKey.HLINT_KEY.getFlags(project);
         if (hlintPath == null) return new Problems();
 
-        return parseProblems(toolConsole, workingDirectory, hlintPath, hlintFlags, file, haskellFile).fold(
-            new AbstractFunction1<ExecError, Problems>() {
-                @Override
-                public Problems apply(ExecError e) {
-                    toolConsole.writeError(ToolKey.HLINT_KEY, e.getMessage());
-                    NotificationUtil.displayToolsNotification(
-                        NotificationType.ERROR, project, "hlint", e.getMessage()
-                    );
-                    return new Problems();
-                }
-            },
-            FunctionUtil.<Problems>identity()
+        return EitherUtil.valueOr(
+            parseProblems(toolConsole, workingDirectory, hlintPath, hlintFlags, file, haskellFile),
+            e -> {
+                toolConsole.writeError(ToolKey.HLINT_KEY, e.getMessage());
+                NotificationUtil.displayToolsNotification(
+                  NotificationType.ERROR, project, "hlint", e.getMessage()
+                );
+                return new Problems();
+            }
         );
     }
 
@@ -79,31 +73,15 @@ public class HLint {
                                                             final @NotNull String flags,
                                                             final @NotNull String file,
                                                             final @NotNull HaskellFile haskellFile) {
-        return getVersion(toolConsole, workingDirectory, path).fold(
-            new AbstractFunction1<ExecError, Either<ExecError, Problems>>() {
-                @Override
-                public Either<ExecError, Problems> apply(ExecError e) {
-                    return e.toLeft();
-                }
-            },
-            new AbstractFunction1<VersionTriple, Either<ExecError, Problems>>() {
-                @Override
-                public Either<ExecError, Problems> apply(VersionTriple version) {
-                    final boolean useJson = version.$greater$eq(HLINT_MIN_VERSION_WITH_JSON_SUPPORT);
-                    final String[] params = getParams(file, haskellFile, useJson);
-                    return EitherUtil.rightMap(runHlint(
-                      toolConsole, workingDirectory, path, flags, params
-                    ), new AbstractFunction1<String, Problems>() {
-                        @Override
-                        public Problems apply(String stdout) {
-                            toolConsole.writeOutput(ToolKey.HLINT_KEY, stdout);
-                            if (useJson) return parseProblemsJson(toolConsole, stdout);
-                            return parseProblemsFallback(stdout);
-                        }
-                    });
-                }
-            }
-        );
+        return getVersion(toolConsole, workingDirectory, path).flatMap(version -> {
+            final boolean useJson = version.$greater$eq(HLINT_MIN_VERSION_WITH_JSON_SUPPORT);
+            final String[] params = getParams(file, haskellFile, useJson);
+            return runHlint(toolConsole, workingDirectory, path, flags, params).map(stdout -> {
+                toolConsole.writeOutput(ToolKey.HLINT_KEY, stdout);
+                if (useJson) return parseProblemsJson(toolConsole, stdout);
+                return parseProblemsFallback(stdout);
+            });
+        });
     }
 
     private static String[] getParams(@NotNull String file,
