@@ -1,8 +1,6 @@
 package com.haskforce.highlighting.annotation.external;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonSyntaxException;
+import com.google.gson.*;
 import com.haskforce.cabal.completion.CabalFileFinder;
 import com.haskforce.cabal.lang.psi.CabalFile;
 import com.haskforce.cabal.query.BuildInfo;
@@ -34,9 +32,8 @@ import scala.Option;
 import scala.runtime.AbstractFunction1;
 import scala.util.Either;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.lang.reflect.Type;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,7 +44,10 @@ import java.util.regex.Pattern;
 public class HLint {
     private static final Logger LOG = Logger.getInstance(HLint.class);
     private static final VersionTriple HLINT_MIN_VERSION_WITH_JSON_SUPPORT = new VersionTriple(1, 9, 1);
-    private static final Gson gson = new GsonBuilder().create();
+    private static final Gson gson =
+        new GsonBuilder()
+            .registerTypeAdapter(HLint.Problem.class, new HLintProblemGsonAdapter())
+            .create();
 
     @NotNull
     public static Problems lint(final @NotNull Project project, @NotNull String workingDirectory,
@@ -128,25 +128,39 @@ public class HLint {
      */
     @NotNull
     public static Problems parseProblemsJson(@NotNull HaskellToolsConsole toolsConsole, @NotNull String stdout) {
+        return EitherUtil.valueOr(
+            parseProblemsJson(stdout),
+            e -> {
+                toolsConsole.writeError(ToolKey.HLINT_KEY, e.getMessage());
+                LOG.error(e);
+                return new Problems();
+            }
+        );
+    }
+
+    @NotNull
+    public static Either<Throwable, Problems> parseProblemsJson(@NotNull String stdout) {
         final Problem[] problems;
         try {
             problems = gson.fromJson(stdout, Problem[].class);
         } catch (JsonSyntaxException e) {
-            String msg =
+            return EitherUtil.left(
+              new IllegalStateException(
                 "Unable to decode problem from HLint json output:\n"
-                + e.getMessage()
-                + "\nJSON was: " + stdout;
-            toolsConsole.writeError(ToolKey.HLINT_KEY, msg);
-            LOG.error(msg, e);
-            return new Problems();
+                  + e.getMessage()
+                  + "\nJSON was: " + stdout,
+                e
+              )
+            );
         }
         if (problems == null) {
-            String msg = "Unable to decode problem from HLint json output, decoded as null; json was: " + stdout;
-            toolsConsole.writeError(ToolKey.HLINT_KEY, msg);
-            LOG.warn(msg);
-            return new Problems();
+            return EitherUtil.left(
+              new IllegalStateException(
+                "Unable to decode problem from HLint json output, decoded as null; json was: " + stdout
+              )
+            );
         }
-        return new Problems(problems);
+        return EitherUtil.right(new Problems(problems));
     }
 
     /**
@@ -220,6 +234,7 @@ public class HLint {
     }
 
     public static class Problem extends HaskellProblem {
+
         public String decl;
         public String file;
         public String hint;
@@ -332,6 +347,91 @@ public class HLint {
                 }
             }
             return offsetStart + width;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Problem problem = (Problem) o;
+            return endLine == problem.endLine &&
+              endColumn == problem.endColumn &&
+              Objects.equals(decl, problem.decl) &&
+              Objects.equals(file, problem.file) &&
+              Objects.equals(hint, problem.hint) &&
+              Objects.equals(from, problem.from) &&
+              Objects.equals(to, problem.to) &&
+              Objects.equals(module, problem.module) &&
+              Arrays.equals(note, problem.note) &&
+              Objects.equals(severity, problem.severity);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = Objects.hash(decl, file, hint, from, to, module, severity, endLine, endColumn);
+            result = 31 * result + Arrays.hashCode(note);
+            return result;
+        }
+    }
+
+    /**
+     * Custom deserialization to deal with the fact that hlint < 2.1.5 used String for the
+     * 'module' and 'decl' fields whereas hlint >= 2.1.5 started using Array[String].
+     * See https://github.com/ndmitchell/hlint/commit/7bb10df6871759704a287fedea623f5142ad2154#diff-c1ba1f9735f9cb9bfe8be220568d211b
+     */
+    private static class HLintProblemGsonAdapter implements JsonDeserializer<Problem> {
+
+        @Override
+        public Problem deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
+            JsonObject o = jsonElement.getAsJsonObject();
+            Problem p = new Problem();
+            p.useJson = true;
+            p.decl = extractStringOrSingletonArray(o, "decl");
+            p.file = o.get("file").getAsString();
+            p.hint = o.get("hint").getAsString();
+            p.from = o.get("from").getAsString();
+            p.to = o.get("to").getAsString();
+            p.module = extractStringOrSingletonArray(o, "module");
+            p.note = extractStringArray(o, "note");
+            p.severity = o.get("severity").getAsString();
+            p.startLine = o.get("startLine").getAsInt();
+            p.startColumn = o.get("startColumn").getAsInt();
+            p.endLine = o.get("endLine").getAsInt();
+            p.endColumn = o.get("endColumn").getAsInt();
+            return p;
+        }
+
+        private String extractStringOrSingletonArray(JsonObject o, String field) {
+            JsonElement v = o.get(field);
+            if (v.isJsonArray()) {
+                JsonArray a = v.getAsJsonArray();
+                if (a.size() == 0) return "";
+                if (a.size() != 1 || !a.get(0).isJsonPrimitive() || !a.get(0).getAsJsonPrimitive().isString()) {
+                    throw new IllegalStateException("Expected singleton array of string at field '" + field + "'; found: " + v.toString());
+                }
+                return a.get(0).getAsJsonPrimitive().getAsString();
+            }
+            if (v.isJsonPrimitive() && v.getAsJsonPrimitive().isString()) {
+                return v.getAsJsonPrimitive().getAsString();
+            }
+            throw new IllegalStateException("Expected either a string or array of string at field '" + field + "'; found: " + v.toString());
+        }
+
+        private String[] extractStringArray(JsonObject o, String field) {
+            JsonElement v = o.get(field);
+            if (!v.isJsonArray()) {
+                throw new IllegalStateException("Expected string array at field '" + field + "'; got: " + v.toString());
+            }
+            JsonArray a = v.getAsJsonArray();
+            String[] result = new String[a.size()];
+            for (int i = 0; i < a.size(); ++i) {
+                JsonElement x = a.get(i);
+                if (!x.isJsonPrimitive() || !x.getAsJsonPrimitive().isString()) {
+                    throw new IllegalStateException("At field '" + field + "', expected array index " + i + " to be a string; got: " + x.toString());
+                }
+                result[i] = x.getAsJsonPrimitive().getAsString();
+            }
+            return result;
         }
     }
 }

@@ -29,4 +29,14 @@ object EitherUtil {
   def left[A, B](x: A): Either[A, B] = Left(x)
 
   def right[A, B](x: B): Either[A, B] = Right(x)
+
+//  def valueOr[A, B](e: Either[A, B], f: JavaFunction[A, B]): B = e match {
+//    case Left(a) => f(a)
+//    case Right(b) => b
+//  }
+
+  def valueOr[A, B](e: Either[A, B], f: A => B): B = e match {
+    case Left(a) => f(a)
+    case Right(b) => b
+  }
 }
