@@ -40,7 +40,8 @@ class HLintParserTest extends UsefulTestCase with AssertMixin {
       4,
       8,
       5,
-      25
+      25,
+      true
     )
   }
 }

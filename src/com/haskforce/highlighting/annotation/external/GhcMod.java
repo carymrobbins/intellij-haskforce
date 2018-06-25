@@ -266,13 +266,15 @@ public class GhcMod {
         }
     }
 
-    public static class Problem extends HaskellProblem {
-        public String file;
-        public String message;
-        public boolean isError;
-        public boolean isUnknownSymbol;
-        public boolean isUnusedSymbol;
-        public boolean isUnusedImport;
+    public static class Problem implements HaskellProblem {
+        public final String file;
+        public final int startLine;
+        public final int startColumn;
+        public final String message;
+        public final boolean isError;
+        public final boolean isUnknownSymbol;
+        public final boolean isUnusedSymbol;
+        public final boolean isUnusedImport;
 
         private static Pattern notInScopeRegex = Pattern.compile("(?i)not in scope");
 
@@ -280,9 +282,8 @@ public class GhcMod {
             this.file = file;
             this.startLine = startLine;
             this.startColumn = startColumn;
-            this.message = message;
             this.isError = !message.startsWith("Warning: ");
-            if (!this.isError) this.message = message.substring("Warning: ".length());
+            this.message = this.isError ? message : message.substring("Warning: ".length());
             isUnknownSymbol = notInScopeRegex.matcher(message).find();
             isUnusedSymbol = message.contains("Defined but not used");
             isUnusedImport = message.contains("import of") && message.contains("is redundant");
@@ -334,6 +335,16 @@ public class GhcMod {
                     return;
                 }
             }
+        }
+
+        @Override
+        public int getStartLine() {
+            return startLine;
+        }
+
+        @Override
+        public int getStartColumn() {
+            return startColumn;
         }
 
         /**

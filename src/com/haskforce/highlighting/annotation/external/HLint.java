@@ -167,7 +167,7 @@ public class HLint {
         }
         final String from = split.get(0).trim();
         final String to = split.get(1).trim();
-        return new Problem("", "", hint, from, to, "", new String[]{}, "", line, column);
+        return Problem.forFallback("", "", hint, from, to, "", new String[]{}, "", line, column);
     }
 
     /**
@@ -211,33 +211,28 @@ public class HLint {
         return ExecUtil.readCommandLine(commandLine);
     }
 
-    public static class Problem extends HaskellProblem {
+    public static class Problem implements HaskellProblem {
 
-        public String decl;
-        public String file;
-        public String hint;
-        public String from;
-        public String to;
-        public String module;
-        public String[] note;
-        public String severity;
-        public int endLine;
-        public int endColumn;
-        public boolean useJson;
+        public final String decl;
+        public final String file;
+        public final String hint;
+        public final String from;
+        public final String to;
+        public final String module;
+        public final String[] note;
+        public final String severity;
+        public final int startLine;
+        public final int startColumn;
+        public final int endLine;
+        public final int endColumn;
+        public final boolean useJson;
 
-        /**
-         * Provide a default constructor so gson objects will default to `useJson = true`.
-         */
-        public Problem() {
-            useJson = true;
-        }
-
-        public Problem(String decl, String file, String hint, String from, String to, String module, String[] note,
-                       String severity, int startLine, int startColumn, int endLine, int endColumn) {
+        public Problem(String decl, String file, String hint, String from, String to, String module, String[] note, String severity, int startLine, int startColumn, int endLine, int endColumn, boolean useJson) {
             this.decl = decl;
             this.file = file;
-            this.from = from;
             this.hint = hint;
+            this.from = from;
+            this.to = to;
             this.module = module;
             this.note = note;
             this.severity = severity;
@@ -245,13 +240,11 @@ public class HLint {
             this.startColumn = startColumn;
             this.endLine = endLine;
             this.endColumn = endColumn;
-            this.to = to;
+            this.useJson = useJson;
         }
 
-        public Problem(String decl, String file, String hint, String from, String to, String module, String[] note,
-                       String severity, int startLine, int startColumn) {
-            this(decl, file, hint, from, to, module, note, severity, startLine, startColumn, -1, -1);
-            useJson = false;
+        public static Problem forFallback(String decl, String file, String hint, String from, String to, String module, String[] note, String severity, int startLine, int startColumn) {
+            return new Problem(decl, file, hint, from, to, module, note, severity, startLine, startColumn, -1, -1, false);
         }
 
         public String getMessage() {
@@ -261,6 +254,16 @@ public class HLint {
         protected void createAnnotation(@NotNull HaskellAnnotationHolder holder, int start, int end, @NotNull String message) {
             Annotation ann = holder.createWarningAnnotation(TextRange.create(start, end), message);
             if (ann != null) ann.registerFix(new IgnoreHLint(hint));
+        }
+
+        @Override
+        public int getStartLine() {
+            return startLine;
+        }
+
+        @Override
+        public int getStartColumn() {
+            return startColumn;
         }
 
         @Override
@@ -332,8 +335,11 @@ public class HLint {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
             Problem problem = (Problem) o;
-            return endLine == problem.endLine &&
+            return startLine == problem.startLine &&
+              startColumn == problem.startColumn &&
+              endLine == problem.endLine &&
               endColumn == problem.endColumn &&
+              useJson == problem.useJson &&
               Objects.equals(decl, problem.decl) &&
               Objects.equals(file, problem.file) &&
               Objects.equals(hint, problem.hint) &&
@@ -346,7 +352,7 @@ public class HLint {
 
         @Override
         public int hashCode() {
-            int result = Objects.hash(decl, file, hint, from, to, module, severity, endLine, endColumn);
+            int result = Objects.hash(decl, file, hint, from, to, module, severity, startLine, startColumn, endLine, endColumn, useJson);
             result = 31 * result + Arrays.hashCode(note);
             return result;
         }
@@ -362,21 +368,21 @@ public class HLint {
         @Override
         public Problem deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
             JsonObject o = jsonElement.getAsJsonObject();
-            Problem p = new Problem();
-            p.useJson = true;
-            p.decl = extractStringOrSingletonArray(o, "decl");
-            p.file = o.get("file").getAsString();
-            p.hint = o.get("hint").getAsString();
-            p.from = o.get("from").getAsString();
-            p.to = o.get("to").getAsString();
-            p.module = extractStringOrSingletonArray(o, "module");
-            p.note = extractStringArray(o, "note");
-            p.severity = o.get("severity").getAsString();
-            p.startLine = o.get("startLine").getAsInt();
-            p.startColumn = o.get("startColumn").getAsInt();
-            p.endLine = o.get("endLine").getAsInt();
-            p.endColumn = o.get("endColumn").getAsInt();
-            return p;
+            return new Problem(
+                extractStringOrSingletonArray(o, "decl"),
+                o.get("file").getAsString(),
+                o.get("hint").getAsString(),
+                o.get("from").getAsString(),
+                o.get("to").getAsString(),
+                extractStringOrSingletonArray(o, "module"),
+                extractStringArray(o, "note"),
+                o.get("severity").getAsString(),
+                o.get("startLine").getAsInt(),
+                o.get("startColumn").getAsInt(),
+                o.get("endLine").getAsInt(),
+                o.get("endColumn").getAsInt(),
+                true
+            );
         }
 
         private String extractStringOrSingletonArray(JsonObject o, String field) {
