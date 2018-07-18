@@ -25,6 +25,17 @@ class HLintParserTest extends UsefulTestCase with AssertMixin {
     }
   }
 
+  def testParseOptionalTo(): Unit = {
+    import fixtureOptionalTo._
+
+    HLint.parseProblemsJson(input) match {
+      case Left(e) => throw new AssertionError(e)
+      case Right(p) =>
+        assertEquals(1, p.size())
+        assertSameElements(p, expected)
+    }
+  }
+
   private object fixture_2_1_5 {
     val before_2_1_5 = """[{"module":"Main","decl":"main","severity":"Warning","hint":"Redundant do","file":"Main.hs","startLine":4,"startColumn":8,"endLine":5,"endColumn":25,"from":"do putStrLn \"hello world\"","to":"putStrLn \"hello world\"","note":[],"refactorings":"[Replace {rtype = Expr, pos = SrcSpan {startLine = 4, startCol = 8, endLine = 5, endCol = 25}, subts = [(\"y\",SrcSpan {startLine = 5, startCol = 3, endLine = 5, endCol = 25})], orig = \"y\"}]"}]"""
     val at_2_1_5 = """[{"module":["Main"],"decl":["main"],"severity":"Warning","hint":"Redundant do","file":"Main.hs","startLine":4,"startColumn":8,"endLine":5,"endColumn":25,"from":"do putStrLn \"hello world\"","to":"putStrLn \"hello world\"","note":[],"refactorings":"[Replace {rtype = Expr, pos = SrcSpan {startLine = 4, startCol = 8, endLine = 5, endCol = 25}, subts = [(\"y\",SrcSpan {startLine = 5, startCol = 3, endLine = 5, endCol = 25})], orig = \"y\"}]"}]"""
@@ -41,6 +52,25 @@ class HLintParserTest extends UsefulTestCase with AssertMixin {
       8,
       5,
       25,
+      true
+    )
+  }
+
+  private object fixtureOptionalTo {
+    val input = """[{"module":"","decl":"","severity":"Error","hint":"Parse error","file":"Main.hs","startLine":42,"startColumn":1,"endLine":42,"endColumn":1,"from":"    }\n  -}\n> \n","to":null,"note":[],"refactorings":"[]"}]"""
+    val expected = new HLint.Problem(
+      "",
+      "Main.hs",
+      "Parse error",
+      "    }\n  -}\n> \n",
+      "",
+      "",
+      Array.empty,
+      "Error",
+      42,
+      1,
+      42,
+      1,
       true
     )
   }
