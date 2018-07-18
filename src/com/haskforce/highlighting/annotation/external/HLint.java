@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -356,6 +358,25 @@ public class HLint {
             result = 31 * result + Arrays.hashCode(note);
             return result;
         }
+
+        @Override
+        public String toString() {
+            return "Problem{" +
+              "decl='" + decl + '\'' +
+              ", file='" + file + '\'' +
+              ", hint='" + hint + '\'' +
+              ", from='" + from + '\'' +
+              ", to='" + to + '\'' +
+              ", module='" + module + '\'' +
+              ", note=" + Arrays.toString(note) +
+              ", severity='" + severity + '\'' +
+              ", startLine=" + startLine +
+              ", startColumn=" + startColumn +
+              ", endLine=" + endLine +
+              ", endColumn=" + endColumn +
+              ", useJson=" + useJson +
+              '}';
+        }
     }
 
     /**
@@ -373,7 +394,7 @@ public class HLint {
                 o.get("file").getAsString(),
                 o.get("hint").getAsString(),
                 o.get("from").getAsString(),
-                o.get("to").getAsString(),
+                extractOptional(o, "to", JsonElement::getAsString, () -> ""),
                 extractStringOrSingletonArray(o, "module"),
                 extractStringArray(o, "note"),
                 o.get("severity").getAsString(),
@@ -383,6 +404,13 @@ public class HLint {
                 o.get("endColumn").getAsInt(),
                 true
             );
+        }
+
+        private <A> A extractOptional(JsonObject o, String field, Function<JsonElement, A> ifNotNull, Supplier<A> ifNull) {
+          if (!o.has(field)) return ifNull.get();
+          JsonElement v = o.get(field);
+          if (v.isJsonNull()) return ifNull.get();
+          return ifNotNull.apply(v);
         }
 
         private String extractStringOrSingletonArray(JsonObject o, String field) {
