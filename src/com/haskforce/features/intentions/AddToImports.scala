@@ -81,19 +81,15 @@ class AddToImports(val symbolName: String) extends BaseIntentionAction {
 object AddToImports {
 
   def appendToExistingImport(project: Project, symbolName: String, impDecl: HaskellImpdecl): Unit = {
-    val varName: PsiElement = HaskellElementFactory.createVaridFromText(project, symbolName)
-    val importt: HaskellImportt = impDecl.getImporttList.asScala.head
-    val comma = HaskellElementFactory.createComma(project)
-    val space = HaskellElementFactory.createSpace(project)
+    val importt = impDecl.getImporttList.iterator().next()
     val rParen = impDecl.getRparen
-    importt.addBefore(comma, rParen)
-    importt.addBefore(space, rParen)
-    importt.addBefore(varName, rParen)
+    importt.addBefore(HaskellElementFactory.createComma(project), rParen)
+    importt.addBefore(HaskellElementFactory.createSpace(project), rParen)
+    importt.addBefore(mkImportt(project, symbolName), rParen)
   }
 
   def createNewImport(file: PsiFile, project: Project, importName: String, symbolName: String, imports: Iterable[HaskellImpdecl]): Unit = {
-    val textImport = s"import $importName ($symbolName)"
-    val impDecl = HaskellElementFactory.createImpdeclFromText(project, textImport)
+    val impDecl = mkImpDecl(project, importName, symbolName)
     val body = PsiTreeUtil.getChildOfType(file, classOf[HaskellBody])
     val newline = HaskellElementFactory.createNewLine(project)
     if (imports.nonEmpty) {
@@ -107,4 +103,18 @@ object AddToImports {
     }
   }
 
+  private def mkImportt(project: Project, symbolName: String) =
+    mkImpDecl(project, "Dummy", symbolName).getImporttList.asScala.head
+
+  private def mkImpDecl(project: Project, importName: String, symbolName: String) = {
+    val textImport =
+      if (isOp(symbolName)) s"import $importName (($symbolName))"
+      else s"import $importName ($symbolName)"
+    HaskellElementFactory.createImpdeclFromText(project, textImport)
+  }
+
+
+  private def isOp(symbolName: String) = notOpRegex.unapplySeq(symbolName).isEmpty
+
+  private def notOpRegex = """^\w+$""".r
 }
