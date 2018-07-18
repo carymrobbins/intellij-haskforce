@@ -48,8 +48,7 @@ class AddToImports(val symbolName: String) extends BaseIntentionAction {
       .setItemChoosenCallback(() => doAddImport(project, file, list.getSelectedValue))
       .createPopup()
 
-    // TODO: Can we put it at the cursor offset?
-    popup.showInFocusCenter()
+    popup.showInBestPositionFor(editor)
   }
 
   def doAddImport(project: Project, file: PsiFile, r: SymbolImportProvider.Result): Unit = {
