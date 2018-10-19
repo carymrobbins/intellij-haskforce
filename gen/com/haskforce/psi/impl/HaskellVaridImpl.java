@@ -16,7 +16,7 @@ import com.intellij.psi.stubs.IStubElementType;
 
 public class HaskellVaridImpl extends HaskellNamedStubbedPsiElementBase<HaskellVaridStub> implements HaskellVarid {
 
-  public HaskellVaridImpl(HaskellVaridStub stub, IStubElementType type) {
+  public HaskellVaridImpl(@NotNull HaskellVaridStub stub, IStubElementType type) {
     super(stub, type);
   }
 
@@ -73,7 +73,7 @@ public class HaskellVaridImpl extends HaskellNamedStubbedPsiElementBase<HaskellV
   }
 
   @Nullable
-  public PsiElement setName(String newName) {
+  public PsiElement setName(@NotNull String newName) {
     return HaskellPsiImplUtil.setName(this, newName);
   }
 

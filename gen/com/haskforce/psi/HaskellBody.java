@@ -98,6 +98,9 @@ public interface HaskellBody extends HaskellCompositeElement {
   PsiElement getIf();
 
   @Nullable
+  PsiElement getLcasetok();
+
+  @Nullable
   PsiElement getMdotok();
 
   @Nullable

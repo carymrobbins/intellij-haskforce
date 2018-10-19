@@ -50,9 +50,9 @@ public class HaskellGuardImpl extends HaskellCompositeElementImpl implements Has
   }
 
   @Override
-  @Nullable
-  public HaskellLetexp getLetexp() {
-    return PsiTreeUtil.getChildOfType(this, HaskellLetexp.class);
+  @NotNull
+  public List<HaskellLetexp> getLetexpList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellLetexp.class);
   }
 
   @Override
@@ -110,9 +110,9 @@ public class HaskellGuardImpl extends HaskellCompositeElementImpl implements Has
   }
 
   @Override
-  @Nullable
-  public HaskellStmts getStmts() {
-    return PsiTreeUtil.getChildOfType(this, HaskellStmts.class);
+  @NotNull
+  public List<HaskellStmts> getStmtsList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellStmts.class);
   }
 
   @Override
@@ -129,50 +129,8 @@ public class HaskellGuardImpl extends HaskellCompositeElementImpl implements Has
 
   @Override
   @Nullable
-  public PsiElement getCase() {
-    return findChildByType(CASE);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getDo() {
-    return findChildByType(DO);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getElse() {
-    return findChildByType(ELSE);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getIf() {
-    return findChildByType(IF);
-  }
-
-  @Override
-  @Nullable
   public PsiElement getLet() {
     return findChildByType(LET);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getMdotok() {
-    return findChildByType(MDOTOK);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getOf() {
-    return findChildByType(OF);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getThen() {
-    return findChildByType(THEN);
   }
 
   @Override
@@ -185,12 +143,6 @@ public class HaskellGuardImpl extends HaskellCompositeElementImpl implements Has
   @Nullable
   public PsiElement getWhitespacerbracetok() {
     return findChildByType(WHITESPACERBRACETOK);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getBackslash() {
-    return findChildByType(BACKSLASH);
   }
 
   @Override

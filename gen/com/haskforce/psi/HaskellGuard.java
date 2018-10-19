@@ -19,8 +19,8 @@ public interface HaskellGuard extends HaskellCompositeElement {
   @Nullable
   HaskellGendecl getGendecl();
 
-  @Nullable
-  HaskellLetexp getLetexp();
+  @NotNull
+  List<HaskellLetexp> getLetexpList();
 
   @NotNull
   List<HaskellListlike> getListlikeList();
@@ -49,8 +49,8 @@ public interface HaskellGuard extends HaskellCompositeElement {
   @NotNull
   List<HaskellQvarid> getQvaridList();
 
-  @Nullable
-  HaskellStmts getStmts();
+  @NotNull
+  List<HaskellStmts> getStmtsList();
 
   @NotNull
   List<HaskellVarid> getVaridList();
@@ -59,37 +59,13 @@ public interface HaskellGuard extends HaskellCompositeElement {
   List<HaskellVarsym> getVarsymList();
 
   @Nullable
-  PsiElement getCase();
-
-  @Nullable
-  PsiElement getDo();
-
-  @Nullable
-  PsiElement getElse();
-
-  @Nullable
-  PsiElement getIf();
-
-  @Nullable
   PsiElement getLet();
-
-  @Nullable
-  PsiElement getMdotok();
-
-  @Nullable
-  PsiElement getOf();
-
-  @Nullable
-  PsiElement getThen();
 
   @Nullable
   PsiElement getWhitespacelbracetok();
 
   @Nullable
   PsiElement getWhitespacerbracetok();
-
-  @Nullable
-  PsiElement getBackslash();
 
   @Nullable
   PsiElement getLbrace();

@@ -229,11 +229,11 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   "infixr"            { return INFIXR; }
   "qualified"         { return QUALIFIED; }
   "hiding"            { return HIDING; }
-  "\\case"            {
+  "\\" {LINE_WS}* "case" {
                           yybegin(FINDINGINDENTATIONCONTEXT);
                           indent = yycolumn;
                           return LCASETOK;
-                      }
+                         }
   "case"              { return CASE; }
   "mdo"                 {
                             yybegin(FINDINGINDENTATIONCONTEXT);

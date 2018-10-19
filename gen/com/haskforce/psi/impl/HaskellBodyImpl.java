@@ -207,6 +207,12 @@ public class HaskellBodyImpl extends HaskellCompositeElementImpl implements Hask
 
   @Override
   @Nullable
+  public PsiElement getLcasetok() {
+    return findChildByType(LCASETOK);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getMdotok() {
     return findChildByType(MDOTOK);
   }
