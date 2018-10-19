@@ -25,9 +25,6 @@ public interface HaskellNewtypedecl extends HaskellCompositeElement {
   @Nullable
   PsiElement getDeriving();
 
-  @NotNull
-  PsiElement getNewtype();
-
   @Nullable
   PsiElement getDoublearrow();
 

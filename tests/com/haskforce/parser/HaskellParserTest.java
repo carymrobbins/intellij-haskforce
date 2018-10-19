@@ -61,6 +61,8 @@ public class HaskellParserTest extends HaskellParserTestBase {
     public void testImport00004()       { doTest(true, true); }
     public void testImport00005()       { doTest(true, true); }
     public void testImport00006()       { doTest(true, true); }
+    public void testInstance00001()     { doTest(true, true); }
+    public void testInstance00002()     { doTest(true, true); }
     public void testInstanceSigs00001() { doTest(true, true); }
     public void testInfix00001()        { doTest(true, true); }
     public void testKind00001()         { doTest(true, true); }
@@ -103,6 +105,7 @@ public class HaskellParserTest extends HaskellParserTestBase {
     public void testComment00007()      { doTest(true, true); }
     public void testComment00008()      { doTest(true, true); }
     public void testLambda00001()       { doTest(true, true); }
+    public void testLambdaCase00001()   { doTest(true, true); }
     public void testMagicHash00001()    { doTest(true, true); }
     public void testMinimal00001()      { doTest(true, true); }
     public void testModule00001()       { doTest(true, true); }
@@ -136,6 +139,7 @@ public class HaskellParserTest extends HaskellParserTestBase {
     public void testType00004()         { doTest(true, true); }
     public void testType00005()         { doTest(true, true); }
     public void testType00006()         { doTest(true, true); }
+    public void testTypeApplications00001()     { doTest(true, true); }
     public void testVar00001()          { doTest(true, true); }
     public void testViewPatterns00001() { doTest(true, true); }
     public void testQuote00001()        { doTest(true, true); }

@@ -129,6 +129,12 @@ public class HaskellDatadeclImpl extends HaskellCompositeElementImpl implements 
 
   @Override
   @Nullable
+  public PsiElement getNewtype() {
+    return findChildByType(NEWTYPE);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getWhere() {
     return findChildByType(WHERE);
   }

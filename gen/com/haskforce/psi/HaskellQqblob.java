@@ -10,7 +10,7 @@ public interface HaskellQqblob extends HaskellLanguageInjectionElement {
 
   boolean isValidHost();
 
-  HaskellQqblob updateText(String s);
+  HaskellQqblob updateText(@NotNull String s);
 
   @NotNull
   StringLiteralEscaper<HaskellQqblob> createLiteralTextEscaper();

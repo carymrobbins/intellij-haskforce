@@ -14,10 +14,13 @@ public interface HaskellExp extends HaskellCompositeElement {
   HaskellClscontext getClscontext();
 
   @NotNull
-  List<HaskellExp> getExpList();
+  List<HaskellCtype> getCtypeList();
 
-  @NotNull
-  List<HaskellLetexp> getLetexpList();
+  @Nullable
+  HaskellExp getExp();
+
+  @Nullable
+  HaskellLetexp getLetexp();
 
   @NotNull
   List<HaskellListlike> getListlikeList();
@@ -46,8 +49,8 @@ public interface HaskellExp extends HaskellCompositeElement {
   @NotNull
   List<HaskellQvarid> getQvaridList();
 
-  @NotNull
-  List<HaskellStmts> getStmtsList();
+  @Nullable
+  HaskellStmts getStmts();
 
   @Nullable
   HaskellTypee getTypee();
@@ -59,9 +62,48 @@ public interface HaskellExp extends HaskellCompositeElement {
   List<HaskellVarsym> getVarsymList();
 
   @Nullable
+  PsiElement getCase();
+
+  @Nullable
+  PsiElement getDo();
+
+  @Nullable
+  PsiElement getElse();
+
+  @Nullable
+  PsiElement getIf();
+
+  @Nullable
+  PsiElement getLcasetok();
+
+  @Nullable
+  PsiElement getMdotok();
+
+  @Nullable
+  PsiElement getOf();
+
+  @Nullable
+  PsiElement getThen();
+
+  @Nullable
+  PsiElement getWhitespacelbracetok();
+
+  @Nullable
+  PsiElement getWhitespacerbracetok();
+
+  @Nullable
+  PsiElement getBackslash();
+
+  @Nullable
   PsiElement getDoublearrow();
 
   @Nullable
   PsiElement getDoublecolon();
+
+  @Nullable
+  PsiElement getLbrace();
+
+  @Nullable
+  PsiElement getRbrace();
 
 }

@@ -59,6 +59,9 @@ public interface HaskellDatadecl extends HaskellCompositeElement {
   PsiElement getInstance();
 
   @Nullable
+  PsiElement getNewtype();
+
+  @Nullable
   PsiElement getWhere();
 
   @Nullable

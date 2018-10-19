@@ -50,9 +50,6 @@ public interface HaskellIdecl extends HaskellCompositeElement {
   PsiElement getDeriving();
 
   @Nullable
-  PsiElement getNewtype();
-
-  @Nullable
   PsiElement getType();
 
   @Nullable
