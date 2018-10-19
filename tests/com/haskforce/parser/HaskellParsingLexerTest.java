@@ -47,6 +47,8 @@ public class HaskellParsingLexerTest extends HaskellLexerTestBase {
     public void testHello00001()        { doTest(true, true); }
     public void testHello00002()        { doTest(true, true); }
     public void testHello00003()        { doTest(true, false); }
+    public void testInstance00001()     { doTest(true, true); }
+    public void testInstance00002()     { doTest(true, true); }
     public void testImport00001()       { doTest(true, true); }
     public void testImport00002()       { doTest(true, true); }
     public void testImport00003()       { doTest(true, true); }
@@ -90,6 +92,7 @@ public class HaskellParsingLexerTest extends HaskellLexerTestBase {
     public void testComment00006()      { doTest(true, true); }
     public void testComment00008()      { doTest(true, true); }
     public void testLambda00001()       { doTest(true, true); }
+    public void testLambdaCase00001()   { doTest(true, true); }
     public void testMagicHash00001()    { doTest(true, true); }
     public void testModule00001()       { doTest(true, true); }
     public void testPragma00001()       { doTest(true, true); }
@@ -109,6 +112,7 @@ public class HaskellParsingLexerTest extends HaskellLexerTestBase {
     public void testTempHask00003()     { doTest(true, true); }
     public void testTempHask00004()     { doTest(true, true); }
     public void testTempHask00005()     { doTest(true, true); }
+    public void testTypeApplications00001()     { doTest(true, true); }
     public void testUnicode00001()      { doTest(true, true); }
     public void testQuote00001()        { doTest(true, true); }
 }
