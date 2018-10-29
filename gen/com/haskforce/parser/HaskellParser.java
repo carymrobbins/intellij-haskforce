@@ -3756,7 +3756,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // "instance" ctype ["where" idecls]
+  // "instance" ppragma? ctype ["where" idecls]
   public static boolean instancedecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "instancedecl")) return false;
     if (!nextTokenIs(b, INSTANCE)) return false;
@@ -3764,22 +3764,30 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     Marker m = enter_section_(b, l, _NONE_, INSTANCEDECL, null);
     r = consumeToken(b, INSTANCE);
     p = r; // pin = 1
-    r = r && report_error_(b, ctype(b, l + 1));
-    r = p && instancedecl_2(b, l + 1) && r;
+    r = r && report_error_(b, instancedecl_1(b, l + 1));
+    r = p && report_error_(b, ctype(b, l + 1)) && r;
+    r = p && instancedecl_3(b, l + 1) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
+  // ppragma?
+  private static boolean instancedecl_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "instancedecl_1")) return false;
+    ppragma(b, l + 1);
+    return true;
+  }
+
   // ["where" idecls]
-  private static boolean instancedecl_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "instancedecl_2")) return false;
-    instancedecl_2_0(b, l + 1);
+  private static boolean instancedecl_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "instancedecl_3")) return false;
+    instancedecl_3_0(b, l + 1);
     return true;
   }
 
   // "where" idecls
-  private static boolean instancedecl_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "instancedecl_2_0")) return false;
+  private static boolean instancedecl_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "instancedecl_3_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, WHERE);
