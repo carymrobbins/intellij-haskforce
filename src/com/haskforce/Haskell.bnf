@@ -264,7 +264,7 @@ classdecl ::= "class" ctype [fundeps] ["where" ppragma* cdecls] {pin=1}
 instancedecl ::= "instance" ppragma? ctype ["where" idecls] {pin=1}
 defaultdecl ::= "default" <<commaSeparate typee>> {pin=1}
 foreigndecl ::= "foreign" fdecl {pin=1}
-derivingdecl ::= "deriving" "instance" [ppragma] ctype {pin=1}
+derivingdecl ::= "deriving" "newtype"? "instance" [ppragma] ctype {pin=1}
 
 private fundeps ::= '|' <<sequence fundep>> {pin=1}
 private fundep ::= tyvar+ "->" tyvar+ {pin=2}
@@ -363,7 +363,7 @@ private fielddecls ::= fielddecl [',' fielddecls] {pin(".*")=1}
 
 private fielddecl ::= vars "::" (typee | '!' atype) {pin=2}
 
-private deriving ::= "deriving" (dclass  | <<commaSeparate dclass>>) {pin=1}
+private deriving ::= "deriving" "newtype"? (dclass  | <<commaSeparate dclass>>) {pin=1}
 private dclass ::= qtycls (dclass|tyvar)*
 
 private fdecl ::= (importdecl | exportdecl) var "::" [clscontext "=>"] ftype

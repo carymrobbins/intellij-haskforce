@@ -49,4 +49,10 @@ public class HaskellDerivingdeclImpl extends HaskellCompositeElementImpl impleme
     return findChildByType(INSTANCE);
   }
 
+  @Override
+  @Nullable
+  public PsiElement getNewtype() {
+    return findChildByType(NEWTYPE);
+  }
+
 }

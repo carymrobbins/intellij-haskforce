@@ -111,12 +111,6 @@ public class HaskellIdeclImpl extends HaskellCompositeElementImpl implements Has
 
   @Override
   @Nullable
-  public PsiElement getNewtype() {
-    return findChildByType(NEWTYPE);
-  }
-
-  @Override
-  @Nullable
   public PsiElement getType() {
     return findChildByType(TYPE);
   }
