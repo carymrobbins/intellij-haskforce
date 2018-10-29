@@ -262,6 +262,10 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   //                | [recordlikelhs] i '{' (fbind ',')* [e] (".." | fbind) [e] '}'
   //                | gcon
   //                | qvar
+  //                // Hole
+  //                | "_"
+  //                // Type application
+  //                | "@" ("_" | ctype)
   static boolean aexp(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "aexp")) return false;
     boolean r;
@@ -278,6 +282,8 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     if (!r) r = aexp_9(b, l + 1);
     if (!r) r = gcon(b, l + 1);
     if (!r) r = qvar(b, l + 1);
+    if (!r) r = consumeToken(b, UNDERSCORE);
+    if (!r) r = aexp_13(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -409,6 +415,28 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "aexp_9_6")) return false;
     e(b, l + 1);
     return true;
+  }
+
+  // "@" ("_" | ctype)
+  private static boolean aexp_13(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "aexp_13")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, AMPERSAT);
+    r = r && aexp_13_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // "_" | ctype
+  private static boolean aexp_13_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "aexp_13_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, UNDERSCORE);
+    if (!r) r = ctype(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   /* ********************************************************** */

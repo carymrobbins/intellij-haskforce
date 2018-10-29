@@ -139,6 +139,7 @@ public class HaskellParserTest extends HaskellParserTestBase {
     public void testType00004()         { doTest(true, true); }
     public void testType00005()         { doTest(true, true); }
     public void testType00006()         { doTest(true, true); }
+    public void testTypeApplications00001()     { doTest(true, true); }
     public void testVar00001()          { doTest(true, true); }
     public void testViewPatterns00001() { doTest(true, true); }
     public void testQuote00001()        { doTest(true, true); }

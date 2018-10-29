@@ -13,6 +13,9 @@ public interface HaskellExp extends HaskellCompositeElement {
   @Nullable
   HaskellClscontext getClscontext();
 
+  @NotNull
+  List<HaskellCtype> getCtypeList();
+
   @Nullable
   HaskellExp getExp();
 

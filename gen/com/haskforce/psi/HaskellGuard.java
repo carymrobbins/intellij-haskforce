@@ -10,6 +10,9 @@ public interface HaskellGuard extends HaskellCompositeElement {
   @NotNull
   List<HaskellAlt> getAltList();
 
+  @NotNull
+  List<HaskellCtype> getCtypeList();
+
   @Nullable
   HaskellExp getExp();
 

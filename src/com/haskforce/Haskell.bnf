@@ -435,6 +435,10 @@ private aexp ::= parensplice exp i ')'
                | [recordlikelhs] i '{' (fbind ',')* [e] (".." | fbind) [e] '}'
                | gcon
                | qvar
+               // Hole
+               | "_"
+               // Type application
+               | "@" ("_" | ctype)
 
 qqblob ::= qqtext+ {
     methods=[isValidHost updateText createLiteralTextEscaper]

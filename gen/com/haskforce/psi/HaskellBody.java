@@ -13,6 +13,9 @@ public interface HaskellBody extends HaskellCompositeElement {
   @Nullable
   HaskellClassdecl getClassdecl();
 
+  @NotNull
+  List<HaskellCtype> getCtypeList();
+
   @Nullable
   HaskellDatadecl getDatadecl();
 

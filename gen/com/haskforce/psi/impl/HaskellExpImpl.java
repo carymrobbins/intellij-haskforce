@@ -38,6 +38,12 @@ public class HaskellExpImpl extends HaskellCompositeElementImpl implements Haske
   }
 
   @Override
+  @NotNull
+  public List<HaskellCtype> getCtypeList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellCtype.class);
+  }
+
+  @Override
   @Nullable
   public HaskellExp getExp() {
     return PsiTreeUtil.getChildOfType(this, HaskellExp.class);
