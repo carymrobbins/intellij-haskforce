@@ -23,6 +23,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.xml.util.XmlUtil;
@@ -31,6 +32,9 @@ import org.jetbrains.annotations.Nullable;
 import scala.Option;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
@@ -129,9 +133,29 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     @Nullable
     private Problems unsafeCheck(final @NotNull String file) throws GhcModiError {
+        // Check the file content so only call out to ghc-mod when the file changes.
+        final String fileContent;
+        try {
+            fileContent = new String(Files.readAllBytes(Paths.get(file)), StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new CheckError(file, e.getMessage());
+        }
+
+        // Check the cache to determine if the file changed.
+        Pair<String, Problems> item = checkCache.get(file);
+        if (item != null && item.first.equals(fileContent)) return item.second;
+
+        // Call out to ghc-mod.
         final String stdout = simpleExec("check " + file);
-        return stdout == null ? new Problems() : handleCheck(module, file, stdout);
+        Problems result = stdout == null ? new Problems() : handleCheck(module, file, stdout);
+
+        // Update the cache.
+        checkCache.put(file, new Pair<>(fileContent, result));
+        return result;
     }
+
+    private ConcurrentHashMap<String, Pair<String, Problems>> checkCache = new ConcurrentHashMap<>();
 
     @Nullable
     public String[] syncLang() {
@@ -175,8 +199,12 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     @NotNull
     private String[] unsafeList() throws GhcModiError {
-        return simpleExecToLinesOrEmpty("list");
+        if (listCache != null) return listCache;
+        listCache = simpleExecToLinesOrEmpty("list");
+        return listCache;
     }
+
+    private String[] listCache = null;
 
     public Future<String> type(final @NotNull String canonicalPath,
                                @NotNull final VisualPosition startPosition,
@@ -199,14 +227,23 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     }
 
     public String[] find(@NotNull final String symbol) {
+        // Check to see if we've already found this symbol.
+        String[] item = findCache.get(symbol);
+        if (item != null && item.length > 0) return item;
+
         return runSync(new GhcModiCallable<String[]>() {
             @Override
             public String[] call() throws GhcModiError {
                 final String command = "find " + symbol;
-                return simpleExecToLinesOrEmpty(command);
+                String[] result = simpleExecToLinesOrEmpty(command);
+                // Update the cache so we don't have to find this symbol again.
+                findCache.put(symbol, result);
+                return result;
             }
         });
     }
+
+    private ConcurrentHashMap<String, String[]> findCache = new ConcurrentHashMap<>();
 
     @Nullable
     private static Problems handleCheck(@NotNull Module module, @NotNull String file, @NotNull String stdout) throws GhcModiError {
@@ -248,6 +285,10 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     @NotNull
     private BrowseItem[] unsafeBrowse(@NotNull final String module) throws GhcModiError {
+        // Check the cache to avoid calling out to ghc-mod if we don't have to.
+        BrowseItem[] item = browseCache.get(module);
+        if (item != null && item.length > 0) return item;
+
         String[] lines = simpleExecToLines("browse -d " + module);
         if (lines == null) return new BrowseItem[0];
         BrowseItem[] result = new BrowseItem[lines.length];
@@ -256,8 +297,13 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
             //noinspection ObjectAllocationInLoop
             result[i] = new BrowseItem(parts[0], module, parts.length == 2 ? parts[1] : "");
         }
+
+        // Update the cache in case we browse this module again.
+        browseCache.put(module, result);
         return result;
     }
+
+    private ConcurrentHashMap<String, BrowseItem[]> browseCache = new ConcurrentHashMap<>();
 
     /**
      * A wrapper to exec that checks stdout and returns null if there was no output.
@@ -402,6 +448,13 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
      * Restarts the ghc-modi process and runs the check command on file to ensure the process starts successfully.
      */
     public synchronized void restart() {
+        // Clear the caches.
+        browseCache.clear();
+        findCache.clear();
+        checkCache.clear();
+        listCache = null;
+
+        // Kill the process, allowing it to be started up again.
         kill();
         setEnabled(true);
     }
