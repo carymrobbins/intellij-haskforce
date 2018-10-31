@@ -105,7 +105,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     }
 
     public boolean isConfigured() {
-        return path != null;
+        return path != null && !path.trim().isEmpty();
     }
 
     /**
@@ -583,13 +583,8 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     public void onSettingsChanged(@NotNull ToolSettings settings) {
         this.path = settings.getPath();
         this.flags = settings.getFlags();
-        toolConsole.writeError(ToolKey.GHC_MODI_KEY, "Settings changed, reloading ghc-modi");
+        toolConsole.writeError(ToolKey.GHC_MODI_KEY, "Settings changed, reloading ghc-modi, will spawn once invoked");
         kill();
-        try {
-            spawnProcess();
-        } catch (GhcModiError e) {
-            displayError(e.message);
-        }
     }
 
     @Nullable
