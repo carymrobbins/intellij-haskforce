@@ -348,6 +348,30 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         return interact(command, input, output);
     }
 
+    /** Wraps toolConsole.writeInput and prepends the message with the module name. */
+    private void writeInputToConsole(String message) {
+        toolConsole.writeInput(ToolKey.GHC_MODI_KEY, prependWithModuleName(message));
+    }
+
+    /** Wraps toolConsole.writeError and prepends the message with the module name. */
+    private void writeErrorToConsole(String message) {
+        toolConsole.writeInput(ToolKey.GHC_MODI_KEY, prependWithModuleName(message));
+    }
+
+    /** Wraps toolConsole.writeOutput except, unlike the other helpers, does NOT prepend the
+     *  message with the module name (because this is usually unnecessary and visually jarring, but a better UI
+     *  is really in order here). This helper is mostly here for consistency so we can avoid using toolConsole
+     *  directly outside of the helpers.
+     */
+    private void writeOutputToConsole(String message) {
+        toolConsole.writeOutput(ToolKey.GHC_MODI_KEY, message);
+    }
+
+    /** Used by the write*ToConsole helpers for updating the log message with the module name. */
+    private String prependWithModuleName(String message) {
+        return "[" + module.getName() + "] " + message;
+    }
+
     private void spawnProcess() throws GhcModiError {
         GeneralCommandLine commandLine = new GeneralCommandLine(
             GhcModUtil.changedPathIfStack(module.getProject(), path)
@@ -361,12 +385,12 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         commandLine.setWorkDirectory(workingDirectory);
         // Make sure we can actually see the errors.
         commandLine.setRedirectErrorStream(true);
-        toolConsole.writeInput(ToolKey.GHC_MODI_KEY, "Using working directory: " + workingDirectory);
-        toolConsole.writeInput(ToolKey.GHC_MODI_KEY, "Starting ghc-modi process: " + commandLine.getCommandLineString());
+        writeInputToConsole("Using working directory: " + workingDirectory);
+        writeInputToConsole("Starting ghc-modi process: " + commandLine.getCommandLineString());
         try {
             process = commandLine.createProcess();
         } catch (ExecutionException e) {
-            toolConsole.writeError(ToolKey.GHC_MODI_KEY, "Failed to initialize process");
+            writeErrorToConsole("Failed to initialize process");
             throw new InitError(e.toString());
         }
         input = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -387,25 +411,24 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         Runnable idleKiller = () -> {
             long diff = System.currentTimeMillis() - lastCallTimeMillis;
             if (diff > timeout) {
-                if (lastCallTimeMillis == 0) {
-                    LOG.info("ghc-modi in module '" + module.getName() + "'" +
-                             " has not been called for at least " + timeout + " ms, killing");
-                } else {
-                    LOG.info("ghc-modi in module '" + module.getName() + "'" +
-                             " has been idle for " + diff + " ms, killing");
-                }
+                writeErrorToConsole(
+                    "ghc-modi in module '" + module.getName() + "'" +
+                    " has been idle for " + diff + " ms, killing");
                 // Shut down the scheduler, no longer needs to run.
                 scheduler.shutdown();
                 // Kill the ghc-modi process.
                 kill();
             } else {
-                LOG.info("ghc-modi in module '" + module.getName() + "'" +
-                         " has only been idle for " + diff + " ms, allowed to stay alive");
+                LOG.debug(
+                        "ghc-modi in module '" + module.getName() + "'" +
+                        " has only been idle for " + diff + " ms, allowed to stay alive");
             }
         };
         // Start the killer, delaying for the timeout to give ghc-modi time to be called, but then checking
         // every time out in case it needs to be killed in case it's been idle for too long.
-        LOG.info("Starting scheduler to check ghc-modi idle time for module '" + module.getName() + "' every " + timeout + " ms");
+        LOG.debug(
+                "Starting scheduler to check ghc-modi idle time for module '" + module.getName() + "'" +
+                "every " + timeout + " ms");
         scheduler.scheduleAtFixedRate(idleKiller, timeout, timeout, TimeUnit.MILLISECONDS);
     }
 
@@ -430,19 +453,15 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     @Nullable
     private String interact(@NotNull String command, @NotNull BufferedReader input, @NotNull BufferedWriter output) throws GhcModiError {
-        toolConsole.writeInput(ToolKey.GHC_MODI_KEY, command);
+        writeInputToConsole(command);
         write(command, input, output);
         try {
             final String result = read(command, input);
-            toolConsole.writeOutput(ToolKey.GHC_MODI_KEY, result);
+            writeOutputToConsole(result);
             return result;
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | IOException e) {
             final ExecError err = new ExecError(command, e.toString());
-            toolConsole.writeError(ToolKey.GHC_MODI_KEY, err.message);
-            throw err;
-        } catch (IOException e) {
-            final ExecError err = new ExecError(command, e.toString());
-            toolConsole.writeError(ToolKey.GHC_MODI_KEY, err.message);
+            writeErrorToConsole(err.message);
             throw err;
         }
     }
@@ -458,9 +477,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
             try {
                 // Attempt to read error from ghc-modi.
                 message = read(command, input);
-            } catch (IOException ignored) {
-                // Ignored
-            } catch (InterruptedException ignored) {
+            } catch (IOException | InterruptedException ignored) {
                 // Ignored
             }
             if (message == null || message.trim().isEmpty()) message = e.toString();
@@ -620,7 +637,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     public void onSettingsChanged(@NotNull ToolSettings settings) {
         this.path = settings.getPath();
         this.flags = settings.getFlags();
-        toolConsole.writeError(ToolKey.GHC_MODI_KEY, "Settings changed, reloading ghc-modi, will spawn once invoked");
+        writeErrorToConsole("Settings changed, reloading ghc-modi, will spawn once invoked");
         kill();
     }
 
