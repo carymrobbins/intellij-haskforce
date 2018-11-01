@@ -87,7 +87,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     @Nullable
     public static <T> T getFuture(@NotNull Project project, @NotNull Future<T> future) {
-        long timeout = ToolKey.getGhcModiTimeout(project);
+        long timeout = ToolKey.getGhcModiResponseTimeout(project);
         try {
             return future.get(timeout, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
@@ -338,6 +338,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
      */
     @Nullable
     public synchronized String exec(@NotNull String command) throws GhcModiError {
+        lastCallTimeMillis = System.currentTimeMillis();
         if (!enabled) { return null; }
         if (path == null) { return null; }
         if (!validateGhcVersion()) { return null; }
@@ -370,6 +371,42 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         }
         input = new BufferedReader(new InputStreamReader(process.getInputStream()));
         output = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
+        startIdleKillerThread();
+    }
+
+    // Initialized by `startIdleKillerThread`
+    private long lastCallTimeMillis;
+
+    private void startIdleKillerThread() {
+        lastCallTimeMillis = System.currentTimeMillis();
+        long timeout = ToolKey.getGhcModiKillIdleTimeout(this.module.getProject());
+        // Disable the idle killer if the configured timeout is zero or negative.
+        if (timeout <= 0) return;
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+        // Task to kill process if it's been running idle for longer than the configured timeout.
+        Runnable idleKiller = () -> {
+            long diff = System.currentTimeMillis() - lastCallTimeMillis;
+            if (diff > timeout) {
+                if (lastCallTimeMillis == 0) {
+                    LOG.info("ghc-modi in module '" + module.getName() + "'" +
+                             " has not been called for at least " + timeout + " ms, killing");
+                } else {
+                    LOG.info("ghc-modi in module '" + module.getName() + "'" +
+                             " has been idle for " + diff + " ms, killing");
+                }
+                // Shut down the scheduler, no longer needs to run.
+                scheduler.shutdown();
+                // Kill the ghc-modi process.
+                kill();
+            } else {
+                LOG.info("ghc-modi in module '" + module.getName() + "'" +
+                         " has only been idle for " + diff + " ms, allowed to stay alive");
+            }
+        };
+        // Start the killer, delaying for the timeout to give ghc-modi time to be called, but then checking
+        // every time out in case it needs to be killed in case it's been idle for too long.
+        LOG.info("Starting scheduler to check ghc-modi idle time for module '" + module.getName() + "' every " + timeout + " ms");
+        scheduler.scheduleAtFixedRate(idleKiller, timeout, timeout, TimeUnit.MILLISECONDS);
     }
 
     private boolean validateGhcVersion() {
