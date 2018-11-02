@@ -53,6 +53,7 @@ public class TypeInfoUtil {
         return getTypeInfo(module, blockStart, blockEnd, projectFile);
     }
 
+    // TODO: Very poor, needs better return values, better interface, abstract away ghc-mod...
     public static String getTypeInfo(Module module, VisualPosition blockStart, VisualPosition blockEnd, VirtualFile projectFile) {
         final String canonicalPath = projectFile.getCanonicalPath();
         if (canonicalPath == null){

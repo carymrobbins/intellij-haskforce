@@ -432,6 +432,8 @@
     <gotoSymbolContributor implementation="com.haskforce.features.HaskellChooseByNameContributor"/>
 
     <!-- Language utilities -->
+    <codeInsight.parameterInfo language="Haskell"
+                               implementationClass="com.haskforce.haskell.lang.parameterInfo.HaskellParameterInfoHandler"/>
     <lang.namesValidator language="Haskell"
                          implementationClass="com.haskforce.language.HaskellNamesValidator"/>
 
