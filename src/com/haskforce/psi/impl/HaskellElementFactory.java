@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiWhiteSpace;
+import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,6 +71,11 @@ public class HaskellElementFactory {
     @NotNull
     public static HaskellImpdecl createImpdeclFromText(@NotNull Project project, @NotNull String text) {
         return ((HaskellImpdecl) (createFileFromText(project, text).getFirstChild().getFirstChild()));
+    }
+
+    @Nullable
+    public static HaskellCtype createCtypeFromText(@NotNull Project project, @NotNull String text) {
+        return PsiTreeUtil.findChildOfType(createFileFromText(project, "foo :: " + text), HaskellCtype.class);
     }
 
     @NotNull
