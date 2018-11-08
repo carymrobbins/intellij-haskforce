@@ -386,6 +386,7 @@
     <configurationType implementation="com.haskforce.run.HaskellApplicationConfigurationType"/>
     <configurationType implementation="com.haskforce.run.HaskellTestConfigurationType"/>
     <configurationType implementation="com.haskforce.run.stack.application.StackApplicationConfigurationType"/>
+    <configurationType implementation="com.haskforce.run.stack.task.StackTaskConfigurationType"/>
     <programRunner implementation="com.haskforce.run.HaskellRunner"/>
     <codeStyleSettingsProvider
         implementation="com.haskforce.language.formatting.HaskellCodeStyleSettingsProvider"/>
