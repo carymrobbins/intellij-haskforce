@@ -385,7 +385,7 @@
                        implementationClass="com.haskforce.highlighting.annotation.external.HaskellExternalAnnotator"/>
     <configurationType implementation="com.haskforce.run.HaskellApplicationConfigurationType"/>
     <configurationType implementation="com.haskforce.run.HaskellTestConfigurationType"/>
-    <configurationType implementation="com.haskforce.run.stack.StackApplicationConfigurationType"/>
+    <configurationType implementation="com.haskforce.run.stack.application.StackApplicationConfigurationType"/>
     <programRunner implementation="com.haskforce.run.HaskellRunner"/>
     <codeStyleSettingsProvider
         implementation="com.haskforce.language.formatting.HaskellCodeStyleSettingsProvider"/>

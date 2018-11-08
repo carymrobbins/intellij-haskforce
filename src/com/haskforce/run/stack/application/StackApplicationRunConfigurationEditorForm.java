@@ -1,4 +1,4 @@
-package com.haskforce.run.stack;
+package com.haskforce.run.stack.application;
 
 
 import com.intellij.openapi.options.ConfigurationException;

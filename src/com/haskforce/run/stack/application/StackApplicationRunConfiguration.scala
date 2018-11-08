@@ -1,10 +1,11 @@
-package com.haskforce.run.stack
+package com.haskforce.run.stack.application
 
 import java.util
 
+import com.haskforce.run.stack.application.StackApplicationRunConfigurationEditorForm
 import com.intellij.execution.Executor
 import com.intellij.execution.configuration.AbstractRunConfiguration
-import com.intellij.execution.configurations.{RuntimeConfigurationException, RunProfileState, ConfigurationFactory}
+import com.intellij.execution.configurations.{ConfigurationFactory, RunProfileState, RuntimeConfigurationException}
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.openapi.components.PathMacroManager
 import com.intellij.openapi.module.Module
