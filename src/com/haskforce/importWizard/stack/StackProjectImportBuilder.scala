@@ -154,7 +154,8 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
           case Some(ce) =>
             val vFileMgr = VirtualFileManager.getInstance()
             q.getTestSourceRoots.run(app).foreach { _.foreach { dir =>
-              if (!new File(s"${ce.getFile.getCanonicalPath}/$dir").mkdirs()) {
+              val dirJFile = new File(s"${ce.getFile.getCanonicalPath}/$dir")
+              if (!dirJFile.exists() && !dirJFile.mkdirs()) {
                 StackProjectImportBuilder.LOG.warn(new AssertionError(
                   s"Could not create directory: ${ce.getFile.getCanonicalPath}/$dir"
                 ))
