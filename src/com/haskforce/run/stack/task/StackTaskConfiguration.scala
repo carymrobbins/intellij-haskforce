@@ -37,7 +37,7 @@ class StackTaskConfiguration(project: Project, configFactory: ConfigurationFacto
 
   override def checkConfiguration(): Unit = {
     if (!Option(configState.task).exists(_.trim.nonEmpty)) {
-      throw new RuntimeConfigurationException("Please specify an executable")
+      throw new RuntimeConfigurationException("Please specify a task")
     }
   }
   override def readExternal(element: Element): Unit = {

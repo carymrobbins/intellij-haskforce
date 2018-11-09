@@ -33,13 +33,22 @@ class StackTaskCommandLineState(
   })
 
   override def startProcess(): OSProcessHandler = {
+    val configState = config.getConfigState
     val commandLine: GeneralCommandLine = new GeneralCommandLine
+    // Set up the working directory for the process
+    // TODO: Make this configurable
     commandLine.setWorkDirectory(getEnvironment.getProject.getBasePath)
     val buildSettings: HaskellBuildSettings = HaskellBuildSettings.getInstance(config.getProject)
+    // Set the path to `stack`
     commandLine.setExePath(buildSettings.getStackPath)
+    // Build the parameters list
     val parametersList: ParametersList = commandLine.getParametersList
-    parametersList.addParametersString(config.task)
-    commandLine.getEnvironment.putAll(config.getEnvs)
+    parametersList.addParametersString(configState.task)
+    // Set the env vars
+    val environment = commandLine.getEnvironment
+    if (configState.environmentVariables.isPassParentEnvs) environment.putAll(System.getenv())
+    commandLine.getEnvironment.putAll(configState.environmentVariables.getEnvs)
+    // Start and return the process
     new OSProcessHandler(commandLine)
   }
 }
