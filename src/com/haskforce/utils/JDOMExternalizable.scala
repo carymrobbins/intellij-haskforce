@@ -14,6 +14,14 @@ trait JDOMExternalizable[A] {
 
 object JDOMExternalizable {
 
+  def readExternal[A](element: Element)(implicit ev: JDOMExternalizable[A]): A = {
+    ev.readExternal(element)
+  }
+
+  def writeExternal[A](element: Element, a: A)(implicit ev: JDOMExternalizable[A]): Unit = {
+    ev.writeExternal(element, a)
+  }
+
   def apply[A](implicit ev: JDOMExternalizable[A]): JDOMExternalizable[A] = ev
 
   def instance[A](
@@ -40,6 +48,28 @@ object JDOMExternalizable {
       (e, cc) => {
         val v1 = unsafeUnapplyGet(un(cc))
         aField.writeField(aName, e, v1)
+      }
+    )
+  }
+
+  def derive2[CC <: Product : TypeTag, A, B](
+    ap: (A, B) => CC,
+    un: CC => Option[(A, B)]
+  )(
+    implicit
+    aField: JDOMFieldExternalizable[A],
+    bField: JDOMFieldExternalizable[B]
+  ): JDOMExternalizable[CC] = {
+    val List(aName, bName) = MetaUtil.caseFieldNames[CC]
+    instance(
+      e => ap(
+        aField.readField(aName, e),
+        bField.readField(bName, e)
+      ),
+      (e, cc) => {
+        val (a, b) = unsafeUnapplyGet(un(cc))
+        aField.writeField(aName, e, a)
+        bField.writeField(bName, e, b)
       }
     )
   }

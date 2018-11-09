@@ -2,22 +2,25 @@ package com.haskforce.run.stack.task
 
 import java.util
 
+import com.haskforce.utils.JDOMExternalizable
 import com.intellij.execution.Executor
-import com.intellij.execution.configuration.AbstractRunConfiguration
+import com.intellij.execution.configuration.{AbstractRunConfiguration, EnvironmentVariablesData}
 import com.intellij.execution.configurations.{ConfigurationFactory, RunProfileState, RuntimeConfigurationException}
 import com.intellij.execution.runners.ExecutionEnvironment
-import com.intellij.openapi.components.PathMacroManager
 import com.intellij.openapi.module.Module
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.JDOMExternalizerUtil
 import org.jdom.Element
 
 class StackTaskConfiguration(project: Project, configFactory: ConfigurationFactory) extends
   AbstractRunConfiguration(project, configFactory) {
 
-  val TASK: String = "TASK"
+  private var configState = StackTaskConfigurationState("", EnvironmentVariablesData.DEFAULT)
 
-  var task: String = _
+  def getConfigState: StackTaskConfigurationState = configState
+
+  def updateConfigState(f: StackTaskConfigurationState => StackTaskConfigurationState): Unit = {
+    configState = f(configState)
+  }
 
   override def getValidModules: util.Collection[Module] = null
 
@@ -28,24 +31,32 @@ class StackTaskConfiguration(project: Project, configFactory: ConfigurationFacto
     new StackTaskCommandLineState(executionEnvironment, this)
   }
 
+  override def getEnvs: util.Map[String, String] = {
+    super.getEnvs
+  }
+
   override def checkConfiguration(): Unit = {
-    if (!Option(task).exists(_.trim.nonEmpty)) {
+    if (!Option(configState.task).exists(_.trim.nonEmpty)) {
       throw new RuntimeConfigurationException("Please specify an executable")
     }
   }
   override def readExternal(element: Element): Unit = {
-    PathMacroManager.getInstance(getProject).expandPaths(element)
     super.readExternal(element)
-    task = JDOMExternalizerUtil.readField(element, TASK)
+    configState = JDOMExternalizable.readExternal[StackTaskConfigurationState](element)
   }
 
   override def writeExternal(element: Element): Unit = {
+    JDOMExternalizable.writeExternal(element, configState)
     super.writeExternal(element)
-    JDOMExternalizerUtil.writeField(element, TASK, task)
-    PathMacroManager.getInstance(getProject).collapsePathsRecursively(element)
   }
+}
 
-  def setTask(task: String): Unit = {
-    this.task = task
-  }
+final case class StackTaskConfigurationState(
+  task: String,
+  environmentVariables: EnvironmentVariablesData
+)
+
+object StackTaskConfigurationState {
+  implicit val jdomExt: JDOMExternalizable[StackTaskConfigurationState]
+    = JDOMExternalizable.derive2(apply, unapply)
 }

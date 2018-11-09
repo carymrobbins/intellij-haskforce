@@ -1,5 +1,7 @@
 package com.haskforce.run.stack.task;
 
+import com.intellij.execution.configuration.EnvironmentVariablesComponent;
+import com.intellij.execution.configuration.EnvironmentVariablesData;
 import com.intellij.openapi.options.SettingsEditor;
 import com.intellij.ui.RawCommandLineEditor;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +12,7 @@ public class StackTaskConfigurationEditorForm extends SettingsEditor<StackTaskCo
 
     private JPanel mainPanel;
     private RawCommandLineEditor task;
-    private com.intellij.execution.configuration.EnvironmentVariablesTextFieldWithBrowseButton envVars;
+    private EnvironmentVariablesComponent envVars;
 
     @NotNull
     @Override
@@ -20,12 +22,13 @@ public class StackTaskConfigurationEditorForm extends SettingsEditor<StackTaskCo
 
     @Override
     protected void resetEditorFrom(@NotNull StackTaskConfiguration config) {
-        task.setText(config.task());
+        StackTaskConfigurationState st = config.getConfigState();
+        task.setText(st.task());
+        envVars.setEnvData(st.environmentVariables());
     }
 
     @Override
     protected void applyEditorTo(@NotNull StackTaskConfiguration config) {
-        config.setTask(task.getText());
-        config.setEnvs(envVars.getEnvs());
+        config.updateConfigState(state -> state.copy(task.getText(), envVars.getEnvData()));
     }
 }
