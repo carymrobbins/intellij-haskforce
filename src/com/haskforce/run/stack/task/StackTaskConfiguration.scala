@@ -16,6 +16,8 @@ class StackTaskConfiguration(project: Project, configFactory: ConfigurationFacto
 
   private var configState = StackTaskConfigurationState("", EnvironmentVariablesData.DEFAULT)
 
+  override def isBuildBeforeLaunchAddedByDefault: Boolean = false
+
   def getConfigState: StackTaskConfigurationState = configState
 
   def updateConfigState(f: StackTaskConfigurationState => StackTaskConfigurationState): Unit = {
