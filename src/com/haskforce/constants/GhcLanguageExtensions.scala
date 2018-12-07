@@ -30,210 +30,243 @@ object GhcLanguageExtensions extends Enumeration {
     m
   }
 
-  /** Extensions list generated from 'ghc-mod lang' */
-  val
-    Haskell98,
-    Haskell2010,
-    Unsafe,
-    Trustworthy,
-    Safe,
-    AllowAmbiguousTypes,
-    NoAllowAmbiguousTypes,
-    AlternativeLayoutRule,
-    NoAlternativeLayoutRule,
-    AlternativeLayoutRuleTransitional,
-    NoAlternativeLayoutRuleTransitional,
-    Arrows,
-    NoArrows,
-    AutoDeriveTypeable,
-    NoAutoDeriveTypeable,
-    BangPatterns,
-    NoBangPatterns,
-    BinaryLiterals,
-    NoBinaryLiterals,
-    CApiFFI,
-    NoCApiFFI,
-    CPP,
-    NoCPP,
-    ConstrainedClassMethods,
-    NoConstrainedClassMethods,
-    ConstraintKinds,
-    NoConstraintKinds,
-    DataKinds,
-    NoDataKinds,
-    DatatypeContexts,
-    NoDatatypeContexts,
-    DefaultSignatures,
-    NoDefaultSignatures,
-    DeriveAnyClass,
-    NoDeriveAnyClass,
-    DeriveDataTypeable,
-    NoDeriveDataTypeable,
-    DeriveFoldable,
-    NoDeriveFoldable,
-    DeriveFunctor,
-    NoDeriveFunctor,
-    DeriveGeneric,
-    NoDeriveGeneric,
-    DeriveTraversable,
-    NoDeriveTraversable,
-    DisambiguateRecordFields,
-    NoDisambiguateRecordFields,
-    DoAndIfThenElse,
-    NoDoAndIfThenElse,
-    DoRec,
-    NoDoRec,
-    EmptyCase,
-    NoEmptyCase,
-    EmptyDataDecls,
-    NoEmptyDataDecls,
-    ExistentialQuantification,
-    NoExistentialQuantification,
-    ExplicitForAll,
-    NoExplicitForAll,
-    ExplicitNamespaces,
-    NoExplicitNamespaces,
-    ExtendedDefaultRules,
-    NoExtendedDefaultRules,
-    FlexibleContexts,
-    NoFlexibleContexts,
-    FlexibleInstances,
-    NoFlexibleInstances,
-    ForeignFunctionInterface,
-    NoForeignFunctionInterface,
-    FunctionalDependencies,
-    NoFunctionalDependencies,
-    GADTSyntax,
-    NoGADTSyntax,
-    GADTs,
-    NoGADTs,
-    GHCForeignImportPrim,
-    NoGHCForeignImportPrim,
-    GeneralizedNewtypeDeriving,
-    NoGeneralizedNewtypeDeriving,
-    ImplicitParams,
-    NoImplicitParams,
-    ImplicitPrelude,
-    NoImplicitPrelude,
-    ImpredicativeTypes,
-    NoImpredicativeTypes,
-    IncoherentInstances,
-    NoIncoherentInstances,
-    InstanceSigs,
-    NoInstanceSigs,
-    InterruptibleFFI,
-    NoInterruptibleFFI,
-    JavaScriptFFI,
-    NoJavaScriptFFI,
-    KindSignatures,
-    NoKindSignatures,
-    LambdaCase,
-    NoLambdaCase,
-    LiberalTypeSynonyms,
-    NoLiberalTypeSynonyms,
-    MagicHash,
-    NoMagicHash,
-    MonadComprehensions,
-    NoMonadComprehensions,
-    MonoLocalBinds,
-    NoMonoLocalBinds,
-    MonoPatBinds,
-    NoMonoPatBinds,
-    MonomorphismRestriction,
-    NoMonomorphismRestriction,
-    MultiParamTypeClasses,
-    NoMultiParamTypeClasses,
-    MultiWayIf,
-    NoMultiWayIf,
-    NPlusKPatterns,
-    NoNPlusKPatterns,
-    NamedFieldPuns,
-    NoNamedFieldPuns,
-    NamedWildCards,
-    NoNamedWildCards,
-    NegativeLiterals,
-    NoNegativeLiterals,
-    NondecreasingIndentation,
-    NoNondecreasingIndentation,
-    NullaryTypeClasses,
-    NoNullaryTypeClasses,
-    NumDecimals,
-    NoNumDecimals,
-    OverlappingInstances,
-    NoOverlappingInstances,
-    OverloadedLists,
-    NoOverloadedLists,
-    OverloadedStrings,
-    NoOverloadedStrings,
-    PackageImports,
-    NoPackageImports,
-    ParallelArrays,
-    NoParallelArrays,
-    ParallelListComp,
-    NoParallelListComp,
-    PartialTypeSignatures,
-    NoPartialTypeSignatures,
-    PatternGuards,
-    NoPatternGuards,
-    PatternSignatures,
-    NoPatternSignatures,
-    PatternSynonyms,
-    NoPatternSynonyms,
-    PolyKinds,
-    NoPolyKinds,
-    PolymorphicComponents,
-    NoPolymorphicComponents,
-    PostfixOperators,
-    NoPostfixOperators,
-    QuasiQuotes,
-    NoQuasiQuotes,
-    Rank2Types,
-    NoRank2Types,
-    RankNTypes,
-    NoRankNTypes,
-    RebindableSyntax,
-    NoRebindableSyntax,
-    RecordPuns,
-    NoRecordPuns,
-    RecordWildCards,
-    NoRecordWildCards,
-    RecursiveDo,
-    NoRecursiveDo,
-    RelaxedLayout,
-    NoRelaxedLayout,
-    RelaxedPolyRec,
-    NoRelaxedPolyRec,
-    RoleAnnotations,
-    NoRoleAnnotations,
-    ScopedTypeVariables,
-    NoScopedTypeVariables,
-    StandaloneDeriving,
-    NoStandaloneDeriving,
-    StaticPointers,
-    NoStaticPointers,
-    TemplateHaskell,
-    NoTemplateHaskell,
-    TraditionalRecordSyntax,
-    NoTraditionalRecordSyntax,
-    TransformListComp,
-    NoTransformListComp,
-    TupleSections,
-    NoTupleSections,
-    TypeFamilies,
-    NoTypeFamilies,
-    TypeOperators,
-    NoTypeOperators,
-    TypeSynonymInstances,
-    NoTypeSynonymInstances,
-    UnboxedTuples,
-    NoUnboxedTuples,
-    UndecidableInstances,
-    NoUndecidableInstances,
-    UnicodeSyntax,
-    NoUnicodeSyntax,
-    UnliftedFFITypes,
-    NoUnliftedFFITypes,
-    ViewPatterns,
-    NoViewPatterns
+  // Extensions list generated with: ghc --show-options | grep '^-X' | cut -dX -f2-
+  val AllowAmbiguousTypes
+    , AlternativeLayoutRule
+    , AlternativeLayoutRuleTransitional
+    , ApplicativeDo
+    , Arrows
+    , AutoDeriveTypeable
+    , BangPatterns
+    , BinaryLiterals
+    , CApiFFI
+    , CPP
+    , ConstrainedClassMethods
+    , ConstraintKinds
+    , DataKinds
+    , DatatypeContexts
+    , DefaultSignatures
+    , DeriveAnyClass
+    , DeriveDataTypeable
+    , DeriveFoldable
+    , DeriveFunctor
+    , DeriveGeneric
+    , DeriveLift
+    , DeriveTraversable
+    , DerivingStrategies
+    , DisambiguateRecordFields
+    , DoAndIfThenElse
+    , DoRec
+    , DuplicateRecordFields
+    , EmptyCase
+    , EmptyDataDecls
+    , EmptyDataDeriving
+    , ExistentialQuantification
+    , ExplicitForAll
+    , ExplicitNamespaces
+    , ExtendedDefaultRules
+    , FlexibleContexts
+    , FlexibleInstances
+    , ForeignFunctionInterface
+    , FunctionalDependencies
+    , GADTSyntax
+    , GADTs
+    , GHCForeignImportPrim
+    , GeneralizedNewtypeDeriving
+    , Generics
+    , Haskell2010
+    , Haskell98
+    , HexFloatLiterals
+    , ImplicitParams
+    , ImplicitPrelude
+    , ImpredicativeTypes
+    , IncoherentInstances
+    , InstanceSigs
+    , InterruptibleFFI
+    , JavaScriptFFI
+    , KindSignatures
+    , LambdaCase
+    , LiberalTypeSynonyms
+    , MagicHash
+    , MonadComprehensions
+    , MonadFailDesugaring
+    , MonoLocalBinds
+    , MonoPatBinds
+    , MonomorphismRestriction
+    , MultiParamTypeClasses
+    , MultiWayIf
+    , NPlusKPatterns
+    , NamedFieldPuns
+    , NamedWildCards
+    , NegativeLiterals
+    , NoAllowAmbiguousTypes
+    , NoAlternativeLayoutRule
+    , NoAlternativeLayoutRuleTransitional
+    , NoApplicativeDo
+    , NoArrows
+    , NoAutoDeriveTypeable
+    , NoBangPatterns
+    , NoBinaryLiterals
+    , NoCApiFFI
+    , NoCPP
+    , NoConstrainedClassMethods
+    , NoConstraintKinds
+    , NoDataKinds
+    , NoDatatypeContexts
+    , NoDefaultSignatures
+    , NoDeriveAnyClass
+    , NoDeriveDataTypeable
+    , NoDeriveFoldable
+    , NoDeriveFunctor
+    , NoDeriveGeneric
+    , NoDeriveLift
+    , NoDeriveTraversable
+    , NoDerivingStrategies
+    , NoDisambiguateRecordFields
+    , NoDoAndIfThenElse
+    , NoDoRec
+    , NoDuplicateRecordFields
+    , NoEmptyCase
+    , NoEmptyDataDecls
+    , NoEmptyDataDeriving
+    , NoExistentialQuantification
+    , NoExplicitForAll
+    , NoExplicitNamespaces
+    , NoExtendedDefaultRules
+    , NoFlexibleContexts
+    , NoFlexibleInstances
+    , NoForeignFunctionInterface
+    , NoFunctionalDependencies
+    , NoGADTSyntax
+    , NoGADTs
+    , NoGHCForeignImportPrim
+    , NoGeneralizedNewtypeDeriving
+    , NoGenerics
+    , NoHexFloatLiterals
+    , NoImplicitParams
+    , NoImplicitPrelude
+    , NoImpredicativeTypes
+    , NoIncoherentInstances
+    , NoInstanceSigs
+    , NoInterruptibleFFI
+    , NoJavaScriptFFI
+    , NoKindSignatures
+    , NoLambdaCase
+    , NoLiberalTypeSynonyms
+    , NoMagicHash
+    , NoMonadComprehensions
+    , NoMonadFailDesugaring
+    , NoMonoLocalBinds
+    , NoMonoPatBinds
+    , NoMonomorphismRestriction
+    , NoMultiParamTypeClasses
+    , NoMultiWayIf
+    , NoNPlusKPatterns
+    , NoNamedFieldPuns
+    , NoNamedWildCards
+    , NoNegativeLiterals
+    , NoNondecreasingIndentation
+    , NoNullaryTypeClasses
+    , NoNumDecimals
+    , NoOverlappingInstances
+    , NoOverloadedLabels
+    , NoOverloadedLists
+    , NoOverloadedStrings
+    , NoPackageImports
+    , NoParallelArrays
+    , NoParallelListComp
+    , NoPartialTypeSignatures
+    , NoPatternGuards
+    , NoPatternSignatures
+    , NoPatternSynonyms
+    , NoPolyKinds
+    , NoPolymorphicComponents
+    , NoPostfixOperators
+    , NoQuasiQuotes
+    , NoRank2Types
+    , NoRankNTypes
+    , NoRebindableSyntax
+    , NoRecordPuns
+    , NoRecordWildCards
+    , NoRecursiveDo
+    , NoRelaxedLayout
+    , NoRelaxedPolyRec
+    , NoRoleAnnotations
+    , NoScopedTypeVariables
+    , NoStandaloneDeriving
+    , NoStaticPointers
+    , NoStrict
+    , NoStrictData
+    , NoTemplateHaskell
+    , NoTemplateHaskellQuotes
+    , NoTraditionalRecordSyntax
+    , NoTransformListComp
+    , NoTupleSections
+    , NoTypeApplications
+    , NoTypeFamilies
+    , NoTypeFamilyDependencies
+    , NoTypeInType
+    , NoTypeOperators
+    , NoTypeSynonymInstances
+    , NoUnboxedSums
+    , NoUnboxedTuples
+    , NoUndecidableInstances
+    , NoUndecidableSuperClasses
+    , NoUnicodeSyntax
+    , NoUnliftedFFITypes
+    , NoViewPatterns
+    , NondecreasingIndentation
+    , NullaryTypeClasses
+    , NumDecimals
+    , OverlappingInstances
+    , OverloadedLabels
+    , OverloadedLists
+    , OverloadedStrings
+    , PackageImports
+    , ParallelArrays
+    , ParallelListComp
+    , PartialTypeSignatures
+    , PatternGuards
+    , PatternSignatures
+    , PatternSynonyms
+    , PolyKinds
+    , PolymorphicComponents
+    , PostfixOperators
+    , QuasiQuotes
+    , Rank2Types
+    , RankNTypes
+    , RebindableSyntax
+    , RecordPuns
+    , RecordWildCards
+    , RecursiveDo
+    , RelaxedLayout
+    , RelaxedPolyRec
+    , RoleAnnotations
+    , Safe
+    , ScopedTypeVariables
+    , StandaloneDeriving
+    , StaticPointers
+    , Strict
+    , StrictData
+    , TemplateHaskell
+    , TemplateHaskellQuotes
+    , TraditionalRecordSyntax
+    , TransformListComp
+    , Trustworthy
+    , TupleSections
+    , TypeApplications
+    , TypeFamilies
+    , TypeFamilyDependencies
+    , TypeInType
+    , TypeOperators
+    , TypeSynonymInstances
+    , UnboxedSums
+    , UnboxedTuples
+    , UndecidableInstances
+    , UndecidableSuperClasses
+    , UnicodeSyntax
+    , UnliftedFFITypes
+    , Unsafe
+    , ViewPatterns
     = Value
 }

@@ -3,279 +3,294 @@ package com.haskforce.constants
 /** Compiler flags supported by GHC. */
 object GhcFlags {
 
-  /** Flags list generated from 'ghc-mod flag' */
+  // Flags list generated with: ghc --show-options | grep '^-f' | sort | xargs -n1 printf ', "%s"\n'
   val list = Array(
-    "-fbreak-on-error",
-    "-fno-break-on-error",
-    "-fbreak-on-exception",
-    "-fno-break-on-exception",
-    "-fbuilding-cabal-package",
-    "-fno-building-cabal-package",
-    "-fcall-arity",
-    "-fno-call-arity",
-    "-fcase-merge",
-    "-fno-case-merge",
-    "-fcmm-elim-common-blocks",
-    "-fno-cmm-elim-common-blocks",
-    "-fcmm-sink",
-    "-fno-cmm-sink",
-    "-fcse",
-    "-fno-cse",
-    "-fdefer-type-errors",
-    "-fno-defer-type-errors",
-    "-fdefer-typed-holes",
-    "-fno-defer-typed-holes",
-    "-fdicts-cheap",
-    "-fno-dicts-cheap",
-    "-fdicts-strict",
-    "-fno-dicts-strict",
-    "-fdmd-tx-dict-sel",
-    "-fno-dmd-tx-dict-sel",
-    "-fdo-eta-reduction",
-    "-fno-do-eta-reduction",
-    "-fdo-lambda-eta-expansion",
-    "-fno-do-lambda-eta-expansion",
-    "-feager-blackholing",
-    "-fno-eager-blackholing",
-    "-fembed-manifest",
-    "-fno-embed-manifest",
-    "-fenable-rewrite-rules",
-    "-fno-enable-rewrite-rules",
-    "-ferror-spans",
-    "-fno-error-spans",
-    "-fexcess-precision",
-    "-fno-excess-precision",
-    "-fexpose-all-unfoldings",
-    "-fno-expose-all-unfoldings",
-    "-fext-core",
-    "-fno-ext-core",
-    "-fflat-cache",
-    "-fno-flat-cache",
-    "-ffloat-in",
-    "-fno-float-in",
-    "-fforce-recomp",
-    "-fno-force-recomp",
-    "-ffull-laziness",
-    "-fno-full-laziness",
-    "-ffun-to-thunk",
-    "-fno-fun-to-thunk",
-    "-fgen-manifest",
-    "-fno-gen-manifest",
-    "-fghci-history",
-    "-fno-ghci-history",
-    "-fghci-sandbox",
-    "-fno-ghci-sandbox",
-    "-fhelpful-errors",
-    "-fno-helpful-errors",
-    "-fhpc",
-    "-fno-hpc",
-    "-fhpc-no-auto",
-    "-fno-hpc-no-auto",
-    "-fignore-asserts",
-    "-fno-ignore-asserts",
-    "-fignore-interface-pragmas",
-    "-fno-ignore-interface-pragmas",
-    "-fimplicit-import-qualified",
-    "-fno-implicit-import-qualified",
-    "-firrefutable-tuples",
-    "-fno-irrefutable-tuples",
-    "-fkill-absence",
-    "-fno-kill-absence",
-    "-fkill-one-shot",
-    "-fno-kill-one-shot",
-    "-flate-dmd-anal",
-    "-fno-late-dmd-anal",
-    "-fliberate-case",
-    "-fno-liberate-case",
-    "-fllvm-pass-vectors-in-regs",
-    "-fno-llvm-pass-vectors-in-regs",
-    "-fllvm-tbaa",
-    "-fno-llvm-tbaa",
-    "-floopification",
-    "-fno-loopification",
-    "-fomit-interface-pragmas",
-    "-fno-omit-interface-pragmas",
-    "-fomit-yields",
-    "-fno-omit-yields",
-    "-fpedantic-bottoms",
-    "-fno-pedantic-bottoms",
-    "-fpre-inlining",
-    "-fno-pre-inlining",
-    "-fprint-bind-contents",
-    "-fno-print-bind-contents",
-    "-fprint-bind-result",
-    "-fno-print-bind-result",
-    "-fprint-evld-with-show",
-    "-fno-print-evld-with-show",
-    "-fprint-explicit-foralls",
-    "-fno-print-explicit-foralls",
-    "-fprint-explicit-kinds",
-    "-fno-print-explicit-kinds",
-    "-fprof-cafs",
-    "-fno-prof-cafs",
-    "-fprof-count-entries",
-    "-fno-prof-count-entries",
-    "-fregs-graph",
-    "-fno-regs-graph",
-    "-fregs-iterative",
-    "-fno-regs-iterative",
-    "-frewrite-rules",
-    "-fno-rewrite-rules",
-    "-fshared-implib",
-    "-fno-shared-implib",
-    "-fsimple-list-literals",
-    "-fno-simple-list-literals",
-    "-fspec-constr",
-    "-fno-spec-constr",
-    "-fspecialise",
-    "-fno-specialise",
-    "-fspecialise-aggressively",
-    "-fno-specialise-aggressively",
-    "-fstatic-argument-transformation",
-    "-fno-static-argument-transformation",
-    "-fstrictness",
-    "-fno-strictness",
-    "-fuse-rpaths",
-    "-fno-use-rpaths",
-    "-fwrite-interface",
-    "-fno-write-interface",
-    "-funbox-small-strict-fields",
-    "-fno-unbox-small-strict-fields",
-    "-funbox-strict-fields",
-    "-fno-unbox-strict-fields",
-    "-fvectorisation-avoidance",
-    "-fno-vectorisation-avoidance",
-    "-fvectorise",
-    "-fno-vectorise",
-    "-fwarn-alternative-layout-rule-transitional",
-    "-fno-warn-alternative-layout-rule-transitional",
-    "-fwarn-amp",
-    "-fno-warn-amp",
-    "-fwarn-auto-orphans",
-    "-fno-warn-auto-orphans",
-    "-fwarn-deprecations",
-    "-fno-warn-deprecations",
-    "-fwarn-deprecated-flags",
-    "-fno-warn-deprecated-flags",
-    "-fwarn-deriving-typeable",
-    "-fno-warn-deriving-typeable",
-    "-fwarn-dodgy-exports",
-    "-fno-warn-dodgy-exports",
-    "-fwarn-dodgy-foreign-imports",
-    "-fno-warn-dodgy-foreign-imports",
-    "-fwarn-dodgy-imports",
-    "-fno-warn-dodgy-imports",
-    "-fwarn-empty-enumerations",
-    "-fno-warn-empty-enumerations",
-    "-fwarn-context-quantification",
-    "-fno-warn-context-quantification",
-    "-fwarn-duplicate-constraints",
-    "-fno-warn-duplicate-constraints",
-    "-fwarn-duplicate-exports",
-    "-fno-warn-duplicate-exports",
-    "-fwarn-hi-shadowing",
-    "-fno-warn-hi-shadowing",
-    "-fwarn-implicit-prelude",
-    "-fno-warn-implicit-prelude",
-    "-fwarn-incomplete-patterns",
-    "-fno-warn-incomplete-patterns",
-    "-fwarn-incomplete-record-updates",
-    "-fno-warn-incomplete-record-updates",
-    "-fwarn-incomplete-uni-patterns",
-    "-fno-warn-incomplete-uni-patterns",
-    "-fwarn-inline-rule-shadowing",
-    "-fno-warn-inline-rule-shadowing",
-    "-fwarn-identities",
-    "-fno-warn-identities",
-    "-fwarn-missing-fields",
-    "-fno-warn-missing-fields",
-    "-fwarn-missing-import-lists",
-    "-fno-warn-missing-import-lists",
-    "-fwarn-missing-local-sigs",
-    "-fno-warn-missing-local-sigs",
-    "-fwarn-missing-methods",
-    "-fno-warn-missing-methods",
-    "-fwarn-missing-signatures",
-    "-fno-warn-missing-signatures",
-    "-fwarn-missing-exported-sigs",
-    "-fno-warn-missing-exported-sigs",
-    "-fwarn-monomorphism-restriction",
-    "-fno-warn-monomorphism-restriction",
-    "-fwarn-name-shadowing",
-    "-fno-warn-name-shadowing",
-    "-fwarn-orphans",
-    "-fno-warn-orphans",
-    "-fwarn-overflowed-literals",
-    "-fno-warn-overflowed-literals",
-    "-fwarn-overlapping-patterns",
-    "-fno-warn-overlapping-patterns",
-    "-fwarn-pointless-pragmas",
-    "-fno-warn-pointless-pragmas",
-    "-fwarn-safe",
-    "-fno-warn-safe",
-    "-fwarn-trustworthy-safe",
-    "-fno-warn-trustworthy-safe",
-    "-fwarn-tabs",
-    "-fno-warn-tabs",
-    "-fwarn-type-defaults",
-    "-fno-warn-type-defaults",
-    "-fwarn-typed-holes",
-    "-fno-warn-typed-holes",
-    "-fwarn-partial-type-signatures",
-    "-fno-warn-partial-type-signatures",
-    "-fwarn-unrecognised-pragmas",
-    "-fno-warn-unrecognised-pragmas",
-    "-fwarn-unsafe",
-    "-fno-warn-unsafe",
-    "-fwarn-unsupported-calling-conventions",
-    "-fno-warn-unsupported-calling-conventions",
-    "-fwarn-unsupported-llvm-version",
-    "-fno-warn-unsupported-llvm-version",
-    "-fwarn-unticked-promoted-constructors",
-    "-fno-warn-unticked-promoted-constructors",
-    "-fwarn-unused-binds",
-    "-fno-warn-unused-binds",
-    "-fwarn-unused-do-bind",
-    "-fno-warn-unused-do-bind",
-    "-fwarn-unused-imports",
-    "-fno-warn-unused-imports",
-    "-fwarn-unused-matches",
-    "-fno-warn-unused-matches",
-    "-fwarn-warnings-deprecations",
-    "-fno-warn-warnings-deprecations",
-    "-fwarn-wrong-do-bind",
-    "-fno-warn-wrong-do-bind",
-    "-fth",
-    "-fno-th",
-    "-ffi",
-    "-fno-fi",
-    "-fffi",
-    "-fno-ffi",
-    "-farrows",
-    "-fno-arrows",
-    "-fimplicit-prelude",
-    "-fno-implicit-prelude",
-    "-fbang-patterns",
-    "-fno-bang-patterns",
-    "-fmonomorphism-restriction",
-    "-fno-monomorphism-restriction",
-    "-fmono-pat-binds",
-    "-fno-mono-pat-binds",
-    "-fextended-default-rules",
-    "-fno-extended-default-rules",
-    "-fimplicit-params",
-    "-fno-implicit-params",
-    "-fscoped-type-variables",
-    "-fno-scoped-type-variables",
-    "-fparr",
-    "-fno-parr",
-    "-fPArr",
-    "-fno-PArr",
-    "-fallow-overlapping-instances",
-    "-fno-allow-overlapping-instances",
-    "-fallow-undecidable-instances",
-    "-fno-allow-undecidable-instances",
-    "-fallow-incoherent-instances",
-    "-fno-allow-incoherent-instances"
+      "-fPArr"
+    , "-fPIC"
+    , "-fPIE"
+    , "-falignment-sanitisation"
+    , "-fallow-incoherent-instances"
+    , "-fallow-overlapping-instances"
+    , "-fallow-undecidable-instances"
+    , "-farrows"
+    , "-fasm"
+    , "-fast-llvm"
+    , "-fbang-patterns"
+    , "-fbuilding-cabal-package"
+    , "-fbyte-code"
+    , "-fcall-arity"
+    , "-fcase-folding"
+    , "-fcase-merge"
+    , "-fcatch-bottoms"
+    , "-fcmm-elim-common-blocks"
+    , "-fcmm-sink"
+    , "-fconstraint-solver-iterations"
+    , "-fcontext-stack"
+    , "-fcpr-anal"
+    , "-fcross-module-specialise"
+    , "-fcross-module-specialize"
+    , "-fcse"
+    , "-fdefer-out-of-scope-variables"
+    , "-fdefer-type-errors"
+    , "-fdefer-typed-holes"
+    , "-fdiagnostics-color=always"
+    , "-fdiagnostics-color=auto"
+    , "-fdiagnostics-color=never"
+    , "-fdiagnostics-show-caret"
+    , "-fdicts-cheap"
+    , "-fdicts-strict"
+    , "-fdmd-tx-dict-sel"
+    , "-fdo-eta-reduction"
+    , "-fdo-lambda-eta-expansion"
+    , "-feager-blackholing"
+    , "-fembed-manifest"
+    , "-fenable-rewrite-rules"
+    , "-ferror-spans"
+    , "-fexcess-precision"
+    , "-fexitification"
+    , "-fexpose-all-unfoldings"
+    , "-fextended-default-rules"
+    , "-fexternal-interpreter"
+    , "-fffi"
+    , "-ffi"
+    , "-fflat-cache"
+    , "-ffloat-all-lams"
+    , "-ffloat-in"
+    , "-ffloat-lam-args"
+    , "-fforce-recomp"
+    , "-ffrontend-opt"
+    , "-ffull-laziness"
+    , "-ffun-to-thunk"
+    , "-fgen-manifest"
+    , "-fghci-history"
+    , "-fghci-sandbox"
+    , "-fglasgow-exts"
+    , "-fhelpful-errors"
+    , "-fhide-source-paths"
+    , "-fhistory-size"
+    , "-fhpc"
+    , "-fignore-asserts"
+    , "-fignore-hpc-changes"
+    , "-fignore-interface-pragmas"
+    , "-fignore-optim-changes"
+    , "-fimplicit-params"
+    , "-fimplicit-prelude"
+    , "-firrefutable-tuples"
+    , "-fkill-absence"
+    , "-fkill-one-shot"
+    , "-flate-dmd-anal"
+    , "-fliberate-case"
+    , "-fliberate-case-threshold"
+    , "-fllvm"
+    , "-fllvm-pass-vectors-in-regs"
+    , "-floopification"
+    , "-fmax-errors"
+    , "-fmax-inline-alloc-size"
+    , "-fmax-inline-memcpy-insns"
+    , "-fmax-inline-memset-insns"
+    , "-fmax-pmcheck-iterations"
+    , "-fmax-relevant-binds"
+    , "-fmax-simplifier-iterations"
+    , "-fmax-uncovered-patterns"
+    , "-fmax-valid-substitutions"
+    , "-fmax-worker-args"
+    , "-fmono-pat-binds"
+    , "-fmonomorphism-restriction"
+    , "-fno-PArr"
+    , "-fno-PIC"
+    , "-fno-PIE"
+    , "-fno-alignment-sanitisation"
+    , "-fno-allow-incoherent-instances"
+    , "-fno-allow-overlapping-instances"
+    , "-fno-allow-undecidable-instances"
+    , "-fno-arrows"
+    , "-fno-bang-patterns"
+    , "-fno-building-cabal-package"
+    , "-fno-call-arity"
+    , "-fno-case-folding"
+    , "-fno-case-merge"
+    , "-fno-catch-bottoms"
+    , "-fno-cmm-elim-common-blocks"
+    , "-fno-cmm-sink"
+    , "-fno-code"
+    , "-fno-cpr-anal"
+    , "-fno-cross-module-specialise"
+    , "-fno-cross-module-specialize"
+    , "-fno-cse"
+    , "-fno-defer-out-of-scope-variables"
+    , "-fno-defer-type-errors"
+    , "-fno-defer-typed-holes"
+    , "-fno-diagnostics-show-caret"
+    , "-fno-dicts-cheap"
+    , "-fno-dicts-strict"
+    , "-fno-dmd-tx-dict-sel"
+    , "-fno-do-eta-reduction"
+    , "-fno-do-lambda-eta-expansion"
+    , "-fno-eager-blackholing"
+    , "-fno-embed-manifest"
+    , "-fno-enable-rewrite-rules"
+    , "-fno-error-spans"
+    , "-fno-excess-precision"
+    , "-fno-exitification"
+    , "-fno-expose-all-unfoldings"
+    , "-fno-extended-default-rules"
+    , "-fno-external-interpreter"
+    , "-fno-ffi"
+    , "-fno-fi"
+    , "-fno-flat-cache"
+    , "-fno-float-in"
+    , "-fno-force-recomp"
+    , "-fno-full-laziness"
+    , "-fno-fun-to-thunk"
+    , "-fno-gen-manifest"
+    , "-fno-ghci-history"
+    , "-fno-ghci-sandbox"
+    , "-fno-glasgow-exts"
+    , "-fno-helpful-errors"
+    , "-fno-hide-source-paths"
+    , "-fno-hpc"
+    , "-fno-ignore-asserts"
+    , "-fno-ignore-hpc-changes"
+    , "-fno-ignore-interface-pragmas"
+    , "-fno-ignore-optim-changes"
+    , "-fno-implicit-params"
+    , "-fno-implicit-prelude"
+    , "-fno-irrefutable-tuples"
+    , "-fno-kill-absence"
+    , "-fno-kill-one-shot"
+    , "-fno-late-dmd-anal"
+    , "-fno-liberate-case"
+    , "-fno-liberate-case-threshold"
+    , "-fno-llvm-pass-vectors-in-regs"
+    , "-fno-loopification"
+    , "-fno-max-errors"
+    , "-fno-max-relevant-binds"
+    , "-fno-max-valid-substitutions"
+    , "-fno-mono-pat-binds"
+    , "-fno-monomorphism-restriction"
+    , "-fno-omit-interface-pragmas"
+    , "-fno-omit-yields"
+    , "-fno-opt-coercion"
+    , "-fno-optimal-applicative-do"
+    , "-fno-parr"
+    , "-fno-pedantic-bottoms"
+    , "-fno-pre-inlining"
+    , "-fno-print-equality-relations"
+    , "-fno-print-expanded-synonyms"
+    , "-fno-print-explicit-coercions"
+    , "-fno-print-explicit-foralls"
+    , "-fno-print-explicit-kinds"
+    , "-fno-print-explicit-runtime-reps"
+    , "-fno-print-potential-instances"
+    , "-fno-print-typechecker-elaboration"
+    , "-fno-print-unicode-syntax"
+    , "-fno-prof-auto"
+    , "-fno-prof-cafs"
+    , "-fno-prof-count-entries"
+    , "-fno-regs-graph"
+    , "-fno-regs-iterative"
+    , "-fno-reverse-errors"
+    , "-fno-rewrite-rules"
+    , "-fno-safe-infer"
+    , "-fno-scoped-type-variables"
+    , "-fno-shared-implib"
+    , "-fno-show-hole-constraints"
+    , "-fno-show-loaded-modules"
+    , "-fno-show-warning-groups"
+    , "-fno-solve-constant-dicts"
+    , "-fno-spec-constr"
+    , "-fno-spec-constr-count"
+    , "-fno-spec-constr-keen"
+    , "-fno-spec-constr-threshold"
+    , "-fno-specialise"
+    , "-fno-specialise-aggressively"
+    , "-fno-specialize"
+    , "-fno-specialize-aggressively"
+    , "-fno-state-hack"
+    , "-fno-static-argument-transformation"
+    , "-fno-stg-cse"
+    , "-fno-strictness"
+    , "-fno-th"
+    , "-fno-unbox-small-strict-fields"
+    , "-fno-unbox-strict-fields"
+    , "-fno-use-rpaths"
+    , "-fno-vectorisation-avoidance"
+    , "-fno-vectorise"
+    , "-fno-version-macros"
+    , "-fno-whole-archive-hs-libs"
+    , "-fno-worker-wrapper"
+    , "-fno-write-interface"
+    , "-fobject-code"
+    , "-fomit-interface-pragmas"
+    , "-fomit-yields"
+    , "-foptimal-applicative-do"
+    , "-fpackage-trust"
+    , "-fparr"
+    , "-fpedantic-bottoms"
+    , "-fplugin"
+    , "-fplugin-opt"
+    , "-fpre-inlining"
+    , "-fprint-equality-relations"
+    , "-fprint-expanded-synonyms"
+    , "-fprint-explicit-coercions"
+    , "-fprint-explicit-foralls"
+    , "-fprint-explicit-kinds"
+    , "-fprint-explicit-runtime-reps"
+    , "-fprint-potential-instances"
+    , "-fprint-typechecker-elaboration"
+    , "-fprint-unicode-syntax"
+    , "-fprof-auto"
+    , "-fprof-auto-calls"
+    , "-fprof-auto-exported"
+    , "-fprof-auto-top"
+    , "-fprof-cafs"
+    , "-fprof-count-entries"
+    , "-framework"
+    , "-framework-path"
+    , "-freduction-depth"
+    , "-fregs-graph"
+    , "-fregs-iterative"
+    , "-freverse-errors"
+    , "-frewrite-rules"
+    , "-frule-check"
+    , "-fscoped-type-variables"
+    , "-fshared-implib"
+    , "-fshow-hole-constraints"
+    , "-fshow-loaded-modules"
+    , "-fshow-warning-groups"
+    , "-fsimpl-tick-factor"
+    , "-fsimplifier-phases"
+    , "-fsolve-constant-dicts"
+    , "-fspec-constr"
+    , "-fspec-constr-count"
+    , "-fspec-constr-keen"
+    , "-fspec-constr-recursive"
+    , "-fspec-constr-threshold"
+    , "-fspecialise"
+    , "-fspecialise-aggressively"
+    , "-fspecialize"
+    , "-fspecialize-aggressively"
+    , "-fstatic-argument-transformation"
+    , "-fstg-cse"
+    , "-fstrictness"
+    , "-fstrictness-before"
+    , "-fth"
+    , "-ftype-function-depth"
+    , "-funbox-small-strict-fields"
+    , "-funbox-strict-fields"
+    , "-funfolding-creation-threshold"
+    , "-funfolding-dict-discount"
+    , "-funfolding-fun-discount"
+    , "-funfolding-keeness-factor"
+    , "-funfolding-use-threshold"
+    , "-fuse-rpaths"
+    , "-fvectorisation-avoidance"
+    , "-fvectorise"
+    , "-fversion-macros"
+    , "-fvia-C"
+    , "-fvia-c"
+    , "-fwhole-archive-hs-libs"
+    , "-fworker-wrapper"
+    , "-fwrite-interface"
   )
 }
