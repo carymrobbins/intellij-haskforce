@@ -14,7 +14,11 @@ import org.jdom.Element
 class StackTaskConfiguration(project: Project, configFactory: ConfigurationFactory) extends
   AbstractRunConfiguration(project, configFactory) {
 
-  private var configState = StackTaskConfigurationState("", EnvironmentVariablesData.DEFAULT)
+  private var configState = StackTaskConfigurationState(
+    task = "",
+    environmentVariables = EnvironmentVariablesData.DEFAULT,
+    useCurrentSSHAgentVars = true
+  )
 
   override def isBuildBeforeLaunchAddedByDefault: Boolean = false
 
@@ -55,10 +59,11 @@ class StackTaskConfiguration(project: Project, configFactory: ConfigurationFacto
 
 final case class StackTaskConfigurationState(
   task: String,
-  environmentVariables: EnvironmentVariablesData
+  environmentVariables: EnvironmentVariablesData,
+  useCurrentSSHAgentVars: Boolean
 )
 
 object StackTaskConfigurationState {
   implicit val jdomExt: JDOMExternalizable[StackTaskConfigurationState]
-    = JDOMExternalizable.derive2(apply, unapply)
+    = JDOMExternalizable.derive3(apply, unapply)
 }

@@ -13,6 +13,7 @@ public class StackTaskConfigurationEditorForm extends SettingsEditor<StackTaskCo
     private JPanel mainPanel;
     private RawCommandLineEditor task;
     private EnvironmentVariablesComponent envVars;
+    private JCheckBox useCurrentSSHAgentVars;
 
     @NotNull
     @Override
@@ -25,10 +26,15 @@ public class StackTaskConfigurationEditorForm extends SettingsEditor<StackTaskCo
         StackTaskConfigurationState st = config.getConfigState();
         task.setText(st.task());
         envVars.setEnvData(st.environmentVariables());
+        useCurrentSSHAgentVars.setSelected(st.useCurrentSSHAgentVars());
     }
 
     @Override
     protected void applyEditorTo(@NotNull StackTaskConfiguration config) {
-        config.updateConfigState(state -> state.copy(task.getText(), envVars.getEnvData()));
+        config.updateConfigState(state -> state.copy(
+            task.getText(),
+            envVars.getEnvData(),
+            useCurrentSSHAgentVars.isSelected()
+        ));
     }
 }

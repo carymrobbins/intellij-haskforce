@@ -1,5 +1,7 @@
 package com.haskforce.run.stack.task
 
+import java.io.File
+import java.nio.file.Files
 import java.util.regex.Pattern
 
 import com.haskforce.settings.HaskellBuildSettings
@@ -11,7 +13,7 @@ import com.intellij.execution.process.OSProcessHandler
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.ui.ConsoleView
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.vfs.{LocalFileSystem, VirtualFileManager}
+import com.intellij.openapi.vfs.LocalFileSystem
 
 import scala.collection.JavaConverters._
 
@@ -52,9 +54,25 @@ class StackTaskCommandLineState(
     // Set the env vars
     val environment = commandLine.getEnvironment
     if (configState.environmentVariables.isPassParentEnvs) environment.putAll(System.getenv())
+    if (configState.useCurrentSSHAgentVars) environment.putAll(extractCurrentSSHAgentVars())
     commandLine.getEnvironment.putAll(configState.environmentVariables.getEnvs)
     // Start and return the process
     new OSProcessHandler(commandLine)
+  }
+
+  private def extractCurrentSSHAgentVars(): java.util.Map[String, String] = {
+    def empty = java.util.Collections.emptyMap[String, String]()
+    val home = sys.props.get("user.home").getOrElse { return empty }
+    val sshDir = new File(home, ".ssh")
+    if (!sshDir.isDirectory) return empty
+    val envFile = sshDir.listFiles().find(_.getName.startsWith("environment-")).getOrElse { return empty }
+    Files.readAllLines(envFile.toPath).iterator().asScala
+      .filter(s => s.startsWith("SSH_AUTH_SOCK=") || s.startsWith("SSH_AGENT_PID="))
+      .map(_.split(';').head.split('=') match {
+        case Array(k, v) => (k, v)
+        case _ => return empty
+      })
+      .toMap.asJava
   }
 }
 
