@@ -290,8 +290,9 @@ public class GhcMod {
             isUnusedImport = message.contains("import of") && message.contains("is redundant");
         }
 
-        abstract static class RegisterFixHandler {
-            abstract public void apply(Matcher matcher, Annotation annotation, Problem problem);
+        @FunctionalInterface
+        interface RegisterFixHandler {
+            void apply(Matcher matcher, Annotation annotation, Problem problem);
         }
 
         /**
@@ -301,44 +302,30 @@ public class GhcMod {
          */
         static final List<Pair<Pattern, RegisterFixHandler>> fixHandlers;
         static {
-            fixHandlers = new ArrayList<>(Arrays.<Pair<Pattern, RegisterFixHandler>>asList(
-                    Pair.create(Pattern.compile("^Top-level binding with no type signature"),
-                            new RegisterFixHandler() {
-                                @Override
-                                public void apply(Matcher matcher, Annotation annotation, Problem problem) {
-                                    annotation.registerFix(new AddTypeSignature(problem));
-                                }
-                            }),
-                    Pair.create(Pattern.compile("^Illegal symbol '.' in type"),
-                            new RegisterFixHandler() {
-                                @Override
-                                public void apply(Matcher matcher, Annotation annotation, Problem problem) {
-                                    annotation.registerFix(new AddLanguagePragma("RankNTypes"));
-                                    annotation.registerFix(new RemoveForall(problem));
-                                }
-                            }),
-                    Pair.create(Pattern.compile(" -X([A-Z][A-Za-z0-9]+)"),
-                            new RegisterFixHandler() {
-                                @Override
-                                public void apply(Matcher matcher, Annotation annotation, Problem problem) {
-                                    annotation.registerFix(new AddLanguagePragma(matcher.group(1)));
-                                }
-                            }),
-                    Pair.create(Pattern.compile(" not in scope:\\s*\\(?([^\\s)]+)"),
-                            new RegisterFixHandler() {
-                                @Override
-                                public void apply(Matcher matcher, Annotation annotation, Problem problem) {
-                                    annotation.registerFix(new AddToImports(matcher.group(1)));
-                                }
-                            }),
-              Pair.create(Pattern.compile("Not in scope:[^‘]*‘([^’]+)’"),
-                new RegisterFixHandler() {
-                    @Override
-                    public void apply(Matcher matcher, Annotation annotation, Problem problem) {
-                        annotation.registerFix(new AddToImports(matcher.group(1)));
-                    }
-                })
-            ));
+            fixHandlers = Arrays.asList(
+                Pair.create(
+                    Pattern.compile("^Top-level binding with no type signature"),
+                    (__, annotation, problem) -> annotation.registerFix(new AddTypeSignature(problem))
+                ),
+                Pair.create(
+                    Pattern.compile("^Illegal symbol '.' in type"),
+                    (__, annotation, problem) -> {
+                        annotation.registerFix(new AddLanguagePragma("RankNTypes"));
+                        annotation.registerFix(new RemoveForall(problem));
+                }),
+                Pair.create(
+                    Pattern.compile(" -X([A-Z][A-Za-z0-9]+)"),
+                    (matcher, annotation, problem) -> annotation.registerFix(new AddLanguagePragma(matcher.group(1)))
+                ),
+                Pair.create(
+                    Pattern.compile(" not in scope:\\s*\\(?([^\\s)]+)"),
+                    (matcher, annotation, problem) -> annotation.registerFix(new AddToImports(matcher.group(1)))
+                ),
+                Pair.create(
+                    Pattern.compile("Not in scope:[^‘]*‘([^’]+)’"),
+                    (matcher, annotation, problem) -> annotation.registerFix(new AddToImports(matcher.group(1)))
+                )
+            );
         }
 
         public void registerFix(@NotNull Annotation annotation) {
