@@ -324,6 +324,10 @@ public class GhcMod {
                 Pair.create(
                     Pattern.compile("Not in scope:[^‘]*‘([^’]+)’"),
                     (matcher, annotation, problem) -> annotation.registerFix(new AddToImports(matcher.group(1)))
+                ),
+                Pair.create(
+                    Pattern.compile("Or perhaps ‘(_[^’]+)’ is mis-spelled, or not in scope"),
+                    (matcher, annotation, problem) -> annotation.registerFix(new AddToImports(matcher.group(1)))
                 )
             );
         }
