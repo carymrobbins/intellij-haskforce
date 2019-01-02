@@ -9,10 +9,11 @@ import com.haskforce.utils.FileUtil
 import com.intellij.execution.configurations.{CommandLineState, GeneralCommandLine, ParametersList}
 import com.intellij.execution.filters._
 import com.intellij.execution.impl.ConsoleViewImpl
-import com.intellij.execution.process.OSProcessHandler
+import com.intellij.execution.process.{OSProcessHandler, ProcessEvent, ProcessListener}
 import com.intellij.execution.runners.ExecutionEnvironment
-import com.intellij.execution.ui.ConsoleView
+import com.intellij.execution.ui.{ConsoleView, ConsoleViewContentType}
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.LocalFileSystem
 
 import scala.collection.JavaConverters._
@@ -57,7 +58,22 @@ class StackTaskCommandLineState(
     if (configState.useCurrentSSHAgentVars) environment.putAll(extractCurrentSSHAgentVars())
     commandLine.getEnvironment.putAll(configState.environmentVariables.getEnvs)
     // Start and return the process
-    new OSProcessHandler(commandLine)
+    val procHandler = new OSProcessHandler(commandLine)
+    // TODO: This doesn't seem to work...the message doesn't get printed...
+    procHandler.addProcessListener(new ProcessListener {
+      override def startNotified(event: ProcessEvent): Unit = ()
+      override def processWillTerminate(event: ProcessEvent, willBeDestroyed: Boolean): Unit = ()
+      override def onTextAvailable(event: ProcessEvent, outputType: Key[_]): Unit = ()
+      override def processTerminated(event: ProcessEvent): Unit = {
+        if (event.getExitCode == 0) {
+          getConsoleBuilder.getConsole.print(
+            s"Stack task '${config.getConfigState.task}' completed successfully (exit code 0)",
+            ConsoleViewContentType.NORMAL_OUTPUT
+          )
+        }
+      }
+    })
+    procHandler
   }
 
   private def extractCurrentSSHAgentVars(): java.util.Map[String, String] = {
