@@ -23,6 +23,7 @@ src/com/haskforce/cabal/lang/lexer/_CabalParsingLexer
 src/com/haskforce/highlighting/_HaskellSyntaxHighlightingLexer
 src/com/haskforce/parsing/_HaskellParsingLexer
 src/com/haskforce/yesod/shakespeare/hamlet/highlighting/_HamletSyntaxHighlightingLexer
+src/com/haskforce/haskell/lang/lexer/_HaskellParsingLexer2
 )
 
 main() {

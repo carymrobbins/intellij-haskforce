@@ -192,7 +192,7 @@ public interface HaskellTypes {
   IElementType TYPE = new HaskellTokenType("type");
   IElementType UNDERSCORE = new HaskellTokenType("_");
   IElementType VARIDREGEXP = new HaskellTokenType("varidRegexp");
-  IElementType VARSYMTOK = new HaskellTokenType("Varsym");
+  IElementType VARSYMTOK = new HaskellTokenType("VarsymToken");
   IElementType VARSYMTOKPLUS = new HaskellTokenType("VarsymPlus");
   IElementType WHERE = new HaskellTokenType("where");
   IElementType WHITESPACELBRACETOK = new HaskellTokenType("Synthetic leftbrace");

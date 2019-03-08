@@ -182,7 +182,7 @@
     EXPORTTOKEN='export'
     CONSYMTOK="Consym"
     VARSYMTOKPLUS="VarsymPlus"
-    VARSYMTOK="Varsym"
+    VARSYMTOK="VarsymToken"
     FORALLTOKEN='forall'
     WHITESPACESEMITOK="Synthetic semicolon"
     WHITESPACELBRACETOK="Synthetic leftbrace"
