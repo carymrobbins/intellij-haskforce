@@ -4,8 +4,8 @@ import com.haskforce.HaskellLanguage;
 import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 
-public class Token extends IElementType {
-  public Token(@NotNull String debugName) {
+public class LexerToken extends IElementType {
+  public LexerToken(@NotNull String debugName) {
     super(debugName, HaskellLanguage.INSTANCE);
   }
 }

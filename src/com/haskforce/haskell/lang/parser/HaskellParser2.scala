@@ -1,23 +1,33 @@
 package com.haskforce.haskell.lang.parser
 
+import com.haskforce.haskell.lang.lexer.psi.LexerToken
+import com.haskforce.haskell.lang.lexer.psi.Tokens._
+import com.haskforce.haskell.lang.parser.psi.Elements._
+import com.haskforce.haskell.lang.parser.psi.ParserElement
+import com.haskforce.utils.parser.parsec.{Psi, PsiParsecTypedElements}
 import com.intellij.lang.{ASTNode, PsiBuilder, PsiParser}
 import com.intellij.psi.tree.IElementType
 import scalaz.syntax.monad._
 
 final class HaskellParser2 extends PsiParser {
-  override def parse(root: IElementType, builder: PsiBuilder): ASTNode = ???
+
+  override def parse(root: IElementType, builder: PsiBuilder): ASTNode =
+    HaskellParser2Parsec.runParser(root.asInstanceOf[ParserElement], builder)
 }
 
-object HaskellParser2Parsec {
+object HaskellParser2Parsec
+    extends PsiParsecTypedElements[LexerToken, ParserElement] {
 
-  import com.haskforce.psi.HaskellTypes._
-  import com.haskforce.utils.parser.PsiParsec._
+  def runParser(root: ParserElement, builder: PsiBuilder): ASTNode = {
+    markStart(top *> consumeUntilEOF *> markDone(root)).run(builder)
+    builder.getTreeBuilt
+  }
 
   type P0 = Psi[Unit]
 
   val pModuleName: P0 = markStart(
-    pif(maybeTokenOneOfAdvance(CONID, QCONID))
-      .pthen(markDone(??? /*MODULE_NAME*/))
+    pif(maybeTokenOneOfAdvance(CONIDREGEXP))
+      .pthen(markDone(MODULE_NAME))
       .pelse(markError("Missing module name"))
   )
 
@@ -27,12 +37,12 @@ object HaskellParser2Parsec {
       *> pModuleName
       *> expectTokenAdvance(WHERE)
       *> expectTokenOneOfAdvance(LBRACE /*, VIRTUAL_LBRACE*/)
-      *> markDone(MODULEDECL)
+      *> markDone(MODULE_DECL)
     ))
 
   val pImportModule: P0 = markStart(
-    pif(maybeTokenOneOfAdvance(CONID, QCON))
-      .pthen(markDone(??? /*IMPORT_MODULE*/))
+    pif(maybeTokenOneOfAdvance(CONIDREGEXP))
+      .pthen(markDone(IMPORT_MODULE))
       .pelse(markError("Missing import module"))
   )
 
