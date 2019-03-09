@@ -122,3 +122,8 @@ patchPluginXml {
 buildPlugin {
     archiveName = "haskforce-${patchPluginXml.version}.zip"
 }
+
+test {
+    // Allow gradle to pick up and delegate system props for tests.
+    systemProperty 'idea.tests.overwrite.data', System.getProperty('idea.tests.overwrite.data')
+}

@@ -22,7 +22,6 @@
 
 package com.haskforce.parser;
 
-import com.haskforce.utils.ExecUtil;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.testFramework.ParsingTestCase;
 import com.intellij.psi.PsiFile;
