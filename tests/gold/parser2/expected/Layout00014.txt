@@ -1,0 +1,23 @@
+HASKELL_FILE
+  MODULE_DECL
+    PsiElement(module)('module')
+    MODULE_NAME
+      PsiElement(conidRegexp)('Layout00014')
+    PsiElement(where)('where')
+  UNKNOWN
+    PsiElement(instance)('instance')
+    PsiElement(conidRegexp)('Indexed')
+    PsiElement(()('(')
+    PsiElement(conidRegexp)('Pull')
+    PsiElement(varidRegexp)('sh')
+    PsiElement(varidRegexp)('a')
+    PsiElement())(')')
+    PsiElement(where)('where')
+    PsiElement(conidRegexp)('Pull')
+    PsiElement(varidRegexp)('ixf')
+    PsiElement(_)('_')
+    PsiElement(!)('!')
+    PsiElement(varidRegexp)('i')
+    PsiElement(=)('=')
+    PsiElement(varidRegexp)('ixf')
+    PsiElement(varidRegexp)('i')

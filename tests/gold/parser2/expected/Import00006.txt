@@ -1,0 +1,48 @@
+HASKELL_FILE
+  MODULE_DECL
+    PsiElement(module)('module')
+    MODULE_NAME
+      PsiElement(conidRegexp)('Import00006')
+    PsiErrorElement:Expected where
+      <empty list>
+  UNKNOWN
+    PsiElement(()('(')
+    PsiElement(varidRegexp)('a')
+    PsiElement(,)(',')
+    PsiElement(varidRegexp)('b')
+    PsiElement(,)(',')
+    PsiElement(varidRegexp)('foo')
+    PsiElement(,)(',')
+    PsiElement(varidRegexp)('bar')
+    PsiElement(,)(',')
+    PsiElement(,)(',')
+    PsiElement())(')')
+    PsiElement(where)('where')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(import)('import')
+    PsiElement(conidRegexp)('A')
+    PsiElement(()('(')
+    PsiElement(varidRegexp)('a')
+    PsiElement(,)(',')
+    PsiElement(varidRegexp)('b')
+    PsiElement(,)(',')
+    PsiElement())(')')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(import)('import')
+    PsiElement(conidRegexp)('M')
+    PsiElement(()('(')
+    PsiElement(,)(',')
+    PsiElement(,)(',')
+    PsiElement(varidRegexp)('foo')
+    PsiElement(,)(',')
+    PsiElement(,)(',')
+    PsiElement(,)(',')
+    PsiElement(varidRegexp)('bar')
+    PsiElement(,)(',')
+    PsiElement(,)(',')
+    PsiElement(,)(',')
+    PsiElement())(')')

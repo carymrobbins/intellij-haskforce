@@ -1,0 +1,12 @@
+HASKELL_FILE
+  MODULE_DECL
+    PsiElement(module)('module')
+    MODULE_NAME
+      PsiElement(conidRegexp)('String00003')
+    PsiElement(where)('where')
+  UNKNOWN
+    PsiElement(varidRegexp)('s')
+    PsiElement(=)('=')
+    PsiElement(")('"')
+    PsiElement(STRINGTOKEN)('\\n    \Strings should allow \"escaped double quotes\"\\n    \as well as multi-line strings.  Also, the closing\\n    \quote of this string can be preceded by a backslash\\n    \since the backslash indicates line continuation, not\\n    \quote escaping!\\n\')
+    PsiElement(")('"')

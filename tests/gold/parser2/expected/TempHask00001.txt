@@ -1,0 +1,25 @@
+HASKELL_FILE
+  MODULE_DECL
+    PsiElement(module)('module')
+    MODULE_NAME
+      PsiElement(conidRegexp)('TempHask00001')
+    PsiElement(where)('where')
+  UNKNOWN
+    PsiElement(varidRegexp)('rewriteType')
+    PsiElement(::)('::')
+    PsiElement(conidRegexp)('Type')
+    PsiElement(->)('->')
+    PsiElement(conidRegexp)('Q')
+    PsiElement(conidRegexp)('Type')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('rewriteType')
+    PsiElement(varidRegexp)('t')
+    PsiElement(=)('=')
+    PsiElement(varidRegexp)('applyTF')
+    PsiElement('')('''')
+    PsiElement(conidRegexp)('Internal')
+    PsiElement(varidRegexp)('t')
+    PsiElement(VarsymPlus)('>>=')
+    PsiElement(varidRegexp)('expandTF')

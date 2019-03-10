@@ -1,0 +1,23 @@
+HASKELL_FILE
+  MODULE_DECL
+    PsiElement(module)('module')
+    MODULE_NAME
+      PsiElement(conidRegexp)('ForAll00001')
+    PsiElement(where)('where')
+  UNKNOWN
+    PsiElement(data)('data')
+    PsiElement(conidRegexp)('BlockedFetch')
+    PsiElement(varidRegexp)('r')
+    PsiElement(=)('=')
+    PsiElement(forall)('forall')
+    PsiElement(varidRegexp)('a')
+    PsiElement(.)('.')
+    PsiElement(conidRegexp)('BlockedFetch')
+    PsiElement(()('(')
+    PsiElement(varidRegexp)('r')
+    PsiElement(varidRegexp)('a')
+    PsiElement())(')')
+    PsiElement(()('(')
+    PsiElement(conidRegexp)('ResultVar')
+    PsiElement(varidRegexp)('a')
+    PsiElement())(')')

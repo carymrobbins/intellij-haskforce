@@ -20,6 +20,7 @@ object Elements {
 
   case object IMPORT_MODULE extends ParserElement("IMPORT_MODULE")
   case object IMPORT_LIST extends ParserElement("IMPORT_LIST")
+  case object IMPORT_STMT extends ParserElement("IMPORT_STMT")
   case object IMPORT_ALIAS extends ParserElement("IMPORT_ALIAS")
   case object IMPORT_EXPLICIT extends ParserElement("IMPORT_EXPLICIT")
   case object IMPORT_EXPLICITS extends ParserElement("IMPORT_EXPLICITS")
@@ -27,10 +28,13 @@ object Elements {
   case object IMPORT_HIDDENS extends ParserElement("IMPORT_HIDDENS")
 
   case object FOREIGN_IMPORT extends ParserElement("FOREIGN_IMPORT")
+  case object FOREIGN_EXPORT extends ParserElement("FOREIGN_EXPORT")
 
   case object TYPE_EXPR extends ParserElement("TYPE_EXPR")
 
   case object STRING_LIT extends ParserElement("STRING_LIT")
+
+  case object QCONID extends ParserElement("QCONID")
 }
 
 object ElementFactory {

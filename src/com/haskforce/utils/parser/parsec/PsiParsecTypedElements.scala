@@ -19,7 +19,7 @@ abstract class PsiParsecTypedElements[I <: IElementType, O <: IElementType]
     marker <- Psi(_.mark())
     res0 <- p
     (markRes, parseRes) = res0
-    _ <- pure(markRes match {
+    _ <- ppure(markRes match {
       case MarkResult.Done(el) => marker.done(el)
       case MarkResult.Collapse(el) => marker.collapse(el)
       case MarkResult.Error(msg) => marker.error(msg)
@@ -27,13 +27,16 @@ abstract class PsiParsecTypedElements[I <: IElementType, O <: IElementType]
   } yield parseRes
 
   def markDone(el: O): Psi[(MarkResult[O], Unit)] =
-    pure((MarkResult.Done(el), ()))
+    ppure((MarkResult.Done(el), ()))
 
   def markDoneWith[A](el: O, a: A): Psi[(MarkResult[O], A)] =
-    pure((MarkResult.Done(el), a))
+    ppure((MarkResult.Done(el), a))
 
   def markError(msg: String): Psi[(MarkResult[O], Unit)] =
-    pure((MarkResult.Error(msg), ()))
+    ppure((MarkResult.Error(msg), ()))
+
+  def markErrorWith[A](msg: String, a: A): Psi[(MarkResult[O], A)] =
+    ppure((MarkResult.Error(msg), a))
 
   def lookAhead(n: Int): Psi[Option[I]] =
     Psi(b => castTokenF(Option(b.lookAhead(n))))
@@ -43,11 +46,26 @@ abstract class PsiParsecTypedElements[I <: IElementType, O <: IElementType]
     Psi(b => castTokenF((0 until n).map(b.lookAhead).takeWhile(_ != null).toList))
   }
 
+  def lookAheadManyIs(ts: I*): Psi[Boolean] =
+    lookAheadMany(ts.length).map(_ == ts.toList)
+
   def remapAdvance(el: O): Psi[Unit] =
     Psi(_.remapCurrentToken(el)) *> advanceLexer
 
   val getTokenType: Psi[Option[I]] =
     Psi(b => castTokenF(Option(b.getTokenType)))
+
+  def isTokenType(t: I): Psi[Boolean] =
+    getTokenType.map(_.contains(t))
+
+  def isTokenTypeOneOf(ts: I*): Psi[Boolean] =
+    getTokenType.map {
+      case Some(t) if ts.contains(t) => true
+      case _ => false
+    }
+
+  val getTokenText: Psi[Option[String]] =
+    Psi(b => Option(b.getTokenText))
 
   def withTokenType(f: I => Psi[Unit]): Psi[Unit] =
     getTokenType >>= {
@@ -68,6 +86,12 @@ abstract class PsiParsecTypedElements[I <: IElementType, O <: IElementType]
     getTokenType.flatMap {
       case Some(el0) if el0 == el => advanceLexer *> rTrue
       case _ => rFalse
+    }
+
+  def maybeTokenAdvance_(el: I): Psi[Unit] =
+    getTokenType.flatMap {
+      case Some(el0) if el0 == el => advanceLexer
+      case _ => rUnit
     }
 
   def maybeTokenOneOfAdvance(els: I*): Psi[Boolean] =

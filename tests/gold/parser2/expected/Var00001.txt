@@ -1,0 +1,11 @@
+HASKELL_FILE
+  MODULE_DECL
+    PsiElement(module)('module')
+    MODULE_NAME
+      PsiElement(conidRegexp)('Var00001')
+    PsiElement(where)('where')
+    PsiComment(comment)('-- Believe it or not, this is valid!\n')
+  UNKNOWN
+    PsiElement(qualified)('qualified')
+    PsiElement(=)('=')
+    PsiElement(conidRegexp)('True')

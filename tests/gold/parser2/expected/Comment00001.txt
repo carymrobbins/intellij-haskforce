@@ -1,0 +1,16 @@
+HASKELL_FILE
+  PsiComment(comment)('--\n')
+  PsiComment(comment)('-- Pretend long copyright notice is here.\n')
+  PsiComment(comment)('--\n')
+  MODULE_DECL
+    PsiElement(module)('module')
+    MODULE_NAME
+      PsiElement(conidRegexp)('Comment1')
+    PsiElement(where)('where')
+  UNKNOWN
+    PsiElement(varidRegexp)('main')
+    PsiElement(=)('=')
+    PsiElement(varidRegexp)('print')
+    PsiElement(")('"')
+    PsiElement(STRINGTOKEN)('Hello, complicated world!')
+    PsiElement(")('"')

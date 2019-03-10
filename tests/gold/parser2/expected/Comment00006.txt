@@ -1,0 +1,19 @@
+HASKELL_FILE
+  PsiComment({-)('{-')
+  PsiComment(commenttext)('\nmain = 1; ')
+  PsiComment(commenttext)('{-')
+  PsiComment(commenttext)('# ANN module ("HLint: ignore Use camelCase" :: String) #')
+  PsiComment(commenttext)('-}')
+  PsiComment(commenttext)('\nmain = 1; ')
+  PsiComment(commenttext)('{-')
+  PsiComment(commenttext)('# ANN module (1 + (2)) #')
+  PsiComment(commenttext)('-}')
+  PsiComment(commenttext)('\n')
+  PsiComment(-})('-}')
+  MODULE_DECL
+    PsiElement(module)('module')
+    MODULE_NAME
+      PsiElement(conidRegexp)('Comment00006')
+    PsiElement(where)('where')
+  UNKNOWN
+    <empty list>

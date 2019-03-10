@@ -1,0 +1,21 @@
+HASKELL_FILE
+  MODULE_DECL
+    PsiElement(module)('module')
+    MODULE_NAME
+      PsiElement(conidRegexp)('Import00004')
+    PsiElement(where)('where')
+  IMPORT_LIST
+    IMPORT_STMT
+      PsiElement(import)('import')
+      IMPORT_MODULE
+        QCONID
+          PsiElement(conidRegexp)('Data')
+          PsiElement(.)('.')
+          PsiElement(conidRegexp)('QuickCheck')
+      PsiElement(()('(')
+      IMPORT_EXPLICITS
+        PsiElement(()('(')
+  UNKNOWN
+    PsiElement(VarsymPlus)('===>')
+    PsiElement())(')')
+    PsiElement())(')')

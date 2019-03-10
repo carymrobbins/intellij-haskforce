@@ -1,0 +1,31 @@
+HASKELL_FILE
+  MODULE_DECL
+    PsiElement(module)('module')
+    MODULE_NAME
+      PsiElement(conidRegexp)('Layout00021')
+    PsiElement(where)('where')
+  UNKNOWN
+    PsiElement(varidRegexp)('runGhcModT')
+    PsiElement(varidRegexp)('opt')
+    PsiElement(varidRegexp)('action')
+    PsiElement(=)('=')
+    PsiElement(do)('do')
+    PsiElement(()('(')
+    PsiElement(varidRegexp)('f')
+    PsiElement($)('$')
+    PsiElement(do)('do')
+    PsiElement(varidRegexp)('action')
+    PsiElement())(')')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('runGhcModT'')
+    PsiElement(varidRegexp)('a')
+    PsiElement(=)('=')
+    PsiElement(do)('do')
+    PsiElement(varidRegexp)('return')
+    PsiElement(varidRegexp)('res')

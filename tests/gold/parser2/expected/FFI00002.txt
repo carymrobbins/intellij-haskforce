@@ -1,0 +1,77 @@
+HASKELL_FILE
+  PsiErrorElement:Expected 'module' but got: {-#
+    <empty list>
+  UNKNOWN
+    PsiElement({-#)('{-#')
+    PsiElement(PRAGMA)('LANGUAGE')
+    PsiElement(PRAGMA)('ForeignFunctionInterface,')
+    PsiElement(PRAGMA)('InterruptibleFFI,')
+    PsiElement(PRAGMA)('CApiFFI')
+    PsiElement(#-})('#-}')
+  UNKNOWN
+    PsiElement(module)('module')
+    PsiElement(conidRegexp)('FFI00002')
+    PsiElement(where)('where')
+  UNKNOWN
+    <empty list>
+  FOREIGN_IMPORT
+    PsiElement(foreign)('foreign')
+    PsiElement(import)('import')
+    PsiElement(varidRegexp)('ccall')
+    PsiElement(varidRegexp)('interruptible')
+    STRING_LIT
+      PsiElement(")('"')
+      PsiElement(STRINGTOKEN)('sleep')
+      PsiElement(")('"')
+    PsiElement(varidRegexp)('sleep')
+    PsiElement(::)('::')
+    TYPE_EXPR
+      UNKNOWN
+        PsiElement(conidRegexp)('CUint')
+        PsiElement(->)('->')
+        PsiElement(conidRegexp)('IO')
+        PsiElement(conidRegexp)('CUint')
+  UNKNOWN
+    <empty list>
+  FOREIGN_IMPORT
+    PsiElement(foreign)('foreign')
+    PsiElement(import)('import')
+    PsiElement(varidRegexp)('ccall')
+    PsiElement(varidRegexp)('safe')
+    STRING_LIT
+      PsiElement(")('"')
+      PsiElement(STRINGTOKEN)('wool-common.h wool_init')
+      PsiElement(")('"')
+    PsiElement(varidRegexp)('initWool')
+    PsiElement(::)('::')
+    TYPE_EXPR
+      UNKNOWN
+        PsiElement(conidRegexp)('CInt')
+        PsiElement(->)('->')
+        PsiElement(conidRegexp)('Ptr')
+        PsiElement(conidRegexp)('CString')
+        PsiElement(->)('->')
+        PsiElement(conidRegexp)('IO')
+        PsiElement(conidRegexp)('CInt')
+  UNKNOWN
+    <empty list>
+  FOREIGN_IMPORT
+    PsiElement(foreign)('foreign')
+    PsiElement(import)('import')
+    PsiElement(varidRegexp)('jvm')
+    PsiElement(varidRegexp)('interruptible')
+    STRING_LIT
+      PsiElement(")('"')
+      PsiElement(STRINGTOKEN)('wool-common.h wool_init2')
+      PsiElement(")('"')
+    PsiElement(varidRegexp)('initWool2')
+    PsiElement(::)('::')
+    TYPE_EXPR
+      UNKNOWN
+        PsiElement(conidRegexp)('CInt')
+        PsiElement(->)('->')
+        PsiElement(conidRegexp)('Ptr')
+        PsiElement(conidRegexp)('CString')
+        PsiElement(->)('->')
+        PsiElement(conidRegexp)('IO')
+        PsiElement(conidRegexp)('CInt')

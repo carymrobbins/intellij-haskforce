@@ -1,0 +1,97 @@
+HASKELL_FILE
+  PsiErrorElement:Expected 'module' but got: {-#
+    <empty list>
+  UNKNOWN
+    PsiElement({-#)('{-#')
+    PsiElement(PRAGMA)('LANGUAGE')
+    PsiElement(PRAGMA)('FlexibleInstances')
+    PsiElement(#-})('#-}')
+  UNKNOWN
+    PsiElement({-#)('{-#')
+    PsiElement(PRAGMA)('LANGUAGE')
+    PsiElement(PRAGMA)('QuasiQuotes')
+    PsiElement(#-})('#-}')
+  UNKNOWN
+    PsiElement({-#)('{-#')
+    PsiElement(PRAGMA)('LANGUAGE')
+    PsiElement(PRAGMA)('TemplateHaskell')
+    PsiElement(#-})('#-}')
+  UNKNOWN
+    PsiElement(module)('module')
+    PsiElement(conidRegexp)('TempHask00002')
+    PsiElement(where)('where')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(Quasi-[)('[')
+    PsiElement(varidRegexp)('undefined')
+    PsiElement(|)('|')
+  UNKNOWN
+    PsiElement(Quasi-stuff)('\nsomething here "hello world"\n')
+  UNKNOWN
+    PsiElement(|])('|]')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement([|)('[|')
+    PsiElement(integertoken)('7')
+    PsiElement(|])('|]')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(Quasi-[)('[')
+    PsiElement(varidRegexp)('d')
+    PsiElement(|)('|')
+    PsiElement(Quasi-stuff)(' 7 ')
+    PsiElement(|])('|]')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(Quasi-[)('[')
+    PsiElement(varidRegexp)('t')
+    PsiElement(|)('|')
+    PsiElement(Quasi-stuff)(' Int ')
+    PsiElement(|])('|]')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(Quasi-[)('[')
+    PsiElement(varidRegexp)('p')
+    PsiElement(|)('|')
+    PsiElement(Quasi-stuff)(' 7 ')
+    PsiElement(|])('|]')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement($()('$(')
+    PsiElement(varidRegexp)('deriveStuff')
+    PsiElement(')(''')
+    PsiElement(varidRegexp)('f')
+    PsiElement())(')')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('m')
+    PsiElement(=)('=')
+    PsiElement(idsplice)('$x')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement('')('''')
+    PsiElement(conidRegexp)('T')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('f')
+    PsiElement(varidRegexp)('n')
+    PsiElement(=)('=')
+    PsiElement(\)('\')
+    PsiElement(Quasi-[)('[')
+    PsiElement(varidRegexp)('haskell')
+    PsiElement(|)('|')
+    PsiElement(Quasi-stuff)('y')
+    PsiElement(|])('|]')
+    PsiElement(->)('->')
+    PsiElement(varidRegexp)('y')
+    PsiElement(+)('+')
+    PsiElement(varidRegexp)('n')

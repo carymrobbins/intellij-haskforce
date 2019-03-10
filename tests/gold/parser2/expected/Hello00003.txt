@@ -1,0 +1,31 @@
+HASKELL_FILE
+  MODULE_DECL
+    PsiElement(module)('module')
+    MODULE_NAME
+      PsiElement(conidRegexp)('Hello00003')
+    PsiElement(where)('where')
+  UNKNOWN
+    PsiElement(varidRegexp)('main')
+    PsiElement(=)('=')
+    PsiElement(varidRegexp)('print')
+    PsiElement(")('"')
+    PsiElement(STRINGTOKEN)('Hello, World!')
+    PsiElement(")('"')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(module)('module')
+    PsiElement(conidRegexp)('Illegal')
+    PsiElement(where)('where')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('main')
+    PsiElement(=)('=')
+    PsiElement(")('"')
+    PsiElement(STRINGTOKEN)('I'm invisible!')
+    PsiElement(")('"')

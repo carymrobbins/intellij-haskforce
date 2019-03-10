@@ -1,0 +1,35 @@
+HASKELL_FILE
+  MODULE_DECL
+    PsiElement(module)('module')
+    MODULE_NAME
+      PsiElement(conidRegexp)('Layout00001')
+    PsiElement(where)('where')
+  UNKNOWN
+    PsiElement(varidRegexp)('topLexer')
+    PsiElement(::)('::')
+    PsiElement(conidRegexp)('Lex')
+    PsiElement(varidRegexp)('a')
+    PsiElement(()('(')
+    PsiElement(conidRegexp)('Loc')
+    PsiElement(conidRegexp)('Token')
+    PsiElement())(')')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('topLexer')
+    PsiElement(=)('=')
+    PsiElement(do)('do')
+    PsiElement(varidRegexp)('t')
+    PsiElement(<-)('<-')
+    PsiElement(if)('if')
+    PsiElement(varidRegexp)('bol'')
+    PsiElement(then)('then')
+    PsiElement(varidRegexp)('lexBOL')
+    PsiElement(else)('else')
+    PsiElement(varidRegexp)('lexToken')
+    PsiComment(comment)('-- t\n')
+    PsiElement(varidRegexp)('el')
+    PsiElement(<-)('<-')
+    PsiElement(varidRegexp)('getSrcLocL')
+    PsiElement(varidRegexp)('return')
+    PsiElement(integertoken)('2')

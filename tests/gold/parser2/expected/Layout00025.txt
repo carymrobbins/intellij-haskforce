@@ -1,0 +1,42 @@
+HASKELL_FILE
+  MODULE_DECL
+    PsiElement(module)('module')
+    MODULE_NAME
+      PsiElement(conidRegexp)('Layout00025')
+    PsiElement(where)('where')
+  IMPORT_LIST
+    IMPORT_STMT
+      PsiElement(import)('import')
+      IMPORT_MODULE
+        QCONID
+          PsiElement(conidRegexp)('Text')
+          PsiElement(.)('.')
+          PsiElement(conidRegexp)('Parsec')
+    IMPORT_STMT
+      PsiElement(import)('import')
+      IMPORT_MODULE
+        QCONID
+          PsiElement(conidRegexp)('Text')
+          PsiElement(.)('.')
+          PsiElement(conidRegexp)('Parsec')
+          PsiElement(.)('.')
+          PsiElement(conidRegexp)('String')
+  UNKNOWN
+    PsiElement(varidRegexp)('testParser')
+    PsiElement(::)('::')
+    PsiElement(conidRegexp)('Parser')
+    PsiElement(conidRegexp)('Char')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('testParser')
+    PsiElement(=)('=')
+    PsiElement(do)('do')
+    PsiElement(varidRegexp)('c')
+    PsiElement(<-)('<-')
+    PsiElement(varidRegexp)('char')
+    PsiElement(chartoken)(''c'')
+    PsiElement(VarsymPlus)('<?>')
+    PsiElement(")('"')
+    PsiElement(STRINGTOKEN)('char c expected')
+    PsiElement(")('"')

@@ -1,0 +1,12 @@
+HASKELL_FILE
+  PsiErrorElement:Expected 'module' but got: Synthetic leftbrace
+    <empty list>
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('main')
+    PsiElement(=)('=')
+    PsiElement(varidRegexp)('print')
+    PsiElement(")('"')
+    PsiElement(STRINGTOKEN)('Hello, World!')
+    PsiElement(")('"')

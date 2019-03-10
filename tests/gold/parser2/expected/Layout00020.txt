@@ -1,0 +1,159 @@
+HASKELL_FILE
+  PsiErrorElement:Expected 'module' but got: {-#
+    <empty list>
+  PsiComment(comment)('-- NOTE: This file is auto-generated.\n')
+  UNKNOWN
+    PsiElement({-#)('{-#')
+    PsiElement(PRAGMA)('LANGUAGE')
+    PsiElement(PRAGMA)('DeriveDataTypeable')
+    PsiElement(#-})('#-}')
+  UNKNOWN
+    PsiElement({-#)('{-#')
+    PsiElement(PRAGMA)('LANGUAGE')
+    PsiElement(PRAGMA)('CPP')
+    PsiElement(#-})('#-}')
+  PsiComment(haddock)('-- | Module to be shared between server and client.\n')
+  PsiComment(comment)('--\n')
+  PsiComment(comment)('-- This module must be valid for both GHC and Fay.\n')
+  UNKNOWN
+    PsiElement(module)('module')
+    PsiElement(conidRegexp)('Language')
+    PsiElement(.)('.')
+    PsiElement(conidRegexp)('Fay')
+    PsiElement(.)('.')
+    PsiElement(conidRegexp)('Yesod')
+    PsiElement(where)('where')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(import)('import')
+    PsiElement(conidRegexp)('Prelude')
+  PsiComment(CPPIFDEF)('#ifdef FAY')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(import)('import')
+    PsiElement(conidRegexp)('FFI')
+  PsiComment(#else)('#else')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(import)('import')
+    PsiElement(conidRegexp)('Fay')
+    PsiElement(.)('.')
+    PsiElement(conidRegexp)('FFI')
+  PsiComment(#endif)('#endif')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(import)('import')
+    PsiElement(conidRegexp)('Data')
+    PsiElement(.)('.')
+    PsiElement(conidRegexp)('Data')
+  PsiComment(CPPIFDEF)('#ifdef FAY')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(data)('data')
+    PsiElement(conidRegexp)('Text')
+    PsiElement(=)('=')
+    PsiElement(conidRegexp)('Text')
+    PsiElement(deriving)('deriving')
+    PsiElement(()('(')
+    PsiElement(conidRegexp)('Show')
+    PsiElement(,)(',')
+    PsiElement(conidRegexp)('Read')
+    PsiElement(,)(',')
+    PsiElement(conidRegexp)('Eq')
+    PsiElement(,)(',')
+    PsiElement(conidRegexp)('Typeable')
+    PsiElement(,)(',')
+    PsiElement(conidRegexp)('Data')
+    PsiElement())(')')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('fromString')
+    PsiElement(::)('::')
+    PsiElement(conidRegexp)('String')
+    PsiElement(->)('->')
+    PsiElement(conidRegexp)('Text')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('fromString')
+    PsiElement(=)('=')
+    PsiElement(varidRegexp)('ffi')
+    PsiElement(")('"')
+    PsiElement(STRINGTOKEN)('%1')
+    PsiElement(")('"')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('toString')
+    PsiElement(::)('::')
+    PsiElement(conidRegexp)('Text')
+    PsiElement(->)('->')
+    PsiElement(conidRegexp)('String')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('toString')
+    PsiElement(=)('=')
+    PsiElement(varidRegexp)('ffi')
+    PsiElement(")('"')
+    PsiElement(STRINGTOKEN)('%1')
+    PsiElement(")('"')
+  PsiComment(#else)('#else')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(import)('import')
+    PsiElement(qualified)('qualified')
+    PsiElement(conidRegexp)('Data')
+    PsiElement(.)('.')
+    PsiElement(conidRegexp)('Text')
+    PsiElement(as)('as')
+    PsiElement(conidRegexp)('T')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(type)('type')
+    PsiElement(conidRegexp)('Text')
+    PsiElement(=)('=')
+    PsiElement(conidRegexp)('T')
+    PsiElement(.)('.')
+    PsiElement(conidRegexp)('Text')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('fromString')
+    PsiElement(::)('::')
+    PsiElement(conidRegexp)('String')
+    PsiElement(->)('->')
+    PsiElement(conidRegexp)('Text')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('fromString')
+    PsiElement(=)('=')
+    PsiElement(conidRegexp)('T')
+    PsiElement(.)('.')
+    PsiElement(varidRegexp)('pack')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('toString')
+    PsiElement(::)('::')
+    PsiElement(conidRegexp)('Text')
+    PsiElement(->)('->')
+    PsiElement(conidRegexp)('String')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('toString')
+    PsiElement(=)('=')
+    PsiElement(conidRegexp)('T')
+    PsiElement(.)('.')
+    PsiElement(varidRegexp)('unpack')
+    PsiComment(#endif)('#endif')

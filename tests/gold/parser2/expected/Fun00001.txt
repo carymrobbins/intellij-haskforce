@@ -1,0 +1,32 @@
+HASKELL_FILE
+  PsiErrorElement:Expected 'module' but got: {-#
+    <empty list>
+  UNKNOWN
+    PsiElement({-#)('{-#')
+    PsiElement(PRAGMA)('LANGUAGE')
+    PsiElement(PRAGMA)('GADTs')
+    PsiElement(#-})('#-}')
+  UNKNOWN
+    PsiElement(module)('module')
+    PsiElement(conidRegexp)('Fun00001')
+    PsiElement(where)('where')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(data)('data')
+    PsiElement(conidRegexp)('Maybe')
+    PsiElement(varidRegexp)('a')
+    PsiElement(=)('=')
+    PsiElement(conidRegexp)('Nothing')
+    PsiElement(|)('|')
+    PsiElement(conidRegexp)('Just')
+    PsiElement(varidRegexp)('a')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(type)('type')
+    PsiElement(conidRegexp)('Perhaps')
+    PsiElement(varidRegexp)('a')
+    PsiElement(=)('=')
+    PsiElement(conidRegexp)('Maybe')
+    PsiElement(varidRegexp)('a')

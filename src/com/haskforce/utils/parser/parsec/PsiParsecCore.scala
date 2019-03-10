@@ -7,15 +7,15 @@ import scala.language.higherKinds
 
 trait PsiParsecCore {
 
-  def pure[A](f: => A): Psi[A] = Psi(_ => f)
+  def ppure[A](a: A): Psi[A] = Psi(_ => a)
 
-  val rUnit: Psi[Unit] = pure(())
-  val rFalse: Psi[Boolean] = pure(false)
-  val rTrue: Psi[Boolean] = pure(true)
+  val rUnit: Psi[Unit] = ppure(())
+  val rFalse: Psi[Boolean] = ppure(false)
+  val rTrue: Psi[Boolean] = ppure(true)
   def rNone[A]: Psi[Option[A]] = _rNone.asInstanceOf[Psi[Option[A]]]
 
   // Cached value for rNone.
-  private val _rNone: Psi[None.type] = pure(None)
+  private val _rNone: Psi[None.type] = ppure(None)
 
   /**
     * Useful for inspecting a combinator, particularly for inserting a
@@ -84,7 +84,7 @@ trait PsiParsecCore {
     p.flatMap(b => error(msg).whenM(!b))
 
   def maybeAdvance(p: Psi[Boolean]): Psi[Boolean] =
-    p.flatMap(b => advanceLexer.whenM(b) *> pure(b))
+    p.flatMap(b => advanceLexer.whenM(b) *> ppure(b))
 
   def advanceWhile(p: Psi[Boolean])(b: Psi[Unit]): Psi[Unit] =
     (b *> advanceLexer).whileM_(for {
@@ -97,6 +97,9 @@ trait PsiParsecCore {
   /** Run parser until eof is reached. */
   def pforever(p: Psi[Unit]): Psi[Unit] =
     Psi(b => while (!b.eof()) p.run(b))
+
+  def pwhile(c: Psi[Boolean])(p: Psi[Unit]): Psi[Unit] =
+    Psi(b => while (c.run(b)) p.run(b))
 
   def pany(ps: Psi[Boolean]*): Psi[Boolean] =
     Psi(b => ps.exists(_.run(b)))

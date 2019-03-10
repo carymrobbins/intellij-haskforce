@@ -1,0 +1,28 @@
+HASKELL_FILE
+  PsiErrorElement:Expected 'module' but got: {-#
+    <empty list>
+  UNKNOWN
+    PsiElement({-#)('{-#')
+    PsiElement(PRAGMA)('LANGUAGE')
+    PsiElement(PRAGMA)('QuasiQuotes')
+    PsiElement(#-})('#-}')
+  UNKNOWN
+    PsiElement(module)('module')
+    PsiElement(conidRegexp)('TempHask00003')
+    PsiElement(where)('where')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('str')
+    PsiElement(::)('::')
+    PsiElement(conidRegexp)('String')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('str')
+    PsiElement(=)('=')
+    PsiElement(Quasi-[)('[')
+    PsiElement(varidRegexp)('here')
+    PsiElement(|)('|')
+    PsiElement(Quasi-stuff)('test\ntest\ntest test ')
+    PsiElement(|])('|]')

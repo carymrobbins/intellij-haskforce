@@ -1,0 +1,34 @@
+HASKELL_FILE
+  MODULE_DECL
+    PsiElement(module)('module')
+    MODULE_NAME
+      PsiElement(conidRegexp)('Comment00008')
+    PsiElement(where)('where')
+  UNKNOWN
+    PsiElement(()('(')
+    PsiElement(VarsymPlus)('--*')
+    PsiElement())(')')
+    PsiElement(::)('::')
+    PsiElement(conidRegexp)('Int')
+    PsiElement(->)('->')
+    PsiElement(conidRegexp)('Int')
+    PsiElement(->)('->')
+    PsiElement(conidRegexp)('Int')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('a')
+    PsiElement(VarsymPlus)('--*')
+    PsiElement(varidRegexp)('b')
+    PsiElement(=)('=')
+    PsiElement(()('(')
+    PsiElement(varidRegexp)('a')
+    PsiElement(-)('-')
+    PsiElement(varidRegexp)('b')
+    PsiElement())(')')
+    PsiElement(*)('*')
+    PsiElement(()('(')
+    PsiElement(varidRegexp)('b')
+    PsiElement(-)('-')
+    PsiElement(varidRegexp)('a')
+    PsiElement())(')')

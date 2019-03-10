@@ -1,0 +1,52 @@
+HASKELL_FILE
+  MODULE_DECL
+    PsiElement(module)('module')
+    MODULE_NAME
+      PsiElement(conidRegexp)('Operator00002')
+    PsiErrorElement:Expected where
+      <empty list>
+  UNKNOWN
+    PsiElement(()('(')
+    PsiElement(()('(')
+    PsiElement(conidRegexp)('Prelude')
+    PsiElement(VarsymPlus)('.:->')
+    PsiElement())(')')
+    PsiElement())(')')
+    PsiElement(where)('where')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(import)('import')
+    PsiElement(qualified)('qualified')
+    PsiElement(conidRegexp)('Lib')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('f')
+    PsiElement(varidRegexp)('x')
+    PsiElement(=)('=')
+    PsiElement(case)('case')
+    PsiElement(varidRegexp)('x')
+    PsiElement(of)('of')
+    PsiElement(varidRegexp)('y')
+    PsiElement(Consym)(':->')
+    PsiElement(_)('_')
+    PsiElement(->)('->')
+    PsiElement(varidRegexp)('y')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('f')
+    PsiElement(varidRegexp)('x')
+    PsiElement(=)('=')
+    PsiElement(case)('case')
+    PsiElement(varidRegexp)('x')
+    PsiElement(of)('of')
+    PsiElement(varidRegexp)('y')
+    PsiElement(conidRegexp)('Lib')
+    PsiElement(VarsymPlus)('.:->')
+    PsiElement(_)('_')
+    PsiElement(->)('->')
+    PsiElement(varidRegexp)('y')

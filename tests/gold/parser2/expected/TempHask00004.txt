@@ -1,0 +1,26 @@
+HASKELL_FILE
+  PsiErrorElement:Expected 'module' but got: {-#
+    <empty list>
+  UNKNOWN
+    PsiElement({-#)('{-#')
+    PsiElement(PRAGMA)('LANGUAGE')
+    PsiElement(PRAGMA)('QuasiQuotes')
+    PsiElement(#-})('#-}')
+  UNKNOWN
+    PsiElement(module)('module')
+    PsiElement(conidRegexp)('TempHask00004')
+    PsiElement(where)('where')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('mkYesod')
+    PsiElement(")('"')
+    PsiElement(STRINGTOKEN)('HelloWorld')
+    PsiElement(")('"')
+    PsiElement(Quasi-[)('[')
+    PsiElement(varidRegexp)('parseRoutes')
+    PsiElement(|)('|')
+  UNKNOWN
+    PsiElement(Quasi-stuff)('\n/ HomeR GET\n')
+  UNKNOWN
+    PsiElement(|])('|]')

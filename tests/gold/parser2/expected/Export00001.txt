@@ -1,0 +1,32 @@
+HASKELL_FILE
+  MODULE_DECL
+    PsiElement(module)('module')
+    MODULE_NAME
+      PsiElement(conidRegexp)('Export00001')
+    PsiErrorElement:Expected where
+      <empty list>
+  UNKNOWN
+    PsiElement(()('(')
+    PsiElement(()('(')
+    PsiElement(conidRegexp)('Prelude')
+    PsiElement(VarsymPlus)('.$')
+    PsiElement())(')')
+    PsiElement(,)(',')
+    PsiElement(()('(')
+    PsiElement(conidRegexp)('Prelude')
+    PsiElement(VarsymPlus)('.$!')
+    PsiElement())(')')
+    PsiElement(,)(',')
+    PsiElement(()('(')
+    PsiElement(conidRegexp)('Control')
+    PsiElement(.)('.')
+    PsiElement(conidRegexp)('Category')
+    PsiElement(..)('..')
+    PsiElement())(')')
+    PsiElement(,)(',')
+    PsiElement(conidRegexp)('Prelude')
+    PsiElement(.)('.')
+    PsiElement(varidRegexp)('not')
+    PsiElement())(')')
+  UNKNOWN
+    PsiElement(where)('where')

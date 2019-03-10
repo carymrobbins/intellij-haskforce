@@ -1,0 +1,51 @@
+HASKELL_FILE
+  MODULE_DECL
+    PsiElement(module)('module')
+    MODULE_NAME
+      PsiElement(conidRegexp)('Case00001')
+    PsiElement(where)('where')
+    PsiComment(comment)('-- Ensure broken case expressions don't break the parser.\n')
+  UNKNOWN
+    PsiElement(varidRegexp)('connect')
+    PsiElement(::)('::')
+    PsiElement(conidRegexp)('Maybe')
+    PsiElement(conidRegexp)('String')
+    PsiElement(->)('->')
+    PsiElement(conidRegexp)('IO')
+    PsiElement(conidRegexp)('Pool')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('connect')
+    PsiElement(varidRegexp)('ehost')
+    PsiElement(=)('=')
+    PsiElement(do)('do')
+    PsiElement(varidRegexp)('etcd')
+    PsiElement(<-)('<-')
+    PsiElement(case)('case')
+    PsiElement(varidRegexp)('ehost')
+    PsiElement(of)('of')
+    PsiElement(conidRegexp)('Just')
+    PsiElement(varidRegexp)('h')
+    PsiElement(->)('->')
+    PsiElement(varidRegexp)('createClient')
+    PsiElement([)('[')
+    PsiElement(varidRegexp)('h')
+    PsiElement(])(']')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('connect'')
+    PsiElement(varidRegexp)('ehost')
+    PsiElement(=)('=')
+    PsiElement(do)('do')
+    PsiElement(varidRegexp)('etcd')
+    PsiElement(<-)('<-')
+    PsiElement(case)('case')
+    PsiElement(varidRegexp)('ehost')
+    PsiElement(of)('of')
+    PsiElement(conidRegexp)('Just')

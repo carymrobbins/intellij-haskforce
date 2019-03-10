@@ -1,0 +1,42 @@
+HASKELL_FILE
+  MODULE_DECL
+    PsiElement(module)('module')
+    MODULE_NAME
+      PsiElement(conidRegexp)('FFI00001')
+    PsiElement(where)('where')
+  FOREIGN_IMPORT
+    PsiElement(foreign)('foreign')
+    PsiElement(import)('import')
+    PsiElement(varidRegexp)('ccall')
+    PsiElement(varidRegexp)('unsafe')
+    STRING_LIT
+      PsiElement(")('"')
+      PsiElement(STRINGTOKEN)('wool-common.h wool_init')
+      PsiElement(")('"')
+    PsiElement(varidRegexp)('initWool')
+    PsiElement(::)('::')
+    TYPE_EXPR
+      UNKNOWN
+        PsiElement(conidRegexp)('CInt')
+        PsiElement(->)('->')
+        PsiElement(conidRegexp)('Ptr')
+        PsiElement(conidRegexp)('CString')
+        PsiElement(->)('->')
+        PsiElement(conidRegexp)('IO')
+        PsiElement(conidRegexp)('CInt')
+  UNKNOWN
+    <empty list>
+  FOREIGN_EXPORT
+    PsiElement(foreign)('foreign')
+    PsiElement(export)('export')
+    PsiElement(varidRegexp)('ccall')
+    PsiElement(varidRegexp)('id')
+    PsiElement(::)('::')
+    TYPE_EXPR
+      UNKNOWN
+        PsiElement(conidRegexp)('Int')
+        PsiElement(->)('->')
+        PsiElement(conidRegexp)('Int')
+        PsiElement(->)('->')
+        PsiElement(conidRegexp)('IO')
+        PsiElement(conidRegexp)('CString')

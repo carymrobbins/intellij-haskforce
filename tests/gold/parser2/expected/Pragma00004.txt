@@ -1,0 +1,17 @@
+HASKELL_FILE
+  MODULE_DECL
+    PsiElement(module)('module')
+    MODULE_NAME
+      PsiElement(conidRegexp)('Pragma00004')
+    PsiErrorElement:Expected where
+      <empty list>
+  UNKNOWN
+    PsiElement({-#)('{-#')
+    PsiElement(PRAGMA)('WARNING')
+    PsiElement(PRAGMA)('"This')
+    PsiElement(PRAGMA)('is')
+    PsiElement(PRAGMA)('an')
+    PsiElement(PRAGMA)('unstable')
+    PsiElement(PRAGMA)('interface."')
+    PsiElement(#-})('#-}')
+    PsiElement(where)('where')

@@ -1,18 +1,15 @@
 package com.haskforce.haskell.lang.parser
 
-import com.haskforce.haskell.lang.lexer.HaskellParsingLexer2
 import com.haskforce.haskell.lang.lexer.psi.LexerToken
 import com.haskforce.haskell.lang.lexer.psi.Tokens._
 import com.haskforce.haskell.lang.parser.psi.Elements._
 import com.haskforce.haskell.lang.parser.psi.ParserElement
-import com.haskforce.utils.parser.parsec.Psi
-import com.haskforce.utils.parser.parsec.{PsiParsecTypedElements => PPTyped}
-import com.haskforce.utils.parser.parsec.{PsiParsecUntypedElements => PPUntyped}
-import com.intellij.lang.impl.PsiBuilderImpl
+import com.haskforce.utils.parser.parsec.{Psi, PsiParsecTypedElements => PPTyped, PsiParsecUntypedElements => PPUntyped}
 import com.intellij.lang.{ASTNode, PsiBuilder, PsiParser}
-import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.tree.IElementType
 import scalaz.syntax.monad._
+
+import scala.annotation.tailrec
 
 final class HaskellParser2 extends PsiParser {
 
@@ -30,24 +27,16 @@ object HaskellParser2Parsec extends PPTyped[LexerToken, ParserElement] {
 
   type P0 = Psi[Unit]
 
-  private def atCol0(b: PsiBuilder): Boolean = {
-    val offset = b.getCurrentOffset - 1
-    if (offset < 0) return true
-    val c = b.getOriginalText.charAt(offset)
-    c == '\n' || c == '\r'
-  }
-
-  // Wow...this is...very...nice?
-  val consumeUntilCol0: P0 =
-    Psi(b =>
-      while (!b.eof() && !atCol0(b)) {
-        b.advanceLexer()
-      }
-    )
+  // Consume until we encounter a token at column 1. This will allow us
+  // to make the parser more recoverable and continue parsing even with
+  // bad input.
+  val consumeUntilLineStart: P0 =
+    Psi(b => while (!b.eof() && !atLineStart(b)) b.advanceLexer())
 
   val pUnknown: P0 =
     punlessM_(eof)(markStart(
-      consumeUntilCol0
+      advanceLexer
+        *> consumeUntilLineStart
         *> markDone(UNKNOWN)
     ))
 
@@ -58,7 +47,7 @@ object HaskellParser2Parsec extends PPTyped[LexerToken, ParserElement] {
   )
 
   // Returns an Option[OpenBraceType]
-  val pModule: Psi[Option[LexerToken]] =
+  val pModuleDecl: Psi[Option[LexerToken]] =
     getTokenType >>= {
       case Some(MODULETOKEN) =>
         markStart(for {
@@ -67,7 +56,7 @@ object HaskellParser2Parsec extends PPTyped[LexerToken, ParserElement] {
           _ <- expectTokenAdvance(WHERE)
           optOpenBrace <- getTokenType >>= [Option[LexerToken]] {
             case ot@(None | Some(LBRACE | WHITESPACELBRACETOK)) =>
-              advanceLexer *> pure(ot)
+              advanceLexer *> ppure(ot)
             case Some(t) =>
               error(s"Unexpected token after module decl: $t") *> rNone
           }
@@ -79,8 +68,19 @@ object HaskellParser2Parsec extends PPTyped[LexerToken, ParserElement] {
         ) *> rNone
     }
 
+  val pQConId: Psi[Boolean] =
+    whenTokenIs(CONIDREGEXP)(
+      markStart(
+        advanceLexer
+          *> pwhile(lookAheadManyIs(PERIOD, CONIDREGEXP))(
+               times(advanceLexer, 2)
+             )
+          *> markDone(QCONID)
+      )
+    )
+
   val pImportModule: P0 = markStart(
-    pif(maybeTokenOneOfAdvance(CONIDREGEXP))
+    pif(pQConId)
       .pthen(markDone(IMPORT_MODULE))
       .pelse(markError("Missing import module"))
   )
@@ -89,7 +89,7 @@ object HaskellParser2Parsec extends PPTyped[LexerToken, ParserElement] {
     getTokenType.map(_.contains(LPAREN)).flatMap(hasParen =>
          advanceLexer.whenM(hasParen)
       >> withTokenType(t =>
-           pif(pure(List(CONIDREGEXP, VARIDREGEXP).contains(t))).pthen(
+           pif(ppure(List(CONIDREGEXP, VARIDREGEXP).contains(t))).pthen(
                   markStart(advanceLexer >> markDone(node))
                >> pImportCtorsOrMethods(node)
              ).pelse(error("Invalid explicit import; expected id, constructor, or symbol"))
@@ -115,9 +115,9 @@ object HaskellParser2Parsec extends PPTyped[LexerToken, ParserElement] {
   def pImportNames(node: ParserElement): P0 = {
 
     lazy val loop: P0 = getTokenType.flatMap(mt =>
-      if (mt.contains(LPAREN)) advanceLexer
+      if (mt.contains(RPAREN)) advanceLexer
       else if (mt.contains(COMMA)) advanceLexer >> pImportName(node) >> loop
-      else error("Expected close parent or comma in explicit name import")
+      else error("Expected close paren or comma in explicit name import")
     )
 
     getTokenType.flatMap(mt =>
@@ -126,7 +126,7 @@ object HaskellParser2Parsec extends PPTyped[LexerToken, ParserElement] {
     )
   }
 
-  val pImport: P0 = markStart(
+  val pImportStmt: P0 = markStart(
        advanceLexer
     >> whenTokenIs(_ == QUALIFIED)(advanceLexer)
     >> pImportModule
@@ -153,21 +153,15 @@ object HaskellParser2Parsec extends PPTyped[LexerToken, ParserElement] {
            >> markDone(IMPORT_HIDDENS)
          )
        )
-    >> markDone(IMPORT_MODULE)
+    >> markDone(IMPORT_STMT)
   )
 
-  val pImports: P0 = {
-    lazy val loop: P0 = (
-      pImport
-      >> whenTokenIs_(_ == SEMICOLON)(advanceLexer)
-      >> whenTokenIs_(_ == IMPORT)(loop)
-    )
-
+  val pImportList: P0 =
     whenTokenIs_(_ == IMPORT)(markStart(
-         loop
-      >> markDone(IMPORT_LIST)
+      pwhile(isTokenType(IMPORT))(
+        pImportStmt *> maybeTokenAdvance_(WHITESPACESEMITOK)
+      ) *> markDone(IMPORT_LIST)
     ))
-  }
 
   val pType: P0 = // TODO
     markStart(pUnknown *> markDone(TYPE_EXPR))
@@ -181,25 +175,52 @@ object HaskellParser2Parsec extends PPTyped[LexerToken, ParserElement] {
     )
   )
 
-  val pForeignImport: Psi[Boolean] =
-    inspect(b =>
-      lookAheadMany(2) >>= (ts =>
-        pwhen(ts == List(FOREIGN, IMPORT))(
-          markStart(
-            times(advanceLexer, 2)
-              *> many_(VARIDREGEXP)
-              *> (pStringLit >>= (if (_) expectTokenAdvance(VARIDREGEXP) else rUnit))
-              *> expectTokenAdvance(DOUBLECOLON)
-              *> pType
-              *> markDone(FOREIGN_IMPORT)
-          )
-        )
+  val pForeignDecl: Psi[Boolean] =
+    whenTokenIs(FOREIGN)(
+      markStart(
+        advanceLexer *> getTokenText.flatMap { optForeignType =>
+          val optResultNode = optForeignType match {
+            case Some("import") => Some(FOREIGN_IMPORT)
+            case Some("export") => Some(FOREIGN_EXPORT)
+            case _              => None
+          }
+          optResultNode match {
+            case None =>
+              (consumeUntilLineStart
+                *> markError("Expected import or export after 'foreign'"))
+            case Some(resultNode) =>
+              (advanceLexer
+                *> many_(VARIDREGEXP)
+                *> (pStringLit >>= (if (_) expectTokenAdvance(VARIDREGEXP) else rUnit))
+                *> expectTokenAdvance(DOUBLECOLON)
+                *> pType
+                *> markDone(resultNode))
+          }
+        }
       )
     )
 
+//  def pForeignDecl(importOrExport: LexerToken, node: ParserElement): Psi[Boolean] =
+//    lookAheadMany(2) >>= (ts =>
+//      pwhen(ts == List(FOREIGN, importOrExport))(
+//        markStart(
+//          times(advanceLexer, 2)
+//            *> many_(VARIDREGEXP)
+//            *> (pStringLit >>= (if (_) expectTokenAdvance(VARIDREGEXP) else rUnit))
+//            *> expectTokenAdvance(DOUBLECOLON)
+//            *> pType
+//            *> markDone(node)
+//        )
+//      )
+//    )
+//
+//  val pForeignImport: Psi[Boolean] = pForeignDecl(IMPORT, FOREIGN_IMPORT)
+//
+//  val pForeignExport: Psi[Boolean] = pForeignDecl(EXPORT, FOREIGN_EXPORT)
+
   val pTopDecl: Psi[Boolean] =
     pany(
-      pForeignImport
+      pForeignDecl
     )
 
   val body: P0 = pforever(pTopDecl >>= (matched =>
@@ -207,8 +228,39 @@ object HaskellParser2Parsec extends PPTyped[LexerToken, ParserElement] {
   ))
 
   val file: P0 = (
-    pModule
-    >> pImports
+    pModuleDecl
+    >> pImportList
     >> body
   )
+
+  // I'm surprised this isn't easier to get from the lexer.
+  // I've tried (essentially) b.getLexer.getFlex.yycolumn and it
+  // seems the lexer is done and yycolumn never changes (it's just stuck
+  // at whatever its last state was at the end of lexing).
+  private def getColumn(s: CharSequence, offset: Int): Int = {
+    @tailrec
+    def loop(col: Int, index: Int): Int = {
+      if (index == -1) return 1
+      val c = s.charAt(index)
+      if (c == '\n' || c == '\r') return col
+      loop(col + 1, index - 1)
+    }
+    loop(0, offset)
+  }
+
+  private def atLineStart(b: PsiBuilder): Boolean =
+    atLineStart(b.getOriginalText, b.getCurrentOffset)
+
+  // Slightly more optimized way of determining if we're at the start of a line,
+  // i.e. either on a newline or char 1 of the line.
+  private def atLineStart(s: CharSequence, offset: Int): Boolean = {
+    // Correct an offset which has exceeded the length of the input string.
+    val i = Math.min(offset, s.length - 1)
+    if (i == 0) return true
+    val c1 = s.charAt(i)
+    if (c1 == '\n' || c1 == '\r') return true
+    val c0 = s.charAt(i - 1)
+    if (c0 == '\n' || c0 == '\r') return true
+    false
+  }
 }

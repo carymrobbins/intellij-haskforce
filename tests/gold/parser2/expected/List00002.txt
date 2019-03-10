@@ -1,0 +1,15 @@
+HASKELL_FILE
+  MODULE_DECL
+    PsiElement(module)('module')
+    MODULE_NAME
+      PsiElement(conidRegexp)('List00002')
+    PsiElement(where)('where')
+  UNKNOWN
+    PsiElement(varidRegexp)('main')
+    PsiElement(=)('=')
+    PsiElement(varidRegexp)('print')
+    PsiElement([)('[')
+    PsiElement(integertoken)('1')
+    PsiElement(,)(',')
+    PsiElement(integertoken)('2')
+    PsiElement(])(']')

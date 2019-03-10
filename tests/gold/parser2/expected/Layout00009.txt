@@ -1,0 +1,15 @@
+HASKELL_FILE
+  MODULE_DECL
+    PsiElement(module)('module')
+    MODULE_NAME
+      PsiElement(conidRegexp)('Layout00009')
+    PsiElement(where)('where')
+  UNKNOWN
+    PsiElement(varidRegexp)('xs')
+    PsiElement(=)('=')
+    PsiElement([)('[')
+    PsiElement(")('"')
+    PsiElement(STRINGTOKEN)('foo')
+    PsiElement(")('"')
+    PsiElement(,)(',')
+    PsiElement(])(']')

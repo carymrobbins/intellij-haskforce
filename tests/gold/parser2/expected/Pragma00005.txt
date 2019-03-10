@@ -1,0 +1,10 @@
+HASKELL_FILE
+  PsiErrorElement:Expected 'module' but got: {-#
+    <empty list>
+  UNKNOWN
+    PsiElement({-#)('{-#')
+    PsiElement(PRAGMA)('OPTIONS_GHC')
+    PsiElement(PRAGMA)('-F')
+    PsiElement(PRAGMA)('-pgmF')
+    PsiElement(PRAGMA)('hspec-discover')
+    PsiElement(#-})('#-}')

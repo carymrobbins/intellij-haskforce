@@ -1,0 +1,57 @@
+HASKELL_FILE
+  MODULE_DECL
+    PsiElement(module)('module')
+    MODULE_NAME
+      PsiElement(conidRegexp)('Layout00018')
+    PsiElement(where)('where')
+  UNKNOWN
+    PsiElement(varidRegexp)('getDB')
+    PsiElement(::)('::')
+    PsiElement([)('[')
+    PsiElement(conidRegexp)('String')
+    PsiElement(])(']')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('getDB')
+    PsiElement(=)('=')
+    PsiElement(varidRegexp)('return')
+    PsiElement(varidRegexp)('dirs')
+    PsiElement(where)('where')
+    PsiElement(varidRegexp)('local')
+    PsiElement(=)('=')
+    PsiElement(do)('do')
+    PsiElement(varidRegexp)('maybe')
+    PsiElement(()('(')
+    PsiElement(varidRegexp)('return')
+    PsiElement([)('[')
+    PsiElement(])(']')
+    PsiElement())(')')
+    PsiElement(varidRegexp)('f')
+    PsiElement(()('(')
+    PsiElement(varidRegexp)('maybeHasLibs')
+    PsiElement(varidRegexp)('flatten')
+    PsiElement())(')')
+  UNKNOWN
+    PsiElement({-#)('{-#')
+    PsiElement(PRAGMA)('NOINLINE')
+    PsiElement(PRAGMA)('getDB')
+    PsiElement(#-})('#-}')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('f')
+    PsiElement(::)('::')
+    PsiElement(conidRegexp)('String')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('f')
+    PsiElement(=)('=')
+    PsiElement(")('"')
+    PsiElement(STRINGTOKEN)('Hello')
+    PsiElement(")('"')

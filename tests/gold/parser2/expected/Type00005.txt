@@ -1,0 +1,112 @@
+HASKELL_FILE
+  PsiErrorElement:Expected 'module' but got: {-#
+    <empty list>
+  UNKNOWN
+    PsiElement({-#)('{-#')
+    PsiElement(PRAGMA)('LANGUAGE')
+    PsiElement(PRAGMA)('DataKinds,')
+    PsiElement(PRAGMA)('TypeFamilies')
+    PsiElement(#-})('#-}')
+  UNKNOWN
+    PsiElement(module)('module')
+    PsiElement(conidRegexp)('Main')
+    PsiElement(where)('where')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(type)('type')
+    PsiElement(family)('family')
+    PsiElement(conidRegexp)('F')
+    PsiElement(varidRegexp)('a')
+    PsiElement(where)('where')
+    PsiElement(conidRegexp)('F')
+    PsiElement(conidRegexp)('Int')
+    PsiElement(=)('=')
+    PsiElement(conidRegexp)('Bool')
+    PsiElement(conidRegexp)('F')
+    PsiElement(conidRegexp)('Bool')
+    PsiElement(=)('=')
+    PsiElement(conidRegexp)('Char')
+    PsiElement(conidRegexp)('F')
+    PsiElement(varidRegexp)('a')
+    PsiElement(=)('=')
+    PsiElement(conidRegexp)('Bool')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(type)('type')
+    PsiElement(family)('family')
+    PsiElement(conidRegexp)('And')
+    PsiElement(()('(')
+    PsiElement(varidRegexp)('a')
+    PsiElement(::)('::')
+    PsiElement(conidRegexp)('Bool')
+    PsiElement())(')')
+    PsiElement(()('(')
+    PsiElement(varidRegexp)('b')
+    PsiElement(::)('::')
+    PsiElement(conidRegexp)('Bool')
+    PsiElement())(')')
+    PsiElement(::)('::')
+    PsiElement(conidRegexp)('Bool')
+    PsiElement(where)('where')
+    PsiElement(conidRegexp)('And')
+    PsiElement(conidRegexp)('False')
+    PsiElement(varidRegexp)('c')
+    PsiElement(=)('=')
+    PsiElement(conidRegexp)('False')
+    PsiElement(conidRegexp)('And')
+    PsiElement(conidRegexp)('True')
+    PsiElement(varidRegexp)('d')
+    PsiElement(=)('=')
+    PsiElement(varidRegexp)('d')
+    PsiElement(conidRegexp)('And')
+    PsiElement(varidRegexp)('e')
+    PsiElement(conidRegexp)('False')
+    PsiElement(=)('=')
+    PsiElement(conidRegexp)('False')
+    PsiElement(conidRegexp)('And')
+    PsiElement(varidRegexp)('f')
+    PsiElement(conidRegexp)('True')
+    PsiElement(=)('=')
+    PsiElement(varidRegexp)('f')
+    PsiElement(conidRegexp)('And')
+    PsiElement(varidRegexp)('g')
+    PsiElement(varidRegexp)('g')
+    PsiElement(=)('=')
+    PsiElement(varidRegexp)('g')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(type)('type')
+    PsiElement(family)('family')
+    PsiElement(conidRegexp)('G')
+    PsiElement(varidRegexp)('a')
+    PsiElement(where)('where')
+    PsiElement(conidRegexp)('G')
+    PsiElement(varidRegexp)('a')
+    PsiElement(=)('=')
+    PsiElement(conidRegexp)('()')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('main')
+    PsiElement(::)('::')
+    PsiElement(conidRegexp)('IO')
+    PsiElement(()('(')
+    PsiElement(conidRegexp)('G')
+    PsiElement(conidRegexp)('()')
+    PsiElement())(')')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('main')
+    PsiElement(=)('=')
+    PsiElement(varidRegexp)('return')
+    PsiElement(conidRegexp)('()')

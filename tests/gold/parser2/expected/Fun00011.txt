@@ -1,0 +1,184 @@
+HASKELL_FILE
+  PsiErrorElement:Expected 'module' but got: {-#
+    <empty list>
+  UNKNOWN
+    PsiElement({-#)('{-#')
+    PsiElement(PRAGMA)('LANGUAGE')
+    PsiElement(PRAGMA)('LambdaCase')
+    PsiElement(#-})('#-}')
+  UNKNOWN
+    PsiElement({-#)('{-#')
+    PsiElement(PRAGMA)('LANGUAGE')
+    PsiElement(PRAGMA)('MultiWayIf')
+    PsiElement(#-})('#-}')
+  UNKNOWN
+    PsiElement({-#)('{-#')
+    PsiElement(PRAGMA)('LANGUAGE')
+    PsiElement(PRAGMA)('RecursiveDo')
+    PsiElement(#-})('#-}')
+  UNKNOWN
+    PsiElement({-#)('{-#')
+    PsiElement(PRAGMA)('LANGUAGE')
+    PsiElement(PRAGMA)('ImplicitParams')
+    PsiElement(#-})('#-}')
+  UNKNOWN
+    PsiElement({-#)('{-#')
+    PsiElement(PRAGMA)('LANGUAGE')
+    PsiElement(PRAGMA)('DataKinds')
+    PsiElement(#-})('#-}')
+  UNKNOWN
+    PsiElement(module)('module')
+    PsiElement(conidRegexp)('Fun00011')
+    PsiElement(where)('where')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(data)('data')
+    PsiElement(conidRegexp)('ICon')
+    PsiElement(varidRegexp)('a')
+    PsiElement(=)('=')
+    PsiElement(varidRegexp)('a')
+    PsiElement(Consym)(':>')
+    PsiElement(varidRegexp)('b')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('f')
+    PsiElement(::)('::')
+    PsiElement([)('[')
+    PsiElement(])(']')
+    PsiElement(->)('->')
+    PsiElement(conidRegexp)('()')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('f')
+    PsiElement(=)('=')
+    PsiElement(varidRegexp)('undefined')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('g')
+    PsiElement(::)('::')
+    PsiElement(varidRegexp)('a')
+    PsiElement(()('(')
+    PsiElement(->)('->')
+    PsiElement())(')')
+    PsiElement(varidRegexp)('b')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('g')
+    PsiElement(=)('=')
+    PsiElement(varidRegexp)('foo')
+    PsiElement(VarsymPlus)('>>=')
+    PsiElement(\case)('\case')
+    PsiElement(conidRegexp)('Just')
+    PsiElement(varidRegexp)('x')
+    PsiElement(->)('->')
+    PsiElement(varidRegexp)('x')
+    PsiElement(conidRegexp)('Nothing')
+    PsiElement(->)('->')
+    PsiElement(integertoken)('12')
+  PsiComment({-)('{-')
+  PsiComment(commenttext)(' FIXME: Add support for MultiWayIf.\nh = if | True ')
+  PsiComment(commenttext)('-')
+  PsiComment(commenttext)('> 12\n       | False ')
+  PsiComment(commenttext)('-')
+  PsiComment(commenttext)('> 9\n')
+  PsiComment(-})('-}')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('i')
+    PsiElement(=)('=')
+    PsiElement(mdo)('mdo')
+    PsiElement(integertoken)('7')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('sort')
+    PsiElement(::)('::')
+    PsiElement(()('(')
+    PsiElement(?)('?')
+    PsiElement(varidRegexp)('cmp')
+    PsiElement(::)('::')
+    PsiElement(varidRegexp)('a')
+    PsiElement(->)('->')
+    PsiElement(varidRegexp)('a')
+    PsiElement(->)('->')
+    PsiElement(conidRegexp)('Bool')
+    PsiElement())(')')
+    PsiElement(=>)('=>')
+    PsiElement([)('[')
+    PsiElement(varidRegexp)('a')
+    PsiElement(])(']')
+    PsiElement(->)('->')
+    PsiElement([)('[')
+    PsiElement(varidRegexp)('a')
+    PsiElement(])(']')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('sort')
+    PsiElement(=)('=')
+    PsiElement(varidRegexp)('sortBy')
+    PsiElement(?)('?')
+    PsiElement(varidRegexp)('cmp')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('clearPage')
+    PsiElement(::)('::')
+    PsiElement(conidRegexp)('ArrPtr')
+    PsiElement(integertoken)('4096')
+    PsiElement(conidRegexp)('Word8')
+    PsiElement(->)('->')
+    PsiElement(conidRegexp)('IO')
+    PsiElement(conidRegexp)('()')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('clearPage')
+    PsiElement(()('(')
+    PsiElement(conidRegexp)('ArrPtr')
+    PsiElement(varidRegexp)('p')
+    PsiElement())(')')
+    PsiElement(=)('=')
+    PsiElement(varidRegexp)('undefined')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(instance)('instance')
+    PsiElement(conidRegexp)('Has')
+    PsiElement(conidRegexp)('Point')
+    PsiElement(")('"')
+    PsiElement(STRINGTOKEN)('x')
+    PsiElement(")('"')
+    PsiElement(conidRegexp)('Int')
+    PsiElement(where)('where')
+    PsiElement(varidRegexp)('from')
+    PsiElement(()('(')
+    PsiElement(conidRegexp)('Point')
+    PsiElement(varidRegexp)('x')
+    PsiElement(_)('_')
+    PsiElement())(')')
+    PsiElement(_)('_')
+    PsiElement(=)('=')
+    PsiElement(varidRegexp)('x')
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    <empty list>
+  UNKNOWN
+    PsiElement(varidRegexp)('y1')
+    PsiElement(=)('=')
+    PsiElement(varidRegexp)('undefined')
+    PsiElement(::)('::')
+    PsiElement(conidRegexp)('Y')
+    PsiElement(')(''')
+    PsiElement(conidRegexp)('()')

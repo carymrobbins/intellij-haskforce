@@ -1,0 +1,23 @@
+HASKELL_FILE
+  MODULE_DECL
+    PsiElement(module)('module')
+    MODULE_NAME
+      PsiElement(conidRegexp)('ViewPatterns00001')
+    PsiElement(where)('where')
+  UNKNOWN
+    PsiElement(varidRegexp)('f')
+    PsiElement(=)('=')
+    PsiElement(\case)('\case')
+    PsiElement(conidRegexp)('Foo')
+    PsiElement(varidRegexp)('y')
+    PsiElement(@)('@')
+    PsiElement(varidRegexp)('z')
+    PsiElement(()('(')
+    PsiElement(conidRegexp)('T')
+    PsiElement(.)('.')
+    PsiElement(varidRegexp)('length')
+    PsiElement(->)('->')
+    PsiElement(varidRegexp)('n')
+    PsiElement())(')')
+    PsiElement(->)('->')
+    PsiElement(varidRegexp)('n')
