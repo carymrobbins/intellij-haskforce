@@ -14,5 +14,6 @@ HASKELL_FILE
           PsiElement(conidRegexp)('ByteString')
           PsiElement(.)('.')
           PsiElement(conidRegexp)('Char8')
-  UNKNOWN
-    PsiElement(conidRegexp)('()')
+  BODY
+    UNKNOWN
+      PsiElement(conidRegexp)('()')

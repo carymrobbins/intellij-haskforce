@@ -15,7 +15,8 @@ HASKELL_FILE
       PsiElement(()('(')
       IMPORT_EXPLICITS
         PsiElement(()('(')
-  UNKNOWN
-    PsiElement(VarsymPlus)('===>')
-    PsiElement())(')')
-    PsiElement())(')')
+  BODY
+    UNKNOWN
+      PsiElement(VarsymPlus)('===>')
+      PsiElement())(')')
+      PsiElement())(')')

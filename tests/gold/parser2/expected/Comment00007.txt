@@ -1,19 +1,20 @@
 HASKELL_FILE
   PsiErrorElement:Expected 'module' but got: Synthetic shebang start "#!"
     <empty list>
-  UNKNOWN
-    PsiElement(Synthetic shebang start "#!")('#!')
-    PsiElement(Synthetic shebang path)('/usr/bin/env runhaskell')
-  UNKNOWN
-    PsiElement(module)('module')
-    PsiElement(conidRegexp)('Comment00007')
-    PsiElement(where)('where')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(varidRegexp)('main')
-    PsiElement(=)('=')
-    PsiElement(varidRegexp)('putStrLn')
-    PsiElement(")('"')
-    PsiElement(STRINGTOKEN)('shebang!')
-    PsiElement(")('"')
+  BODY
+    UNKNOWN
+      PsiElement(Synthetic shebang start "#!")('#!')
+      PsiElement(Synthetic shebang path)('/usr/bin/env runhaskell')
+    UNKNOWN
+      PsiElement(module)('module')
+      PsiElement(conidRegexp)('Comment00007')
+      PsiElement(where)('where')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(varidRegexp)('main')
+      PsiElement(=)('=')
+      PsiElement(varidRegexp)('putStrLn')
+      PsiElement(")('"')
+      PsiElement(STRINGTOKEN)('shebang!')
+      PsiElement(")('"')

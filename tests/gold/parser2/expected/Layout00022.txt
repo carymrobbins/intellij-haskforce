@@ -5,11 +5,12 @@ HASKELL_FILE
       PsiElement(conidRegexp)('Layout00022')
     PsiElement(where)('where')
     PsiComment(comment)('-- We don't want to parse the following as a shebang.\n')
-  UNKNOWN
-    PsiElement(varidRegexp)('x')
-    PsiElement(VarsymPlus)('#!')
-    PsiElement(varidRegexp)('y')
-    PsiElement(=)('=')
-    PsiElement(varidRegexp)('x')
-    PsiElement(*)('*')
-    PsiElement(varidRegexp)('y')
+  BODY
+    UNKNOWN
+      PsiElement(varidRegexp)('x')
+      PsiElement(VarsymPlus)('#!')
+      PsiElement(varidRegexp)('y')
+      PsiElement(=)('=')
+      PsiElement(varidRegexp)('x')
+      PsiElement(*)('*')
+      PsiElement(varidRegexp)('y')

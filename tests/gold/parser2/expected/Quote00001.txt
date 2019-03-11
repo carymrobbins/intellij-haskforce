@@ -4,13 +4,14 @@ HASKELL_FILE
     MODULE_NAME
       PsiElement(conidRegexp)('Quote00001')
     PsiElement(where)('where')
-  UNKNOWN
-    PsiElement(varidRegexp)('f')
-    PsiElement(=)('=')
-    PsiElement(varidRegexp)('map')
-    PsiElement(()('(')
-    PsiElement(`)('`')
-    PsiElement(conidRegexp)('Declaration')
-    PsiElement(`)('`')
-    PsiElement(conidRegexp)('Nothing')
-    PsiElement())(')')
+  BODY
+    UNKNOWN
+      PsiElement(varidRegexp)('f')
+      PsiElement(=)('=')
+      PsiElement(varidRegexp)('map')
+      PsiElement(()('(')
+      PsiElement(`)('`')
+      PsiElement(conidRegexp)('Declaration')
+      PsiElement(`)('`')
+      PsiElement(conidRegexp)('Nothing')
+      PsiElement())(')')

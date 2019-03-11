@@ -1,83 +1,88 @@
 HASKELL_FILE
-  PsiErrorElement:Expected 'module' but got: {-#
-    <empty list>
-  UNKNOWN
+  PRAGMA_EXPR
     PsiElement({-#)('{-#')
     PsiElement(PRAGMA)('LANGUAGE')
-    PsiElement(PRAGMA)('KindSignatures')
-    PsiElement(#-})('#-}')
-  UNKNOWN
-    PsiElement({-#)('{-#')
-    PsiElement(PRAGMA)('LANGUAGE')
-    PsiElement(PRAGMA)('EmptyDataDecls')
-    PsiElement(#-})('#-}')
-  UNKNOWN
-    PsiElement({-#)('{-#')
-    PsiElement(PRAGMA)('LANGUAGE')
-    PsiElement(PRAGMA)('TypeOperators')
-    PsiElement(#-})('#-}')
-  UNKNOWN
-    PsiElement({-#)('{-#')
-    PsiElement(PRAGMA)('LANGUAGE')
-    PsiElement(PRAGMA)('UnboxedTuples')
-    PsiElement(#-})('#-}')
-  UNKNOWN
-    PsiElement(module)('module')
-    PsiElement(conidRegexp)('Kind00001')
-    PsiElement(where)('where')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(type)('type')
-    PsiElement(conidRegexp)('Pr')
-    PsiElement(=)('=')
-    PsiElement((#)('(#')
-    PsiElement(conidRegexp)('Int')
-    PsiElement(,)(',')
-    PsiElement(conidRegexp)('Int')
-    PsiElement(#))('#)')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(type)('type')
-    PsiElement(conidRegexp)('T')
-    PsiElement(()('(')
-    PsiElement(varidRegexp)('f')
-    PsiElement(::)('::')
-    PsiElement(*)('*')
-    PsiElement(->)('->')
-    PsiElement(*)('*')
-    PsiElement())(')')
-    PsiElement(=)('=')
-    PsiElement(varidRegexp)('f')
-    PsiElement(conidRegexp)('Int')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(data)('data')
-    PsiElement(conidRegexp)('S')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(data)('data')
-    PsiElement(varidRegexp)('a')
-    PsiElement(Consym)(':*:')
-    PsiElement(varidRegexp)('b')
-    PsiElement(=)('=')
-    PsiElement(conidRegexp)('Foo')
-    PsiElement(varidRegexp)('a')
-    PsiElement(varidRegexp)('b')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(varidRegexp)('x')
-    PsiElement(::)('::')
-    PsiElement(conidRegexp)('Int')
-    PsiElement(Consym)(':*:')
-    PsiElement(conidRegexp)('Bool')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(varidRegexp)('x')
-    PsiElement(=)('=')
-    PsiElement(conidRegexp)('Foo')
+    PRAGMA_LANGS
+      PsiErrorElement:Expected language extension name
+        <empty list>
+    PsiErrorElement:Expected #-}
+      <empty list>
+  BODY
+    UNKNOWN
+      PsiElement(PRAGMA)('KindSignatures')
+      PsiElement(#-})('#-}')
+    UNKNOWN
+      PsiElement({-#)('{-#')
+      PsiElement(PRAGMA)('LANGUAGE')
+      PsiElement(PRAGMA)('EmptyDataDecls')
+      PsiElement(#-})('#-}')
+    UNKNOWN
+      PsiElement({-#)('{-#')
+      PsiElement(PRAGMA)('LANGUAGE')
+      PsiElement(PRAGMA)('TypeOperators')
+      PsiElement(#-})('#-}')
+    UNKNOWN
+      PsiElement({-#)('{-#')
+      PsiElement(PRAGMA)('LANGUAGE')
+      PsiElement(PRAGMA)('UnboxedTuples')
+      PsiElement(#-})('#-}')
+    UNKNOWN
+      PsiElement(module)('module')
+      PsiElement(conidRegexp)('Kind00001')
+      PsiElement(where)('where')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(type)('type')
+      PsiElement(conidRegexp)('Pr')
+      PsiElement(=)('=')
+      PsiElement((#)('(#')
+      PsiElement(conidRegexp)('Int')
+      PsiElement(,)(',')
+      PsiElement(conidRegexp)('Int')
+      PsiElement(#))('#)')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(type)('type')
+      PsiElement(conidRegexp)('T')
+      PsiElement(()('(')
+      PsiElement(varidRegexp)('f')
+      PsiElement(::)('::')
+      PsiElement(*)('*')
+      PsiElement(->)('->')
+      PsiElement(*)('*')
+      PsiElement())(')')
+      PsiElement(=)('=')
+      PsiElement(varidRegexp)('f')
+      PsiElement(conidRegexp)('Int')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(data)('data')
+      PsiElement(conidRegexp)('S')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(data)('data')
+      PsiElement(varidRegexp)('a')
+      PsiElement(Consym)(':*:')
+      PsiElement(varidRegexp)('b')
+      PsiElement(=)('=')
+      PsiElement(conidRegexp)('Foo')
+      PsiElement(varidRegexp)('a')
+      PsiElement(varidRegexp)('b')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(varidRegexp)('x')
+      PsiElement(::)('::')
+      PsiElement(conidRegexp)('Int')
+      PsiElement(Consym)(':*:')
+      PsiElement(conidRegexp)('Bool')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(varidRegexp)('x')
+      PsiElement(=)('=')
+      PsiElement(conidRegexp)('Foo')

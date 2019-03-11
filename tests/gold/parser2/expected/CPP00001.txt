@@ -1,16 +1,21 @@
 HASKELL_FILE
-  PsiErrorElement:Expected 'module' but got: {-#
-    <empty list>
-  UNKNOWN
+  PRAGMA_EXPR
     PsiElement({-#)('{-#')
     PsiElement(PRAGMA)('LANGUAGE')
-    PsiElement(PRAGMA)('CPP')
-    PsiElement(#-})('#-}')
-  UNKNOWN
-    PsiElement(module)('module')
-    PsiElement(conidRegexp)('CPP00001')
-    PsiElement(where)('where')
-    PsiComment(CPPIF)('#if __GLASGOW_HASKELL__ < 708')
-    PsiComment(CPPDEFINE)('#define DIFFERENT_MONADIO 1')
-    PsiComment(CPPDEFINE)('#define MONADIO_INSTANCES 1')
-    PsiComment(#endif)('#endif')
+    PRAGMA_LANGS
+      PsiErrorElement:Expected language extension name
+        <empty list>
+    PsiErrorElement:Expected #-}
+      <empty list>
+  BODY
+    UNKNOWN
+      PsiElement(PRAGMA)('CPP')
+      PsiElement(#-})('#-}')
+    UNKNOWN
+      PsiElement(module)('module')
+      PsiElement(conidRegexp)('CPP00001')
+      PsiElement(where)('where')
+      PsiComment(CPPIF)('#if __GLASGOW_HASKELL__ < 708')
+      PsiComment(CPPDEFINE)('#define DIFFERENT_MONADIO 1')
+      PsiComment(CPPDEFINE)('#define MONADIO_INSTANCES 1')
+      PsiComment(#endif)('#endif')

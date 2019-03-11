@@ -33,6 +33,8 @@ object HaskellParser2Parsec extends PPTyped[LexerToken, ParserElement] {
   val consumeUntilLineStart: P0 =
     Psi(b => while (!b.eof() && !atLineStart(b)) b.advanceLexer())
 
+  // Useful so we can just parse tokens until we get to the start of
+  // a line and try again.
   val pUnknown: P0 =
     punlessM_(eof)(markStart(
       advanceLexer
@@ -46,7 +48,6 @@ object HaskellParser2Parsec extends PPTyped[LexerToken, ParserElement] {
       .pelse(markError("Missing module name"))
   )
 
-  // Returns an Option[OpenBraceType]
   val pModuleDecl: Psi[Option[LexerToken]] =
     getTokenType >>= {
       case Some(MODULETOKEN) =>
@@ -200,37 +201,67 @@ object HaskellParser2Parsec extends PPTyped[LexerToken, ParserElement] {
       )
     )
 
-//  def pForeignDecl(importOrExport: LexerToken, node: ParserElement): Psi[Boolean] =
-//    lookAheadMany(2) >>= (ts =>
-//      pwhen(ts == List(FOREIGN, importOrExport))(
-//        markStart(
-//          times(advanceLexer, 2)
-//            *> many_(VARIDREGEXP)
-//            *> (pStringLit >>= (if (_) expectTokenAdvance(VARIDREGEXP) else rUnit))
-//            *> expectTokenAdvance(DOUBLECOLON)
-//            *> pType
-//            *> markDone(node)
-//        )
-//      )
-//    )
-//
-//  val pForeignImport: Psi[Boolean] = pForeignDecl(IMPORT, FOREIGN_IMPORT)
-//
-//  val pForeignExport: Psi[Boolean] = pForeignDecl(EXPORT, FOREIGN_EXPORT)
+  val maybeEndBody: Psi[Unit] =
+    lookAheadMany(2) >>= {
+      // If looking ahead for two tokens only produces one and that one
+      // is an rbrace (or synthetic rbrace), let's consume it and
+      // we're done parsing the body.
+      case List(RBRACE | WHITESPACERBRACETOK) => advanceLexer
+      // Otherwise, we're in a weird state, so consume until a
+      // token is at the start of a line.
+      case _ => pUnknown
+    }
 
-  val pTopDecl: Psi[Boolean] =
-    pany(
-      pForeignDecl
+  val pTopDecl: Psi[Unit] =
+    pFirstTrue(
+      pForeignDecl,
+      maybeEndBody *> rTrue
+    ).void
+
+  val body: P0 =
+    markStart(pforever(pTopDecl) *> markDone(BODY))
+
+  val pPragmaLang: P0 = markStart(
+    getTokenType >>= {
+      case Some(CONIDREGEXP) => advanceLexer *> markDone(PRAGMA_LANG)
+      case _ => markError("Expected language extension name")
+    }
+  )
+
+  val pPragmaLangs: P0 =
+    markStart(
+      pPragmaLang
+        *> pwhile(isTokenType(COMMA))(advanceLexer *> pPragmaLang)
+        *> markDone(PRAGMA_LANGS)
     )
 
-  val body: P0 = pforever(pTopDecl >>= (matched =>
-    if (matched) rUnit else pUnknown
-  ))
+  val pPragmaContents: P0 =
+    getTokenText.flatMap {
+      case Some(text) if text.toLowerCase == "language" =>
+        advanceLexer *> pPragmaLangs
+      case _ =>
+        // Catch-all for non-language pragmas.
+        pwhile(not(isTokenType(CLOSEPRAGMA)))(advanceLexer)
+    }
+
+  val pPragmaExpr: P0 =
+    whenTokenIs_(OPENPRAGMA)(
+      markStart(
+        advanceLexer
+          *> pPragmaContents
+          *> expectTokenAdvance(CLOSEPRAGMA)
+          *> markDone(PRAGMA_EXPR)
+      )
+    )
+
+  val pTopPragmas: P0 =
+    pwhile(isTokenType(OPENPRAGMA))(pPragmaExpr)
 
   val file: P0 = (
-    pModuleDecl
-    >> pImportList
-    >> body
+    pTopPragmas
+      >> pModuleDecl
+      >> pImportList
+      >> body
   )
 
   // I'm surprised this isn't easier to get from the lexer.

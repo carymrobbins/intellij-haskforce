@@ -5,164 +5,165 @@ HASKELL_FILE
       PsiElement(conidRegexp)('AStack00001')
     PsiErrorElement:Expected where
       <empty list>
-  UNKNOWN
-    PsiElement(()('(')
-    PsiElement(conidRegexp)('Stack')
-    PsiElement(,)(',')
-    PsiElement(varidRegexp)('push')
-    PsiElement(,)(',')
-    PsiElement(varidRegexp)('pop')
-    PsiElement(,)(',')
-    PsiElement(varidRegexp)('top')
-    PsiElement(,)(',')
-    PsiElement(varidRegexp)('size')
-    PsiElement())(')')
-    PsiElement(where)('where')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(data)('data')
-    PsiElement(conidRegexp)('Stack')
-    PsiElement(varidRegexp)('a')
-    PsiElement(=)('=')
-    PsiElement(conidRegexp)('Empty')
-    PsiElement(|)('|')
-    PsiElement(conidRegexp)('MkStack')
-    PsiElement(varidRegexp)('a')
-    PsiElement(()('(')
-    PsiElement(conidRegexp)('Stack')
-    PsiElement(varidRegexp)('a')
-    PsiElement())(')')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(varidRegexp)('push')
-    PsiElement(::)('::')
-    PsiElement(varidRegexp)('a')
-    PsiElement(->)('->')
-    PsiElement(conidRegexp)('Stack')
-    PsiElement(varidRegexp)('a')
-    PsiElement(->)('->')
-    PsiElement(conidRegexp)('Stack')
-    PsiElement(varidRegexp)('a')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(varidRegexp)('push')
-    PsiElement(varidRegexp)('x')
-    PsiElement(varidRegexp)('s')
-    PsiElement(=)('=')
-    PsiElement(conidRegexp)('MkStack')
-    PsiElement(varidRegexp)('x')
-    PsiElement(varidRegexp)('s')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(varidRegexp)('size')
-    PsiElement(::)('::')
-    PsiElement(conidRegexp)('Stack')
-    PsiElement(varidRegexp)('a')
-    PsiElement(->)('->')
-    PsiElement(conidRegexp)('Int')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(varidRegexp)('size')
-    PsiElement(varidRegexp)('s')
-    PsiElement(=)('=')
-    PsiElement(varidRegexp)('length')
-    PsiElement(()('(')
-    PsiElement(varidRegexp)('stkToLst')
-    PsiElement(varidRegexp)('s')
-    PsiElement())(')')
-    PsiElement(where)('where')
-    PsiElement(varidRegexp)('stkToLst')
-    PsiElement(conidRegexp)('Empty')
-    PsiElement(=)('=')
-    PsiElement([)('[')
-    PsiElement(])(']')
-    PsiElement(varidRegexp)('stkToLst')
-    PsiElement(()('(')
-    PsiElement(conidRegexp)('MkStack')
-    PsiElement(varidRegexp)('x')
-    PsiElement(varidRegexp)('s')
-    PsiElement())(')')
-    PsiElement(=)('=')
-    PsiElement(varidRegexp)('x')
-    PsiElement(:)(':')
-    PsiElement(varidRegexp)('xs')
-    PsiElement(where)('where')
-    PsiElement(varidRegexp)('xs')
-    PsiElement(=)('=')
-    PsiElement(varidRegexp)('stkToLst')
-    PsiElement(varidRegexp)('s')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(varidRegexp)('pop')
-    PsiElement(::)('::')
-    PsiElement(conidRegexp)('Stack')
-    PsiElement(varidRegexp)('a')
-    PsiElement(->)('->')
-    PsiElement(()('(')
-    PsiElement(varidRegexp)('a')
-    PsiElement(,)(',')
-    PsiElement(conidRegexp)('Stack')
-    PsiElement(varidRegexp)('a')
-    PsiElement())(')')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(varidRegexp)('pop')
-    PsiElement(()('(')
-    PsiElement(conidRegexp)('MkStack')
-    PsiElement(varidRegexp)('x')
-    PsiElement(varidRegexp)('s')
-    PsiElement())(')')
-    PsiElement(=)('=')
-    PsiElement(()('(')
-    PsiElement(varidRegexp)('x')
-    PsiElement(,)(',')
-    PsiElement(case)('case')
-    PsiElement(varidRegexp)('s')
-    PsiElement(of)('of')
-    PsiElement(varidRegexp)('r')
-    PsiElement(->)('->')
-    PsiElement(varidRegexp)('i')
-    PsiElement(varidRegexp)('r')
-    PsiElement(where)('where')
-    PsiElement(varidRegexp)('i')
-    PsiElement(varidRegexp)('x')
-    PsiElement(=)('=')
-    PsiElement(varidRegexp)('x')
-    PsiElement())(')')
-  PsiComment(comment)('-- (pop Empty) is an error  \n')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(varidRegexp)('top')
-    PsiElement(::)('::')
-    PsiElement(conidRegexp)('Stack')
-    PsiElement(varidRegexp)('a')
-    PsiElement(->)('->')
-    PsiElement(varidRegexp)('a')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(varidRegexp)('top')
-    PsiElement(()('(')
-    PsiElement(conidRegexp)('MkStack')
-    PsiElement(varidRegexp)('x')
-    PsiElement(varidRegexp)('s')
-    PsiElement())(')')
-    PsiElement(=)('=')
-    PsiElement(varidRegexp)('x')
-    PsiComment(comment)('-- (top Empty) is an error')
+  BODY
+    UNKNOWN
+      PsiElement(()('(')
+      PsiElement(conidRegexp)('Stack')
+      PsiElement(,)(',')
+      PsiElement(varidRegexp)('push')
+      PsiElement(,)(',')
+      PsiElement(varidRegexp)('pop')
+      PsiElement(,)(',')
+      PsiElement(varidRegexp)('top')
+      PsiElement(,)(',')
+      PsiElement(varidRegexp)('size')
+      PsiElement())(')')
+      PsiElement(where)('where')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(data)('data')
+      PsiElement(conidRegexp)('Stack')
+      PsiElement(varidRegexp)('a')
+      PsiElement(=)('=')
+      PsiElement(conidRegexp)('Empty')
+      PsiElement(|)('|')
+      PsiElement(conidRegexp)('MkStack')
+      PsiElement(varidRegexp)('a')
+      PsiElement(()('(')
+      PsiElement(conidRegexp)('Stack')
+      PsiElement(varidRegexp)('a')
+      PsiElement())(')')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(varidRegexp)('push')
+      PsiElement(::)('::')
+      PsiElement(varidRegexp)('a')
+      PsiElement(->)('->')
+      PsiElement(conidRegexp)('Stack')
+      PsiElement(varidRegexp)('a')
+      PsiElement(->)('->')
+      PsiElement(conidRegexp)('Stack')
+      PsiElement(varidRegexp)('a')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(varidRegexp)('push')
+      PsiElement(varidRegexp)('x')
+      PsiElement(varidRegexp)('s')
+      PsiElement(=)('=')
+      PsiElement(conidRegexp)('MkStack')
+      PsiElement(varidRegexp)('x')
+      PsiElement(varidRegexp)('s')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(varidRegexp)('size')
+      PsiElement(::)('::')
+      PsiElement(conidRegexp)('Stack')
+      PsiElement(varidRegexp)('a')
+      PsiElement(->)('->')
+      PsiElement(conidRegexp)('Int')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(varidRegexp)('size')
+      PsiElement(varidRegexp)('s')
+      PsiElement(=)('=')
+      PsiElement(varidRegexp)('length')
+      PsiElement(()('(')
+      PsiElement(varidRegexp)('stkToLst')
+      PsiElement(varidRegexp)('s')
+      PsiElement())(')')
+      PsiElement(where)('where')
+      PsiElement(varidRegexp)('stkToLst')
+      PsiElement(conidRegexp)('Empty')
+      PsiElement(=)('=')
+      PsiElement([)('[')
+      PsiElement(])(']')
+      PsiElement(varidRegexp)('stkToLst')
+      PsiElement(()('(')
+      PsiElement(conidRegexp)('MkStack')
+      PsiElement(varidRegexp)('x')
+      PsiElement(varidRegexp)('s')
+      PsiElement())(')')
+      PsiElement(=)('=')
+      PsiElement(varidRegexp)('x')
+      PsiElement(:)(':')
+      PsiElement(varidRegexp)('xs')
+      PsiElement(where)('where')
+      PsiElement(varidRegexp)('xs')
+      PsiElement(=)('=')
+      PsiElement(varidRegexp)('stkToLst')
+      PsiElement(varidRegexp)('s')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(varidRegexp)('pop')
+      PsiElement(::)('::')
+      PsiElement(conidRegexp)('Stack')
+      PsiElement(varidRegexp)('a')
+      PsiElement(->)('->')
+      PsiElement(()('(')
+      PsiElement(varidRegexp)('a')
+      PsiElement(,)(',')
+      PsiElement(conidRegexp)('Stack')
+      PsiElement(varidRegexp)('a')
+      PsiElement())(')')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(varidRegexp)('pop')
+      PsiElement(()('(')
+      PsiElement(conidRegexp)('MkStack')
+      PsiElement(varidRegexp)('x')
+      PsiElement(varidRegexp)('s')
+      PsiElement())(')')
+      PsiElement(=)('=')
+      PsiElement(()('(')
+      PsiElement(varidRegexp)('x')
+      PsiElement(,)(',')
+      PsiElement(case)('case')
+      PsiElement(varidRegexp)('s')
+      PsiElement(of)('of')
+      PsiElement(varidRegexp)('r')
+      PsiElement(->)('->')
+      PsiElement(varidRegexp)('i')
+      PsiElement(varidRegexp)('r')
+      PsiElement(where)('where')
+      PsiElement(varidRegexp)('i')
+      PsiElement(varidRegexp)('x')
+      PsiElement(=)('=')
+      PsiElement(varidRegexp)('x')
+      PsiElement())(')')
+    PsiComment(comment)('-- (pop Empty) is an error  \n')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(varidRegexp)('top')
+      PsiElement(::)('::')
+      PsiElement(conidRegexp)('Stack')
+      PsiElement(varidRegexp)('a')
+      PsiElement(->)('->')
+      PsiElement(varidRegexp)('a')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(varidRegexp)('top')
+      PsiElement(()('(')
+      PsiElement(conidRegexp)('MkStack')
+      PsiElement(varidRegexp)('x')
+      PsiElement(varidRegexp)('s')
+      PsiElement())(')')
+      PsiElement(=)('=')
+      PsiElement(varidRegexp)('x')
+      PsiComment(comment)('-- (top Empty) is an error')

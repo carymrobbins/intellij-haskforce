@@ -19,5 +19,5 @@ HASKELL_FILE
     PsiComment(commenttext)('-')
     PsiComment(commenttext)('\n\nWe should parse this as a comment.\n\n')
     PsiComment(-})('-}')
-  UNKNOWN
+  BODY
     <empty list>

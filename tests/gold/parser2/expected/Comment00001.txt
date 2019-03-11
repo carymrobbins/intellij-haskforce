@@ -7,10 +7,11 @@ HASKELL_FILE
     MODULE_NAME
       PsiElement(conidRegexp)('Comment1')
     PsiElement(where)('where')
-  UNKNOWN
-    PsiElement(varidRegexp)('main')
-    PsiElement(=)('=')
-    PsiElement(varidRegexp)('print')
-    PsiElement(")('"')
-    PsiElement(STRINGTOKEN)('Hello, complicated world!')
-    PsiElement(")('"')
+  BODY
+    UNKNOWN
+      PsiElement(varidRegexp)('main')
+      PsiElement(=)('=')
+      PsiElement(varidRegexp)('print')
+      PsiElement(")('"')
+      PsiElement(STRINGTOKEN)('Hello, complicated world!')
+      PsiElement(")('"')

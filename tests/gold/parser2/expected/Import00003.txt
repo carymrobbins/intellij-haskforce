@@ -44,5 +44,5 @@ HASKELL_FILE
           PsiElement(varidRegexp)('typeOf')
         PsiElement())(')')
   PsiComment(#endif)('#endif')
-  UNKNOWN
+  BODY
     <empty list>

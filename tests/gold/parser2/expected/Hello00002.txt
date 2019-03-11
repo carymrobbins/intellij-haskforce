@@ -4,10 +4,11 @@ HASKELL_FILE
     MODULE_NAME
       PsiElement(conidRegexp)('Hello2')
     PsiElement(where)('where')
-  UNKNOWN
-    PsiElement(varidRegexp)('main')
-    PsiElement(=)('=')
-    PsiElement(varidRegexp)('print')
-    PsiElement(")('"')
-    PsiElement(STRINGTOKEN)('Hello, World!')
-    PsiElement(")('"')
+  BODY
+    UNKNOWN
+      PsiElement(varidRegexp)('main')
+      PsiElement(=)('=')
+      PsiElement(varidRegexp)('print')
+      PsiElement(")('"')
+      PsiElement(STRINGTOKEN)('Hello, World!')
+      PsiElement(")('"')

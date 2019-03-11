@@ -4,17 +4,18 @@ HASKELL_FILE
     MODULE_NAME
       PsiElement(conidRegexp)('Layout00013')
     PsiElement(where)('where')
-  UNKNOWN
-    PsiElement(type)('type')
-    PsiElement(family)('family')
-    PsiElement(conidRegexp)('UnsignedRep')
-    PsiElement(varidRegexp)('a')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(type)('type')
-    PsiElement(instance)('instance')
-    PsiElement(conidRegexp)('UnsignedRep')
-    PsiElement(conidRegexp)('Int8')
-    PsiElement(=)('=')
-    PsiElement(conidRegexp)('Word8')
+  BODY
+    UNKNOWN
+      PsiElement(type)('type')
+      PsiElement(family)('family')
+      PsiElement(conidRegexp)('UnsignedRep')
+      PsiElement(varidRegexp)('a')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(type)('type')
+      PsiElement(instance)('instance')
+      PsiElement(conidRegexp)('UnsignedRep')
+      PsiElement(conidRegexp)('Int8')
+      PsiElement(=)('=')
+      PsiElement(conidRegexp)('Word8')

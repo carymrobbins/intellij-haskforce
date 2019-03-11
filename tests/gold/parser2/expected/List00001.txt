@@ -4,21 +4,22 @@ HASKELL_FILE
     MODULE_NAME
       PsiElement(conidRegexp)('List00001')
     PsiElement(where)('where')
-  UNKNOWN
-    PsiElement(varidRegexp)('list')
-    PsiElement(=)('=')
-    PsiElement([)('[')
-    PsiElement(")('"')
-    PsiElement(STRINGTOKEN)('a')
-    PsiElement(")('"')
-    PsiElement(,)(',')
-    PsiElement(")('"')
-    PsiElement(STRINGTOKEN)('b')
-    PsiElement(")('"')
-    PsiElement(])(']')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(varidRegexp)('val')
-    PsiElement(=)('=')
-    PsiElement(integertoken)('0')
+  BODY
+    UNKNOWN
+      PsiElement(varidRegexp)('list')
+      PsiElement(=)('=')
+      PsiElement([)('[')
+      PsiElement(")('"')
+      PsiElement(STRINGTOKEN)('a')
+      PsiElement(")('"')
+      PsiElement(,)(',')
+      PsiElement(")('"')
+      PsiElement(STRINGTOKEN)('b')
+      PsiElement(")('"')
+      PsiElement(])(']')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(varidRegexp)('val')
+      PsiElement(=)('=')
+      PsiElement(integertoken)('0')

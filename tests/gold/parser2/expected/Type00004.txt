@@ -1,29 +1,34 @@
 HASKELL_FILE
-  PsiErrorElement:Expected 'module' but got: {-#
-    <empty list>
-  UNKNOWN
+  PRAGMA_EXPR
     PsiElement({-#)('{-#')
     PsiElement(PRAGMA)('LANGUAGE')
-    PsiElement(PRAGMA)('FunctionalDependencies')
-    PsiElement(#-})('#-}')
-  UNKNOWN
-    PsiElement(module)('module')
-    PsiElement(conidRegexp)('Type00004')
-    PsiElement(where)('where')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(class)('class')
-    PsiElement(conidRegexp)('Foo')
-    PsiElement(varidRegexp)('a')
-    PsiElement(varidRegexp)('b')
-    PsiElement(varidRegexp)('c')
-    PsiElement(varidRegexp)('d')
-    PsiElement(|)('|')
-    PsiElement(varidRegexp)('a')
-    PsiElement(->)('->')
-    PsiElement(varidRegexp)('b')
-    PsiElement(,)(',')
-    PsiElement(varidRegexp)('c')
-    PsiElement(->)('->')
-    PsiElement(varidRegexp)('d')
+    PRAGMA_LANGS
+      PsiErrorElement:Expected language extension name
+        <empty list>
+    PsiErrorElement:Expected #-}
+      <empty list>
+  BODY
+    UNKNOWN
+      PsiElement(PRAGMA)('FunctionalDependencies')
+      PsiElement(#-})('#-}')
+    UNKNOWN
+      PsiElement(module)('module')
+      PsiElement(conidRegexp)('Type00004')
+      PsiElement(where)('where')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(class)('class')
+      PsiElement(conidRegexp)('Foo')
+      PsiElement(varidRegexp)('a')
+      PsiElement(varidRegexp)('b')
+      PsiElement(varidRegexp)('c')
+      PsiElement(varidRegexp)('d')
+      PsiElement(|)('|')
+      PsiElement(varidRegexp)('a')
+      PsiElement(->)('->')
+      PsiElement(varidRegexp)('b')
+      PsiElement(,)(',')
+      PsiElement(varidRegexp)('c')
+      PsiElement(->)('->')
+      PsiElement(varidRegexp)('d')

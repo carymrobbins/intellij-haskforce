@@ -1,10 +1,12 @@
 HASKELL_FILE
-  PsiErrorElement:Expected 'module' but got: {-#
-    <empty list>
-  UNKNOWN
+  PRAGMA_EXPR
     PsiElement({-#)('{-#')
     PsiElement(PRAGMA)('OPTIONS_GHC')
     PsiElement(PRAGMA)('-F')
     PsiElement(PRAGMA)('-pgmF')
     PsiElement(PRAGMA)('hspec-discover')
     PsiElement(#-})('#-}')
+  PsiErrorElement:Expected 'module' but got: end of input
+    <empty list>
+  BODY
+    <empty list>

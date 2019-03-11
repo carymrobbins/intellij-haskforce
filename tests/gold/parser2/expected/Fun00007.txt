@@ -1,84 +1,89 @@
 HASKELL_FILE
-  PsiErrorElement:Expected 'module' but got: {-#
-    <empty list>
-  UNKNOWN
+  PRAGMA_EXPR
     PsiElement({-#)('{-#')
     PsiElement(PRAGMA)('LANGUAGE')
-    PsiElement(PRAGMA)('RankNTypes')
-    PsiElement(#-})('#-}')
-  UNKNOWN
-    PsiElement({-#)('{-#')
-    PsiElement(PRAGMA)('LANGUAGE')
-    PsiElement(PRAGMA)('ScopedTypeVariables')
-    PsiElement(#-})('#-}')
-  UNKNOWN
-    PsiElement({-#)('{-#')
-    PsiElement(PRAGMA)('LANGUAGE')
-    PsiElement(PRAGMA)('StandaloneDeriving')
-    PsiElement(#-})('#-}')
-  UNKNOWN
-    PsiElement(module)('module')
-    PsiElement(conidRegexp)('Fun00007')
-    PsiElement(where)('where')
-  PsiComment(haddock)('-- | Cast a 'Size' to a 'RangeSet'\n')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(varidRegexp)('sizeToRange')
-    PsiElement(::)('::')
-    PsiElement(forall)('forall')
-    PsiElement(varidRegexp)('a')
-    PsiElement(.)('.')
-    PsiElement(conidRegexp)('Type')
-    PsiElement(varidRegexp)('a')
-    PsiElement(=>)('=>')
-    PsiElement(conidRegexp)('Size')
-    PsiElement(varidRegexp)('a')
-    PsiElement(->)('->')
-    PsiElement(conidRegexp)('RangeSet')
-    PsiElement(varidRegexp)('a')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(varidRegexp)('sizeToRange')
-    PsiElement(varidRegexp)('sz')
-    PsiElement(=)('=')
-    PsiElement(case)('case')
-    PsiElement(varidRegexp)('typeRep')
-    PsiElement(::)('::')
-    PsiElement(conidRegexp)('TypeRep')
-    PsiElement(varidRegexp)('a')
-    PsiElement(of)('of')
-    PsiElement(conidRegexp)('IntType')
-    PsiElement(_)('_')
-    PsiElement(_)('_')
-    PsiElement(->)('->')
-    PsiElement(conidRegexp)('RangeSet')
-    PsiElement(varidRegexp)('sz')
-    PsiElement(_)('_')
-    PsiElement(->)('->')
-    PsiElement(conidRegexp)('Universal')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(deriving)('deriving')
-    PsiElement(instance)('instance')
-    PsiElement(conidRegexp)('Typeable')
-    PsiElement(()('(')
-    PsiElement(,)(',')
-    PsiElement(,)(',')
-    PsiElement(,)(',')
-    PsiElement(,)(',')
-    PsiElement(,)(',')
-    PsiElement(,)(',')
-    PsiElement(,)(',')
-    PsiElement(,)(',')
-    PsiElement(,)(',')
-    PsiElement(,)(',')
-    PsiElement(,)(',')
-    PsiElement(,)(',')
-    PsiElement(,)(',')
-    PsiElement(,)(',')
-    PsiElement())(')')
+    PRAGMA_LANGS
+      PsiErrorElement:Expected language extension name
+        <empty list>
+    PsiErrorElement:Expected #-}
+      <empty list>
+  BODY
+    UNKNOWN
+      PsiElement(PRAGMA)('RankNTypes')
+      PsiElement(#-})('#-}')
+    UNKNOWN
+      PsiElement({-#)('{-#')
+      PsiElement(PRAGMA)('LANGUAGE')
+      PsiElement(PRAGMA)('ScopedTypeVariables')
+      PsiElement(#-})('#-}')
+    UNKNOWN
+      PsiElement({-#)('{-#')
+      PsiElement(PRAGMA)('LANGUAGE')
+      PsiElement(PRAGMA)('StandaloneDeriving')
+      PsiElement(#-})('#-}')
+    UNKNOWN
+      PsiElement(module)('module')
+      PsiElement(conidRegexp)('Fun00007')
+      PsiElement(where)('where')
+    PsiComment(haddock)('-- | Cast a 'Size' to a 'RangeSet'\n')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(varidRegexp)('sizeToRange')
+      PsiElement(::)('::')
+      PsiElement(forall)('forall')
+      PsiElement(varidRegexp)('a')
+      PsiElement(.)('.')
+      PsiElement(conidRegexp)('Type')
+      PsiElement(varidRegexp)('a')
+      PsiElement(=>)('=>')
+      PsiElement(conidRegexp)('Size')
+      PsiElement(varidRegexp)('a')
+      PsiElement(->)('->')
+      PsiElement(conidRegexp)('RangeSet')
+      PsiElement(varidRegexp)('a')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(varidRegexp)('sizeToRange')
+      PsiElement(varidRegexp)('sz')
+      PsiElement(=)('=')
+      PsiElement(case)('case')
+      PsiElement(varidRegexp)('typeRep')
+      PsiElement(::)('::')
+      PsiElement(conidRegexp)('TypeRep')
+      PsiElement(varidRegexp)('a')
+      PsiElement(of)('of')
+      PsiElement(conidRegexp)('IntType')
+      PsiElement(_)('_')
+      PsiElement(_)('_')
+      PsiElement(->)('->')
+      PsiElement(conidRegexp)('RangeSet')
+      PsiElement(varidRegexp)('sz')
+      PsiElement(_)('_')
+      PsiElement(->)('->')
+      PsiElement(conidRegexp)('Universal')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(deriving)('deriving')
+      PsiElement(instance)('instance')
+      PsiElement(conidRegexp)('Typeable')
+      PsiElement(()('(')
+      PsiElement(,)(',')
+      PsiElement(,)(',')
+      PsiElement(,)(',')
+      PsiElement(,)(',')
+      PsiElement(,)(',')
+      PsiElement(,)(',')
+      PsiElement(,)(',')
+      PsiElement(,)(',')
+      PsiElement(,)(',')
+      PsiElement(,)(',')
+      PsiElement(,)(',')
+      PsiElement(,)(',')
+      PsiElement(,)(',')
+      PsiElement(,)(',')
+      PsiElement())(')')

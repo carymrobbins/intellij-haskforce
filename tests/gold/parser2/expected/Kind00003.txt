@@ -1,206 +1,211 @@
 HASKELL_FILE
-  PsiErrorElement:Expected 'module' but got: {-#
-    <empty list>
-  UNKNOWN
+  PRAGMA_EXPR
     PsiElement({-#)('{-#')
     PsiElement(PRAGMA)('LANGUAGE')
-    PsiElement(PRAGMA)('DataKinds')
-    PsiElement(#-})('#-}')
-  UNKNOWN
-    PsiElement({-#)('{-#')
-    PsiElement(PRAGMA)('LANGUAGE')
-    PsiElement(PRAGMA)('KindSignatures')
-    PsiElement(#-})('#-}')
-  UNKNOWN
-    PsiElement({-#)('{-#')
-    PsiElement(PRAGMA)('LANGUAGE')
-    PsiElement(PRAGMA)('GADTs')
-    PsiElement(#-})('#-}')
-  UNKNOWN
-    PsiElement({-#)('{-#')
-    PsiElement(PRAGMA)('LANGUAGE')
-    PsiElement(PRAGMA)('TypeOperators')
-    PsiElement(#-})('#-}')
-  UNKNOWN
-    PsiElement(module)('module')
-    PsiElement(conidRegexp)('Kind00003')
-    PsiElement(where)('where')
-  PsiComment({-)('{-')
-  PsiComment(commenttext)('\n')
-  PsiComment(commenttext)('-')
-  PsiComment(commenttext)('-')
-  PsiComment(commenttext)(' FIXME: Waiting on https://github.com/haskell')
-  PsiComment(commenttext)('-')
-  PsiComment(commenttext)('suite/haskell')
-  PsiComment(commenttext)('-')
-  PsiComment(commenttext)('src')
-  PsiComment(commenttext)('-')
-  PsiComment(commenttext)('exts/issues/125\ndata HList :: [*] ')
-  PsiComment(commenttext)('-')
-  PsiComment(commenttext)('> * where\n  HNil  :: HList '[]\n  HCons :: a ')
-  PsiComment(commenttext)('-')
-  PsiComment(commenttext)('> HList t ')
-  PsiComment(commenttext)('-')
-  PsiComment(commenttext)('> HList (a ': t)\n\n')
-  PsiComment(commenttext)('-')
-  PsiComment(commenttext)('-')
-  PsiComment(commenttext)(' FIXME: Waiting on https://github.com/haskell')
-  PsiComment(commenttext)('-')
-  PsiComment(commenttext)('suite/haskell')
-  PsiComment(commenttext)('-')
-  PsiComment(commenttext)('src')
-  PsiComment(commenttext)('-')
-  PsiComment(commenttext)('exts/issues/124\ndata Tuple :: (*,*) ')
-  PsiComment(commenttext)('-')
-  PsiComment(commenttext)('> * where\n  Tuple :: a ')
-  PsiComment(commenttext)('-')
-  PsiComment(commenttext)('> b ')
-  PsiComment(commenttext)('-')
-  PsiComment(commenttext)('> Tuple '(a,b)\n')
-  PsiComment(-})('-}')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(class)('class')
-    PsiElement(conidRegexp)('C1')
-    PsiElement(()('(')
-    PsiElement(varidRegexp)('a')
-    PsiElement(::)('::')
-    PsiElement(conidRegexp)('Bool')
+    PRAGMA_LANGS
+      PsiErrorElement:Expected language extension name
+        <empty list>
+    PsiErrorElement:Expected #-}
+      <empty list>
+  BODY
+    UNKNOWN
+      PsiElement(PRAGMA)('DataKinds')
+      PsiElement(#-})('#-}')
+    UNKNOWN
+      PsiElement({-#)('{-#')
+      PsiElement(PRAGMA)('LANGUAGE')
+      PsiElement(PRAGMA)('KindSignatures')
+      PsiElement(#-})('#-}')
+    UNKNOWN
+      PsiElement({-#)('{-#')
+      PsiElement(PRAGMA)('LANGUAGE')
+      PsiElement(PRAGMA)('GADTs')
+      PsiElement(#-})('#-}')
+    UNKNOWN
+      PsiElement({-#)('{-#')
+      PsiElement(PRAGMA)('LANGUAGE')
+      PsiElement(PRAGMA)('TypeOperators')
+      PsiElement(#-})('#-}')
+    UNKNOWN
+      PsiElement(module)('module')
+      PsiElement(conidRegexp)('Kind00003')
+      PsiElement(where)('where')
     PsiComment({-)('{-')
-    PsiComment(commenttext)(' 1 ')
+    PsiComment(commenttext)('\n')
+    PsiComment(commenttext)('-')
+    PsiComment(commenttext)('-')
+    PsiComment(commenttext)(' FIXME: Waiting on https://github.com/haskell')
+    PsiComment(commenttext)('-')
+    PsiComment(commenttext)('suite/haskell')
+    PsiComment(commenttext)('-')
+    PsiComment(commenttext)('src')
+    PsiComment(commenttext)('-')
+    PsiComment(commenttext)('exts/issues/125\ndata HList :: [*] ')
+    PsiComment(commenttext)('-')
+    PsiComment(commenttext)('> * where\n  HNil  :: HList '[]\n  HCons :: a ')
+    PsiComment(commenttext)('-')
+    PsiComment(commenttext)('> HList t ')
+    PsiComment(commenttext)('-')
+    PsiComment(commenttext)('> HList (a ': t)\n\n')
+    PsiComment(commenttext)('-')
+    PsiComment(commenttext)('-')
+    PsiComment(commenttext)(' FIXME: Waiting on https://github.com/haskell')
+    PsiComment(commenttext)('-')
+    PsiComment(commenttext)('suite/haskell')
+    PsiComment(commenttext)('-')
+    PsiComment(commenttext)('src')
+    PsiComment(commenttext)('-')
+    PsiComment(commenttext)('exts/issues/124\ndata Tuple :: (*,*) ')
+    PsiComment(commenttext)('-')
+    PsiComment(commenttext)('> * where\n  Tuple :: a ')
+    PsiComment(commenttext)('-')
+    PsiComment(commenttext)('> b ')
+    PsiComment(commenttext)('-')
+    PsiComment(commenttext)('> Tuple '(a,b)\n')
     PsiComment(-})('-}')
-    PsiElement())(')')
-    PsiElement(where)('where')
-    PsiElement(varidRegexp)('c')
-    PsiElement(::)('::')
-    PsiElement(varidRegexp)('proxy')
-    PsiElement(varidRegexp)('a')
-    PsiElement(->)('->')
-    PsiElement(conidRegexp)('Int')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(class)('class')
-    PsiElement(conidRegexp)('C2')
-    PsiElement(()('(')
-    PsiElement(varidRegexp)('a')
-    PsiElement(::)('::')
-    PsiElement([)('[')
-    PsiElement(*)('*')
-    PsiElement(])(']')
-    PsiElement())(')')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(class)('class')
-    PsiElement(conidRegexp)('C3')
-    PsiElement(()('(')
-    PsiElement(varidRegexp)('a')
-    PsiElement(::)('::')
-    PsiElement([)('[')
-    PsiElement(()('(')
-    PsiElement(conidRegexp)('Int')
-    PsiElement(,)(',')
-    PsiElement(conidRegexp)('Double')
-    PsiElement())(')')
-    PsiElement(])(']')
-    PsiElement())(')')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(class)('class')
-    PsiElement(conidRegexp)('C4')
-    PsiElement(()('(')
-    PsiElement(varidRegexp)('a')
-    PsiElement(::)('::')
-    PsiElement(()('(')
-    PsiElement(*)('*')
-    PsiElement())(')')
-    PsiElement())(')')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(data)('data')
-    PsiElement(conidRegexp)('X')
-    PsiElement(()('(')
-    PsiElement(varidRegexp)('a')
-    PsiElement(::)('::')
-    PsiElement([)('[')
-    PsiElement(*)('*')
-    PsiElement(])(']')
-    PsiElement())(')')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(varidRegexp)('x1')
-    PsiElement(=)('=')
-    PsiElement(varidRegexp)('undefined')
-    PsiElement(::)('::')
-    PsiElement(conidRegexp)('X')
-    PsiElement(')(''')
-    PsiElement([)('[')
-    PsiElement(conidRegexp)('Int')
-    PsiElement(])(']')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(varidRegexp)('x2')
-    PsiElement(=)('=')
-    PsiElement(varidRegexp)('undefined')
-    PsiElement(::)('::')
-    PsiElement(conidRegexp)('X')
-    PsiElement(')(''')
-    PsiElement([)('[')
-    PsiElement(conidRegexp)('Int')
-    PsiElement(,)(',')
-    PsiElement(conidRegexp)('Double')
-    PsiElement(])(']')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(data)('data')
-    PsiElement(conidRegexp)('Y')
-    PsiElement(()('(')
-    PsiElement(varidRegexp)('a')
-    PsiElement(::)('::')
-    PsiElement(()('(')
-    PsiElement(*)('*')
-    PsiElement(,)(',')
-    PsiElement(conidRegexp)('Bool')
-    PsiElement())(')')
-    PsiElement())(')')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(varidRegexp)('y1')
-    PsiElement(=)('=')
-    PsiElement(varidRegexp)('undefined')
-    PsiElement(::)('::')
-    PsiElement(conidRegexp)('Y')
-    PsiElement(')(''')
-    PsiElement(()('(')
-    PsiElement(conidRegexp)('Double')
-    PsiElement(,)(',')
-    PsiElement(conidRegexp)('True')
-    PsiElement())(')')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(varidRegexp)('y2')
-    PsiElement(=)('=')
-    PsiElement(varidRegexp)('undefined')
-    PsiElement(::)('::')
-    PsiElement(conidRegexp)('Y')
-    PsiElement(')(''')
-    PsiElement(()('(')
-    PsiElement(conidRegexp)('Double')
-    PsiElement(,)(',')
-    PsiElement(')(''')
-    PsiElement(conidRegexp)('False')
-    PsiComment({-)('{-')
-    PsiComment(commenttext)('comment')
-    PsiComment(-})('-}')
-    PsiElement())(')')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(class)('class')
+      PsiElement(conidRegexp)('C1')
+      PsiElement(()('(')
+      PsiElement(varidRegexp)('a')
+      PsiElement(::)('::')
+      PsiElement(conidRegexp)('Bool')
+      PsiComment({-)('{-')
+      PsiComment(commenttext)(' 1 ')
+      PsiComment(-})('-}')
+      PsiElement())(')')
+      PsiElement(where)('where')
+      PsiElement(varidRegexp)('c')
+      PsiElement(::)('::')
+      PsiElement(varidRegexp)('proxy')
+      PsiElement(varidRegexp)('a')
+      PsiElement(->)('->')
+      PsiElement(conidRegexp)('Int')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(class)('class')
+      PsiElement(conidRegexp)('C2')
+      PsiElement(()('(')
+      PsiElement(varidRegexp)('a')
+      PsiElement(::)('::')
+      PsiElement([)('[')
+      PsiElement(*)('*')
+      PsiElement(])(']')
+      PsiElement())(')')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(class)('class')
+      PsiElement(conidRegexp)('C3')
+      PsiElement(()('(')
+      PsiElement(varidRegexp)('a')
+      PsiElement(::)('::')
+      PsiElement([)('[')
+      PsiElement(()('(')
+      PsiElement(conidRegexp)('Int')
+      PsiElement(,)(',')
+      PsiElement(conidRegexp)('Double')
+      PsiElement())(')')
+      PsiElement(])(']')
+      PsiElement())(')')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(class)('class')
+      PsiElement(conidRegexp)('C4')
+      PsiElement(()('(')
+      PsiElement(varidRegexp)('a')
+      PsiElement(::)('::')
+      PsiElement(()('(')
+      PsiElement(*)('*')
+      PsiElement())(')')
+      PsiElement())(')')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(data)('data')
+      PsiElement(conidRegexp)('X')
+      PsiElement(()('(')
+      PsiElement(varidRegexp)('a')
+      PsiElement(::)('::')
+      PsiElement([)('[')
+      PsiElement(*)('*')
+      PsiElement(])(']')
+      PsiElement())(')')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(varidRegexp)('x1')
+      PsiElement(=)('=')
+      PsiElement(varidRegexp)('undefined')
+      PsiElement(::)('::')
+      PsiElement(conidRegexp)('X')
+      PsiElement(')(''')
+      PsiElement([)('[')
+      PsiElement(conidRegexp)('Int')
+      PsiElement(])(']')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(varidRegexp)('x2')
+      PsiElement(=)('=')
+      PsiElement(varidRegexp)('undefined')
+      PsiElement(::)('::')
+      PsiElement(conidRegexp)('X')
+      PsiElement(')(''')
+      PsiElement([)('[')
+      PsiElement(conidRegexp)('Int')
+      PsiElement(,)(',')
+      PsiElement(conidRegexp)('Double')
+      PsiElement(])(']')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(data)('data')
+      PsiElement(conidRegexp)('Y')
+      PsiElement(()('(')
+      PsiElement(varidRegexp)('a')
+      PsiElement(::)('::')
+      PsiElement(()('(')
+      PsiElement(*)('*')
+      PsiElement(,)(',')
+      PsiElement(conidRegexp)('Bool')
+      PsiElement())(')')
+      PsiElement())(')')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(varidRegexp)('y1')
+      PsiElement(=)('=')
+      PsiElement(varidRegexp)('undefined')
+      PsiElement(::)('::')
+      PsiElement(conidRegexp)('Y')
+      PsiElement(')(''')
+      PsiElement(()('(')
+      PsiElement(conidRegexp)('Double')
+      PsiElement(,)(',')
+      PsiElement(conidRegexp)('True')
+      PsiElement())(')')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(varidRegexp)('y2')
+      PsiElement(=)('=')
+      PsiElement(varidRegexp)('undefined')
+      PsiElement(::)('::')
+      PsiElement(conidRegexp)('Y')
+      PsiElement(')(''')
+      PsiElement(()('(')
+      PsiElement(conidRegexp)('Double')
+      PsiElement(,)(',')
+      PsiElement(')(''')
+      PsiElement(conidRegexp)('False')
+      PsiComment({-)('{-')
+      PsiComment(commenttext)('comment')
+      PsiComment(-})('-}')
+      PsiElement())(')')

@@ -4,9 +4,10 @@ HASKELL_FILE
     MODULE_NAME
       PsiElement(conidRegexp)('String00001')
     PsiElement(where)('where')
-  UNKNOWN
-    PsiElement(varidRegexp)('s')
-    PsiElement(=)('=')
-    PsiElement(")('"')
-    PsiElement(STRINGTOKEN)('There's trailing spaces after this backslash \  \n    \Trust me, they're there!')
-    PsiElement(")('"')
+  BODY
+    UNKNOWN
+      PsiElement(varidRegexp)('s')
+      PsiElement(=)('=')
+      PsiElement(")('"')
+      PsiElement(STRINGTOKEN)('There's trailing spaces after this backslash \  \n    \Trust me, they're there!')
+      PsiElement(")('"')

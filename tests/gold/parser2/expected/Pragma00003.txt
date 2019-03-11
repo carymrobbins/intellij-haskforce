@@ -5,11 +5,12 @@ HASKELL_FILE
       PsiElement(conidRegexp)('Pragma00003')
     PsiErrorElement:Expected where
       <empty list>
-  UNKNOWN
-    PsiElement({-#)('{-#')
-    PsiElement(PRAGMA)('DEPRECATED')
-    PsiElement(PRAGMA)('"Use')
-    PsiElement(PRAGMA)('Wobble')
-    PsiElement(PRAGMA)('instead"')
-    PsiElement(#-})('#-}')
-    PsiElement(where)('where')
+  BODY
+    UNKNOWN
+      PsiElement({-#)('{-#')
+      PsiElement(PRAGMA)('DEPRECATED')
+      PsiElement(PRAGMA)('"Use')
+      PsiElement(PRAGMA)('Wobble')
+      PsiElement(PRAGMA)('instead"')
+      PsiElement(#-})('#-}')
+      PsiElement(where)('where')

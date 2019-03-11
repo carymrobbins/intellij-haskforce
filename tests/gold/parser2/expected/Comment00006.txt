@@ -15,5 +15,5 @@ HASKELL_FILE
     MODULE_NAME
       PsiElement(conidRegexp)('Comment00006')
     PsiElement(where)('where')
-  UNKNOWN
+  BODY
     <empty list>

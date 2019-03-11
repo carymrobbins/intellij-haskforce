@@ -61,5 +61,5 @@ HASKELL_FILE
       PsiElement(as)('as')
       IMPORT_ALIAS
         PsiElement(conidRegexp)('P')
-  UNKNOWN
+  BODY
     <empty list>

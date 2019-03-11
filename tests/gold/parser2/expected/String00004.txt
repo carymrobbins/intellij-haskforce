@@ -4,12 +4,13 @@ HASKELL_FILE
     MODULE_NAME
       PsiElement(conidRegexp)('String00004')
     PsiElement(where)('where')
-  UNKNOWN
-    PsiElement(varidRegexp)('s')
-    PsiElement(=)('=')
-    PsiElement(")('"')
-    PsiElement(STRINGTOKEN)('\\n    \Strings should allow \"escaped double quotes\"\\n    \as well as multi-line strings.  Also, the closing')
-    PsiElement(STRINGTOKEN)('\\n')
-  UNKNOWN
-    PsiElement(STRINGTOKEN)('    quote of this string can be preceded by a backslash\\n    \since the backslash indicates line continuation, not\\n    \quote escaping!\\n\')
-    PsiElement(")('"')
+  BODY
+    UNKNOWN
+      PsiElement(varidRegexp)('s')
+      PsiElement(=)('=')
+      PsiElement(")('"')
+      PsiElement(STRINGTOKEN)('\\n    \Strings should allow \"escaped double quotes\"\\n    \as well as multi-line strings.  Also, the closing')
+      PsiElement(STRINGTOKEN)('\\n')
+    UNKNOWN
+      PsiElement(STRINGTOKEN)('    quote of this string can be preceded by a backslash\\n    \since the backslash indicates line continuation, not\\n    \quote escaping!\\n\')
+      PsiElement(")('"')

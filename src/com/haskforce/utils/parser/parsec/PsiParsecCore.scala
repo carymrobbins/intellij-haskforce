@@ -101,9 +101,6 @@ trait PsiParsecCore {
   def pwhile(c: Psi[Boolean])(p: Psi[Unit]): Psi[Unit] =
     Psi(b => while (c.run(b)) p.run(b))
 
-  def pany(ps: Psi[Boolean]*): Psi[Boolean] =
+  def pFirstTrue(ps: Psi[Boolean]*): Psi[Boolean] =
     Psi(b => ps.exists(_.run(b)))
-
-  def pany_(ps: Psi[Boolean]*): Psi[Unit] =
-    pany(ps: _*).void
 }

@@ -1,36 +1,41 @@
 HASKELL_FILE
-  PsiErrorElement:Expected 'module' but got: {-#
-    <empty list>
-  UNKNOWN
+  PRAGMA_EXPR
     PsiElement({-#)('{-#')
     PsiElement(PRAGMA)('LANGUAGE')
-    PsiElement(PRAGMA)('RankNTypes')
-    PsiElement(#-})('#-}')
-  UNKNOWN
-    PsiElement(module)('module')
-    PsiElement(conidRegexp)('Type00003')
-    PsiElement(where)('where')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(type)('type')
-    PsiElement(conidRegexp)('Run')
-    PsiElement(varidRegexp)('t')
-    PsiElement(=)('=')
-    PsiElement(forall)('forall')
-    PsiElement(varidRegexp)('n')
-    PsiElement(varidRegexp)('b')
-    PsiElement(.)('.')
-    PsiElement(conidRegexp)('Monad')
-    PsiElement(varidRegexp)('n')
-    PsiElement(=>)('=>')
-    PsiElement(varidRegexp)('t')
-    PsiElement(varidRegexp)('n')
-    PsiElement(varidRegexp)('b')
-    PsiElement(->)('->')
-    PsiElement(varidRegexp)('n')
-    PsiElement(()('(')
-    PsiElement(conidRegexp)('StT')
-    PsiElement(varidRegexp)('t')
-    PsiElement(varidRegexp)('b')
-    PsiElement())(')')
+    PRAGMA_LANGS
+      PsiErrorElement:Expected language extension name
+        <empty list>
+    PsiErrorElement:Expected #-}
+      <empty list>
+  BODY
+    UNKNOWN
+      PsiElement(PRAGMA)('RankNTypes')
+      PsiElement(#-})('#-}')
+    UNKNOWN
+      PsiElement(module)('module')
+      PsiElement(conidRegexp)('Type00003')
+      PsiElement(where)('where')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(type)('type')
+      PsiElement(conidRegexp)('Run')
+      PsiElement(varidRegexp)('t')
+      PsiElement(=)('=')
+      PsiElement(forall)('forall')
+      PsiElement(varidRegexp)('n')
+      PsiElement(varidRegexp)('b')
+      PsiElement(.)('.')
+      PsiElement(conidRegexp)('Monad')
+      PsiElement(varidRegexp)('n')
+      PsiElement(=>)('=>')
+      PsiElement(varidRegexp)('t')
+      PsiElement(varidRegexp)('n')
+      PsiElement(varidRegexp)('b')
+      PsiElement(->)('->')
+      PsiElement(varidRegexp)('n')
+      PsiElement(()('(')
+      PsiElement(conidRegexp)('StT')
+      PsiElement(varidRegexp)('t')
+      PsiElement(varidRegexp)('b')
+      PsiElement())(')')

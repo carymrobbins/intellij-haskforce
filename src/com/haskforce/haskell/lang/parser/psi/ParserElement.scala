@@ -15,8 +15,13 @@ object Elements {
     "HASKELL_FILE", HaskellLanguage.INSTANCE)
 
   case object UNKNOWN extends ParserElement("UNKNOWN")
+
   case object MODULE_NAME extends ParserElement("MODULE_NAME")
   case object MODULE_DECL extends ParserElement("MODULE_DECL")
+
+  case object PRAGMA_EXPR extends ParserElement("PRAGMA_EXPR")
+  case object PRAGMA_LANGS extends ParserElement("PRAGMA_LANGS")
+  case object PRAGMA_LANG extends ParserElement("PRAGMA_LANG")
 
   case object IMPORT_MODULE extends ParserElement("IMPORT_MODULE")
   case object IMPORT_LIST extends ParserElement("IMPORT_LIST")
@@ -26,6 +31,8 @@ object Elements {
   case object IMPORT_EXPLICITS extends ParserElement("IMPORT_EXPLICITS")
   case object IMPORT_HIDDEN extends ParserElement("IMPORT_HIDDEN")
   case object IMPORT_HIDDENS extends ParserElement("IMPORT_HIDDENS")
+
+  case object BODY extends ParserElement("BODY")
 
   case object FOREIGN_IMPORT extends ParserElement("FOREIGN_IMPORT")
   case object FOREIGN_EXPORT extends ParserElement("FOREIGN_EXPORT")

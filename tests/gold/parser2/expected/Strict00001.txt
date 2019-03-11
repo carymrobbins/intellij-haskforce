@@ -4,30 +4,31 @@ HASKELL_FILE
     MODULE_NAME
       PsiElement(conidRegexp)('Pragma00005')
     PsiElement(where)('where')
-  UNKNOWN
-    PsiElement(data)('data')
-    PsiElement(conidRegexp)('Test')
-    PsiElement(where)('where')
-    PsiElement(conidRegexp)('Test')
-    PsiElement(::)('::')
-    PsiElement(!)('!')
-    PsiElement(conidRegexp)('Int')
-    PsiElement(->)('->')
-    PsiElement(conidRegexp)('Test')
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    <empty list>
-  UNKNOWN
-    PsiElement(data)('data')
-    PsiElement(conidRegexp)('Test2')
-    PsiElement(where)('where')
-    PsiElement(conidRegexp)('Test')
-    PsiElement(::)('::')
-    PsiElement({-#)('{-#')
-    PsiElement(PRAGMA)('UNPACK')
-    PsiElement(#-})('#-}')
-    PsiElement(!)('!')
-    PsiElement(conidRegexp)('Int')
-    PsiElement(->)('->')
-    PsiElement(conidRegexp)('Test2')
+  BODY
+    UNKNOWN
+      PsiElement(data)('data')
+      PsiElement(conidRegexp)('Test')
+      PsiElement(where)('where')
+      PsiElement(conidRegexp)('Test')
+      PsiElement(::)('::')
+      PsiElement(!)('!')
+      PsiElement(conidRegexp)('Int')
+      PsiElement(->)('->')
+      PsiElement(conidRegexp)('Test')
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      <empty list>
+    UNKNOWN
+      PsiElement(data)('data')
+      PsiElement(conidRegexp)('Test2')
+      PsiElement(where)('where')
+      PsiElement(conidRegexp)('Test')
+      PsiElement(::)('::')
+      PsiElement({-#)('{-#')
+      PsiElement(PRAGMA)('UNPACK')
+      PsiElement(#-})('#-}')
+      PsiElement(!)('!')
+      PsiElement(conidRegexp)('Int')
+      PsiElement(->)('->')
+      PsiElement(conidRegexp)('Test2')

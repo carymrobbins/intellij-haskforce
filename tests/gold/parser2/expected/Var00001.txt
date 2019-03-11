@@ -5,7 +5,8 @@ HASKELL_FILE
       PsiElement(conidRegexp)('Var00001')
     PsiElement(where)('where')
     PsiComment(comment)('-- Believe it or not, this is valid!\n')
-  UNKNOWN
-    PsiElement(qualified)('qualified')
-    PsiElement(=)('=')
-    PsiElement(conidRegexp)('True')
+  BODY
+    UNKNOWN
+      PsiElement(qualified)('qualified')
+      PsiElement(=)('=')
+      PsiElement(conidRegexp)('True')

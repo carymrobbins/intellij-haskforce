@@ -7,5 +7,5 @@ HASKELL_FILE
     PsiComment({-)('{-')
     PsiComment(commenttext)(' NOTES:\n\nThe trick of doing a copy at the end, i.e. `tellProg [copyProg loc\ne]`, when compiling WithArray is important.\n')
     PsiComment(-})('-}')
-  UNKNOWN
+  BODY
     <empty list>
