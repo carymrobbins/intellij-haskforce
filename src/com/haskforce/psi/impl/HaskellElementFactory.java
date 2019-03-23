@@ -68,8 +68,26 @@ public class HaskellElementFactory {
     }
 
     @NotNull
+    public static HaskellImpdecl createImpdeclFromText(@NotNull Project project, @NotNull String text) {
+        return ((HaskellImpdecl) (createFileFromText(project, text).getFirstChild().getFirstChild()));
+    }
+
+    @NotNull
     public static PsiWhiteSpace createNewLine(@NotNull Project project) {
         return ((PsiWhiteSpace) (createFileFromText(project, "\n")).getFirstChild());
+    }
+
+    @NotNull
+    public static PsiWhiteSpace createSpace(@NotNull Project project) {
+        return ((PsiWhiteSpace) (createFileFromText(project, " ")).getFirstChild());
+    }
+
+    @NotNull
+    public static PsiElement createComma(@NotNull Project project) {
+        HaskellFile fileFromText = createFileFromText(project, "x = (,)");
+        PsiElement rhs = fileFromText.getFirstChild().getFirstChild().getLastChild();
+        PsiElement comma = rhs.getLastChild().getFirstChild().getNextSibling();
+        return comma;
     }
 
     /**
