@@ -261,10 +261,10 @@ private typedeclnorm ::= ["family" | "instance"] typee ['=' (typee|foralltype)]
 datadecl ::= "data" ["instance"] [clscontext "=>"] [ppragma] typee ['=' ["forall" tv_bndr* '.'] constrs| [kindsig] ["where" gadtconstrs]] [deriving] {pin=1}
 newtypedecl ::= "newtype" [clscontext "=>"] simpletype '=' newconstr [deriving] {pin=1}
 classdecl ::= "class" ctype [fundeps] ["where" ppragma* cdecls] {pin=1}
-instancedecl ::= "instance" ctype ["where" idecls] {pin=1}
+instancedecl ::= "instance" ppragma? ctype ["where" idecls] {pin=1}
 defaultdecl ::= "default" <<commaSeparate typee>> {pin=1}
 foreigndecl ::= "foreign" fdecl {pin=1}
-derivingdecl ::= "deriving" "instance" [ppragma] ctype {pin=1}
+derivingdecl ::= "deriving" "newtype"? "instance" [ppragma] ctype {pin=1}
 
 private fundeps ::= '|' <<sequence fundep>> {pin=1}
 private fundep ::= tyvar+ "->" tyvar+ {pin=2}
@@ -363,7 +363,7 @@ private fielddecls ::= fielddecl [',' fielddecls] {pin(".*")=1}
 
 private fielddecl ::= vars "::" (typee | '!' atype) {pin=2}
 
-private deriving ::= "deriving" (dclass  | <<commaSeparate dclass>>) {pin=1}
+private deriving ::= "deriving" "newtype"? (dclass  | <<commaSeparate dclass>>) {pin=1}
 private dclass ::= qtycls (dclass|tyvar)*
 
 private fdecl ::= (importdecl | exportdecl) var "::" [clscontext "=>"] ftype
@@ -412,7 +412,7 @@ private infixexp ::= '-'* lexp [qop infixexp]
 
 letexp ::= "let" decls ["in" exp]
 
-private lexp ::= "\\case" altslist
+private lexp ::= LCASETOK altslist
                | '\' (apat | thaexp)+ "->" exp
                | letexp
                | "if" exp [semi] "then" exp [semi] "else" exp
@@ -435,6 +435,10 @@ private aexp ::= parensplice exp i ')'
                | [recordlikelhs] i '{' (fbind ',')* [e] (".." | fbind) [e] '}'
                | gcon
                | qvar
+               // Hole
+               | "_"
+               // Type application
+               | "@" ("_" | ctype)
 
 qqblob ::= qqtext+ {
     methods=[isValidHost updateText createLiteralTextEscaper]

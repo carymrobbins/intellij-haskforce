@@ -33,7 +33,7 @@ public interface HaskellVarid extends HaskellNamedElement, StubBasedPsiElement<H
   PsiReference getReference();
 
   @Nullable
-  PsiElement setName(String newName);
+  PsiElement setName(@NotNull String newName);
 
   @NotNull
   ItemPresentation getPresentation();

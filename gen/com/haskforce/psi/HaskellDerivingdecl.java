@@ -19,4 +19,7 @@ public interface HaskellDerivingdecl extends HaskellCompositeElement {
   @Nullable
   PsiElement getInstance();
 
+  @Nullable
+  PsiElement getNewtype();
+
 }

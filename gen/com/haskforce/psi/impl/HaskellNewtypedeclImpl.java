@@ -62,12 +62,6 @@ public class HaskellNewtypedeclImpl extends HaskellCompositeElementImpl implemen
   }
 
   @Override
-  @NotNull
-  public PsiElement getNewtype() {
-    return notNullChild(findChildByType(NEWTYPE));
-  }
-
-  @Override
   @Nullable
   public PsiElement getDoublearrow() {
     return findChildByType(DOUBLEARROW);

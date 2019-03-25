@@ -46,7 +46,7 @@ When hacking on HaskForce, you may need the following plugins -
 * **Scala**
 * **PsiViewer** - Useful for viewing parse trees
 * **JFlex Support 1.5.1** - Generate lexers
-* **Grammar Kit 1.4.3** - Generate parsers
+* **Grammar Kit 2017.1.5** - Generate parsers
 
 To import this project in IntelliJ, use `File > Open`, navigate to
 the project directory, then click `OK`.

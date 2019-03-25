@@ -13,6 +13,9 @@ public interface HaskellBody extends HaskellCompositeElement {
   @Nullable
   HaskellClassdecl getClassdecl();
 
+  @NotNull
+  List<HaskellCtype> getCtypeList();
+
   @Nullable
   HaskellDatadecl getDatadecl();
 
@@ -96,6 +99,9 @@ public interface HaskellBody extends HaskellCompositeElement {
 
   @Nullable
   PsiElement getIf();
+
+  @Nullable
+  PsiElement getLcasetok();
 
   @Nullable
   PsiElement getMdotok();

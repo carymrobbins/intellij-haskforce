@@ -38,6 +38,12 @@ public class HaskellBodyImpl extends HaskellCompositeElementImpl implements Hask
   }
 
   @Override
+  @NotNull
+  public List<HaskellCtype> getCtypeList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellCtype.class);
+  }
+
+  @Override
   @Nullable
   public HaskellDatadecl getDatadecl() {
     return PsiTreeUtil.getChildOfType(this, HaskellDatadecl.class);
@@ -203,6 +209,12 @@ public class HaskellBodyImpl extends HaskellCompositeElementImpl implements Hask
   @Nullable
   public PsiElement getIf() {
     return findChildByType(IF);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getLcasetok() {
+    return findChildByType(LCASETOK);
   }
 
   @Override
