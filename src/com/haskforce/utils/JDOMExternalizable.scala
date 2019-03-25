@@ -14,6 +14,14 @@ trait JDOMExternalizable[A] {
 
 object JDOMExternalizable {
 
+  def readExternal[A](element: Element)(implicit ev: JDOMExternalizable[A]): A = {
+    ev.readExternal(element)
+  }
+
+  def writeExternal[A](element: Element, a: A)(implicit ev: JDOMExternalizable[A]): Unit = {
+    ev.writeExternal(element, a)
+  }
+
   def apply[A](implicit ev: JDOMExternalizable[A]): JDOMExternalizable[A] = ev
 
   def instance[A](
@@ -40,6 +48,53 @@ object JDOMExternalizable {
       (e, cc) => {
         val v1 = unsafeUnapplyGet(un(cc))
         aField.writeField(aName, e, v1)
+      }
+    )
+  }
+
+  def derive2[CC <: Product : TypeTag, A, B](
+    ap: (A, B) => CC,
+    un: CC => Option[(A, B)]
+  )(
+    implicit
+    aField: JDOMFieldExternalizable[A],
+    bField: JDOMFieldExternalizable[B]
+  ): JDOMExternalizable[CC] = {
+    val List(aName, bName) = MetaUtil.caseFieldNames[CC]
+    instance(
+      e => ap(
+        aField.readField(aName, e),
+        bField.readField(bName, e)
+      ),
+      (e, cc) => {
+        val (a, b) = unsafeUnapplyGet(un(cc))
+        aField.writeField(aName, e, a)
+        bField.writeField(bName, e, b)
+      }
+    )
+  }
+
+  def derive3[CC <: Product : TypeTag, A, B, C](
+    ap: (A, B, C) => CC,
+    un: CC => Option[(A, B, C)]
+  )(
+    implicit
+    aField: JDOMFieldExternalizable[A],
+    bField: JDOMFieldExternalizable[B],
+    cField: JDOMFieldExternalizable[C]
+  ): JDOMExternalizable[CC] = {
+    val List(aName, bName, cName) = MetaUtil.caseFieldNames[CC]
+    instance(
+      e => ap(
+        aField.readField(aName, e),
+        bField.readField(bName, e),
+        cField.readField(cName, e)
+      ),
+      (e, cc) => {
+        val (a, b, c) = unsafeUnapplyGet(un(cc))
+        aField.writeField(aName, e, a)
+        bField.writeField(bName, e, b)
+        cField.writeField(cName, e, c)
       }
     )
   }
@@ -98,9 +153,26 @@ object JDOMFieldExternalizable {
     override def writeField(n: String, e: Element, a: A): Unit = w(n, e, a)
   }
 
+  private def readFieldParser[A](p: String => A): (String, Element) => A = {
+    (name, elem) => p(JDOMExternalizerUtil.readField(elem, name))
+  }
+
+  private def writeFieldFromToString[A](name: String, elem: Element, a: A): Unit = {
+    JDOMExternalizerUtil.writeField(elem, name, a.toString)
+  }
+
   implicit val string: JDOMFieldExternalizable[String] = instance(
-    (n, e) => JDOMExternalizerUtil.readField(e, n),
-    (n, e, a) => JDOMExternalizerUtil.writeField(e, n, a)
+    readFieldParser(identity),
+    writeFieldFromToString
+  )
+
+  implicit val bool: JDOMFieldExternalizable[Boolean] = instance(
+    readFieldParser {
+      case "true" => true
+      case "false" => false
+      case s => throw new IllegalArgumentException(s"JDOMFieldExternalizable expected bool but got string: $s")
+    },
+    writeFieldFromToString
   )
 
   implicit val envVarData: JDOMFieldExternalizable[EnvironmentVariablesData] = instance(
