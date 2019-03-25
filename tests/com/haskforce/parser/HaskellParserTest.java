@@ -35,6 +35,8 @@ public class HaskellParserTest extends HaskellParserTestBase {
     public void testArrow00001()        { doTest(true, true); }
     public void testCase00001()         { doTest(true, true); }
     public void testCPP00001()          { doTest(true, true); }
+    public void testDerivingStrategies00001() { doTest(true, true); }
+    public void testDerivingVia00001()  { doTest(true, true); }
     public void testExport00001()       { doTest(true, true); }
     public void testEta00001()          { doTest(true, true); }
     public void testFun00001()          { doTest(true, true); }
@@ -95,6 +97,7 @@ public class HaskellParserTest extends HaskellParserTestBase {
     public void testLayout00023()       { doTest(true, true); }
     public void testLayout00024()       { doTest(true, true); }
     public void testLayout00025()       { doTest(true, true); }
+    public void testLayout00026()       { doTest(true, true); }
     public void testLet00001()          { doTest(true, true); }
     public void testList00001()         { doTest(true, true); }
     public void testList00002()         { doTest(true, true); }

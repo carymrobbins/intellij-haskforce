@@ -41,13 +41,13 @@ public interface HaskellIdecl extends HaskellCompositeElement {
   List<HaskellTyvar> getTyvarList();
 
   @NotNull
+  List<HaskellVarid> getVaridList();
+
+  @NotNull
   List<HaskellVars> getVarsList();
 
   @Nullable
   PsiElement getData();
-
-  @Nullable
-  PsiElement getDeriving();
 
   @Nullable
   PsiElement getType();
@@ -63,11 +63,5 @@ public interface HaskellIdecl extends HaskellCompositeElement {
 
   @Nullable
   PsiElement getEquals();
-
-  @Nullable
-  PsiElement getLparen();
-
-  @Nullable
-  PsiElement getRparen();
 
 }

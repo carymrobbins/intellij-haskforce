@@ -10,6 +10,9 @@ public interface HaskellNewtypedecl extends HaskellCompositeElement {
   @Nullable
   HaskellClscontext getClscontext();
 
+  @NotNull
+  List<HaskellCtype> getCtypeList();
+
   @Nullable
   HaskellNewconstr getNewconstr();
 
@@ -22,19 +25,13 @@ public interface HaskellNewtypedecl extends HaskellCompositeElement {
   @NotNull
   List<HaskellTyvar> getTyvarList();
 
-  @Nullable
-  PsiElement getDeriving();
+  @NotNull
+  List<HaskellVarid> getVaridList();
 
   @Nullable
   PsiElement getDoublearrow();
 
   @Nullable
   PsiElement getEquals();
-
-  @Nullable
-  PsiElement getLparen();
-
-  @Nullable
-  PsiElement getRparen();
 
 }
