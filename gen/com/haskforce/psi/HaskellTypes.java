@@ -202,7 +202,7 @@ public interface HaskellTypes {
   class Factory {
     public static PsiElement createElement(ASTNode node) {
       IElementType type = node.getElementType();
-       if (type == AKIND) {
+      if (type == AKIND) {
         return new HaskellAkindImpl(node);
       }
       else if (type == ALT) {

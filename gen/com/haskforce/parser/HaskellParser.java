@@ -6509,67 +6509,67 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  final static Parser FALSE_parser_ = new Parser() {
+  static final Parser FALSE_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return consumeToken(b, FALSE);
     }
   };
-  final static Parser TRUE_parser_ = new Parser() {
+  static final Parser TRUE_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return consumeToken(b, TRUE);
     }
   };
-  final static Parser cname_parser_ = new Parser() {
+  static final Parser cname_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return cname(b, l + 1);
     }
   };
-  final static Parser con_parser_ = new Parser() {
+  static final Parser con_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return con(b, l + 1);
     }
   };
-  final static Parser ctype_parser_ = new Parser() {
+  static final Parser ctype_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return ctype(b, l + 1);
     }
   };
-  final static Parser dclass_parser_ = new Parser() {
+  static final Parser dclass_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return dclass(b, l + 1);
     }
   };
-  final static Parser exports_0_0_parser_ = new Parser() {
+  static final Parser exports_0_0_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return exports_0_0(b, l + 1);
     }
   };
-  final static Parser fundep_parser_ = new Parser() {
+  static final Parser fundep_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return fundep(b, l + 1);
     }
   };
-  final static Parser impspec_0_2_0_0_parser_ = new Parser() {
+  static final Parser impspec_0_2_0_0_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return impspec_0_2_0_0(b, l + 1);
     }
   };
-  final static Parser op_parser_ = new Parser() {
+  static final Parser op_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return op(b, l + 1);
     }
   };
-  final static Parser qvar_parser_ = new Parser() {
+  static final Parser qvar_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return qvar(b, l + 1);
     }
   };
-  final static Parser typee_parser_ = new Parser() {
+  static final Parser typee_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return typee(b, l + 1);
     }
   };
-  final static Parser var_parser_ = new Parser() {
+  static final Parser var_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return var(b, l + 1);
     }
