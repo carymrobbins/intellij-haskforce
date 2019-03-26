@@ -53,6 +53,9 @@ public interface HaskellDatadecl extends HaskellCompositeElement {
   PsiElement getData();
 
   @Nullable
+  PsiElement getFamilytoken();
+
+  @Nullable
   PsiElement getForalltoken();
 
   @Nullable

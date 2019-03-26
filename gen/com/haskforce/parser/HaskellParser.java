@@ -1937,7 +1937,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // "data" ["instance"] [clscontext "=>"] [ppragma] typee ['=' ["forall" tv_bndr* '.'] constrs| [kindsig] ["where" gadtconstrs]] deriving*
+  // "data" ["family"|"instance"] [clscontext "=>"] [ppragma] typee ['=' ["forall" tv_bndr* '.'] constrs| [kindsig] ["where" gadtconstrs]] deriving*
   public static boolean datadecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "datadecl")) return false;
     if (!nextTokenIs(b, DATA)) return false;
@@ -1955,11 +1955,22 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // ["instance"]
+  // ["family"|"instance"]
   private static boolean datadecl_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "datadecl_1")) return false;
-    consumeToken(b, INSTANCE);
+    datadecl_1_0(b, l + 1);
     return true;
+  }
+
+  // "family"|"instance"
+  private static boolean datadecl_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "datadecl_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, FAMILYTOKEN);
+    if (!r) r = consumeToken(b, INSTANCE);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   // [clscontext "=>"]

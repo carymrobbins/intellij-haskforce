@@ -117,6 +117,12 @@ public class HaskellDatadeclImpl extends HaskellCompositeElementImpl implements 
 
   @Override
   @Nullable
+  public PsiElement getFamilytoken() {
+    return findChildByType(FAMILYTOKEN);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getForalltoken() {
     return findChildByType(FORALLTOKEN);
   }
