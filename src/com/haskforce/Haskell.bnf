@@ -258,13 +258,13 @@ private typedeclnorm ::= ["family" | "instance"] typee ['=' (typee|foralltype)]
 
 // Both data declaration and gadt declaration. The syntactic difference between
 // the two is between typee and [deriving].
-datadecl ::= "data" ["instance"] [clscontext "=>"] [ppragma] typee ['=' ["forall" tv_bndr* '.'] constrs| [kindsig] ["where" gadtconstrs]] [deriving] {pin=1}
-newtypedecl ::= "newtype" [clscontext "=>"] simpletype '=' newconstr [deriving] {pin=1}
+datadecl ::= "data" ["family"|"instance"] [clscontext "=>"] [ppragma] typee ['=' ["forall" tv_bndr* '.'] constrs| [kindsig] ["where" gadtconstrs]] deriving* {pin=1}
+newtypedecl ::= "newtype" [clscontext "=>"] simpletype '=' newconstr deriving* {pin=1}
 classdecl ::= "class" ctype [fundeps] ["where" ppragma* cdecls] {pin=1}
 instancedecl ::= "instance" ppragma? ctype ["where" idecls] {pin=1}
 defaultdecl ::= "default" <<commaSeparate typee>> {pin=1}
 foreigndecl ::= "foreign" fdecl {pin=1}
-derivingdecl ::= "deriving" "newtype"? "instance" [ppragma] ctype {pin=1}
+derivingdecl ::= "deriving" ("via" ctype|"newtype"|varid)? "instance" [ppragma] ctype {pin=1}
 
 private fundeps ::= '|' <<sequence fundep>> {pin=1}
 private fundep ::= tyvar+ "->" tyvar+ {pin=2}
@@ -291,7 +291,7 @@ idecl ::= itdecl
         | funorpatdecl
 
 private itdecl ::= "type" ctype '=' ctype
-                 | ("data" | "newtype") ctype ([kindsig] gadtconstrs | ['=' constrs]) [deriving]
+                 | ("data" | "newtype") ctype ([kindsig] gadtconstrs | ['=' constrs]) deriving*
 
 gendecl ::= gendeclfst
           | fixity [integertoken] (<<sequence op>>) {pin(".*")=1}
@@ -363,7 +363,7 @@ private fielddecls ::= fielddecl [',' fielddecls] {pin(".*")=1}
 
 private fielddecl ::= vars "::" (typee | '!' atype) {pin=2}
 
-private deriving ::= "deriving" "newtype"? (dclass  | <<commaSeparate dclass>>) {pin=1}
+private deriving ::= "deriving" ("newtype"|varid)? (dclass  | <<commaSeparate dclass>>) ("via" ctype)? {pin=1}
 private dclass ::= qtycls (dclass|tyvar)*
 
 private fdecl ::= (importdecl | exportdecl) var "::" [clscontext "=>"] ftype

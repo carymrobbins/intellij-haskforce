@@ -44,22 +44,22 @@ public interface HaskellDatadecl extends HaskellCompositeElement {
   List<HaskellTyvar> getTyvarList();
 
   @NotNull
+  List<HaskellVarid> getVaridList();
+
+  @NotNull
   List<HaskellVars> getVarsList();
 
   @NotNull
   PsiElement getData();
 
   @Nullable
-  PsiElement getDeriving();
+  PsiElement getFamilytoken();
 
   @Nullable
   PsiElement getForalltoken();
 
   @Nullable
   PsiElement getInstance();
-
-  @Nullable
-  PsiElement getNewtype();
 
   @Nullable
   PsiElement getWhere();
@@ -74,12 +74,6 @@ public interface HaskellDatadecl extends HaskellCompositeElement {
   PsiElement getEquals();
 
   @Nullable
-  PsiElement getLparen();
-
-  @Nullable
   PsiElement getPeriod();
-
-  @Nullable
-  PsiElement getRparen();
 
 }

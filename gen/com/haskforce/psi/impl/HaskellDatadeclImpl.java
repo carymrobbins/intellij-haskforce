@@ -99,6 +99,12 @@ public class HaskellDatadeclImpl extends HaskellCompositeElementImpl implements 
 
   @Override
   @NotNull
+  public List<HaskellVarid> getVaridList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVarid.class);
+  }
+
+  @Override
+  @NotNull
   public List<HaskellVars> getVarsList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVars.class);
   }
@@ -111,8 +117,8 @@ public class HaskellDatadeclImpl extends HaskellCompositeElementImpl implements 
 
   @Override
   @Nullable
-  public PsiElement getDeriving() {
-    return findChildByType(DERIVING);
+  public PsiElement getFamilytoken() {
+    return findChildByType(FAMILYTOKEN);
   }
 
   @Override
@@ -125,12 +131,6 @@ public class HaskellDatadeclImpl extends HaskellCompositeElementImpl implements 
   @Nullable
   public PsiElement getInstance() {
     return findChildByType(INSTANCE);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getNewtype() {
-    return findChildByType(NEWTYPE);
   }
 
   @Override
@@ -159,20 +159,8 @@ public class HaskellDatadeclImpl extends HaskellCompositeElementImpl implements 
 
   @Override
   @Nullable
-  public PsiElement getLparen() {
-    return findChildByType(LPAREN);
-  }
-
-  @Override
-  @Nullable
   public PsiElement getPeriod() {
     return findChildByType(PERIOD);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getRparen() {
-    return findChildByType(RPAREN);
   }
 
 }

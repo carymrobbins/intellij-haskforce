@@ -1937,7 +1937,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // "data" ["instance"] [clscontext "=>"] [ppragma] typee ['=' ["forall" tv_bndr* '.'] constrs| [kindsig] ["where" gadtconstrs]] [deriving]
+  // "data" ["family"|"instance"] [clscontext "=>"] [ppragma] typee ['=' ["forall" tv_bndr* '.'] constrs| [kindsig] ["where" gadtconstrs]] deriving*
   public static boolean datadecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "datadecl")) return false;
     if (!nextTokenIs(b, DATA)) return false;
@@ -1955,11 +1955,22 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // ["instance"]
+  // ["family"|"instance"]
   private static boolean datadecl_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "datadecl_1")) return false;
-    consumeToken(b, INSTANCE);
+    datadecl_1_0(b, l + 1);
     return true;
+  }
+
+  // "family"|"instance"
+  private static boolean datadecl_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "datadecl_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, FAMILYTOKEN);
+    if (!r) r = consumeToken(b, INSTANCE);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   // [clscontext "=>"]
@@ -2083,10 +2094,14 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // [deriving]
+  // deriving*
   private static boolean datadecl_6(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "datadecl_6")) return false;
-    deriving(b, l + 1);
+    while (true) {
+      int c = current_position_(b);
+      if (!deriving(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "datadecl_6", c)) break;
+    }
     return true;
   }
 
@@ -2225,7 +2240,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // "deriving" "newtype"? (dclass  | <<commaSeparate dclass>>)
+  // "deriving" ("newtype"|varid)? (dclass  | <<commaSeparate dclass>>) ("via" ctype)?
   static boolean deriving(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "deriving")) return false;
     if (!nextTokenIs(b, DERIVING)) return false;
@@ -2234,16 +2249,28 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     r = consumeToken(b, DERIVING);
     p = r; // pin = 1
     r = r && report_error_(b, deriving_1(b, l + 1));
-    r = p && deriving_2(b, l + 1) && r;
+    r = p && report_error_(b, deriving_2(b, l + 1)) && r;
+    r = p && deriving_3(b, l + 1) && r;
     exit_section_(b, l, m, r, p, null);
     return r || p;
   }
 
-  // "newtype"?
+  // ("newtype"|varid)?
   private static boolean deriving_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "deriving_1")) return false;
-    consumeToken(b, NEWTYPE);
+    deriving_1_0(b, l + 1);
     return true;
+  }
+
+  // "newtype"|varid
+  private static boolean deriving_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "deriving_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, NEWTYPE);
+    if (!r) r = varid(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   // dclass  | <<commaSeparate dclass>>
@@ -2257,8 +2284,26 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r;
   }
 
+  // ("via" ctype)?
+  private static boolean deriving_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "deriving_3")) return false;
+    deriving_3_0(b, l + 1);
+    return true;
+  }
+
+  // "via" ctype
+  private static boolean deriving_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "deriving_3_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, "via");
+    r = r && ctype(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
   /* ********************************************************** */
-  // "deriving" "newtype"? "instance" [ppragma] ctype
+  // "deriving" ("via" ctype|"newtype"|varid)? "instance" [ppragma] ctype
   public static boolean derivingdecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "derivingdecl")) return false;
     if (!nextTokenIs(b, DERIVING)) return false;
@@ -2274,11 +2319,34 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  // "newtype"?
+  // ("via" ctype|"newtype"|varid)?
   private static boolean derivingdecl_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "derivingdecl_1")) return false;
-    consumeToken(b, NEWTYPE);
+    derivingdecl_1_0(b, l + 1);
     return true;
+  }
+
+  // "via" ctype|"newtype"|varid
+  private static boolean derivingdecl_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "derivingdecl_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = derivingdecl_1_0_0(b, l + 1);
+    if (!r) r = consumeToken(b, NEWTYPE);
+    if (!r) r = varid(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // "via" ctype
+  private static boolean derivingdecl_1_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "derivingdecl_1_0_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, "via");
+    r = r && ctype(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
   }
 
   // [ppragma]
@@ -3843,7 +3911,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // "type" ctype '=' ctype
-  //                  | ("data" | "newtype") ctype ([kindsig] gadtconstrs | ['=' constrs]) [deriving]
+  //                  | ("data" | "newtype") ctype ([kindsig] gadtconstrs | ['=' constrs]) deriving*
   static boolean itdecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "itdecl")) return false;
     boolean r;
@@ -3867,7 +3935,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ("data" | "newtype") ctype ([kindsig] gadtconstrs | ['=' constrs]) [deriving]
+  // ("data" | "newtype") ctype ([kindsig] gadtconstrs | ['=' constrs]) deriving*
   private static boolean itdecl_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "itdecl_1")) return false;
     boolean r;
@@ -3938,10 +4006,14 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // [deriving]
+  // deriving*
   private static boolean itdecl_1_3(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "itdecl_1_3")) return false;
-    deriving(b, l + 1);
+    while (true) {
+      int c = current_position_(b);
+      if (!deriving(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "itdecl_1_3", c)) break;
+    }
     return true;
   }
 
@@ -4685,7 +4757,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // "newtype" [clscontext "=>"] simpletype '=' newconstr [deriving]
+  // "newtype" [clscontext "=>"] simpletype '=' newconstr deriving*
   public static boolean newtypedecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "newtypedecl")) return false;
     if (!nextTokenIs(b, NEWTYPE)) return false;
@@ -4720,10 +4792,14 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // [deriving]
+  // deriving*
   private static boolean newtypedecl_5(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "newtypedecl_5")) return false;
-    deriving(b, l + 1);
+    while (true) {
+      int c = current_position_(b);
+      if (!deriving(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "newtypedecl_5", c)) break;
+    }
     return true;
   }
 
@@ -6509,67 +6585,67 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r || p;
   }
 
-  final static Parser FALSE_parser_ = new Parser() {
+  static final Parser FALSE_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return consumeToken(b, FALSE);
     }
   };
-  final static Parser TRUE_parser_ = new Parser() {
+  static final Parser TRUE_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return consumeToken(b, TRUE);
     }
   };
-  final static Parser cname_parser_ = new Parser() {
+  static final Parser cname_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return cname(b, l + 1);
     }
   };
-  final static Parser con_parser_ = new Parser() {
+  static final Parser con_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return con(b, l + 1);
     }
   };
-  final static Parser ctype_parser_ = new Parser() {
+  static final Parser ctype_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return ctype(b, l + 1);
     }
   };
-  final static Parser dclass_parser_ = new Parser() {
+  static final Parser dclass_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return dclass(b, l + 1);
     }
   };
-  final static Parser exports_0_0_parser_ = new Parser() {
+  static final Parser exports_0_0_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return exports_0_0(b, l + 1);
     }
   };
-  final static Parser fundep_parser_ = new Parser() {
+  static final Parser fundep_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return fundep(b, l + 1);
     }
   };
-  final static Parser impspec_0_2_0_0_parser_ = new Parser() {
+  static final Parser impspec_0_2_0_0_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return impspec_0_2_0_0(b, l + 1);
     }
   };
-  final static Parser op_parser_ = new Parser() {
+  static final Parser op_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return op(b, l + 1);
     }
   };
-  final static Parser qvar_parser_ = new Parser() {
+  static final Parser qvar_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return qvar(b, l + 1);
     }
   };
-  final static Parser typee_parser_ = new Parser() {
+  static final Parser typee_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return typee(b, l + 1);
     }
   };
-  final static Parser var_parser_ = new Parser() {
+  static final Parser var_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return var(b, l + 1);
     }

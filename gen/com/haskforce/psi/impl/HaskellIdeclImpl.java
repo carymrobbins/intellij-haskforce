@@ -93,6 +93,12 @@ public class HaskellIdeclImpl extends HaskellCompositeElementImpl implements Has
 
   @Override
   @NotNull
+  public List<HaskellVarid> getVaridList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVarid.class);
+  }
+
+  @Override
+  @NotNull
   public List<HaskellVars> getVarsList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVars.class);
   }
@@ -101,12 +107,6 @@ public class HaskellIdeclImpl extends HaskellCompositeElementImpl implements Has
   @Nullable
   public PsiElement getData() {
     return findChildByType(DATA);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getDeriving() {
-    return findChildByType(DERIVING);
   }
 
   @Override
@@ -137,18 +137,6 @@ public class HaskellIdeclImpl extends HaskellCompositeElementImpl implements Has
   @Nullable
   public PsiElement getEquals() {
     return findChildByType(EQUALS);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getLparen() {
-    return findChildByType(LPAREN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getRparen() {
-    return findChildByType(RPAREN);
   }
 
 }
