@@ -7,7 +7,16 @@ import com.haskforce.macros.string.dedent
 class AddToImportsTest
   extends HaskellLightPlatformCodeInsightFixtureTestCase("add-to-imports") {
 
-  def testSimpleCreateImportNoModule(): Unit = {
+  // This is actually an impossible state but convenient for testing.
+  def testCreateImportEmptyFile(): Unit = {
+    given("")
+      .whenAddingImport("Control.Monad", "when")
+      .shouldBe(dedent("""
+         import Control.Monad (when)
+         """))
+  }
+
+  def testCreateImportNoModule(): Unit = {
     given(dedent("""
          main = when True $ print 1
          """))
@@ -19,7 +28,7 @@ class AddToImportsTest
          """))
   }
 
-  def testSimpleCreateImportWithModule(): Unit = {
+  def testCreateVaridImport(): Unit = {
     given(dedent("""
          module Main where
 
@@ -32,6 +41,25 @@ class AddToImportsTest
          import Control.Monad (when)
 
          main = when True $ print 1
+         """))
+  }
+
+  // TODO: Need to figure out how to deal with constructors.
+  def testCreateConidImport(): Unit = {
+    given("")
+      .whenAddingImport("Data.Monoid", "Sum")
+      .shouldBe(dedent("""
+         import Data.Monoid (Sum)
+         """))
+  }
+
+  def testAppendConsymImport(): Unit = {
+    given(dedent("""
+         import Servant (Server)
+         """))
+      .whenAddingImport("Servant", ":<|>")
+      .shouldBe(dedent("""
+         import Servant (Server, (:<|>))
          """))
   }
 

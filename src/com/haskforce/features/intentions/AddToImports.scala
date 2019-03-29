@@ -81,26 +81,37 @@ class AddToImports(val symbolName: String) extends BaseIntentionAction {
 object AddToImports {
 
   def appendToExistingImport(project: Project, symbolName: String, impDecl: HaskellImpdecl): Unit = {
-    val importt = impDecl.getImporttList.iterator().next()
     val rParen = impDecl.getRparen
-    importt.addBefore(HaskellElementFactory.createComma(project), rParen)
-    importt.addBefore(HaskellElementFactory.createSpace(project), rParen)
-    importt.addBefore(mkImportt(project, symbolName), rParen)
+    impDecl.addBefore(HaskellElementFactory.createComma(project), rParen)
+    impDecl.addBefore(HaskellElementFactory.createSpace(project), rParen)
+    impDecl.addBefore(mkImportt(project, symbolName), rParen)
   }
 
   def createNewImport(file: PsiFile, project: Project, importName: String, symbolName: String, imports: Iterable[HaskellImpdecl]): Unit = {
     val impDecl = mkImpDecl(project, importName, symbolName)
-    val body = PsiTreeUtil.getChildOfType(file, classOf[HaskellBody])
+    val optBody = Option(PsiTreeUtil.getChildOfType(file, classOf[HaskellBody]))
     val newline = HaskellElementFactory.createNewLine(project)
     if (imports.nonEmpty) {
-      body.addAfter(newline, imports.last)
-      body.addAfter(impDecl, imports.last.getNextSibling)
+      optBody match {
+        case Some(b) =>
+          b.addAfter(newline, imports.last)
+          b.addAfter(impDecl, imports.last.getNextSibling)
+        case None =>
+          throw new RuntimeException("Impossible case! Imports found without a body!")
+      }
     }
     else {
-      val firstChild = body.getFirstChild
-      val impDeclAdded = body.addBefore(impDecl, firstChild)
-      body.addBefore(newline, firstChild)
-      body.addAfter(newline, impDeclAdded)
+      optBody.flatMap(b => Option(b.getFirstChild).map(c => (b, c))) match {
+        case Some((b, firstChild)) =>
+          val impDeclAdded = b.addBefore(impDecl, firstChild)
+          b.addBefore(newline, firstChild)
+          b.addAfter(newline, impDeclAdded)
+        case None =>
+          // This really shouldn't happen since the user can't invoke auto-import
+          // without there being a non-empty Haskell body, but it's here for
+          // completeness and usefulness in tests.
+          file.add(impDecl)
+      }
     }
   }
 
