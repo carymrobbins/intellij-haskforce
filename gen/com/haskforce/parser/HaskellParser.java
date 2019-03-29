@@ -2109,7 +2109,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   // qtycls (dclass|tyvar)*
   static boolean dclass(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "dclass")) return false;
-    if (!nextTokenIs(b, CONIDREGEXP)) return false;
+    if (!nextTokenIs(b, "", CONIDREGEXP, LPAREN)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = qtycls(b, l + 1);
@@ -3714,7 +3714,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // var
-  //           // Really (tycon|tycls), but they are both ::= conid.
+  //           // Really (tycon|tycls), but they are both identical
   //           | tycon ['(' (".." | cnames | vars) ')']
   public static boolean importt(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "importt")) return false;
@@ -5440,12 +5440,12 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   // [modulePrefix] tycls
   public static boolean qtycls(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "qtycls")) return false;
-    if (!nextTokenIs(b, CONIDREGEXP)) return false;
+    if (!nextTokenIs(b, "<qtycls>", CONIDREGEXP, LPAREN)) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_, QTYCLS, "<qtycls>");
     r = qtycls_0(b, l + 1);
     r = r && tycls(b, l + 1);
-    exit_section_(b, m, QTYCLS, r);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -5460,12 +5460,12 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   // [modulePrefix] tycon
   public static boolean qtycon(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "qtycon")) return false;
-    if (!nextTokenIs(b, CONIDREGEXP)) return false;
+    if (!nextTokenIs(b, "<qtycon>", CONIDREGEXP, LPAREN)) return false;
     boolean r;
-    Marker m = enter_section_(b);
+    Marker m = enter_section_(b, l, _NONE_, QTYCON, "<qtycon>");
     r = qtycon_0(b, l + 1);
     r = r && tycon(b, l + 1);
-    exit_section_(b, m, QTYCON, r);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -5853,7 +5853,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   // tycon tyvar*
   static boolean simpletype(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "simpletype")) return false;
-    if (!nextTokenIs(b, CONIDREGEXP)) return false;
+    if (!nextTokenIs(b, "", CONIDREGEXP, LPAREN)) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = tycon(b, l + 1);
@@ -6252,26 +6252,52 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // conid
+  // conid | '(' consym ')'
   public static boolean tycls(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "tycls")) return false;
-    if (!nextTokenIs(b, CONIDREGEXP)) return false;
+    if (!nextTokenIs(b, "<tycls>", CONIDREGEXP, LPAREN)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, TYCLS, "<tycls>");
+    r = conid(b, l + 1);
+    if (!r) r = tycls_1(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // '(' consym ')'
+  private static boolean tycls_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tycls_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = conid(b, l + 1);
-    exit_section_(b, m, TYCLS, r);
+    r = consumeToken(b, LPAREN);
+    r = r && consym(b, l + 1);
+    r = r && consumeToken(b, RPAREN);
+    exit_section_(b, m, null, r);
     return r;
   }
 
   /* ********************************************************** */
-  // conid
+  // conid | '(' consym ')'
   public static boolean tycon(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "tycon")) return false;
-    if (!nextTokenIs(b, CONIDREGEXP)) return false;
+    if (!nextTokenIs(b, "<tycon>", CONIDREGEXP, LPAREN)) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NONE_, TYCON, "<tycon>");
+    r = conid(b, l + 1);
+    if (!r) r = tycon_1(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // '(' consym ')'
+  private static boolean tycon_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "tycon_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = conid(b, l + 1);
-    exit_section_(b, m, TYCON, r);
+    r = consumeToken(b, LPAREN);
+    r = r && consym(b, l + 1);
+    r = r && consumeToken(b, RPAREN);
+    exit_section_(b, m, null, r);
     return r;
   }
 

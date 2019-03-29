@@ -7,7 +7,16 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellTycls extends HaskellCompositeElement {
 
-  @NotNull
+  @Nullable
   HaskellConid getConid();
+
+  @Nullable
+  HaskellConsym getConsym();
+
+  @Nullable
+  PsiElement getLparen();
+
+  @Nullable
+  PsiElement getRparen();
 
 }

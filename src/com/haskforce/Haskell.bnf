@@ -229,7 +229,7 @@ impempty ::= "()"
 
 // Workaround for https://github.com/JetBrains/Grammar-Kit/issues/32.
 importt ::= var
-          // Really (tycon|tycls), but they are both ::= conid.
+          // Really (tycon|tycls), but they are both identical
           | tycon ['(' (".." | cnames | vars) ')']
 
 private cnames ::= <<sequence cname>>
@@ -586,8 +586,8 @@ consym ::= CONSYMTOK
 // reservedop ::= '..' | '::' | '=' | '\' | '|' | '<-' | '->' | '@' | '~' | '=>'
 
 tyvar ::= varid
-tycon ::= conid
-tycls ::= conid
+tycon ::= conid | '(' consym ')'
+tycls ::= conid | '(' consym ')'
 private modulePrefix ::= (conid '.')+
 
 qvarid ::= [modulePrefix] varid
