@@ -1,7 +1,7 @@
 package com.haskforce.features.intentions
 
 import com.haskforce.highlighting.annotation.external.{SymbolImportProvider, SymbolImportProviderFactory}
-import com.haskforce.psi.{HaskellBody, HaskellImpdecl, HaskellImportt}
+import com.haskforce.psi.{HaskellBody, HaskellImpdecl}
 import com.haskforce.psi.impl.HaskellElementFactory
 import com.haskforce.utils.NotificationUtil
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction
@@ -10,7 +10,7 @@ import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
-import com.intellij.psi.{PsiElement, PsiFile}
+import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.components.JBList
 import com.intellij.util.IncorrectOperationException
@@ -98,8 +98,9 @@ object AddToImports {
     }
     else {
       val firstChild = body.getFirstChild
-      body.addBefore(impDecl, firstChild)
+      val impDeclAdded = body.addBefore(impDecl, firstChild)
       body.addBefore(newline, firstChild)
+      body.addAfter(newline, impDeclAdded)
     }
   }
 
