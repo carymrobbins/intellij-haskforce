@@ -17,6 +17,51 @@
       <a href="https://github.com/carymrobbins/intellij-haskforce/issues">bug tracker</a>.
     </p>
     <p>
+      <b>v0.3.42</b>
+      <ul>
+        <li>Auto-import support via ghc-mod
+          <ul>
+            <li>
+              Speacial thanks to @i-am-the-slime for the base
+              implementation!
+            </li>
+          </ul>
+        </li>
+        <li>
+          Resolve hindent format action bug
+          <ul>
+            <li>Special thanks to @dplusic for the fix!</li>
+          </ul>
+        </li>
+        <li>Introducing Stack Task run configuration</li>
+        <li>Improvements for ghc-mod integration
+          <ul>
+            <li>Caching find/browse data</li>
+            <li>Lazily spawn after changing settings</li>
+            <li>Auto-kill long running, idle ghc-mod processes</li>
+          </ul>
+        </li>
+        <li>Properly highlight not-in-scope types as red</li>
+        <li>Support newer hlint versions (>= 2.1.5) (#365)</li>
+        <li>Updated GHC extensions and flags autocompletion</li>
+        <li>
+          Ensure module name generated via Create Haskell File action
+          is properly qualified
+        </li>
+        <li>Various parser fixes:
+          <ul>
+            <li>Import consyms (type operators)</li>
+            <li>Data families</li>
+            <li>DerivingStrategies</li>
+            <li>DerivingVia</li>
+            <li>DerivingVia</li>
+            <li>LambdaCase</li>
+            <li>TypeApplications</li>
+          </ul>
+        </li>
+      </ul>
+    </p>
+    <p>
       <b>v0.3.41</b>
       <ul>
         <li>Use Scala 2.12 runtime (#348)</li>
