@@ -26,9 +26,27 @@ public class HaskellTyconImpl extends HaskellCompositeElementImpl implements Has
   }
 
   @Override
-  @NotNull
+  @Nullable
   public HaskellConid getConid() {
-    return notNullChild(PsiTreeUtil.getChildOfType(this, HaskellConid.class));
+    return PsiTreeUtil.getChildOfType(this, HaskellConid.class);
+  }
+
+  @Override
+  @Nullable
+  public HaskellConsym getConsym() {
+    return PsiTreeUtil.getChildOfType(this, HaskellConsym.class);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getLparen() {
+    return findChildByType(LPAREN);
+  }
+
+  @Override
+  @Nullable
+  public PsiElement getRparen() {
+    return findChildByType(RPAREN);
   }
 
 }

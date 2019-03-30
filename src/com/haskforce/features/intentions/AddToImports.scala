@@ -1,7 +1,7 @@
 package com.haskforce.features.intentions
 
 import com.haskforce.highlighting.annotation.external.{SymbolImportProvider, SymbolImportProviderFactory}
-import com.haskforce.psi.{HaskellBody, HaskellImpdecl, HaskellImportt}
+import com.haskforce.psi.{HaskellBody, HaskellImpdecl}
 import com.haskforce.psi.impl.HaskellElementFactory
 import com.haskforce.utils.NotificationUtil
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction
@@ -10,7 +10,7 @@ import com.intellij.openapi.command.WriteCommandAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
-import com.intellij.psi.{PsiElement, PsiFile}
+import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
 import com.intellij.ui.components.JBList
 import com.intellij.util.IncorrectOperationException
@@ -81,25 +81,37 @@ class AddToImports(val symbolName: String) extends BaseIntentionAction {
 object AddToImports {
 
   def appendToExistingImport(project: Project, symbolName: String, impDecl: HaskellImpdecl): Unit = {
-    val importt = impDecl.getImporttList.iterator().next()
     val rParen = impDecl.getRparen
-    importt.addBefore(HaskellElementFactory.createComma(project), rParen)
-    importt.addBefore(HaskellElementFactory.createSpace(project), rParen)
-    importt.addBefore(mkImportt(project, symbolName), rParen)
+    impDecl.addBefore(HaskellElementFactory.createComma(project), rParen)
+    impDecl.addBefore(HaskellElementFactory.createSpace(project), rParen)
+    impDecl.addBefore(mkImportt(project, symbolName), rParen)
   }
 
   def createNewImport(file: PsiFile, project: Project, importName: String, symbolName: String, imports: Iterable[HaskellImpdecl]): Unit = {
     val impDecl = mkImpDecl(project, importName, symbolName)
-    val body = PsiTreeUtil.getChildOfType(file, classOf[HaskellBody])
+    val optBody = Option(PsiTreeUtil.getChildOfType(file, classOf[HaskellBody]))
     val newline = HaskellElementFactory.createNewLine(project)
     if (imports.nonEmpty) {
-      body.addAfter(newline, imports.last)
-      body.addAfter(impDecl, imports.last.getNextSibling)
+      optBody match {
+        case Some(b) =>
+          b.addAfter(newline, imports.last)
+          b.addAfter(impDecl, imports.last.getNextSibling)
+        case None =>
+          throw new RuntimeException("Impossible case! Imports found without a body!")
+      }
     }
     else {
-      val firstChild = body.getFirstChild
-      body.addBefore(impDecl, firstChild)
-      body.addBefore(newline, firstChild)
+      optBody.flatMap(b => Option(b.getFirstChild).map(c => (b, c))) match {
+        case Some((b, firstChild)) =>
+          val impDeclAdded = b.addBefore(impDecl, firstChild)
+          b.addBefore(newline, firstChild)
+          b.addAfter(newline, impDeclAdded)
+        case None =>
+          // This really shouldn't happen since the user can't invoke auto-import
+          // without there being a non-empty Haskell body, but it's here for
+          // completeness and usefulness in tests.
+          file.add(impDecl)
+      }
     }
   }
 
