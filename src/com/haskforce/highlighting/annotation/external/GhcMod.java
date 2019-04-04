@@ -251,22 +251,6 @@ public class GhcMod {
         return null;
     }
 
-    @Nullable
-    public static String type(@NotNull Module module, @NotNull String workDir, @NotNull String canonicalPath,
-                              VisualPosition startPosition, @NotNull VisualPosition stopPosition) {
-        final String stdout = simpleExec(module, workDir, getFlags(module.getProject()), "type" , canonicalPath,
-                String.valueOf(startPosition.line), String.valueOf(startPosition.column));
-        if (stdout == null) return "Type info not found";
-        try {
-            return GhcModUtil.handleTypeInfo(startPosition, stopPosition, stdout);
-        } catch (GhcModUtil.TypeInfoParseException e) {
-              NotificationUtil.displayToolsNotification(
-                      NotificationType.ERROR, module.getProject(), "Type Info Error",
-                      "There was an error when executing the `ghc-mod type` command:\n\n" + stdout);
-              return null;
-        }
-    }
-
     public static class Problem implements HaskellProblem {
         public final String file;
         public final int startLine;

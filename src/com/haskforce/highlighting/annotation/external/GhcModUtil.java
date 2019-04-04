@@ -8,6 +8,7 @@ import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.editor.VisualPosition;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.SystemInfo;
@@ -37,8 +38,8 @@ public class GhcModUtil {
      * java.util.InputMismatchException might be thrown from the Scanner.
      */
     @SuppressWarnings("ObjectAllocationInLoop") // Should only be 3-5 loops.
-    public static String unsafeHandleTypeInfo(VisualPosition selectionStartPosition,
-                                              VisualPosition selectionStopPosition,
+    public static String unsafeHandleTypeInfo(LogicalPosition selectionStartPosition,
+                                              LogicalPosition selectionStopPosition,
                                               @NotNull String stdout) {
         Scanner typeInfosScanner = new Scanner(stdout);
         String lineSeparator = System.getProperty("line.separator");
@@ -53,8 +54,8 @@ public class GhcModUtil {
             int endRow   = rowAndColScanner.nextInt();
             int endCol   = rowAndColScanner.nextInt();
             String typeOnRowAndCol = typeInfoScanner.next();
-            if (! (new VisualPosition(startRow, startCol).after(selectionStartPosition))
-                    && ! selectionStopPosition.after(new VisualPosition(endRow, endCol))){
+            if (! (new LogicalPosition(startRow, startCol).compareTo(selectionStartPosition) > 0)
+                    && ! (selectionStopPosition.compareTo(new LogicalPosition(endRow, endCol)) > 0)){
                 typeInfosScanner.close();
                 typeInfoScanner.close();
                 rowAndColScanner.close();
@@ -68,8 +69,8 @@ public class GhcModUtil {
         return "No enclosing type found";
     }
 
-    public static String handleTypeInfo(VisualPosition selectionStartPosition,
-                                        VisualPosition selectionStopPosition,
+    public static String handleTypeInfo(LogicalPosition selectionStartPosition,
+                                        LogicalPosition selectionStopPosition,
                                         @NotNull String stdout) throws TypeInfoParseException {
         try {
             return unsafeHandleTypeInfo(selectionStartPosition, selectionStopPosition, stdout);

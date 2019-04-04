@@ -18,6 +18,7 @@ import com.intellij.execution.configurations.ParametersList;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.editor.LogicalPosition;
 import com.intellij.openapi.editor.VisualPosition;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
@@ -207,8 +208,8 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     private String[] listCache = null;
 
     public Future<String> type(final @NotNull String canonicalPath,
-                               @NotNull final VisualPosition startPosition,
-                               @NotNull final VisualPosition  stopPosition) {
+                               @NotNull final LogicalPosition startPosition,
+                               @NotNull final LogicalPosition stopPosition) {
         return handleGhcModiCall(new GhcModiCallable<String>(){
             @Override
             public String call() throws GhcModiError {

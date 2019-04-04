@@ -3,6 +3,9 @@ package com.haskforce.utils
 /** Simplify Either interop with Java. */
 object EitherUtil {
 
+  def fold_[A, B](x: Either[A, B], f: A => Unit, g: B => Unit): Unit =
+    x.fold(f, g)
+
   def unsafeGetLeft[A, B](e: Either[A, B]): A = {
     e.fold(
       left => left,
