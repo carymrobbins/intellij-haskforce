@@ -56,6 +56,10 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         return Option.apply(null);
     }
 
+    public static boolean isRunning(@NotNull Module module) {
+      return get(module).exists(g -> g.process != null);
+    }
+
     @SuppressWarnings("UnusedDeclaration")
     private static final Logger LOG = Logger.getInstance(GhcModi.class);
 

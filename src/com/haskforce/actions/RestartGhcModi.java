@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class RestartGhcModi extends AnAction implements DumbAware {
     private static final Logger LOG = Logger.getInstance(HaskellStylishFormatAction.class);
@@ -41,7 +42,11 @@ public class RestartGhcModi extends AnAction implements DumbAware {
         final String prefix = "Unable to restart ghc-modi - ";
         Project project = e.getProject();
         if (project == null) { displayError(e, prefix + "No active project."); return; }
-        Collection<Module> modules = HaskellModuleType.findModules(project);
+        Collection<Module> modules =
+          HaskellModuleType.findModules(project)
+            .stream()
+            .filter(GhcModi::isRunning)
+            .collect(Collectors.toList());
         int size = modules.size();
         if (size == 0) displayError(e, prefix + "No Haskell modules are used in this project.");
         else if (size == 1) restartGhcModi(e, modules.iterator().next());
