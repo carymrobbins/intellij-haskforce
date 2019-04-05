@@ -1,9 +1,7 @@
 package com.haskforce.highlighting.annotation.external;
 
-import com.haskforce.features.intentions.AddLanguagePragma;
-import com.haskforce.features.intentions.AddToImports;
-import com.haskforce.features.intentions.AddTypeSignature;
-import com.haskforce.features.intentions.RemoveForall;
+import com.haskforce.constants.GhcLanguageExtensions;
+import com.haskforce.features.intentions.*;
 import com.haskforce.highlighting.annotation.HaskellAnnotationHolder;
 import com.haskforce.highlighting.annotation.HaskellProblem;
 import com.haskforce.highlighting.annotation.Problems;
@@ -292,7 +290,7 @@ public class GhcMod {
 
         @FunctionalInterface
         interface RegisterFixHandler {
-            void apply(Matcher matcher, Annotation annotation, Problem problem);
+            void apply(Matcher matcher, Annotation annotation, Problem problem, PsiFile psiFile);
         }
 
         /**
@@ -305,40 +303,62 @@ public class GhcMod {
             fixHandlers = Arrays.asList(
                 Pair.create(
                     Pattern.compile("^Top-level binding with no type signature"),
-                    (__, annotation, problem) -> annotation.registerFix(new AddTypeSignature(problem))
+                    (__, annotation, problem, psiFile) -> annotation.registerFix(new AddTypeSignature(problem))
                 ),
                 Pair.create(
                     Pattern.compile("^Illegal symbol '.' in type"),
-                    (__, annotation, problem) -> {
-                        annotation.registerFix(new AddLanguagePragma("RankNTypes"));
+                    (__, annotation, problem, psiFile) -> {
+                        AddLanguagePragma.registerFixes("RankNTypes", annotation, psiFile);
                         annotation.registerFix(new RemoveForall(problem));
                 }),
                 Pair.create(
-                    Pattern.compile(" -X([A-Z][A-Za-z0-9]+)"),
-                    (matcher, annotation, problem) -> annotation.registerFix(new AddLanguagePragma(matcher.group(1)))
+                    Pattern.compile("(-X|[Uu]se |[Ee]nable)(" + String.join("|", GhcLanguageExtensions.stringArray()) + ")"),
+                    (matcher, annotation, problem, psiFile) -> AddLanguagePragma.registerFixes(matcher.group(2), annotation, psiFile)
                 ),
                 Pair.create(
                     Pattern.compile(" not in scope:\\s*\\(?([^\\s)]+)"),
-                    (matcher, annotation, problem) -> annotation.registerFix(new AddToImports(matcher.group(1)))
+                    (matcher, annotation, problem, psiFile) -> annotation.registerFix(new AddToImports(matcher.group(1)))
                 ),
                 Pair.create(
                     Pattern.compile("Not in scope:[^‘]*‘([^’]+)’"),
-                    (matcher, annotation, problem) -> annotation.registerFix(new AddToImports(matcher.group(1)))
+                    (matcher, annotation, problem, psiFile) -> annotation.registerFix(new AddToImports(matcher.group(1)))
                 ),
                 Pair.create(
                     Pattern.compile("Or perhaps ‘(_[^’]+)’ is mis-spelled, or not in scope"),
-                    (matcher, annotation, problem) -> annotation.registerFix(new AddToImports(matcher.group(1)))
+                    (matcher, annotation, problem, psiFile) -> annotation.registerFix(new AddToImports(matcher.group(1)))
+                ),
+                Pair.create(
+                    Pattern.compile("‘([^’]+)’ is a data constructor of ‘([^’]+)’"),
+                    (matcher, annotation, problem, psiFile) -> annotation.registerFix(new FixDataConstructorImport(matcher.group(1), matcher.group(2), problem))
+                ),
+                Pair.create(
+                  Pattern.compile("Orphan instance:"),
+                  (matcher, annotation, problem, psiFile) -> annotation.registerFix(new EnableOrphanInstances())
+                ),
+                // This regex should have the package WITH the version number.
+                Pair.create(
+                  Pattern.compile("It is a member of the hidden package ‘([^’]+)’"),
+                  (matcher, annotation, problem, psiFile) ->
+                    AddPackageDependency.registerFixes(
+                      matcher.group(1), annotation, psiFile
+                    )
+                ),
+                // This regex should have the package WITHOUT the version number.
+                Pair.create(
+                  Pattern.compile("Perhaps you need to add ‘([^’]+)’ to the build-depends"),
+                  (matcher, annotation, problem, psiFile) ->
+                    AddPackageDependency.registerFixes(
+                      matcher.group(1), annotation, psiFile
+                    )
                 )
             );
         }
 
-        public void registerFix(@NotNull Annotation annotation) {
+        public void registerFix(@NotNull PsiFile psiFile, @NotNull Annotation annotation) {
             for (Pair<Pattern, RegisterFixHandler> p : fixHandlers) {
                 final Matcher matcher = p.first.matcher(message);
                 if (matcher.find()) {
-                    p.second.apply(matcher, annotation, this);
-                    // Bail out on first match.
-                    return;
+                    p.second.apply(matcher, annotation, this, psiFile);
                 }
             }
         }
@@ -381,7 +401,7 @@ public class GhcMod {
             } else if (isUnusedImport) {
                 annotation.setHighlightType(ProblemHighlightType.LIKE_UNUSED_SYMBOL);
             }
-            registerFix(annotation);
+            registerFix(psiFile, annotation);
         }
 
         /** The text range of our annotation should be based on the element at that offset. */
