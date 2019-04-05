@@ -302,6 +302,15 @@ public class GhcMod {
         static {
             fixHandlers = Arrays.asList(
                 Pair.create(
+                  Pattern.compile("Perhaps you meant ‘([^’]+)’"),
+                  (matcher, annotation, problem, psiFile) ->
+                    ReplaceWithSuggestion.registerFixes(
+                      matcher.group(1),
+                      annotation,
+                      psiFile
+                    )
+                ),
+                Pair.create(
                     Pattern.compile("^Top-level binding with no type signature"),
                     (__, annotation, problem, psiFile) -> annotation.registerFix(new AddTypeSignature(problem))
                 ),
