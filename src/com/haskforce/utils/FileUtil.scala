@@ -32,6 +32,20 @@ object FileUtil {
     }
   }
 
+  def maybeUpdateFileText(project: Project, file: PsiFile, function: Function[String, Option[String]]) {
+    val app = ApplicationManager.getApplication
+    app.saveAll()
+    app.invokeLater { () =>
+      Option(PsiDocumentManager.getInstance(project).getDocument(file)).foreach { document =>
+        CommandProcessor.getInstance.executeCommand(project, { () =>
+          app.runWriteAction({ () =>
+            function.fun(document.getText).foreach(document.setText)
+          }: Runnable)
+        }, "Update text for " + file.getName, "", document)
+      }
+    }
+  }
+
   /**
    * Returns an array of directory names as the relative path to `file` from the source root.
    * For example, given file "project/src/foo/bar/baz.hs" the result would be `{"foo", "bar"}`.
