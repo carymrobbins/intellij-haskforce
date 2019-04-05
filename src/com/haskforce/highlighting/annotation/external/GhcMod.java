@@ -350,6 +350,15 @@ public class GhcMod {
                     AddPackageDependency.registerFixes(
                       matcher.group(1), annotation, psiFile
                     )
+                ),
+                Pair.create(
+                  Pattern.compile("Could not find module"),
+                  (matcher, annotation, problem, psiFile) ->
+                    EditPackageYaml.registerFixes(
+                      "Manually update dependency in package.yaml",
+                      annotation,
+                      psiFile
+                    )
                 )
             );
         }
