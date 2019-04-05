@@ -321,7 +321,7 @@ public class GhcMod {
                         annotation.registerFix(new RemoveForall(problem));
                 }),
                 Pair.create(
-                    Pattern.compile("(-X|[Uu]se |[Ee]nable)(" + String.join("|", GhcLanguageExtensions.stringArray()) + ")"),
+                    Pattern.compile("(-X|[Uu]se |[Ee]nable |[Tt]ry )(" + String.join("|", GhcLanguageExtensions.stringArray()) + ")"),
                     (matcher, annotation, problem, psiFile) -> AddLanguagePragma.registerFixes(matcher.group(2), annotation, psiFile)
                 ),
                 Pair.create(
