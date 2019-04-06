@@ -73,7 +73,7 @@ class CreateHaskellFileAction
 
 object CreateHaskellFileAction {
 
-  private val TITLE = "New Haskel File"
+  private val TITLE = "New Haskell File"
   private val DESCRIPTION = "Creates a new Haskell source file"
   private val HASKEL_MODULE_TEMPLATE_NAME = "Haskell Module"
   private val VALID_NAME_REGEX = Pattern.compile("^([A-Z][A-Za-z0-9]*)(\\.[A-Z][A-Za-z0-9]*)*(\\.hs)?$")
