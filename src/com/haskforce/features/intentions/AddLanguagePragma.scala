@@ -35,7 +35,7 @@ class AddLanguagePragma(target: AddLanguagePragma.Target) extends BaseIntentionA
 
   private def invoke(t: AddLanguagePragma.Target.PackageYamlTop): Unit = {
     // TODO: Insert it sorted, as best as we can.
-    FileUtil.maybeUpdateFileText(t.packageYaml.getProject, t.packageYaml, text => {
+    PackageYamlUpdateUtil.maybeUpdatePackageYamlAndReloadExternalTools(t.packageYaml, text => {
       // TODO: Fix this copy pasta; adapted from AddPackageDependency.
       val lines = text.split('\n').toVector
       lines.zipWithIndex.find {
