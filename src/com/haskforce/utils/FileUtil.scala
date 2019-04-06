@@ -6,12 +6,12 @@ import java.util
 import scala.annotation.tailrec
 import scala.collection.JavaConverters._
 import scala.language.implicitConversions
-
 import com.haskforce.Implicits._
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
+import com.intellij.openapi.util.Computable
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.{PsiDirectory, PsiDocumentManager, PsiFile}
 import com.intellij.util.Function
@@ -32,15 +32,29 @@ object FileUtil {
     }
   }
 
-  def maybeUpdateFileText(project: Project, file: PsiFile, function: Function[String, Option[String]]) {
+  /**
+    * Update the text of `file` with the given `function` and, afterwards,
+    * execute `runOnUpdate`. However, if `function` returns None, DO NOT
+    * touch the file and DO NOT execute `runOnUpdate`.
+    */
+  def maybeUpdateFileText(
+    project: Project,
+    file: PsiFile,
+    function: Function[String, Option[String]],
+    runOnUpdate: () => Unit = () => () // Only run IF an update occurred.
+  ) {
     val app = ApplicationManager.getApplication
     app.saveAll()
     app.invokeLater { () =>
       Option(PsiDocumentManager.getInstance(project).getDocument(file)).foreach { document =>
         CommandProcessor.getInstance.executeCommand(project, { () =>
-          app.runWriteAction({ () =>
-            function.fun(document.getText).foreach(document.setText)
-          }: Runnable)
+          val updated = app.runWriteAction({ () =>
+            function.fun(document.getText).fold(false) { newText =>
+              document.setText(newText)
+              true
+            }
+          }: Computable[Boolean])
+          if (updated) runOnUpdate()
         }, "Update text for " + file.getName, "", document)
       }
     }
