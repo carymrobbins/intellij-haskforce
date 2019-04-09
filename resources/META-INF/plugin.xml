@@ -1,4 +1,4 @@
-<idea-plugin use-idea-classloader="true">
+<idea-plugin>
   <id>com.haskforce</id>
   <name>HaskForce</name>
   <idea-version since-build="173"/>
