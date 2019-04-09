@@ -32,7 +32,7 @@ allprojects {
         version = '2019.2.1'
         pluginName = 'HaskForce'
         updateSinceUntilBuild = true
-        plugins = ['java']
+        plugins = ['java', 'yaml']
     }
 
     // FIXME: See https://github.com/JetBrains/gradle-intellij-plugin/issues/424

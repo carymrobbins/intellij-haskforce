@@ -5,6 +5,8 @@
 
   <description>Plugin for Haskell language support.</description>
 
+  <depends>org.jetbrains.plugins.yaml</depends>
+
   <change-notes><![CDATA[
     <p>
       <span style="color:red"><b>Warning:</b> You cannot use multiple Haskell plugins at the same time.</span>
