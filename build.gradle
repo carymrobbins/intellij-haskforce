@@ -32,6 +32,7 @@ allprojects {
         version = '2017.3'
         pluginName = 'HaskForce'
         updateSinceUntilBuild = false
+        plugins = ['yaml']
     }
 
     repositories {
