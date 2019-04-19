@@ -2,6 +2,8 @@ package prelude.imports
 
 trait PreludeImports extends {}
   with prelude.types.TypesImports
+  // Custom extension methods
+  with prelude.ops.ToEitherOps
   // Scalaz extension methods
   with scalaz.syntax.ToFoldableOps
   with scalaz.syntax.ToMonadOps
@@ -17,6 +19,7 @@ trait PreludeImports extends {}
   with scala.collection.convert.DecorateAsJava
   with scala.collection.convert.DecorateAsScala
 {
+
   type Monad[F[_]] = scalaz.Monad[F]
 
   type Traverse[F[_]] = scalaz.Traverse[F]

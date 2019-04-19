@@ -580,6 +580,8 @@
     <spellchecker.bundledDictionaryProvider
         implementation="com.haskforce.spellchecker.HaskellBundledDictionaryProvider"/>
 
+    <!-- Stack support -->
+    <externalSystemManager implementation="com.haskforce.haskell.project.externalSystem.stack.StackManager"/>
     <projectImportProvider
         implementation="com.haskforce.importWizard.stack.StackProjectImportProvider"/>
     <projectImportBuilder
