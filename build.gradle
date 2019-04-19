@@ -56,7 +56,7 @@ allprojects {
         compile "org.scala-lang:scala-reflect:${scalaVersion}"
         compile "org.scala-lang:scala-library:${scalaVersion}"
 
-        compile "io.estatico:newtype_${scalaBinaryVersion}:0.1.0"
+        compile "io.estatico:newtype_${scalaBinaryVersion}:0.4.2"
         compile "org.scalaz:scalaz-core_${scalaBinaryVersion}:7.2.17"
         compile "org.yaml:snakeyaml:1.16"
 
