@@ -2,11 +2,8 @@ package com.haskforce.ui.tools
 
 import java.awt.event.ItemEvent
 import java.awt.{GridBagLayout, GridLayout}
-import java.util.regex.Pattern
+
 import javax.swing.{JComponent, JPanel}
-
-import scala.collection.mutable
-
 import com.intellij.execution.filters.TextConsoleBuilderFactory
 import com.intellij.execution.ui.{ConsoleView, ConsoleViewContentType}
 import com.intellij.openapi.Disposable
@@ -19,11 +16,10 @@ import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Condition
 import com.intellij.openapi.wm.{ToolWindow, ToolWindowFactory}
 import com.intellij.ui.content.ContentFactory
-
 import com.haskforce.HaskellModuleType
 import com.haskforce.settings.ToolKey
 import com.haskforce.ui.{GC, SComboBox}
-import com.haskforce.utils.SAMUtils
+import com.haskforce.utils.{SAMUtils, SConcurrentHashMap}
 
 /**
   * Manages the Haskell Tools Console "tool window" for a project.
@@ -87,7 +83,7 @@ final class HaskellToolsConsole private(project: Project) {
   private lazy val toolsCombo = new SComboBox[ToolKey]
 
   /** Consoles for each tool. */
-  private val consoles = mutable.Map[ToolKey, ToolConsoleView]()
+  private val consoles = SConcurrentHashMap.create[ToolKey, ToolConsoleView]()
 
   /** The currently visible console. */
   private[this] var currentConsole: Option[ToolConsoleView] = None
@@ -179,7 +175,7 @@ object HaskellToolsConsole {
     console
   }
 
-  private val consoles = mutable.Map[Project, HaskellToolsConsole]()
+  private val consoles = SConcurrentHashMap.create[Project, HaskellToolsConsole]()
 
   final class Curried(val console: HaskellToolsConsole, toolKey: ToolKey) {
     def writeInput(msg: String): Unit = console.writeInput(toolKey, msg)
