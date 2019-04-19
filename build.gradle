@@ -31,7 +31,8 @@ allprojects {
     intellij {
         version = '2020.3'
         pluginName = 'HaskForce'
-        plugins = ['java', 'yaml']
+        updateSinceUntilBuild = false
+        plugins = ['java', 'gradle', 'yaml']
     }
 
     repositories {
@@ -50,7 +51,7 @@ allprojects {
         compile "org.scala-lang:scala-reflect:${scalaVersion}"
         compile "org.scala-lang:scala-library:${scalaVersion}"
 
-        compile "io.estatico:newtype_${scalaBinaryVersion}:0.1.0"
+        compile "io.estatico:newtype_${scalaBinaryVersion}:0.4.2"
         compile "org.scalaz:scalaz-core_${scalaBinaryVersion}:7.2.17"
         compile "org.yaml:snakeyaml:1.16"
 
