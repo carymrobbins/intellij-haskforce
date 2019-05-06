@@ -4,6 +4,7 @@ import com.haskforce.parsing.HaskellParsingLexer;
 import com.haskforce.psi.HaskellParserWrapper;
 import com.haskforce.psi.HaskellTypes;
 import com.haskforce.stubs.types.HaskellFileStubElementType;
+import com.haskforce.utils.parser.SimplePsiParser;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.lang.PsiParser;
@@ -66,9 +67,13 @@ public class HaskellParserDefinition implements ParserDefinition {
         return STRINGS;
     }
 
+    static final boolean USE_PARSER2 =
+        "true".equals(System.getProperty("com.haskforce.parser2"));
+
     @NotNull
     @Override
     public PsiParser createParser(final Project project) {
+        if (USE_PARSER2) return new SimplePsiParser();
         return new HaskellParserWrapper();
     }
 
