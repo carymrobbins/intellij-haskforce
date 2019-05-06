@@ -32,9 +32,9 @@ public class HaskellBodyImpl extends HaskellCompositeElementImpl implements Hask
   }
 
   @Override
-  @Nullable
-  public HaskellClassdecl getClassdecl() {
-    return PsiTreeUtil.getChildOfType(this, HaskellClassdecl.class);
+  @NotNull
+  public List<HaskellClassdecl> getClassdeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellClassdecl.class);
   }
 
   @Override
@@ -44,45 +44,45 @@ public class HaskellBodyImpl extends HaskellCompositeElementImpl implements Hask
   }
 
   @Override
-  @Nullable
-  public HaskellDatadecl getDatadecl() {
-    return PsiTreeUtil.getChildOfType(this, HaskellDatadecl.class);
+  @NotNull
+  public List<HaskellDatadecl> getDatadeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellDatadecl.class);
   }
 
   @Override
-  @Nullable
-  public HaskellDefaultdecl getDefaultdecl() {
-    return PsiTreeUtil.getChildOfType(this, HaskellDefaultdecl.class);
+  @NotNull
+  public List<HaskellDefaultdecl> getDefaultdeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellDefaultdecl.class);
   }
 
   @Override
-  @Nullable
-  public HaskellDerivingdecl getDerivingdecl() {
-    return PsiTreeUtil.getChildOfType(this, HaskellDerivingdecl.class);
+  @NotNull
+  public List<HaskellDerivingdecl> getDerivingdeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellDerivingdecl.class);
   }
 
   @Override
-  @Nullable
-  public HaskellExp getExp() {
-    return PsiTreeUtil.getChildOfType(this, HaskellExp.class);
+  @NotNull
+  public List<HaskellExp> getExpList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellExp.class);
   }
 
   @Override
-  @Nullable
-  public HaskellForeigndecl getForeigndecl() {
-    return PsiTreeUtil.getChildOfType(this, HaskellForeigndecl.class);
+  @NotNull
+  public List<HaskellForeigndecl> getForeigndeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellForeigndecl.class);
   }
 
   @Override
-  @Nullable
-  public HaskellFunorpatdecl getFunorpatdecl() {
-    return PsiTreeUtil.getChildOfType(this, HaskellFunorpatdecl.class);
+  @NotNull
+  public List<HaskellFunorpatdecl> getFunorpatdeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellFunorpatdecl.class);
   }
 
   @Override
-  @Nullable
-  public HaskellGendecl getGendecl() {
-    return PsiTreeUtil.getChildOfType(this, HaskellGendecl.class);
+  @NotNull
+  public List<HaskellGendecl> getGendeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellGendecl.class);
   }
 
   @Override
@@ -92,15 +92,15 @@ public class HaskellBodyImpl extends HaskellCompositeElementImpl implements Hask
   }
 
   @Override
-  @Nullable
-  public HaskellInstancedecl getInstancedecl() {
-    return PsiTreeUtil.getChildOfType(this, HaskellInstancedecl.class);
+  @NotNull
+  public List<HaskellInstancedecl> getInstancedeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellInstancedecl.class);
   }
 
   @Override
-  @Nullable
-  public HaskellLetexp getLetexp() {
-    return PsiTreeUtil.getChildOfType(this, HaskellLetexp.class);
+  @NotNull
+  public List<HaskellLetexp> getLetexpList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellLetexp.class);
   }
 
   @Override
@@ -110,9 +110,9 @@ public class HaskellBodyImpl extends HaskellCompositeElementImpl implements Hask
   }
 
   @Override
-  @Nullable
-  public HaskellNewtypedecl getNewtypedecl() {
-    return PsiTreeUtil.getChildOfType(this, HaskellNewtypedecl.class);
+  @NotNull
+  public List<HaskellNewtypedecl> getNewtypedeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellNewtypedecl.class);
   }
 
   @Override
@@ -164,15 +164,15 @@ public class HaskellBodyImpl extends HaskellCompositeElementImpl implements Hask
   }
 
   @Override
-  @Nullable
-  public HaskellStmts getStmts() {
-    return PsiTreeUtil.getChildOfType(this, HaskellStmts.class);
+  @NotNull
+  public List<HaskellStmts> getStmtsList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellStmts.class);
   }
 
   @Override
-  @Nullable
-  public HaskellTypedecl getTypedecl() {
-    return PsiTreeUtil.getChildOfType(this, HaskellTypedecl.class);
+  @NotNull
+  public List<HaskellTypedecl> getTypedeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellTypedecl.class);
   }
 
   @Override
@@ -185,60 +185,6 @@ public class HaskellBodyImpl extends HaskellCompositeElementImpl implements Hask
   @NotNull
   public List<HaskellVarsym> getVarsymList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVarsym.class);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getCase() {
-    return findChildByType(CASE);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getDo() {
-    return findChildByType(DO);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getElse() {
-    return findChildByType(ELSE);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getIf() {
-    return findChildByType(IF);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getLcasetok() {
-    return findChildByType(LCASETOK);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getMdotok() {
-    return findChildByType(MDOTOK);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getOf() {
-    return findChildByType(OF);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getThen() {
-    return findChildByType(THEN);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getBackslash() {
-    return findChildByType(BACKSLASH);
   }
 
 }

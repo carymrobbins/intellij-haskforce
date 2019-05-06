@@ -10,47 +10,47 @@ public interface HaskellBody extends HaskellCompositeElement {
   @NotNull
   List<HaskellAlt> getAltList();
 
-  @Nullable
-  HaskellClassdecl getClassdecl();
+  @NotNull
+  List<HaskellClassdecl> getClassdeclList();
 
   @NotNull
   List<HaskellCtype> getCtypeList();
 
-  @Nullable
-  HaskellDatadecl getDatadecl();
+  @NotNull
+  List<HaskellDatadecl> getDatadeclList();
 
-  @Nullable
-  HaskellDefaultdecl getDefaultdecl();
+  @NotNull
+  List<HaskellDefaultdecl> getDefaultdeclList();
 
-  @Nullable
-  HaskellDerivingdecl getDerivingdecl();
+  @NotNull
+  List<HaskellDerivingdecl> getDerivingdeclList();
 
-  @Nullable
-  HaskellExp getExp();
+  @NotNull
+  List<HaskellExp> getExpList();
 
-  @Nullable
-  HaskellForeigndecl getForeigndecl();
+  @NotNull
+  List<HaskellForeigndecl> getForeigndeclList();
 
-  @Nullable
-  HaskellFunorpatdecl getFunorpatdecl();
+  @NotNull
+  List<HaskellFunorpatdecl> getFunorpatdeclList();
 
-  @Nullable
-  HaskellGendecl getGendecl();
+  @NotNull
+  List<HaskellGendecl> getGendeclList();
 
   @NotNull
   List<HaskellImpdecl> getImpdeclList();
 
-  @Nullable
-  HaskellInstancedecl getInstancedecl();
+  @NotNull
+  List<HaskellInstancedecl> getInstancedeclList();
 
-  @Nullable
-  HaskellLetexp getLetexp();
+  @NotNull
+  List<HaskellLetexp> getLetexpList();
 
   @NotNull
   List<HaskellListlike> getListlikeList();
 
-  @Nullable
-  HaskellNewtypedecl getNewtypedecl();
+  @NotNull
+  List<HaskellNewtypedecl> getNewtypedeclList();
 
   @NotNull
   List<HaskellPat> getPatList();
@@ -76,43 +76,16 @@ public interface HaskellBody extends HaskellCompositeElement {
   @NotNull
   List<HaskellQvarid> getQvaridList();
 
-  @Nullable
-  HaskellStmts getStmts();
+  @NotNull
+  List<HaskellStmts> getStmtsList();
 
-  @Nullable
-  HaskellTypedecl getTypedecl();
+  @NotNull
+  List<HaskellTypedecl> getTypedeclList();
 
   @NotNull
   List<HaskellVarid> getVaridList();
 
   @NotNull
   List<HaskellVarsym> getVarsymList();
-
-  @Nullable
-  PsiElement getCase();
-
-  @Nullable
-  PsiElement getDo();
-
-  @Nullable
-  PsiElement getElse();
-
-  @Nullable
-  PsiElement getIf();
-
-  @Nullable
-  PsiElement getLcasetok();
-
-  @Nullable
-  PsiElement getMdotok();
-
-  @Nullable
-  PsiElement getOf();
-
-  @Nullable
-  PsiElement getThen();
-
-  @Nullable
-  PsiElement getBackslash();
 
 }

@@ -7,8 +7,8 @@ import com.intellij.psi.PsiElement;
 
 public interface HaskellClassdecl extends HaskellCompositeElement {
 
-  @Nullable
-  HaskellCdecl getCdecl();
+  @NotNull
+  List<HaskellCdecl> getCdeclList();
 
   @Nullable
   HaskellCtype getCtype();

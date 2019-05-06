@@ -1,9 +1,11 @@
 package com.haskforce;
 
+import com.haskforce.parser.HaskellParser;
 import com.haskforce.parsing.HaskellParsingLexer;
 import com.haskforce.psi.HaskellParserWrapper;
 import com.haskforce.psi.HaskellTypes;
 import com.haskforce.stubs.types.HaskellFileStubElementType;
+import com.haskforce.utils.parser.SimplePsiParser;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.ParserDefinition;
 import com.intellij.lang.PsiParser;
@@ -23,6 +25,27 @@ import org.jetbrains.annotations.NotNull;
  * things useful for parsing.
  */
 public class HaskellParserDefinition implements ParserDefinition {
+
+    private static final Mode SYSTEM_PARSER_MODE;
+    static {
+        final String s = System.getProperty("com.haskforce.parser", "default").trim().toLowerCase();
+        if (s.equals("noop")) SYSTEM_PARSER_MODE = Mode.NOOP;
+        else if (s.equals("unwrapped")) SYSTEM_PARSER_MODE = Mode.UNWRAPPED;
+        else SYSTEM_PARSER_MODE = Mode.DEFAULT;
+    }
+
+    public HaskellParserDefinition() {
+      this(SYSTEM_PARSER_MODE);
+    }
+
+    public HaskellParserDefinition(Mode mode) {
+        this.mode = mode;
+    }
+
+    public enum Mode { DEFAULT, NOOP, UNWRAPPED }
+
+    private final Mode mode;
+
     public static final TokenSet WHITE_SPACES = TokenSet.create(TokenType.WHITE_SPACE);
     public static final TokenSet COMMENTS = TokenSet.create(
             HaskellTypes.COMMENT, HaskellTypes.HADDOCK,
@@ -69,7 +92,11 @@ public class HaskellParserDefinition implements ParserDefinition {
     @NotNull
     @Override
     public PsiParser createParser(final Project project) {
-        return new HaskellParserWrapper();
+      switch (mode) {
+          case NOOP: return new SimplePsiParser();
+          case UNWRAPPED: return new HaskellParser();
+          default: return new HaskellParserWrapper();
+      }
     }
 
     /**

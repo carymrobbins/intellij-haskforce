@@ -38,9 +38,9 @@ public class HaskellInstancedeclImpl extends HaskellCompositeElementImpl impleme
   }
 
   @Override
-  @Nullable
-  public HaskellIdecl getIdecl() {
-    return PsiTreeUtil.getChildOfType(this, HaskellIdecl.class);
+  @NotNull
+  public List<HaskellIdecl> getIdeclList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellIdecl.class);
   }
 
   @Override
