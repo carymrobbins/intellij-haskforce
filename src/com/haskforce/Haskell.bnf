@@ -601,7 +601,7 @@ qconsym ::= [modulePrefix] consym
 qvarsym ::= varsym | explicitqvarsym
 private explicitqvarsym ::= conid ('.' conid)* (varsym | '..')
 
-private var ::= varid | '(' varsym ')'
+private var ::= varid | "type"? '(' varsym ')'
 qvars ::= <<sequence qvar>>
 qvar ::= qvarid | '(' qvarsym ')'
 con ::= conid | '(' consym ')'
