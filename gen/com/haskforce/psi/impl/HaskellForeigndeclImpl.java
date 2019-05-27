@@ -87,6 +87,12 @@ public class HaskellForeigndeclImpl extends HaskellCompositeElementImpl implemen
 
   @Override
   @Nullable
+  public PsiElement getType() {
+    return findChildByType(TYPE);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getDoublearrow() {
     return findChildByType(DOUBLEARROW);
   }

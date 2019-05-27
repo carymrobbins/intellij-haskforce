@@ -23,6 +23,9 @@ public interface HaskellNewconstr extends HaskellCompositeElement {
   HaskellVarsym getVarsym();
 
   @Nullable
+  PsiElement getType();
+
+  @Nullable
   PsiElement getDoublecolon();
 
   @Nullable

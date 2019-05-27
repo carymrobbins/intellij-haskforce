@@ -38,6 +38,9 @@ public interface HaskellForeigndecl extends HaskellCompositeElement {
   PsiElement getImport();
 
   @Nullable
+  PsiElement getType();
+
+  @Nullable
   PsiElement getDoublearrow();
 
   @Nullable

@@ -57,6 +57,12 @@ public class HaskellNewconstrImpl extends HaskellCompositeElementImpl implements
 
   @Override
   @Nullable
+  public PsiElement getType() {
+    return findChildByType(TYPE);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getDoublecolon() {
     return findChildByType(DOUBLECOLON);
   }

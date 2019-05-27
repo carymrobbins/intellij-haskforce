@@ -6513,7 +6513,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // varid | '(' varsym ')'
+  // varid | "type"? '(' varsym ')'
   static boolean var(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "var")) return false;
     boolean r;
@@ -6524,16 +6524,24 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // '(' varsym ')'
+  // "type"? '(' varsym ')'
   private static boolean var_1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "var_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = consumeToken(b, LPAREN);
+    r = var_1_0(b, l + 1);
+    r = r && consumeToken(b, LPAREN);
     r = r && varsym(b, l + 1);
     r = r && consumeToken(b, RPAREN);
     exit_section_(b, m, null, r);
     return r;
+  }
+
+  // "type"?
+  private static boolean var_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "var_1_0")) return false;
+    consumeToken(b, TYPE);
+    return true;
   }
 
   /* ********************************************************** */
