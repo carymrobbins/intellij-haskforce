@@ -432,7 +432,7 @@ private aexp ::= parensplice exp i ')'
                | '(#' i '#)'
                | listlike
                | parenlike
-               | [recordlikelhs] i '{' (fbind ',')* [e] (".." | fbind) [e] '}'
+               | [recordlikelhs] i '{' ((fbind | var) ',')* [e] (".." | fbind | var) [e] '}'
                | gcon
                | qvar
                // Hole
