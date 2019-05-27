@@ -259,7 +259,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   //                | '(#' i '#)'
   //                | listlike
   //                | parenlike
-  //                | [recordlikelhs] i '{' (fbind ',')* [e] (".." | fbind) [e] '}'
+  //                | [recordlikelhs] i '{' ((fbind | var) ',')* [e] (".." | fbind | var) [e] '}'
   //                | gcon
   //                | qvar
   //                // Hole
@@ -346,7 +346,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // [recordlikelhs] i '{' (fbind ',')* [e] (".." | fbind) [e] '}'
+  // [recordlikelhs] i '{' ((fbind | var) ',')* [e] (".." | fbind | var) [e] '}'
   private static boolean aexp_9(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "aexp_9")) return false;
     boolean r;
@@ -370,7 +370,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // (fbind ',')*
+  // ((fbind | var) ',')*
   private static boolean aexp_9_3(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "aexp_9_3")) return false;
     while (true) {
@@ -381,14 +381,23 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // fbind ','
+  // (fbind | var) ','
   private static boolean aexp_9_3_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "aexp_9_3_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = fbind(b, l + 1);
+    r = aexp_9_3_0_0(b, l + 1);
     r = r && consumeToken(b, COMMA);
     exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // fbind | var
+  private static boolean aexp_9_3_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "aexp_9_3_0_0")) return false;
+    boolean r;
+    r = fbind(b, l + 1);
+    if (!r) r = var(b, l + 1);
     return r;
   }
 
@@ -399,13 +408,14 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // ".." | fbind
+  // ".." | fbind | var
   private static boolean aexp_9_5(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "aexp_9_5")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, DOUBLEPERIOD);
     if (!r) r = fbind(b, l + 1);
+    if (!r) r = var(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }

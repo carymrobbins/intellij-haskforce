@@ -13,6 +13,9 @@ public class HaskellLexerTest extends HaskellLexerTestBase {
     public void testCase00001()         { doTest(true, true); }
     public void testDerivingStrategies00001() { doTest(true, true); }
     public void testDerivingVia00001()  { doTest(true, true); }
+    public void testRecord00001()       { doTest(true, true); }
+    public void testRecord00002()       { doTest(true, true); }
+    public void testRecord00003()       { doTest(true, true); }
     public void testEta00001()          { doTest(true, true); }
     public void testFun00001()          { doTest(true, true); }
     public void testFun00002()          { doTest(true, true); }
