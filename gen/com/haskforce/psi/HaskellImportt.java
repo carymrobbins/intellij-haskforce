@@ -10,6 +10,9 @@ public interface HaskellImportt extends HaskellCompositeElement {
   @NotNull
   List<HaskellCon> getConList();
 
+  @NotNull
+  List<HaskellLabel> getLabelList();
+
   @Nullable
   HaskellTycon getTycon();
 

@@ -129,6 +129,7 @@
     nullCharacter='\&'
     classtoken='class'
     varidRegexp="regexp:[a-z_][a-zA-Z_0-9']*"
+    labelRegexp="regexp:#[a-z_][a-zA-Z_0-9']*"
     conidRegexp="regexp:[A-Z][a-zA-Z_0-9']*"
     chartoken="regexp:'(\\.|[^'])'"
     integertoken="regexp:(0(o|O)[0-7]+|0(x|X)[0-9a-fA-F]+|[0-9]+)"
@@ -435,6 +436,7 @@ private aexp ::= parensplice exp i ')'
                | [recordlikelhs] i '{' ((fbind | var) ',')* [e] (".." | fbind | var) [e] '}'
                | gcon
                | qvar
+               | label
                // Hole
                | "_"
                // Type application
@@ -564,6 +566,8 @@ varid ::= (varidRegexp | "as" | "rec" | "qualified") {
         methods=[getName getNameIdentifier getReference setName getPresentation]
         stubClass="com.haskforce.stubs.HaskellVaridStub"
     }
+label ::= labelRegexp
+
 conid ::= conidRegexp {
         methods=[getName getNameIdentifier getReference setName getPresentation]
         stubClass="com.haskforce.stubs.HaskellConidStub"
@@ -601,7 +605,7 @@ qconsym ::= [modulePrefix] consym
 qvarsym ::= varsym | explicitqvarsym
 private explicitqvarsym ::= conid ('.' conid)* (varsym | '..')
 
-private var ::= varid | "type"? '(' varsym ')'
+private var ::= varid | label | "type"? '(' varsym ')'
 qvars ::= <<sequence qvar>>
 qvar ::= qvarid | '(' qvarsym ')'
 con ::= conid | '(' consym ')'

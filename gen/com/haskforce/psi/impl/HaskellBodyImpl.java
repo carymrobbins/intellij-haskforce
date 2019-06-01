@@ -98,6 +98,12 @@ public class HaskellBodyImpl extends HaskellCompositeElementImpl implements Hask
   }
 
   @Override
+  @NotNull
+  public List<HaskellLabel> getLabelList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellLabel.class);
+  }
+
+  @Override
   @Nullable
   public HaskellLetexp getLetexp() {
     return PsiTreeUtil.getChildOfType(this, HaskellLetexp.class);

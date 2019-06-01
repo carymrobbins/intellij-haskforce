@@ -10,6 +10,9 @@ public interface HaskellExport extends HaskellCompositeElement {
   @NotNull
   List<HaskellCon> getConList();
 
+  @NotNull
+  List<HaskellLabel> getLabelList();
+
   @Nullable
   HaskellQconid getQconid();
 

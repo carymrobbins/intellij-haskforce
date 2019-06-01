@@ -20,6 +20,9 @@ public interface HaskellCdecl extends HaskellCompositeElement {
   HaskellKind getKind();
 
   @NotNull
+  List<HaskellLabel> getLabelList();
+
+  @NotNull
   List<HaskellPat> getPatList();
 
   @Nullable

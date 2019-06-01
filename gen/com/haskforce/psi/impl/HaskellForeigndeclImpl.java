@@ -39,6 +39,12 @@ public class HaskellForeigndeclImpl extends HaskellCompositeElementImpl implemen
 
   @Override
   @Nullable
+  public HaskellLabel getLabel() {
+    return PsiTreeUtil.getChildOfType(this, HaskellLabel.class);
+  }
+
+  @Override
+  @Nullable
   public HaskellPstringtoken getPstringtoken() {
     return PsiTreeUtil.getChildOfType(this, HaskellPstringtoken.class);
   }
