@@ -1,11 +1,8 @@
 package com.haskforce.psi.impl;
 
 import com.haskforce.HaskellIcons;
-import com.haskforce.psi.HaskellFile;
-import com.haskforce.psi.HaskellQqblob;
+import com.haskforce.psi.*;
 import com.haskforce.psi.references.HaskellReference;
-import com.haskforce.psi.HaskellConid;
-import com.haskforce.psi.HaskellVarid;
 import com.haskforce.stubs.HaskellConidStub;
 import com.haskforce.stubs.HaskellVaridStub;
 import com.intellij.lang.ASTNode;

@@ -11,6 +11,9 @@ public interface HaskellFunorpatdecl extends HaskellCompositeElement {
   List<HaskellExp> getExpList();
 
   @NotNull
+  List<HaskellLabel> getLabelList();
+
+  @NotNull
   List<HaskellPat> getPatList();
 
   @NotNull

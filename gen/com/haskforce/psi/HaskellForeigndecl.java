@@ -14,6 +14,9 @@ public interface HaskellForeigndecl extends HaskellCompositeElement {
   HaskellClscontext getClscontext();
 
   @Nullable
+  HaskellLabel getLabel();
+
+  @Nullable
   HaskellPstringtoken getPstringtoken();
 
   @Nullable

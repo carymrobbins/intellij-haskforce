@@ -10,14 +10,14 @@ import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
 import com.haskforce.psi.*;
 
-public class HaskellVarsImpl extends HaskellCompositeElementImpl implements HaskellVars {
+public class HaskellLabelImpl extends HaskellCompositeElementImpl implements HaskellLabel {
 
-  public HaskellVarsImpl(ASTNode node) {
+  public HaskellLabelImpl(ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull HaskellVisitor visitor) {
-    visitor.visitVars(this);
+    visitor.visitLabel(this);
   }
 
   public void accept(@NotNull PsiElementVisitor visitor) {
@@ -27,20 +27,8 @@ public class HaskellVarsImpl extends HaskellCompositeElementImpl implements Hask
 
   @Override
   @NotNull
-  public List<HaskellLabel> getLabelList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellLabel.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellVarid> getVaridList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVarid.class);
-  }
-
-  @Override
-  @NotNull
-  public List<HaskellVarsym> getVarsymList() {
-    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellVarsym.class);
+  public PsiElement getLabelRegexp() {
+    return notNullChild(findChildByType(LABELREGEXP));
   }
 
 }

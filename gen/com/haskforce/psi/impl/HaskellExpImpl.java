@@ -50,6 +50,12 @@ public class HaskellExpImpl extends HaskellCompositeElementImpl implements Haske
   }
 
   @Override
+  @NotNull
+  public List<HaskellLabel> getLabelList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellLabel.class);
+  }
+
+  @Override
   @Nullable
   public HaskellLetexp getLetexp() {
     return PsiTreeUtil.getChildOfType(this, HaskellLetexp.class);

@@ -19,6 +19,9 @@ public interface HaskellExp extends HaskellCompositeElement {
   @Nullable
   HaskellExp getExp();
 
+  @NotNull
+  List<HaskellLabel> getLabelList();
+
   @Nullable
   HaskellLetexp getLetexp();
 

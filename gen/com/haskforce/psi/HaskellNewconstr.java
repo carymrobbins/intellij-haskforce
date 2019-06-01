@@ -14,6 +14,9 @@ public interface HaskellNewconstr extends HaskellCompositeElement {
   HaskellCon getCon();
 
   @Nullable
+  HaskellLabel getLabel();
+
+  @Nullable
   HaskellTypee getTypee();
 
   @Nullable

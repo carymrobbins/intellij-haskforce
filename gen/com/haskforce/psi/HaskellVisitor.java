@@ -138,6 +138,10 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitCompositeElement(o);
   }
 
+  public void visitLabel(@NotNull HaskellLabel o) {
+    visitCompositeElement(o);
+  }
+
   public void visitLetexp(@NotNull HaskellLetexp o) {
     visitCompositeElement(o);
   }

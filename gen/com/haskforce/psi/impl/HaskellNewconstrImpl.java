@@ -39,6 +39,12 @@ public class HaskellNewconstrImpl extends HaskellCompositeElementImpl implements
 
   @Override
   @Nullable
+  public HaskellLabel getLabel() {
+    return PsiTreeUtil.getChildOfType(this, HaskellLabel.class);
+  }
+
+  @Override
+  @Nullable
   public HaskellTypee getTypee() {
     return PsiTreeUtil.getChildOfType(this, HaskellTypee.class);
   }

@@ -42,6 +42,7 @@ public interface HaskellTypes {
   IElementType IMPORTT = new HaskellElementType("IMPORTT");
   IElementType INSTANCEDECL = new HaskellElementType("INSTANCEDECL");
   IElementType KIND = new HaskellElementType("KIND");
+  IElementType LABEL = new HaskellElementType("LABEL");
   IElementType LETEXP = new HaskellElementType("LETEXP");
   IElementType LISTLIKE = new HaskellElementType("LISTLIKE");
   IElementType MODULEDECL = new HaskellElementType("MODULEDECL");
@@ -145,6 +146,7 @@ public interface HaskellTypes {
   IElementType INFIXVARID = new HaskellTokenType("Infix varid");
   IElementType INSTANCE = new HaskellTokenType("instance");
   IElementType INTEGERTOKEN = new HaskellTokenType("integertoken");
+  IElementType LABELREGEXP = new HaskellTokenType("labelRegexp");
   IElementType LBRACE = new HaskellTokenType("{");
   IElementType LBRACKET = new HaskellTokenType("[");
   IElementType LCASETOK = new HaskellTokenType("\\case");
@@ -300,6 +302,9 @@ public interface HaskellTypes {
       }
       else if (type == KIND) {
         return new HaskellKindImpl(node);
+      }
+      else if (type == LABEL) {
+        return new HaskellLabelImpl(node);
       }
       else if (type == LETEXP) {
         return new HaskellLetexpImpl(node);

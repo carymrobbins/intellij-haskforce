@@ -43,6 +43,9 @@ public interface HaskellBody extends HaskellCompositeElement {
   @Nullable
   HaskellInstancedecl getInstancedecl();
 
+  @NotNull
+  List<HaskellLabel> getLabelList();
+
   @Nullable
   HaskellLetexp getLetexp();
 

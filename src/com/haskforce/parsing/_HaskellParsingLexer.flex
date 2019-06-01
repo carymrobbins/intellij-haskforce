@@ -80,6 +80,7 @@ EOL=\r|\n|\r\n
 LINE_WS=[\ \t\f]
 WHITE_SPACE=({LINE_WS}|{EOL})+
 VARIDREGEXP=([a-z_][a-zA-Z_0-9']+)|[a-z]
+LABELREGEXP=#{VARIDREGEXP}
 CONID=([A-Z][a-zA-Z_0-9']*)|(\(\))
 CHARTOKEN='(\\.|[^'])'#?
 INTEGERTOKEN=(0(o|O)[0-7]+|0(x|X)[0-9a-fA-F]+|[0-9]+)#?#?
@@ -361,6 +362,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
   (":"{ASCSYMBOL}+)     { return CONSYMTOK; }
   ({ASCSYMBOL}+)      { return SHARED_VARSYM_TOKEN; }
 
+  {LABELREGEXP}       { return LABELREGEXP; }
   {VARIDREGEXP}       { return VARIDREGEXP; }
   {CONID}             { return CONIDREGEXP; }
   {CHARTOKEN}         { return CHARTOKEN; }
@@ -582,6 +584,7 @@ STRINGGAP=\\[ \t\n\x0B\f\r]*\n[ \t\n\x0B\f\r]*\\
                                 yybegin(INQUASIQUOTE);
                                 return PIPE;
                             }
+  {LABELREGEXP}             { return LABELREGEXP; }
   {VARIDREGEXP}             { return VARIDREGEXP; }
   {CONID}                   { return CONIDREGEXP; }
   "."                       { return PERIOD;}

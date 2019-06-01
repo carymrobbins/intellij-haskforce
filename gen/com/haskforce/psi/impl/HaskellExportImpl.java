@@ -32,6 +32,12 @@ public class HaskellExportImpl extends HaskellCompositeElementImpl implements Ha
   }
 
   @Override
+  @NotNull
+  public List<HaskellLabel> getLabelList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellLabel.class);
+  }
+
+  @Override
   @Nullable
   public HaskellQconid getQconid() {
     return PsiTreeUtil.getChildOfType(this, HaskellQconid.class);

@@ -33,6 +33,12 @@ public class HaskellFunorpatdeclImpl extends HaskellCompositeElementImpl impleme
 
   @Override
   @NotNull
+  public List<HaskellLabel> getLabelList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellLabel.class);
+  }
+
+  @Override
+  @NotNull
   public List<HaskellPat> getPatList() {
     return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellPat.class);
   }

@@ -32,6 +32,12 @@ public class HaskellImporttImpl extends HaskellCompositeElementImpl implements H
   }
 
   @Override
+  @NotNull
+  public List<HaskellLabel> getLabelList() {
+    return PsiTreeUtil.getChildrenOfTypeAsList(this, HaskellLabel.class);
+  }
+
+  @Override
   @Nullable
   public HaskellTycon getTycon() {
     return PsiTreeUtil.getChildOfType(this, HaskellTycon.class);
