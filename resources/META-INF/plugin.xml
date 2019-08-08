@@ -1,7 +1,6 @@
-<idea-plugin use-idea-classloader="true">
+<idea-plugin>
   <id>com.haskforce</id>
   <name>HaskForce</name>
-  <idea-version since-build="173"/>
   <vendor url="https://github.com/carymrobbins/intellij-haskforce">HaskForce on GitHub</vendor>
 
   <description>Plugin for Haskell language support.</description>

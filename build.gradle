@@ -1,5 +1,5 @@
 plugins {
-    id "org.jetbrains.intellij" version "0.2.16"
+    id "org.jetbrains.intellij" version "0.4.9"
 }
 
 version = file('version.txt').text.trim()
@@ -29,9 +29,10 @@ allprojects {
     apply plugin: 'org.jetbrains.intellij'
 
     intellij {
-        version = '2017.3'
+        version = '2019.2'
         pluginName = 'HaskForce'
-        updateSinceUntilBuild = false
+        updateSinceUntilBuild = true
+        plugins = ['java']
     }
 
     repositories {
