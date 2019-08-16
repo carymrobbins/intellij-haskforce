@@ -30,7 +30,7 @@ public class CabalSyntaxHighlighter extends SyntaxHighlighterBase {
     private static final TextAttributesKey[] CONDITIONAL_KEYS = new TextAttributesKey[]{CONDITIONAL};
 
     public static final TextAttributesKey BRACES = TextAttributesKey.createTextAttributesKey(
-      "CABAL_COLON", DefaultLanguageHighlighterColors.BRACES);
+            "CABAL_BRACES", DefaultLanguageHighlighterColors.BRACES);
     private static final TextAttributesKey[] BRACES_KEYS = new TextAttributesKey[]{BRACES};
 
     @NotNull
