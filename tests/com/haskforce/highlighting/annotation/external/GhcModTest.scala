@@ -3,7 +3,6 @@ package com.haskforce.highlighting.annotation.external
 import java.util
 
 import scala.collection.JavaConverters._
-import junit.framework.TestCase
 import com.haskforce.HaskellLightPlatformCodeInsightFixtureTestCase
 import com.haskforce.highlighting.annotation.HaskellAnnotationHolder
 import com.haskforce.psi.impl.HaskellElementFactory
@@ -16,7 +15,7 @@ import com.intellij.openapi.util.text.StringUtil
  * Tests for consuming output from ghc-mod.
  */
 class GhcModTest extends HaskellLightPlatformCodeInsightFixtureTestCase("ghc-mod") {
-    import TestCase._
+    import junit.framework.Assert._
 
     def testParseProblems(): Unit = {
         val stdout = StringUtil.join(util.Arrays.asList(
@@ -26,7 +25,7 @@ class GhcModTest extends HaskellLightPlatformCodeInsightFixtureTestCase("ghc-mod
         ), "\n")
         val scanner = new util.Scanner(stdout)
 
-        val problems = GhcMod.parseProblems(myModule, scanner)
+        val problems = GhcMod.parseProblems(myFixture.getModule, scanner)
 
         assertNotNull(problems)
 
@@ -70,7 +69,7 @@ class GhcModTest extends HaskellLightPlatformCodeInsightFixtureTestCase("ghc-mod
         ), "\n")
         val scanner = new util.Scanner(stdout)
 
-        val problems = GhcMod.parseProblems(myModule, scanner).asScala.toStream
+        val problems = GhcMod.parseProblems(myFixture.getModule, scanner).asScala.toStream
 
         val holder = new HaskellAnnotationHolder(
           new AnnotationHolderImpl(new AnnotationSession(file))

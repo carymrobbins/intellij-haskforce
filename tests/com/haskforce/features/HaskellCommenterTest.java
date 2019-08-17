@@ -3,12 +3,12 @@ package com.haskforce.features;
 import com.haskforce.HaskellFileType;
 import com.intellij.codeInsight.generation.actions.CommentByBlockCommentAction;
 import com.intellij.codeInsight.generation.actions.CommentByLineCommentAction;
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
+import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 
 /**
  * Features test driver. Add new feature testcases here.
  */
-public class HaskellCommenterTest extends LightPlatformCodeInsightFixtureTestCase {
+public class HaskellCommenterTest extends BasePlatformTestCase {
     public HaskellCommenterTest() {
         super();
     }
