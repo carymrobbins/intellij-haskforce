@@ -26,14 +26,17 @@ public class HaskellQqblobImpl extends HaskellCompositeElementImpl implements Ha
     else super.accept(visitor);
   }
 
+  @Override
   public boolean isValidHost() {
     return HaskellPsiImplUtil.isValidHost(this);
   }
 
+  @Override
   public HaskellQqblob updateText(@NotNull String s) {
     return HaskellPsiImplUtil.updateText(this, s);
   }
 
+  @Override
   @NotNull
   public StringLiteralEscaper<HaskellQqblob> createLiteralTextEscaper() {
     return HaskellPsiImplUtil.createLiteralTextEscaper(this);

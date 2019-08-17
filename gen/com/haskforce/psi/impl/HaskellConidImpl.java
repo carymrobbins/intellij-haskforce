@@ -39,26 +39,31 @@ public class HaskellConidImpl extends HaskellNamedStubbedPsiElementBase<HaskellC
     return notNullChild(findChildByType(CONIDREGEXP));
   }
 
+  @Override
   @NotNull
   public String getName() {
     return HaskellPsiImplUtil.getName(this);
   }
 
+  @Override
   @Nullable
   public PsiElement getNameIdentifier() {
     return HaskellPsiImplUtil.getNameIdentifier(this);
   }
 
+  @Override
   @NotNull
   public PsiReference getReference() {
     return HaskellPsiImplUtil.getReference(this);
   }
 
+  @Override
   @Nullable
   public PsiElement setName(@NotNull String newName) {
     return HaskellPsiImplUtil.setName(this, newName);
   }
 
+  @Override
   @NotNull
   public ItemPresentation getPresentation() {
     return HaskellPsiImplUtil.getPresentation(this);
