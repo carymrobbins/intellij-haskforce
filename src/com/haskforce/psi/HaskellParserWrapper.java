@@ -6,6 +6,7 @@ import com.haskforce.parsing._HaskellParsingLexer;
 import com.intellij.lang.ASTNode;
 import com.intellij.lang.ITokenTypeRemapper;
 import com.intellij.lang.PsiBuilder;
+import com.intellij.lang.impl.PsiBuilderAdapter;
 import com.intellij.lang.impl.PsiBuilderImpl;
 import com.intellij.lexer.FlexAdapter;
 import com.intellij.openapi.util.Pair;
@@ -76,7 +77,45 @@ public class HaskellParserWrapper extends HaskellParser {
         builder_.setTokenTypeRemapper(myRemapper);
         lexer =  (_HaskellParsingLexer) ((FlexAdapter) ((PsiBuilderImpl) builder_).getLexer()).getFlex();
         ASTNode node = super.parse(root_, builder_);
+//        ASTNode node = super.parse(root_, new MyDebugPsiBuilderWrapper(builder_));
         return node;
+    }
+
+    static class MyDebugPsiBuilderWrapper extends PsiBuilderAdapter {
+        public MyDebugPsiBuilderWrapper(@NotNull PsiBuilder delegate) {
+            super(delegate);
+            delegate.setDebugMode(true);
+        }
+
+        @Override
+        public void advanceLexer() {
+            super.advanceLexer();
+            System.out.println(
+              "advanceLexer() : "
+                + getCurrentOffset()
+                + " | " + getTokenType()
+                + "\n" + renderLine()
+            );
+        }
+
+        private String renderLine() {
+            int n = getCurrentOffset();
+            CharSequence text = getOriginalText();
+            int i = Math.max(0, Math.min(n, text.length() - 1));
+            while (i > 0 && text.charAt(i) != '\n') --i;
+            int start = i;
+            i = n;
+            while (i < text.length() - 1 && text.charAt(i) != '\n') ++i;
+            int end = i;
+            CharSequence s = text.subSequence(start, end);
+            StringBuilder b = new StringBuilder(s.length() * 2 + 1);
+            b.append(s);
+            b.append('\n');
+            for (int j = 1; j < n - start; ++j) b.append(' ');
+            b.append('^');
+            return b.toString();
+        }
+
     }
 
     /**
