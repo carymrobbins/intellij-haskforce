@@ -6,7 +6,6 @@ import com.haskforce.psi.HaskellTypes;
 import com.intellij.lang.cacheBuilder.DefaultWordsScanner;
 import com.intellij.lang.cacheBuilder.WordsScanner;
 import com.intellij.lang.findUsages.FindUsagesProvider;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.psi.ElementDescriptionUtil;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiNamedElement;
@@ -21,18 +20,17 @@ import org.jetbrains.annotations.Nullable;
  * "Find usages" in right-click on top of an identifier.
  */
 public class HaskellFindUsagesProvider implements FindUsagesProvider {
-    @SuppressWarnings("UnusedDeclaration")
-    private final static Logger LOG = Logger.getInstance(HaskellFindUsagesProvider.class);
-    // Second parameter is nodes that are PsiNamedElements in practice.
-    private final static WordsScanner SCANNER =
-            new DefaultWordsScanner(new HaskellSyntaxHighlightingLexer(),
-                    TokenSet.create(HaskellTypes.VARIDREGEXP,
-                            HaskellTypes.CONIDREGEXP),
-                    HaskellParserDefinition.COMMENTS, HaskellParserDefinition.STRINGS);
+
     @Nullable
     @Override
     public WordsScanner getWordsScanner() {
-        return SCANNER;
+        // NOTE: Do not make this static! See https://github.com/carymrobbins/intellij-haskforce/issues/397
+        // Second parameter is nodes that are PsiNamedElements in practice.
+        return new DefaultWordsScanner(
+            new HaskellSyntaxHighlightingLexer(),
+            TokenSet.create(HaskellTypes.VARIDREGEXP, HaskellTypes.CONIDREGEXP),
+            HaskellParserDefinition.COMMENTS, HaskellParserDefinition.STRINGS
+        );
     }
 
     @Override
