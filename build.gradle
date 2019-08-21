@@ -29,7 +29,7 @@ allprojects {
     apply plugin: 'org.jetbrains.intellij'
 
     intellij {
-        version = '2019.2'
+        version = '2019.2.1'
         pluginName = 'HaskForce'
         updateSinceUntilBuild = true
         plugins = ['java']
