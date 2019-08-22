@@ -54,27 +54,6 @@ public abstract class HaskellParserTestBase extends ParsingTestCase {
         doTest(true, true);
     }
 
-    /**
-     * Perform a test. Add tests that should work but does not work yet with
-     * doTest(false, false).
-     */
-    protected void doTest(boolean checkResult, boolean shouldPass) {
-        // Do some gymnastics to see if we had to create the comparison file.
-        // This is convenient so we can tell if the generated file has error elements or not.
-        AssertionFailedError noComparisonTextFound = null;
-        try {
-            doTest(checkResult);
-        } catch (AssertionFailedError e) {
-            if (e.getMessage().startsWith("No output text found")) {
-                boolean hasErrors = toParseTreeText(myFile, skipSpaces(), includeRanges()).contains("PsiErrorElement");
-                if (hasErrors) fail(e.getMessage() + " (contains error elements)");
-                fail(e.getMessage() + " (no error elements)");
-            } else {
-                throw e;
-            }
-        }
-    }
-
     /*
      * Ensure that expected outputs live in some other directory than the test
      * inputs.
