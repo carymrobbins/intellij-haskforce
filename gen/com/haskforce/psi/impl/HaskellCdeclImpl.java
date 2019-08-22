@@ -117,6 +117,12 @@ public class HaskellCdeclImpl extends HaskellCompositeElementImpl implements Has
 
   @Override
   @Nullable
+  public PsiElement getDefault() {
+    return findChildByType(DEFAULT);
+  }
+
+  @Override
+  @Nullable
   public PsiElement getInstance() {
     return findChildByType(INSTANCE);
   }

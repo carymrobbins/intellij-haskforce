@@ -1114,39 +1114,57 @@ public class HaskellParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // atdecl
-  //         | (funlhs | var) rhs
-  //         | gendecl
   //         | ppragma
+  //         | (funlhs | var) rhs
+  //         | "default"? gendecl
   public static boolean cdecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "cdecl")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_, CDECL, "<cdecl>");
     r = atdecl(b, l + 1);
-    if (!r) r = cdecl_1(b, l + 1);
-    if (!r) r = gendecl(b, l + 1);
     if (!r) r = ppragma(b, l + 1);
+    if (!r) r = cdecl_2(b, l + 1);
+    if (!r) r = cdecl_3(b, l + 1);
     exit_section_(b, l, m, r, false, null);
     return r;
   }
 
   // (funlhs | var) rhs
-  private static boolean cdecl_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "cdecl_1")) return false;
+  private static boolean cdecl_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "cdecl_2")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = cdecl_1_0(b, l + 1);
+    r = cdecl_2_0(b, l + 1);
     r = r && rhs(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // funlhs | var
-  private static boolean cdecl_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "cdecl_1_0")) return false;
+  private static boolean cdecl_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "cdecl_2_0")) return false;
     boolean r;
     r = funlhs(b, l + 1);
     if (!r) r = var(b, l + 1);
     return r;
+  }
+
+  // "default"? gendecl
+  private static boolean cdecl_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "cdecl_3")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = cdecl_3_0(b, l + 1);
+    r = r && gendecl(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // "default"?
+  private static boolean cdecl_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "cdecl_3_0")) return false;
+    consumeToken(b, DEFAULT);
+    return true;
   }
 
   /* ********************************************************** */

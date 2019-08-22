@@ -274,9 +274,9 @@ private cdecls ::= open [cdecls1] close {pin=1}
 private cdecls1 ::= cdecl [semi cdecls1]
 
 cdecl ::= atdecl
-        | (funlhs | var) rhs
-        | gendecl
         | ppragma
+        | (funlhs | var) rhs
+        | "default"? gendecl
 
 private atdecl ::= "type" ["instance"] (typee [kindsig] | ctype '=' ctype)
                  | "data" ["instance"] ctype [kindsig]

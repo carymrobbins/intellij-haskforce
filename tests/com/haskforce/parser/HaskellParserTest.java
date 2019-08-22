@@ -35,6 +35,7 @@ public class HaskellParserTest extends HaskellParserTestBase {
     public void testArrow00001()        { doTest(true, true); }
     public void testCase00001()         { doTest(true, true); }
     public void testCPP00001()          { doTest(true, true); }
+    public void testDefaultSignatures00001()  { doTest(true, true); }
     public void testDerivingStrategies00001() { doTest(true, true); }
     public void testDerivingVia00001()  { doTest(true, true); }
     public void testExport00001()       { doTest(true, true); }
