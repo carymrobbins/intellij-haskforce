@@ -123,6 +123,9 @@ patchPluginXml {
     sinceBuild = '173'
 }
 
+// Allow re-running tests without forcing a recompile.
+test.outputs.upToDateWhen { false }
+
 buildPlugin {
     archiveName = "haskforce-${patchPluginXml.version}.zip"
 }
