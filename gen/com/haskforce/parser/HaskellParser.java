@@ -6,7 +6,6 @@ import com.intellij.lang.PsiBuilder.Marker;
 import static com.haskforce.psi.HaskellTypes.*;
 import static com.haskforce.psi.HaskellParserUtilBase.*;
 import com.intellij.psi.tree.IElementType;
-import com.intellij.psi.tree.IFileElementType;
 import com.intellij.lang.ASTNode;
 import com.intellij.psi.tree.TokenSet;
 import com.intellij.lang.PsiParser;
@@ -24,16 +23,15 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     boolean r;
     b = adapt_builder_(t, b, this, null);
     Marker m = enter_section_(b, 0, _COLLAPSE_, null);
-    if (t instanceof IFileElementType) {
-      r = parse_root_(t, b, 0);
-    }
-    else {
-      r = false;
-    }
+    r = parse_root_(t, b);
     exit_section_(b, 0, m, t, r, true, TRUE_CONDITION);
   }
 
-  protected boolean parse_root_(IElementType t, PsiBuilder b, int l) {
+  protected boolean parse_root_(IElementType t, PsiBuilder b) {
+    return parse_root_(t, b, 0);
+  }
+
+  static boolean parse_root_(IElementType t, PsiBuilder b, int l) {
     return module(b, l + 1);
   }
 
@@ -3377,16 +3375,15 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   // "import" ["qualified"] qconid ["as" qconid] [impspec]
   public static boolean impdecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "impdecl")) return false;
-    if (!nextTokenIs(b, IMPORT)) return false;
     boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_, IMPDECL, null);
+    Marker m = enter_section_(b, l, _NONE_, IMPDECL, "<impdecl>");
     r = consumeToken(b, IMPORT);
     p = r; // pin = 1
     r = r && report_error_(b, impdecl_1(b, l + 1));
     r = p && report_error_(b, qconid(b, l + 1)) && r;
     r = p && report_error_(b, impdecl_3(b, l + 1)) && r;
     r = p && impdecl_4(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
+    exit_section_(b, l, m, r, p, impdecl_recover_parser_);
     return r || p;
   }
 
@@ -3421,6 +3418,17 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     if (!recursion_guard_(b, l, "impdecl_4")) return false;
     impspec(b, l + 1);
     return true;
+  }
+
+  /* ********************************************************** */
+  // !semi
+  static boolean impdecl_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "impdecl_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !semi(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
+    return r;
   }
 
   /* ********************************************************** */
@@ -5877,12 +5885,13 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   // topdecl1 ppragma*
   static boolean topdecl(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "topdecl")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
+    boolean r, p;
+    Marker m = enter_section_(b, l, _NONE_);
     r = topdecl1(b, l + 1);
+    p = r; // pin = 1
     r = r && topdecl_1(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
+    exit_section_(b, l, m, r, p, topdecl_recover_parser_);
+    return r || p;
   }
 
   // ppragma*
@@ -5911,6 +5920,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   static boolean topdecl1(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "topdecl1")) return false;
     boolean r;
+    Marker m = enter_section_(b);
     r = typedecl(b, l + 1);
     if (!r) r = datadecl(b, l + 1);
     if (!r) r = newtypedecl(b, l + 1);
@@ -5922,6 +5932,18 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     if (!r) r = decl(b, l + 1);
     if (!r) r = impdecl(b, l + 1);
     if (!r) r = infixexp(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // !semi
+  static boolean topdecl_recover(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "topdecl_recover")) return false;
+    boolean r;
+    Marker m = enter_section_(b, l, _NOT_);
+    r = !semi(b, l + 1);
+    exit_section_(b, l, m, r, false, null);
     return r;
   }
 
@@ -6475,6 +6497,11 @@ public class HaskellParser implements PsiParser, LightPsiParser {
       return fundep(b, l + 1);
     }
   };
+  static final Parser impdecl_recover_parser_ = new Parser() {
+    public boolean parse(PsiBuilder b, int l) {
+      return impdecl_recover(b, l + 1);
+    }
+  };
   static final Parser impspec_0_2_0_0_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return impspec_0_2_0_0(b, l + 1);
@@ -6488,6 +6515,11 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   static final Parser qvar_parser_ = new Parser() {
     public boolean parse(PsiBuilder b, int l) {
       return qvar(b, l + 1);
+    }
+  };
+  static final Parser topdecl_recover_parser_ = new Parser() {
+    public boolean parse(PsiBuilder b, int l) {
+      return topdecl_recover(b, l + 1);
     }
   };
   static final Parser typee_parser_ = new Parser() {
