@@ -211,20 +211,16 @@ export ::= "module" qconid
         | qtycon [ '(' (".." | cnames | qvars) ')']
         | qvar {pin(".*")=1}
 
-body ::= ppragma* open bodyaux close {pin=2}
+body ::= ppragma* open toplevel* close {pin=2}
 
-private bodyaux ::= impdecls* ppragma* [[semi] topdecls]
+private toplevel ::= ppragma | topdecl | semi {recoverWhile=toplevel_recover}
+private toplevel_recover ::= !(toplevel | '}' | WHITESPACERBRACETOK)
 
-// Do not pin semi in impdecls, that parse-conflicts with the semi in bodyaux.
-private impdecls ::= impdecl [semi impdecls] {pin=1}
+impdecl ::= "import" ["qualified"] qconid ["as" qconid] [impspec] {pin=1}
 
-private topdecls ::= topdecl [semi topdecls] {pin(".*")=1}
-
-impdecl ::= "import" ["qualified"] qconid ["as" qconid] [impspec] {pin(".*")=1 recoverWhile=impdecl_recover}
-private impdecl_recover ::= !semi
-
+private impspec ::= [i "hiding"] impspec1 | impempty
 // Using <<sequence [importt]>> since you can have extraneous commas.
-private impspec ::= [i "hiding"] '(' [<<sequence [importt]>>] ')' | impempty {pin(".*")=2}
+private impspec1 ::= '(' [<<sequence [importt]>>] ')' {pin=1}
 
 impempty ::= "()"
 
@@ -232,17 +228,13 @@ impempty ::= "()"
 importt ::= var
           // Really (tycon|tycls), but they are both identical
           | tycon ['(' (".." | cnames | vars) ')']
-          {pin=1}
 
 private cnames ::= <<sequence cname>>
 private cname ::= var | con
 
 vars ::= <<sequence var>>
 
-private topdecl ::= topdecl1 ppragma* {pin=1 recoverWhile=topdecl_recover}
-private topdecl_recover ::= !semi
-
-private topdecl1 ::= typedecl
+private topdecl ::= typedecl
                   | datadecl
                   | newtypedecl
                   | classdecl
@@ -556,7 +548,7 @@ private comma_kinds1 ::= kind  [',' comma_kinds1]
 
 private literal ::= floattoken | integertoken | chartoken | pstringtoken ['#']
 
-ppragma ::= openpragma PRAGMA+ closepragma {pin(".*")=3}
+ppragma ::= openpragma PRAGMA+ closepragma {pin=1}
 
 // private symbol ::= symbol1 | '=' | '|' | '#' |
 
@@ -631,14 +623,14 @@ pstringtoken ::= '"' STRINGTOKEN* '"'
 // Misc cross-cutting stuff.
 
 private open ::= '{'
-                | WHITESPACELBRACETOK {pin(".*")=1}
+                | WHITESPACELBRACETOK
 
 private close ::= '}'
                 | WHITESPACERBRACETOK
                 | [<<stateHackMess>>]
 
 private semi ::= ';'
-               | WHITESPACESEMITOK {pin(".*")=1}
+               | WHITESPACESEMITOK
 
 // Meta-Helpers
 
