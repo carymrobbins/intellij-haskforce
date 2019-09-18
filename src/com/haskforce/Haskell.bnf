@@ -214,7 +214,7 @@ export ::= "module" qconid
 body ::= ppragma* open toplevel* close {pin=2}
 
 private toplevel ::= ppragma | topdecl | semi {recoverWhile=toplevel_recover}
-private toplevel_recover ::= !(toplevel | '}' | WHITESPACERBRACETOK)
+private toplevel_recover ::= !toplevel
 
 impdecl ::= "import" ["qualified"] qconid ["as" qconid] [impspec] {pin=1}
 
@@ -266,6 +266,7 @@ private fundep ::= tyvar+ "->" tyvar+ {pin=2}
 
 private cdecls ::= open [cdecls1] close {pin=1}
 
+// TODO: Remove recursion
 private cdecls1 ::= cdecl [semi cdecls1]
 
 cdecl ::= atdecl
@@ -278,6 +279,7 @@ private atdecl ::= "type" ["instance"] (typee [kindsig] | ctype '=' ctype)
 
 private idecls ::= ppragma* open [idecls1] close {pin=2}
 
+// TODO: Remove recursion
 private idecls1 ::= [gendecl semi] idecl0 [semi [gendecl semi] idecls1]
 
 private idecl0 ::= ppragma* idecl ppragma*

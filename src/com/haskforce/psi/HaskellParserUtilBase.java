@@ -10,6 +10,7 @@ import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 
 import static com.intellij.openapi.util.text.StringUtil.parseInt;
@@ -44,6 +45,57 @@ public class HaskellParserUtilBase extends GeneratedParserUtilBase {
             return false;
         }
         return true;
+    }
+
+    public static boolean toplevel_recover_debug(PsiBuilder builder, int level) {
+        IElementType typ = builder.getTokenType();
+        final boolean res = !(TOPLEVEL_RECOVER_TYPES.contains(typ) || builder.eof());
+        System.out.println(
+            "toplevel_recover_debug: res: " + res
+              + "; offset: " + builder.getCurrentOffset()
+              + "; type: " + typ
+              + "; text: '" + builder.getTokenText() + "'");
+        return res;
+    }
+    // private toplevel_recover ::= !(<<eof>> | semi | "foreign" | "import" | "type" | "class" | "data" | "newtype" | "deriving")
+    private static final java.util.Set<IElementType> TOPLEVEL_RECOVER_TYPES;
+    static {
+        TOPLEVEL_RECOVER_TYPES = new java.util.HashSet<>(Arrays.asList(
+            HaskellTypes.SEMICOLON, HaskellTypes.WHITESPACESEMITOK,
+            HaskellTypes.FOREIGNDECL,
+            HaskellTypes.IMPORT,
+            HaskellTypes.TYPE,
+            HaskellTypes.CLASSTOKEN,
+            HaskellTypes.DATA,
+            HaskellTypes.NEWTYPE,
+            HaskellTypes.DERIVING
+        ));
+    }
+
+    /**
+     * External rule used to determine if the current lexer position is
+     * in an indent. Semantically, this returns true unless the previous
+     * character was a newline and the current one is not whitespace.
+     * Via recoverWhile, this rule will be used to consume input until
+     * it reaches an unindented token, presumably a top-level element
+     * of some sort, and resume at that time. It's quite convenient to just
+     * resume parsing once we encounter a new top-level element.
+     */
+    public static boolean inIndentRecover(@NotNull PsiBuilder builder, int level) {
+        if (builder.eof()) return false;
+        final int offset = builder.getCurrentOffset();
+        if (offset == 0) return false;
+        final CharSequence text = builder.getOriginalText();
+        return !(
+            text.charAt(offset - 1) == '\n'
+                && !Character.isWhitespace(text.charAt(offset)));
+    }
+
+    public static boolean anyNonSemi(@NotNull PsiBuilder builder, int level) {
+        return
+            !builder.eof() && (
+                builder.getTokenType() == HaskellTypes.SEMICOLON
+                  || builder.getTokenType() == HaskellTypes.WHITESPACESEMITOK);
     }
 
     /**

@@ -5845,25 +5845,13 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // !(toplevel | '}' | WHITESPACERBRACETOK)
+  // !toplevel
   static boolean toplevel_recover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "toplevel_recover")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NOT_);
-    r = !toplevel_recover_0(b, l + 1);
+    r = !toplevel(b, l + 1);
     exit_section_(b, l, m, r, false, null);
-    return r;
-  }
-
-  // toplevel | '}' | WHITESPACERBRACETOK
-  private static boolean toplevel_recover_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "toplevel_recover_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = toplevel(b, l + 1);
-    if (!r) r = consumeToken(b, RBRACE);
-    if (!r) r = consumeToken(b, WHITESPACERBRACETOK);
-    exit_section_(b, m, null, r);
     return r;
   }
 
