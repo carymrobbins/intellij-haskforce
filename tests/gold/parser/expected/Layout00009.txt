@@ -12,10 +12,10 @@ Haskell File
           PsiElement(HaskellTokenType.varidRegexp)('xs')
       RHS
         PsiElement(HaskellTokenType.=)('=')
-  PsiElement(HaskellTokenType.[)('[')
-  PsiElement(HaskellTokenType.")('"')
-  PsiElement(HaskellTokenType.STRINGTOKEN)('foo')
-  PsiElement(HaskellTokenType.")('"')
-  PsiElement(HaskellTokenType.,)(',')
-  PsiErrorElement:<exp> expected, got ']'
-    PsiElement(HaskellTokenType.])(']')
+    PsiElement(HaskellTokenType.[)('[')
+    PsiElement(HaskellTokenType.")('"')
+    PsiElement(HaskellTokenType.STRINGTOKEN)('foo')
+    PsiElement(HaskellTokenType.")('"')
+    PsiElement(HaskellTokenType.,)(',')
+    PsiErrorElement:<exp> expected, got ']'
+      PsiElement(HaskellTokenType.])(']')

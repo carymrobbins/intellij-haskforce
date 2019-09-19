@@ -988,7 +988,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ppragma* open toplevel* close
+  // ppragma* open ([semi] toplevel)* close
   public static boolean body(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "body")) return false;
     boolean r, p;
@@ -1013,14 +1013,32 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return true;
   }
 
-  // toplevel*
+  // ([semi] toplevel)*
   private static boolean body_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "body_2")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!toplevel(b, l + 1)) break;
+      if (!body_2_0(b, l + 1)) break;
       if (!empty_element_parsed_guard_(b, "body_2", c)) break;
     }
+    return true;
+  }
+
+  // [semi] toplevel
+  private static boolean body_2_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "body_2_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = body_2_0_0(b, l + 1);
+    r = r && toplevel(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // [semi]
+  private static boolean body_2_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "body_2_0_0")) return false;
+    semi(b, l + 1);
     return true;
   }
 
@@ -5832,26 +5850,52 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ppragma | topdecl | semi
+  // ppragma | topdecl
   static boolean toplevel(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "toplevel")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NONE_);
     r = ppragma(b, l + 1);
     if (!r) r = topdecl(b, l + 1);
-    if (!r) r = semi(b, l + 1);
     exit_section_(b, l, m, r, false, toplevel_recover_parser_);
     return r;
   }
 
   /* ********************************************************** */
-  // !toplevel
+  // !( semi
+  //    | '{-#'
+  //    | WHITESPACERBRACETOK | '}'
+  //    | "foreign" | "data" | "newtype" | "class" | "instance" | "deriving" | "type"
+  //    )
   static boolean toplevel_recover(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "toplevel_recover")) return false;
     boolean r;
     Marker m = enter_section_(b, l, _NOT_);
-    r = !toplevel(b, l + 1);
+    r = !toplevel_recover_0(b, l + 1);
     exit_section_(b, l, m, r, false, null);
+    return r;
+  }
+
+  // semi
+  //    | '{-#'
+  //    | WHITESPACERBRACETOK | '}'
+  //    | "foreign" | "data" | "newtype" | "class" | "instance" | "deriving" | "type"
+  private static boolean toplevel_recover_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "toplevel_recover_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = semi(b, l + 1);
+    if (!r) r = consumeToken(b, OPENPRAGMA);
+    if (!r) r = consumeToken(b, WHITESPACERBRACETOK);
+    if (!r) r = consumeToken(b, RBRACE);
+    if (!r) r = consumeToken(b, FOREIGN);
+    if (!r) r = consumeToken(b, DATA);
+    if (!r) r = consumeToken(b, NEWTYPE);
+    if (!r) r = consumeToken(b, CLASSTOKEN);
+    if (!r) r = consumeToken(b, INSTANCE);
+    if (!r) r = consumeToken(b, DERIVING);
+    if (!r) r = consumeToken(b, TYPE);
+    exit_section_(b, m, null, r);
     return r;
   }
 
