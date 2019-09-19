@@ -3589,45 +3589,60 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // '-'* lexp [qop infixexp]
+  // infixexp0 (qop infixexp0)*
   static boolean infixexp(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "infixexp")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = infixexp_0(b, l + 1);
+    r = infixexp0(b, l + 1);
+    r = r && infixexp_1(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (qop infixexp0)*
+  private static boolean infixexp_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "infixexp_1")) return false;
+    while (true) {
+      int c = current_position_(b);
+      if (!infixexp_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "infixexp_1", c)) break;
+    }
+    return true;
+  }
+
+  // qop infixexp0
+  private static boolean infixexp_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "infixexp_1_0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = qop(b, l + 1);
+    r = r && infixexp0(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  /* ********************************************************** */
+  // '-'* lexp
+  static boolean infixexp0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "infixexp0")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = infixexp0_0(b, l + 1);
     r = r && lexp(b, l + 1);
-    r = r && infixexp_2(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // '-'*
-  private static boolean infixexp_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "infixexp_0")) return false;
+  private static boolean infixexp0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "infixexp0_0")) return false;
     while (true) {
       int c = current_position_(b);
       if (!consumeToken(b, MINUS)) break;
-      if (!empty_element_parsed_guard_(b, "infixexp_0", c)) break;
+      if (!empty_element_parsed_guard_(b, "infixexp0_0", c)) break;
     }
     return true;
-  }
-
-  // [qop infixexp]
-  private static boolean infixexp_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "infixexp_2")) return false;
-    infixexp_2_0(b, l + 1);
-    return true;
-  }
-
-  // qop infixexp
-  private static boolean infixexp_2_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "infixexp_2_0")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = qop(b, l + 1);
-    r = r && infixexp(b, l + 1);
-    exit_section_(b, m, null, r);
-    return r;
   }
 
   /* ********************************************************** */

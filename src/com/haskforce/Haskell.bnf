@@ -410,7 +410,8 @@ guard ::= pat '<-' exp
 
 exp ::= ppragma* infixexp ["::" [clscontext "=>"] typee]
 
-private infixexp ::= '-'* lexp [qop infixexp]
+private infixexp ::= infixexp0 (qop infixexp0)*
+private infixexp0 ::= '-'* lexp
 
 letexp ::= "let" decls ["in" exp]
 

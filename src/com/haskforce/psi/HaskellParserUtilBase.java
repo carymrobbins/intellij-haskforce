@@ -21,6 +21,18 @@ import static com.intellij.openapi.util.text.StringUtil.parseInt;
 public class HaskellParserUtilBase extends GeneratedParserUtilBase {
 
     /**
+     * This is mostly useful for debugging. Enabling this will allow us to
+     * more easily inspect the stack trace at the position where some deep
+     * recursion is happening, enabling us to then adjust the grammar and
+     * see if we can
+     */
+    private static final boolean THROW_ON_MAX_RECURSION =
+      "true".equals(System.getProperty("com.haskforce.parser.recursion.max.throw"));
+
+    private static final int MAX_RECURSION_LEVEL =
+      parseInt(System.getProperty("com.haskforce.parser.recursion.max"), 100);
+
+    /**
      * HACK! This is pure copy-pasta from {@link com.intellij.lang.parser.GeneratedParserUtilBase}
      * We are abusing the static import of this class in {@link com.haskforce.parser.HaskellParser}
      * to "override" the {@link GeneratedParserUtilBase#recursion_guard_(com.intellij.lang.PsiBuilder, int, java.lang.String)}
@@ -36,12 +48,16 @@ public class HaskellParserUtilBase extends GeneratedParserUtilBase {
      * The real solution is to rewrite the parser, but this should provide some amount of
      * life support for the current parser.
      */
-    private static final int MAX_RECURSION_LEVEL =
-        parseInt(System.getProperty("com.haskforce.parser.recursion.max"), 100);
 
     public static boolean recursion_guard_(PsiBuilder builder, int level, String funcName) {
         if (level > MAX_RECURSION_LEVEL) {
-            builder.mark().error("Maximum recursion level (" + MAX_RECURSION_LEVEL + ") reached in '" + funcName + "'");
+            final String msg =
+                "Maximum recursion level "
+                    + "(" + MAX_RECURSION_LEVEL + ") "
+                    + "reached in '" + funcName + "' "
+                    + "at offset " + builder.getCurrentOffset();
+            if (THROW_ON_MAX_RECURSION) throw new RuntimeException(msg);
+            builder.mark().error(msg);
             return false;
         }
         return true;
