@@ -16,11 +16,11 @@ public interface HaskellGuard extends HaskellCompositeElement {
   @Nullable
   HaskellExp getExp();
 
-  @Nullable
-  HaskellFunorpatdecl getFunorpatdecl();
+  @NotNull
+  List<HaskellFunorpatdecl> getFunorpatdeclList();
 
-  @Nullable
-  HaskellGendecl getGendecl();
+  @NotNull
+  List<HaskellGendecl> getGendeclList();
 
   @NotNull
   List<HaskellLetexp> getLetexpList();

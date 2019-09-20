@@ -320,18 +320,20 @@ ctype ::= foralltype
 private foralltype ::=  "forall" tv_bndr* '.' ctype {pin=1}
 private contexttype ::= clscontext '=>' ctype {pin=2}
 
-private btype ::= atype [btype]
+private btype ::= atype+
 
-atype ::= [singlequote] ntgtycon ['##'|'#']
-        | tyvar
-        | strict_mark atype
-        | '{' fielddecls '}'
-        | '(#' <<sequence ctype>> '#)'
-        | '(' ['?'] ctype "::" (kind | ctype)')'
-        | [singlequote] ('(' [<<sequence ctype>>] ')' | '[' <<sequence ctype>> ']')
-        | integertoken
-        | pstringtoken
-        | foralltype
+atype ::=
+  [strict_mark]
+    ( [singlequote] ntgtycon ['##'|'#']
+    | tyvar
+    | '{' fielddecls '}'
+    | '(#' <<sequence ctype>> '#)'
+    | '(' ['?'] ctype "::" (kind | ctype)')'
+    | [singlequote] ('(' [<<sequence ctype>>] ')' | '[' <<sequence ctype>> ']')
+    | integertoken
+    | pstringtoken
+    | foralltype
+    )
 
 private ntgtycon ::=  '(#' commas '#)'
                    | '(' ('->' | commas) ')'
@@ -393,7 +395,7 @@ private fatype ::= (qtycon|tyvar) atype*
 
 private safety ::= "unsafe" | "safe" | "interruptible"
 
-private funlhs ::= (var |'(' funlhs ')') apat+
+private funlhs 4::= (var |'(' funlhs ')') apat+
                  | pat varop pat
 
 private wheredecls ::= "where" decls {pin=1}
@@ -413,18 +415,28 @@ exp ::= ppragma* infixexp ["::" [clscontext "=>"] typee]
 private infixexp ::= infixexp0 (qop infixexp0)*
 private infixexp0 ::= '-'* lexp
 
-letexp ::= "let" decls ["in" exp]
+letexp ::= "let" decls ["in" exp] {pin(".*")=1}
 
-private lexp ::= LCASETOK altslist
-               | '\' (apat | thaexp)+ "->" exp
+private lexp ::= lambdacase
+               | lambdapat
                | letexp
-               | "if" exp [semi] "then" exp [semi] "else" exp
-               | "case" exp "of" altslist
-               | "do" open stmts close
-               | "mdo" open stmts close
-               // proc might just be a variable name.
-               | "proc" (aexp "->" exp | aexp*)
-               | aexp+ {pin(".*")=2}
+               | ifexpr
+               | caseof
+               | doblock
+               | mdoblock
+               | procarrow
+               | aexps
+
+private lambdacase ::= LCASETOK altslist {pin=1}
+private lambdapat ::= '\' (apat | thaexp)+ "->" exp {pin=2}
+private ifexpr ::= "if" exp [semi] "then" exp [semi] "else" exp {pin=1}
+private caseof ::= "case" exp "of" altslist {pin=1}
+private doblock ::= "do" stmts {pin=1}
+private mdoblock ::= "mdo" stmts {pin=1}
+// proc might just be a variable name.
+private procarrow ::= "proc" (aexp "->" exp | aexp*) {pin=1}
+private aexps ::= aexp aexp* {pin=1}
+
 
 private aexp ::= parensplice exp i ')'
                | singlequote i (qvar | qcon)
@@ -455,6 +467,7 @@ private thaexp ::= '[|' e (exp [semi])+ e '|]'
 
 
 listlike ::=  '[' exp [listlike1] ']'
+
 
 private listlike1 ::= ('|' (squal ',')* squal)+
                     | [',' exp] '..' [exp]
@@ -494,11 +507,9 @@ private qual ::= pat '<-' exp
               | "let" decls
               | exp
 
-stmts ::= stmt* (letexp | partialstmt | exp)
+stmts ::= open (partialstmt semi)* (letexp | partialstmt | exp) close
 
-private stmt ::= partialstmt semi
-
-private partialstmt ::= "rec" [open stmts close | "let" decls]
+private partialstmt ::= "rec" [stmts | "let" decls]
                       | [pat '<-'] exp
 
 private fbind ::= qvar '=' exp {pin=2}
@@ -529,7 +540,8 @@ private gcon ::= '[' ']'
 
 private decls ::= open [decls1] close {pin=1}
 
-private decls1 ::= ppragma* decl ppragma* [semi decls1]
+private decls1 ::= decls0 (semi decls0)*
+private decls0 ::= ppragma* decl ppragma*
 
 private decl ::= funorpatdecl
                | gendecl

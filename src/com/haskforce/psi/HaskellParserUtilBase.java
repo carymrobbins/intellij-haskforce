@@ -27,10 +27,10 @@ public class HaskellParserUtilBase extends GeneratedParserUtilBase {
      * see if we can
      */
     private static final boolean THROW_ON_MAX_RECURSION =
-      "true".equals(System.getProperty("com.haskforce.parser.recursion.max.throw"));
+        "true".equals(System.getProperty("com.haskforce.parser.recursion.max.throw"));
 
     private static final int MAX_RECURSION_LEVEL =
-      parseInt(System.getProperty("com.haskforce.parser.recursion.max"), 100);
+        parseInt(System.getProperty("com.haskforce.parser.recursion.max"), 100);
 
     /**
      * HACK! This is pure copy-pasta from {@link com.intellij.lang.parser.GeneratedParserUtilBase}

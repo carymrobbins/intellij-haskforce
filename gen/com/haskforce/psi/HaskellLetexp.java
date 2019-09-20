@@ -10,11 +10,11 @@ public interface HaskellLetexp extends HaskellCompositeElement {
   @Nullable
   HaskellExp getExp();
 
-  @Nullable
-  HaskellFunorpatdecl getFunorpatdecl();
+  @NotNull
+  List<HaskellFunorpatdecl> getFunorpatdeclList();
 
-  @Nullable
-  HaskellGendecl getGendecl();
+  @NotNull
+  List<HaskellGendecl> getGendeclList();
 
   @NotNull
   List<HaskellPpragma> getPpragmaList();

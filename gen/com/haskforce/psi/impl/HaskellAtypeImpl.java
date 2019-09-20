@@ -105,12 +105,6 @@ public class HaskellAtypeImpl extends HaskellCompositeElementImpl implements Has
 
   @Override
   @Nullable
-  public PsiElement getExclamation() {
-    return findChildByType(EXCLAMATION);
-  }
-
-  @Override
-  @Nullable
   public PsiElement getHash() {
     return findChildByType(HASH);
   }

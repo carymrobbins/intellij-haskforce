@@ -47,9 +47,6 @@ public interface HaskellAtype extends HaskellCompositeElement {
   PsiElement getDoublehash();
 
   @Nullable
-  PsiElement getExclamation();
-
-  @Nullable
   PsiElement getHash();
 
   @Nullable

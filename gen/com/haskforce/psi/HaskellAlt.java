@@ -10,11 +10,11 @@ public interface HaskellAlt extends HaskellCompositeElement {
   @NotNull
   List<HaskellExp> getExpList();
 
-  @Nullable
-  HaskellFunorpatdecl getFunorpatdecl();
+  @NotNull
+  List<HaskellFunorpatdecl> getFunorpatdeclList();
 
-  @Nullable
-  HaskellGendecl getGendecl();
+  @NotNull
+  List<HaskellGendecl> getGendeclList();
 
   @NotNull
   List<HaskellGuard> getGuardList();
