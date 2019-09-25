@@ -317,9 +317,8 @@ public class HaskellUtil {
     }
 
     public static List<HaskellVarid> extractAllHaskellVarids(HaskellPat pat) {
-        List<HaskellVarid> varidList = pat.getVaridList();
-        List<HaskellPat> patList = pat.getPatList();
-        for (HaskellPat haskellPat : patList) {
+        List<HaskellVarid> varidList = new ArrayList<>(pat.getVaridList());
+        for (HaskellPat haskellPat : pat.getPatList()) {
             varidList.addAll(haskellPat.getVaridList());
         }
         return varidList;
