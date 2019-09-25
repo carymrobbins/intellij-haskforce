@@ -1,5 +1,6 @@
 plugins {
     id "org.jetbrains.intellij" version "0.4.10"
+    id "org.jetbrains.grammarkit" version "2019.2.1"
 }
 
 version = file('version.txt').text.trim()
@@ -77,6 +78,23 @@ allprojects {
     }
 }
 
+apply plugin: 'org.jetbrains.grammarkit'
+
+grammarKit {
+    jflexRelease = '1.7.0-1'
+    grammarKitRelease = '2019.1.1'
+}
+
+import org.jetbrains.grammarkit.tasks.GenerateParser
+
+task generateHaskellParser(type: GenerateParser) {
+    source = 'src/com/haskforce/Haskell.bnf'
+    targetRoot = 'gen'
+    pathToParser = '/com/haskforce/parser/HaskellParser.java'
+    pathToPsiRoot = '/com/haskforce/psi'
+    purgeOldFiles = true
+}
+
 assemble.dependsOn(validateDic, runJFlex)
 
 project(':jps-plugin') {
@@ -115,7 +133,7 @@ def getPluginVersion() {
 
 clean.dependsOn cleanJFlex
 
-compileJava.dependsOn runJFlex
+compileJava.dependsOn(runJFlex, generateHaskellParser)
 
 patchPluginXml {
     version = getPluginVersion()
