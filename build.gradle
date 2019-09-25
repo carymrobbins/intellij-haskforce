@@ -129,3 +129,9 @@ test.outputs.upToDateWhen { false }
 buildPlugin {
     archiveName = "haskforce-${patchPluginXml.version}.zip"
 }
+
+test {
+    if ("1" == System.getenv("OVERWRITE_FIXTURES")) {
+        systemProperties.put("idea.tests.overwrite.data", "true")
+    }
+}
