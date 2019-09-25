@@ -6,8 +6,6 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.haskforce.stubs.HaskellVaridStub;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.PsiReference;
 
 public interface HaskellVarid extends HaskellNamedElement, StubBasedPsiElement<HaskellVaridStub> {
 
@@ -22,20 +20,5 @@ public interface HaskellVarid extends HaskellNamedElement, StubBasedPsiElement<H
 
   @Nullable
   PsiElement getVaridRegexp();
-
-  @NotNull
-  String getName();
-
-  @Nullable
-  PsiElement getNameIdentifier();
-
-  @NotNull
-  PsiReference getReference();
-
-  @Nullable
-  PsiElement setName(@NotNull String newName);
-
-  @NotNull
-  ItemPresentation getPresentation();
 
 }

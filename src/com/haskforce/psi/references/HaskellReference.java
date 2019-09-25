@@ -2,11 +2,9 @@ package com.haskforce.psi.references;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
-import com.haskforce.codeInsight.HaskellCompletionContributor;
 import com.haskforce.codeInsight.LookupElementUtil;
 import com.haskforce.index.HaskellModuleIndex;
 import com.haskforce.psi.*;
-import com.haskforce.psi.impl.HaskellPsiImplUtil;
 import com.haskforce.utils.HaskellUtil;
 import com.haskforce.utils.HaskellUtil.FoundDefinition;
 import com.intellij.codeInsight.lookup.LookupElement;
@@ -309,11 +307,11 @@ public class HaskellReference extends PsiReferenceBase<PsiNamedElement> implemen
     public PsiElement handleElementRename(final String newName)  throws IncorrectOperationException {
         PsiElement element;
         if (myElement instanceof HaskellVarid) {
-            element = HaskellPsiImplUtil.setName((HaskellVarid) myElement, newName);
+            element = ((HaskellVarid) myElement).setName(newName);
             if (element != null) return element;
             throw new IncorrectOperationException("Cannot rename " + name + " to " + newName);
         } else if (myElement instanceof HaskellConid) {
-            element = HaskellPsiImplUtil.setName((HaskellConid) myElement, newName);
+            element = ((HaskellConid) myElement).setName(newName);
             if (element != null) return element;
             throw new IncorrectOperationException("Cannot rename " + name + " to " + newName);
         }
