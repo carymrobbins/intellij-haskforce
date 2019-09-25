@@ -8,13 +8,11 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiElementVisitor;
 import com.intellij.psi.util.PsiTreeUtil;
 import static com.haskforce.psi.HaskellTypes.*;
-import com.haskforce.stubs.HaskellConidStub;
 import com.haskforce.psi.*;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.PsiReference;
+import com.haskforce.stubs.HaskellConidStub;
 import com.intellij.psi.stubs.IStubElementType;
 
-public class HaskellConidImpl extends HaskellNamedStubbedPsiElementBase<HaskellConidStub> implements HaskellConid {
+public class HaskellConidImpl extends HaskellConidBaseImpl implements HaskellConid {
 
   public HaskellConidImpl(@NotNull HaskellConidStub stub, IStubElementType type) {
     super(stub, type);
@@ -37,36 +35,6 @@ public class HaskellConidImpl extends HaskellNamedStubbedPsiElementBase<HaskellC
   @NotNull
   public PsiElement getConidRegexp() {
     return notNullChild(findChildByType(CONIDREGEXP));
-  }
-
-  @Override
-  @NotNull
-  public String getName() {
-    return HaskellPsiImplUtil.getName(this);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement getNameIdentifier() {
-    return HaskellPsiImplUtil.getNameIdentifier(this);
-  }
-
-  @Override
-  @NotNull
-  public PsiReference getReference() {
-    return HaskellPsiImplUtil.getReference(this);
-  }
-
-  @Override
-  @Nullable
-  public PsiElement setName(@NotNull String newName) {
-    return HaskellPsiImplUtil.setName(this, newName);
-  }
-
-  @Override
-  @NotNull
-  public ItemPresentation getPresentation() {
-    return HaskellPsiImplUtil.getPresentation(this);
   }
 
 }

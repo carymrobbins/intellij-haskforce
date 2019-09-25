@@ -65,11 +65,6 @@
   elementTypeClass="com.haskforce.psi.HaskellElementType"
   tokenTypeClass="com.haskforce.psi.HaskellTokenType"
 
-  psiImplUtilClass="com.haskforce.psi.impl.HaskellPsiImplUtil"
-
-  implements("varid|conid")="com.haskforce.psi.HaskellNamedElement"
-  implements("qqblob")="com.haskforce.psi.HaskellLanguageInjectionElement"
-  extends("varid|conid")="com.haskforce.psi.impl.HaskellNamedStubbedPsiElementBase<?>"
   elementTypeFactory("varid|conid")="com.haskforce.psi.impl.HaskellElementTypeFactory.factory"
 
   generate=[tokenAccessors="yes"]
@@ -443,7 +438,8 @@ private aexp ::= parensplice exp i ')'
                | "@" ("_" | ctype)
 
 qqblob ::= qqtext+ {
-    methods=[isValidHost updateText createLiteralTextEscaper]
+    implements="com.haskforce.psi.HaskellQqblobBase"
+    extends="com.haskforce.psi.impl.HaskellQqblobBaseImpl"
 }
 
 private thaexp ::= '[|' e (exp [semi])+ e '|]'
@@ -563,11 +559,13 @@ ppragma ::= openpragma PRAGMA+ closepragma {pin=1}
 private symbol1 ::= '!' | '#' | '$' | '%' | '&' | '*' | '+' | '.' | '/' | '<' | '>' | '?' | '@'
          | '\' | '^' | '-' | '~' | ':'
 varid ::= (varidRegexp | "as" | "rec" | "qualified") {
-        methods=[getName getNameIdentifier getReference setName getPresentation]
+        implements="com.haskforce.psi.HaskellNamedElement"
+        extends="com.haskforce.psi.impl.HaskellVaridBaseImpl"
         stubClass="com.haskforce.stubs.HaskellVaridStub"
     }
 conid ::= conidRegexp {
-        methods=[getName getNameIdentifier getReference setName getPresentation]
+        implements="com.haskforce.psi.HaskellNamedElement"
+        extends="com.haskforce.psi.impl.HaskellConidBaseImpl"
         stubClass="com.haskforce.stubs.HaskellConidStub"
     }
 

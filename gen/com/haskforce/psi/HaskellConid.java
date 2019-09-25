@@ -6,27 +6,10 @@ import org.jetbrains.annotations.*;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.StubBasedPsiElement;
 import com.haskforce.stubs.HaskellConidStub;
-import com.intellij.navigation.ItemPresentation;
-import com.intellij.psi.PsiReference;
 
 public interface HaskellConid extends HaskellNamedElement, StubBasedPsiElement<HaskellConidStub> {
 
   @NotNull
   PsiElement getConidRegexp();
-
-  @NotNull
-  String getName();
-
-  @Nullable
-  PsiElement getNameIdentifier();
-
-  @NotNull
-  PsiReference getReference();
-
-  @Nullable
-  PsiElement setName(@NotNull String newName);
-
-  @NotNull
-  ItemPresentation getPresentation();
 
 }
