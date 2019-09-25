@@ -54,6 +54,10 @@ public abstract class HaskellParserTestBase extends ParsingTestCase {
         doTest(true, true);
     }
 
+    public void doTestPermitErrors() {
+        doTest(true, false);
+    }
+
     /*
      * Ensure that expected outputs live in some other directory than the test
      * inputs.
