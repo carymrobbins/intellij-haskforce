@@ -377,13 +377,14 @@ Haskell File
                 CONID
                   PsiElement(HaskellTokenType.conidRegexp)('ByteString')
       PsiElement(HaskellTokenType.=)('=')
-      TYPEE
-        ATYPE
-          OQTYCON
-            QTYCON
-              TYCON
-                CONID
-                  PsiElement(HaskellTokenType.conidRegexp)('Word8')
+      CTYPE
+        TYPEE
+          ATYPE
+            OQTYCON
+              QTYCON
+                TYCON
+                  CONID
+                    PsiElement(HaskellTokenType.conidRegexp)('Word8')
     PsiComment(HaskellTokenType.comment)('-- and the Element of a `L.ByteString` is also `Word8`\n')
     TYPEDECL
       PsiElement(HaskellTokenType.type)('type')
@@ -405,13 +406,14 @@ Haskell File
                 CONID
                   PsiElement(HaskellTokenType.conidRegexp)('ByteString')
       PsiElement(HaskellTokenType.=)('=')
-      TYPEE
-        ATYPE
-          OQTYCON
-            QTYCON
-              TYCON
-                CONID
-                  PsiElement(HaskellTokenType.conidRegexp)('Word8')
+      CTYPE
+        TYPEE
+          ATYPE
+            OQTYCON
+              QTYCON
+                TYCON
+                  CONID
+                    PsiElement(HaskellTokenType.conidRegexp)('Word8')
     PsiComment(HaskellTokenType.comment)('-- Declare a list-like data family\n')
     DATADECL
       PsiElement(HaskellTokenType.data)('data')

@@ -254,7 +254,7 @@ private topdecl ::= typedecl
 typedecl ::= "type" (typedeclclosedfamily | typedeclnorm) {pin=1}
 private typedeclclosedfamily ::= "family" kindedvars 'where' decls {pin=3}
 private kindedvars ::= typee (typee | '(' tyvar kindsig ')')* [kindsig]
-private typedeclnorm ::= ["family" | "instance"] typee ['=' (typee|foralltype)]
+private typedeclnorm ::= ["family" | "instance"] typee ['=' ctype]
 
 // Both data declaration and gadt declaration. The syntactic difference between
 // the two is between typee and [deriving].

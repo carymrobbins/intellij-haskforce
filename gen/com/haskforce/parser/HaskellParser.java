@@ -6144,7 +6144,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   /* ********************************************************** */
-  // ["family" | "instance"] typee ['=' (typee|foralltype)]
+  // ["family" | "instance"] typee ['=' ctype]
   static boolean typedeclnorm(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "typedeclnorm")) return false;
     boolean r;
@@ -6174,30 +6174,21 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // ['=' (typee|foralltype)]
+  // ['=' ctype]
   private static boolean typedeclnorm_2(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "typedeclnorm_2")) return false;
     typedeclnorm_2_0(b, l + 1);
     return true;
   }
 
-  // '=' (typee|foralltype)
+  // '=' ctype
   private static boolean typedeclnorm_2_0(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "typedeclnorm_2_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, EQUALS);
-    r = r && typedeclnorm_2_0_1(b, l + 1);
+    r = r && ctype(b, l + 1);
     exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // typee|foralltype
-  private static boolean typedeclnorm_2_0_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "typedeclnorm_2_0_1")) return false;
-    boolean r;
-    r = typee(b, l + 1);
-    if (!r) r = foralltype(b, l + 1);
     return r;
   }
 

@@ -66,23 +66,24 @@ Haskell File
             VARID
               PsiElement(HaskellTokenType.varidRegexp)('a')
       PsiElement(HaskellTokenType.=)('=')
-      TYPEE
-        ATYPE
-          OQTYCON
-            QTYCON
-              TYCON
-                CONID
-                  PsiElement(HaskellTokenType.conidRegexp)('Pull')
-        ATYPE
-          OQTYCON
-            QTYCON
-              TYCON
-                CONID
-                  PsiElement(HaskellTokenType.conidRegexp)('DIM1')
-        ATYPE
-          TYVAR
-            VARID
-              PsiElement(HaskellTokenType.varidRegexp)('a')
+      CTYPE
+        TYPEE
+          ATYPE
+            OQTYCON
+              QTYCON
+                TYCON
+                  CONID
+                    PsiElement(HaskellTokenType.conidRegexp)('Pull')
+          ATYPE
+            OQTYCON
+              QTYCON
+                TYCON
+                  CONID
+                    PsiElement(HaskellTokenType.conidRegexp)('DIM1')
+          ATYPE
+            TYVAR
+              VARID
+                PsiElement(HaskellTokenType.varidRegexp)('a')
     PPRAGMA
       PsiElement(HaskellTokenType.{-#)('{-#')
       PsiElement(HaskellTokenType.PRAGMA)('DEPRECATED')

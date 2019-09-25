@@ -193,16 +193,17 @@ Haskell File
                 CONID
                   PsiElement(HaskellTokenType.conidRegexp)('Text')
       PsiElement(HaskellTokenType.=)('=')
-      TYPEE
-        ATYPE
-          OQTYCON
-            QTYCON
-              CONID
-                PsiElement(HaskellTokenType.conidRegexp)('T')
-              PsiElement(HaskellTokenType..)('.')
-              TYCON
+      CTYPE
+        TYPEE
+          ATYPE
+            OQTYCON
+              QTYCON
                 CONID
-                  PsiElement(HaskellTokenType.conidRegexp)('Text')
+                  PsiElement(HaskellTokenType.conidRegexp)('T')
+                PsiElement(HaskellTokenType..)('.')
+                TYCON
+                  CONID
+                    PsiElement(HaskellTokenType.conidRegexp)('Text')
     GENDECL
       VARS
         VARID

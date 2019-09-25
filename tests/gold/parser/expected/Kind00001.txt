@@ -36,27 +36,28 @@ Haskell File
                 CONID
                   PsiElement(HaskellTokenType.conidRegexp)('Pr')
       PsiElement(HaskellTokenType.=)('=')
-      TYPEE
-        ATYPE
-          PsiElement(HaskellTokenType.(#)('(#')
-          CTYPE
-            TYPEE
-              ATYPE
-                OQTYCON
-                  QTYCON
-                    TYCON
-                      CONID
-                        PsiElement(HaskellTokenType.conidRegexp)('Int')
-          PsiElement(HaskellTokenType.,)(',')
-          CTYPE
-            TYPEE
-              ATYPE
-                OQTYCON
-                  QTYCON
-                    TYCON
-                      CONID
-                        PsiElement(HaskellTokenType.conidRegexp)('Int')
-          PsiElement(HaskellTokenType.#))('#)')
+      CTYPE
+        TYPEE
+          ATYPE
+            PsiElement(HaskellTokenType.(#)('(#')
+            CTYPE
+              TYPEE
+                ATYPE
+                  OQTYCON
+                    QTYCON
+                      TYCON
+                        CONID
+                          PsiElement(HaskellTokenType.conidRegexp)('Int')
+            PsiElement(HaskellTokenType.,)(',')
+            CTYPE
+              TYPEE
+                ATYPE
+                  OQTYCON
+                    QTYCON
+                      TYCON
+                        CONID
+                          PsiElement(HaskellTokenType.conidRegexp)('Int')
+            PsiElement(HaskellTokenType.#))('#)')
     TYPEDECL
       PsiElement(HaskellTokenType.type)('type')
       TYPEE
@@ -86,17 +87,18 @@ Haskell File
                   PsiElement(HaskellTokenType.*)('*')
           PsiElement(HaskellTokenType.))(')')
       PsiElement(HaskellTokenType.=)('=')
-      TYPEE
-        ATYPE
-          TYVAR
-            VARID
-              PsiElement(HaskellTokenType.varidRegexp)('f')
-        ATYPE
-          OQTYCON
-            QTYCON
-              TYCON
-                CONID
-                  PsiElement(HaskellTokenType.conidRegexp)('Int')
+      CTYPE
+        TYPEE
+          ATYPE
+            TYVAR
+              VARID
+                PsiElement(HaskellTokenType.varidRegexp)('f')
+          ATYPE
+            OQTYCON
+              QTYCON
+                TYCON
+                  CONID
+                    PsiElement(HaskellTokenType.conidRegexp)('Int')
     DATADECL
       PsiElement(HaskellTokenType.data)('data')
       TYPEE

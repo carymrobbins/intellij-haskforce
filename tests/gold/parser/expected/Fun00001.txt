@@ -52,14 +52,15 @@ Haskell File
             VARID
               PsiElement(HaskellTokenType.varidRegexp)('a')
       PsiElement(HaskellTokenType.=)('=')
-      TYPEE
-        ATYPE
-          OQTYCON
-            QTYCON
-              TYCON
-                CONID
-                  PsiElement(HaskellTokenType.conidRegexp)('Maybe')
-        ATYPE
-          TYVAR
-            VARID
-              PsiElement(HaskellTokenType.varidRegexp)('a')
+      CTYPE
+        TYPEE
+          ATYPE
+            OQTYCON
+              QTYCON
+                TYCON
+                  CONID
+                    PsiElement(HaskellTokenType.conidRegexp)('Maybe')
+          ATYPE
+            TYVAR
+              VARID
+                PsiElement(HaskellTokenType.varidRegexp)('a')
