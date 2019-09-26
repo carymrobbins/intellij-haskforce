@@ -18,6 +18,28 @@
       <a href="https://github.com/carymrobbins/intellij-haskforce/issues">bug tracker</a>.
     </p>
     <p>
+      <b>v0.3.43</b>
+      <ul>
+        <li>IntelliJ 2019.2 support (#396)</li>
+        <li>Parser improvements
+          <ul>
+            <li>Optimizations, less recursion, improved recovery</li>
+            <li>Parse type decls with class constraints</li>
+            <li>Parse DefaultSignatures</li>
+            <li>Parse NamedFieldPuns</li>
+            <li>Parse 'type' keyword in import</li>
+          </ul>
+        </li>
+        <li>New intentions
+          <ul>
+            <li>Add language extensions to package.yaml</li>
+            <li>Add dependency to package.yaml</li>
+            <li>"Replace with" suggestion</li>
+          </ul>
+        </li>
+        <li>Fix UnsupportedOperationException (#402)</li>
+      </ul>
+
       <b>v0.3.42</b>
       <ul>
         <li>Auto-import support via ghc-mod
