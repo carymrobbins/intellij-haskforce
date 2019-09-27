@@ -35,9 +35,6 @@ allprojects {
         plugins = ['java', 'yaml']
     }
 
-    // FIXME: See https://github.com/JetBrains/gradle-intellij-plugin/issues/424
-    buildSearchableOptions.enabled = false
-
     repositories {
         mavenCentral()
     }
