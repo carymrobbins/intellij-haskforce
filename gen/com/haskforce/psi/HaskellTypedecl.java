@@ -23,9 +23,6 @@ public interface HaskellTypedecl extends HaskellCompositeElement {
   List<HaskellPpragma> getPpragmaList();
 
   @NotNull
-  List<HaskellTvBndr> getTvBndrList();
-
-  @NotNull
   List<HaskellTypee> getTypeeList();
 
   @NotNull
@@ -33,9 +30,6 @@ public interface HaskellTypedecl extends HaskellCompositeElement {
 
   @Nullable
   PsiElement getFamilytoken();
-
-  @Nullable
-  PsiElement getForalltoken();
 
   @Nullable
   PsiElement getInstance();
@@ -57,9 +51,6 @@ public interface HaskellTypedecl extends HaskellCompositeElement {
 
   @Nullable
   PsiElement getLbrace();
-
-  @Nullable
-  PsiElement getPeriod();
 
   @Nullable
   PsiElement getRbrace();

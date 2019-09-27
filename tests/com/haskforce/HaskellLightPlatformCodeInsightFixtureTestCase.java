@@ -12,7 +12,7 @@ import com.intellij.openapi.util.io.FileUtil;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.CharsetToolkit;
 import com.intellij.testFramework.TestDataFile;
-import com.intellij.testFramework.fixtures.LightPlatformCodeInsightFixtureTestCase;
+import com.intellij.testFramework.fixtures.BasePlatformTestCase;
 import org.jetbrains.annotations.NonNls;
 
 import java.io.File;
@@ -21,7 +21,7 @@ import java.io.IOException;
 /**
  * Lightweight test case base.  Note that file paths must use '/' instead of `File.separatorChar`.
  */
-public abstract class HaskellLightPlatformCodeInsightFixtureTestCase extends LightPlatformCodeInsightFixtureTestCase {
+public abstract class HaskellLightPlatformCodeInsightFixtureTestCase extends BasePlatformTestCase {
     private String srcPath;
     private String expectPath;
 

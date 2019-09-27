@@ -199,7 +199,7 @@ public class HaskellVisitor extends PsiElementVisitor {
   }
 
   public void visitQqblob(@NotNull HaskellQqblob o) {
-    visitLanguageInjectionElement(o);
+    visitQqblobBase(o);
   }
 
   public void visitQtycls(@NotNull HaskellQtycls o) {
@@ -294,11 +294,11 @@ public class HaskellVisitor extends PsiElementVisitor {
     visitCompositeElement(o);
   }
 
-  public void visitLanguageInjectionElement(@NotNull HaskellLanguageInjectionElement o) {
+  public void visitNamedElement(@NotNull HaskellNamedElement o) {
     visitCompositeElement(o);
   }
 
-  public void visitNamedElement(@NotNull HaskellNamedElement o) {
+  public void visitQqblobBase(@NotNull HaskellQqblobBase o) {
     visitCompositeElement(o);
   }
 

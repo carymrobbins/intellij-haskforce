@@ -26,9 +26,9 @@ public class HaskellPpragmaImpl extends HaskellCompositeElementImpl implements H
   }
 
   @Override
-  @NotNull
+  @Nullable
   public PsiElement getClosepragma() {
-    return notNullChild(findChildByType(CLOSEPRAGMA));
+    return findChildByType(CLOSEPRAGMA);
   }
 
   @Override

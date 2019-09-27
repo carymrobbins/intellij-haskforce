@@ -537,23 +537,24 @@ Haskell File
                     PsiElement(HaskellTokenType.varidRegexp)('a')
           PsiElement(HaskellTokenType.))(')')
       PsiElement(HaskellTokenType.=)('=')
-      TYPEE
-        ATYPE
-          PsiElement(HaskellTokenType.')(''')
-          PsiElement(HaskellTokenType.[)('[')
-          CTYPE
-            TYPEE
-              ATYPE
-                OQTYCON
-                  QTYCON
-                    TYCON
-                      CONID
-                        PsiElement(HaskellTokenType.conidRegexp)('List')
-              ATYPE
-                TYVAR
-                  VARID
-                    PsiElement(HaskellTokenType.varidRegexp)('a')
-          PsiElement(HaskellTokenType.])(']')
+      CTYPE
+        TYPEE
+          ATYPE
+            PsiElement(HaskellTokenType.')(''')
+            PsiElement(HaskellTokenType.[)('[')
+            CTYPE
+              TYPEE
+                ATYPE
+                  OQTYCON
+                    QTYCON
+                      TYCON
+                        CONID
+                          PsiElement(HaskellTokenType.conidRegexp)('List')
+                ATYPE
+                  TYVAR
+                    VARID
+                      PsiElement(HaskellTokenType.varidRegexp)('a')
+            PsiElement(HaskellTokenType.])(']')
     TYPEDECL
       PsiElement(HaskellTokenType.type)('type')
       PsiElement(HaskellTokenType.instance)('instance')
@@ -580,23 +581,24 @@ Haskell File
                     PsiElement(HaskellTokenType.varidRegexp)('a')
           PsiElement(HaskellTokenType.))(')')
       PsiElement(HaskellTokenType.=)('=')
-      TYPEE
-        ATYPE
-          PsiElement(HaskellTokenType.')(''')
-          PsiElement(HaskellTokenType.[)('[')
-          CTYPE
-            TYPEE
-              ATYPE
-                OQTYCON
-                  QTYCON
-                    TYCON
-                      CONID
-                        PsiElement(HaskellTokenType.conidRegexp)('Collection')
-              ATYPE
-                TYVAR
-                  VARID
-                    PsiElement(HaskellTokenType.varidRegexp)('a')
-          PsiElement(HaskellTokenType.])(']')
+      CTYPE
+        TYPEE
+          ATYPE
+            PsiElement(HaskellTokenType.')(''')
+            PsiElement(HaskellTokenType.[)('[')
+            CTYPE
+              TYPEE
+                ATYPE
+                  OQTYCON
+                    QTYCON
+                      TYCON
+                        CONID
+                          PsiElement(HaskellTokenType.conidRegexp)('Collection')
+                ATYPE
+                  TYVAR
+                    VARID
+                      PsiElement(HaskellTokenType.varidRegexp)('a')
+            PsiElement(HaskellTokenType.])(']')
     TYPEDECL
       PsiElement(HaskellTokenType.type)('type')
       PsiElement(HaskellTokenType.instance)('instance')
@@ -614,19 +616,20 @@ Haskell File
                 CONID
                   PsiElement(HaskellTokenType.conidRegexp)('JInteger')
       PsiElement(HaskellTokenType.=)('=')
-      TYPEE
-        ATYPE
-          PsiElement(HaskellTokenType.')(''')
-          PsiElement(HaskellTokenType.[)('[')
-          CTYPE
-            TYPEE
-              ATYPE
-                OQTYCON
-                  QTYCON
-                    TYCON
-                      CONID
-                        PsiElement(HaskellTokenType.conidRegexp)('Object')
-          PsiElement(HaskellTokenType.])(']')
+      CTYPE
+        TYPEE
+          ATYPE
+            PsiElement(HaskellTokenType.')(''')
+            PsiElement(HaskellTokenType.[)('[')
+            CTYPE
+              TYPEE
+                ATYPE
+                  OQTYCON
+                    QTYCON
+                      TYCON
+                        CONID
+                          PsiElement(HaskellTokenType.conidRegexp)('Object')
+            PsiElement(HaskellTokenType.])(']')
     FOREIGNDECL
       PsiElement(HaskellTokenType.foreign)('foreign')
       PsiElement(HaskellTokenType.import)('import')

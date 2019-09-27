@@ -16,47 +16,7 @@ Haskell File
                 CONID
                   PsiElement(HaskellTokenType.conidRegexp)('FeldSymbols')
       PsiElement(HaskellTokenType.=)('=')
-      TYPEE
-        ATYPE
-          PsiElement(HaskellTokenType.()('(')
-          CTYPE
-            TYPEE
-              ATYPE
-                OQTYCON
-                  QTYCON
-                    TYCON
-                      CONID
-                        PsiElement(HaskellTokenType.conidRegexp)('Decor')
-              ATYPE
-                OQTYCON
-                  QTYCON
-                    TYCON
-                      CONID
-                        PsiElement(HaskellTokenType.conidRegexp)('SourceInfo1')
-              ATYPE
-                OQTYCON
-                  QTYCON
-                    TYCON
-                      CONID
-                        PsiElement(HaskellTokenType.conidRegexp)('Identity')
-              QTYCONOP
-                QTYCONSYM
-                  QCONSYM
-                    CONSYM
-                      PsiElement(HaskellTokenType.Consym)(':||')
-              TYPEE
-                ATYPE
-                  OQTYCON
-                    QTYCON
-                      TYCON
-                        CONID
-                          PsiElement(HaskellTokenType.conidRegexp)('Type')
-          PsiElement(HaskellTokenType.))(')')
-        QTYCONOP
-          QTYCONSYM
-            QCONSYM
-              CONSYM
-                PsiElement(HaskellTokenType.Consym)(':+:')
+      CTYPE
         TYPEE
           ATYPE
             PsiElement(HaskellTokenType.()('(')
@@ -67,7 +27,19 @@ Haskell File
                     QTYCON
                       TYCON
                         CONID
-                          PsiElement(HaskellTokenType.conidRegexp)('Condition')
+                          PsiElement(HaskellTokenType.conidRegexp)('Decor')
+                ATYPE
+                  OQTYCON
+                    QTYCON
+                      TYCON
+                        CONID
+                          PsiElement(HaskellTokenType.conidRegexp)('SourceInfo1')
+                ATYPE
+                  OQTYCON
+                    QTYCON
+                      TYCON
+                        CONID
+                          PsiElement(HaskellTokenType.conidRegexp)('Identity')
                 QTYCONOP
                   QTYCONSYM
                     QCONSYM
@@ -81,3 +53,32 @@ Haskell File
                           CONID
                             PsiElement(HaskellTokenType.conidRegexp)('Type')
             PsiElement(HaskellTokenType.))(')')
+          QTYCONOP
+            QTYCONSYM
+              QCONSYM
+                CONSYM
+                  PsiElement(HaskellTokenType.Consym)(':+:')
+          TYPEE
+            ATYPE
+              PsiElement(HaskellTokenType.()('(')
+              CTYPE
+                TYPEE
+                  ATYPE
+                    OQTYCON
+                      QTYCON
+                        TYCON
+                          CONID
+                            PsiElement(HaskellTokenType.conidRegexp)('Condition')
+                  QTYCONOP
+                    QTYCONSYM
+                      QCONSYM
+                        CONSYM
+                          PsiElement(HaskellTokenType.Consym)(':||')
+                  TYPEE
+                    ATYPE
+                      OQTYCON
+                        QTYCON
+                          TYCON
+                            CONID
+                              PsiElement(HaskellTokenType.conidRegexp)('Type')
+              PsiElement(HaskellTokenType.))(')')

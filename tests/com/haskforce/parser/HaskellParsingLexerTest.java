@@ -28,6 +28,7 @@ public class HaskellParsingLexerTest extends HaskellLexerTestBase {
     /* Borrow the test inputs from ParserTest. */
     public void testArrow00001()        { doTest(true, true); }
     public void testCase00001()         { doTest(true, true); }
+    public void testDefaultSignatures00001()  { doTest(true, true); }
     public void testDerivingStrategies00001() { doTest(true, true); }
     public void testDerivingVia00001()  { doTest(true, true); }
     public void testRecord00001()       { doTest(true, true); }

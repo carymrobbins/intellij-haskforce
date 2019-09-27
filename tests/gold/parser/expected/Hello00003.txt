@@ -21,14 +21,14 @@ Haskell File
             PsiElement(HaskellTokenType.")('"')
             PsiElement(HaskellTokenType.STRINGTOKEN)('Hello, World!')
             PsiElement(HaskellTokenType.")('"')
-    PsiErrorElement:<funorpatdecl>, <gendecl>, <qcon>, <qvar>, HaskellTokenType.", HaskellTokenType.$(, HaskellTokenType.', HaskellTokenType.'', HaskellTokenType.(, HaskellTokenType.(#, HaskellTokenType.-, HaskellTokenType.@, HaskellTokenType.Quasi-[, HaskellTokenType.[, HaskellTokenType.[|, HaskellTokenType.\, HaskellTokenType.\case, HaskellTokenType._, HaskellTokenType.case, HaskellTokenType.chartoken, HaskellTokenType.class, HaskellTokenType.data, HaskellTokenType.default, HaskellTokenType.deriving, HaskellTokenType.do, HaskellTokenType.false, HaskellTokenType.floattoken, HaskellTokenType.foreign, HaskellTokenType.idsplice, HaskellTokenType.if, HaskellTokenType.import, HaskellTokenType.instance, HaskellTokenType.integertoken, HaskellTokenType.let, HaskellTokenType.mdo, HaskellTokenType.newtype, HaskellTokenType.type or proc expected, got 'module'
-      <empty list>
-  PsiElement(HaskellTokenType.module)('module')
+  PsiErrorElement:HaskellTokenType.Synthetic rightbrace or HaskellTokenType.} expected
+    <empty list>
   PsiElement(DUMMY_BLOCK)
+    PsiElement(HaskellTokenType.module)('module')
     PsiElement(HaskellTokenType.conidRegexp)('Illegal')
     PsiElement(HaskellTokenType.where)('where')
     PsiElement(HaskellTokenType.varidRegexp)('main')
     PsiElement(HaskellTokenType.=)('=')
     PsiElement(HaskellTokenType.")('"')
     PsiElement(HaskellTokenType.STRINGTOKEN)('I'm invisible!')
-    PsiElement(HaskellTokenType.")('"')
+  PsiElement(HaskellTokenType.")('"')

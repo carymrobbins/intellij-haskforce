@@ -37,10 +37,11 @@ Haskell File
                 CONID
                   PsiElement(HaskellTokenType.conidRegexp)('Int8')
       PsiElement(HaskellTokenType.=)('=')
-      TYPEE
-        ATYPE
-          OQTYCON
-            QTYCON
-              TYCON
-                CONID
-                  PsiElement(HaskellTokenType.conidRegexp)('Word8')
+      CTYPE
+        TYPEE
+          ATYPE
+            OQTYCON
+              QTYCON
+                TYCON
+                  CONID
+                    PsiElement(HaskellTokenType.conidRegexp)('Word8')

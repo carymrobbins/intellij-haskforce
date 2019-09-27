@@ -25,67 +25,66 @@ Haskell File
             VARID
               PsiElement(HaskellTokenType.varidRegexp)('t')
       PsiElement(HaskellTokenType.=)('=')
-      TYPEE
-        ATYPE
-          PsiElement(HaskellTokenType.forall)('forall')
-          TV_BNDR
-            TYVAR
-              VARID
-                PsiElement(HaskellTokenType.varidRegexp)('n')
-          TV_BNDR
-            TYVAR
-              VARID
-                PsiElement(HaskellTokenType.varidRegexp)('b')
-          PsiElement(HaskellTokenType..)('.')
+      CTYPE
+        PsiElement(HaskellTokenType.forall)('forall')
+        TV_BNDR
+          TYVAR
+            VARID
+              PsiElement(HaskellTokenType.varidRegexp)('n')
+        TV_BNDR
+          TYVAR
+            VARID
+              PsiElement(HaskellTokenType.varidRegexp)('b')
+        PsiElement(HaskellTokenType..)('.')
+        CTYPE
+          CLSCONTEXT
+            ATYPE
+              OQTYCON
+                QTYCON
+                  TYCON
+                    CONID
+                      PsiElement(HaskellTokenType.conidRegexp)('Monad')
+            ATYPE
+              TYVAR
+                VARID
+                  PsiElement(HaskellTokenType.varidRegexp)('n')
+          PsiElement(HaskellTokenType.=>)('=>')
           CTYPE
-            CLSCONTEXT
+            TYPEE
               ATYPE
-                OQTYCON
-                  QTYCON
-                    TYCON
-                      CONID
-                        PsiElement(HaskellTokenType.conidRegexp)('Monad')
+                TYVAR
+                  VARID
+                    PsiElement(HaskellTokenType.varidRegexp)('t')
               ATYPE
                 TYVAR
                   VARID
                     PsiElement(HaskellTokenType.varidRegexp)('n')
-            PsiElement(HaskellTokenType.=>)('=>')
-            CTYPE
+              ATYPE
+                TYVAR
+                  VARID
+                    PsiElement(HaskellTokenType.varidRegexp)('b')
+              PsiElement(HaskellTokenType.->)('->')
               TYPEE
-                ATYPE
-                  TYVAR
-                    VARID
-                      PsiElement(HaskellTokenType.varidRegexp)('t')
                 ATYPE
                   TYVAR
                     VARID
                       PsiElement(HaskellTokenType.varidRegexp)('n')
                 ATYPE
-                  TYVAR
-                    VARID
-                      PsiElement(HaskellTokenType.varidRegexp)('b')
-                PsiElement(HaskellTokenType.->)('->')
-                TYPEE
-                  ATYPE
-                    TYVAR
-                      VARID
-                        PsiElement(HaskellTokenType.varidRegexp)('n')
-                  ATYPE
-                    PsiElement(HaskellTokenType.()('(')
-                    CTYPE
-                      TYPEE
-                        ATYPE
-                          OQTYCON
-                            QTYCON
-                              TYCON
-                                CONID
-                                  PsiElement(HaskellTokenType.conidRegexp)('StT')
-                        ATYPE
-                          TYVAR
-                            VARID
-                              PsiElement(HaskellTokenType.varidRegexp)('t')
-                        ATYPE
-                          TYVAR
-                            VARID
-                              PsiElement(HaskellTokenType.varidRegexp)('b')
-                    PsiElement(HaskellTokenType.))(')')
+                  PsiElement(HaskellTokenType.()('(')
+                  CTYPE
+                    TYPEE
+                      ATYPE
+                        OQTYCON
+                          QTYCON
+                            TYCON
+                              CONID
+                                PsiElement(HaskellTokenType.conidRegexp)('StT')
+                      ATYPE
+                        TYVAR
+                          VARID
+                            PsiElement(HaskellTokenType.varidRegexp)('t')
+                      ATYPE
+                        TYVAR
+                          VARID
+                            PsiElement(HaskellTokenType.varidRegexp)('b')
+                  PsiElement(HaskellTokenType.))(')')

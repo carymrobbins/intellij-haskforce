@@ -10,12 +10,110 @@ import com.intellij.psi.tree.IElementType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.LinkedList;
+
+import static com.intellij.openapi.util.text.StringUtil.parseInt;
 
 /**
  * Implementation holder for external rules in Haskell.bnf.
  */
 public class HaskellParserUtilBase extends GeneratedParserUtilBase {
+
+    /**
+     * This is mostly useful for debugging. Enabling this will allow us to
+     * more easily inspect the stack trace at the position where some deep
+     * recursion is happening, enabling us to then adjust the grammar and
+     * see if we can
+     */
+    private static final boolean THROW_ON_MAX_RECURSION =
+      "true".equals(System.getProperty("com.haskforce.parser.recursion.max.throw"));
+
+    private static final int MAX_RECURSION_LEVEL =
+      parseInt(System.getProperty("com.haskforce.parser.recursion.max"), 100);
+
+    /**
+     * HACK! This is pure copy-pasta from {@link com.intellij.lang.parser.GeneratedParserUtilBase}
+     * We are abusing the static import of this class in {@link com.haskforce.parser.HaskellParser}
+     * to "override" the {@link GeneratedParserUtilBase#recursion_guard_(com.intellij.lang.PsiBuilder, int, java.lang.String)}
+     * static method.
+     *
+     * The problem is that, for large files, our parser may do a lot of backtracking, and this
+     * helps us to prevent seemingly endless loops while parsing. Instead of using the default
+     * max recursion level of 1000, we reduce this to 10.
+     *
+     * Note that changing this value WILL change the parse tree as it breaks
+     * the red cuts in the parser.
+     *
+     * The real solution is to rewrite the parser, but this should provide some amount of
+     * life support for the current parser.
+     */
+
+    public static boolean recursion_guard_(PsiBuilder builder, int level, String funcName) {
+        if (level > MAX_RECURSION_LEVEL) {
+            final String msg =
+                "Maximum recursion level "
+                    + "(" + MAX_RECURSION_LEVEL + ") "
+                    + "reached in '" + funcName + "' "
+                    + "at offset " + builder.getCurrentOffset();
+            if (THROW_ON_MAX_RECURSION) throw new RuntimeException(msg);
+            builder.mark().error(msg);
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean toplevel_recover_debug(PsiBuilder builder, int level) {
+        IElementType typ = builder.getTokenType();
+        final boolean res = !(TOPLEVEL_RECOVER_TYPES.contains(typ) || builder.eof());
+        System.out.println(
+            "toplevel_recover_debug: res: " + res
+              + "; offset: " + builder.getCurrentOffset()
+              + "; type: " + typ
+              + "; text: '" + builder.getTokenText() + "'");
+        return res;
+    }
+    // private toplevel_recover ::= !(<<eof>> | semi | "foreign" | "import" | "type" | "class" | "data" | "newtype" | "deriving")
+    private static final java.util.Set<IElementType> TOPLEVEL_RECOVER_TYPES;
+    static {
+        TOPLEVEL_RECOVER_TYPES = new java.util.HashSet<>(Arrays.asList(
+            HaskellTypes.SEMICOLON, HaskellTypes.WHITESPACESEMITOK,
+            HaskellTypes.FOREIGNDECL,
+            HaskellTypes.IMPORT,
+            HaskellTypes.TYPE,
+            HaskellTypes.CLASSTOKEN,
+            HaskellTypes.DATA,
+            HaskellTypes.NEWTYPE,
+            HaskellTypes.DERIVING
+        ));
+    }
+
+    /**
+     * External rule used to determine if the current lexer position is
+     * in an indent. Semantically, this returns true unless the previous
+     * character was a newline and the current one is not whitespace.
+     * Via recoverWhile, this rule will be used to consume input until
+     * it reaches an unindented token, presumably a top-level element
+     * of some sort, and resume at that time. It's quite convenient to just
+     * resume parsing once we encounter a new top-level element.
+     */
+    public static boolean inIndentRecover(@NotNull PsiBuilder builder, int level) {
+        if (builder.eof()) return false;
+        final int offset = builder.getCurrentOffset();
+        if (offset == 0) return false;
+        final CharSequence text = builder.getOriginalText();
+        return !(
+            text.charAt(offset - 1) == '\n'
+                && !Character.isWhitespace(text.charAt(offset)));
+    }
+
+    public static boolean anyNonSemi(@NotNull PsiBuilder builder, int level) {
+        return
+            !builder.eof() && (
+                builder.getTokenType() == HaskellTypes.SEMICOLON
+                  || builder.getTokenType() == HaskellTypes.WHITESPACESEMITOK);
+    }
+
     /**
      * Called when the parser gets confused from layout rules.
      *

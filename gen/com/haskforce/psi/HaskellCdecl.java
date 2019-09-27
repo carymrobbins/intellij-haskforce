@@ -53,6 +53,9 @@ public interface HaskellCdecl extends HaskellCompositeElement {
   PsiElement getData();
 
   @Nullable
+  PsiElement getDefault();
+
+  @Nullable
   PsiElement getInstance();
 
   @Nullable

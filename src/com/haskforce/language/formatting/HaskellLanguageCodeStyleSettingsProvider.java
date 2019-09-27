@@ -19,7 +19,10 @@ public class HaskellLanguageCodeStyleSettingsProvider extends LanguageCodeStyleS
 
     @Override
     public String getCodeSample(@NotNull SettingsType settingsType) {
-        return "";
+        return
+            "main :: IO ()\n" +
+            "main = do\n" +
+            "  putStrLn \"yolo\"\n";
     }
 
     @Override
