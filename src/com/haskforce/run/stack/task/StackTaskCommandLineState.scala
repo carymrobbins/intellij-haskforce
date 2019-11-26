@@ -31,7 +31,7 @@ class StackTaskCommandLineState(
         config.getProject.getBasePath,
         new RelativeDiscoveryFileHyperlinkRawDataFinder(getProject, Array(
           new PatternHyperlinkFormat(
-            Pattern.compile("^\\s*([^:]+):(\\d+):(\\d+):"), false, false,
+            StackTaskCommandLineState.LINK_TO_SOURCE_REGEX, false, false,
             PatternHyperlinkPart.PATH, PatternHyperlinkPart.LINE, PatternHyperlinkPart.COLUMN
           )
         ))
@@ -90,6 +90,11 @@ class StackTaskCommandLineState(
       })
       .toMap.asJava
   }
+}
+
+object StackTaskCommandLineState {
+  // [\\w\\-]*>? detects a dependency building; issue #409
+  private val LINK_TO_SOURCE_REGEX = Pattern.compile("^[\\w\\-\\s]*>?\\s*([^:]+):(\\d+):(\\d+):")
 }
 
 /**
