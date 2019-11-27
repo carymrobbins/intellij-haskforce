@@ -40,6 +40,12 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   //                | singlequote i (qvar | qcon)
   //                | idsplice
   //                | thquote i qcon
+  //                // Parsing these here to handle BlockArguments
+  //                | '\' (apat | thaexp)+ "->" exp
+  //                | "if" exp [semi] "then" exp [semi] "else" exp
+  //                | "case" exp "of" altslist
+  //                | "do" open stmts close
+  //                | "mdo" open stmts close
   //                | literal
   //                | thaexp
   //                | '(#' i '#)'
@@ -60,16 +66,21 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     if (!r) r = aexp_1(b, l + 1);
     if (!r) r = consumeToken(b, IDSPLICE);
     if (!r) r = aexp_3(b, l + 1);
+    if (!r) r = aexp_4(b, l + 1);
+    if (!r) r = aexp_5(b, l + 1);
+    if (!r) r = aexp_6(b, l + 1);
+    if (!r) r = aexp_7(b, l + 1);
+    if (!r) r = aexp_8(b, l + 1);
     if (!r) r = literal(b, l + 1);
     if (!r) r = thaexp(b, l + 1);
-    if (!r) r = aexp_6(b, l + 1);
+    if (!r) r = aexp_11(b, l + 1);
     if (!r) r = listlike(b, l + 1);
     if (!r) r = parenlike(b, l + 1);
-    if (!r) r = aexp_9(b, l + 1);
+    if (!r) r = aexp_14(b, l + 1);
     if (!r) r = gcon(b, l + 1);
     if (!r) r = qvar(b, l + 1);
     if (!r) r = consumeToken(b, UNDERSCORE);
-    if (!r) r = aexp_13(b, l + 1);
+    if (!r) r = aexp_18(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -120,9 +131,116 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // '(#' i '#)'
+  // '\' (apat | thaexp)+ "->" exp
+  private static boolean aexp_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "aexp_4")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, BACKSLASH);
+    r = r && aexp_4_1(b, l + 1);
+    r = r && consumeToken(b, RIGHTARROW);
+    r = r && exp(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // (apat | thaexp)+
+  private static boolean aexp_4_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "aexp_4_1")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = aexp_4_1_0(b, l + 1);
+    while (r) {
+      int c = current_position_(b);
+      if (!aexp_4_1_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "aexp_4_1", c)) break;
+    }
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // apat | thaexp
+  private static boolean aexp_4_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "aexp_4_1_0")) return false;
+    boolean r;
+    r = apat(b, l + 1);
+    if (!r) r = thaexp(b, l + 1);
+    return r;
+  }
+
+  // "if" exp [semi] "then" exp [semi] "else" exp
+  private static boolean aexp_5(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "aexp_5")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, IF);
+    r = r && exp(b, l + 1);
+    r = r && aexp_5_2(b, l + 1);
+    r = r && consumeToken(b, THEN);
+    r = r && exp(b, l + 1);
+    r = r && aexp_5_5(b, l + 1);
+    r = r && consumeToken(b, ELSE);
+    r = r && exp(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // [semi]
+  private static boolean aexp_5_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "aexp_5_2")) return false;
+    semi(b, l + 1);
+    return true;
+  }
+
+  // [semi]
+  private static boolean aexp_5_5(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "aexp_5_5")) return false;
+    semi(b, l + 1);
+    return true;
+  }
+
+  // "case" exp "of" altslist
   private static boolean aexp_6(PsiBuilder b, int l) {
     if (!recursion_guard_(b, l, "aexp_6")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, CASE);
+    r = r && exp(b, l + 1);
+    r = r && consumeToken(b, OF);
+    r = r && altslist(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // "do" open stmts close
+  private static boolean aexp_7(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "aexp_7")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, DO);
+    r = r && open(b, l + 1);
+    r = r && stmts(b, l + 1);
+    r = r && close(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // "mdo" open stmts close
+  private static boolean aexp_8(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "aexp_8")) return false;
+    boolean r;
+    Marker m = enter_section_(b);
+    r = consumeToken(b, MDOTOK);
+    r = r && open(b, l + 1);
+    r = r && stmts(b, l + 1);
+    r = r && close(b, l + 1);
+    exit_section_(b, m, null, r);
+    return r;
+  }
+
+  // '(#' i '#)'
+  private static boolean aexp_11(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "aexp_11")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, LUNBOXPAREN);
@@ -133,54 +251,54 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   // [recordlikelhs] i '{' ((fbind | var) ',')* [e] (".." | fbind | var) [e] '}'
-  private static boolean aexp_9(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "aexp_9")) return false;
+  private static boolean aexp_14(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "aexp_14")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = aexp_9_0(b, l + 1);
+    r = aexp_14_0(b, l + 1);
     r = r && i(b, l + 1);
     r = r && consumeToken(b, LBRACE);
-    r = r && aexp_9_3(b, l + 1);
-    r = r && aexp_9_4(b, l + 1);
-    r = r && aexp_9_5(b, l + 1);
-    r = r && aexp_9_6(b, l + 1);
+    r = r && aexp_14_3(b, l + 1);
+    r = r && aexp_14_4(b, l + 1);
+    r = r && aexp_14_5(b, l + 1);
+    r = r && aexp_14_6(b, l + 1);
     r = r && consumeToken(b, RBRACE);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // [recordlikelhs]
-  private static boolean aexp_9_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "aexp_9_0")) return false;
+  private static boolean aexp_14_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "aexp_14_0")) return false;
     recordlikelhs(b, l + 1);
     return true;
   }
 
   // ((fbind | var) ',')*
-  private static boolean aexp_9_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "aexp_9_3")) return false;
+  private static boolean aexp_14_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "aexp_14_3")) return false;
     while (true) {
       int c = current_position_(b);
-      if (!aexp_9_3_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "aexp_9_3", c)) break;
+      if (!aexp_14_3_0(b, l + 1)) break;
+      if (!empty_element_parsed_guard_(b, "aexp_14_3", c)) break;
     }
     return true;
   }
 
   // (fbind | var) ','
-  private static boolean aexp_9_3_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "aexp_9_3_0")) return false;
+  private static boolean aexp_14_3_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "aexp_14_3_0")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = aexp_9_3_0_0(b, l + 1);
+    r = aexp_14_3_0_0(b, l + 1);
     r = r && consumeToken(b, COMMA);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // fbind | var
-  private static boolean aexp_9_3_0_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "aexp_9_3_0_0")) return false;
+  private static boolean aexp_14_3_0_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "aexp_14_3_0_0")) return false;
     boolean r;
     r = fbind(b, l + 1);
     if (!r) r = var(b, l + 1);
@@ -188,15 +306,15 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   // [e]
-  private static boolean aexp_9_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "aexp_9_4")) return false;
+  private static boolean aexp_14_4(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "aexp_14_4")) return false;
     e(b, l + 1);
     return true;
   }
 
   // ".." | fbind | var
-  private static boolean aexp_9_5(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "aexp_9_5")) return false;
+  private static boolean aexp_14_5(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "aexp_14_5")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, DOUBLEPERIOD);
@@ -207,26 +325,26 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   // [e]
-  private static boolean aexp_9_6(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "aexp_9_6")) return false;
+  private static boolean aexp_14_6(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "aexp_14_6")) return false;
     e(b, l + 1);
     return true;
   }
 
   // "@" ("_" | ctype)
-  private static boolean aexp_13(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "aexp_13")) return false;
+  private static boolean aexp_18(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "aexp_18")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, AMPERSAT);
-    r = r && aexp_13_1(b, l + 1);
+    r = r && aexp_18_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // "_" | ctype
-  private static boolean aexp_13_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "aexp_13_1")) return false;
+  private static boolean aexp_18_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "aexp_18_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, UNDERSCORE);
@@ -3943,12 +4061,7 @@ public class HaskellParser implements PsiParser, LightPsiParser {
 
   /* ********************************************************** */
   // LCASETOK altslist
-  //                | '\' (apat | thaexp)+ "->" exp
   //                | letexp
-  //                | "if" exp [semi] "then" exp [semi] "else" exp
-  //                | "case" exp "of" altslist
-  //                | "do" open stmts close
-  //                | "mdo" open stmts close
   //                // proc might just be a variable name.
   //                | "proc" (aexp "->" exp | aexp*)
   //                | aexp+
@@ -3957,14 +4070,9 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     boolean r;
     Marker m = enter_section_(b);
     r = lexp_0(b, l + 1);
-    if (!r) r = lexp_1(b, l + 1);
     if (!r) r = letexp(b, l + 1);
+    if (!r) r = lexp_2(b, l + 1);
     if (!r) r = lexp_3(b, l + 1);
-    if (!r) r = lexp_4(b, l + 1);
-    if (!r) r = lexp_5(b, l + 1);
-    if (!r) r = lexp_6(b, l + 1);
-    if (!r) r = lexp_7(b, l + 1);
-    if (!r) r = lexp_8(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
@@ -3980,143 +4088,31 @@ public class HaskellParser implements PsiParser, LightPsiParser {
     return r;
   }
 
-  // '\' (apat | thaexp)+ "->" exp
-  private static boolean lexp_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "lexp_1")) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_);
-    r = consumeToken(b, BACKSLASH);
-    r = r && lexp_1_1(b, l + 1);
-    p = r; // pin = 2
-    r = r && report_error_(b, consumeToken(b, RIGHTARROW));
-    r = p && exp(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  // (apat | thaexp)+
-  private static boolean lexp_1_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "lexp_1_1")) return false;
-    boolean r;
-    Marker m = enter_section_(b);
-    r = lexp_1_1_0(b, l + 1);
-    while (r) {
-      int c = current_position_(b);
-      if (!lexp_1_1_0(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "lexp_1_1", c)) break;
-    }
-    exit_section_(b, m, null, r);
-    return r;
-  }
-
-  // apat | thaexp
-  private static boolean lexp_1_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "lexp_1_1_0")) return false;
-    boolean r;
-    r = apat(b, l + 1);
-    if (!r) r = thaexp(b, l + 1);
-    return r;
-  }
-
-  // "if" exp [semi] "then" exp [semi] "else" exp
-  private static boolean lexp_3(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "lexp_3")) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_);
-    r = consumeToken(b, IF);
-    r = r && exp(b, l + 1);
-    p = r; // pin = 2
-    r = r && report_error_(b, lexp_3_2(b, l + 1));
-    r = p && report_error_(b, consumeToken(b, THEN)) && r;
-    r = p && report_error_(b, exp(b, l + 1)) && r;
-    r = p && report_error_(b, lexp_3_5(b, l + 1)) && r;
-    r = p && report_error_(b, consumeToken(b, ELSE)) && r;
-    r = p && exp(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  // [semi]
-  private static boolean lexp_3_2(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "lexp_3_2")) return false;
-    semi(b, l + 1);
-    return true;
-  }
-
-  // [semi]
-  private static boolean lexp_3_5(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "lexp_3_5")) return false;
-    semi(b, l + 1);
-    return true;
-  }
-
-  // "case" exp "of" altslist
-  private static boolean lexp_4(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "lexp_4")) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_);
-    r = consumeToken(b, CASE);
-    r = r && exp(b, l + 1);
-    p = r; // pin = 2
-    r = r && report_error_(b, consumeToken(b, OF));
-    r = p && altslist(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  // "do" open stmts close
-  private static boolean lexp_5(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "lexp_5")) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_);
-    r = consumeToken(b, DO);
-    r = r && open(b, l + 1);
-    p = r; // pin = 2
-    r = r && report_error_(b, stmts(b, l + 1));
-    r = p && close(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
-  // "mdo" open stmts close
-  private static boolean lexp_6(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "lexp_6")) return false;
-    boolean r, p;
-    Marker m = enter_section_(b, l, _NONE_);
-    r = consumeToken(b, MDOTOK);
-    r = r && open(b, l + 1);
-    p = r; // pin = 2
-    r = r && report_error_(b, stmts(b, l + 1));
-    r = p && close(b, l + 1) && r;
-    exit_section_(b, l, m, r, p, null);
-    return r || p;
-  }
-
   // "proc" (aexp "->" exp | aexp*)
-  private static boolean lexp_7(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "lexp_7")) return false;
+  private static boolean lexp_2(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "lexp_2")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = consumeToken(b, "proc");
-    r = r && lexp_7_1(b, l + 1);
+    r = r && lexp_2_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // aexp "->" exp | aexp*
-  private static boolean lexp_7_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "lexp_7_1")) return false;
+  private static boolean lexp_2_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "lexp_2_1")) return false;
     boolean r;
     Marker m = enter_section_(b);
-    r = lexp_7_1_0(b, l + 1);
-    if (!r) r = lexp_7_1_1(b, l + 1);
+    r = lexp_2_1_0(b, l + 1);
+    if (!r) r = lexp_2_1_1(b, l + 1);
     exit_section_(b, m, null, r);
     return r;
   }
 
   // aexp "->" exp
-  private static boolean lexp_7_1_0(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "lexp_7_1_0")) return false;
+  private static boolean lexp_2_1_0(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "lexp_2_1_0")) return false;
     boolean r, p;
     Marker m = enter_section_(b, l, _NONE_);
     r = aexp(b, l + 1);
@@ -4128,26 +4124,26 @@ public class HaskellParser implements PsiParser, LightPsiParser {
   }
 
   // aexp*
-  private static boolean lexp_7_1_1(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "lexp_7_1_1")) return false;
+  private static boolean lexp_2_1_1(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "lexp_2_1_1")) return false;
     while (true) {
       int c = current_position_(b);
       if (!aexp(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "lexp_7_1_1", c)) break;
+      if (!empty_element_parsed_guard_(b, "lexp_2_1_1", c)) break;
     }
     return true;
   }
 
   // aexp+
-  private static boolean lexp_8(PsiBuilder b, int l) {
-    if (!recursion_guard_(b, l, "lexp_8")) return false;
+  private static boolean lexp_3(PsiBuilder b, int l) {
+    if (!recursion_guard_(b, l, "lexp_3")) return false;
     boolean r;
     Marker m = enter_section_(b);
     r = aexp(b, l + 1);
     while (r) {
       int c = current_position_(b);
       if (!aexp(b, l + 1)) break;
-      if (!empty_element_parsed_guard_(b, "lexp_8", c)) break;
+      if (!empty_element_parsed_guard_(b, "lexp_3", c)) break;
     }
     exit_section_(b, m, null, r);
     return r;

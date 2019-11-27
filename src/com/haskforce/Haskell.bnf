@@ -410,12 +410,7 @@ private infixexp0 ::= '-'* lexp
 letexp ::= "let" decls ["in" exp]
 
 private lexp ::= LCASETOK altslist
-               | '\' (apat | thaexp)+ "->" exp
                | letexp
-               | "if" exp [semi] "then" exp [semi] "else" exp
-               | "case" exp "of" altslist
-               | "do" open stmts close
-               | "mdo" open stmts close
                // proc might just be a variable name.
                | "proc" (aexp "->" exp | aexp*)
                | aexp+ {pin(".*")=2}
@@ -424,6 +419,14 @@ private aexp ::= parensplice exp i ')'
                | singlequote i (qvar | qcon)
                | idsplice
                | thquote i qcon
+
+               // Parsing these here to handle BlockArguments
+               | '\' (apat | thaexp)+ "->" exp
+               | "if" exp [semi] "then" exp [semi] "else" exp
+               | "case" exp "of" altslist
+               | "do" open stmts close
+               | "mdo" open stmts close
+
                | literal
                | thaexp
                | '(#' i '#)'
