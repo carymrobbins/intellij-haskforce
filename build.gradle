@@ -55,6 +55,9 @@ allprojects {
         compile "org.scalaz:scalaz-core_${scalaBinaryVersion}:7.2.17"
         compile "org.yaml:snakeyaml:1.16"
 
+        compile     "com.github.plokhotnyuk.jsoniter-scala:jsoniter-scala-core_${scalaBinaryVersion}:2.0.2"
+        compileOnly "com.github.plokhotnyuk.jsoniter-scala:jsoniter-scala-macros_${scalaBinaryVersion}:2.0.2"
+
         // Compile-time-only deps.
         compileOnly "com.google.code.findbugs:findbugs:3.0.1"
         compileOnly "com.google.guava:guava:21.0"
