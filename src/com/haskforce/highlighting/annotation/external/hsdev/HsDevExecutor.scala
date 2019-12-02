@@ -103,8 +103,9 @@ class HsDevExecutor(
       val stdout = new BufferedInputStream(proc.getInputStream)
       // Peek to see if an error occurred
       stdout.mark(1)
-      if (stdout.read() == '{') {
-        stdout.reset()
+      val char0 = stdout.read()
+      stdout.reset()
+      if (char0 == '{') {
         try {
           val err = Jsoniter.readFromStream[HsDevError](stdout)
           toolsConsole.writeError(
