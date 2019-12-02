@@ -25,13 +25,20 @@ class HsDevExecutor(
 ) {
   def installedModules: Vector[HsDevModule] = {
     cache.installedModules.getOrElse {
-      exec[HsDevModule]("module", "--installed").fold(
-        (_: Unit) => Vector.empty,
-        res => {
+      exec[HsDevModule]("module", "--installed") match {
+        case Left(()) => Vector.empty
+        case Right(res) =>
           cache.installedModules = Some(res)
           res
-        }
-      )
+      }
+    }
+  }
+
+  def checkContents(contents: String): Vector[HsDevNote[HsDevOutputMessage]] = {
+    // TODO: How does it know the file location? Maybe do we need to do something trickier?
+    exec[HsDevNote[HsDevOutputMessage]]("check", "--contents", contents) match {
+      case Left(()) => Vector.empty
+      case Right(res) => res
     }
   }
 
