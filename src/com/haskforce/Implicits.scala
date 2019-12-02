@@ -10,6 +10,7 @@ import scala.collection.JavaConverters._
 
 import com.intellij.openapi.util.{Computable, Condition}
 
+// TODO: Most of this should be refactorable to use SAMs
 object Implicits {
   implicit final class Fun0[A](val underlying: () => A) extends AnyVal {
     def toRunnable(implicit ev: A =:= Unit): Runnable = new Runnable {

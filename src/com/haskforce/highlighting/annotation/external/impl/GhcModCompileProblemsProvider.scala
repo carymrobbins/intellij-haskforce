@@ -31,8 +31,6 @@ object GhcModCompileProblemsProvider {
     workDir = ExecUtil.guessWorkDir(psiFile)
   } yield new GhcModCompileProblemsProvider(module, workDir, filePath)
 
-  val executorService = Executors.newSingleThreadExecutor()
-
   val LOG = Logger.getInstance(classOf[GhcModCompileProblemsProvider])
 }
 

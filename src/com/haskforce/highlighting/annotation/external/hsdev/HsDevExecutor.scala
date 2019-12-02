@@ -9,7 +9,7 @@ import com.haskforce.utils.ExecUtil
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.module.{Module, ModuleUtilCore}
 import com.intellij.openapi.project.Project
-import com.intellij.psi.PsiElement
+import com.intellij.psi.{PsiElement, PsiFile}
 
 import scala.collection.mutable
 import scala.util.control.NonFatal
@@ -34,8 +34,10 @@ class HsDevExecutor(
     }
   }
 
-  def checkContents(contents: String): Vector[HsDevNote[HsDevOutputMessage]] = {
-    // TODO: How does it know the file location? Maybe do we need to do something trickier?
+  def checkContents(file: PsiFile): Vector[HsDevNote[HsDevOutputMessage]] = {
+    // hsdev expects a json argument for contents; e.g.
+    // {"file": "path/to/file.hs", "contents": "module ..."}
+    val contents = Jsoniter.writeToString(HsDevFileSource.fromPsiFile(file))
     exec[HsDevNote[HsDevOutputMessage]]("check", "--contents", contents) match {
       case Left(()) => Vector.empty
       case Right(res) => res

@@ -4,6 +4,7 @@ import com.haskforce.ui.JTextAccessorField;
 import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.GuiUtil;
 import com.haskforce.utils.NotificationUtil;
+import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.diagnostic.Logger;
@@ -19,6 +20,7 @@ import com.intellij.util.messages.Topic;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import scala.Option;
 import scala.runtime.AbstractFunction1;
 
 import javax.swing.*;
@@ -48,6 +50,12 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     private RawCommandLineEditor hlintFlags;
     private JButton hlintAutoFind;
     private JTextField hlintVersion;
+
+    private TextFieldWithBrowseButton hsdevPath;
+    private RawCommandLineEditor hsdevFlags;
+    private JButton hsdevAutoFind;
+    private JTextField hsdevVersion;
+
     private TextFieldWithBrowseButton ghcModPath;
     private RawCommandLineEditor ghcModFlags;
     private JButton ghcModAutoFind;
@@ -72,6 +80,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
                         stylishAutoFind, stylishVersion, "--help"),
                 new Tool(project, "hlint", ToolKey.HLINT_KEY, hlintPath, hlintFlags,
                          hlintAutoFind, hlintVersion),
+                new HsDevTool(project),
                 new Tool(project, "ghc-mod", ToolKey.GHC_MOD_KEY, ghcModPath, ghcModFlags,
                          ghcModAutoFind, ghcModVersion, "version"),
                 new Tool(project, "ghc-modi", ToolKey.GHC_MODI_KEY, ghcModiPath, ghcModiFlags,
@@ -234,6 +243,53 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
             for (PropertyField propertyField : propertyFields) {
                 propertyField.restoreState();
             }
+        }
+    }
+
+    class HsDevTool extends Tool {
+        HsDevTool(Project project) {
+            super(
+              project,
+              "hsdev",
+              ToolKey.HSDEV_KEY,
+              hsdevPath,
+              hsdevFlags,
+              hsdevAutoFind,
+              hsdevVersion
+            );
+        }
+
+        @Override
+        public void updateVersion() {
+            String pathText = pathField.getText();
+            if (pathText.isEmpty()) {
+                versionField.setText("");
+                return;
+            }
+            versionField.setText(getHsDevVersion(pathText));
+        }
+
+        // Returns null on error which will clear the versionField when
+        // passed to versionField.set()
+        @Nullable
+        private String getHsDevVersion(String hsdevPath) {
+            return ExecUtil.readCommandLine(
+                new GeneralCommandLine(hsdevPath, "version")
+            ).flatMap(hsdevVersion ->
+                ExecUtil.readCommandLine(
+                    new GeneralCommandLine(hsdevPath, "version", "--compiler")
+                ).map(ghcVersion ->
+                    "hsdev version " + hsdevVersion + "; compiled with " + ghcVersion
+                )
+            ).fold(
+              e -> {
+                  NotificationUtil.displaySimpleNotification(
+                    NotificationType.ERROR, null, "Haskell Tools", e.getMessage()
+                  );
+                  return null;
+              },
+              s -> s
+            );
         }
     }
 

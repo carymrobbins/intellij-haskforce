@@ -1,7 +1,33 @@
 package com.haskforce.highlighting.annotation.external.hsdev
 
-import com.github.plokhotnyuk.jsoniter_scala.core.{JsonReader, JsonReaderException, JsonValueCodec, JsonWriter}
+import com.github.plokhotnyuk.jsoniter_scala.core.JsonValueCodec
 import com.github.plokhotnyuk.jsoniter_scala.macros.{CodecMakerConfig, JsonCodecMaker}
+import com.intellij.psi.PsiFile
+
+final case class HsDevFileSource(
+  file: String,
+  contents: String
+)
+
+object HsDevFileSource {
+
+  def fromPsiFile(x: PsiFile): HsDevFileSource = {
+    // If the full source file path cannot be recovered (likely because
+    // this is an in-memory PsiFile) then make up a source file name
+    // based on the name of the PsiFile.
+    val filePath =
+      Option(x.getVirtualFile)
+        .fold(s"${x.getName}.hs")(_.getCanonicalPath)
+    HsDevFileSource(
+      file = filePath,
+      contents = x.getText
+    )
+  }
+
+  implicit val jsonCodec: JsonValueCodec[HsDevFileSource] =
+    JsonCodecMaker.make(CodecMakerConfig)
+}
+
 
 final case class HsDevModule(
   id: HsDevModuleId,

@@ -6,8 +6,7 @@ import com.haskforce.highlighting.annotation.external.impl.{GhcModiCompileProble
 
 object CompileProblemsProviderFactory extends ProblemsProviderFactory {
   def get(psiFile: PsiFile): Option[ProblemsProvider] = {
-    GhcModiCompileProblemsProvider.create(psiFile).orElse(
-      GhcModCompileProblemsProvider.create(psiFile)
-    )
+    GhcModiCompileProblemsProvider.create(psiFile)
+      .orElse(GhcModCompileProblemsProvider.create(psiFile))
   }
 }

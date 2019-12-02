@@ -249,7 +249,6 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     private ConcurrentHashMap<String, String[]> findCache = new ConcurrentHashMap<>();
 
-    @Nullable
     private static Problems handleCheck(@NotNull Module module, @NotNull String file, @NotNull String stdout) throws GhcModiError {
         final Problems problems = GhcMod.parseProblems(module, new Scanner(stdout));
         if (problems == null) {

@@ -265,6 +265,7 @@ public class GhcMod {
         }
     }
 
+    // TODO: Refactor this out of GhcMod
     public static class Problem implements HaskellProblem {
         public final String file;
         public final int startLine;
@@ -424,7 +425,7 @@ public class GhcMod {
 
         /** The text range of our annotation should be based on the element at that offset. */
         @Nullable
-        private TextRange getTextRange(@NotNull PsiFile psiFile) {
+        protected TextRange getTextRange(@NotNull PsiFile psiFile) {
             final String text = psiFile.getText();
             final int offsetStart = getOffsetStart(text);
             if (offsetStart == -1) return null;
