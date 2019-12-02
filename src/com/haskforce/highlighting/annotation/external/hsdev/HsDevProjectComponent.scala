@@ -25,8 +25,9 @@ class HsDevProjectComponent(
   private val toolsConsole =
     HaskellToolsConsole.get(project).curry(ToolKey.HSDEV_KEY)
 
-  private val server = new HsDevServerProcess(project)
-  server.reload(exeSettings)
+  private val server = HsDevServerProcess.start(
+    project, toolsConsole, exeSettings
+  )
 
   override def onSettingsChanged(settings: ToolSettings): Unit = {
     exeSettings = HsDevExeSettings.lift(
@@ -36,6 +37,10 @@ class HsDevProjectComponent(
     )
     toolsConsole.writeError("Settings changed, reloading hsdev")
     server.reload(exeSettings)
+  }
+
+  override def disposeComponent(): Unit = {
+    server.kill()
   }
 
   def currentPort: Option[Int] = server.currentPort

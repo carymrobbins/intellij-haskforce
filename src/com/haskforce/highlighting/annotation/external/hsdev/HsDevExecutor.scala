@@ -51,6 +51,8 @@ class HsDevExecutor(
   }
 
   private def ensureScanned(): Either[Unit, Unit] = {
+    if (cache.port.contains(port) && cache.scanned) return Right(())
+    cache.clear()
     val cli = mkHsdevCli()
     cli.addParameters("scan", "project", workPkgDir)
     if (exeSettings.stackPath.isDefined) {
@@ -86,6 +88,8 @@ class HsDevExecutor(
       )
       return Left(())
     }
+    cache.port = Some(port)
+    cache.scanned = true
     Right(())
   }
 
