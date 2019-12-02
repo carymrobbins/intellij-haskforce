@@ -1,14 +1,17 @@
 package com.haskforce.highlighting.annotation.external.hsdev
 
 import java.io.{BufferedInputStream, BufferedReader, IOException, InputStreamReader}
+import java.util.concurrent.atomic.AtomicInteger
 
 import com.github.plokhotnyuk.jsoniter_scala.{core => Jsoniter}
 import com.haskforce.settings.ToolKey
 import com.haskforce.ui.tools.HaskellToolsConsole
 import com.haskforce.utils.ExecUtil
 import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.execution.process.{OSProcessHandler, ProcessAdapter, ProcessEvent, ProcessOutputType}
 import com.intellij.openapi.module.{Module, ModuleUtilCore}
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Key
 import com.intellij.psi.{PsiElement, PsiFile}
 
 import scala.collection.mutable
@@ -50,6 +53,13 @@ class HsDevExecutor(
     cli
   }
 
+  private def renderCli(cli: GeneralCommandLine): String = {
+    cli.getCommandLineString match {
+      case s if s.length > 203 => s.substring(0, 200) + "..."
+      case s => s
+    }
+  }
+
   private def ensureScanned(): Either[Unit, Unit] = {
     if (cache.port.contains(port) && cache.scanned) return Right(())
     cache.clear()
@@ -58,33 +68,15 @@ class HsDevExecutor(
     if (exeSettings.stackPath.isDefined) {
       cli.addParameter("--stack")
     }
-    toolsConsole.writeInput(cli.getCommandLineString)
-    val proc = cli.createProcess()
-    val stdout = new BufferedReader(new InputStreamReader(proc.getInputStream))
-    val stderr = new BufferedReader(new InputStreamReader(proc.getErrorStream))
-    while (proc.isAlive) {
-      try {
-        Option(stdout.readLine()).foreach(toolsConsole.writeOutput)
-      } catch {
-        case e: IOException =>
-          toolsConsole.writeError(
-            s"Failed to read stdout of command '${cli.getCommandLineString}': $e"
-          )
-          return Left(())
-      }
-      try {
-        Option(stderr.readLine()).foreach(toolsConsole.writeError)
-      } catch {
-        case e: IOException =>
-          toolsConsole.writeError(
-            s"Failed to read stderr of command '${cli.getCommandLineString}': $e"
-          )
-          return Left(())
-      }
-    }
-    if (proc.exitValue != 0) {
+    val commandId = HsDevExecutor.nextCommandId()
+    toolsConsole.writeInput(s"hsdev $commandId: ${renderCli(cli)}")
+    val proc = new OSProcessHandler(cli)
+    proc.addProcessListener(new HsDevExecutor.MyProcessListener(toolsConsole, commandId))
+    // TODO: Add timeout config
+    proc.waitFor()
+    if (proc.getExitCode != 0) {
       toolsConsole.writeError(
-        s"Command '${cli.getCommandLineString}' with non-zero exit code ${proc.exitValue}"
+        s"hsdev $commandId: Failed with non-zero exit code ${proc.getExitCode}"
       )
       return Left(())
     }
@@ -101,7 +93,8 @@ class HsDevExecutor(
     val cli = mkHsdevCli()
     cli.addParameter(command)
     cli.addParameters(args: _*)
-    toolsConsole.writeInput(cli.getCommandLineString)
+    val commandId = HsDevExecutor.nextCommandId()
+    toolsConsole.writeInput(s"hsdev $commandId: ${renderCli(cli)}")
     val proc = cli.createProcess()
     try {
       val stdout = new BufferedInputStream(proc.getInputStream)
@@ -113,7 +106,7 @@ class HsDevExecutor(
         try {
           val err = Jsoniter.readFromStream[HsDevError](stdout)
           toolsConsole.writeError(
-            s"Command '${cli.getCommandLineString} failed: $err"
+            s"hsdev $commandId: error: $err"
           )
           return Left(())
         } catch {
@@ -121,7 +114,7 @@ class HsDevExecutor(
             val buf = new Array[Char](1000)
             new InputStreamReader(stdout).read(buf)
             toolsConsole.writeError(
-              s"Failed to decode HsDevError: $e; "
+              s"hsdev $commandId: Failed to decode HsDevError: $e; "
                 + s"the input was (showing first 1000 chars): "
                 + new String(buf)
             )
@@ -143,9 +136,9 @@ class HsDevExecutor(
             case _: IOException => ""
           }
         toolsConsole.writeError(
-          s"Command '${cli.getCommandLineString}' failed\n"
+          s"hsdev $commandId: failed\n"
+            + s"  exception was: $e\n"
             + s"  stderr was: $stderrText"
-            + s"  exception was: $e"
         )
         Left(())
     }
@@ -174,4 +167,21 @@ object HsDevExecutor {
       toolsConsole = toolsConsole
     )
   }
+
+  private class MyProcessListener(
+    toolsConsole: HaskellToolsConsole.Curried,
+    commandId: Int
+  ) extends ProcessAdapter {
+    override def onTextAvailable(event: ProcessEvent, outputType: Key[_]): Unit = {
+      val text = s"hsdev $commandId: ${event.getText}"
+      if (ProcessOutputType.isStdout(outputType)) {
+        toolsConsole.writeOutput(text)
+      } else {
+        toolsConsole.writeError(text)
+      }
+    }
+  }
+
+  private val commandCounter = new AtomicInteger()
+  private def nextCommandId(): Int = commandCounter.incrementAndGet()
 }
