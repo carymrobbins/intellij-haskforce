@@ -61,8 +61,19 @@ class HsDevExecutor private(
   }
 
   private def ensureScanned(): Either[Unit, Unit] = {
-    if (cache.port.contains(port) && cache.scanned) return Right(())
-    cache.clear()
+    cache.scanned match {
+      case HsDevCache.ScanState.NotScanned => // noop
+      case HsDevCache.ScanState.Scanned =>
+        if (cache.port.contains(port)) return Right(())
+        // Reset the cache if the old cache was for a different server
+        cache.clear()
+      case HsDevCache.ScanState.ScanFailure =>
+        // TODO: Hack to prevent endless looping trying to scan while failing
+        return Left(())
+    }
+    if (cache.port.contains(port) && cache.scanned == HsDevCache.ScanState.Scanned) {
+      return Right(())
+    }
     val cli = mkHsdevCli()
     cli.addParameters("scan", "project", workPkgDir)
     if (exeSettings.stackPath.isDefined) {
@@ -70,23 +81,49 @@ class HsDevExecutor private(
     }
     val commandId = HsDevExecutor.nextCommandId()
     toolsConsole.writeInput(s"hsdev $commandId: ${renderCli(cli)}")
-    val proc = new OSProcessHandler(cli)
-    proc.addProcessListener(new HsDevExecutor.MyProcessListener(toolsConsole, commandId))
-    // TODO: Add timeout config
-    val threeMinutes = 3 * 60 * 1000
-    proc.waitFor(threeMinutes)
-    if (proc.getProcess.isAlive) {
-      toolsConsole.writeError(s"hsdev $commandId: scan took longer than $threeMinutes ms; killing")
-      proc.destroyProcess()
-    }
-    if (proc.getExitCode != 0) {
+
+//    val proc = new OSProcessHandler(cli)
+//    proc.addProcessListener(new HsDevExecutor.MyProcessListener(toolsConsole, commandId))
+//    // TODO: Add timeout config
+//    val threeMinutes = 3 * 60 * 1000
+//    proc.waitFor(threeMinutes)
+//    if (proc.getProcess.isAlive) {
+//      toolsConsole.writeError(s"hsdev $commandId: scan took longer than $threeMinutes ms; killing")
+//      proc.destroyProcess()
+//    }
+//    if (proc.getExitCode != 0) {
+//      toolsConsole.writeError(
+//        s"hsdev $commandId: Failed with non-zero exit code ${proc.getExitCode}"
+//      )
+//      return Left(())
+//    }
+
+    // redirect stderr to stdout
+    cli.setRedirectErrorStream(true)
+    val proc = cli.createProcess()
+    val stdout = new BufferedReader(new InputStreamReader(proc.getInputStream))
+
+    Stream.continually(
+      try {
+        stdout.readLine()
+      } catch {
+        // TODO: So much sadness
+        case e: IOException =>
+          toolsConsole.writeError(s"hsdev $commandId: Exception when reading output: $e")
+          null
+      }
+    ).takeWhile(_ != null).foreach(toolsConsole.writeOutput)
+
+    // TODO: There's got to be a better way
+    if (proc.isAlive) {
       toolsConsole.writeError(
-        s"hsdev $commandId: Failed with non-zero exit code ${proc.getExitCode}"
+        s"hsdev $commandId: process still alive after output consumed, killing"
       )
-      return Left(())
+      proc.destroy()
     }
+
     cache.port = Some(port)
-    cache.scanned = true
+    cache.scanned = HsDevCache.ScanState.Scanned
     Right(())
   }
 
