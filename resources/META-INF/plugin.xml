@@ -584,10 +584,17 @@
     <!-- Note that the classpath is needed for plugin deployment to export a zip archive. -->
     <compileServer.plugin classpath="jps-plugin.jar;jps-shared.jar;scala-library-2.12.4.jar;scala-reflect-2.12.4.jar;scalaz-core_2.12-7.2.17.jar;snakeyaml-1.16.jar;newtype_2.12-0.1.0.jar"/>
   </extensions>
+  <project-components>
+    <component>
+      <implementation-class>com.haskforce.highlighting.annotation.external.hsdev.HsDevProjectComponent</implementation-class>
+    </component>
+  </project-components>
   <module-components>
     <component>
+      <implementation-class>com.haskforce.highlighting.annotation.external.hsdev.HsDevModuleComponent</implementation-class>
+    </component>
+    <component>
       <implementation-class>com.haskforce.highlighting.annotation.external.GhcModi</implementation-class>
-      <interface-class>com.haskforce.highlighting.annotation.external.GhcModi</interface-class>
     </component>
   </module-components>
 </idea-plugin>
