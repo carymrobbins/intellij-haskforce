@@ -17,13 +17,18 @@ class HsDevServerProcess private (
   private [this] var state: Option[HsDevServerProcess.State] = None
 
   def reload(optParams: Option[HsDevExeSettings]): Unit = {
+    toolsConsole.writeOutput("Reloading hsdev server process")
     kill()
     optParams.foreach(spawn)
   }
 
   def kill(): Unit = {
-    toolsConsole.writeOutput("Terminating hsdev server process")
-    state.foreach(_.process.destroyProcess())
+    state.foreach { s =>
+      s.process.destroyProcess()
+      // Logging after to ensure logging doesn't prevent the
+      // process from getting killed.
+      toolsConsole.writeOutput("Killed hsdev server process")
+    }
     state = None
   }
 
@@ -32,33 +37,19 @@ class HsDevServerProcess private (
   }
 
   private def spawn(params: HsDevExeSettings): Unit = {
-    val s = HaskellBuildSettings.getInstance(project)
-
+    toolsConsole.writeOutput("Spawning hsdev server process")
     val flagParams: java.util.List[String] = {
       val paramList = new ParametersList()
       paramList.addParametersString(params.flags)
       paramList.getParameters
     }
-
     val port = PortUtil.findFreePort()
-
-    val (cli, paramList) =
-      Option(s.getStackPath).filter(_ => s.isStackEnabled) match {
-        case Some(stackPath) =>
-          val cli = new GeneralCommandLine(stackPath)
-          val paramList = cli.getParametersList
-          paramList.addAll("exec", "--", params.path, "run")
-          (cli, paramList)
-
-        case None =>
-          val cli = new GeneralCommandLine(params.path)
-          val paramList = cli.getParametersList
-          paramList.add("run")
-          (cli, paramList)
-      }
-
-    paramList.addAll("--port", port.toString)
-    paramList.addAll(flagParams)
+    val cli = params.toGeneralCommandLine
+    cli.addParameters("run", "--port", port.toString)
+    cli.addParameters(flagParams)
+    // TODO: For stack projects, this must be the directory where the
+    // stack.yaml lives. Important so that `stack exec` works as expected.
+    cli.setWorkDirectory(project.getBasePath)
     val process = new OSProcessHandler(cli)
     process.addProcessListener(new HsDevServerProcess.MyProcessListener(toolsConsole))
     state = Some(HsDevServerProcess.State(port, process))
