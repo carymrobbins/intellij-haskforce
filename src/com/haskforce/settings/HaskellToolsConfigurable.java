@@ -274,13 +274,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
         @Nullable
         private String getHsDevVersion(String hsdevPath) {
             return ExecUtil.readCommandLine(
-                new GeneralCommandLine(hsdevPath, "version")
-            ).flatMap(hsdevVersion ->
-                ExecUtil.readCommandLine(
-                    new GeneralCommandLine(hsdevPath, "version", "--compiler")
-                ).map(ghcVersion ->
-                    "hsdev version " + hsdevVersion + "; compiled with " + ghcVersion
-                )
+                new GeneralCommandLine(hsdevPath, "version", "--compiler")
             ).fold(
               e -> {
                   NotificationUtil.displaySimpleNotification(
@@ -288,7 +282,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
                   );
                   return null;
               },
-              s -> s
+              s -> s.replace('\r', ' ').replace('\n', ' ')
             );
         }
     }
