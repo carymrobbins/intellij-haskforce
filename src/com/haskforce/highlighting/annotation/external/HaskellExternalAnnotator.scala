@@ -35,8 +35,10 @@ class HaskellExternalAnnotator extends ExternalAnnotator[PsiFile, State] {
   /** Builds the set of annotations to be applied to the source file. */
   @Nullable
   override def doAnnotate(@NotNull file: PsiFile): State = {
+    // TODO: Enable saveAllFiles() when we're using ghc-mod, hlint, etc.
     // We need to save the files so external processes will see what we see.
-    saveAllFiles()
+    // saveAllFiles()
+
     // Constructs our annotation state for a file given our registered providers.
     State.buildForFile(file)
   }
