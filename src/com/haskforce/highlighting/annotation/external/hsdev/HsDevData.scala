@@ -65,7 +65,7 @@ object HsDevModuleLocation {
   final case class NoLocation() extends HsDevModuleLocation
 
   implicit val jsonCodec: JsonValueCodec[HsDevModuleLocation] =
-    JsonCodecMaker.make(CodecMakerConfig)
+    JsonCodecMaker.make(CodecMakerConfig.withDiscriminatorFieldName(None))
 }
 
 final case class HsDevProject(
