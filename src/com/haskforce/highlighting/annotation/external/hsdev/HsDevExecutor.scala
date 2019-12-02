@@ -1,8 +1,8 @@
 package com.haskforce.highlighting.annotation.external.hsdev
 
-import java.io.{BufferedReader, IOException, InputStreamReader}
+import java.io.{BufferedInputStream, BufferedReader, IOException, InputStreamReader}
 
-import com.github.plokhotnyuk.jsoniter_scala.core.{JsonValueCodec, scanJsonArrayFromStream}
+import com.github.plokhotnyuk.jsoniter_scala.{core => Jsoniter}
 import com.haskforce.settings.ToolKey
 import com.haskforce.ui.tools.HaskellToolsConsole
 import com.haskforce.utils.ExecUtil
@@ -80,7 +80,7 @@ class HsDevExecutor(
     Right(())
   }
 
-  private def exec[A : JsonValueCodec](command: String, args: String*): Either[Unit, Vector[A]] = {
+  private def exec[A : Jsoniter.JsonValueCodec](command: String, args: String*): Either[Unit, Vector[A]] = {
     ensureScanned() match {
       case Left(()) => return Left(())
       case Right(()) => // noop
@@ -91,9 +91,31 @@ class HsDevExecutor(
     toolsConsole.writeInput(cli.getCommandLineString)
     val proc = cli.createProcess()
     try {
-      val stdout = proc.getInputStream
+      val stdout = new BufferedInputStream(proc.getInputStream)
+      // Peek to see if an error occurred
+      stdout.mark(1)
+      if (stdout.read() == '{') {
+        stdout.reset()
+        try {
+          val err = Jsoniter.readFromStream[HsDevError](stdout)
+          toolsConsole.writeError(
+            s"Command '${cli.getCommandLineString} failed: $err"
+          )
+          return Left(())
+        } catch {
+          case NonFatal(e) =>
+            val buf = new Array[Char](1000)
+            new InputStreamReader(stdout).read(buf)
+            toolsConsole.writeError(
+              s"Failed to decode HsDevError: $e; "
+                + s"the input was (showing first 1000 chars): "
+                + new String(buf)
+            )
+            return Left(())
+        }
+      }
       val buf = new mutable.ArrayBuffer[A]
-      scanJsonArrayFromStream(stdout) { a: A => buf += a ; true }
+      Jsoniter.scanJsonArrayFromStream[A](stdout) { a: A => buf += a ; true }
       Right(buf.toVector)
     } catch {
       case NonFatal(e) =>
