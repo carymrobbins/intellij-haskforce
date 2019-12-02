@@ -26,6 +26,7 @@ class HsDevProjectComponent(
     HaskellToolsConsole.get(project).curry(ToolKey.HSDEV_KEY)
 
   private val server = new HsDevServerProcess(project)
+  server.reload(exeSettings)
 
   override def onSettingsChanged(settings: ToolSettings): Unit = {
     exeSettings = HsDevExeSettings.lift(
