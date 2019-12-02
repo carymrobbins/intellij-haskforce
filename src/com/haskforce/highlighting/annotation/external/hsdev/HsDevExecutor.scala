@@ -17,7 +17,7 @@ import com.intellij.psi.{PsiElement, PsiFile}
 import scala.collection.mutable
 import scala.util.control.NonFatal
 
-class HsDevExecutor(
+class HsDevExecutor private(
   project: Project,
   module: Module,
   workPkgDir: String,
@@ -73,7 +73,12 @@ class HsDevExecutor(
     val proc = new OSProcessHandler(cli)
     proc.addProcessListener(new HsDevExecutor.MyProcessListener(toolsConsole, commandId))
     // TODO: Add timeout config
-    proc.waitFor()
+    val threeMinutes = 3 * 60 * 1000
+    proc.waitFor(threeMinutes)
+    if (proc.getProcess.isAlive) {
+      toolsConsole.writeError(s"hsdev $commandId: scan took longer than $threeMinutes ms; killing")
+      proc.destroyProcess()
+    }
     if (proc.getExitCode != 0) {
       toolsConsole.writeError(
         s"hsdev $commandId: Failed with non-zero exit code ${proc.getExitCode}"
