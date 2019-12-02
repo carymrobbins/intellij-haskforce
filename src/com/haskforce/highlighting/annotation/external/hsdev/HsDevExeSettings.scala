@@ -24,6 +24,7 @@ final case class HsDevExeSettings(
 }
 
 object HsDevExeSettings {
+
   def lift(
     path: Option[String],
     flags: Option[String],

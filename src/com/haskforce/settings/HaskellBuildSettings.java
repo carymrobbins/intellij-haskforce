@@ -12,6 +12,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import scala.Option;
 
 import java.util.List;
 
@@ -121,6 +122,10 @@ public class HaskellBuildSettings implements PersistentStateComponent<HaskellBui
 
     public String getStackPath() {
         return myBuildOptions.myStackPath;
+    }
+
+    public static Option<String> getStackPathOption(@NotNull Project project) {
+        return Option.apply(getInstance(project).getStackPath());
     }
 
     public void setStackPath(@NotNull String path) {
