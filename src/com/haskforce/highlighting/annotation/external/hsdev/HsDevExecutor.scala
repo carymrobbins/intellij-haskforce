@@ -1,6 +1,7 @@
 package com.haskforce.highlighting.annotation.external.hsdev
 
 import java.io.{BufferedInputStream, BufferedReader, IOException, InputStreamReader}
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicInteger
 
 import com.github.plokhotnyuk.jsoniter_scala.{core => Jsoniter}
@@ -153,12 +154,12 @@ class HsDevExecutor private(
           return Left(())
         } catch {
           case NonFatal(e) =>
-            val buf = new Array[Char](1000)
-            new InputStreamReader(stdout).read(buf)
+            val buf = new Array[Byte](1000)
+            stdout.read(buf)
             toolsConsole.writeError(
               s"hsdev $commandId: Failed to decode HsDevError: $e; "
-                + s"the input was (showing first 1000 chars): "
-                + new String(buf)
+                + s"the input was (showing first 1000 UTF-8 bytes): "
+                + new String(buf, StandardCharsets.UTF_8)
             )
             return Left(())
         }
