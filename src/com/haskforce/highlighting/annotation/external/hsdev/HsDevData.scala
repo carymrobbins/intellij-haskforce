@@ -1,6 +1,6 @@
 package com.haskforce.highlighting.annotation.external.hsdev
 
-import com.github.plokhotnyuk.jsoniter_scala.core.JsonValueCodec
+import com.github.plokhotnyuk.jsoniter_scala.core.{JsonReader, JsonValueCodec, JsonWriter}
 import com.github.plokhotnyuk.jsoniter_scala.macros.{CodecMakerConfig, JsonCodecMaker}
 import com.intellij.psi.PsiFile
 
@@ -62,10 +62,121 @@ object HsDevModuleLocation {
     source: String
   ) extends HsDevModuleLocation
 
+  // This could be a case object, but this makes it simpler to derive
+  // as an empty object.
   final case class NoLocation() extends HsDevModuleLocation
 
+//  private case class Raw(
+//    // FileModule
+//    file: Option[String],
+//    project: Option[HsDevProject],
+//    // InstalledModule
+//    dirs: Option[List[String]],
+//    `package`: Option[String],
+//    name: Option[String],
+//    exposed: Option[Boolean],
+//    // OtherLocation
+//    source: Option[String]
+//  )
+
+  private val fileModuleCodec: JsonValueCodec[FileModule] =
+    JsonCodecMaker.make(CodecMakerConfig)
+
+  private val installedModuleCodec: JsonValueCodec[InstalledModule] =
+    JsonCodecMaker.make(CodecMakerConfig)
+
+  private val otherLocationCodec: JsonValueCodec[OtherLocation] =
+    JsonCodecMaker.make(CodecMakerConfig)
+
+  private val noLocationCodec: JsonValueCodec[NoLocation] =
+    JsonCodecMaker.make(CodecMakerConfig)
+
+//  private val rawCodec: JsonValueCodec[Raw] =
+//    JsonCodecMaker.make(CodecMakerConfig)
+
+  private def decodeValueAlt[A](
+    name: String,
+    in: JsonReader,
+    codecs: JsonValueCodec[_ <: A]*
+  ): A = {
+    codecs.foreach { codec =>
+      in.setMark()
+      decodeValueOrNull(in, codec) match {
+        case x if x != null => return x
+      }
+      in.rollbackToMark()
+    }
+    in.decodeError(s"All codecs failed to decode $name")
+  }
+
+  private def decodeValueOrNull[A](
+    in: JsonReader,
+    codec: JsonValueCodec[A]
+  ): A = {
+    codec.decodeValue(in, null.asInstanceOf[A])
+  }
+
   implicit val jsonCodec: JsonValueCodec[HsDevModuleLocation] =
-    JsonCodecMaker.make(CodecMakerConfig.withDiscriminatorFieldName(None))
+    new JsonValueCodec[HsDevModuleLocation] {
+      override def decodeValue(in: JsonReader, default: HsDevModuleLocation): HsDevModuleLocation = {
+        decodeValueAlt[HsDevModuleLocation](
+          "HsDevModuleLocation",
+          in,
+          fileModuleCodec,
+          installedModuleCodec,
+          otherLocationCodec,
+          noLocationCodec
+        )
+
+//        val raw = rawCodec.decodeValue(in, null)
+//        if (raw == null) in.decodeError("Invalid variant for HsDevModuleLocation")
+//
+//        ( // FileModule
+//          for {
+//            file <- raw.file
+//            project = raw.project
+//          } yield FileModule(file = file, project = project)
+//        ).foreach(return _)
+//
+//        ( // InstalledModule
+//          for {
+//            dirs <- raw.dirs
+//            pkg <- raw.`package`
+//            name <- raw.name
+//            exposed <- raw.exposed
+//          } yield InstalledModule(
+//            dirs = dirs,
+//            `package` = pkg,
+//            name = name,
+//            exposed = exposed
+//          )
+//        ).foreach(return _)
+//
+//        ( // OtherLocation
+//          for {
+//            source <- raw.source
+//          } yield OtherLocation(source = source)
+//        ).foreach(return _)
+//
+//        // default if nothing else was parsed, because any object
+//        // (already parsed as `raw`) matches the empty object.
+//        NoLocation
+      }
+
+      override def encodeValue(x: HsDevModuleLocation, out: JsonWriter): Unit = {
+        x match {
+          case m: FileModule => fileModuleCodec.encodeValue(m, out)
+          case m: InstalledModule => installedModuleCodec.encodeValue(m, out)
+          case m: OtherLocation => otherLocationCodec.encodeValue(m, out)
+          case m: NoLocation => noLocationCodec.encodeValue(m, out)
+        }
+      }
+
+      override def nullValue: HsDevModuleLocation = {
+        // Hack, mostly to avoid having to throw RuntimeException
+        fileModuleCodec.nullValue
+      }
+    }
 }
 
 final case class HsDevProject(
