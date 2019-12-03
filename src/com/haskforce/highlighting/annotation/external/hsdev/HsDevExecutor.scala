@@ -166,6 +166,11 @@ class HsDevExecutor private(
       }
       val buf = new mutable.ArrayBuffer[A]
       Jsoniter.scanJsonArrayFromStream[A](stdout) { a: A => buf += a ; true }
+      val res = buf.toVector
+      toolsConsole.writeOutput(s"hsdev $commandId: ${res.length} rows returned")
+      res.zipWithIndex.foreach { case (x, i) =>
+        toolsConsole.writeOutput(s"hsdev $commandId: row $i:\t$x")
+      }
       Right(buf.toVector)
     } catch {
       case NonFatal(e) =>
