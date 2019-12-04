@@ -1,15 +1,18 @@
 package com.haskforce.highlighting.annotation.external.impl
 
-import com.haskforce.highlighting.annotation.external.hsdev.{HsDevExecutor, HsDevNote, HsDevOutputMessage}
+import com.haskforce.highlighting.annotation.external.hsdev.{HsDevExecutor, HsDevModuleLocation, HsDevNote, HsDevOutputMessage}
 import com.haskforce.highlighting.annotation.external.{GhcMod, ProblemsProvider}
 import com.haskforce.highlighting.annotation.{HaskellProblem, Problems}
+import com.haskforce.settings.ToolKey
+import com.haskforce.ui.tools.HaskellToolsConsole
 import com.intellij.openapi.util.TextRange
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.psi.PsiFile
 
 class HsDevCompileProblemsProvider private(
   hsDevExecutor: HsDevExecutor,
-  psiFile: PsiFile
+  psiFile: PsiFile,
+  toolsConsole: HaskellToolsConsole.Curried
 ) extends ProblemsProvider {
   override def getProblems: Option[Problems] = {
     toProblems(psiFile, hsDevExecutor.checkContents(psiFile))
@@ -22,23 +25,25 @@ class HsDevCompileProblemsProvider private(
     if (xs.isEmpty) {
       None
     } else {
-      val res = new Problems(new Array[HaskellProblem](xs.length))
-      xs.zipWithIndex.foreach { case (note, i) =>
-        // TODO: A bit of a hack but simpler than matching on note.source?
-        val fileName = psiFile.getName
-        val message = note.note.suggestion match {
-          case None => note.note.message
-          case Some(suggestion) => note.note.message + "\nSuggestion: " + suggestion
+      val res = new Problems(xs.length)
+      xs.foreach { note =>
+        note.source match {
+          // This is the only case that matters for us.
+          case fileModule: HsDevModuleLocation.FileModule =>
+            val fileName = fileModule.file
+            val message =
+              note.note.message +
+                note.note.suggestion.fold("")("\nSuggestion: " + _)
+            val problem = HsDevCompileProblemsProvider.HsDevProblem(
+              file_ = fileName,
+              startLine_ = note.region.from.line,
+              startColumn_ = note.region.from.column,
+              endLine = note.region.to.line,
+              endColumn = note.region.to.column,
+              message_ = message
+            )
+            res.add(problem)
         }
-        val problem = new HsDevCompileProblemsProvider.HsDevProblem(
-          file = fileName,
-          startLine = note.region.from.line,
-          startColumn = note.region.from.column,
-          endLine = note.region.to.line,
-          endColumn = note.region.to.column,
-          message = message
-        )
-        res.set(i, problem)
       }
       Some(res)
     }
@@ -48,23 +53,32 @@ class HsDevCompileProblemsProvider private(
 object HsDevCompileProblemsProvider {
 
   def create(psiFile: PsiFile): Option[HsDevCompileProblemsProvider] = {
-    HsDevExecutor.get(psiFile).map(new HsDevCompileProblemsProvider(_, psiFile))
+    HsDevExecutor.get(psiFile).map(hsDevExecutor =>
+      new HsDevCompileProblemsProvider(
+        hsDevExecutor,
+        psiFile,
+        HaskellToolsConsole.get(psiFile.getProject).curry(ToolKey.HSDEV_KEY)
+      )
+    )
   }
 
   // TODO: Refactor GhcMod.Problem to somewhere else! Maybe a GhcProblem class?
   // Also, this is sad to subclass it here...
-  class HsDevProblem(
-    file: String,
-    startLine: Int,
-    startColumn: Int,
+  final case class HsDevProblem(
+    // TODO: Using _ suffix to avoid clashing with the java final member
+    // This should be better resolved later when the GhcMod.Problem is
+    // refactored.
+    file_ : String,
+    startLine_ : Int,
+    startColumn_ : Int,
     endLine: Int,
     endColumn: Int,
-    message: String
+    message_ : String
   ) extends GhcMod.Problem(
-    file,
-    startLine,
-    startColumn,
-    message
+    file_ ,
+    startLine_ ,
+    startColumn_ ,
+    message_
   ) {
     // TODO: The original GhcMod.Problem just guesses at stop offsets.
     // We actually have them here, so need to clean this up.

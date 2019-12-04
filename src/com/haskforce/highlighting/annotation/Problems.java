@@ -12,6 +12,10 @@ public class Problems extends ArrayList<HaskellProblem> {
         super();
     }
 
+    public Problems(int initialCapacity) {
+        super(initialCapacity);
+    }
+
     public Problems(@NotNull HaskellProblem[] problems) {
         super(Arrays.asList(problems));
     }
