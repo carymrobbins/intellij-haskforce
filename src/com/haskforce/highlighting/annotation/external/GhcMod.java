@@ -345,22 +345,28 @@ public class GhcMod {
                   Pattern.compile("Orphan instance:"),
                   (matcher, annotation, problem, psiFile) -> annotation.registerFix(new EnableOrphanInstances())
                 ),
-                // This regex should have the package WITH the version number.
                 Pair.create(
-                  Pattern.compile("It is a member of the hidden package ‘([^’]+)’"),
-                  (matcher, annotation, problem, psiFile) ->
-                    AddPackageDependency.registerFixes(
-                      matcher.group(1), annotation, psiFile
-                    )
+                  Pattern.compile("It is a member of the hidden package ‘([\\w\\-]+)-([\\d.]+)’"),
+                  (matcher, annotation, problem, psiFile) -> {
+                      // Package without version number
+                      AddPackageDependency.registerFixes(
+                        matcher.group(1), annotation, psiFile
+                      );
+                      // Package with version number
+                      AddPackageDependency.registerFixes(
+                        matcher.group(1) + " == " + matcher.group(2), annotation, psiFile
+                      );
+                  }
                 ),
-                // This regex should have the package WITHOUT the version number.
-                Pair.create(
-                  Pattern.compile("Perhaps you need to add ‘([^’]+)’ to the build-depends"),
-                  (matcher, annotation, problem, psiFile) ->
-                    AddPackageDependency.registerFixes(
-                      matcher.group(1), annotation, psiFile
-                    )
-                ),
+// TODO: REMOVE ME (if the above change works)
+//                // This regex should have the package WITHOUT the version number.
+//                Pair.create(
+//                  Pattern.compile("Perhaps you need to add ‘([^’]+)’ to the build-depends"),
+//                  (matcher, annotation, problem, psiFile) ->
+//                    AddPackageDependency.registerFixes(
+//                      matcher.group(1), annotation, psiFile
+//                    )
+//                ),
                 Pair.create(
                   Pattern.compile("Could not find module"),
                   (matcher, annotation, problem, psiFile) ->
