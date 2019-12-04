@@ -26,25 +26,34 @@ class HsDevCompileProblemsProvider private(
       None
     } else {
       val res = new Problems(xs.length)
+
+      def addProblem(
+        note: HsDevNote[HsDevOutputMessage],
+        fileModule: HsDevModuleLocation.FileModule
+      ): Unit = {
+        val fileName = fileModule.file
+        val message =
+          note.note.message +
+            note.note.suggestion.fold("")("\nSuggestion: " + _)
+        val problem = HsDevCompileProblemsProvider.HsDevProblem(
+          file_ = fileName,
+          startLine_ = note.region.from.line,
+          startColumn_ = note.region.from.column,
+          endLine = note.region.to.line,
+          endColumn = note.region.to.column,
+          message_ = message
+        )
+        res.add(problem)
+      }
+
       xs.foreach { note =>
         note.source match {
           // This is the only case that matters for us.
-          case fileModule: HsDevModuleLocation.FileModule =>
-            val fileName = fileModule.file
-            val message =
-              note.note.message +
-                note.note.suggestion.fold("")("\nSuggestion: " + _)
-            val problem = HsDevCompileProblemsProvider.HsDevProblem(
-              file_ = fileName,
-              startLine_ = note.region.from.line,
-              startColumn_ = note.region.from.column,
-              endLine = note.region.to.line,
-              endColumn = note.region.to.column,
-              message_ = message
-            )
-            res.add(problem)
+          case fileModule: HsDevModuleLocation.FileModule => addProblem(note, fileModule)
+          case _ => // skip
         }
       }
+
       Some(res)
     }
   }

@@ -17,7 +17,6 @@ class HsDevServerProcess private (
   private [this] var state: Option[HsDevServerProcess.State] = None
 
   def reload(optParams: Option[HsDevExeSettings]): Unit = {
-    toolsConsole.writeOutput("Reloading hsdev server process")
     kill()
     optParams.foreach(spawn)
   }
