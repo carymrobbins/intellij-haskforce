@@ -28,12 +28,8 @@ class HsDevServerProcess private (
     state = None
   }
 
-  def isAlive: Boolean = {
-    state.exists(_.process.exists(_.getProcess.isAlive))
-  }
-
   def currentPort: Option[Int] = {
-    state.filter(_.process.exists(_.getProcess.isAlive)).map(_.port)
+    state.map(_.port)
   }
 
   private def spawn(params: HsDevExeSettings): Unit = {
@@ -44,7 +40,12 @@ class HsDevServerProcess private (
           toolsConsole.writeOutput(
             s"Not spawning hsdev server, expecting a user-spawned server to exist at port $port"
           )
-          state = Some(HsDevServerProcess.State(port = port, process = None))
+          state = Some(
+            HsDevServerProcess.State(
+              port = port,
+              process = None
+            )
+          )
 
         case None =>
           toolsConsole.writeError(
@@ -73,7 +74,12 @@ class HsDevServerProcess private (
       toolsConsole.writeInput(s"${cli.getCommandLineString} ; work directory: $workDir")
       val process = new OSProcessHandler(cli)
       process.addProcessListener(new HsDevServerProcess.MyProcessListener(toolsConsole))
-      state = Some(HsDevServerProcess.State(port = port, process = Some(process)))
+      state = Some(
+        HsDevServerProcess.State(
+          port = port,
+          process = Some(process)
+        )
+      )
     }
   }
 }
@@ -85,9 +91,7 @@ object HsDevServerProcess {
     toolsConsole: HaskellToolsConsole.Curried,
     optParams: Option[HsDevExeSettings]
   ): HsDevServerProcess = {
-    // Using .toInt to convert from java.lang.Integer
-    val suppliedPort = ToolKey.getHsDevPort(project).map(_.toInt)
-    val res = new HsDevServerProcess(project, toolsConsole, suppliedPort)
+    val res = new HsDevServerProcess(project, toolsConsole)
     res.reload(optParams)
     res
   }
