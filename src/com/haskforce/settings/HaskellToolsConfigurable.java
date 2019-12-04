@@ -55,6 +55,8 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     private RawCommandLineEditor hsdevFlags;
     private JButton hsdevAutoFind;
     private JTextField hsdevVersion;
+    private JTextAccessorField hsdevPort;
+    private JCheckBox hsdevSpawnServer;
 
     private TextFieldWithBrowseButton ghcModPath;
     private RawCommandLineEditor ghcModFlags;
@@ -80,7 +82,12 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
                         stylishAutoFind, stylishVersion, "--help"),
                 new Tool(project, "hlint", ToolKey.HLINT_KEY, hlintPath, hlintFlags,
                          hlintAutoFind, hlintVersion),
+
                 new HsDevTool(project),
+                // TODO: These need to somehow be with HsDevTool
+                new PropertyField(ToolKey.HSDEV_PORT_KEY, hsdevPort),
+                new PropertyCheckBox(ToolKey.HSDEV_SPAWN_SERVER_KEY, hsdevSpawnServer, ToolKey.getHsDevSpawnServer(project)),
+
                 new Tool(project, "ghc-mod", ToolKey.GHC_MOD_KEY, ghcModPath, ghcModFlags,
                          ghcModAutoFind, ghcModVersion, "version"),
                 new Tool(project, "ghc-modi", ToolKey.GHC_MODI_KEY, ghcModiPath, ghcModiFlags,
@@ -122,6 +129,34 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
 
     interface Versioned {
         void updateVersion();
+    }
+
+    class PropertyCheckBox implements Property {
+
+        public boolean oldValue;
+        public final String propertyKey;
+        public final JCheckBox field;
+
+        PropertyCheckBox(@NotNull String propertyKey, @NotNull JCheckBox field, boolean defaultValue) {
+          this.propertyKey = propertyKey;
+          this.field = field;
+          this.oldValue = defaultValue;
+        }
+
+        @Override
+        public boolean isModified() {
+            return field.isSelected() == oldValue;
+        }
+
+        @Override
+        public void saveState() {
+          propertiesComponent.setValue(propertyKey, oldValue = field.isSelected());
+        }
+
+        @Override
+        public void restoreState() {
+          field.setSelected(oldValue);
+        }
     }
 
     /**

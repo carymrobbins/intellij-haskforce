@@ -7,6 +7,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import scala.Option;
 
 /**
  * String wrapper to ensure that we don't accidentally pass an invalid key to the PropertiesComponent.
@@ -20,7 +21,12 @@ public class ToolKey {
     public static final ToolKey HLINT_KEY = new ToolKey("hlint", "hlint");
     public static final ToolKey GHC_MOD_KEY = new ToolKey("ghcMod", "ghc-mod");
     public static final ToolKey GHC_MODI_KEY = new ToolKey("ghcModi", "ghc-modi");
+
     public static final ToolKey HSDEV_KEY = new ToolKey("hsdev", "hsdev");
+    public static final String HSDEV_PORT_KEY = "hsdevPort";
+    public static final String HSDEV_SPAWN_SERVER_KEY = "hsdevSpawnServer";
+    public static final boolean HSDEV_SPAWN_SERVER_DEFAULT = true;
+
     public static final ToolKey HINDENT_KEY = new ToolKey("hindent", "hindent");
 
     public static final String GHC_MODI_RESPONSE_TIMEOUT_LEGACY_KEY = "ghcModiTimeout";
@@ -50,6 +56,32 @@ public class ToolKey {
             LOG.warn(message);
             NotificationUtil.displaySimpleNotification(NotificationType.WARNING, project, "Configuration", message);
             return GHC_MODI_RESPONSE_TIMEOUT_DEFAULT;
+        }
+    }
+
+    public static Option<Integer> getHsDevPort(@NotNull Project project) {
+        final String hsdevPort = PropertiesComponent.getInstance(project).getValue(HSDEV_PORT_KEY);
+        if (hsdevPort == null || hsdevPort.isEmpty()) return Option.empty();
+        try {
+            return Option.apply(Integer.parseInt(hsdevPort));
+        } catch (NumberFormatException e) {
+            String message = "Invalid " + HSDEV_PORT_KEY + " value '" + hsdevPort + "'";
+            LOG.warn(message);
+            NotificationUtil.displaySimpleNotification(NotificationType.WARNING, project, "Configuration", message);
+            return Option.empty();
+        }
+    }
+
+    public static boolean getHsDevSpawnServer(@NotNull Project project) {
+        final String hsdevSpawnServer = PropertiesComponent.getInstance(project).getValue(HSDEV_PORT_KEY);
+        if (hsdevSpawnServer == null || hsdevSpawnServer.isEmpty()) return HSDEV_SPAWN_SERVER_DEFAULT;
+        try {
+            return Boolean.parseBoolean(hsdevSpawnServer);
+        } catch (NumberFormatException e) {
+            String message = "Invalid " + HSDEV_SPAWN_SERVER_KEY + " value '" + hsdevSpawnServer + "'";
+            LOG.warn(message);
+            NotificationUtil.displaySimpleNotification(NotificationType.WARNING, project, "Configuration", message);
+            return HSDEV_SPAWN_SERVER_DEFAULT;
         }
     }
 
