@@ -51,23 +51,12 @@ object HsDevData {
     bis.reset()
     if (char0 != '{') None else {
       try {
-        Some(
-          new HsDevDataException(
-            Jsoniter.readFromStream[HsDevError](bis)
-          )
-        )
+        Some(new HsDevDataException(Jsoniter.readFromStream[HsDevError](bis)))
       } catch {
         case NonFatal(e) =>
           val buf = new Array[Byte](1000)
           bis.read(buf)
-          Some(
-            new HsDevDataException(
-              s"Failed to decode HsDevError: $e; "
-                + s"the input was (showing the first 1000 UTF-8 bytes): "
-                + new String(buf, StandardCharsets.UTF_8),
-              e
-            )
-          )
+          Some(new HsDevDataException(s"Failed to decode HsDevError: $e", e))
       }
     }
   }
@@ -81,6 +70,16 @@ final class HsDevDataException private (
   def this(e: HsDevError) = this(Right(e))
   override def getMessage: String = error.map(_.toString).merge
   override def toString: String = s"HsDevException($getMessage)"
+}
+
+final case class HsDevError(
+  error: String,
+  msg: String
+)
+
+object HsDevError {
+  implicit val jsonCodec: JsonValueCodec[HsDevError] =
+    JsonCodecMaker.make[HsDevError](CodecMakerConfig)
 }
 
 final case class HsDevFileSource(

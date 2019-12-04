@@ -1,6 +1,6 @@
 package com.haskforce.highlighting.annotation.external.hsdev
 
-import java.io.{BufferedInputStream, BufferedReader, IOException, InputStreamReader}
+import java.io.{BufferedInputStream, BufferedReader, ByteArrayInputStream, IOException, InputStreamReader}
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -14,6 +14,7 @@ import com.intellij.openapi.module.{Module, ModuleUtilCore}
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 import com.intellij.psi.{PsiElement, PsiFile}
+import org.apache.commons.io.IOUtils
 
 import scala.collection.mutable
 import scala.util.control.NonFatal
@@ -142,7 +143,14 @@ class HsDevExecutor private(
       val commandId = HsDevExecutor.nextCommandId()
       toolsConsole.writeInput(s"hsdev $commandId: ${renderCli(cli)}")
       val proc = cli.createProcess()
-      HsDevData.fromJSONArrayStream[A](proc.getInputStream) match {
+
+      // TODO: Make verbose logging of JSON payloads configurable as this is very inefficient
+      val stdoutBytes = IOUtils.toByteArray(proc.getInputStream)
+      val stdoutString = new String(stdoutBytes, StandardCharsets.UTF_8)
+      toolsConsole.writeOutput(s"hsdev $commandId: $stdoutString")
+      val stdoutStream = new ByteArrayInputStream(stdoutBytes)
+
+      HsDevData.fromJSONArrayStream[A](stdoutStream) match {
         case Left(e) =>
           toolsConsole.writeError(s"hsdev $commandId: error: $e")
           Left(())
