@@ -83,21 +83,24 @@ class HsDevExecutor private(
     val commandId = HsDevExecutor.nextCommandId()
     toolsConsole.writeInput(s"hsdev $commandId: ${renderCli(cli)}")
 
-//    val proc = new OSProcessHandler(cli)
-//    proc.addProcessListener(new HsDevExecutor.MyProcessListener(toolsConsole, commandId))
-//    // TODO: Add timeout config
-//    val threeMinutes = 3 * 60 * 1000
-//    proc.waitFor(threeMinutes)
-//    if (proc.getProcess.isAlive) {
-//      toolsConsole.writeError(s"hsdev $commandId: scan took longer than $threeMinutes ms; killing")
-//      proc.destroyProcess()
-//    }
-//    if (proc.getExitCode != 0) {
-//      toolsConsole.writeError(
-//        s"hsdev $commandId: Failed with non-zero exit code ${proc.getExitCode}"
-//      )
-//      return Left(())
-//    }
+    // TODO: Using this sort of approach seems much better, but for some
+    // reason it stalls out at the waitFor and no messages get sent via the
+    // .addProcessListener. Weird.
+    // val proc = new OSProcessHandler(cli)
+    // proc.addProcessListener(new HsDevExecutor.MyProcessListener(toolsConsole, commandId))
+    // // TODO: Add timeout config
+    // val threeMinutes = 3 * 60 * 1000
+    // proc.waitFor(threeMinutes)
+    // if (proc.getProcess.isAlive) {
+    //   toolsConsole.writeError(s"hsdev $commandId: scan took longer than $threeMinutes ms; killing")
+    //   proc.destroyProcess()
+    // }
+    // if (proc.getExitCode != 0) {
+    //   toolsConsole.writeError(
+    //     s"hsdev $commandId: Failed with non-zero exit code ${proc.getExitCode}"
+    //   )
+    //   return Left(())
+    // }
 
     // redirect stderr to stdout
     cli.setRedirectErrorStream(true)
@@ -128,67 +131,27 @@ class HsDevExecutor private(
     Right(())
   }
 
-  private def exec[A : Jsoniter.JsonValueCodec](command: String, args: String*): Either[Unit, Vector[A]] = {
-    ensureScanned() match {
-      case Left(()) => return Left(())
-      case Right(()) => // noop
-    }
-    val cli = mkHsdevCli()
-    cli.addParameter(command)
-    cli.addParameters(args: _*)
-    val commandId = HsDevExecutor.nextCommandId()
-    toolsConsole.writeInput(s"hsdev $commandId: ${renderCli(cli)}")
-    val proc = cli.createProcess()
-    try {
-      val stdout = new BufferedInputStream(proc.getInputStream)
-      // Peek to see if an error occurred
-      stdout.mark(1)
-      val char0 = stdout.read()
-      stdout.reset()
-      if (char0 == '{') {
-        try {
-          val err = Jsoniter.readFromStream[HsDevError](stdout)
-          toolsConsole.writeError(
-            s"hsdev $commandId: error: $err"
-          )
-          return Left(())
-        } catch {
-          case NonFatal(e) =>
-            val buf = new Array[Byte](1000)
-            stdout.read(buf)
-            toolsConsole.writeError(
-              s"hsdev $commandId: Failed to decode HsDevError: $e; "
-                + s"the input was (showing first 1000 UTF-8 bytes): "
-                + new String(buf, StandardCharsets.UTF_8)
-            )
-            return Left(())
-        }
-      }
-      val buf = new mutable.ArrayBuffer[A]
-      Jsoniter.scanJsonArrayFromStream[A](stdout) { a: A => buf += a ; true }
-      val res = buf.toVector
-      toolsConsole.writeOutput(s"hsdev $commandId: ${res.length} rows returned")
-      res.zipWithIndex.foreach { case (x, i) =>
-        toolsConsole.writeOutput(s"hsdev $commandId: row $i:\t$x")
-      }
-      Right(buf.toVector)
-    } catch {
-      case NonFatal(e) =>
-        val stderrText =
-          try {
-            val stderr = new BufferedReader(new InputStreamReader(proc.getErrorStream))
-            Stream.continually(stderr.readLine())
-              .takeWhile(_ != null)
-              .mkString("\n")
-          } catch {
-            case _: IOException => ""
+  private def exec[A : Jsoniter.JsonValueCodec](
+    command: String,
+    args: String*
+  ): Either[Unit, Vector[A]] = {
+    ensureScanned().flatMap { case () =>
+      val cli = mkHsdevCli()
+      cli.addParameter(command)
+      cli.addParameters(args: _*)
+      val commandId = HsDevExecutor.nextCommandId()
+      toolsConsole.writeInput(s"hsdev $commandId: ${renderCli(cli)}")
+      val proc = cli.createProcess()
+      HsDevData.fromJSONArrayStream[A](proc.getInputStream) match {
+        case Left(e) =>
+          toolsConsole.writeError(s"hsdev $commandId: error: $e")
+          Left(())
+        case Right(res) =>
+          res.zipWithIndex.foreach { case (x, i) =>
+            toolsConsole.writeOutput(s"hsdev $commandId: row $i:\t$x")
           }
-        toolsConsole.writeError(
-          s"hsdev $commandId: failed\n"
-            + s"  exception was: $e\n"
-            + s"  stderr was: $stderrText"
-        )
-        Left(())
+          Right(res)
+      }
     }
   }
 }
