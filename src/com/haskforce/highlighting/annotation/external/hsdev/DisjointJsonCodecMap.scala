@@ -6,9 +6,11 @@ import com.haskforce.highlighting.annotation.external.hsdev
 import scala.collection.immutable.ListMap
 import scala.reflect.{ClassTag, classTag}
 
-final case class DisjointJsonCodecMap[A <: AnyRef : ClassTag] private (
-  toMap: ListMap[Class[_], JsonValueCodec[_]]
+final class DisjointJsonCodecMap[A <: AnyRef : ClassTag] private (
+  val toMap: ListMap[Class[_], JsonValueCodec[_]]
 ) {
+  override def toString: String = toMap.toString
+
   def toCodec: JsonValueCodec[A] = {
     new hsdev.DisjointJsonCodecMap.Codec[A](this)
   }
@@ -39,7 +41,7 @@ object DisjointJsonCodecMap {
   ) extends JsonValueCodec[A] {
 
     override def decodeValue(in: JsonReader, default: A): A = {
-      codecMap.toMap.foreach { case (cls, codec) =>
+      codecMap.toMap.foreach { case (_, codec) =>
         in.setMark()
         codec.asInstanceOf[JsonValueCodec[A]].decodeValue(
           in, null.asInstanceOf[A]

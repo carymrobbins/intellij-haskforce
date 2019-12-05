@@ -72,14 +72,32 @@ final class HsDevDataException private (
   override def toString: String = s"HsDevException($getMessage)"
 }
 
-final case class HsDevError(
-  error: String,
-  msg: String
-)
-
+// See: https://hackage.haskell.org/package/hsdev-0.3.3.6/docs/HsDev-Types.html#t:HsDevError
+sealed trait HsDevError {
+  def error: HsDevError.Type
+}
 object HsDevError {
+  sealed trait Type
+  object Type {
+    case object `ghc error` extends Type
+    case object `module not inspected` extends Type
+  }
+
+  final case class GhcError(
+    error: Type.`ghc error`.type,
+    msg: String
+  ) extends HsDevError
+
+  final case class NotInspected(
+    error: Type.`module not inspected`.type,
+    module: HsDevModuleLocation
+  ) extends HsDevError
+
   implicit val jsonCodec: JsonValueCodec[HsDevError] =
-    JsonCodecMaker.make[HsDevError](CodecMakerConfig)
+    DisjointJsonCodecMap[HsDevError](
+      JsonCodecMaker.make[GhcError](CodecMakerConfig),
+      JsonCodecMaker.make[NotInspected](CodecMakerConfig)
+    ).toCodec
 }
 
 final case class HsDevFileSource(
