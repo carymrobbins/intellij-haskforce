@@ -57,6 +57,8 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     private JTextField hsdevVersion;
     private JTextAccessorField hsdevPort;
     private JCheckBox hsdevSpawnServer;
+    private JTextAccessorField hsdevScanTimeout;
+    private JTextAccessorField hsdevCommandTimeout;
 
     private TextFieldWithBrowseButton ghcModPath;
     private RawCommandLineEditor ghcModFlags;
@@ -85,6 +87,8 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
 
                 new HsDevTool(project),
                 // TODO: These need to somehow be with HsDevTool
+                new PropertyField(ToolKey.HSDEV_SCAN_TIMEOUT_KEY, hsdevScanTimeout),
+                new PropertyField(ToolKey.HSDEV_COMMAND_TIMEOUT_KEY, hsdevCommandTimeout),
                 new PropertyField(ToolKey.HSDEV_PORT_KEY, hsdevPort),
                 new PropertyCheckBox(ToolKey.HSDEV_SPAWN_SERVER_KEY, hsdevSpawnServer, ToolKey.getHsDevSpawnServer(project)),
 
@@ -145,12 +149,16 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
 
         @Override
         public boolean isModified() {
-            return field.isSelected() == oldValue;
+            return field.isSelected() != oldValue;
         }
 
         @Override
         public void saveState() {
-          propertiesComponent.setValue(propertyKey, oldValue = field.isSelected());
+            oldValue = field.isSelected();
+            // We have to serialize the boolean; using the overloaded setValue
+            // which accepts a boolean actually unsets the property on false,
+            // which becomes ambiguous when the default value is true.
+            propertiesComponent.setValue(propertyKey, Boolean.toString(oldValue));
         }
 
         @Override

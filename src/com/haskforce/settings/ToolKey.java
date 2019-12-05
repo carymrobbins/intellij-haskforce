@@ -9,6 +9,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import scala.Option;
 
+import java.util.function.Function;
+
 /**
  * String wrapper to ensure that we don't accidentally pass an invalid key to the PropertiesComponent.
  * These are set as property keys in HaskellToolsConfigurable.
@@ -23,6 +25,8 @@ public class ToolKey {
     public static final ToolKey GHC_MODI_KEY = new ToolKey("ghcModi", "ghc-modi");
 
     public static final ToolKey HSDEV_KEY = new ToolKey("hsdev", "hsdev");
+    public static final String HSDEV_SCAN_TIMEOUT_KEY = "hsdevScanTimeout";
+    public static final String HSDEV_COMMAND_TIMEOUT_KEY = "hsdevCommandTimeout";
     public static final String HSDEV_PORT_KEY = "hsdevPort";
     public static final String HSDEV_SPAWN_SERVER_KEY = "hsdevSpawnServer";
     public static final boolean HSDEV_SPAWN_SERVER_DEFAULT = true;
@@ -59,30 +63,55 @@ public class ToolKey {
         }
     }
 
-    public static Option<Integer> getHsDevPort(@NotNull Project project) {
-        final String hsdevPort = PropertiesComponent.getInstance(project).getValue(HSDEV_PORT_KEY);
-        if (hsdevPort == null || hsdevPort.isEmpty()) return Option.empty();
+    @Nullable
+    private static <A> A getPropertyNullable(
+      @NotNull Project project,
+      @NotNull String keyName,
+      @NotNull Function<String, A> parse
+    ) {
+        final String value = PropertiesComponent.getInstance(project).getValue(keyName);
+        if (value == null || value.isEmpty()) return null;
         try {
-            return Option.apply(Integer.parseInt(hsdevPort));
-        } catch (NumberFormatException e) {
-            String message = "Invalid " + HSDEV_PORT_KEY + " value '" + hsdevPort + "'";
+            return parse.apply(value);
+        } catch (Exception e) { // TODO: Convert to scala and use NonFatal
+            String message = "Invalid " + keyName + " value '" + value + "'";
             LOG.warn(message);
             NotificationUtil.displaySimpleNotification(NotificationType.WARNING, project, "Configuration", message);
-            return Option.empty();
+            return null;
         }
     }
 
+    private static <A> Option<A> getPropertyOption(
+        @NotNull Project project,
+        @NotNull String keyName,
+        @NotNull Function<String, A> parse
+    ) {
+      return Option.apply(getPropertyNullable(project, keyName, parse));
+    }
+
+    private static <A> A getPropertyOrDefault(
+        @NotNull Project project,
+        @NotNull String keyName,
+        @NotNull Function<String, A> parse,
+        @NotNull A defaultValue
+    ) {
+      return getPropertyOption(project, keyName, parse).getOrElse(() -> defaultValue);
+    }
+
+    public static Option<Long> getHsDevScanTimeoutSeconds(@NotNull Project project) {
+        return getPropertyOption(project, HSDEV_SCAN_TIMEOUT_KEY, Long::parseUnsignedLong);
+    }
+
+    public static Option<Long> getHsDevCommandTimeoutSeconds(@NotNull Project project) {
+        return getPropertyOption(project, HSDEV_COMMAND_TIMEOUT_KEY, Long::parseUnsignedLong);
+    }
+
+    public static Option<Integer> getHsDevPort(@NotNull Project project) {
+        return getPropertyOption(project, HSDEV_PORT_KEY, Integer::parseInt);
+    }
+
     public static boolean getHsDevSpawnServer(@NotNull Project project) {
-        final String hsdevSpawnServer = PropertiesComponent.getInstance(project).getValue(HSDEV_PORT_KEY);
-        if (hsdevSpawnServer == null || hsdevSpawnServer.isEmpty()) return HSDEV_SPAWN_SERVER_DEFAULT;
-        try {
-            return Boolean.parseBoolean(hsdevSpawnServer);
-        } catch (NumberFormatException e) {
-            String message = "Invalid " + HSDEV_SPAWN_SERVER_KEY + " value '" + hsdevSpawnServer + "'";
-            LOG.warn(message);
-            NotificationUtil.displaySimpleNotification(NotificationType.WARNING, project, "Configuration", message);
-            return HSDEV_SPAWN_SERVER_DEFAULT;
-        }
+        return getPropertyOrDefault(project, HSDEV_SPAWN_SERVER_KEY, Boolean::parseBoolean, HSDEV_SPAWN_SERVER_DEFAULT);
     }
 
     public static long getGhcModiKillIdleTimeout(@NotNull Project project) {
