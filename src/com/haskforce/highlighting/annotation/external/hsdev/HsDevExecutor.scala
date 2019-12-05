@@ -142,6 +142,9 @@ class HsDevExecutor private(
     command: String,
     args: String*
   ): Either[Unit, Vector[A]] = {
+    // TODO: It is unnecessary to force a scan. We should try to check. If we need
+    // to scan, hsdev will tell us by returning an HsDevError.NotInspected. We can
+    // just recover from those cases by scanning lazily then retrying the command.
     ensureScanned().flatMap { case () =>
       val cli = mkHsdevCli()
       cli.addParameter(command)
