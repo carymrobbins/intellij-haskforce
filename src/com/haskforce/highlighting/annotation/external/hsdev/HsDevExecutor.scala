@@ -152,7 +152,7 @@ class HsDevExecutor private(
         case Left(e) =>
           e.error match {
             case Right(_: HsDevError.NotInspected) if !scanned =>
-              toolsConsole.writeError(s"hsdev $commandId: command requires scan: $e")
+              toolsConsole.writeOutput(s"hsdev $commandId: command requires scan: $e")
               // TODO: This is ugly and unreadable
               Right(Left(()))
             case _ =>
@@ -171,7 +171,9 @@ class HsDevExecutor private(
       Left(())
     } match {
       case Left(()) => Left(())
+      // TODO: This is ugly and unreadable
       case Right(Right(res)) => Right(res)
+      // TODO: This is ugly and unreadable
       case Right(Left(())) =>
         scan().flatMap { case () =>
           execWithScan(scanned = true, command, args: _*)
