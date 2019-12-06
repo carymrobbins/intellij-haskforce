@@ -81,6 +81,7 @@ object HsDevError {
   object Type {
     case object `ghc error` extends Type
     case object `module not inspected` extends Type
+    case class Unknown(error: String) extends Type
   }
 
   final case class GhcError(
@@ -93,10 +94,36 @@ object HsDevError {
     module: HsDevModuleLocation
   ) extends HsDevError
 
+  final case class Unknown(
+    error: Type.Unknown
+    // TODO: Find a way to get the raw json object into a string field here.
+  ) extends HsDevError
+
+  implicit val typeCodec: JsonValueCodec[Type] =
+    JsonCodecMaker.make(CodecMakerConfig.withDiscriminatorFieldName(None))
+
+  // Special case of the above
+  implicit val typeUnknownCodec: JsonValueCodec[Type.Unknown] =
+    new JsonValueCodec[Type.Unknown] {
+      override def decodeValue(in: JsonReader, default: Type.Unknown): Type.Unknown = {
+        in.readString(null) match {
+          case null => in.decodeError("Expected string")
+          case s => Type.Unknown(s)
+        }
+      }
+
+      override def encodeValue(x: Type.Unknown, out: JsonWriter): Unit = {
+        out.writeVal(x.error)
+      }
+
+      override def nullValue: Type.Unknown = null
+    }
+
   implicit val jsonCodec: JsonValueCodec[HsDevError] =
     DisjointJsonCodecMap[HsDevError](
       JsonCodecMaker.make[GhcError](CodecMakerConfig),
-      JsonCodecMaker.make[NotInspected](CodecMakerConfig)
+      JsonCodecMaker.make[NotInspected](CodecMakerConfig),
+      JsonCodecMaker.make[Unknown](CodecMakerConfig)
     ).toCodec
 }
 
