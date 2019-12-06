@@ -1,11 +1,10 @@
 package com.haskforce.highlighting.annotation.external.hsdev
 
 import java.io.{BufferedInputStream, InputStream}
-import java.nio.charset.StandardCharsets
 
-import com.github.plokhotnyuk.jsoniter_scala.{core => Jsoniter}
-import com.github.plokhotnyuk.jsoniter_scala.core.{JsonReader, JsonValueCodec, JsonWriter}
+import com.github.plokhotnyuk.jsoniter_scala.core.JsonValueCodec
 import com.github.plokhotnyuk.jsoniter_scala.macros.{CodecMakerConfig, JsonCodecMaker}
+import com.github.plokhotnyuk.jsoniter_scala.{core => Jsoniter}
 import com.intellij.psi.PsiFile
 
 import scala.collection.mutable
@@ -73,58 +72,52 @@ final case class HsDevDataException private (
 }
 
 // See: https://hackage.haskell.org/package/hsdev-0.3.3.6/docs/HsDev-Types.html#t:HsDevError
-sealed trait HsDevError {
-  def error: HsDevError.Type
-}
+sealed trait HsDevError
 object HsDevError {
-  sealed trait Type
-  object Type {
-    case object `ghc error` extends Type
-    case object `module not inspected` extends Type
-    case class Unknown(error: String) extends Type
-  }
-
-  final case class GhcError(
-    error: Type.`ghc error`.type,
-    msg: String
-  ) extends HsDevError
-
-  final case class NotInspected(
-    error: Type.`module not inspected`.type,
-    module: HsDevModuleLocation
-  ) extends HsDevError
-
-  final case class Unknown(
-    error: Type.Unknown
-    // TODO: Find a way to get the raw json object into a string field here.
-  ) extends HsDevError
-
-  implicit val typeCodec: JsonValueCodec[Type] =
-    JsonCodecMaker.make(CodecMakerConfig.withDiscriminatorFieldName(None))
-
-  // Special case of the above
-  implicit val typeUnknownCodec: JsonValueCodec[Type.Unknown] =
-    new JsonValueCodec[Type.Unknown] {
-      override def decodeValue(in: JsonReader, default: Type.Unknown): Type.Unknown = {
-        in.readString(null) match {
-          case null => in.decodeError("Expected string")
-          case s => Type.Unknown(s)
-        }
-      }
-
-      override def encodeValue(x: Type.Unknown, out: JsonWriter): Unit = {
-        out.writeVal(x.error)
-      }
-
-      override def nullValue: Type.Unknown = null
-    }
+  final case class HsDefFailure()
+  final case class ModuleNotSource(module: HsDevModuleLocation) extends HsDevError
+  final case class BrowseNoModuleInfo(module: String) extends HsDevError
+  final case class FileNotFound(file: String) extends HsDevError
+  final case class ToolNotFound(tool: String) extends HsDevError
+  final case class ProjectNotFound(project: String) extends HsDevError
+  final case class PackageNotFound(`package`: String) extends HsDevError
+  final case class ToolError(tool: String, msg: String) extends HsDevError
+  final case class NotInspected(module: HsDevModuleLocation) extends HsDevError
+  final case class InspectError(msg: String) extends HsDevError
+  final case class InspectCabalError(cabal: String, msg: String) extends HsDevError
+  final case class IOFailed(msg: String) extends HsDevError
+  final case class GhcError(msg: String) extends HsDevError
+  final case class RequestError(msg: String, request: String) extends HsDevError
+  final case class ResponseError(msg: String, response: String) extends HsDevError
+  final case class SQLiteError(msg: String) extends HsDevError
+  final case class OtherError(msg: String) extends HsDevError
+  final case class UnhandledError(msg: String) extends HsDevError
 
   implicit val jsonCodec: JsonValueCodec[HsDevError] =
-    DisjointJsonCodecMap[HsDevError](
-      JsonCodecMaker.make[GhcError](CodecMakerConfig),
-      JsonCodecMaker.make[NotInspected](CodecMakerConfig),
-      JsonCodecMaker.make[Unknown](CodecMakerConfig)
-    ).toCodec
+    JsonCodecMaker.make(
+      CodecMakerConfig
+        .withDiscriminatorFieldName(Some("error"))
+        .withAdtLeafClassNameMapper { s => JsonCodecMaker.simpleClassName(s) match {
+          case "HsDefFailure" => "failure"
+          case "ModuleNotSource" => "module is not source"
+          case "BrowseNoModuleInfo" => "no module info"
+          case "FileNotFound" => "file not found"
+          case "ToolNotFound" => "tool not found"
+          case "ProjectNotFound" => "project not found"
+          case "PackageNotFound" => "package not found"
+          case "ToolError" => "tool error"
+          case "NotInspected" => "module not inspected"
+          case "InspectError" => "inspect error"
+          case "InspectCabalError" => "inspect cabal error"
+          case "IOFailed" => "io error"
+          case "GhcError" => "ghc error"
+          case "RequestError" => "request error"
+          case "ResponseError" => "response error"
+          case "SQLiteError" => "sqlite error"
+          case "OtherError" => "other error"
+          case "UnhandledError" => "unhandled error"
+        }}
+    )
 }
 
 final case class HsDevFileSource(
