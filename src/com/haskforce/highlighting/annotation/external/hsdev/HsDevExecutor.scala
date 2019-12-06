@@ -1,6 +1,6 @@
 package com.haskforce.highlighting.annotation.external.hsdev
 
-import java.io.{BufferedInputStream, BufferedReader, ByteArrayInputStream, IOException, InputStreamReader}
+import java.io.{BufferedReader, ByteArrayInputStream, IOException, InputStreamReader}
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -9,7 +9,7 @@ import com.haskforce.settings.ToolKey
 import com.haskforce.ui.tools.HaskellToolsConsole
 import com.haskforce.utils.ExecUtil
 import com.intellij.execution.configurations.GeneralCommandLine
-import com.intellij.execution.process.{OSProcessHandler, ProcessAdapter, ProcessEvent, ProcessOutputType}
+import com.intellij.execution.process.{ProcessAdapter, ProcessEvent, ProcessOutputType}
 import com.intellij.openapi.module.{Module, ModuleUtilCore}
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
@@ -17,7 +17,6 @@ import com.intellij.psi.{PsiElement, PsiFile}
 import com.intellij.util.TimeoutUtil
 import org.apache.commons.io.IOUtils
 
-import scala.collection.mutable
 import scala.util.control.NonFatal
 
 class HsDevExecutor private(
@@ -63,20 +62,7 @@ class HsDevExecutor private(
     }
   }
 
-  private def ensureScanned(): Either[Unit, Unit] = {
-    cache.scanned match {
-      case HsDevCache.ScanState.NotScanned => // noop
-      case HsDevCache.ScanState.Scanned =>
-        if (cache.port.contains(port)) return Right(())
-        // Reset the cache if the old cache was for a different server
-        cache.clear()
-      case HsDevCache.ScanState.ScanFailure =>
-        // TODO: Hack to prevent endless looping trying to scan while failing
-        return Left(())
-    }
-    if (cache.port.contains(port) && cache.scanned == HsDevCache.ScanState.Scanned) {
-      return Right(())
-    }
+  private def scan(): Either[Unit, Unit] = {
     val cli = mkHsdevCli()
     cli.addParameters("scan", "project", workPkgDir)
     if (exeSettings.stackPath.isDefined) {
@@ -122,15 +108,13 @@ class HsDevExecutor private(
       ).takeWhile(_ != null).foreach(toolsConsole.writeOutput)
 
       // TODO: There's got to be a better way
-      if (proc.isAlive) {
-        toolsConsole.writeError(
-          s"hsdev $commandId: process still alive after output consumed, killing"
-        )
-        proc.destroy()
-      }
+      // if (proc.isAlive) {
+      //   toolsConsole.writeError(
+      //     s"hsdev $commandId: process still alive after output consumed, killing"
+      //   )
+      //   proc.destroy()
+      // }
 
-      cache.port = Some(port)
-      cache.scanned = HsDevCache.ScanState.Scanned
       Right(())
     }).getOrElse {
       toolsConsole.writeError(s"hsdev $commandId: scan killed due to configured timeout")
@@ -142,38 +126,56 @@ class HsDevExecutor private(
     command: String,
     args: String*
   ): Either[Unit, Vector[A]] = {
-    // TODO: It is unnecessary to force a scan. We should try to check. If we need
-    // to scan, hsdev will tell us by returning an HsDevError.NotInspected. We can
-    // just recover from those cases by scanning lazily then retrying the command.
-    ensureScanned().flatMap { case () =>
-      val cli = mkHsdevCli()
-      cli.addParameter(command)
-      cli.addParameters(args: _*)
-      val commandId = HsDevExecutor.nextCommandId()
-      toolsConsole.writeInput(s"hsdev $commandId: ${renderCli(cli)}")
+    execWithScan(scanned = false, command, args: _*)
+  }
 
-      runWithOptionalTimeout(ToolKey.getHsDevCommandTimeoutSeconds(project).map(_.toLong), () => {
-        val proc = cli.createProcess()
-        // TODO: Make verbose logging of JSON payloads configurable as this is very inefficient
-        val stdoutBytes = IOUtils.toByteArray(proc.getInputStream)
-        val stdoutString = new String(stdoutBytes, StandardCharsets.UTF_8)
-        toolsConsole.writeOutput(s"hsdev $commandId: $stdoutString")
-        val stdoutStream = new ByteArrayInputStream(stdoutBytes)
+  private def execWithScan[A : Jsoniter.JsonValueCodec](
+    scanned: Boolean,
+    command: String,
+    args: String*
+  ): Either[Unit, Vector[A]] = {
+    val cli = mkHsdevCli()
+    cli.addParameter(command)
+    cli.addParameters(args: _*)
+    val commandId = HsDevExecutor.nextCommandId()
+    toolsConsole.writeInput(s"hsdev $commandId: ${renderCli(cli)}")
 
-        HsDevData.fromJSONArrayStream[A](stdoutStream) match {
-          case Left(e) =>
-            toolsConsole.writeError(s"hsdev $commandId: error: $e")
-            Left(())
-          case Right(res) =>
-            res.zipWithIndex.foreach { case (x, i) =>
-              toolsConsole.writeOutput(s"hsdev $commandId: row $i:\t$x")
-            }
-            Right(res)
-        }
-      }).getOrElse {
-        toolsConsole.writeError(s"hsdev $commandId: command killed due to configured timeout")
-        Left(())
+    runWithOptionalTimeout(ToolKey.getHsDevCommandTimeoutSeconds(project).map(_.toLong), () => {
+      val proc = cli.createProcess()
+      // TODO: Make verbose logging of JSON payloads configurable as this is very inefficient
+      val stdoutBytes = IOUtils.toByteArray(proc.getInputStream)
+      val stdoutString = new String(stdoutBytes, StandardCharsets.UTF_8)
+      toolsConsole.writeOutput(s"hsdev $commandId: $stdoutString")
+      val stdoutStream = new ByteArrayInputStream(stdoutBytes)
+
+      HsDevData.fromJSONArrayStream[A](stdoutStream) match {
+        case Left(e) =>
+          e.error match {
+            case Right(_: HsDevError.NotInspected) if !scanned =>
+              toolsConsole.writeError(s"hsdev $commandId: command requires scan: $e")
+              // TODO: This is ugly and unreadable
+              Right(Left(()))
+            case _ =>
+              toolsConsole.writeError(s"hsdev $commandId: error: $e")
+              Left(())
+          }
+        case Right(res) =>
+          res.zipWithIndex.foreach { case (x, i) =>
+            toolsConsole.writeOutput(s"hsdev $commandId: row $i:\t$x")
+          }
+          // TODO: This is ugly and unreadable
+          Right(Right(res))
       }
+    }).getOrElse {
+      toolsConsole.writeError(s"hsdev $commandId: command killed due to configured timeout")
+      Left(())
+    } match {
+      case Left(()) => Left(())
+      case Right(Right(res)) => Right(res)
+      case Right(Left(())) =>
+        scan().flatMap { case () =>
+          execWithScan(scanned = true, command, args: _*)
+        }
     }
   }
 

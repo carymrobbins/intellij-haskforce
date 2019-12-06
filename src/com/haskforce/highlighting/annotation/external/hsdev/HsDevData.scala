@@ -62,7 +62,7 @@ object HsDevData {
   }
 }
 
-final class HsDevDataException private (
+final case class HsDevDataException private (
   error: Either[String, HsDevError],
   cause: Throwable = null
 ) extends RuntimeException(cause) {
