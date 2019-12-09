@@ -17,6 +17,7 @@
 package com.haskforce.utils;
 
 import com.haskforce.settings.HaskellToolsConfigurable;
+import com.haskforce.settings.HaskellToolsConfigurableBase;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationListener;
 import com.intellij.openapi.options.ShowSettingsUtil;
@@ -43,7 +44,7 @@ public class HaskellToolsNotificationListener implements NotificationListener {
     public void hyperlinkUpdate(@NotNull Notification notification, @NotNull HyperlinkEvent event) {
         if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
             if (event.getDescription().equals("configureHaskellTools") && !myProject.isDisposed()) {
-                ShowSettingsUtil.getInstance().showSettingsDialog(myProject, HaskellToolsConfigurable.HASKELL_TOOLS_ID);
+                ShowSettingsUtil.getInstance().showSettingsDialog(myProject, HaskellToolsConfigurable.HASKELL_TOOLS_ID());
                 notification.expire();
             }
         }

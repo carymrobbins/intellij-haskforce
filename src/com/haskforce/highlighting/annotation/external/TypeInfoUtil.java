@@ -2,6 +2,7 @@ package com.haskforce.highlighting.annotation.external;
 
 import com.haskforce.settings.ToolKey;
 import com.haskforce.utils.ExecUtil;
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.VisualPosition;
 import com.intellij.openapi.fileEditor.FileEditorManager;
@@ -59,7 +60,8 @@ public class TypeInfoUtil {
             return "canonical path is null";
         }
         final String workDir = ExecUtil.guessWorkDir(module);
-        if (ToolKey.GHC_MODI_KEY.getPath(module.getProject()) != null) {
+        final PropertiesComponent props = PropertiesComponent.getInstance(module.getProject());
+        if (ToolKey.GHC_MODI$.MODULE$.PATH().getValue(props) != null) {
             GhcModi ghcModi = module.getComponent(GhcModi.class);
             if (ghcModi != null) {
                 return GhcModi.getFutureType(module.getProject(), ghcModi.type(canonicalPath,

@@ -2,14 +2,13 @@ package com.haskforce.ui.tools
 
 import java.awt.event.ItemEvent
 import java.awt.{GridBagLayout, GridLayout}
-import java.util.regex.Pattern
-import javax.swing.{JComponent, JPanel}
 
-import scala.collection.mutable
-
+import com.haskforce.HaskellModuleType
+import com.haskforce.settings.ToolKey
+import com.haskforce.ui.{GC, SComboBox}
+import com.haskforce.utils.SAMUtils
 import com.intellij.execution.filters.TextConsoleBuilderFactory
 import com.intellij.execution.ui.{ConsoleView, ConsoleViewContentType}
-import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.{ActionManager, DefaultActionGroup}
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
@@ -19,11 +18,9 @@ import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Condition
 import com.intellij.openapi.wm.{ToolWindow, ToolWindowFactory}
 import com.intellij.ui.content.ContentFactory
+import javax.swing.{JComponent, JPanel}
 
-import com.haskforce.HaskellModuleType
-import com.haskforce.settings.ToolKey
-import com.haskforce.ui.{GC, SComboBox}
-import com.haskforce.utils.SAMUtils
+import scala.collection.mutable
 
 /**
   * Manages the Haskell Tools Console "tool window" for a project.
@@ -36,26 +33,26 @@ final class HaskellToolsConsole private(project: Project) {
   val LINE_LIMIT = 3
   val TRUNCATED_SUFFIX = "\n<<truncated output...>>\n"
 
-  def curry(toolKey: ToolKey): HaskellToolsConsole.Curried = {
+  def curry(toolKey: ToolKey[_]): HaskellToolsConsole.Curried = {
     new HaskellToolsConsole.Curried(this, toolKey)
   }
 
   /** Log tool input to the console. */
-  def writeInput(toolKey: ToolKey, msg: String): Unit = {
+  def writeInput(toolKey: ToolKey[_], msg: String): Unit = {
     write(ConsoleViewContentType.USER_INPUT, toolKey, msg)
   }
 
   /** Log tool output to the console. */
-  def writeOutput(toolKey: ToolKey, msg: String): Unit = {
+  def writeOutput(toolKey: ToolKey[_], msg: String): Unit = {
     write(ConsoleViewContentType.NORMAL_OUTPUT, toolKey, msg)
   }
 
   /** Log a tool error to the console. */
-  def writeError(toolKey: ToolKey, msg: String): Unit = {
+  def writeError(toolKey: ToolKey[_], msg: String): Unit = {
     write(ConsoleViewContentType.ERROR_OUTPUT, toolKey, msg)
   }
 
-  private def write(contentType: ConsoleViewContentType, toolKey: ToolKey, msg: String): Unit = {
+  private def write(contentType: ConsoleViewContentType, toolKey: ToolKey[_], msg: String): Unit = {
     ApplicationManager.getApplication.invokeLater(SAMUtils.runnable {
       val m = if (msg.isEmpty) "<empty message>" else msg
       getConsole(toolKey).view.print(m + "\n", contentType)
@@ -68,7 +65,7 @@ final class HaskellToolsConsole private(project: Project) {
   /** Initialize the UI; should only by called by the ToolWindowFactory. */
   def initUI(): Unit = {
     toolsCombo.setEditable(false)
-    toolsCombo.setRenderer(SAMUtils.listCellRenderer((_: ToolKey).prettyName))
+    toolsCombo.setRenderer(SAMUtils.listCellRenderer((_: ToolKey[_]).name))
 
     component.add(toolsCombo, toolsComboGC)
     showConsole()
@@ -84,10 +81,10 @@ final class HaskellToolsConsole private(project: Project) {
   private lazy val consoleGC = baseGC.grid(0, 1).weight(1, 1).fillBoth
 
   /** Combo box to choose a tool. */
-  private lazy val toolsCombo = new SComboBox[ToolKey]
+  private lazy val toolsCombo = new SComboBox[ToolKey[_]]
 
   /** Consoles for each tool. */
-  private val consoles = mutable.Map[ToolKey, ToolConsoleView]()
+  private val consoles = mutable.Map[ToolKey[_], ToolConsoleView]()
 
   /** The currently visible console. */
   private[this] var currentConsole: Option[ToolConsoleView] = None
@@ -106,14 +103,14 @@ final class HaskellToolsConsole private(project: Project) {
   }
 
   /** Get the console for a tool. */
-  private def getConsole(toolKey: ToolKey): ToolConsoleView = {
+  private def getConsole(toolKey: ToolKey[_]): ToolConsoleView = {
     consoles.getOrElse(toolKey, newConsole(toolKey))
   }
 
   private val consoleBuilder = TextConsoleBuilderFactory.getInstance().createBuilder(project)
 
   /** Create a console for a tool. */
-  private def newConsole(toolKey: ToolKey): ToolConsoleView = {
+  private def newConsole(toolKey: ToolKey[_]): ToolConsoleView = {
     if (consoles.contains(toolKey)) throw new RuntimeException(s"Tool console already exists: $toolKey")
     val c = ToolConsoleView.create(consoleBuilder.getConsole)
     consoles.put(toolKey, c)
@@ -122,8 +119,8 @@ final class HaskellToolsConsole private(project: Project) {
   }
 
   /** Get the currently selected tool. */
-  private def selectedToolKey(): Option[ToolKey] = Option(toolsCombo.getSelectedItem).map {
-    case t: ToolKey => t
+  private def selectedToolKey(): Option[ToolKey[_]] = Option(toolsCombo.getSelectedItem).map {
+    case t: ToolKey[_] => t
     case other => throw new RuntimeException(s"Expected ToolKey, got: $other")
   }
 }
@@ -161,7 +158,7 @@ object ToolConsoleView {
 
 object HaskellToolsConsole {
 
-  val logger = Logger.getInstance(classOf[HaskellToolsConsole])
+  val logger: Logger = Logger.getInstance(classOf[HaskellToolsConsole])
 
   /** Gets the HaskellToolsConsole for the given Project. */
   def get(project: Project): HaskellToolsConsole = {
@@ -181,7 +178,7 @@ object HaskellToolsConsole {
 
   private val consoles = mutable.Map[Project, HaskellToolsConsole]()
 
-  final class Curried(val console: HaskellToolsConsole, toolKey: ToolKey) {
+  final class Curried(val console: HaskellToolsConsole, toolKey: ToolKey[_]) {
     def writeInput(msg: String): Unit = console.writeInput(toolKey, msg)
     def writeOutput(msg: String): Unit = console.writeOutput(toolKey, msg)
     def writeError(msg: String): Unit = console.writeError(toolKey, msg)
@@ -199,9 +196,7 @@ class HaskellToolsConsoleWindowFactory extends ToolWindowFactory with Condition[
     toolWindow.getContentManager.addContent(content)
     // Explicitly dispose resources.
     // See https://github.com/carymrobbins/intellij-haskforce/issues/269
-    content.setDisposer(new Disposable {
-      override def dispose(): Unit = HaskellToolsConsole.dispose(console)
-    })
+    content.setDisposer(() => HaskellToolsConsole.dispose(console))
   }
 
   /**

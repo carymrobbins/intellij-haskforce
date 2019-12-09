@@ -66,7 +66,7 @@ object HsDevCompileProblemsProvider {
       new HsDevCompileProblemsProvider(
         hsDevExecutor,
         psiFile,
-        HaskellToolsConsole.get(psiFile.getProject).curry(ToolKey.HSDEV_KEY)
+        HaskellToolsConsole.get(psiFile.getProject).curry(ToolKey.HSDEV)
       )
     )
   }

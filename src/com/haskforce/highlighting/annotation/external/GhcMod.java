@@ -7,6 +7,7 @@ import com.haskforce.highlighting.annotation.HaskellProblem;
 import com.haskforce.highlighting.annotation.Problems;
 import com.haskforce.highlighting.annotation.external.GhcModUtil.GhcVersionValidation;
 import com.haskforce.psi.HaskellImpdecl;
+import com.haskforce.settings.SimpleToolSettings;
 import com.haskforce.settings.ToolKey;
 import com.haskforce.ui.tools.HaskellToolsConsole;
 import com.haskforce.utils.ExecUtil;
@@ -15,6 +16,7 @@ import com.haskforce.utils.EitherUtil;
 import com.intellij.codeInspection.ProblemHighlightType;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.lang.annotation.Annotation;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.diagnostic.Logger;
@@ -31,6 +33,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import scala.Option;
 import scala.util.Either;
 
 import java.io.File;
@@ -53,15 +56,23 @@ public class GhcMod {
 
     @Nullable
     public static String getPath(@NotNull Project project) {
-        return GhcModUtil.changedPathIfStack(project, ToolKey.GHC_MOD_KEY.getPath(project));
+        return GhcModUtil.changedPathIfStack(
+            project,
+            ToolKey.GHC_MOD().PATH().getValue(
+                PropertiesComponent.getInstance(project)
+            ).getOrElse(null)
+        );
     }
 
     @NotNull
     public static String getFlags(@NotNull Project project) {
+        SimpleToolSettings settings = ToolKey.GHC_MOD().getValue(
+          PropertiesComponent.getInstance(project)
+        );
         return GhcModUtil.changedFlagsIfStack(
           project,
-          ToolKey.GHC_MOD_KEY.getPath(project),
-          ToolKey.GHC_MOD_KEY.getFlags(project)
+          settings.path().getOrElse(() -> null),
+          settings.flags()
         );
     }
 
@@ -137,20 +148,20 @@ public class GhcMod {
         // Make sure we can actually see the errors.
         commandLine.setRedirectErrorStream(true);
         HaskellToolsConsole toolConsole = HaskellToolsConsole.get(project);
-        toolConsole.writeInput(ToolKey.GHC_MOD_KEY, "Using working directory: " + workingDirectory);
-        toolConsole.writeInput(ToolKey.GHC_MOD_KEY, commandLine.getCommandLineString());
+        toolConsole.writeInput(ToolKey.GHC_MOD(), "Using working directory: " + workingDirectory);
+        toolConsole.writeInput(ToolKey.GHC_MOD(), commandLine.getCommandLineString());
         Either<ExecUtil.ExecError, String> result = ExecUtil.readCommandLine(commandLine);
         if (result.isLeft()) {
             //noinspection ThrowableResultOfMethodCallIgnored
             ExecUtil.ExecError e = EitherUtil.unsafeGetLeft(result);
-            toolConsole.writeError(ToolKey.GHC_MOD_KEY, e.getMessage());
+            toolConsole.writeError(ToolKey.GHC_MOD(), e.getMessage());
             NotificationUtil.displayToolsNotification(
                 NotificationType.ERROR, project, "ghc-mod", e.getMessage()
             );
             return null;
         }
         String out = EitherUtil.unsafeGetRight(result);
-        toolConsole.writeOutput(ToolKey.GHC_MOD_KEY, out);
+        toolConsole.writeOutput(ToolKey.GHC_MOD(), out);
         return out;
     }
 

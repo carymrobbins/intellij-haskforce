@@ -3,6 +3,7 @@ package com.haskforce.actions;
 import com.haskforce.HaskellModuleType;
 import com.haskforce.highlighting.annotation.external.GhcModi;
 import com.haskforce.settings.ToolKey;
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
@@ -33,7 +34,8 @@ public class RestartGhcModi extends AnAction implements DumbAware {
     private static boolean enabled(@NotNull AnActionEvent e) {
         final Project project = getEventProject(e);
         if (project == null) return false;
-        final String ghcModiPath = ToolKey.GHC_MODI_KEY.getPath(project);
+        final PropertiesComponent props = PropertiesComponent.getInstance(project);
+        final String ghcModiPath = ToolKey.GHC_MODI$.MODULE$.PATH().getValue(props).getOrElse(() -> null);
         return ghcModiPath != null && !ghcModiPath.isEmpty() && HaskellModuleType.findModules(project).size() > 0;
     }
 

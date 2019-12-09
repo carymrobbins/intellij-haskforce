@@ -13,6 +13,7 @@ import com.haskforce.utils.*;
 import com.haskforce.utils.ExecUtil.ExecError;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.lang.annotation.Annotation;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
@@ -52,14 +53,15 @@ public class HLint {
     public static Problems lint(final @NotNull Project project, @NotNull String workingDirectory,
                                 @NotNull String file, @NotNull HaskellFile haskellFile) {
         final HaskellToolsConsole toolConsole = HaskellToolsConsole.get(project);
-        final String hlintPath = ToolKey.HLINT_KEY.getPath(project);
-        final String hlintFlags = ToolKey.HLINT_KEY.getFlags(project);
+        final PropertiesComponent props = PropertiesComponent.getInstance(project);
+        final String hlintPath = ToolKey.HLINT().PATH().getValue(props).getOrElse(() -> null);
+        final String hlintFlags = ToolKey.HLINT().FLAGS().getValue(props);
         if (hlintPath == null) return new Problems();
 
         return EitherUtil.valueOr(
             parseProblems(toolConsole, workingDirectory, hlintPath, hlintFlags, file, haskellFile),
             e -> {
-                toolConsole.writeError(ToolKey.HLINT_KEY, e.getMessage());
+                toolConsole.writeError(ToolKey.HLINT(), e.getMessage());
                 NotificationUtil.displayToolsNotification(
                   NotificationType.ERROR, project, "hlint", e.getMessage()
                 );
@@ -79,7 +81,7 @@ public class HLint {
             final boolean useJson = version.$greater$eq(HLINT_MIN_VERSION_WITH_JSON_SUPPORT);
             final String[] params = getParams(file, haskellFile, useJson);
             return runHlint(toolConsole, workingDirectory, path, flags, params).map(stdout -> {
-                toolConsole.writeOutput(ToolKey.HLINT_KEY, stdout);
+                toolConsole.writeOutput(ToolKey.HLINT(), stdout);
                 if (useJson) return parseProblemsJson(toolConsole, stdout);
                 return parseProblemsFallback(stdout);
             });
@@ -111,7 +113,7 @@ public class HLint {
         return EitherUtil.valueOr(
             parseProblemsJson(stdout),
             e -> {
-                toolsConsole.writeError(ToolKey.HLINT_KEY, e.getMessage());
+                toolsConsole.writeError(ToolKey.HLINT(), e.getMessage());
                 LOG.error(e);
                 return new Problems();
             }
@@ -208,8 +210,8 @@ public class HLint {
         parametersList.add("--no-exit-code");
         parametersList.addParametersString(hlintFlags);
         parametersList.addAll(params);
-        toolConsole.writeInput(ToolKey.HLINT_KEY, "Using working directory: " + workingDirectory);
-        toolConsole.writeInput(ToolKey.HLINT_KEY, commandLine.getCommandLineString());
+        toolConsole.writeInput(ToolKey.HLINT(), "Using working directory: " + workingDirectory);
+        toolConsole.writeInput(ToolKey.HLINT(), commandLine.getCommandLineString());
         return ExecUtil.readCommandLine(commandLine);
     }
 

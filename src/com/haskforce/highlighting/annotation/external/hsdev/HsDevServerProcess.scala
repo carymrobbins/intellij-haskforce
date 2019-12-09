@@ -5,6 +5,7 @@ import com.haskforce.ui.tools.HaskellToolsConsole
 import com.haskforce.utils.PortUtil
 import com.intellij.execution.configurations.ParametersList
 import com.intellij.execution.process.{OSProcessHandler, ProcessAdapter, ProcessEvent}
+import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
 
@@ -12,6 +13,8 @@ class HsDevServerProcess private (
   project: Project,
   toolsConsole: HaskellToolsConsole.Curried
 ) {
+
+  private val props = PropertiesComponent.getInstance(project)
 
   private [this] var state: Option[HsDevServerProcess.State] = None
 
@@ -32,9 +35,13 @@ class HsDevServerProcess private (
     state.map(_.port)
   }
 
+  def isAlive: Boolean = {
+    state.flatMap(_.process).exists(_.getProcess.isAlive)
+  }
+
   private def spawn(params: HsDevExeSettings): Unit = {
-    val optSuppliedPort = ToolKey.getHsDevPort(project)
-    if (!ToolKey.getHsDevSpawnServer(project)) {
+    val optSuppliedPort = ToolKey.HSDEV.PORT.getValue(props)
+    if (!ToolKey.HSDEV.SPAWN_SERVER.getValue(props)) {
       optSuppliedPort match {
         case Some(port) =>
           toolsConsole.writeOutput(

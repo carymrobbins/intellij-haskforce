@@ -10,6 +10,7 @@ import com.haskforce.ui.tools.HaskellToolsConsole
 import com.haskforce.utils.ExecUtil
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.{ProcessAdapter, ProcessEvent, ProcessOutputType}
+import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.module.{Module, ModuleUtilCore}
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Key
@@ -28,6 +29,9 @@ class HsDevExecutor private(
   cache: HsDevCache,
   toolsConsole: HaskellToolsConsole.Curried
 ) {
+
+  private val props = PropertiesComponent.getInstance(project)
+
   def installedModules: Vector[HsDevModule] = {
     cache.installedModules.getOrElse {
       exec[HsDevModule]("module", "--installed") match {
@@ -95,7 +99,7 @@ class HsDevExecutor private(
     val proc = cli.createProcess()
     val stdout = new BufferedReader(new InputStreamReader(proc.getInputStream))
 
-    runWithOptionalTimeout(ToolKey.getHsDevScanTimeoutSeconds(project).map(_.toLong), () => {
+    runWithOptionalTimeout(ToolKey.HSDEV.SCAN_TIMEOUT_SECONDS.getValue(props), () => {
       Stream.continually(
         try {
           stdout.readLine()
@@ -140,8 +144,9 @@ class HsDevExecutor private(
     val commandId = HsDevExecutor.nextCommandId()
     toolsConsole.writeInput(s"hsdev $commandId: ${renderCli(cli)}")
 
-    runWithOptionalTimeout(ToolKey.getHsDevCommandTimeoutSeconds(project).map(_.toLong), () => {
+    runWithOptionalTimeout(ToolKey.HSDEV.COMMAND_TIMEOUT_SECONDS.getValue(props), () => {
       val proc = cli.createProcess()
+
       // TODO: Make verbose logging of JSON payloads configurable as this is very inefficient
       val stdoutBytes = IOUtils.toByteArray(proc.getInputStream)
       val stdoutString = new String(stdoutBytes, StandardCharsets.UTF_8)
@@ -217,7 +222,7 @@ object HsDevExecutor {
       port <- projectComponent.currentPort
       moduleComponent <- HsDevModuleComponent.get(module)
       cache = moduleComponent.cache
-      toolsConsole = HaskellToolsConsole.get(project).curry(ToolKey.HSDEV_KEY)
+      toolsConsole = HaskellToolsConsole.get(project).curry(ToolKey.HSDEV)
     } yield new HsDevExecutor(
       project = project,
       module = module,

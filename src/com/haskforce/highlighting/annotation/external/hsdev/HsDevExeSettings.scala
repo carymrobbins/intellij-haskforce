@@ -1,6 +1,10 @@
 package com.haskforce.highlighting.annotation.external.hsdev
 
+import com.haskforce.settings.HaskellBuildSettings
+import com.haskforce.settings.ToolKey
 import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.ide.util.PropertiesComponent
+import com.intellij.openapi.project.Project
 
 final case class HsDevExeSettings(
   path: String,
@@ -25,17 +29,23 @@ final case class HsDevExeSettings(
 
 object HsDevExeSettings {
 
-  def lift(
-    path: Option[String],
-    flags: Option[String],
+  def get(project: Project): Option[HsDevExeSettings] = {
+    of(
+      ToolKey.HSDEV.getValue(PropertiesComponent.getInstance(project)),
+      HaskellBuildSettings.getStackPathOption(project)
+    )
+  }
+
+  def of(
+    toolSettings: ToolKey.HsDevToolSettings,
     stackPath: Option[String]
   ): Option[HsDevExeSettings] = {
-    path.map(_.trim).filter(_.nonEmpty).map(thePath =>
+    toolSettings.path.map { path =>
       HsDevExeSettings(
-        path = thePath,
-        flags = flags.map(_.trim).getOrElse(""),
+        path = path,
+        flags = toolSettings.flags,
         stackPath = stackPath
       )
-    )
+    }
   }
 }

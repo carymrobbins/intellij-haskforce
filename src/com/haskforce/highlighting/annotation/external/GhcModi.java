@@ -6,7 +6,6 @@ import com.haskforce.highlighting.annotation.Problems;
 import com.haskforce.highlighting.annotation.external.GhcModUtil.GhcVersionValidation;
 import com.haskforce.settings.SettingsChangeNotifier;
 import com.haskforce.settings.ToolKey;
-import com.haskforce.settings.ToolSettings;
 import com.haskforce.ui.tools.HaskellToolsConsole;
 import com.haskforce.utils.ExecUtil;
 import com.haskforce.utils.HtmlUtils;
@@ -15,6 +14,7 @@ import com.haskforce.utils.SystemUtil;
 import com.intellij.execution.ExecutionException;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
@@ -42,7 +42,7 @@ import java.util.regex.Pattern;
 /**
  * Process wrapper for GhcModi.  Implements ModuleComponent so destruction of processes coincides with closing projects.
  */
-public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
+public class GhcModi implements ModuleComponent, SettingsChangeNotifier.GhcModiSettingsChangeNotifier {
 
     public static Option<GhcModi> get(PsiElement element) {
         final Module module = ModuleUtilCore.findModuleForPsiElement(element);
@@ -91,7 +91,8 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     @Nullable
     public static <T> T getFuture(@NotNull Project project, @NotNull Future<T> future) {
-        long timeout = ToolKey.getGhcModiResponseTimeout(project);
+        PropertiesComponent props = PropertiesComponent.getInstance(project);
+        long timeout = ToolKey.GHC_MODI$.MODULE$.RESPONSE_TIMEOUT_MS().getLong(props);
         try {
             return future.get(timeout, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
@@ -103,7 +104,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         } catch (TimeoutException e) {
             String msg = "ghc-modi took too long to respond (waited " + timeout + " milliseconds)";
             LOG.warn(msg, e);
-            HaskellToolsConsole.get(project).writeError(ToolKey.GHC_MODI_KEY, msg);
+            HaskellToolsConsole.get(project).writeError(ToolKey.GHC_MODI$.MODULE$, msg);
         }
         return null;
     }
@@ -353,12 +354,12 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     /** Wraps toolConsole.writeInput and prepends the message with the module name. */
     private void writeInputToConsole(String message) {
-        toolConsole.writeInput(ToolKey.GHC_MODI_KEY, prependWithModuleName(message));
+        toolConsole.writeInput(ToolKey.GHC_MODI$.MODULE$, prependWithModuleName(message));
     }
 
     /** Wraps toolConsole.writeError and prepends the message with the module name. */
     private void writeErrorToConsole(String message) {
-        toolConsole.writeInput(ToolKey.GHC_MODI_KEY, prependWithModuleName(message));
+        toolConsole.writeInput(ToolKey.GHC_MODI$.MODULE$, prependWithModuleName(message));
     }
 
     /** Wraps toolConsole.writeOutput except, unlike the other helpers, does NOT prepend the
@@ -367,7 +368,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
      *  directly outside of the helpers.
      */
     private void writeOutputToConsole(String message) {
-        toolConsole.writeOutput(ToolKey.GHC_MODI_KEY, message);
+        toolConsole.writeOutput(ToolKey.GHC_MODI$.MODULE$, message);
     }
 
     /** Used by the write*ToConsole helpers for updating the log message with the module name. */
@@ -406,7 +407,8 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     private void startIdleKillerThread() {
         lastCallTimeMillis = System.currentTimeMillis();
-        long timeout = ToolKey.getGhcModiKillIdleTimeout(this.module.getProject());
+        PropertiesComponent props = PropertiesComponent.getInstance(this.module.getProject());
+        long timeout = ToolKey.GHC_MODI$.MODULE$.KILL_IDLE_TIMEOUT_MS().getLong(props);
         // Disable the idle killer if the configured timeout is zero or negative.
         if (timeout <= 0) return;
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -566,7 +568,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
     }
 
     private static void displayError(@NotNull Project project, @NotNull String message, boolean stripHtmlTags) {
-        HaskellToolsConsole.get(project).writeError(ToolKey.GHC_MODI_KEY,
+        HaskellToolsConsole.get(project).writeError(ToolKey.GHC_MODI$.MODULE$,
           stripHtmlTags ? HtmlUtils.stripTags(message) : message
         );
         NotificationUtil.displayToolsNotification(NotificationType.ERROR, project, "ghc-modi error", message);
@@ -632,26 +634,30 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         this.flags = lookupFlags();
         this.workingDirectory = lookupWorkingDirectory();
         // Ensure that we are notified of changes to the settings.
-        module.getProject().getMessageBus().connect().subscribe(SettingsChangeNotifier.GHC_MODI_TOPIC, this);
+        module.getProject().getMessageBus().connect().subscribe(SettingsChangeNotifier.GHC_MODI_TOPIC(), this);
         toolConsole = HaskellToolsConsole.get(module.getProject());
     }
 
     @Override
-    public void onSettingsChanged(@NotNull ToolSettings settings) {
-        this.path = settings.getPath();
-        this.flags = settings.getFlags();
+    public void onSettingsChanged(@NotNull ToolKey.GhcModiToolSettings settings) {
+        this.path = settings.path().getOrElse(() -> null);
+        this.flags = settings.flags();
         writeErrorToConsole("Settings changed, reloading ghc-modi, will spawn once invoked");
         kill();
     }
 
     @Nullable
     private String lookupPath() {
-        return ToolKey.GHC_MODI_KEY.getPath(module.getProject());
+        return
+          ToolKey.GHC_MODI$.MODULE$.PATH()
+            .getValue(PropertiesComponent.getInstance(module.getProject()))
+            .getOrElse(() -> null);
     }
 
     @NotNull
     private String lookupFlags() {
-        return ToolKey.GHC_MODI_KEY.getFlags(module.getProject());
+        PropertiesComponent props = PropertiesComponent.getInstance(module.getProject());
+        return ToolKey.GHC_MODI$.MODULE$.FLAGS().getValue(props);
     }
 
     @NotNull

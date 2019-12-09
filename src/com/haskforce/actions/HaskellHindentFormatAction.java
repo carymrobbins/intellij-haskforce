@@ -24,6 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
+import com.intellij.ide.util.PropertiesComponent;
 import org.jetbrains.annotations.NotNull;
 
 import com.haskforce.psi.HaskellFile;
@@ -75,6 +76,7 @@ public class HaskellHindentFormatAction extends AnAction implements DumbAware {
     public void actionPerformed(AnActionEvent e) {
         final PsiFile psiFile = e.getData(CommonDataKeys.PSI_FILE);
         final Project project = getEventProject(e);
+        final PropertiesComponent props = PropertiesComponent.getInstance(project);
         if (project == null) return;
         if (!(psiFile instanceof HaskellFile)) return;
         VirtualFile virtualFile = psiFile.getVirtualFile();
@@ -83,8 +85,8 @@ public class HaskellHindentFormatAction extends AnAction implements DumbAware {
         final String groupId = e.getPresentation().getText();
         try {
             GeneralCommandLine commandLine = new GeneralCommandLine();
-            final String hindentPath = ToolKey.HINDENT_KEY.getPath(project);
-            final String hindentFlags = ToolKey.HINDENT_KEY.getFlags(project);
+            final String hindentPath = ToolKey.HINDENT().PATH().getValue(props).getOrElse(() -> null);
+            final String hindentFlags = ToolKey.HINDENT().FLAGS().getValue(props);
             if (hindentPath == null || hindentPath.isEmpty()) {
                 Notifications.Bus.notify(
                         new Notification(groupId, NOTIFICATION_TITLE,
