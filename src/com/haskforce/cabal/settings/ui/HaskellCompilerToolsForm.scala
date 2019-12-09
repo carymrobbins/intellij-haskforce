@@ -8,18 +8,17 @@ import com.haskforce.jps.model.HaskellBuildOptions
 import com.haskforce.settings.{HaskellBuildSettings, ToolKey}
 import com.haskforce.utils.{ExecUtil, GuiUtil}
 import com.intellij.ide.util.PropertiesComponent
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.DefaultProjectFactory
 import com.intellij.openapi.projectRoots.Sdk
 import com.intellij.openapi.roots.ModifiableRootModel
 import com.intellij.ui.TextAccessor
+import javax.swing.JPanel
 
 /**
  * Simple form which provides the user with configurable tools at project creation time.
  * TODO: It would be nice to unify this with HaskellToolsConfigurable.
  */
 class HaskellCompilerToolsForm(moduleBuilder: HaskellModuleBuilder) extends HaskellCompilerToolsFormBase {
-  private val LOG = Logger.getInstance(getClass)
   private val defaultProject = DefaultProjectFactory.getInstance.getDefaultProject
   private val defaultBuildSettings = HaskellBuildSettings.getInstance(defaultProject)
   var lastAutoSetCabalPath: Option[String] = None
@@ -27,7 +26,7 @@ class HaskellCompilerToolsForm(moduleBuilder: HaskellModuleBuilder) extends Hask
 
   initializeFields()
 
-  def getContentPane = contentPane
+  def getContentPane: JPanel = contentPane
 
   def getCabalPath: Option[String] = getFieldText(cabalPath)
   def getGhcPath: Option[String] = getFieldText(ghcPath)
@@ -41,15 +40,12 @@ class HaskellCompilerToolsForm(moduleBuilder: HaskellModuleBuilder) extends Hask
 
   def save(): Unit = {
     lazy val defaultToolSettings = PropertiesComponent.getInstance(defaultProject)
-    def setToolPath(props: PropertiesComponent, key: ToolKey)(path: String): Unit = {
-      props.setValue(key.pathKey, path)
-    }
 
     // Set default settings if the respective "Set as Default" box is checked.
     getCabalPath.filter(_ => shouldSetCabalAsDefault).foreach(defaultBuildSettings.setCabalPath)
     getGhcPath.filter(_ => shouldSetGhcAsDefault).foreach(defaultBuildSettings.setGhcPath)
-    getGhcModPath.filter(_ => shouldSetGhcModAsDefault).foreach(setToolPath(defaultToolSettings, ToolKey.GHC_MOD_KEY))
-    getGhcModiPath.filter(_ => shouldSetGhcModiAsDefault).foreach(setToolPath(defaultToolSettings, ToolKey.GHC_MODI_KEY))
+    getGhcModPath.filter(_ => shouldSetGhcModAsDefault).foreach(ToolKey.GHC_MOD.PATH.setValue(defaultToolSettings, _))
+    getGhcModiPath.filter(_ => shouldSetGhcModiAsDefault).foreach(ToolKey.GHC_MODI.PATH.setValue(defaultToolSettings, _))
 
     moduleBuilder.registerSetupRootModelCallback { rootModel: ModifiableRootModel =>
       val project = rootModel.getProject
@@ -57,8 +53,8 @@ class HaskellCompilerToolsForm(moduleBuilder: HaskellModuleBuilder) extends Hask
       getCabalPath.foreach(buildSettings.setCabalPath)
       getGhcPath.foreach(buildSettings.setGhcPath)
       val toolSettings = PropertiesComponent.getInstance(project)
-      getGhcModPath.foreach(setToolPath(toolSettings, ToolKey.GHC_MOD_KEY))
-      getGhcModiPath.foreach(setToolPath(toolSettings, ToolKey.GHC_MODI_KEY))
+      getGhcModPath.foreach(ToolKey.GHC_MOD.PATH.setValue(toolSettings, _))
+      getGhcModiPath.foreach(ToolKey.GHC_MODI.PATH.setValue(toolSettings, _))
     }
   }
 
@@ -144,7 +140,7 @@ class HaskellCompilerToolsForm(moduleBuilder: HaskellModuleBuilder) extends Hask
 
   private def initializeGhcModPath(): Unit = {
     (
-      Option(ToolKey.GHC_MOD_KEY.getPath(defaultProject))
+      ToolKey.GHC_MOD.PATH.getValue(PropertiesComponent.getInstance())
       #:: Option(ExecUtil.locateExecutableByGuessing("ghc-mod"))
       #:: Stream()
     ).flatten.headOption.foreach(ghcModPath.setText)
@@ -152,7 +148,7 @@ class HaskellCompilerToolsForm(moduleBuilder: HaskellModuleBuilder) extends Hask
 
   private def initializeGhcModiPath(): Unit = {
     (
-      Option(ToolKey.GHC_MODI_KEY.getPath(defaultProject))
+      ToolKey.GHC_MOD.PATH.getValue(PropertiesComponent.getInstance())
       #:: Option(ExecUtil.locateExecutableByGuessing("ghc-modi"))
       #:: Stream()
     ).flatten.headOption.foreach(ghcModiPath.setText)

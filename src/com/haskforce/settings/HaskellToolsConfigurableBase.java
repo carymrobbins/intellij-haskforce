@@ -20,7 +20,6 @@ import com.intellij.util.messages.Topic;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import scala.Option;
 import scala.runtime.AbstractFunction1;
 
 import javax.swing.*;
@@ -34,63 +33,65 @@ import java.util.regex.Pattern;
 /**
  * The "Haskell Tools" option in Preferences->Project Settings.
  */
-public class HaskellToolsConfigurable implements SearchableConfigurable {
+public abstract class HaskellToolsConfigurableBase implements SearchableConfigurable {
     public static final String HASKELL_TOOLS_ID = "Haskell Tools";
-    private static final Logger LOG = Logger.getInstance(HaskellToolsConfigurable.class);
+    private static final Logger LOG = Logger.getInstance(HaskellToolsConfigurableBase.class);
 
-    private PropertiesComponent propertiesComponent;
+    PropertiesComponent props;
 
     // Swing components.
-    private JPanel mainPanel;
-    private TextFieldWithBrowseButton stylishPath;
-    private RawCommandLineEditor stylishFlags;
-    private JButton stylishAutoFind;
-    private JTextField stylishVersion;
-    private TextFieldWithBrowseButton hlintPath;
-    private RawCommandLineEditor hlintFlags;
-    private JButton hlintAutoFind;
-    private JTextField hlintVersion;
+    JPanel mainPanel;
+    TextFieldWithBrowseButton stylishPath;
+    RawCommandLineEditor stylishFlags;
+    JButton stylishAutoFind;
+    JTextField stylishVersion;
+    TextFieldWithBrowseButton hlintPath;
+    RawCommandLineEditor hlintFlags;
+    JButton hlintAutoFind;
+    JTextField hlintVersion;
 
-    private TextFieldWithBrowseButton hsdevPath;
-    private RawCommandLineEditor hsdevFlags;
-    private JButton hsdevAutoFind;
-    private JTextField hsdevVersion;
-    private JTextAccessorField hsdevPort;
-    private JCheckBox hsdevSpawnServer;
-    private JTextAccessorField hsdevScanTimeout;
-    private JTextAccessorField hsdevCommandTimeout;
+    JCheckBox hsdevEnabled;
+    TextFieldWithBrowseButton hsdevPath;
+    RawCommandLineEditor hsdevFlags;
+    JButton hsdevAutoFind;
+    JTextField hsdevVersion;
+    JTextAccessorField hsdevPort;
+    JCheckBox hsdevSpawnServer;
+    JTextAccessorField hsdevScanTimeout;
+    JTextAccessorField hsdevCommandTimeout;
 
-    private TextFieldWithBrowseButton ghcModPath;
-    private RawCommandLineEditor ghcModFlags;
-    private JButton ghcModAutoFind;
-    private JTextField ghcModVersion;
-    private TextFieldWithBrowseButton ghcModiPath;
-    private JButton ghcModiAutoFind;
-    private JTextField ghcModiVersion;
-    private RawCommandLineEditor ghcModiFlags;
-    private JTextAccessorField ghcModiResponseTimeout;
-    private JTextAccessorField ghcModiKillIdleTimeout;
-    private TextFieldWithBrowseButton hindentPath;
-    private JButton hindentAutoFind;
-    private JTextField hindentVersion;
-    private RawCommandLineEditor hindentFlags;
+    TextFieldWithBrowseButton ghcModPath;
+    RawCommandLineEditor ghcModFlags;
+    JButton ghcModAutoFind;
+    JTextField ghcModVersion;
+    TextFieldWithBrowseButton ghcModiPath;
+    JButton ghcModiAutoFind;
+    JTextField ghcModiVersion;
+    RawCommandLineEditor ghcModiFlags;
+    JTextAccessorField ghcModiResponseTimeout;
+    JTextAccessorField ghcModiKillIdleTimeout;
+    TextFieldWithBrowseButton hindentPath;
+    JButton hindentAutoFind;
+    JTextField hindentVersion;
+    RawCommandLineEditor hindentFlags;
 
-    private List<Property> properties;
+    List<Property> properties;
 
-    public HaskellToolsConfigurable(@NotNull Project project) {
-        this.propertiesComponent = PropertiesComponent.getInstance(project);
+    public HaskellToolsConfigurableBase(@NotNull Project project) {
+        this.props = PropertiesComponent.getInstance(project);
         properties = Arrays.asList(
-                new Tool(project, "stylish-haskell", ToolKey.STYLISH_HASKELL_KEY, stylishPath, stylishFlags,
+                new Tool(project, "stylish-haskell", ToolKey.STYLISH_HASKELL(), stylishPath, stylishFlags,
                         stylishAutoFind, stylishVersion, "--help"),
-                new Tool(project, "hlint", ToolKey.HLINT_KEY, hlintPath, hlintFlags,
+                new Tool(project, "hlint", ToolKey.HLINT(), hlintPath, hlintFlags,
                          hlintAutoFind, hlintVersion),
 
                 new HsDevTool(project),
                 // TODO: These need to somehow be with HsDevTool
-                new PropertyField(ToolKey.HSDEV_SCAN_TIMEOUT_KEY, hsdevScanTimeout),
-                new PropertyField(ToolKey.HSDEV_COMMAND_TIMEOUT_KEY, hsdevCommandTimeout),
-                new PropertyField(ToolKey.HSDEV_PORT_KEY, hsdevPort),
-                new PropertyCheckBox(ToolKey.HSDEV_SPAWN_SERVER_KEY, hsdevSpawnServer, ToolKey.getHsDevSpawnServer(project)),
+                new PropertyCheckBox(ToolKey.HSDEV.ENABLED().name(), hsdevEnabled, ToolKey.HSDEV.ENABLED().getBool(props)),
+                new PropertyField(ToolKey.HSDEV.SCAN_TIMEOUT_SECONDS().name(), hsdevScanTimeout),
+                new PropertyField(ToolKey.HSDEV.COMMAND_TIMEOUT_SECONDS().name(), hsdevCommandTimeout),
+                new PropertyField(ToolKey.HSDEV.PORT().name(), hsdevPort),
+                new PropertyCheckBox(ToolKey.HSDEV.SPAWN_SERVER().name(), hsdevSpawnServer, ToolKey.(project)),
 
                 new Tool(project, "ghc-mod", ToolKey.GHC_MOD_KEY, ghcModPath, ghcModFlags,
                          ghcModAutoFind, ghcModVersion, "version"),
@@ -158,7 +159,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
             // We have to serialize the boolean; using the overloaded setValue
             // which accepts a boolean actually unsets the property on false,
             // which becomes ambiguous when the default value is true.
-            propertiesComponent.setValue(propertyKey, Boolean.toString(oldValue));
+            props.setValue(propertyKey, Boolean.toString(oldValue));
         }
 
         @Override
@@ -182,7 +183,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
         PropertyField(@NotNull String propertyKey, @NotNull TextAccessor field, @NotNull String defaultValue) {
             this.propertyKey = propertyKey;
             this.field = field;
-            this.oldValue = propertiesComponent.getValue(propertyKey, defaultValue);
+            this.oldValue = props.getValue(propertyKey, defaultValue);
             field.setText(oldValue);
         }
 
@@ -191,7 +192,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
         }
 
         public void saveState() {
-            propertiesComponent.setValue(propertyKey, oldValue = field.getText());
+            props.setValue(propertyKey, oldValue = field.getText());
         }
 
         public void restoreState() {
@@ -202,7 +203,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     /**
      * Manages the group of fields which reside to a particular tool.
      */
-    class Tool implements Property, Versioned {
+    class Tool<A extends SimpleToolSettings> implements Property, Versioned {
         public final Project project;
         public final String command;
         public final ToolKey key;
@@ -215,17 +216,17 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
         public final @Nullable Topic<SettingsChangeNotifier> topic;
         private final @Nullable SettingsChangeNotifier publisher;
 
-        Tool(Project project, String command, ToolKey key, TextFieldWithBrowseButton pathField,
+        Tool(Project project, String command, AbstractSimpleToolSettingsKey<A> key, TextFieldWithBrowseButton pathField,
              RawCommandLineEditor flagsField, JButton autoFindButton, JTextField versionField) {
             this(project, command, key, pathField, flagsField, autoFindButton, versionField, "--version");
         }
 
-        Tool(Project project, String command, ToolKey key, TextFieldWithBrowseButton pathField,
+        Tool(Project project, String command, SimpleToolSettingsKey key, TextFieldWithBrowseButton pathField,
              RawCommandLineEditor flagsField, JButton autoFindButton, JTextField versionField, String versionParam) {
             this(project, command, key, pathField, flagsField, autoFindButton, versionField, versionParam, null);
         }
 
-        Tool(Project project, String command, ToolKey key, TextFieldWithBrowseButton pathField,
+        Tool(Project project, String command, SimpleToolSettingsKey key, TextFieldWithBrowseButton pathField,
              RawCommandLineEditor flagsField, JButton autoFindButton, JTextField versionField, String versionParam,
              @Nullable Topic<SettingsChangeNotifier> topic) {
             this.project = project;
@@ -240,8 +241,8 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
             this.publisher = topic == null ? null : project.getMessageBus().syncPublisher(topic);
 
             this.propertyFields = Arrays.asList(
-                    new PropertyField(key.pathKey, pathField),
-                    new PropertyField(key.flagsKey, flagsField));
+                    new PropertyField(key.PATH().name(), pathField),
+                    new PropertyField(key.FLAGS().name(), flagsField));
 
             GuiUtil.addFolderListener(pathField, command);
             GuiUtil.addApplyPathAction(autoFindButton, pathField, command);
@@ -275,7 +276,7 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
 
         public void saveState() {
             if (isModified() && publisher != null) {
-                publisher.onSettingsChanged(new ToolSettings(pathField.getText(), flagsField.getText()));
+                publisher.onSettingsChanged(new SimpleToolSettings.Default(pathField.getText(), flagsField.getText()));
             }
             for (PropertyField propertyField : propertyFields) {
                 propertyField.saveState();
@@ -290,11 +291,11 @@ public class HaskellToolsConfigurable implements SearchableConfigurable {
     }
 
     class HsDevTool extends Tool {
-        HsDevTool(Project project) {
+        HsDevTool(Project project, Property propertyFields) {
             super(
               project,
               "hsdev",
-              ToolKey.HSDEV_KEY,
+              ToolKey.HSDEV$.MODULE$,
               hsdevPath,
               hsdevFlags,
               hsdevAutoFind,
