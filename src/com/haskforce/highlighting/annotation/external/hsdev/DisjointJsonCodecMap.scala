@@ -1,10 +1,11 @@
 package com.haskforce.highlighting.annotation.external.hsdev
 
-import com.github.plokhotnyuk.jsoniter_scala.core.{JsonReader, JsonValueCodec, JsonWriter}
+import com.github.plokhotnyuk.jsoniter_scala.core.{JsonReader, JsonReaderException, JsonValueCodec, JsonWriter}
 import com.haskforce.highlighting.annotation.external.hsdev
 
 import scala.collection.immutable.ListMap
 import scala.reflect.{ClassTag, classTag}
+import scala.util.control.NonFatal
 
 final class DisjointJsonCodecMap[A <: AnyRef : ClassTag] private (
   val toMap: ListMap[Class[_], JsonValueCodec[_]]
@@ -43,11 +44,15 @@ object DisjointJsonCodecMap {
     override def decodeValue(in: JsonReader, default: A): A = {
       codecMap.toMap.foreach { case (_, codec) =>
         in.setMark()
-        codec.asInstanceOf[JsonValueCodec[A]].decodeValue(
-          in, null.asInstanceOf[A]
-        ) match {
-          case x if x != null => return x.asInstanceOf[A]
-          case _ => // noop
+        try {
+          codec.asInstanceOf[JsonValueCodec[A]].decodeValue(
+            in, null.asInstanceOf[A]
+          ) match {
+            case x if x != null => return x.asInstanceOf[A]
+            case _ => // noop
+          }
+        } catch {
+          case e: JsonReaderException => // skip
         }
         in.rollbackToMark()
       }
