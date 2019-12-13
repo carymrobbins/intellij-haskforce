@@ -43,6 +43,18 @@ class HsDevExecutor private(
     }
   }
 
+  def installedModulesMap: Map[String, HsDevModule] = {
+    cache.installedModulesMap.getOrElse {
+      installedModules match {
+        case ms if ms.isEmpty => Map.empty
+        case ms =>
+          val res = ms.iterator.map(m => (m.id.name, m)).toMap
+          cache.installedModulesMap = Some(res)
+          res
+      }
+    }
+  }
+
   def checkContents(file: PsiFile): Vector[HsDevNote[HsDevOutputMessage]] = {
     // hsdev expects a json argument for contents; e.g.
     // {"file": "path/to/file.hs", "contents": "module ..."}

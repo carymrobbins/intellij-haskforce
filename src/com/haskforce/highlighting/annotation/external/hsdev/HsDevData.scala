@@ -162,6 +162,12 @@ final case class HsDevModuleId(
 
 sealed trait HsDevModuleLocation
 object HsDevModuleLocation {
+
+  def exposed(x: HsDevModuleLocation): Option[Boolean] = x match {
+    case m: InstalledModule => Some(m.exposed)
+    case _ => None
+  }
+
   final case class FileModule(
     file: String,
     project: Option[HsDevProject]

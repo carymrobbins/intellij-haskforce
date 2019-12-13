@@ -2,15 +2,15 @@ package com.haskforce.codeInsight
 
 import com.intellij.openapi.module.{Module, ModuleUtilCore}
 import com.intellij.psi.PsiFile
-
 import com.haskforce.highlighting.annotation.external.{GhcMod, GhcModi}
+import com.haskforce.highlighting.annotation.external.hsdev.{HsDevExecutor, HsDevModuleLocation}
 import com.haskforce.utils.ExecUtil
 
 object VisibleModulesProviderFactory {
   def get(psiFile: PsiFile): Option[VisibleModulesProvider] = {
-    GhcModiVisibleModulesProvider.create(psiFile).orElse(
-      GhcModVisibleModulesProvider.create(psiFile)
-    )
+    HsDevVisibleModulesProvider.create(psiFile)
+      .orElse(GhcModiVisibleModulesProvider.create(psiFile))
+      .orElse(GhcModVisibleModulesProvider.create(psiFile))
   }
 }
 
@@ -48,4 +48,22 @@ object GhcModVisibleModulesProvider {
     module <- Option(ModuleUtilCore.findModuleForPsiElement(psiFile))
     workDir <- Option(ExecUtil.guessWorkDir(module))
   } yield new GhcModVisibleModulesProvider(module, workDir)
+}
+
+class HsDevVisibleModulesProvider(
+  hsdev: HsDevExecutor
+) extends VisibleModulesProvider {
+
+  override def getVisibleModules: Array[String] = {
+    hsdev.installedModules.iterator
+      .filter(m => HsDevModuleLocation.exposed(m.id.location).getOrElse(false))
+      .map(_.id.name)
+      .toArray
+  }
+}
+
+object HsDevVisibleModulesProvider {
+  def create(psiFile: PsiFile): Option[HsDevVisibleModulesProvider] = {
+    HsDevExecutor.get(psiFile).map(new HsDevVisibleModulesProvider(_))
+  }
 }
