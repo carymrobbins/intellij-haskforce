@@ -55,6 +55,22 @@ class HsDevExecutor private(
     }
   }
 
+  def symbols: Map[String, Vector[HsDevSymbol]] = {
+    cache.symbols.getOrElse {
+      installedModules match {
+        case ms if ms.isEmpty => Map.empty
+        case ms =>
+          val res =
+            ms.iterator
+              .flatMap(_.exports)
+              .toVector
+              .groupBy(_.id.name)
+          cache.symbols = Some(res)
+          res
+      }
+    }
+  }
+
   def checkContents(file: PsiFile): Vector[HsDevNote[HsDevOutputMessage]] = {
     // hsdev expects a json argument for contents; e.g.
     // {"file": "path/to/file.hs", "contents": "module ..."}
