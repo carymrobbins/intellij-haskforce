@@ -147,7 +147,7 @@ object HsDevFileSource {
 
 final case class HsDevModule(
   id: HsDevModuleId,
-  exports: List[HsDevModuleExport]
+  exports: List[HsDevSymbol]
 )
 
 object HsDevModule {
@@ -225,18 +225,100 @@ final case class HsDevLibrary(
 //   `other-modules`: List[List[String]]
 // )
 
-final case class HsDevModuleExport(
-  id: HsDevModuleExportId,
-  docs: String,
-  info: HsDevModuleExportInfo
+final case class HsDevSymbol(
+  id: HsDevSymbolId,
+  docs: Option[String],
+  position: Option[HsDevPosition],
+  info: HsDevSymbolInfo
 )
 
-final case class HsDevModuleExportInfo(
-  what: String,
-  `type`: String
-)
+// https://hackage.haskell.org/package/hsdev-0.3.3.6/docs/HsDev-Symbols-Types.html#t:SymbolInfo
+sealed trait HsDevSymbolInfo
+object HsDevSymbolInfo {
 
-final case class HsDevModuleExportId(
+  def getType(s: HsDevSymbolInfo): Option[String] = s match {
+    case x: function => x.`type`
+    case x: method => x.`type`
+    case x: selector => x.`type`
+    case x: ctor => Some(x.`type`)
+    case _: `type` => None
+    case _: newtype => None
+    case _: data => None
+    case _: `class` => None
+    case _: `type-family` => None
+    case _: `data-family` => None
+    case _: `pat-ctor` => None
+    case x: `pat-selector` => None // TODO: Should we get .`type` here?
+  }
+
+  final case class function(
+    `type`: Option[String]
+  ) extends HsDevSymbolInfo
+
+  final case class method(
+    `type`: Option[String],
+    `class`: String
+  ) extends HsDevSymbolInfo
+
+  final case class selector(
+    `type`: Option[String],
+    parent: String, // a type
+    constructors: List[String]
+  ) extends HsDevSymbolInfo
+
+  final case class ctor(
+    args: List[String],
+    `type`: String // parent type
+  ) extends HsDevSymbolInfo
+
+  final case class `type`(
+    args: List[String],
+    ctx: List[String]
+  ) extends HsDevSymbolInfo
+
+  final case class newtype(
+    args: List[String],
+    ctx: List[String]
+  ) extends HsDevSymbolInfo
+
+  final case class data(
+    args: List[String],
+    ctx: List[String]
+  ) extends HsDevSymbolInfo
+
+  final case class `class`(
+    args: List[String],
+    ctx: List[String]
+  ) extends HsDevSymbolInfo
+
+  final case class `type-family`(
+    args: List[String],
+    ctx: List[String],
+    associate: Option[String]
+  ) extends HsDevSymbolInfo
+
+  final case class `data-family`(
+    args: List[String],
+    ctx: List[String],
+    associate: Option[String]
+  ) extends HsDevSymbolInfo
+
+  final case class `pat-ctor`(
+    args: List[String],
+    `pat-type`: Option[String]
+  ) extends HsDevSymbolInfo
+
+  final case class `pat-selector`(
+    `type`: List[String], // TODO: is this right? or is it Option[String] ?
+    `pat-type`: Option[String],
+    constructor: String
+  ) extends HsDevSymbolInfo
+
+  implicit val jsonCodec: JsonValueCodec[HsDevSymbolInfo] =
+    JsonCodecMaker.make(CodecMakerConfig.withDiscriminatorFieldName(Some("what")))
+}
+
+final case class HsDevSymbolId(
   name: String,
   module: HsDevModuleId
 )

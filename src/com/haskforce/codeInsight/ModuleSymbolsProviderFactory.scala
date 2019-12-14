@@ -1,9 +1,8 @@
 package com.haskforce.codeInsight
 
 import com.intellij.psi.PsiFile
-
 import com.haskforce.highlighting.annotation.external.GhcModi
-import com.haskforce.highlighting.annotation.external.hsdev.HsDevExecutor
+import com.haskforce.highlighting.annotation.external.hsdev.{HsDevExecutor, HsDevSymbolInfo}
 
 object ModuleSymbolsProviderFactory {
   def get(psiFile: PsiFile): Option[ModuleSymbolsProvider] = {
@@ -40,7 +39,11 @@ class HsDevModuleSymbolsProvider(
       case None => Array.empty
       case Some(m) =>
         m.exports.iterator.map(e =>
-          BrowseItem(e.id.name, e.id.module.name, e.info.`type`)
+          BrowseItem(
+            name = e.id.name,
+            module = e.id.module.name,
+            typ = HsDevSymbolInfo.getType(e.info).getOrElse("")
+          )
         ).toArray
     }
   }
