@@ -5,6 +5,7 @@ import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicInteger
 
 import com.github.plokhotnyuk.jsoniter_scala.{core => Jsoniter}
+import com.haskforce.highlighting.annotation.external.hsdev
 import com.haskforce.settings.ToolKey
 import com.haskforce.ui.tools.HaskellToolsConsole
 import com.haskforce.utils.ExecUtil
@@ -89,7 +90,8 @@ class HsDevExecutor private(
 
   private def renderCli(cli: GeneralCommandLine): String = {
     cli.getCommandLineString match {
-      case s if s.length > 203 => s.substring(0, 200) + "..."
+      case s if !HsDevExecutor.VERBOSE && s.length > 203 =>
+        s.substring(0, 200) + "..."
       case s => s
     }
   }
@@ -175,39 +177,42 @@ class HsDevExecutor private(
     runWithOptionalTimeout(ToolKey.HSDEV.COMMAND_TIMEOUT_SECONDS.getValue(props), () => {
       val proc = cli.createProcess()
 
-      // TODO: Make verbose logging of JSON payloads configurable as this is very inefficient
-      val stdoutBytes = IOUtils.toByteArray(proc.getInputStream)
-      val stdoutString = new String(stdoutBytes, StandardCharsets.UTF_8)
-      toolsConsole.writeOutput(s"hsdev $commandId: $stdoutString")
-      val stdoutStream = new ByteArrayInputStream(stdoutBytes)
+      val stream = {
+        if (!HsDevExecutor.VERBOSE) {
+          proc.getInputStream
+        } else {
+          val stdoutBytes = IOUtils.toByteArray(proc.getInputStream)
+          val stdoutString = new String(stdoutBytes, StandardCharsets.UTF_8)
+          toolsConsole.writeOutput(s"hsdev $commandId: $stdoutString")
+          new ByteArrayInputStream(stdoutBytes)
+        }
+      }
 
-      HsDevData.fromJSONArrayStream[A](stdoutStream) match {
+      HsDevData.fromJSONArrayStream[A](stream) match {
         case Left(e) =>
           e.error match {
             case Right(_: HsDevError.NotInspected) if !scanned =>
               toolsConsole.writeOutput(s"hsdev $commandId: command requires scan: $e")
-              // TODO: This is ugly and unreadable
-              Right(Left(()))
+              HsDevExecutor.ExecResult.RequiresScan
             case _ =>
               toolsConsole.writeError(s"hsdev $commandId: error: $e")
-              Left(())
+              HsDevExecutor.ExecResult.Error(e)
           }
         case Right(res) =>
+          toolsConsole.writeOutput(s"hsdev $commandId: ${res.length} rows returned")
           res.zipWithIndex.foreach { case (x, i) =>
             toolsConsole.writeOutput(s"hsdev $commandId: row $i:\t$x")
           }
-          // TODO: This is ugly and unreadable
-          Right(Right(res))
+          HsDevExecutor.ExecResult.Ok(res)
       }
     }).getOrElse {
       toolsConsole.writeError(s"hsdev $commandId: command killed due to configured timeout")
-      Left(())
+      HsDevExecutor.ExecResult.TimedOut
     } match {
-      case Left(()) => Left(())
-      // TODO: This is ugly and unreadable
-      case Right(Right(res)) => Right(res)
-      // TODO: This is ugly and unreadable
-      case Right(Left(())) =>
+      case HsDevExecutor.ExecResult.TimedOut => Left(())
+      case HsDevExecutor.ExecResult.Error(e) => Left(())
+      case HsDevExecutor.ExecResult.Ok(res) => Right(res)
+      case HsDevExecutor.ExecResult.RequiresScan =>
         scan().flatMap { case () =>
           execWithScan(scanned = true, command, args: _*)
         }
@@ -240,6 +245,10 @@ class HsDevExecutor private(
 }
 
 object HsDevExecutor {
+
+  private val VERBOSE: Boolean =
+    java.lang.Boolean.getBoolean("com.haskforce.tools.hsdev.verbose")
+
   def get(element: PsiElement): Option[HsDevExecutor] = {
     val project = element.getProject
     for {
@@ -274,6 +283,14 @@ object HsDevExecutor {
         toolsConsole.writeError(text)
       }
     }
+  }
+
+  private sealed trait ExecResult[+A]
+  private object ExecResult {
+    case object RequiresScan extends ExecResult[Nothing]
+    case object TimedOut extends ExecResult[Nothing]
+    final case class Error(e: HsDevDataException) extends ExecResult[Nothing]
+    final case class Ok[A](value: Vector[A]) extends ExecResult[A]
   }
 
   private val commandCounter = new AtomicInteger()
