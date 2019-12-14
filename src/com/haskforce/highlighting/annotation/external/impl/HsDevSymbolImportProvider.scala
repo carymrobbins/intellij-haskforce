@@ -16,6 +16,8 @@ class HsDevSymbolImportProvider private(
           symbolText = s.id.name
         )
       )
+      .distinct
+      .sortBy(_.importText)
   }
 }
 

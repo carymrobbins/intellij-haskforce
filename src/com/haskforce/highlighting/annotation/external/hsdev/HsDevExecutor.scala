@@ -5,7 +5,6 @@ import java.nio.charset.StandardCharsets
 import java.util.concurrent.atomic.AtomicInteger
 
 import com.github.plokhotnyuk.jsoniter_scala.{core => Jsoniter}
-import com.haskforce.highlighting.annotation.external.hsdev
 import com.haskforce.settings.ToolKey
 import com.haskforce.ui.tools.HaskellToolsConsole
 import com.haskforce.utils.ExecUtil
