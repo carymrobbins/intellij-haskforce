@@ -437,6 +437,16 @@
             description="Finds Cabal packages in your project and imports them as Haskell modules.">
       <add-to-group group-id="ToolsMenu" anchor="first"/>
     </action>
+    <action class="com.haskforce.ui.status.HsDevRestartServerAction"
+            text="Restart HsDev Server"
+            description="Restarts the currently running HsDev server">
+      <add-to-group group-id="ToolsMenu"/>
+    </action>
+    <action class="com.haskforce.ui.status.HsDevToggleEnabledAction"
+            text="Toggle HsDev On/Off"
+            description="Enable or disable HsDev integration">
+      <add-to-group group-id="ToolsMenu"/>
+    </action>
   </actions>
 
   <extensions defaultExtensionNs="com.intellij">
@@ -579,6 +589,9 @@
         implementation="com.haskforce.importWizard.stack.StackProjectImportProvider"/>
     <projectImportBuilder
         implementation="com.haskforce.importWizard.stack.StackProjectImportBuilder"/>
+
+    <statusBarWidgetProvider
+      implementation="com.haskforce.ui.status.HaskForceStatusBarIconProvider"/>
 
     <!-- External builder support -->
     <!-- Note that the classpath is needed for plugin deployment to export a zip archive. -->
