@@ -7,10 +7,10 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.project.Project
 import com.intellij.ui.{JBColor, TextAccessor}
-import javax.swing.{JButton, JCheckBox, JComponent, JTextField}
+import javax.swing.{JButton, JCheckBox, JComponent, JLabel, JTextField}
 
 final class HaskellToolsConfigurable(
-  project: Project,
+  project: Project
 ) extends HaskellToolsConfigurableBase {
 
   import HaskellToolsConfigurable._
@@ -44,6 +44,19 @@ final class HaskellToolsConfigurable(
       autoFindButton = hlintAutoFind
     ),
 
+    // hindent
+    new Tool(
+      props,
+      command = "hindent",
+      pathProperty = new ToolPathField(
+        props, ToolKey.HINDENT.PATH, hindentPath, hindentVersion
+      ),
+      flagsProperty = new PropertyTextField(
+        props, ToolKey.HINDENT.FLAGS, hindentFlags
+      ),
+      autoFindButton = hindentAutoFind
+    ),
+
     // hsdev
     new Tool(
       props,
@@ -58,7 +71,43 @@ final class HaskellToolsConfigurable(
       ),
       autoFindButton = hsdevAutoFind,
       extraPropertyFields = List(
+        new PropertyCheckBox(props, ToolKey.HSDEV.ENABLED, hsdevEnabled),
+        new TypedPropertyField(props, ToolKey.HSDEV.PORT, hsdevPort),
+        new PropertyCheckBox(props, ToolKey.HSDEV.SPAWN_SERVER, hsdevSpawnServer),
+        new TypedPropertyField(props, ToolKey.HSDEV.SCAN_TIMEOUT_SECONDS, hsdevScanTimeout),
+        new TypedPropertyField(props, ToolKey.HSDEV.COMMAND_TIMEOUT_SECONDS, hsdevCommandTimeout)
+      )
+    ),
 
+    // ghc-mod
+    new Tool(
+      props,
+      command = "ghc-mod",
+      pathProperty = new ToolPathField(
+        props, ToolKey.GHC_MOD.PATH, ghcModPath, ghcModVersion,
+        versionCliArgs = List("version")
+      ),
+      flagsProperty = new PropertyTextField(
+        props, ToolKey.GHC_MOD.FLAGS, ghcModFlags
+      ),
+      autoFindButton = ghcModAutoFind,
+    ),
+
+    // ghc-modi
+    new Tool(
+      props,
+      command = "ghc-modi",
+      pathProperty = new ToolPathField(
+        props, ToolKey.GHC_MODI.PATH, ghcModiPath, ghcModiVersion,
+        versionCliArgs = List("version")
+      ),
+      flagsProperty = new PropertyTextField(
+        props, ToolKey.GHC_MODI.FLAGS, ghcModiFlags
+      ),
+      autoFindButton = ghcModiAutoFind,
+      extraPropertyFields = List(
+        new TypedPropertyField(props, ToolKey.GHC_MODI.RESPONSE_TIMEOUT_MS, ghcModiResponseTimeout),
+        new TypedPropertyField(props, ToolKey.GHC_MODI.KILL_IDLE_TIMEOUT_MS, ghcModiKillIdleTimeout)
       )
     )
   )
@@ -79,8 +128,22 @@ final class HaskellToolsConfigurable(
   @throws[ConfigurationException]
   override def apply(): Unit = {
     tools.foreach(_.validate())
+    ghcModLegacyInteractivePreSaveHook()
     tools.foreach(_.updateVersion())
     tools.foreach(_.saveState())
+  }
+
+  // Infer ghc-modi configuration from ghc-mod.
+  private def ghcModLegacyInteractivePreSaveHook(): Unit = {
+    if (ghcModiPath.getText.nonEmpty) return
+    ghcModiPath.setText(ghcModPath.getText)
+    if (!ghcModiFlags.getText.contains("legacy-interactive")) {
+      ghcModiFlags.setText("legacy-interactive")
+    } else {
+      ghcModiFlags.setText(
+        List(ghcModiFlags.getText, "legacy-interactive").mkString(" ")
+      )
+    }
   }
 }
 
@@ -197,6 +260,8 @@ object HaskellToolsConfigurable {
   ) extends Property with Versioned {
 
     private[this] var oldValue: String = props.getValue(toolKey.name)
+    field.setText(oldValue)
+    updateVersion()
 
     override def isModified: Boolean = {
       field.getText != oldValue
