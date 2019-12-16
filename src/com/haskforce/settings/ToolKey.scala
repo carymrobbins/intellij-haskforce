@@ -83,7 +83,8 @@ class CodecToolKeyWithDefault[A : TypeTag](
   with ToolKey.Decoder[A] {
 
   override def getValue(props: PropertiesComponent): A = {
-    val rawValue: Option[String] = Option(props.getValue(name))
+    // Consider empty strings the same as null.
+    val rawValue = Option(props.getValue(name)).filter(_.nonEmpty)
     rawValue.map(parseString) match {
       case None => getDefault(props)
       case Some(Right(a)) => a
