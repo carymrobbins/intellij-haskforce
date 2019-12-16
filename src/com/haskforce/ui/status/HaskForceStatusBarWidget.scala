@@ -5,12 +5,14 @@ import java.awt.event.MouseEvent
 
 import com.haskforce.HaskellIcons
 import com.haskforce.highlighting.annotation.external.hsdev.HsDevProjectComponent
-import com.haskforce.settings.ToolKey
+import com.haskforce.settings.{HaskellToolsConfigurable, ToolKey}
 import com.intellij.ide.DataManager
 import com.intellij.ide.plugins.PluginManager
 import com.intellij.ide.util.PropertiesComponent
-import com.intellij.openapi.actionSystem.{ActionManager, AnActionEvent, DataContext, DefaultActionGroup, PlatformDataKeys}
+import com.intellij.openapi.actionSystem._
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.extensions.PluginId
+import com.intellij.openapi.options.ShowSettingsUtil
 import com.intellij.openapi.project.{DumbAwareAction, DumbAwareToggleAction, Project}
 import com.intellij.openapi.ui.popup.{JBPopupFactory, ListPopup}
 import com.intellij.openapi.wm.{StatusBar, StatusBarWidget, StatusBarWidgetProvider}
@@ -18,17 +20,24 @@ import com.intellij.ui.awt.RelativePoint
 import com.intellij.util.Consumer
 import javax.swing.{Icon, SwingConstants}
 
+import scala.reflect.{ClassTag, classTag}
+
 class HaskForceStatusBarIconProvider extends StatusBarWidgetProvider {
   override def getWidget(project: Project): StatusBarWidget = {
     HaskForceStatusBarWidget
   }
 }
 
-object HaskForceStatusBarWidget extends StatusBarWidget with StatusBarWidget.IconPresentation {
+case object HaskForceStatusBarWidget
+  extends StatusBarWidget
+  with StatusBarWidget.IconPresentation {
+
+  private val LOG = Logger.getInstance(getClass)
 
   private var statusBar: Option[StatusBar] = None
 
-  override def ID(): String = "HaskellStatusBarWidget"
+  // Uses the `toString` derived from `case object`
+  override def ID(): String = toString
 
   override def getPresentation(
     typ: StatusBarWidget.PlatformType
@@ -67,7 +76,7 @@ object HaskForceStatusBarWidget extends StatusBarWidget with StatusBarWidget.Ico
             TITLE, actions, dataContext,
             JBPopupFactory.ActionSelectionAid.SPEEDSEARCH,
             false,
-            Actions.actionPlace
+            HaskForceStatusBarWidget.ID()
           )
       popup.setAdText(s"Version $pluginVersion", SwingConstants.CENTER)
       popup
@@ -80,25 +89,51 @@ object HaskForceStatusBarWidget extends StatusBarWidget with StatusBarWidget.Ico
     }
 
     private def buildActions(dataContext: DataContext): DefaultActionGroup = {
-      val optProject = Option(dataContext.getData(PlatformDataKeys.PROJECT_CONTEXT))
+      val optProject = Option(dataContext.getData(CommonDataKeys.PROJECT))
       val optHsDevProjectComponent = optProject.flatMap(HsDevProjectComponent.get)
       val actions = new DefaultActionGroup
       actions.setPopup(true)
+      val manager = ActionManager.getInstance()
+
+      // Assumes the action id is the canonical class name by convention.
+      def getAction[A : ClassTag]: AnAction = {
+        manager.getAction(classTag[A].runtimeClass.getCanonicalName)
+      }
+
+      actions.add(getAction[ConfigureHaskellToolsAction])
       optHsDevProjectComponent.foreach { _ =>
-        val manager = ActionManager.getInstance()
-        actions.add(manager.getAction(classOf[HsDevToggleEnabledAction].getCanonicalName))
-        actions.add(manager.getAction(classOf[HsDevRestartServerAction].getCanonicalName))
+        actions.addSeparator("HsDev")
+        actions.add(getAction[HsDevToggleEnabledAction])
+        actions.add(getAction[HsDevRestartServerAction])
       }
       actions
     }
   }
+}
 
-  private object Actions {
-    val actionPlace = "HaskForceActionsPopup"
+class ConfigureHaskellToolsAction extends DumbAwareAction {
+  override def actionPerformed(e: AnActionEvent): Unit = {
+    ShowSettingsUtil.getInstance.showSettingsDialog(
+      e.getProject,
+      HaskellToolsConfigurable.HASKELL_TOOLS_ID
+    )
   }
 }
 
 class HsDevToggleEnabledAction extends DumbAwareToggleAction {
+
+  override def update(e: AnActionEvent): Unit = {
+    e.getPresentation.setText(
+      e.getPlace match {
+        // Displayed in the status icon menu.
+        case s if s == HaskForceStatusBarWidget.ID() =>
+          if (isSelected(e)) "Enabled" else "Enable"
+        // Displayed in the top menu.
+        case _ =>
+          "Enable HsDev"
+      }
+    )
+  }
 
   override def isSelected(e: AnActionEvent): Boolean = {
     ToolKey.HSDEV.ENABLED.getValue(PropertiesComponent.getInstance(e.getProject))

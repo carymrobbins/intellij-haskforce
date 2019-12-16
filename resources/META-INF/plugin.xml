@@ -437,6 +437,12 @@
             description="Finds Cabal packages in your project and imports them as Haskell modules.">
       <add-to-group group-id="ToolsMenu" anchor="first"/>
     </action>
+    <action id="com.haskforce.ui.status.ConfigureHaskellToolsAction"
+            class="com.haskforce.ui.status.ConfigureHaskellToolsAction"
+            text="Configure Haskell Tools"
+            description="Configure external tools used by HaskForce for improved Haskell language support"
+            >
+    </action>
     <action id="com.haskforce.ui.status.HsDevRestartServerAction"
             class="com.haskforce.ui.status.HsDevRestartServerAction"
             text="Restart HsDev Server"
