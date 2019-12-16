@@ -90,18 +90,15 @@ case object HaskForceStatusBarWidget
 
     private def buildActions(dataContext: DataContext): DefaultActionGroup = {
       val optProject = Option(dataContext.getData(CommonDataKeys.PROJECT))
-      val optHsDevProjectComponent = optProject.flatMap(HsDevProjectComponent.get)
       val actions = new DefaultActionGroup
       actions.setPopup(true)
       val manager = ActionManager.getInstance()
-
       // Assumes the action id is the canonical class name by convention.
       def getAction[A : ClassTag]: AnAction = {
         manager.getAction(classTag[A].runtimeClass.getCanonicalName)
       }
-
       actions.add(getAction[ConfigureHaskellToolsAction])
-      optHsDevProjectComponent.foreach { _ =>
+      if (optProject.flatMap(HsDevProjectComponent.get).exists(_.isConfigured)) {
         actions.addSeparator("HsDev")
         actions.add(getAction[HsDevToggleEnabledAction])
         actions.add(getAction[HsDevRestartServerAction])
@@ -116,6 +113,17 @@ class ConfigureHaskellToolsAction extends DumbAwareAction {
     ShowSettingsUtil.getInstance.showSettingsDialog(
       e.getProject,
       HaskellToolsConfigurable.HASKELL_TOOLS_ID
+    )
+  }
+
+  override def update(e: AnActionEvent): Unit = {
+    e.getPresentation.setText(
+      e.getPlace match {
+        // Displayed in the status icon menu.
+        case s if s == HaskForceStatusBarWidget.ID() => "Configure Tools"
+        // Otherwise (although it really shouldn't be enabled elsewhere.
+        case _ => "Configure Haskell Tools"
+      }
     )
   }
 }
@@ -138,12 +146,12 @@ class HsDevToggleEnabledAction extends DumbAwareToggleAction {
     ToolKey.HSDEV.ENABLED.getValue(PropertiesComponent.getInstance(e.getProject))
   }
 
-  override def setSelected(e: AnActionEvent, state: Boolean): Unit = {
+  override def setSelected(e: AnActionEvent, enable: Boolean): Unit = {
     ToolKey.HSDEV.ENABLED.setValue(
       PropertiesComponent.getInstance(e.getProject),
-      state
+      enable
     )
-    if (state) {
+    if (enable) {
       HsDevProjectComponent.get(e.getProject).foreach(_.restart())
     } else {
       HsDevProjectComponent.get(e.getProject).foreach(_.kill())

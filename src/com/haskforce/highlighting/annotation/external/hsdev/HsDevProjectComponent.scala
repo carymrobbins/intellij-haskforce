@@ -16,6 +16,8 @@ class HsDevProjectComponent(
 
   def getExeSettings: Option[HsDevExeSettings] = exeSettings
 
+  def isConfigured: Boolean = exeSettings.isDefined
+
   private [this] var exeSettings: Option[HsDevExeSettings] =
     HsDevExeSettings.get(project)
 
