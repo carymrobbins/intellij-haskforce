@@ -32,7 +32,7 @@ object HaskForceStatusBarWidget extends StatusBarWidget with StatusBarWidget.Ico
 
   override def getPresentation(
     typ: StatusBarWidget.PlatformType
-  ): StatusBarWidget.WidgetPresentation = null
+  ): StatusBarWidget.WidgetPresentation = this
 
   override def install(statusBar: StatusBar): Unit = {
     this.statusBar = Some(statusBar)
@@ -86,8 +86,8 @@ object HaskForceStatusBarWidget extends StatusBarWidget with StatusBarWidget.Ico
       actions.setPopup(true)
       optHsDevProjectComponent.foreach { _ =>
         val manager = ActionManager.getInstance()
-        actions.add(manager.getAction("HsDevToggleEnabledAction"))
-        actions.add(manager.getAction("HsDevRestartServerAction"))
+        actions.add(manager.getAction(classOf[HsDevToggleEnabledAction].getCanonicalName))
+        actions.add(manager.getAction(classOf[HsDevRestartServerAction].getCanonicalName))
       }
       actions
     }
@@ -99,6 +99,7 @@ object HaskForceStatusBarWidget extends StatusBarWidget with StatusBarWidget.Ico
 }
 
 class HsDevToggleEnabledAction extends DumbAwareToggleAction {
+
   override def isSelected(e: AnActionEvent): Boolean = {
     ToolKey.HSDEV.ENABLED.getValue(PropertiesComponent.getInstance(e.getProject))
   }

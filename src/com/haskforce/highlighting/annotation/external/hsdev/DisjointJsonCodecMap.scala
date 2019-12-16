@@ -4,11 +4,10 @@ import com.github.plokhotnyuk.jsoniter_scala.core.{JsonReader, JsonReaderExcepti
 import com.haskforce.highlighting.annotation.external.hsdev
 
 import scala.collection.immutable.ListMap
-import scala.reflect.{ClassTag, classTag}
-import scala.util.control.NonFatal
+import scala.reflect.runtime.universe.{TypeTag, typeTag, typeOf}
 
-final class DisjointJsonCodecMap[A <: AnyRef : ClassTag] private (
-  val toMap: ListMap[Class[_], JsonValueCodec[_]]
+final class DisjointJsonCodecMap[A <: AnyRef : TypeTag] private (
+  val toMap: ListMap[TypeTag[_], JsonValueCodec[_]]
 ) {
   override def toString: String = toMap.toString
 
@@ -19,7 +18,7 @@ final class DisjointJsonCodecMap[A <: AnyRef : ClassTag] private (
 
 object DisjointJsonCodecMap {
 
-  def apply[A <: AnyRef : ClassTag](
+  def apply[A <: AnyRef : TypeTag](
     kvs: KeyValue[_ <: A]*
   ): DisjointJsonCodecMap[A] = {
     new DisjointJsonCodecMap[A](ListMap(kvs.map(_.get): _*))
@@ -27,17 +26,17 @@ object DisjointJsonCodecMap {
 
   // Ensures that the class and the codec types match.
   final case class KeyValue[A <: AnyRef](
-    get: (Class[A], JsonValueCodec[A])
+    get: (TypeTag[A], JsonValueCodec[A])
   ) extends AnyVal
 
-  implicit def toKeyValue[A <: AnyRef : ClassTag](
+  implicit def toKeyValue[A <: AnyRef : TypeTag](
     codec: JsonValueCodec[A]
   ): KeyValue[A] = new KeyValue[A]((
-    classTag[A].runtimeClass.asInstanceOf[Class[A]],
+    typeTag[A],
     codec
   ))
 
-  class Codec[A <: AnyRef : ClassTag](
+  class Codec[A <: AnyRef : TypeTag](
     codecMap: DisjointJsonCodecMap[A]
   ) extends JsonValueCodec[A] {
 
@@ -57,13 +56,13 @@ object DisjointJsonCodecMap {
         in.rollbackToMark()
       }
       in.decodeError(
-        s"All codecs failed to decode ${classTag[A].runtimeClass}; " +
+        s"All codecs failed to decode ${typeOf[A]}; " +
           s"codecs were: $codecMap"
       )
     }
 
     override def encodeValue(x: A, out: JsonWriter): Unit = {
-      codecMap.toMap.get(x.getClass) match {
+      codecMap.toMap.get(typeTag[A]) match {
         case Some(codec) =>
           codec.asInstanceOf[JsonValueCodec[A]].encodeValue(x, out)
         case None =>

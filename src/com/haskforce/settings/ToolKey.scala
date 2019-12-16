@@ -5,7 +5,7 @@ import com.intellij.ide.util.PropertiesComponent
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.Logger
 
-import scala.reflect.{ClassTag, classTag}
+import scala.reflect.runtime.universe.{TypeTag, typeOf}
 import scala.util.control.NonFatal
 
 trait ToolKey[A] {
@@ -62,7 +62,7 @@ final case class LongToolKeyWithDefault(
   def setLong(props: PropertiesComponent, a: Long): Unit = setValue(props, a)
 }
 
-class CodecToolKey[A : ClassTag](
+class CodecToolKey[A : TypeTag](
   decodeOrThrow: String => A,
   encode: A => String,
   name: String
@@ -73,7 +73,7 @@ class CodecToolKey[A : ClassTag](
   _ => None
 )
 
-class CodecToolKeyWithDefault[A : ClassTag](
+class CodecToolKeyWithDefault[A : TypeTag](
   val decodeOrThrow: String => A,
   val encode: A => String,
   val name: String,
@@ -83,12 +83,14 @@ class CodecToolKeyWithDefault[A : ClassTag](
   with ToolKey.Decoder[A] {
 
   override def getValue(props: PropertiesComponent): A = {
-    Option(props.getValue(name)).map(parseString) match {
+    val rawValue: Option[String] = Option(props.getValue(name))
+    rawValue.map(parseString) match {
       case None => getDefault(props)
       case Some(Right(a)) => a
       case Some(Left(e)) =>
         val d = getDefault(props)
-        val message = s"Failed to parse property $name as ${classTag[A].runtimeClass}, using default: $d"
+        val input = rawValue.fold("null")(s => s""""$s"""")
+        val message = s"Failed to parse property $name as ${typeOf[A]}, using default: $d; input was $input"
         ToolKey.LOG.warn(message, e)
         NotificationUtil.displaySimpleNotification(NotificationType.WARNING, null, "Configuration", message)
         d
