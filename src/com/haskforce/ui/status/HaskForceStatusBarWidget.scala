@@ -129,8 +129,7 @@ class HsDevToggleEnabledAction extends DumbAwareToggleAction {
         case s if s == HaskForceStatusBarWidget.ID() =>
           if (isSelected(e)) "Enabled" else "Enable"
         // Displayed in the top menu.
-        case _ =>
-          "Enable HsDev"
+        case _ => "Enable HsDev"
       }
     )
   }
@@ -153,7 +152,19 @@ class HsDevToggleEnabledAction extends DumbAwareToggleAction {
 }
 
 class HsDevRestartServerAction extends DumbAwareAction {
+
   override def actionPerformed(e: AnActionEvent): Unit = {
     HsDevProjectComponent.get(e.getProject).foreach(_.restart())
+  }
+
+  override def update(e: AnActionEvent): Unit = {
+    e.getPresentation.setText(
+      e.getPlace match {
+        // Displayed in the status icon menu.
+        case s if s == HaskForceStatusBarWidget.ID() => "Restart Server"
+        // Displayed in the top menu.
+        case _ => "Restart HsDev server"
+      }
+    )
   }
 }
