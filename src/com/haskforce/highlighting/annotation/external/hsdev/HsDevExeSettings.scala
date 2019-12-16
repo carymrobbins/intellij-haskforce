@@ -7,6 +7,7 @@ import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.project.Project
 
 final case class HsDevExeSettings(
+  enabled: Boolean,
   path: String,
   flags: String,
   stackPath: Option[String]
@@ -42,6 +43,7 @@ object HsDevExeSettings {
   ): Option[HsDevExeSettings] = {
     toolSettings.path.map { path =>
       HsDevExeSettings(
+        enabled = toolSettings.enabled,
         path = path,
         flags = toolSettings.flags,
         stackPath = stackPath

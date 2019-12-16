@@ -254,6 +254,7 @@ object HsDevExecutor {
       module <- Option(ModuleUtilCore.findModuleForPsiElement(element))
       workPkgDir = ExecUtil.guessWorkDir(module)
       projectComponent <- HsDevProjectComponent.get(project)
+      if projectComponent.isEnabled
       exeSettings <- projectComponent.getExeSettings
       port <- projectComponent.currentPort
       moduleComponent <- HsDevModuleComponent.get(module)
