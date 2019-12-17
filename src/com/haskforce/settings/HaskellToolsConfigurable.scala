@@ -4,6 +4,7 @@ import com.haskforce.utils.{ExecUtil, NotificationUtil}
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.ide.util.PropertiesComponent
 import com.intellij.notification.NotificationType
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.project.Project
 import com.intellij.ui.{JBColor, TextAccessor}
@@ -12,6 +13,8 @@ import javax.swing.{JButton, JCheckBox, JComponent, JTextField}
 final class HaskellToolsConfigurable(
   project: Project
 ) extends HaskellToolsConfigurableBase {
+
+  private val LOG = Logger.getInstance(getClass)
 
   private val props = PropertiesComponent.getInstance(project)
 
@@ -98,12 +101,7 @@ final class HaskellToolsConfigurable(
 
   override def createComponent(): JComponent = mainPanel
 
-  override def isModified: Boolean = {
-    tools.foreach { tool =>
-      if (tool.isModified) return true
-    }
-    false
-  }
+  override def isModified: Boolean = tools.exists(_.isModified)
 
   @throws[ConfigurationException]
   override def apply(): Unit = {
@@ -169,7 +167,7 @@ final class HaskellToolsConfigurable(
     private[this] var oldValue: String = props.getValue(toolKey.name)
     field.setText(oldValue)
 
-    override def isModified: Boolean = field.getText == oldValue
+    override def isModified: Boolean = field.getText != oldValue
 
     override def saveState(): Unit = {
       oldValue = field.getText
@@ -193,17 +191,15 @@ final class HaskellToolsConfigurable(
     field.setInputVerifier { _ =>
       toolKey.parseString(field.getText) match {
         case Left(_) =>
-          field.setBackground(originalBackground)
-          true
-        case Right(_) =>
           field.setBackground(JBColor.RED)
           false
+        case Right(_) =>
+          field.setBackground(originalBackground)
+          true
       }
     }
 
-    override def isModified: Boolean = {
-      field.getText != oldValue
-    }
+    override def isModified: Boolean = field.getText != oldValue
 
     override def saveState(): Unit = {
       oldValue = field.getText
@@ -215,8 +211,11 @@ final class HaskellToolsConfigurable(
     }
 
     override def validate(): Unit = {
+      if (field.getText.isEmpty) return
       toolKey.parseString(field.getText) match {
-        case Left(e) => throw new ConfigurationException(e.getMessage, e, "Haskell tools")
+        case Left(e) =>
+          LOG.warn("Invalid Haskell tools configuration", e)
+          throw new ConfigurationException(e.getMessage, e, "Haskell tools")
         case Right(_) => // noop
       }
     }
@@ -234,9 +233,7 @@ final class HaskellToolsConfigurable(
     field.setText(oldValue)
     updateVersion()
 
-    override def isModified: Boolean = {
-      field.getText != oldValue
-    }
+    override def isModified: Boolean = field.getText != oldValue
 
     override def saveState(): Unit = {
       oldValue = field.getText
@@ -284,12 +281,7 @@ final class HaskellToolsConfigurable(
         :: extraPropertyFields
       )
 
-    override def isModified: Boolean = {
-      allPropertyFields.foreach { x =>
-        if (x.isModified) return true
-      }
-      false
-    }
+    override def isModified: Boolean = allPropertyFields.exists(_.isModified)
 
     override def saveState(): Unit = {
       allPropertyFields.foreach(_.saveState())

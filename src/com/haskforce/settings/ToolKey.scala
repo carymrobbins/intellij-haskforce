@@ -69,10 +69,11 @@ class CodecToolKey[A : TypeTag](
   encode: A => String,
   name: String
 ) extends CodecToolKeyWithDefault[Option[A]](
-  s => Option(decodeOrThrow(s)),
-  _.map(encode).orNull,
-  name,
-  _ => None
+  // Interpret empty strings as None.
+  decodeOrThrow = s => Option(s).filter(_.nonEmpty).map(decodeOrThrow),
+  encode = _.map(encode).orNull,
+  name = name,
+  getDefault = _ => None
 )
 
 class CodecToolKeyWithDefault[A : TypeTag](
