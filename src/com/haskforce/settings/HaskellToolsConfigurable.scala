@@ -7,107 +7,87 @@ import com.intellij.notification.NotificationType
 import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.project.Project
 import com.intellij.ui.{JBColor, TextAccessor}
-import javax.swing.{JButton, JCheckBox, JComponent, JLabel, JTextField}
+import javax.swing.{JButton, JCheckBox, JComponent, JTextField}
 
 final class HaskellToolsConfigurable(
   project: Project
 ) extends HaskellToolsConfigurableBase {
-
-  import HaskellToolsConfigurable._
 
   private val props = PropertiesComponent.getInstance(project)
 
   private val tools: List[Tool] = List(
     // stylish-haskell
     new Tool(
-      props,
+      toolKey = ToolKey.STYLISH_HASKELL,
       command = "stylish-haskell",
-      pathProperty = new ToolPathField(
-        props, ToolKey.STYLISH_HASKELL.PATH, stylishPath, stylishVersion
-      ),
-      flagsProperty = new PropertyTextField(
-        props, ToolKey.STYLISH_HASKELL.FLAGS, stylishFlags
-      ),
+      mkPathProperty = new ToolPathField(_, stylishPath, stylishVersion),
+      flagsField = stylishFlags,
       autoFindButton = stylishAutoFind
     ),
 
     // hlint
     new Tool(
-      props,
+      toolKey = ToolKey.HLINT,
       command = "hlint",
-      pathProperty = new ToolPathField(
-        props, ToolKey.HLINT.PATH, hlintPath, hlintVersion
-      ),
-      flagsProperty = new PropertyTextField(
-        props, ToolKey.HLINT.FLAGS, hlintFlags
-      ),
+      mkPathProperty = new ToolPathField(_, hlintPath, hlintVersion),
+      flagsField = hlintFlags,
       autoFindButton = hlintAutoFind
     ),
 
     // hindent
     new Tool(
-      props,
+      toolKey = ToolKey.HINDENT,
       command = "hindent",
-      pathProperty = new ToolPathField(
-        props, ToolKey.HINDENT.PATH, hindentPath, hindentVersion
-      ),
-      flagsProperty = new PropertyTextField(
-        props, ToolKey.HINDENT.FLAGS, hindentFlags
-      ),
+      mkPathProperty = new ToolPathField(_, hindentPath, hindentVersion),
+      flagsField = hindentFlags,
       autoFindButton = hindentAutoFind
     ),
 
     // hsdev
     new Tool(
-      props,
+      toolKey = ToolKey.HSDEV,
       command = "hsdev",
-      pathProperty = new ToolPathField(
-        props, ToolKey.HSDEV.PATH, hsdevPath, hsdevVersion,
+      mkPathProperty = new ToolPathField(
+        _, hsdevPath, hsdevVersion,
         versionCliArgs = List("version", "--compiler"),
         versionPostProcess = _.replace('\r', ' ').replace('\n', ' ')
       ),
-      flagsProperty = new PropertyTextField(
-        props, ToolKey.HSDEV.FLAGS, hsdevFlags
-      ),
+      flagsField = hsdevFlags,
       autoFindButton = hsdevAutoFind,
       extraPropertyFields = List(
-        new PropertyCheckBox(props, ToolKey.HSDEV.ENABLED, hsdevEnabled),
-        new TypedPropertyField(props, ToolKey.HSDEV.PORT, hsdevPort),
-        new PropertyCheckBox(props, ToolKey.HSDEV.SPAWN_SERVER, hsdevSpawnServer),
-        new TypedPropertyField(props, ToolKey.HSDEV.SCAN_TIMEOUT_SECONDS, hsdevScanTimeout),
-        new TypedPropertyField(props, ToolKey.HSDEV.COMMAND_TIMEOUT_SECONDS, hsdevCommandTimeout)
+        new PropertyCheckBox(ToolKey.HSDEV.ENABLED, hsdevEnabled),
+        new TypedPropertyField(ToolKey.HSDEV.PORT, hsdevPort),
+        new PropertyCheckBox(ToolKey.HSDEV.SPAWN_SERVER, hsdevSpawnServer),
+        new TypedPropertyField(ToolKey.HSDEV.SCAN_TIMEOUT_SECONDS, hsdevScanTimeout),
+        new TypedPropertyField(ToolKey.HSDEV.COMMAND_TIMEOUT_SECONDS, hsdevCommandTimeout)
       )
     ),
 
     // ghc-mod
     new Tool(
-      props,
+      toolKey = ToolKey.GHC_MOD,
       command = "ghc-mod",
-      pathProperty = new ToolPathField(
-        props, ToolKey.GHC_MOD.PATH, ghcModPath, ghcModVersion,
+      mkPathProperty = new ToolPathField(
+        _, ghcModPath, ghcModVersion,
         versionCliArgs = List("version")
       ),
-      flagsProperty = new PropertyTextField(
-        props, ToolKey.GHC_MOD.FLAGS, ghcModFlags
-      ),
+      flagsField = ghcModFlags,
       autoFindButton = ghcModAutoFind,
     ),
 
     // ghc-modi
     new Tool(
-      props,
+      toolKey = ToolKey.GHC_MODI,
       command = "ghc-modi",
-      pathProperty = new ToolPathField(
-        props, ToolKey.GHC_MODI.PATH, ghcModiPath, ghcModiVersion,
+      mkPathProperty = new ToolPathField(
+        _, ghcModiPath, ghcModiVersion,
         versionCliArgs = List("version")
       ),
-      flagsProperty = new PropertyTextField(
-        props, ToolKey.GHC_MODI.FLAGS, ghcModiFlags
-      ),
+      flagsField = ghcModiFlags,
       autoFindButton = ghcModiAutoFind,
       extraPropertyFields = List(
-        new TypedPropertyField(props, ToolKey.GHC_MODI.RESPONSE_TIMEOUT_MS, ghcModiResponseTimeout),
-        new TypedPropertyField(props, ToolKey.GHC_MODI.KILL_IDLE_TIMEOUT_MS, ghcModiKillIdleTimeout)
+        new TypedPropertyField(ToolKey.GHC_MODI.RESPONSE_TIMEOUT_MS, ghcModiResponseTimeout),
+        new TypedPropertyField(ToolKey.GHC_MODI.KILL_IDLE_TIMEOUT_MS, ghcModiKillIdleTimeout)
       )
     )
   )
@@ -145,29 +125,23 @@ final class HaskellToolsConfigurable(
       )
     }
   }
-}
 
-object HaskellToolsConfigurable {
-
-  val HASKELL_TOOLS_ID = "Haskell Tools"
-
-  trait Property {
+  private trait Property {
     def isModified: Boolean
     def saveState(): Unit
     def restoreState(): Unit
   }
 
-  trait Versioned {
+  private trait Versioned {
     def updateVersion(): Unit
   }
 
-  trait Validatable {
+  private trait Validatable {
     @throws[ConfigurationException]
     def validate(): Unit
   }
 
-  class PropertyCheckBox(
-    props: PropertiesComponent,
+  private class PropertyCheckBox(
     toolKey: BooleanToolKeyWithDefault,
     field: JCheckBox
   ) extends Property {
@@ -187,8 +161,7 @@ object HaskellToolsConfigurable {
     }
   }
 
-  class PropertyTextField(
-    props: PropertiesComponent,
+  private class PropertyTextField(
     toolKey: ToolKey[String],
     val field: TextAccessor
   ) extends Property {
@@ -208,8 +181,7 @@ object HaskellToolsConfigurable {
     }
   }
 
-  class TypedPropertyField[A](
-    props: PropertiesComponent,
+  private class TypedPropertyField[A](
     toolKey: CodecToolKeyWithDefault[A],
     val field: JComponent with TextAccessor
   ) extends Property with Validatable {
@@ -250,8 +222,7 @@ object HaskellToolsConfigurable {
     }
   }
 
-  class ToolPathField(
-    props: PropertiesComponent,
+  private class ToolPathField(
     toolKey: ToolKey[Option[String]],
     val field: TextAccessor,
     versionField: JTextField,
@@ -294,20 +265,24 @@ object HaskellToolsConfigurable {
     }
   }
 
-  class Tool(
-    props: PropertiesComponent,
+  private class Tool(
+    toolKey: AbstractSimpleToolSettingsKey[_],
     command: String,
-    pathProperty: ToolPathField,
-    flagsProperty: PropertyTextField,
+    mkPathProperty: PathToolKey => ToolPathField,
+    flagsField: TextAccessor,
     autoFindButton: JButton,
     extraPropertyFields: List[Property] = Nil
   ) extends Property with Versioned with Validatable {
 
+    private val pathProperty = mkPathProperty(toolKey.PATH)
+
+    private val flagsProperty = new PropertyTextField(toolKey.FLAGS, flagsField)
+
     private val allPropertyFields: List[Property] = (
-         pathProperty
-      :: flagsProperty
-      :: extraPropertyFields
-    )
+      pathProperty
+        :: flagsProperty
+        :: extraPropertyFields
+      )
 
     override def isModified: Boolean = {
       allPropertyFields.foreach { x =>
@@ -318,6 +293,10 @@ object HaskellToolsConfigurable {
 
     override def saveState(): Unit = {
       allPropertyFields.foreach(_.saveState())
+      toolKey match {
+        case n: ToolKey.NotifyChanged => n.notifyChanged(project)
+        case _ => // skip
+      }
     }
 
     override def restoreState(): Unit = {
@@ -338,4 +317,8 @@ object HaskellToolsConfigurable {
       }
     }
   }
+}
+
+object HaskellToolsConfigurable {
+  val HASKELL_TOOLS_ID = "Haskell Tools"
 }

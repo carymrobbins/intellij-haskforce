@@ -4,6 +4,8 @@ import com.haskforce.utils.NotificationUtil
 import com.intellij.ide.util.PropertiesComponent
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.Logger
+import com.intellij.openapi.project.Project
+import com.intellij.util.messages.Topic
 
 import scala.reflect.runtime.universe.{TypeTag, typeOf}
 import scala.util.control.NonFatal
@@ -156,6 +158,24 @@ object ToolKey {
     def parseString(s: String): Either[Throwable, A]
   }
 
+  trait NotifyChanged {
+    def notifyChanged(project: Project): Unit
+  }
+
+  object NotifyChanged {
+    def of[A, S <: SettingsChangeNotifier[A]](
+      project: Project,
+      topic: Topic[S],
+      toolKey: ToolKey[A]
+    ): Unit = {
+      project.getMessageBus
+        .syncPublisher(topic)
+        .onSettingsChanged(
+          toolKey.getValue(PropertiesComponent.getInstance(project))
+        )
+    }
+  }
+
   val LOG: Logger = Logger.getInstance(ToolKey.getClass)
 
   val STYLISH_HASKELL = SimpleToolSettingsKey("stylishHaskell")
@@ -163,7 +183,10 @@ object ToolKey {
   val HINDENT = SimpleToolSettingsKey("hindent")
   val GHC_MOD = SimpleToolSettingsKey("ghcMod")
 
-  object GHC_MODI extends AbstractSimpleToolSettingsKey[GhcModiToolSettings]("ghcModi") {
+  object GHC_MODI
+    extends AbstractSimpleToolSettingsKey[GhcModiToolSettings]("ghcModi")
+    with NotifyChanged {
+
     val RESPONSE_TIMEOUT_MS = LongToolKeyWithDefault(s"${name}Timeout", _ => 5000) // 5 seconds
     val KILL_IDLE_TIMEOUT_MS = LongToolKeyWithDefault(s"${name}KillIdleTimeout", _ => 600000) // 10 minutes
 
@@ -182,6 +205,10 @@ object ToolKey {
       RESPONSE_TIMEOUT_MS.setValue(props, a.responseTimeoutMS)
       KILL_IDLE_TIMEOUT_MS.setValue(props, a.killIdleTimeoutMS)
     }
+
+    override def notifyChanged(project: Project): Unit = NotifyChanged.of(
+      project, SettingsChangeNotifier.GHC_MODI_TOPIC, this
+    )
   }
 
   final case class GhcModiToolSettings(
@@ -191,7 +218,10 @@ object ToolKey {
     killIdleTimeoutMS: Long
   ) extends SimpleToolSettings
 
-  object HSDEV extends AbstractSimpleToolSettingsKey[HsDevToolSettings]("hsdev") {
+  object HSDEV
+    extends AbstractSimpleToolSettingsKey[HsDevToolSettings]("hsdev")
+    with NotifyChanged {
+
     val ENABLED = BooleanToolKeyWithDefault(s"${name}Enabled", PATH.getValue(_).isDefined)
     val SCAN_TIMEOUT_SECONDS = new CodecToolKey[Long](_.toLong, _.toString, s"${name}ScanTimeout")
     val COMMAND_TIMEOUT_SECONDS = new CodecToolKey[Long](_.toLong, _.toString, s"${name}CommandTimeout")
@@ -219,6 +249,10 @@ object ToolKey {
       PORT.setValue(props, a.port)
       SPAWN_SERVER.setValue(props, a.spawnServer)
     }
+
+    def notifyChanged(project: Project): Unit = NotifyChanged.of(
+      project, SettingsChangeNotifier.HSDEV_TOPIC, this
+    )
   }
 
   final case class HsDevToolSettings(

@@ -60,7 +60,7 @@ public class GhcMod {
             project,
             ToolKey.GHC_MOD().PATH().getValue(
                 PropertiesComponent.getInstance(project)
-            ).getOrElse(null)
+            ).getOrElse(() -> null)
         );
     }
 

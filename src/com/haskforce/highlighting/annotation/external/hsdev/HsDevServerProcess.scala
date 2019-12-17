@@ -20,7 +20,7 @@ class HsDevServerProcess private (
 
   def reload(optParams: Option[HsDevExeSettings]): Unit = {
     kill()
-    optParams.foreach(spawn)
+    optParams.filter(_.enabled).foreach(spawn)
   }
 
   def kill(): Unit = {
