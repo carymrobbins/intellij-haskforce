@@ -90,25 +90,37 @@ case object HaskForceStatusBarWidget
 
     private def buildActions(dataContext: DataContext): DefaultActionGroup = {
       val optProject = Option(dataContext.getData(CommonDataKeys.PROJECT))
-      val actions = new DefaultActionGroup
-      actions.setPopup(true)
+      val root = new DefaultActionGroup
+      root.setPopup(true)
       val manager = ActionManager.getInstance()
       // Assumes the action id is the canonical class name by convention.
       def getAction[A : ClassTag]: AnAction = {
         manager.getAction(classTag[A].runtimeClass.getCanonicalName)
       }
-      actions.add(getAction[ConfigureHaskellToolsAction])
+      root.add(getAction[ConfigureHaskellToolsAction])
       if (optProject.flatMap(HsDevProjectComponent.get).exists(_.isConfigured)) {
-        actions.addSeparator("HsDev")
-        actions.add(getAction[HsDevToggleEnabledAction])
-        actions.add(getAction[HsDevRestartServerAction])
+        val hsdev = new DefaultActionGroup("HsDev", true)
+        hsdev.add(getAction[HsDevToggleEnabledAction])
+        hsdev.add(getAction[HsDevRestartServerAction])
+        root.add(hsdev)
       }
-      actions
+      root
     }
   }
 }
 
-class ConfigureHaskellToolsAction extends DumbAwareAction {
+/** Helper trait to customized action text in menus. */
+trait CustomActionText extends AnAction {
+
+  def getActionText(e: AnActionEvent): String
+
+  override def update(e: AnActionEvent): Unit = {
+    super.update(e)
+    e.getPresentation.setText(getActionText(e))
+  }
+}
+
+class ConfigureHaskellToolsAction extends DumbAwareAction with CustomActionText {
   override def actionPerformed(e: AnActionEvent): Unit = {
     ShowSettingsUtil.getInstance.showSettingsDialog(
       e.getProject,
@@ -116,30 +128,26 @@ class ConfigureHaskellToolsAction extends DumbAwareAction {
     )
   }
 
-  override def update(e: AnActionEvent): Unit = {
-    e.getPresentation.setText(
-      e.getPlace match {
-        // Displayed in the status icon menu.
-        case s if s == HaskForceStatusBarWidget.ID() => "Configure Tools"
-        // Otherwise (although it really shouldn't be enabled elsewhere.
-        case _ => "Configure Haskell Tools"
-      }
-    )
+  override def getActionText(e: AnActionEvent): String = {
+    e.getPlace match {
+      // Displayed in the status icon menu.
+      case s if s == HaskForceStatusBarWidget.ID() => "Configure Tools"
+      // Otherwise (although it really shouldn't be enabled elsewhere.
+      case _ => "Configure Haskell Tools"
+    }
   }
 }
 
-class HsDevToggleEnabledAction extends DumbAwareToggleAction {
+class HsDevToggleEnabledAction extends DumbAwareToggleAction with CustomActionText {
 
-  override def update(e: AnActionEvent): Unit = {
-    e.getPresentation.setText(
-      e.getPlace match {
-        // Displayed in the status icon menu.
-        case s if s == HaskForceStatusBarWidget.ID() =>
-          if (isSelected(e)) "Enabled" else "Enable"
-        // Displayed in the top menu.
-        case _ => "Enable HsDev"
-      }
-    )
+  override def getActionText(e: AnActionEvent): String = {
+    e.getPlace match {
+      // Displayed in the status icon menu.
+      case s if s == HaskForceStatusBarWidget.ID() =>
+        if (isSelected(e)) "Enabled" else "Enable"
+      // Displayed in the top menu.
+      case _ => "Enable HsDev"
+    }
   }
 
   override def isSelected(e: AnActionEvent): Boolean = {
@@ -159,20 +167,18 @@ class HsDevToggleEnabledAction extends DumbAwareToggleAction {
   }
 }
 
-class HsDevRestartServerAction extends DumbAwareAction {
+class HsDevRestartServerAction extends DumbAwareAction with CustomActionText {
 
   override def actionPerformed(e: AnActionEvent): Unit = {
     HsDevProjectComponent.get(e.getProject).foreach(_.restart())
   }
 
-  override def update(e: AnActionEvent): Unit = {
-    e.getPresentation.setText(
-      e.getPlace match {
-        // Displayed in the status icon menu.
-        case s if s == HaskForceStatusBarWidget.ID() => "Restart Server"
-        // Displayed in the top menu.
-        case _ => "Restart HsDev server"
-      }
-    )
+  override def getActionText(e: AnActionEvent): String = {
+    e.getPlace match {
+      // Displayed in the status icon menu.
+      case s if s == HaskForceStatusBarWidget.ID() => "Restart Server"
+      // Displayed in the top menu.
+      case _ => "Restart HsDev server"
+    }
   }
 }
