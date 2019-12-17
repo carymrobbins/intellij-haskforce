@@ -113,6 +113,7 @@ final class HaskellToolsConfigurable(
 
   // Infer ghc-modi configuration from ghc-mod.
   private def ghcModLegacyInteractivePreSaveHook(): Unit = {
+    if (ghcModPath.getText.isEmpty) return
     if (ghcModiPath.getText.nonEmpty) return
     ghcModiPath.setText(ghcModPath.getText)
     if (!ghcModiFlags.getText.contains("legacy-interactive")) {
