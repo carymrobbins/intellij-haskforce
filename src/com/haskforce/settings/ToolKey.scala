@@ -30,13 +30,13 @@ final case class PathToolKey(prefix: String)
   }
 }
 
-final case class FlagsToolKey(prefix: String)
+final case class FlagsToolKey(prefix: String, default: String = "")
   extends ToolKey[String] {
 
   val name = s"${prefix}Flags"
 
   override def getValue(props: PropertiesComponent): String = {
-    Option(props.getValue(name)).getOrElse("")
+    Option(props.getValue(name)).getOrElse(default)
   }
 
   override def setValue(props: PropertiesComponent, a: String): Unit = {
@@ -224,16 +224,27 @@ object ToolKey {
     with NotifyChanged {
 
     val ENABLED = BooleanToolKeyWithDefault(s"${name}Enabled", PATH.getValue(_).isDefined)
+    val SCAN_FLAGS = FlagsToolKey(s"${name}Scan", defaultScanFlags)
     val SCAN_TIMEOUT_SECONDS = new CodecToolKey[Long](_.toLong, _.toString, s"${name}ScanTimeout")
     val COMMAND_TIMEOUT_SECONDS = new CodecToolKey[Long](_.toLong, _.toString, s"${name}CommandTimeout")
     val PORT = new CodecToolKey[Int](_.toInt, _.toString, s"${name}Port")
     val SPAWN_SERVER = BooleanToolKeyWithDefault(s"${name}SpawnServer", _ => true)
+
+    private def defaultScanFlags = List(
+      // By default, it's nice to defer as many errors as possible
+      "-g -fdefer-type-errors",
+      "-g -fdefer-typed-holes",
+      "-g -fdefer-out-of-scope-variables",
+      // Helps to negate a -Werror flag
+      "-g -Wwarn"
+    ).mkString(" ")
 
     override def getValue(props: PropertiesComponent): HsDevToolSettings = {
       HsDevToolSettings(
         path = PATH.getValue(props),
         flags = FLAGS.getValue(props),
         enabled = ENABLED.getValue(props),
+        scanFlags = SCAN_FLAGS.getValue(props),
         scanTimeoutSeconds = SCAN_TIMEOUT_SECONDS.getValue(props),
         commandTimeoutSeconds = SCAN_TIMEOUT_SECONDS.getValue(props),
         port = PORT.getValue(props),
@@ -245,6 +256,7 @@ object ToolKey {
       PATH.setValue(props, a.path)
       FLAGS.setValue(props, a.flags)
       ENABLED.setValue(props, a.enabled)
+      SCAN_FLAGS.setValue(props, a.scanFlags)
       SCAN_TIMEOUT_SECONDS.setValue(props, a.scanTimeoutSeconds)
       COMMAND_TIMEOUT_SECONDS.setValue(props, a.commandTimeoutSeconds)
       PORT.setValue(props, a.port)
@@ -260,6 +272,7 @@ object ToolKey {
     path: Option[String],
     flags: String,
     enabled: Boolean,
+    scanFlags: String,
     scanTimeoutSeconds: Option[Long],
     commandTimeoutSeconds: Option[Long],
     port: Option[Int],

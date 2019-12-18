@@ -6,6 +6,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 import com.github.plokhotnyuk.jsoniter_scala.{core => Jsoniter}
 import com.haskforce.settings.ToolKey
+import com.haskforce.settings.ToolKey.HsDevToolSettings
 import com.haskforce.ui.tools.HaskellToolsConsole
 import com.haskforce.utils.ExecUtil
 import com.intellij.execution.configurations.GeneralCommandLine
@@ -97,10 +98,13 @@ class HsDevExecutor private(
 
   private def scan(): Either[Unit, Unit] = {
     val cli = mkHsdevCli()
-    cli.addParameters("scan", "project", workPkgDir)
+    cli.addParameters("scan", "--project", workPkgDir)
     if (exeSettings.stackPath.isDefined) {
-      cli.addParameter("--stack")
+      cli.addParameters("--tool", "stack")
     }
+    cli.getParametersList.addParametersString(
+      ToolKey.HSDEV.SCAN_FLAGS.getValue(props)
+    )
     val commandId = HsDevExecutor.nextCommandId()
     toolsConsole.writeInput(s"hsdev $commandId: ${renderCli(cli)}")
 

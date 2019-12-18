@@ -30,6 +30,7 @@ public abstract class HaskellToolsConfigurableBase implements SearchableConfigur
     JTextField hsdevVersion;
     JTextAccessorField hsdevPort;
     JCheckBox hsdevSpawnServer;
+    RawCommandLineEditor hsdevScanFlags;
     JTextAccessorField hsdevScanTimeout;
     JTextAccessorField hsdevCommandTimeout;
 

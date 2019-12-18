@@ -61,6 +61,7 @@ final class HaskellToolsConfigurable(
         new PropertyCheckBox(ToolKey.HSDEV.ENABLED, hsdevEnabled),
         new TypedPropertyField(ToolKey.HSDEV.PORT, hsdevPort),
         new PropertyCheckBox(ToolKey.HSDEV.SPAWN_SERVER, hsdevSpawnServer),
+        new PropertyTextField(ToolKey.HSDEV.SCAN_FLAGS, hsdevScanFlags),
         new TypedPropertyField(ToolKey.HSDEV.SCAN_TIMEOUT_SECONDS, hsdevScanTimeout),
         new TypedPropertyField(ToolKey.HSDEV.COMMAND_TIMEOUT_SECONDS, hsdevCommandTimeout)
       )
@@ -165,7 +166,12 @@ final class HaskellToolsConfigurable(
     val field: TextAccessor
   ) extends Property {
 
-    private[this] var oldValue: String = props.getValue(toolKey.name)
+    // For other properties, we use props.getValue directly to get
+    // the string representation. In this case, our ToolKey is already
+    // String, so it's both easier and more correct to use the ToolKey's
+    // getValue. This is particularly useful when the supplied ToolKey
+    // has some implicit default (e.g. ToolKey.HSDEV.SCAN_FLAGS)
+    private[this] var oldValue: String = toolKey.getValue(props)
     field.setText(oldValue)
 
     override def isModified: Boolean = field.getText != oldValue
