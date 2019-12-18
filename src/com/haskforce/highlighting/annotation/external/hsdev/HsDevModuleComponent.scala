@@ -4,7 +4,7 @@ import com.intellij.openapi.module.{Module, ModuleComponent, ModuleUtilCore}
 import com.intellij.psi.PsiElement
 
 class HsDevModuleComponent extends ModuleComponent {
-  val cache = new HsDevCache
+  val cache = HsDevCache()
 }
 
 object HsDevModuleComponent {

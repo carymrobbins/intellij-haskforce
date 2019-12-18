@@ -203,7 +203,8 @@ class HsDevExecutor private(
           }
         case Right(res) =>
           toolsConsole.writeOutput(s"hsdev $commandId: ${res.length} rows returned")
-          res.zipWithIndex.foreach { case (x, i) =>
+          def limit(it: Iterator[A]) = if (HsDevExecutor.VERBOSE) it else it.take(10)
+          limit(res.iterator).zipWithIndex.foreach { case (x, i) =>
             toolsConsole.writeOutput(s"hsdev $commandId: row $i:\t$x")
           }
           HsDevExecutor.ExecResult.Ok(res)
