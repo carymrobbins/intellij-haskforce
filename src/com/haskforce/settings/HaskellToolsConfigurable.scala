@@ -61,7 +61,7 @@ final class HaskellToolsConfigurable(
         new PropertyCheckBox(ToolKey.HSDEV.ENABLED, hsdevEnabled),
         new TypedPropertyField(ToolKey.HSDEV.PORT, hsdevPort),
         new PropertyCheckBox(ToolKey.HSDEV.SPAWN_SERVER, hsdevSpawnServer),
-        new PropertyTextField(ToolKey.HSDEV.SCAN_FLAGS, hsdevScanFlags),
+        new PropertyTextField(ToolKey.HSDEV.GHC_FLAGS, hsdevGhcFlags),
         new TypedPropertyField(ToolKey.HSDEV.SCAN_TIMEOUT_SECONDS, hsdevScanTimeout),
         new TypedPropertyField(ToolKey.HSDEV.COMMAND_TIMEOUT_SECONDS, hsdevCommandTimeout)
       )

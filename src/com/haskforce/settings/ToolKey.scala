@@ -1,6 +1,7 @@
 package com.haskforce.settings
 
 import com.haskforce.utils.NotificationUtil
+import com.intellij.execution.configurations.ParametersList
 import com.intellij.ide.util.PropertiesComponent
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.Logger
@@ -30,7 +31,7 @@ final case class PathToolKey(prefix: String)
   }
 }
 
-final case class FlagsToolKey(prefix: String, default: String = "")
+class FlagsToolKey(val prefix: String, val default: String = "")
   extends ToolKey[String] {
 
   val name = s"${prefix}Flags"
@@ -41,6 +42,10 @@ final case class FlagsToolKey(prefix: String, default: String = "")
 
   override def setValue(props: PropertiesComponent, a: String): Unit = {
     props.setValue(name, a)
+  }
+
+  def getParameterList(props: PropertiesComponent): Array[String] = {
+    ParametersList.parse(getValue(props))
   }
 }
 
@@ -121,7 +126,7 @@ abstract class AbstractSimpleToolSettingsKey[A <: SimpleToolSettings](
   override val name: String
 ) extends ToolKey[A] {
   val PATH = PathToolKey(name)
-  val FLAGS = FlagsToolKey(name)
+  val FLAGS = new FlagsToolKey(name)
 }
 
 final case class SimpleToolSettingsKey(
@@ -224,19 +229,24 @@ object ToolKey {
     with NotifyChanged {
 
     val ENABLED = BooleanToolKeyWithDefault(s"${name}Enabled", PATH.getValue(_).isDefined)
-    val SCAN_FLAGS = FlagsToolKey(s"${name}Scan", defaultScanFlags)
+    val GHC_FLAGS = new FlagsToolKey(s"${name}Ghc", defaultGhcFlags) {
+      // Builds the parameter list for hsdev by inserting a '-g' before each flag.
+      override def getParameterList(props: PropertiesComponent): Array[String] = {
+        super.getParameterList(props).flatMap(Array("-g", _))
+      }
+    }
     val SCAN_TIMEOUT_SECONDS = new CodecToolKey[Long](_.toLong, _.toString, s"${name}ScanTimeout")
     val COMMAND_TIMEOUT_SECONDS = new CodecToolKey[Long](_.toLong, _.toString, s"${name}CommandTimeout")
     val PORT = new CodecToolKey[Int](_.toInt, _.toString, s"${name}Port")
     val SPAWN_SERVER = BooleanToolKeyWithDefault(s"${name}SpawnServer", _ => true)
 
-    private def defaultScanFlags = List(
-      // By default, it's nice to defer as many errors as possible
-      "-g -fdefer-type-errors",
-      "-g -fdefer-typed-holes",
-      "-g -fdefer-out-of-scope-variables",
+    private def defaultGhcFlags = List(
       // Helps to negate a -Werror flag
-      "-g -Wwarn"
+      "-Wwarn",
+      // By default, it's nice to defer as many errors as possible
+      "-fdefer-type-errors",
+      "-fdefer-typed-holes",
+      "-fdefer-out-of-scope-variables"
     ).mkString(" ")
 
     override def getValue(props: PropertiesComponent): HsDevToolSettings = {
@@ -244,7 +254,7 @@ object ToolKey {
         path = PATH.getValue(props),
         flags = FLAGS.getValue(props),
         enabled = ENABLED.getValue(props),
-        scanFlags = SCAN_FLAGS.getValue(props),
+        ghcFlags = GHC_FLAGS.getValue(props),
         scanTimeoutSeconds = SCAN_TIMEOUT_SECONDS.getValue(props),
         commandTimeoutSeconds = SCAN_TIMEOUT_SECONDS.getValue(props),
         port = PORT.getValue(props),
@@ -256,7 +266,7 @@ object ToolKey {
       PATH.setValue(props, a.path)
       FLAGS.setValue(props, a.flags)
       ENABLED.setValue(props, a.enabled)
-      SCAN_FLAGS.setValue(props, a.scanFlags)
+      GHC_FLAGS.setValue(props, a.ghcFlags)
       SCAN_TIMEOUT_SECONDS.setValue(props, a.scanTimeoutSeconds)
       COMMAND_TIMEOUT_SECONDS.setValue(props, a.commandTimeoutSeconds)
       PORT.setValue(props, a.port)
@@ -272,7 +282,7 @@ object ToolKey {
     path: Option[String],
     flags: String,
     enabled: Boolean,
-    scanFlags: String,
+    ghcFlags: String,
     scanTimeoutSeconds: Option[Long],
     commandTimeoutSeconds: Option[Long],
     port: Option[Int],

@@ -75,8 +75,13 @@ class HsDevExecutor private(
   def checkContents(file: PsiFile): Vector[HsDevNote[HsDevOutputMessage]] = {
     // hsdev expects a json argument for contents; e.g.
     // {"file": "path/to/file.hs", "contents": "module ..."}
-    val contents = Jsoniter.writeToString(HsDevFileSource.fromPsiFile(file))
-    exec[HsDevNote[HsDevOutputMessage]]("check", "--contents", contents) match {
+    val fileSource = HsDevFileSource.fromPsiFile(file)
+    val contents = Jsoniter.writeToString(fileSource)
+    val args = Array("--contents", contents) ++ ToolKey.HSDEV.GHC_FLAGS.getParameterList(props)
+    // Useful to log the file name separately as it's likely cut off when logged
+    // by `exec` below.
+    toolsConsole.writeInput(s"hsdev check file contents: ${fileSource.file}")
+    exec[HsDevNote[HsDevOutputMessage]]("check", args: _*) match {
       case Left(()) => Vector.empty
       case Right(res) => res
     }
@@ -89,9 +94,10 @@ class HsDevExecutor private(
   }
 
   private def renderCli(cli: GeneralCommandLine): String = {
+    val limit = 500
     cli.getCommandLineString match {
-      case s if !HsDevExecutor.VERBOSE && s.length > 203 =>
-        s.substring(0, 200) + "..."
+      case s if !HsDevExecutor.VERBOSE && s.length > limit =>
+        s.substring(0, limit) + "..."
       case s => s
     }
   }
@@ -102,9 +108,7 @@ class HsDevExecutor private(
     if (exeSettings.stackPath.isDefined) {
       cli.addParameters("--tool", "stack")
     }
-    cli.getParametersList.addParametersString(
-      ToolKey.HSDEV.SCAN_FLAGS.getValue(props)
-    )
+    cli.addParameters(ToolKey.HSDEV.GHC_FLAGS.getParameterList(props): _*)
     val commandId = HsDevExecutor.nextCommandId()
     toolsConsole.writeInput(s"hsdev $commandId: ${renderCli(cli)}")
 

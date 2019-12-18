@@ -525,7 +525,7 @@
           <text value=""/>
         </properties>
       </component>
-      <component id="c13aa" class="com.intellij.ui.RawCommandLineEditor" binding="hsdevScanFlags">
+      <component id="c13aa" class="com.intellij.ui.RawCommandLineEditor" binding="hsdevGhcFlags">
         <constraints>
           <grid row="9" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
@@ -538,7 +538,7 @@
           <grid row="9" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
-          <text value="Scan Flags:"/>
+          <text value="GHC Flags:"/>
         </properties>
       </component>
     </children>

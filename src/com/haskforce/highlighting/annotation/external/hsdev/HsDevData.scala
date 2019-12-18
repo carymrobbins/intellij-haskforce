@@ -133,7 +133,7 @@ object HsDevFileSource {
     // based on the name of the PsiFile.
     val filePath =
       Option(x.getVirtualFile)
-        .fold(s"${x.getName}.hs")(_.getCanonicalPath)
+        .fold(x.getName)(_.getCanonicalPath)
     HsDevFileSource(
       file = filePath,
       contents = x.getText
