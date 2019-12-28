@@ -23,6 +23,7 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.Pair;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -45,7 +46,10 @@ import java.util.regex.Pattern;
 public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     public static Option<GhcModi> get(PsiElement element) {
-        final Module module = ModuleUtilCore.findModuleForPsiElement(element);
+        final Module module =
+            ApplicationManager.getApplication().runReadAction((Computable<Module>) () ->
+                ModuleUtilCore.findModuleForPsiElement(element)
+            );
         if (module == null) return Option.apply(null);
         return get(module);
     }
