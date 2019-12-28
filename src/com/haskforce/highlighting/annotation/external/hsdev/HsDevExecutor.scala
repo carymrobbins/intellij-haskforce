@@ -12,9 +12,10 @@ import com.haskforce.utils.ExecUtil
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.{ProcessAdapter, ProcessEvent, ProcessOutputType}
 import com.intellij.ide.util.PropertiesComponent
+import com.intellij.openapi.application.{ApplicationManager, ReadAction}
 import com.intellij.openapi.module.{Module, ModuleUtilCore}
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.Key
+import com.intellij.openapi.util.{Computable, Key}
 import com.intellij.psi.{PsiElement, PsiFile}
 import com.intellij.util.TimeoutUtil
 import org.apache.commons.io.IOUtils
@@ -260,7 +261,9 @@ object HsDevExecutor {
   def get(element: PsiElement): Option[HsDevExecutor] = {
     val project = element.getProject
     for {
-      module <- Option(ModuleUtilCore.findModuleForPsiElement(element))
+      module <- ApplicationManager.getApplication.runReadAction[Option[Module]](() =>
+        Option(ModuleUtilCore.findModuleForPsiElement(element))
+      )
       workPkgDir = ExecUtil.guessWorkDir(module)
       projectComponent <- HsDevProjectComponent.get(project)
       if projectComponent.isEnabled
