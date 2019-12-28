@@ -28,7 +28,7 @@ object HLintUtil {
     workDir: String,
     hlintPath: String
   ): Either[ExecError, VersionTriple] = {
-    HLint.runHlint(toolConsole, workDir, hlintPath, "--numeric-version")
+    HLint.runHlint(toolConsole, workDir, hlintPath, "--numeric-version", null)
       .flatMap(parseVersion)
   }
 }
