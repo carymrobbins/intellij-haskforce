@@ -35,8 +35,7 @@ class HaskellExternalAnnotator
     val problemsProviders = HaskellExternalAnnotator.problemsProviderFactories.flatMap(_.get(file))
     HaskellExternalAnnotator.InitialInfo(
       file,
-      problemsProviders,
-      requiresFileSave = problemsProviders.exists(_.requiresFileSave)
+      problemsProviders
     )
   }
 
@@ -45,8 +44,6 @@ class HaskellExternalAnnotator
   override def doAnnotate(
     @NotNull info: HaskellExternalAnnotator.InitialInfo
   ): State = {
-    // Only save files if one of our problemsProviders requires it.
-    if (info.requiresFileSave) saveAllFiles()
     // Constructs our annotation state for a file given our registered providers.
     State.create(info)
   }
@@ -61,23 +58,13 @@ class HaskellExternalAnnotator
       file, state.getProblems, new HaskellAnnotationHolder(holder)
     )
   }
-
-  private def saveAllFiles(): Unit = {
-    ApplicationManager.getApplication.invokeAndWait(
-      () => FileDocumentManager.getInstance.saveAllDocuments(),
-      // We cannot use ModalityState.any(); see issue #288
-      // https://github.com/carymrobbins/intellij-haskforce/issues/288#issuecomment-319835496
-      ModalityState.defaultModalityState()
-    )
-  }
 }
 
 object HaskellExternalAnnotator {
 
   final case class InitialInfo(
     psiFile: PsiFile,
-    problemsProviders: List[ProblemsProvider],
-    requiresFileSave: Boolean
+    problemsProviders: List[ProblemsProvider]
   )
 
   /** Registered problem providers for our configured tools. */

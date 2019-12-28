@@ -15,8 +15,6 @@ class HsDevCompileProblemsProvider private(
   toolsConsole: HaskellToolsConsole.Curried
 ) extends ProblemsProvider {
 
-  override def requiresFileSave: Boolean = false
-
   override def getProblems: Option[Problems] = {
     toProblems(psiFile, hsDevExecutor.checkContents(psiFile))
   }

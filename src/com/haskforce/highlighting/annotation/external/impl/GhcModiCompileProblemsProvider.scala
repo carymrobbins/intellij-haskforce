@@ -9,8 +9,6 @@ class GhcModiCompileProblemsProvider private(
   psiFile: PsiFile
 ) extends ProblemsProvider {
 
-  override def requiresFileSave: Boolean = false
-
   override def getProblems: Option[Problems] = {
     Option(ghcModi.check(psiFile))
   }

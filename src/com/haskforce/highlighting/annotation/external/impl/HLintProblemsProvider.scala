@@ -17,8 +17,6 @@ class HLintProblemsProvider private(
   haskellFile: HaskellFile
 ) extends ProblemsProvider {
 
-  override def requiresFileSave: Boolean = false
-
   override def getProblems: Option[Problems] = {
     Option(HLint.lint(project, workDir, haskellFile))
   }
