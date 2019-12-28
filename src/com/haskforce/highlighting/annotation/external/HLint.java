@@ -13,11 +13,13 @@ import com.haskforce.utils.*;
 import com.haskforce.utils.ExecUtil.ExecError;
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.configurations.ParametersList;
+import com.intellij.ide.util.PropertiesComponent;
 import com.intellij.lang.annotation.Annotation;
 import com.intellij.notification.NotificationType;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiFile;
@@ -50,16 +52,17 @@ public class HLint {
 
     @NotNull
     public static Problems lint(final @NotNull Project project, @NotNull String workingDirectory,
-                                @NotNull String file, @NotNull HaskellFile haskellFile) {
-        final HaskellToolsConsole toolConsole = HaskellToolsConsole.get(project);
+                                @NotNull HaskellFile haskellFile) {
+        final HaskellToolsConsole.Curried toolConsole = HaskellToolsConsole.get(project).curry(ToolKey.HLINT_KEY);
+        final PropertiesComponent props = PropertiesComponent.getInstance(project);
         final String hlintPath = ToolKey.HLINT_KEY.getPath(project);
         final String hlintFlags = ToolKey.HLINT_KEY.getFlags(project);
         if (hlintPath == null) return new Problems();
 
         return EitherUtil.valueOr(
-            parseProblems(toolConsole, workingDirectory, hlintPath, hlintFlags, file, haskellFile),
+            parseProblems(toolConsole, workingDirectory, hlintPath, hlintFlags, haskellFile),
             e -> {
-                toolConsole.writeError(ToolKey.HLINT_KEY, e.getMessage());
+                toolConsole.writeError(e.getMessage());
                 NotificationUtil.displayToolsNotification(
                   NotificationType.ERROR, project, "hlint", e.getMessage()
                 );
@@ -69,28 +72,30 @@ public class HLint {
     }
 
     @NotNull
-    public static Either<ExecError, Problems> parseProblems(final HaskellToolsConsole toolConsole,
+    public static Either<ExecError, Problems> parseProblems(final HaskellToolsConsole.Curried toolConsole,
                                                             final @NotNull String workingDirectory,
                                                             final @NotNull String path,
                                                             final @NotNull String flags,
-                                                            final @NotNull String file,
                                                             final @NotNull HaskellFile haskellFile) {
         return getVersion(toolConsole, workingDirectory, path).flatMap(version -> {
             final boolean useJson = version.$greater$eq(HLINT_MIN_VERSION_WITH_JSON_SUPPORT);
-            final String[] params = getParams(file, haskellFile, useJson);
-            return runHlint(toolConsole, workingDirectory, path, flags, params).map(stdout -> {
-                toolConsole.writeOutput(ToolKey.HLINT_KEY, stdout);
+            final String[] params = getParams(haskellFile, useJson);
+            final String fileContents =
+              ApplicationManager.getApplication().runReadAction(
+                (Computable<String>) haskellFile::getText
+              );
+            return runHlint(toolConsole, workingDirectory, path, flags, fileContents, params).map(stdout -> {
+                toolConsole.writeOutput(stdout);
                 if (useJson) return parseProblemsJson(toolConsole, stdout);
                 return parseProblemsFallback(stdout);
             });
         });
     }
 
-    private static String[] getParams(@NotNull String file,
-                                      @NotNull HaskellFile haskellFile,
+    private static String[] getParams(@NotNull HaskellFile haskellFile,
                                       boolean useJson) {
         final List<String> result = new ArrayList<>(1);
-        result.add(file);
+        result.add("-"); // Read file from stdin
         if (useJson) result.add("--json");
         result.addAll(getParamsFromCabal(haskellFile));
         return result.toArray(new String[0]);
@@ -107,11 +112,11 @@ public class HLint {
      * Parse problems from the hlint --json output.
      */
     @NotNull
-    public static Problems parseProblemsJson(@NotNull HaskellToolsConsole toolsConsole, @NotNull String stdout) {
+    public static Problems parseProblemsJson(@NotNull HaskellToolsConsole.Curried toolsConsole, @NotNull String stdout) {
         return EitherUtil.valueOr(
             parseProblemsJson(stdout),
             e -> {
-                toolsConsole.writeError(ToolKey.HLINT_KEY, e.getMessage());
+                toolsConsole.writeError(e.getMessage());
                 LOG.error(e);
                 return new Problems();
             }
@@ -186,7 +191,7 @@ public class HLint {
     }
 
     @NotNull
-    private static Either<ExecError, VersionTriple> getVersion(HaskellToolsConsole toolConsole, String workingDirectory, String hlintPath) {
+    private static Either<ExecError, VersionTriple> getVersion(HaskellToolsConsole.Curried toolConsole, String workingDirectory, String hlintPath) {
         return HLintUtil.runHLintNumericVersion(toolConsole, workingDirectory, hlintPath);
     }
 
@@ -194,10 +199,11 @@ public class HLint {
      * Runs hlintProg with parameters if hlintProg can be executed.
      */
     @NotNull
-    public static Either<ExecError, String> runHlint(HaskellToolsConsole toolConsole,
+    public static Either<ExecError, String> runHlint(HaskellToolsConsole.Curried toolConsole,
                                                       @NotNull String workingDirectory,
                                                       @NotNull String hlintProg,
                                                       @NotNull String hlintFlags,
+                                                      @Nullable String fileContents,
                                                       @NotNull String... params) {
         GeneralCommandLine commandLine = new GeneralCommandLine();
         commandLine.setWorkDirectory(workingDirectory);
@@ -208,9 +214,9 @@ public class HLint {
         parametersList.add("--no-exit-code");
         parametersList.addParametersString(hlintFlags);
         parametersList.addAll(params);
-        toolConsole.writeInput(ToolKey.HLINT_KEY, "Using working directory: " + workingDirectory);
-        toolConsole.writeInput(ToolKey.HLINT_KEY, commandLine.getCommandLineString());
-        return ExecUtil.readCommandLine(commandLine);
+        toolConsole.writeInput("Using working directory: " + workingDirectory);
+        toolConsole.writeInput(commandLine.getCommandLineString());
+        return ExecUtil.readCommandLine(commandLine, fileContents);
     }
 
     public static class Problem implements HaskellProblem {
