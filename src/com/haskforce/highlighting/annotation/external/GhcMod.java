@@ -33,7 +33,6 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import scala.Option;
 import scala.util.Either;
 
 import java.io.File;
@@ -325,6 +324,10 @@ public class GhcMod {
                 Pair.create(
                     Pattern.compile("^Top-level binding with no type signature"),
                     (__, annotation, problem, psiFile) -> annotation.registerFix(new AddTypeSignature(problem))
+                ),
+                Pair.create(
+                    InsertHoleTypeAsComment.REGEX(),
+                    (matcher, annotation, problem, psiFile) -> annotation.registerFix(InsertHoleTypeAsComment.create(matcher))
                 ),
                 Pair.create(
                     Pattern.compile("^Illegal symbol '.' in type"),

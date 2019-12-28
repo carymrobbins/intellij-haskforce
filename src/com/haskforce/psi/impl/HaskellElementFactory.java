@@ -3,6 +3,7 @@ package com.haskforce.psi.impl;
 import com.haskforce.HaskellLanguage;
 import com.haskforce.psi.*;
 import com.intellij.openapi.project.Project;
+import com.intellij.psi.PsiComment;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiFileFactory;
 import com.intellij.psi.PsiWhiteSpace;
