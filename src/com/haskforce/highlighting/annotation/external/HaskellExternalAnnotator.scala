@@ -1,6 +1,5 @@
 package com.haskforce.highlighting.annotation.external
 
-import com.haskforce.Implicits._
 import com.haskforce.highlighting.annotation.external.HaskellExternalAnnotator.State
 import com.haskforce.highlighting.annotation.{HaskellAnnotationHolder, HaskellProblem, Problems}
 import com.intellij.lang.annotation.{AnnotationHolder, ExternalAnnotator}
@@ -13,7 +12,8 @@ import org.jetbrains.annotations.{NotNull, Nullable}
 import scala.collection.JavaConverters._
 
 /** Single annotator that calls all external tools used for annotations. */
-class HaskellExternalAnnotator extends ExternalAnnotator[PsiFile, State] {
+class HaskellExternalAnnotator
+  extends ExternalAnnotator[HaskellExternalAnnotator.InitialInfo, State] {
 
   /**
    * The default implementation here is to not annotate files that have lexer/parser errors.
@@ -21,32 +21,42 @@ class HaskellExternalAnnotator extends ExternalAnnotator[PsiFile, State] {
    * appearing.  To get around this, we ignore the `hasErrors` argument.
    */
   @Nullable
-  override def collectInformation
-      (@NotNull file: PsiFile, @NotNull editor: Editor, hasErrors: Boolean): PsiFile = {
-    collectInformation(file)
-  }
+  override def collectInformation(
+    @NotNull file: PsiFile,
+    @NotNull editor: Editor,
+    hasErrors: Boolean
+  ): HaskellExternalAnnotator.InitialInfo = collectInformation(file)
 
   /** Simply returns the file so it will get passed to doAnnotate() */
   @NotNull
-  override def collectInformation(@NotNull file: PsiFile): PsiFile = {
-    file
+  override def collectInformation(
+    @NotNull file: PsiFile
+  ): HaskellExternalAnnotator.InitialInfo = {
+    val problemsProviders = HaskellExternalAnnotator.problemsProviderFactories.flatMap(_.get(file))
+    HaskellExternalAnnotator.InitialInfo(
+      file,
+      problemsProviders,
+      requiresFileSave = problemsProviders.exists(_.requiresFileSave)
+    )
   }
 
   /** Builds the set of annotations to be applied to the source file. */
   @Nullable
-  override def doAnnotate(@NotNull file: PsiFile): State = {
-    // TODO: Enable saveAllFiles() when we're using ghc-mod, hlint, etc.
-    // We need to save the files so external processes will see what we see.
-    // saveAllFiles()
-
+  override def doAnnotate(
+    @NotNull info: HaskellExternalAnnotator.InitialInfo
+  ): State = {
+    // Only save files if one of our problemsProviders requires it.
+    if (info.requiresFileSave) saveAllFiles()
     // Constructs our annotation state for a file given our registered providers.
-    State.buildForFile(file)
+    State.create(info)
   }
 
   /** Applies the annotations from the State to the source file. */
-  override def apply
-      (@NotNull file: PsiFile, state: State, @NotNull holder: AnnotationHolder)
-      : Unit = {
+  override def apply(
+    @NotNull file: PsiFile,
+    state: State,
+    @NotNull holder: AnnotationHolder
+  ): Unit = {
     HaskellExternalAnnotator.createAnnotations(
       file, state.getProblems, new HaskellAnnotationHolder(holder)
     )
@@ -64,6 +74,12 @@ class HaskellExternalAnnotator extends ExternalAnnotator[PsiFile, State] {
 
 object HaskellExternalAnnotator {
 
+  final case class InitialInfo(
+    psiFile: PsiFile,
+    problemsProviders: List[ProblemsProvider],
+    requiresFileSave: Boolean
+  )
+
   /** Registered problem providers for our configured tools. */
   val problemsProviderFactories: List[ProblemsProviderFactory] = List(
     LintProblemsProviderFactory,
@@ -71,11 +87,11 @@ object HaskellExternalAnnotator {
   )
 
   /** Helper to annotate problems in our source from external tools. */
-  def createAnnotations
-      (@NotNull file: PsiFile,
-       problems: Stream[HaskellProblem],
-       @NotNull holder: HaskellAnnotationHolder)
-      : Unit = {
+  def createAnnotations(
+    @NotNull file: PsiFile,
+    problems: Stream[HaskellProblem],
+    @NotNull holder: HaskellAnnotationHolder
+  ): Unit = {
     if (!file.isValid) return
     problems.foreach { _.createAnnotations(file, holder) }
   }
@@ -90,9 +106,8 @@ object HaskellExternalAnnotator {
   }
 
   object State {
-    /** Smart constructor which traverses our factories and obtains problem futures. */
-    def buildForFile(file: PsiFile): State = {
-      State(problemsProviderFactories.flatMap(_.get(file).map(_.getProblems)))
+    def create(info: InitialInfo): State = {
+      State(info.problemsProviders.map(_.getProblems))
     }
   }
 }

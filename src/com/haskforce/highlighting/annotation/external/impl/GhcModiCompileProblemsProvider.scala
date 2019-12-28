@@ -15,6 +15,8 @@ class GhcModiCompileProblemsProvider private(
   filePath: String
 ) extends ProblemsProvider {
 
+  override def requiresFileSave: Boolean = true
+
   override def getProblems: Option[Problems] = {
     Option(ghcModi.syncCheck(filePath))
   }
