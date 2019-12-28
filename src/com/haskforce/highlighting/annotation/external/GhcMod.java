@@ -315,6 +315,10 @@ public class GhcMod {
                     (__, annotation, problem, psiFile) -> annotation.registerFix(new AddTypeSignature(problem))
                 ),
                 Pair.create(
+                    InsertHoleTypeAsComment.REGEX(),
+                    (matcher, annotation, problem, psiFile) -> annotation.registerFix(InsertHoleTypeAsComment.create(matcher))
+                ),
+                Pair.create(
                     Pattern.compile("^Illegal symbol '.' in type"),
                     (__, annotation, problem, psiFile) -> {
                         AddLanguagePragma.registerFixes("RankNTypes", annotation, psiFile);
