@@ -44,7 +44,10 @@ import java.util.regex.Pattern;
 public class GhcModi implements ModuleComponent, SettingsChangeNotifier.GhcModiSettingsChangeNotifier {
 
     public static Option<GhcModi> get(PsiElement element) {
-        final Module module = ModuleUtilCore.findModuleForPsiElement(element);
+        final Module module =
+            ApplicationManager.getApplication().runReadAction((Computable<Module>) () ->
+                ModuleUtilCore.findModuleForPsiElement(element)
+            );
         if (module == null) return Option.apply(null);
         return get(module);
     }
