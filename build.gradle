@@ -29,10 +29,17 @@ allprojects {
     apply plugin: 'org.jetbrains.intellij'
 
     intellij {
-        version = '2019.2.1'
+        version = '2019.3.1'
         pluginName = 'HaskForce'
-        updateSinceUntilBuild = true
         plugins = ['java', 'yaml']
+    }
+
+    patchPluginXml {
+        // Ensure that we've tested HaskForce with the given major IntelliJ
+        // version before changing these values.
+        // See https://github.com/carymrobbins/intellij-haskforce/issues/407
+        sinceBuild = '2019.3.1'
+        untilBuild = '2019.3.*'
     }
 
     repositories {
