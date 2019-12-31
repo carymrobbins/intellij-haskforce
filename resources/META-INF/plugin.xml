@@ -394,6 +394,11 @@
         com.haskforce.codeInsight.HaskellCompletionCacheLoader
       </implementation-class>
     </component>
+    <component>
+      <implementation-class>
+        com.haskforce.ui.tools.HaskellToolsConsole
+      </implementation-class>
+    </component>
   </project-components>
 
   <actions>

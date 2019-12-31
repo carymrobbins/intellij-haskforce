@@ -2,16 +2,17 @@ package com.haskforce.ui.tools
 
 import java.awt.event.ItemEvent
 import java.awt.{GridBagLayout, GridLayout}
-import java.util.regex.Pattern
-import javax.swing.{JComponent, JPanel}
 
-import scala.collection.mutable
-
+import com.haskforce.HaskellModuleType
+import com.haskforce.settings.ToolKey
+import com.haskforce.ui.{GC, SComboBox}
+import com.haskforce.utils.SAMUtils
 import com.intellij.execution.filters.TextConsoleBuilderFactory
 import com.intellij.execution.ui.{ConsoleView, ConsoleViewContentType}
 import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.{ActionManager, DefaultActionGroup}
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.ProjectComponent
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.ModuleUtil
 import com.intellij.openapi.project.Project
@@ -19,11 +20,9 @@ import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Condition
 import com.intellij.openapi.wm.{ToolWindow, ToolWindowFactory}
 import com.intellij.ui.content.ContentFactory
+import javax.swing.{JComponent, JPanel}
 
-import com.haskforce.HaskellModuleType
-import com.haskforce.settings.ToolKey
-import com.haskforce.ui.{GC, SComboBox}
-import com.haskforce.utils.SAMUtils
+import scala.collection.mutable
 
 /**
   * Manages the Haskell Tools Console "tool window" for a project.
@@ -31,10 +30,7 @@ import com.haskforce.utils.SAMUtils
   * Tools can use the write* methods to communicate command input, output, and errors.
   * This enables users to see and understand exactly what is occurring and debug any issues.
   */
-final class HaskellToolsConsole private(project: Project) {
-
-  val LINE_LIMIT = 3
-  val TRUNCATED_SUFFIX = "\n<<truncated output...>>\n"
+final class HaskellToolsConsole(project: Project) extends ProjectComponent {
 
   def curry(toolKey: ToolKey): HaskellToolsConsole.Curried = {
     new HaskellToolsConsole.Curried(this, toolKey)
@@ -161,25 +157,16 @@ object ToolConsoleView {
 
 object HaskellToolsConsole {
 
-  val logger = Logger.getInstance(classOf[HaskellToolsConsole])
+  val logger: Logger = Logger.getInstance(classOf[HaskellToolsConsole])
 
   /** Gets the HaskellToolsConsole for the given Project. */
   def get(project: Project): HaskellToolsConsole = {
-    consoles.getOrElse(project, create(project))
+    project.getComponent(classOf[HaskellToolsConsole])
   }
 
   def dispose(console: HaskellToolsConsole): Unit = {
     console.consoles.foreach { case (_, view) => view.view.dispose() }
   }
-
-  /** Creates a new HaskellToolsConsole, storing the result in the consoles cache. */
-  private def create(project: Project): HaskellToolsConsole = {
-    val console = new HaskellToolsConsole(project)
-    consoles.put(project, console)
-    console
-  }
-
-  private val consoles = mutable.Map[Project, HaskellToolsConsole]()
 
   final class Curried(val console: HaskellToolsConsole, toolKey: ToolKey) {
     def writeInput(msg: String): Unit = console.writeInput(toolKey, msg)
@@ -199,9 +186,7 @@ class HaskellToolsConsoleWindowFactory extends ToolWindowFactory with Condition[
     toolWindow.getContentManager.addContent(content)
     // Explicitly dispose resources.
     // See https://github.com/carymrobbins/intellij-haskforce/issues/269
-    content.setDisposer(new Disposable {
-      override def dispose(): Unit = HaskellToolsConsole.dispose(console)
-    })
+    content.setDisposer(() => HaskellToolsConsole.dispose(console))
   }
 
   /**
