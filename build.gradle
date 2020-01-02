@@ -121,6 +121,13 @@ clean.dependsOn cleanJFlex
 
 compileJava.dependsOn runJFlex
 
+// Fixes "unmappable character for encoding ASCII" when compiling files
+// containing unicode characters in strings via IntelliJ gradle tasks.
+compileJava.options.encoding = "UTF-8"
+compileTestJava.options.encoding = "UTF-8"
+compileScala.options.encoding = "UTF-8"
+compileTestScala.options.encoding = "UTF-8"
+
 patchPluginXml {
     version = getPluginVersion()
     // Requiring >= 2017.3 to ensure compatibility with the Scala plugin (which uses 2.12)
