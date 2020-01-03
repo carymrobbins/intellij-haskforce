@@ -23,18 +23,17 @@ import com.intellij.openapi.module.Module;
 import com.intellij.openapi.module.ModuleComponent;
 import com.intellij.openapi.module.ModuleUtilCore;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.Pair;
+import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
+import com.intellij.psi.PsiFile;
 import com.intellij.xml.util.XmlUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import scala.Option;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
@@ -45,7 +44,10 @@ import java.util.regex.Pattern;
 public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     public static Option<GhcModi> get(PsiElement element) {
-        final Module module = ModuleUtilCore.findModuleForPsiElement(element);
+        final Module module =
+            ApplicationManager.getApplication().runReadAction((Computable<Module>) () ->
+                ModuleUtilCore.findModuleForPsiElement(element)
+            );
         if (module == null) return Option.apply(null);
         return get(module);
     }
@@ -112,54 +114,49 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         return path != null && !path.trim().isEmpty();
     }
 
-    /**
-     * Checks the module with ghc-modi and returns Problems to be annotated in the source.
-     */
     @Nullable
-    public Future<Problems> check(final @NotNull String file) {
-        return handleGhcModiCall(new GhcModiCallable<Problems>() {
-            @Override
-            public Problems call() throws GhcModiError {
-                return unsafeCheck(file);
-            }
-        });
+    public Problems check(final @NotNull PsiFile psiFile) {
+        return runSync(() -> unsafeCheck(psiFile));
     }
 
     @Nullable
-    public Problems syncCheck(final @NotNull String file) {
-        return runSync(new GhcModiCallable<Problems>() {
-            @Override
-            public Problems call() throws GhcModiError {
-                return unsafeCheck(file);
-            }
-        });
+    private Problems unsafeCheck(final @NotNull PsiFile psiFile) throws GhcModiError {
+        FileSource fileSource = FileSource.fromPsiFile(psiFile);
+        if (fileSource == null) return null;
+        mapFileContents(fileSource);
+        final String stdout = simpleExec("check " + fileSource.path);
+        unmapFileContents(fileSource.path);
+        return stdout == null ? new Problems() : handleCheck(module, fileSource.path, stdout);
     }
 
-    @Nullable
-    private Problems unsafeCheck(final @NotNull String file) throws GhcModiError {
-        // Check the file content so only call out to ghc-mod when the file changes.
-        final String fileContent;
-        try {
-            fileContent = new String(Files.readAllBytes(Paths.get(file)), StandardCharsets.UTF_8);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new CheckError(file, e.getMessage());
+    private void mapFileContents(final @NotNull FileSource fileSource) throws GhcModiError {
+        // Terminate with \n then \004 to signal EOF to ghc-modi
+        simpleExec("map-file " + fileSource.path + "\n" + fileSource.contents + "\n\004");
+    }
+
+    private void unmapFileContents(final @NotNull String path) throws GhcModiError {
+        simpleExec("unmap-file " + path);
+    }
+
+    private final static class FileSource {
+        public final @NotNull String path;
+        public final @NotNull String contents;
+
+        private FileSource(@NotNull String path, @NotNull String contents) {
+            this.path = path;
+            this.contents = contents;
         }
 
-        // Check the cache to determine if the file changed.
-        Pair<String, Problems> item = checkCache.get(file);
-        if (item != null && item.first.equals(fileContent)) return item.second;
-
-        // Call out to ghc-mod.
-        final String stdout = simpleExec("check " + file);
-        Problems result = stdout == null ? new Problems() : handleCheck(module, file, stdout);
-
-        // Update the cache.
-        checkCache.put(file, new Pair<>(fileContent, result));
-        return result;
+        static @Nullable FileSource fromPsiFile(PsiFile psiFile) {
+            return ApplicationManager.getApplication().runReadAction((Computable<FileSource>) () -> {
+                VirtualFile vFile = psiFile.getVirtualFile();
+                if (vFile == null) return null;
+                String path = vFile.getCanonicalPath();
+                if (path == null) return null;
+                return new FileSource(path, psiFile.getText());
+            });
+        }
     }
-
-    private ConcurrentHashMap<String, Pair<String, Problems>> checkCache = new ConcurrentHashMap<>();
 
     @Nullable
     public String[] syncLang() {
@@ -509,7 +506,6 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
         // Clear the caches.
         browseCache.clear();
         findCache.clear();
-        checkCache.clear();
         listCache = null;
 
         // Kill the process, allowing it to be started up again.
@@ -579,6 +575,13 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
 
     interface GhcModiCallable<V> extends Callable<V> {
         V call() throws GhcModiError;
+    }
+
+    interface GhcModiRunnable extends GhcModiCallable<Void> {
+        void run() throws GhcModiError;
+
+        @Override
+        default Void call() throws GhcModiError { run(); return null; }
     }
 
     static abstract class GhcModiError extends Exception {
