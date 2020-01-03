@@ -1,16 +1,15 @@
 package com.haskforce.actions.cabal
 
 import com.haskforce.HaskellModuleType
-import com.haskforce.Implicits._
 import com.haskforce.cabal.settings.ui.{AddCabalPackageUtil, DiscoverCabalPackagesDialog}
 import com.haskforce.utils.{FileUtil, NotificationUtil}
 import com.intellij.notification.NotificationType
-import com.intellij.openapi.actionSystem.{AnActionEvent, AnAction}
+import com.intellij.openapi.actionSystem.{AnAction, AnActionEvent}
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.project.{Project, DumbAware}
+import com.intellij.openapi.project.{DumbAware, Project, ProjectUtil}
 import com.intellij.openapi.vfs.VirtualFile
 
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
 /**
  * Finds Cabal packages within project which are lacking an IntelliJ modules and creates modules for them.
@@ -66,7 +65,7 @@ object DiscoverCabalPackagesAction {
    * Finds Cabal files which do not belong to a module.
    */
   private def findDiscoverableCabalFiles(project: Project): Seq[VirtualFile] = {
-    Option(project.getBaseDir).map(
+    Option(ProjectUtil.guessProjectDir(project)).map(
       FileUtil.findFilesRecursively(_, _.getExtension == "cabal").filter(isDiscoverable(project))
     ).getOrElse(Seq())
   }
@@ -76,7 +75,7 @@ object DiscoverCabalPackagesAction {
    * Packages are associated with modules if the module file is in the same directory as the Cabal file.
    */
   private def isDiscoverable(project: Project)(file: VirtualFile): Boolean = {
-    !HaskellModuleType.findModules(project).exists(m =>
+    !HaskellModuleType.findModules(project).iterator.asScala.exists(m =>
       Option(m.getModuleFile).map(_.getParent.getCanonicalPath).contains(file.getParent.getCanonicalPath)
     )
   }

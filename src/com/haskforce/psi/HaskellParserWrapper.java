@@ -1,6 +1,5 @@
 package com.haskforce.psi;
 
-import com.haskforce.HaskellLanguage;
 import com.haskforce.parser.HaskellParser;
 import com.haskforce.parsing._HaskellParsingLexer;
 import com.intellij.lang.ASTNode;
@@ -15,7 +14,9 @@ import com.intellij.psi.tree.IElementType;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 
 /**
  * Wraps the entry-point for the Grammar-Kit parser to register
@@ -23,15 +24,20 @@ import java.util.HashMap;
  */
 public class HaskellParserWrapper extends HaskellParser {
     private static final Pair<Integer, Integer> INIT_KEY = Pair.create(0, 0);
-    public int rbraceDebt;
-    public int maxRbraceDebt;
-    public int lastCountedTok;
-    public boolean regressed;
+    int rbraceDebt;
+    int maxRbraceDebt;
+    private int lastCountedTok;
+    boolean regressed;
     public _HaskellParsingLexer lexer;
 
-    public final HashMap<Integer, Pair<Integer,Integer>> debtPoints = ContainerUtil.newHashMap();
+    final HashMap<Integer, Pair<Integer,Integer>> debtPoints = new HashMap<>();
 
-    final ITokenTypeRemapper myRemapper = new ITokenTypeRemapper() {
+    /** Strings of reserved ops. */
+    private static final HashSet<String> RESERVEDOPS = new HashSet<>(
+        Arrays.asList("..", ":", "::", "=", "\\", "|", "<-", "->", "@", "~", "=>")
+    );
+
+    private final ITokenTypeRemapper myRemapper = new ITokenTypeRemapper() {
         /**
          * Intercept synthetic rbraces and varsymplus tokens and correct them.
          */
@@ -54,7 +60,7 @@ public class HaskellParserWrapper extends HaskellParser {
             if (!HaskellTypes.VARSYMTOKPLUS.equals(source)) return source;
 
             String token = text.toString();
-            if (HaskellLanguage.RESERVEDOPS.contains(token)) {
+            if (RESERVEDOPS.contains(token)) {
                 // Lexer somehow missed lexing the op if we end up here.
                 throw new RuntimeException("Internal Error: Unexpected reservedop: " + token);
             }
@@ -76,11 +82,11 @@ public class HaskellParserWrapper extends HaskellParser {
         debtPoints.clear();
         builder_.setTokenTypeRemapper(myRemapper);
         lexer =  (_HaskellParsingLexer) ((FlexAdapter) ((PsiBuilderImpl) builder_).getLexer()).getFlex();
-        ASTNode node = super.parse(root_, builder_);
-//        ASTNode node = super.parse(root_, new MyDebugPsiBuilderWrapper(builder_));
-        return node;
+        return super.parse(root_, builder_);
+        // return super.parse(root_, new MyDebugPsiBuilderWrapper(builder_));
     }
 
+    @SuppressWarnings("unused")
     static class MyDebugPsiBuilderWrapper extends PsiBuilderAdapter {
         public MyDebugPsiBuilderWrapper(@NotNull PsiBuilder delegate) {
             super(delegate);
@@ -121,7 +127,7 @@ public class HaskellParserWrapper extends HaskellParser {
     /**
      * Increases how many synthetic rbraces the remapper should consume.
      */
-    public boolean increaseRbraceDebt(int offset) {
+    boolean increaseRbraceDebt(int offset) {
         if (maxRbraceDebt < 1) return false;
 
         Pair<Integer,Integer> oldValue = ContainerUtil.getOrCreate(debtPoints, offset, INIT_KEY);

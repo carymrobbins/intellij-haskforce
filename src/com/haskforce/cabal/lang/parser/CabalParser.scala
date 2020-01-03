@@ -1,12 +1,13 @@
 package com.haskforce.cabal.lang.parser
 
+import java.util.function.BooleanSupplier
+
 import com.intellij.lang.impl.PsiBuilderAdapter
 import com.intellij.lang.{ASTNode, PsiBuilder, PsiParser}
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.resolve.FileContextUtil
 import com.intellij.psi.tree.IElementType
-
 import com.haskforce.cabal.lang.psi.CabalTypes._
 import com.haskforce.cabal.lang.psi._
 
@@ -17,6 +18,11 @@ final class CabalParser extends PsiParser {
   }
 }
 
+// IntelliJ's linter erroneously considers forward references from within a
+// closure body to be invalid, so we disable these warnings for this class
+// only.
+
+//noinspection ForwardReference
 final class CabalPsiBuilder(builder: PsiBuilder)
   extends PsiBuilderAdapter(builder) {
 
@@ -36,7 +42,7 @@ final class CabalPsiBuilder(builder: PsiBuilder)
   }
 
   def parseFieldOrStanza(): Unit = {
-    if (topLevelField() || parseStanza()) return
+    if (topLevelField.getAsBoolean || parseStanza.getAsBoolean) return
     // Attempt to recover by reporting an error and just consuming the line.
     errorWith("Unexpected token: " + getTokenType) {
       advanceWhile(getTokenType != EOL) {}
@@ -44,65 +50,65 @@ final class CabalPsiBuilder(builder: PsiBuilder)
     }
   }
 
-  def parseStanza(): Boolean = (
-    flagDecl()
-    || library()
-    || executable()
-    || testSuite()
-    || benchmark()
-    || sourceRepo()
-    || invalidStanza()
+  val parseStanza: BooleanSupplier = () => (
+    flagDecl.getAsBoolean
+    || library.getAsBoolean
+    || executable.getAsBoolean
+    || testSuite.getAsBoolean
+    || benchmark.getAsBoolean
+    || sourceRepo.getAsBoolean
+    || invalidStanza.getAsBoolean
   )
 
-  def library(): Boolean = stanza(
+  val library: BooleanSupplier = () => stanza(
     "library", LIBRARY, LIBRARY_KEY, noStanzaArgs, libraryField
   )
 
-  def libraryField(): Boolean = (
-    buildInfoField()
-    || exposedModules()
-    || exposed()
-    || reexportedModules()
+  val libraryField: BooleanSupplier = () => (
+    buildInfoField.getAsBoolean
+    || exposedModules.getAsBoolean
+    || exposed.getAsBoolean
+    || reexportedModules.getAsBoolean
   )
 
-  def executable(): Boolean = stanza(
+  val executable: BooleanSupplier = () => stanza(
     "executable", EXECUTABLE, EXECUTABLE_KEY,
     stanzaNameArg(EXECUTABLE_NAME), executableField
   )
 
-  def executableField(): Boolean = (
-    buildInfoField()
-    || mainIs()
+  val executableField: BooleanSupplier = () => (
+    buildInfoField.getAsBoolean
+    || mainIs.getAsBoolean
   )
 
-  def testSuite(): Boolean = stanza(
+  val testSuite: BooleanSupplier = () => stanza(
     "test-suite", TEST_SUITE, TEST_SUITE_KEY,
     stanzaNameArg(TEST_SUITE_NAME), testSuiteField
   )
 
-  def testSuiteField(): Boolean = (
-    buildInfoField()
-    || mainIs()
+  val testSuiteField: BooleanSupplier = () => (
+    buildInfoField.getAsBoolean
+    || mainIs.getAsBoolean
     || field(TEST_SUITE_TYPE, TYPE_KEY, freeform)
   )
 
-  def benchmark(): Boolean = stanza(
+  val benchmark: BooleanSupplier = () => stanza(
     "benchmark", BENCHMARK, BENCHMARK_KEY,
     stanzaNameArg(BENCHMARK_NAME), benchmarkField
   )
 
-  def benchmarkField(): Boolean = (
-    buildInfoField()
-    || mainIs()
+  val benchmarkField: BooleanSupplier = () => (
+    buildInfoField.getAsBoolean
+    || mainIs.getAsBoolean
     || field(BENCHMARK_TYPE, TYPE_KEY, freeform)
   )
 
-  def sourceRepo(): Boolean = stanza(
+  val sourceRepo: BooleanSupplier = () => stanza(
     "source-repository", SOURCE_REPO, SOURCE_REPO_KEY,
     stanzaNameArg(SOURCE_REPO_NAME), sourceRepoField
   )
 
-  def sourceRepoField(): Boolean = (
+  val sourceRepoField: BooleanSupplier = () => (
     field(SOURCE_REPO_TYPE, TYPE_KEY, freeform)
     || field(SOURCE_REPO_LOCATION, LOCATION_KEY, freeform)
     || field(SOURCE_REPO_MODULE, MODULE_KEY, freeform)
@@ -111,24 +117,24 @@ final class CabalPsiBuilder(builder: PsiBuilder)
     || field(SOURCE_REPO_SUBDIR, SUBDIR_KEY, freeform)
   )
 
-  def flagDecl(): Boolean = stanza(
+  val flagDecl: BooleanSupplier = () => stanza(
     "flag", FLAG_DECL, FLAG, stanzaNameArg(FLAG_NAME), flagField
   )
 
-  def flagField(): Boolean = (
+  val flagField: BooleanSupplier = () => (
     field(FLAG_DESCR, DESCRIPTION_KEY, freeform)
     || field(FLAG_DEFAULT, DEFAULT_KEY, boolValue)
     || field(FLAG_MANUAL, MANUAL_KEY, boolValue)
   )
 
-  val noStanzaArgs = () => {}
+  val noStanzaArgs: Runnable = () => {}
 
-  def stanzaNameArg(el: CabalStanzaArgTokenType)(): Unit = getTokenType match {
+  def stanzaNameArg(el: CabalStanzaArgTokenType): Runnable = () => getTokenType match {
     case _: CabalWordLikeTokenType => remapAdvance(el)
     case _ => error(s"Expected name argument")
   }
 
-  def invalidStanza(): Boolean = {
+  val invalidStanza: BooleanSupplier = () => {
     parseStanzaWithPred(getTokenType.isInstanceOf[CabalIdentTokenType] && lookAhead(1) != COLON)(
       "invalid",
       INVALID_STANZA,
@@ -141,14 +147,14 @@ final class CabalPsiBuilder(builder: PsiBuilder)
       (pred: => Boolean)
       (stanzaType: String,
        el: CabalElementType,
-       argsParser: () => Unit,
-       fieldParser: () => Boolean)
+       argsParser: Runnable,
+       fieldParser: BooleanSupplier)
       : Boolean = {
     if (!pred) return false
     if (lookAhead(1) == COLON) return oldStyleStanza(stanzaType, el, argsParser, fieldParser)
     val m = mark()
     advanceLexer()
-    argsParser()
+    argsParser.run()
     if (!eof() && getTokenType != EOL && getTokenType != LBRACE) {
       errorWith(s"Unexpected $stanzaType argument") {
         advanceWhile(getTokenType != EOL && getTokenType != LBRACE) {}
@@ -163,20 +169,20 @@ final class CabalPsiBuilder(builder: PsiBuilder)
       (stanzaType: String,
        el: CabalElementType,
        k: CabalStanzaKeyTokenType,
-       argsParser: () => Unit,
-       fieldParser: () => Boolean)
+       argsParser: Runnable,
+       fieldParser: BooleanSupplier)
       : Boolean = {
     parseStanzaWithPred(getTokenType == k)(stanzaType, el, argsParser, fieldParser)
   }
 
-  def stanzaBraceBody(stanzaType: String, fieldParser: () => Boolean): Unit = {
+  def stanzaBraceBody(stanzaType: String, fieldParser: BooleanSupplier): Unit = {
     var foundRBrace = false
     parseWhile(!foundRBrace) {
       getTokenType match {
         case _: CabalLayoutTokenType => remapAdvance(WHITE_SPACE)
         case RBRACE => advanceLexer(); foundRBrace = true
         case _ =>
-          if (!(ifExpr(stanzaType, fieldParser) || fieldParser() || invalidField(stanzaType))) {
+          if (!(ifExpr(stanzaType, fieldParser) || fieldParser.getAsBoolean || invalidField(stanzaType))) {
             errorAdvance(s"Unexpected token in $stanzaType stanza: " + getTokenType)
           }
       }
@@ -185,7 +191,7 @@ final class CabalPsiBuilder(builder: PsiBuilder)
     if (getTokenType == EOL) remapAdvance(WHITE_SPACE)
   }
 
-  def stanzaIndentBody(stanzaType: String, fieldParser: () => Boolean): Unit = {
+  def stanzaIndentBody(stanzaType: String, fieldParser: BooleanSupplier): Unit = {
     if (getTokenType == INDENT) {
       var indent = 0
       advanceWhile(getTokenType == INDENT) {
@@ -195,7 +201,7 @@ final class CabalPsiBuilder(builder: PsiBuilder)
       var break = false
       parseWhile(!break && indent > 0) {
         assert(getTokenType != INDENT, "Unexpected INDENT")
-        if (!(ifExpr(stanzaType, fieldParser) || fieldParser() || invalidField(stanzaType))) {
+        if (!(ifExpr(stanzaType, fieldParser) || fieldParser.getAsBoolean || invalidField(stanzaType))) {
           errorAdvance(s"Unexpected token in $stanzaType stanza: " + getTokenType)
           break = true
         }
@@ -204,7 +210,7 @@ final class CabalPsiBuilder(builder: PsiBuilder)
     }
   }
 
-  def stanzaBody(stanzaType: String, fieldParser: () => Boolean): Unit = getTokenType match {
+  def stanzaBody(stanzaType: String, fieldParser: BooleanSupplier): Unit = getTokenType match {
     case LBRACE => advanceLexer(); stanzaBraceBody(stanzaType, fieldParser)
     case EOL => remapAdvance(WHITE_SPACE); stanzaIndentBody(stanzaType, fieldParser)
     case _ => error("Expected { or end of line")
@@ -213,13 +219,13 @@ final class CabalPsiBuilder(builder: PsiBuilder)
   def oldStyleStanza
       (stanzaType: String,
        el: CabalElementType,
-       argsParser: () => Unit,
-       fieldParser: () => Boolean)
+       argsParser: Runnable,
+       fieldParser: BooleanSupplier)
       : Boolean = {
     val m = mark()
     advanceLexer()
     expectColon()
-    argsParser()
+    argsParser.run()
     if (!eof() && getTokenType != EOL) {
       errorWith(s"Unexpected $stanzaType argument") {
         advanceWhile(getTokenType != EOL) {}
@@ -227,13 +233,13 @@ final class CabalPsiBuilder(builder: PsiBuilder)
     }
     parseWhile(!getTokenType.isInstanceOf[CabalStanzaKeyTokenType]) {
       advanceWhile(oneOf(INDENT, DEDENT, EOL)) { remapCurrentToken(WHITE_SPACE) }
-      if (!fieldParser()) errorAdvance(s"Unexpected $getTokenType")
+      if (!fieldParser.getAsBoolean) errorAdvance(s"Unexpected $getTokenType")
     }
     m.done(el)
     true
   }
 
-  def ifExpr(stanzaType: String, fieldParser: () => Boolean): Boolean = {
+  def ifExpr(stanzaType: String, fieldParser: BooleanSupplier): Boolean = {
     if (getTokenType != IF) return false
     val m = mark()
     advanceLexer()
@@ -249,55 +255,38 @@ final class CabalPsiBuilder(builder: PsiBuilder)
 
   def ifCond(): Unit = {
     val m = mark()
-    boolExpr()
+    boolExpr.run()
     m.done(IF_COND)
   }
 
-  def ifBody(stanzaType: String, fieldParser: () => Boolean): Unit = {
-    if (getTokenType != INDENT) {
-      error("Expected indent")
-    } else {
-      var indent = 0
-      advanceWhile(getTokenType == INDENT) {
-        remapCurrentToken(WHITE_SPACE)
-        indent += 1
-      }
-      var break = false
-      parseWhile(!break && indent > 0) {
-        assert(getTokenType != INDENT, "Unexpected INDENT")
-        if (!(ifExpr(stanzaType, fieldParser) || fieldParser() || invalidField(stanzaType))) {
-          error(s"Unexpected token in $stanzaType stanza: " + getTokenType)
-          break = true
-        }
-        advanceWhile(indent > 0 && getTokenType == DEDENT) { indent -= 1 }
-      }
-    }
-  }
+  val boolExpr: Runnable = () => boolExpr_()
 
-  def boolExpr(): Unit = {
-    if (boolLit() || funcCall() || negation() || parens(boolExpr)) {
+  private def boolExpr_(): Unit = {
+    if (boolLit() || funcCall() || negation.getAsBoolean || parens(boolExpr)) {
       if (oneOf(AND, OR)) {
         advanceLexer()
-        boolExpr()
+        boolExpr.run()
       }
       return
     }
     errorAdvance("Invalid boolean expression")
   }
 
-  def parens(p: () => Unit): Boolean = {
+  def parens(p: Runnable): Boolean = {
     if (getTokenType != LPAREN) return false
     advanceLexer()
-    p()
+    p.run()
     if (getTokenType == RPAREN) advanceLexer() else error("Expected )")
     true
   }
 
-  def negation(): Boolean = {
+  val negation: BooleanSupplier = () => negation_()
+
+  private def negation_(): Boolean = {
     if (getTokenType != BANG) return false
     val m = mark()
     advanceLexer()
-    boolExpr()
+    boolExpr.run()
     m.done(LOGICAL_NEG)
     true
   }
@@ -335,13 +324,13 @@ final class CabalPsiBuilder(builder: PsiBuilder)
     case _ => false
   }
 
-  def buildDepends() = field(BUILD_DEPENDS, BUILD_DEPENDS_KEY, dependencies)
-  def exposedModules() = field(EXPOSED_MODULES, EXPOSED_MODULES_KEY, moduleList)
-  def exposed() = field(EXPOSED, EXPOSED_KEY, freeform)
-  def reexportedModules() = field(REEXPORTED_MODULES, REEXPORTED_MODULES_KEY, reexportedField)
-  def mainIs(): Boolean = field(MAIN_IS, MAIN_IS_KEY, freeform)
+  val buildDepends: BooleanSupplier = () => field(BUILD_DEPENDS, BUILD_DEPENDS_KEY, dependencies)
+  val exposedModules: BooleanSupplier = () => field(EXPOSED_MODULES, EXPOSED_MODULES_KEY, moduleList)
+  val exposed: BooleanSupplier = () => field(EXPOSED, EXPOSED_KEY, freeform)
+  val reexportedModules: BooleanSupplier = () => field(REEXPORTED_MODULES, REEXPORTED_MODULES_KEY, reexportedField)
+  val mainIs: BooleanSupplier = () => field(MAIN_IS, MAIN_IS_KEY, freeform)
 
-  def topLevelField(): Boolean = (
+  val topLevelField: BooleanSupplier = () => (
     field(PKG_NAME, NAME_KEY, freeform)
     || field(PKG_VERSION, VERSION_KEY, freeform)
     || field(CABAL_VERSION, CABAL_VERSION_KEY, freeform)
@@ -368,16 +357,16 @@ final class CabalPsiBuilder(builder: PsiBuilder)
     || field(CUSTOM_FIELD, CUSTOM_KEY, freeform)
     // These fields usually belong in their own stanzas, but it seems they can
     // appear at the top level if there are no other stanzas.
-    || buildDepends()
-    || exposedModules()
-    || exposed()
-    || reexportedModules()
-    || buildInfoField()
+    || buildDepends.getAsBoolean
+    || exposedModules.getAsBoolean
+    || exposed.getAsBoolean
+    || reexportedModules.getAsBoolean
+    || buildInfoField.getAsBoolean
     || invalidField("main")
   )
 
-  def buildInfoField(): Boolean = (
-    buildDepends()
+  val buildInfoField: BooleanSupplier = () => (
+    buildDepends.getAsBoolean
     || field(OTHER_MODULES, OTHER_MODULES_KEY, moduleList)
     || field(DEFAULT_LANGUAGE, DEFAULT_LANGUAGE_KEY, freeform)
     || field(OTHER_LANGUAGES, OTHER_LANGUAGES_KEY, identList)
@@ -413,28 +402,28 @@ final class CabalPsiBuilder(builder: PsiBuilder)
       val m = mark()
       advanceLexer()
       expectColon()
-      freeform()
+      freeform.run()
       m.done(INVALID_FIELD)
       true
 
     case _ => false
   }
 
-  def parseFieldWithPred(pred: => Boolean)(el: CabalElementType, p: () => Unit): Boolean = {
+  def parseFieldWithPred(pred: => Boolean)(el: CabalElementType, p: Runnable): Boolean = {
     if (!pred) return false
     val m = mark()
     advanceLexer()
     expectColon()
-    p()
+    p.run()
     m.done(el)
     true
   }
 
-  def field(el: CabalElementType, k: CabalFieldKeyTokenType, p: () => Unit): Boolean = {
+  def field(el: CabalElementType, k: CabalFieldKeyTokenType, p: Runnable): Boolean = {
     parseFieldWithPred(getTokenType == k)(el, p)
   }
 
-  def ghcOptions(): Unit = {
+  val ghcOptions: Runnable = () => {
     val m = mark()
     indentContext { _ => ghcOption() }
     m.done(IDENT_LIST)
@@ -453,7 +442,7 @@ final class CabalPsiBuilder(builder: PsiBuilder)
     m.collapse(IDENT)
   }
 
-  def reexportedField(): Unit = {
+  def reexportedField: Runnable = () => {
     var lookForComma = false
     indentContext {
       case _: CabalIdentTokenType =>
@@ -464,11 +453,11 @@ final class CabalPsiBuilder(builder: PsiBuilder)
         if (!lookForComma) error("Unexpected comma")
         advanceLexer()
 
-      case other => errorAdvance("Expected module")
+      case _ => errorAdvance("Expected module")
     }
   }
 
-  def dependencies(): Unit = {
+  val dependencies: Runnable = () => {
     val m = mark()
     var lookForComma = false
     indentContext {
@@ -480,7 +469,7 @@ final class CabalPsiBuilder(builder: PsiBuilder)
         dependency()
         lookForComma = true
 
-      case other => errorAdvance("Expected dependency")
+      case _ => errorAdvance("Expected dependency")
     }
     m.done(DEPENDENCIES)
   }
@@ -632,11 +621,11 @@ final class CabalPsiBuilder(builder: PsiBuilder)
     true
   }
 
-  def boolValue(): Unit = {
+  val boolValue: Runnable = () => {
     var found = false
     var err = false
     indentContext {
-      case (TRUE | FALSE) if !found =>
+      case TRUE | FALSE if !found =>
         found = true
         val m = mark()
         advanceLexer()
@@ -651,13 +640,13 @@ final class CabalPsiBuilder(builder: PsiBuilder)
     }
   }
 
-  def freeform(): Unit = {
+  val freeform: Runnable = () => {
     val m = mark()
     indentContext { _ => valueLine() }
     m.done(FREEFORM)
   }
 
-  def identList(): Unit = {
+  val identList: Runnable = () => {
     val m = mark()
     indentContext {
       case _: CabalIdentTokenType => remapAdvance(IDENT)
@@ -667,7 +656,7 @@ final class CabalPsiBuilder(builder: PsiBuilder)
     m.done(IDENT_LIST)
   }
 
-  def sourceDirs(): Unit = indentContext { _ =>
+  def sourceDirs: Runnable = () => indentContext { _ =>
     if (!sourceDir()) advanceLexer()
   }
 
@@ -701,12 +690,12 @@ final class CabalPsiBuilder(builder: PsiBuilder)
     case _ => false
   }
 
-  def moduleList(): Unit = {
+  val moduleList: Runnable = () => {
     val m = mark()
     indentContext {
       case _: CabalIdentTokenType => module()
       case COMMA => advanceLexer() // skip commas
-      case other => errorAdvance("Expected module")
+      case _ => errorAdvance("Expected module")
     }
     m.done(MODULE_LIST)
   }

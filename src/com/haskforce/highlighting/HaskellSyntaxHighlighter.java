@@ -87,14 +87,87 @@ public class HaskellSyntaxHighlighter extends SyntaxHighlighterBase {
 
     static {
         keys = new HashMap<>(0);
-        keysPutEach(HaskellLanguage.RESERVED_IDS_TOKENS, RESERVED_ID);
-        keysPutEach(HaskellLanguage.RESERVED_OPS_TOKENS, RESERVED_OP);
-        keysPutEach(HaskellLanguage.BRACKET_TOKENS, BRACKETS);
-        keysPutEach(HaskellLanguage.PARENS_TOKENS, PARENTHESES);
-        keysPutEach(HaskellLanguage.BRACE_TOKENS, BRACES);
+
+        // Reserved ID tokens
+        keysPutEach(
+          Arrays.asList(
+            HaskellTypes.AS,
+            HaskellTypes.CASE,
+            HaskellTypes.CLASSTOKEN,
+            HaskellTypes.DATA,
+            HaskellTypes.DEFAULT,
+            HaskellTypes.DERIVING,
+            HaskellTypes.DO,
+            HaskellTypes.ELSE,
+            HaskellTypes.FORALLTOKEN,
+            HaskellTypes.FOREIGN,
+            HaskellTypes.HIDING,
+            HaskellTypes.IF,
+            HaskellTypes.IMPORT,
+            HaskellTypes.IN,
+            HaskellTypes.INFIX,
+            HaskellTypes.INFIXL,
+            HaskellTypes.INFIXR,
+            HaskellTypes.INSTANCE,
+            HaskellTypes.LET,
+            HaskellTypes.MDOTOK,
+            HaskellTypes.MODULETOKEN,
+            HaskellTypes.NEWTYPE,
+            HaskellTypes.OF,
+            HaskellTypes.QUALIFIED,
+            HaskellTypes.RECTOK,
+            HaskellTypes.THEN,
+            HaskellTypes.TYPE,
+            HaskellTypes.WHERE
+          ),
+          RESERVED_ID
+        );
+
+        // Reserved operator tokens
+        keysPutEach(
+           Arrays.asList(
+             HaskellTypes.DOUBLEPERIOD,
+             HaskellTypes.COLON,
+             HaskellTypes.DOUBLECOLON,
+             HaskellTypes.EQUALS,
+             HaskellTypes.BACKSLASH,
+             HaskellTypes.PIPE,
+             HaskellTypes.LEFTARROW,
+             HaskellTypes.RIGHTARROW,
+             HaskellTypes.AMPERSAT,
+             HaskellTypes.TILDE,
+             HaskellTypes.DOUBLEARROW
+           ),
+          RESERVED_OP
+        );
+
+        // Bracket tokens
+        keysPutEach(
+          Arrays.asList(
+            HaskellTypes.LBRACKET,
+            HaskellTypes.RBRACKET,
+            HaskellTypes.LTHOPEN,
+            HaskellTypes.RTHCLOSE,
+            HaskellTypes.QQOPEN
+          ),
+          BRACKETS
+        );
+
+        // Paren tokens
+        keysPutEach(
+          Arrays.asList(
+            HaskellTypes.LPAREN,
+            HaskellTypes.RPAREN,
+            HaskellTypes.PARENSPLICE
+          ),
+          PARENTHESES
+        );
+
+        keysPutEach(Arrays.asList(HaskellTypes.LBRACE, HaskellTypes.RBRACE), BRACES);
         keysPutEach(Arrays.asList(HaskellTypes.DOUBLEQUOTE, HaskellTypes.STRINGTOKEN), STRING);
         keysPutEach(Arrays.asList(HaskellTypes.COMMENTTEXT, HaskellTypes.OPENCOM, HaskellTypes.CLOSECOM), NESTED_COMMENT);
         keysPutEach(Arrays.asList(HaskellTypes.PRAGMA, HaskellTypes.OPENPRAGMA, HaskellTypes.CLOSEPRAGMA), PRAGMA);
+
         keys.put(HaskellTypes.COMMA, COMMA);
         keys.put(HaskellTypes.SEMICOLON, SEMICOLON);
         keys.put(HaskellTypes.CONIDREGEXP, CONID);

@@ -2,26 +2,24 @@ package com.haskforce.importWizard.stack
 
 import java.io.File
 import java.util
-import javax.swing.Icon
-import scala.collection.JavaConversions._
-import com.intellij.ide.util.projectWizard.ModuleBuilder
+
+import com.haskforce.cabal.query.CabalQuery
+import com.haskforce.settings.HaskellBuildSettings
+import com.haskforce.{HaskellIcons, HaskellModuleBuilder, HaskellModuleType, HaskellSdkType}
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.{ModifiableModuleModel, Module, ModuleManager}
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.projectRoots.Sdk
-import com.intellij.openapi.projectRoots.impl.SdkConfigurationUtil
-import com.intellij.openapi.roots.{ModifiableRootModel, ProjectRootManager}
 import com.intellij.openapi.roots.ui.configuration.ModulesProvider
-import com.intellij.openapi.util.{Computable, Pair}
+import com.intellij.openapi.roots.{ModifiableRootModel, ProjectRootManager}
 import com.intellij.openapi.util.io.FileUtil
+import com.intellij.openapi.util.{Computable, Pair}
 import com.intellij.openapi.vfs.VirtualFileManager
 import com.intellij.packaging.artifacts.ModifiableArtifactModel
 import com.intellij.projectImport.ProjectImportBuilder
-import com.haskforce.Implicits._
-import com.haskforce.cabal.query.CabalQuery
-import com.haskforce.settings.HaskellBuildSettings
-import com.haskforce.{HaskellIcons, HaskellModuleBuilder, HaskellModuleType, HaskellSdkType}
+import javax.swing.Icon
+
+import scala.collection.JavaConverters._
 
 /**
  * Imports a Stack project and configures modules from the stack.yaml file.
@@ -79,9 +77,15 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
       moduleModel: ModifiableModuleModel,
       stackYaml: StackYaml): util.List[Module] = {
     val projectRoot = getImportRoot
-    val (moduleDirs, modules) = stackYaml.packages.collect { case pkg if isMarked(pkg) =>
-      buildStackPackageModule(project, moduleModel, projectRoot, pkg)
-    }.unzip
+    val moduleDirs = new util.ArrayList[String]
+    val modules = new util.ArrayList[Module]
+    stackYaml.packages.iterator.asScala.foreach { pkg =>
+      if (isMarked(pkg)) {
+        val (moduleDir, module) = buildStackPackageModule(project, moduleModel, projectRoot, pkg)
+        moduleDirs.add(moduleDir)
+        modules.add(module)
+      }
+    }
     // If we aren't updating an existing project AND the project root isn't a module,
     // let's create it as the "root" module.
     if (!isUpdate && !moduleDirs.contains(projectRoot)) {
@@ -146,14 +150,14 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
       moduleBuilder.addSourcePath(Pair.create(FileUtil.join(moduleDir, dir), ""))
     }
     // '.addSourcePath' doesn't support test sources, so we must do this manually.
-    moduleBuilder.addModuleConfigurationUpdater(new ModuleBuilder.ModuleConfigurationUpdater {
-      override def update(module: Module, rootModel: ModifiableRootModel): Unit = {
-        rootModel.getContentEntries.collectFirst {
-          case ce if ce.getFile.getPath == moduleDir => ce
-        } match {
-          case Some(ce) =>
-            val vFileMgr = VirtualFileManager.getInstance()
-            q.getTestSourceRoots.run(app).foreach { _.foreach { dir =>
+    moduleBuilder.addModuleConfigurationUpdater((_: Module, rootModel: ModifiableRootModel) => {
+      rootModel.getContentEntries.collectFirst {
+        case ce if ce.getFile.getPath == moduleDir => ce
+      } match {
+        case Some(ce) =>
+          val vFileMgr = VirtualFileManager.getInstance()
+          q.getTestSourceRoots.run(app).foreach {
+            _.foreach { dir =>
               val dirJFile = new File(s"${ce.getFile.getCanonicalPath}/$dir")
               if (!dirJFile.exists() && !dirJFile.mkdirs()) {
                 StackProjectImportBuilder.LOG.warn(new AssertionError(
@@ -172,12 +176,12 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
                     s"VirtualFile not found: $dir (relative to ${ce.getFile.getPath})"
                   ))
               }
-            }}
-          case None =>
-            StackProjectImportBuilder.LOG.warn(new AssertionError(
-              s"Could not find content entry for module with path: $moduleDir"
-            ))
-        }
+            }
+          }
+        case None =>
+          StackProjectImportBuilder.LOG.warn(new AssertionError(
+            s"Could not find content entry for module with path: $moduleDir"
+          ))
       }
     })
   }
@@ -188,19 +192,7 @@ class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] 
   }
 
   private def commitSdk(project: Project): Unit = {
-    ProjectRootManager.getInstance(project).setProjectSdk(findOrCreateSdk())
-  }
-
-  private def findOrCreateSdk(): Sdk = {
-    val sdkType = HaskellSdkType.getInstance
-    // Essentially, sorts the Sdks so that the Haskell one comes first.
-    // If it doesn't exist, should create a new one.
-    val cmp = { (sdk1: Sdk, sdk2: Sdk) =>
-      if (sdk1.getSdkType == sdkType) -1
-      else if (sdk2.getSdkType == sdkType) 1
-      else 0
-    }
-    SdkConfigurationUtil.findOrCreateSdk(cmp, sdkType)
+    ProjectRootManager.getInstance(project).setProjectSdk(HaskellSdkType.findOrCreateSdk())
   }
 
   def getImportRoot: String = {

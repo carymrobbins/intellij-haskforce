@@ -4,7 +4,9 @@ import java.io.File
 import java.util
 import java.util.concurrent.{ConcurrentLinkedQueue, ExecutionException}
 
-import scala.collection.JavaConversions._
+import com.haskforce.importWizard.stack.StackYaml
+import com.haskforce.jps.model.{HaskellBuildOptions, JpsHaskellBuildOptionsExtension}
+import com.haskforce.jps.{HaskellSourceRootDescriptor, HaskellTarget, HaskellTargetType}
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.{BaseOSProcessHandler, ProcessAdapter, ProcessEvent}
 import com.intellij.openapi.util.Key
@@ -13,9 +15,8 @@ import org.jetbrains.jps.builders.{BuildOutputConsumer, DirtyFilesHolder}
 import org.jetbrains.jps.incremental.messages.{BuildMessage, CompilerMessage}
 import org.jetbrains.jps.incremental.{CompileContext, ProjectBuildException, TargetBuilder}
 import org.jetbrains.jps.model.serialization.JpsModelSerializationDataService
-import com.haskforce.importWizard.stack.StackYaml
-import com.haskforce.jps.model.{HaskellBuildOptions, JpsHaskellBuildOptionsExtension}
-import com.haskforce.jps.{HaskellSourceRootDescriptor, HaskellTarget, HaskellTargetType}
+
+import scala.collection.JavaConverters._
 
 /**
  * Builds the project using `stack build`
@@ -56,7 +57,7 @@ class StackBuilder extends TargetBuilder[HaskellSourceRootDescriptor, HaskellTar
     }
     val moduleBaseDir = JpsModelSerializationDataService.getBaseDirectory(target.getModule)
     val stackRoot = new File(stackFile).getParentFile
-    stackYaml.packages.exists(pkg =>
+    stackYaml.packages.iterator.asScala.exists(pkg =>
       new File(stackRoot, pkg.path).getCanonicalPath == moduleBaseDir.getCanonicalPath
     )
   }
@@ -142,8 +143,8 @@ class StackBuildProcessAdapter(context: CompileContext) extends ProcessAdapter {
   }
 
   private def buildCompilerMessage(head: String, tail: List[String]): CompilerMessage = {
-    import StackBuilderRegex._
     import BuildMessage.Kind
+    import StackBuilderRegex._
 
     def msg(k: Kind, path: String, line: String, col: String, info: String) = {
       val rebuild = if (info.trim.nonEmpty) info :: tail else tail
