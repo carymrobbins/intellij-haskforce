@@ -16,6 +16,23 @@ task cleanJFlex(type: Exec) {
     commandLine './tools/run-jflex', 'clean'
 }
 
+String findIntelliJLibCacheDir() {
+    String baseDir =
+      "${gradle.gradleUserHomeDir}/caches/modules-2/files-2.1/" +
+        "com.jetbrains.intellij.idea/ideaIC/${intellijVersionNumber}"
+    // Relative to the dir above, get the matching "./*/ideaIC-$version/lib" dir
+    for (File d : file(baseDir).listFiles({ it.directory } as FileFilter)) {
+        File[] ds = d.listFiles({ it.directory && it.name == "ideaIC-${intellijVersionNumber}" } as FileFilter)
+        if (ds.length == 0) continue
+        File[] libDirs = ds[0].listFiles({ it.directory && it.name == "lib" } as FileFilter)
+        if (libDirs.length == 0) continue
+        String res = libDirs[0].canonicalPath
+        println("Found intellij lib cache dir: ${res}")
+        return res
+    }
+    throw new RuntimeException("Failed to find intellij lib cache dir!")
+}
+
 ext {
     javaVersion = '1.8'
     scalaVersion = '2.12.4'
@@ -26,6 +43,8 @@ ext {
     // See https://github.com/carymrobbins/intellij-haskforce/issues/407
     intellijVersionNumber = '2019.3.1'
     intellijVersionUntil  = '2019.3.*'
+
+    intellijLibCacheDir = findIntelliJLibCacheDir()
 }
 
 allprojects {
@@ -63,6 +82,11 @@ allprojects {
         compile "org.scalaz:scalaz-core_${scalaBinaryVersion}:7.2.17"
         compile "org.yaml:snakeyaml:1.16"
 
+        compile files("${intellijLibCacheDir}/platform-api.jar")
+        compile files("${intellijLibCacheDir}/platform-ide-util-io.jar")
+        compile files("${intellijLibCacheDir}/jdom.jar")
+        compile files("${intellijLibCacheDir}/annotations.jar")
+
         // Compile-time-only deps.
         compileOnly "com.google.code.findbugs:findbugs:3.0.1"
         compileOnly "com.google.guava:guava:21.0"
@@ -87,6 +111,26 @@ assemble.dependsOn(validateDic, runJFlex)
 project(':jps-plugin') {
     dependencies {
         compile project(':jps-shared')
+    }
+}
+
+// Override the intellij type to be JPS for jps projects.
+// TODO: This can be cleaned up
+[':jps-plugin', ':jps-shared'].each {
+    project(it) {
+        intellij {
+            type = 'JPS'
+        }
+    }
+}
+
+// Proof-of-concept demonstration that we have access to the jar files.
+project(':jps-plugin').configurations.compile.each { dep ->
+    // Ensure that we have a valid jar reference.
+    if (dep.file) {
+        println("dep: ${dep.name} ; ${dep}")
+    } else {
+        throw new RuntimeException("Invalid dependency: ${dep}")
     }
 }
 
