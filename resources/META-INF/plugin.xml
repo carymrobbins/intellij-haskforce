@@ -3,7 +3,7 @@
   <name>HaskForce</name>
   <vendor url="https://github.com/carymrobbins/intellij-haskforce">HaskForce on GitHub</vendor>
 
-  <description>Plugin for Haskell language support.</description>
+  <description>Haskell support for IntelliJ Community and Ultimate editions.</description>
 
   <depends>org.jetbrains.plugins.yaml</depends>
 
@@ -403,18 +403,19 @@
     </action>
     <action id="HaskForce.StylishFormat"
             class="com.haskforce.actions.HaskellStylishFormatAction"
-            text="Reformat code with Stylish Haskell"
+            text="Reformat Code with Stylish Haskell"
             description="Format current file with Stylish-Haskell formatter">
       <add-to-group group-id="CodeFormatGroup" anchor="last"/>
       <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl alt E"/>
     </action>
     <action id="HaskForce.HindentFormat"
             class="com.haskforce.actions.HaskellHindentFormatAction"
-            text="Reformat code with Hindent"
+            text="Reformat Code with Hindent"
             description="Format current file with Hindent">
       <add-to-group group-id="CodeFormatGroup" anchor="last"/>
       <keyboard-shortcut keymap="$default" first-keystroke="shift ctrl alt D"/>
     </action>
+    <!--suppress PluginXmlCapitalization -->
     <action id="com.haskforce.actions.RestartGhcModi" class="com.haskforce.actions.RestartGhcModi"
             text="Restart ghc-modi" description="Restarts a disabled ghc-modi process">
       <add-to-group group-id="ToolsMenu" anchor="last"/>
@@ -445,7 +446,12 @@
     <internalFileTemplate name="Haskell Module"/>
     <moduleType id="HASKELL_MODULE" implementationClass="com.haskforce.HaskellModuleType"/>
     <sdkType implementation="com.haskforce.HaskellSdkType"/>
-    <fileTypeFactory implementation="com.haskforce.HaskellFileTypeFactory"/>
+    <fileType
+      name="Haskell"
+      language="Haskell"
+      implementationClass="com.haskforce.HaskellFileType"
+      extensions="hs"
+    />
     <lang.syntaxHighlighterFactory language="Haskell"
                                    implementationClass="com.haskforce.highlighting.HaskellSyntaxHighlighterFactory"/>
     <lang.parserDefinition language="Haskell"
@@ -548,7 +554,12 @@
                 conditionClass="com.haskforce.ui.tools.HaskellToolsConsoleWindowFactory"/>
 
     <!-- Cabal support -->
-    <fileTypeFactory implementation="com.haskforce.cabal.CabalFileTypeFactory"/>
+    <fileType
+      name="Cabal"
+      language="Cabal"
+      implementationClass="com.haskforce.cabal.CabalFileType"
+      extensions="cabal"
+    />
     <lang.commenter language="Cabal" implementationClass="com.haskforce.cabal.CabalCommenter"/>
     <lang.syntaxHighlighterFactory language="Cabal"
                                    implementationClass="com.haskforce.cabal.highlighting.CabalSyntaxHighlighterFactory"/>
@@ -561,7 +572,12 @@
         implementationClass="com.haskforce.cabal.completion.CabalCompletionContributor" />
 
     <!-- Hamlet support -->
-    <fileTypeFactory implementation="com.haskforce.yesod.shakespeare.hamlet.HamletFileTypeFactory"/>
+    <fileType
+      name="Hamlet"
+      language="Hamlet"
+      implementationClass="com.haskforce.yesod.shakespeare.hamlet.HamletFileType"
+      extensions="hamlet"
+    />
     <lang.syntaxHighlighterFactory language="Hamlet"
                                    implementationClass="com.haskforce.yesod.shakespeare.hamlet.highlighting.HamletSyntaxHighlighterFactory"/>
     <lang.parserDefinition language="Hamlet"
@@ -589,7 +605,6 @@
   <module-components>
     <component>
       <implementation-class>com.haskforce.highlighting.annotation.external.GhcModi</implementation-class>
-      <interface-class>com.haskforce.highlighting.annotation.external.GhcModi</interface-class>
     </component>
   </module-components>
 </idea-plugin>
