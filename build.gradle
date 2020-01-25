@@ -1,5 +1,5 @@
 plugins {
-    id "org.jetbrains.intellij" version "0.4.10"
+    id "org.jetbrains.intellij" version "0.4.15"
 }
 
 version = file('version.txt').text.trim()
@@ -32,14 +32,6 @@ allprojects {
         version = '2019.3.1'
         pluginName = 'HaskForce'
         plugins = ['java', 'yaml']
-    }
-
-    patchPluginXml {
-        // Ensure that we've tested HaskForce with the given major IntelliJ
-        // version before changing these values.
-        // See https://github.com/carymrobbins/intellij-haskforce/issues/407
-        sinceBuild = '2019.3.1'
-        untilBuild = '2019.3.*'
     }
 
     repositories {
@@ -130,8 +122,6 @@ compileTestScala.options.encoding = "UTF-8"
 
 patchPluginXml {
     version = getPluginVersion()
-    // Requiring >= 2017.3 to ensure compatibility with the Scala plugin (which uses 2.12)
-    sinceBuild = '173'
 }
 
 // Allow re-running tests without forcing a recompile.
