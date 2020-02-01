@@ -1,12 +1,13 @@
 package com.haskforce.features.intentions
 
-import com.haskforce.psi.HaskellTypes
+import com.haskforce.haskell.lang.parser.HaskellTokenTypes2020
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction
 import com.intellij.lang.annotation.Annotation
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.tree.LeafPsiElement
+import com.intellij.psi.tree.IElementType
 
 class ReplaceWithSuggestion(
   suggestion: String,
@@ -47,8 +48,8 @@ object ReplaceWithSuggestion {
     }
   }
 
-  private val supportedElementTypes = Set(
-    HaskellTypes.CONIDREGEXP,
-    HaskellTypes.VARIDREGEXP
+  private val supportedElementTypes = Set[IElementType](
+    HaskellTokenTypes2020.CONIDREGEXP,
+    HaskellTokenTypes2020.VARIDREGEXP
   )
 }

@@ -1,5 +1,6 @@
 package com.haskforce;
 
+import com.haskforce.haskell.lang.parser.HaskellParser2020;
 import com.haskforce.parser.HaskellParser;
 import com.haskforce.parsing.HaskellParsingLexer;
 import com.haskforce.psi.HaskellParserWrapper;
@@ -42,7 +43,7 @@ public class HaskellParserDefinition implements ParserDefinition {
         this.mode = mode;
     }
 
-    public enum Mode { DEFAULT, NOOP, UNWRAPPED }
+    public enum Mode { DEFAULT, NOOP, UNWRAPPED, PARSER2020 }
 
     private final Mode mode;
 
@@ -95,6 +96,7 @@ public class HaskellParserDefinition implements ParserDefinition {
       switch (mode) {
           case NOOP: return new SimplePsiParser();
           case UNWRAPPED: return new HaskellParser();
+          case PARSER2020: return new HaskellParser2020();
           default: return new HaskellParserWrapper();
       }
     }
@@ -111,7 +113,8 @@ public class HaskellParserDefinition implements ParserDefinition {
         return new HaskellFile(viewProvider);
     }
 
-    public SpaceRequirements spaceExistanceTypeBetweenTokens(ASTNode left, ASTNode right) {
+    @Override
+    public SpaceRequirements spaceExistenceTypeBetweenTokens(ASTNode left, ASTNode right) {
         return SpaceRequirements.MAY;
     }
 
@@ -119,6 +122,7 @@ public class HaskellParserDefinition implements ParserDefinition {
      * Gets called when PsiBuilder.Marker.done(node) is called by the parser.
      */
     @NotNull
+    @Override
     public PsiElement createElement(ASTNode node) {
         return HaskellTypes.Factory.createElement(node);
     }
