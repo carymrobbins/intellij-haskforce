@@ -1,12 +1,19 @@
 package com.haskforce.haskell.lang.parser
 
+import java.util
+
 import com.haskforce.HaskellLanguage
-import com.intellij.lang.impl.PsiBuilderAdapter
-import com.intellij.lang.{ASTNode, PsiBuilder, PsiParser}
-import com.intellij.psi.PsiElement
-import com.intellij.psi.tree.IElementType
+import com.haskforce.haskell.lang.parser.HaskellParser2020.Psi.HElement
 import com.haskforce.haskell.lang.parser.{HaskellTokenTypes2020 => T}
 import com.haskforce.psi.HaskellTokenType
+import com.intellij.extapi.psi.ASTWrapperPsiElement
+import com.intellij.lang.impl.PsiBuilderAdapter
+import com.intellij.lang.{ASTNode, PsiBuilder, PsiParser}
+import com.intellij.psi.{PsiElement, TokenType}
+import com.intellij.psi.tree.IElementType
+import com.intellij.psi.util.PsiTreeUtil
+
+import scala.reflect.ClassTag
 
 final class HaskellParser2020 extends PsiParser {
   override def parse(root: IElementType, builder: PsiBuilder): ASTNode = {
@@ -24,8 +31,33 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
   def parseRoot(root: IElementType): ASTNode = {
     val rootMarker = mark()
     pModule.run()
+    remapUnparsedWhitespace()
+    handleUnparsedInput()
     rootMarker.done(root)
     getTreeBuilt
+  }
+
+  private def remapUnparsedWhitespace(): Unit = {
+    if (eof()) return
+    while (isSyntheticWhitespace(getTokenType)) {
+      remapCurrentToken(TokenType.WHITE_SPACE)
+      advanceLexer()
+    }
+  }
+
+  private def isSyntheticWhitespace(t: IElementType): Boolean = t match {
+    case T.WHITESPACELBRACETOK => true
+    case T.WHITESPACERBRACETOK => true
+    case T.WHITESPACESEMITOK => true
+    case _ => false
+  }
+
+  private def handleUnparsedInput(): Unit = {
+    if (eof()) return
+    withMark { m =>
+      while (!eof()) advanceLexer()
+      m.done(E.UNKNOWN)
+    }
   }
 
   private def pModule = Parse {
@@ -223,6 +255,7 @@ object HaskellParser2020 {
 
   object Elements {
     sealed class HElementType(name: String) extends IElementType(name, HaskellLanguage.INSTANCE)
+    object UNKNOWN extends HElementType("UNKNOWN")
     object MODULE extends HElementType("MODULE")
     object MODULE_DECL extends HElementType("MODULE_DECL")
     object MODULE_NAME extends HElementType("MODULE_NAME")
@@ -243,6 +276,8 @@ object HaskellParser2020 {
   object Psi {
     trait HElement extends PsiElement
 
+    trait Unknown extends HElement
+
     trait Module extends HElement {
       def getModuleDecl: Option[ModuleDecl]
     }
@@ -256,7 +291,7 @@ object HaskellParser2020 {
     }
 
     trait ModuleExports extends HElement {
-      def getExports: List[ModuleExport]
+      def getExports: util.List[ModuleExport]
     }
 
     sealed trait ModuleExport extends HElement
@@ -269,7 +304,7 @@ object HaskellParser2020 {
       def getQTyCon: QTyCon
       def getDoublePeriod: Option[PsiElement]
       final def exportsAllMembers: Boolean = getDoublePeriod.isDefined
-      def getExportedMembers: List[QVar]
+      def getExportedMembers: util.List[QVar]
     }
 
     trait ModuleExportVar extends ModuleExport {
@@ -277,7 +312,7 @@ object HaskellParser2020 {
     }
 
     trait QualifiedPrefix extends HElement {
-      def getConids: List[Conid]
+      def getConids: util.List[Conid]
     }
 
     trait QConid extends HElement {
@@ -321,6 +356,143 @@ object HaskellParser2020 {
 
     trait TyConConsym extends TyCon {
       def getConsym: Consym
+    }
+  }
+
+  object PsiImpl {
+
+    abstract class HElementImpl(node: ASTNode) extends ASTWrapperPsiElement(node) with HElement {
+      override def toString: String = node.getElementType.toString
+
+      protected def one[A <: HElement](implicit ct: ClassTag[A]): A = {
+        notNullChild(PsiTreeUtil.getChildOfType[A](this, cls[A]))
+      }
+
+      protected def option[A <: HElement](implicit ct: ClassTag[A]): Option[A] = {
+        Option(PsiTreeUtil.getChildOfType[A](this, cls[A]))
+      }
+
+      protected def list[A <: HElement](implicit ct: ClassTag[A]): util.List[A] = {
+        PsiTreeUtil.getChildrenOfTypeAsList[A](this, cls[A])
+      }
+
+      protected def oneTok(t: HaskellTokenType): PsiElement = {
+        notNullChild(findChildByType(t))
+      }
+
+      protected def optionTok(t: HaskellTokenType): Option[PsiElement] = {
+        Option(findChildByType(t))
+      }
+    }
+
+    private def cls[A](implicit ct: ClassTag[A]): Class[A] = {
+      ct.runtimeClass.asInstanceOf[Class[A]]
+    }
+
+    class UnknownImpl(node: ASTNode) extends HElementImpl(node) with Psi.Unknown
+
+    class ModuleImpl(node: ASTNode) extends HElementImpl(node) with Psi.Module {
+      def getModuleDecl: Option[Psi.ModuleDecl] = option
+    }
+
+    class ModuleDeclImpl(node: ASTNode) extends HElementImpl(node) with Psi.ModuleDecl {
+      def getModuleName: Option[Psi.ModuleName] = option
+    }
+
+    class ModuleNameImpl(node: ASTNode) extends HElementImpl(node) with Psi.ModuleName {
+      def getQConid: Psi.QConid = one
+    }
+
+    class ModuleExportsImpl(node: ASTNode) extends HElementImpl(node) with Psi.ModuleExports {
+      def getExports: util.List[Psi.ModuleExport] = list
+    }
+
+    class ModuleExportModuleImpl(node: ASTNode) extends HElementImpl(node) with Psi.ModuleExportModule {
+      def getModuleName: Psi.ModuleName = one
+    }
+
+    class ModuleExportTyConImpl(node: ASTNode) extends HElementImpl(node) with Psi.ModuleExportTyCon {
+      def getQTyCon: Psi.QTyCon = one
+      def getDoublePeriod: Option[PsiElement] = optionTok(T.DOUBLEPERIOD)
+      def getExportedMembers: util.List[Psi.QVar] = list
+    }
+
+    class ModuleExportVarImpl(node: ASTNode) extends HElementImpl(node) with Psi.ModuleExport {
+      def getQVar: Psi.QVar = one
+    }
+
+    class QualifiedPrefixImpl(node: ASTNode) extends HElementImpl(node) with Psi.QualifiedPrefix {
+      def getConids: util.List[Psi.Conid] = list
+    }
+
+    class QConidImpl(node: ASTNode) extends HElementImpl(node) with Psi.QConid {
+      def getQualifiedPrefix: Option[Psi.QualifiedPrefix] = option
+      def getConid: Psi.Conid = one
+    }
+
+    class ConidImpl(node: ASTNode) extends HElementImpl(node) with Psi.Conid {
+      def getConidRegexp: PsiElement = oneTok(T.CONIDREGEXP)
+    }
+
+    class ConsymImpl(node: ASTNode) extends HElementImpl(node) with Psi.Consym {
+      def getConsymTok: PsiElement = oneTok(T.CONSYMTOK)
+    }
+
+    class QVarImpl(node: ASTNode) extends HElementImpl(node) with Psi.QVar {
+      def getQualifiedPrefix: Option[Psi.QualifiedPrefix] = option
+      def getVar: Psi.Var = one
+    }
+
+    class VaridImpl(node: ASTNode) extends HElementImpl(node) with Psi.Varid {
+      def getVaridRegexp: PsiElement = oneTok(T.VARIDREGEXP)
+    }
+
+    class VarsymImpl(node: ASTNode) extends HElementImpl(node) with Psi.Varsym {
+      def getVarsymTok: PsiElement = oneTok(T.VARSYMTOK)
+    }
+
+    class QTyConImpl(node: ASTNode) extends HElementImpl(node) with Psi.QTyCon {
+      def getQualifiedPrefix: Option[Psi.QualifiedPrefix] = option
+      def getTyCon: Psi.TyCon = one
+    }
+
+    class TyConConidImpl(node: ASTNode) extends HElementImpl(node) with Psi.TyConConid {
+      def getConid: Psi.Conid = one
+    }
+
+    class TyConConsymImpl(node: ASTNode) extends HElementImpl(node) with Psi.TyConConsym {
+      def getConsym: Psi.Consym = one
+    }
+  }
+
+  object Factory {
+    def createElement(node: ASTNode): PsiElement = {
+      node.getElementType match {
+        case t: Elements.HElementType => createHElement(node, t)
+        case t => throw new AssertionError(s"Unexpected element type: $t")
+      }
+    }
+
+    private def createHElement(node: ASTNode, t: Elements.HElementType): Psi.HElement = {
+      t match {
+        case Elements.UNKNOWN => new PsiImpl.UnknownImpl(node)
+        case Elements.MODULE => new PsiImpl.ModuleImpl(node)
+        case Elements.MODULE_DECL => new PsiImpl.ModuleDeclImpl(node)
+        case Elements.MODULE_NAME => new PsiImpl.ModuleNameImpl(node)
+        case Elements.MODULE_EXPORTS => new PsiImpl.ModuleExportsImpl(node)
+        case Elements.MODULE_EXPORT_MODULE => new PsiImpl.ModuleExportModuleImpl(node)
+        case Elements.MODULE_EXPORT_TYCON => new PsiImpl.ModuleExportTyConImpl(node)
+        case Elements.MODULE_EXPORT_VAR => new PsiImpl.ModuleExportVarImpl(node)
+        case Elements.QUALIFIED_PREFIX => new PsiImpl.QualifiedPrefixImpl(node)
+        case Elements.CONID => new PsiImpl.ConidImpl(node)
+        case Elements.QCONID => new PsiImpl.QConidImpl(node)
+        case Elements.CONSYM => new PsiImpl.ConsymImpl(node)
+        // TODO case Elements.QCONSYM => new PsiImpl.QConsymImpl(node)
+        case Elements.TYCON_CONID => new PsiImpl.TyConConidImpl(node)
+        case Elements.TYCON_CONSYM => new PsiImpl.TyConConsymImpl(node)
+        case Elements.QTYCON => new PsiImpl.QTyConImpl(node)
+        case _ => throw new AssertionError(s"Unexpected Haskell element type '$t' for node '$node'")
+      }
     }
   }
 }

@@ -21,6 +21,8 @@ import com.intellij.psi.tree.TokenSet;
 import com.haskforce.psi.HaskellFile;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.Function;
+
 /**
  * Main entry point from plugin for parsing. Returns parser, lexer and other
  * things useful for parsing.
@@ -30,9 +32,20 @@ public class HaskellParserDefinition implements ParserDefinition {
     private static final Mode SYSTEM_PARSER_MODE;
     static {
         final String s = System.getProperty("com.haskforce.parser", "default").trim().toLowerCase();
-        if (s.equals("noop")) SYSTEM_PARSER_MODE = Mode.NOOP;
-        else if (s.equals("unwrapped")) SYSTEM_PARSER_MODE = Mode.UNWRAPPED;
-        else SYSTEM_PARSER_MODE = Mode.DEFAULT;
+        switch (s) {
+            case "noop":
+                SYSTEM_PARSER_MODE = Mode.NOOP;
+                break;
+            case "unwrapped":
+                SYSTEM_PARSER_MODE = Mode.UNWRAPPED;
+                break;
+            case "2020":
+                SYSTEM_PARSER_MODE = Mode.PARSER2020;
+                break;
+            default:
+                SYSTEM_PARSER_MODE = Mode.DEFAULT;
+                break;
+        }
     }
 
     public HaskellParserDefinition() {
@@ -124,6 +137,7 @@ public class HaskellParserDefinition implements ParserDefinition {
     @NotNull
     @Override
     public PsiElement createElement(ASTNode node) {
+        if (mode == Mode.PARSER2020) return HaskellParser2020.Factory$.MODULE$.createElement(node);
         return HaskellTypes.Factory.createElement(node);
     }
 }

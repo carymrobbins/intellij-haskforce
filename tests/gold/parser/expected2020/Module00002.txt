@@ -1,0 +1,18 @@
+Haskell File
+  MODULE
+    MODULE_DECL
+      PsiElement(HaskellTokenType.module)('module')
+      MODULE_NAME
+        QCONID
+          CONID
+            PsiElement(HaskellTokenType.conidRegexp)('Path')
+          PsiElement(HaskellTokenType..)('.')
+          CONID
+            PsiElement(HaskellTokenType.conidRegexp)('To')
+          PsiElement(HaskellTokenType..)('.')
+          CONID
+            PsiElement(HaskellTokenType.conidRegexp)('Module00002')
+      MODULE_EXPORTS
+        PsiElement(HaskellTokenType.conidRegexp)('()')
+      PsiElement(HaskellTokenType.where)('where')
+  PsiComment(HaskellTokenType.comment)('-- Parse an empty export list.')
