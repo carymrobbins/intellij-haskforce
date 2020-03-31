@@ -24,7 +24,7 @@ final class HaskellParser2020 extends PsiParser {
 private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(builder) {
 
   import HaskellParser2020.{Elements => E}
-  import HaskellPsiBuilder.{Parse, withMark}
+  import HaskellPsiBuilder.{Parse, withMark, parseIfToken}
 
   private implicit val self: HaskellPsiBuilder = this
 
@@ -61,35 +61,27 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
   }
 
   private def pModule = Parse {
-    val m = mark()
-    pModuleDecl.run()
-    m.done(E.MODULE)
-    true
+    withMark { m =>
+      pModuleDecl.run()
+      m.done(E.MODULE)
+    }.isDone
   }
 
-  private def pModuleDecl = Parse {
-    if (getTokenType != T.MODULETOKEN) {
-      false
-    } else {
-      val m = mark()
-      advanceLexer() // skip seen MODULETOKEN
-      pModuleName.run()
-      pModuleExports.run()
-      if (getTokenType == T.WHERE) advanceLexer()
-      m.done(E.MODULE_DECL)
-      true
-    }
+  private def pModuleDecl = parseIfToken(T.MODULETOKEN) { m =>
+    pModuleName.run()
+    pModuleExports.run()
+    if (getTokenType == T.WHERE) advanceLexer()
+    m.done(E.MODULE_DECL)
   }
 
   private def pModuleName = Parse {
-    val m = mark()
-    if (pQConid.run()) {
-      m.done(E.MODULE_NAME)
-      true
-    } else {
-      m.rollbackTo()
-      false
-    }
+    withMark { m =>
+      if (pQConid.run()) {
+        m.done(E.MODULE_NAME)
+      } else {
+        m.rollbackTo()
+      }
+    }.isDone
   }
 
   private def pModuleExports = Parse {
@@ -108,17 +100,17 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
     } else if (getTokenType != T.LPAREN) {
       false
     } else {
-      val m = mark()
-      advanceLexer() // skip seen LPAREN
-      while (getTokenType != T.RPAREN) {
-        // skip commas
-        while (getTokenType == T.COMMA) advanceLexer()
-        pModuleExport.run()
-        // skip commas
-        while (getTokenType == T.COMMA) advanceLexer()
-      }
-      m.done(E.MODULE_EXPORTS)
-      true
+      withMark { m =>
+        advanceLexer() // skip seen LPAREN
+        while (getTokenType != T.RPAREN) {
+          // skip commas
+          while (getTokenType == T.COMMA) advanceLexer()
+          pModuleExport.run()
+          // skip commas
+          while (getTokenType == T.COMMA) advanceLexer()
+        }
+        m.done(E.MODULE_EXPORTS)
+      }.isDone
     }
   }
 
@@ -127,27 +119,19 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
       .orElse(pModuleExportTyCon)
   }
 
-  private def pModuleExportModule = Parse {
-    if (getTokenType != T.MODULETOKEN) {
-      false
-    } else {
-      val m = mark()
-      advanceLexer() // skip seen MODULETOKEN
-      if (!pModuleName.run()) error("Missing module name")
-      m.done(E.MODULE_EXPORT_MODULE)
-      true
-    }
+  private def pModuleExportModule = parseIfToken(T.MODULETOKEN) { m =>
+    if (!pModuleName.run()) error("Missing module name")
+    m.done(E.MODULE_EXPORT_MODULE)
   }
 
   private def pModuleExportTyCon = Parse {
-    val m = mark()
-    if (!pQTyCon.run()) {
-      m.rollbackTo()
-      false
-    } else {
-      m.done(E.MODULE_EXPORT_TYCON)
-      true
-    }
+    withMark { m =>
+      if (!pQTyCon.run()) {
+        m.rollbackTo()
+      } else {
+        m.done(E.MODULE_EXPORT_TYCON)
+      }
+    }.isDone
   }
 
   private def pTyCon = Parse {
@@ -178,17 +162,29 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
 
   private def pQualified(p: Parse, e: E.HElementType) = Parse {
     withMark { m =>
-      while (getTokenType == T.CONIDREGEXP && lookAhead(1) == T.PERIOD) {
-        assert(pConid.run())
-        assert(getTokenType == T.PERIOD)
-        advanceLexer()
-      }
+      pQualifiedPrefix.run() // ok to ignore result
       if (p.run()) {
         m.done(e)
       } else {
         m.rollbackTo()
       }
     }.isDone
+  }
+
+  private def pQualifiedPrefix = Parse {
+    def hasMore = getTokenType == T.CONIDREGEXP && lookAhead(1) == T.PERIOD
+    if (!hasMore) {
+      false
+    } else {
+      withMark { m =>
+        do {
+          assert(pConid.run())
+          assert(getTokenType == T.PERIOD)
+          advanceLexer()
+        } while (hasMore)
+        m.done(E.QUALIFIED_PREFIX)
+      }.isDone
+    }
   }
 
   private def pTokenAs(t: HaskellTokenType, e: E.HElementType) = Parse {
@@ -217,6 +213,21 @@ object HaskellPsiBuilder {
 
   def withMark(f: Marker => MarkResult)(implicit b: HaskellPsiBuilder): MarkResult = {
     f(new Marker(b.mark()))
+  }
+
+  def parseIf(p: => Boolean)(f: Marker => MarkResult)(implicit b: HaskellPsiBuilder): Parse = Parse {
+    if (!p) {
+      false
+    } else {
+      withMark(f).isDone
+    }
+  }
+
+  def parseIfToken(t: HaskellTokenType)(f: Marker => MarkResult)(implicit b: HaskellPsiBuilder): Parse = {
+    parseIf(b.getTokenType == t) { m =>
+      b.advanceLexer() // skip the checked token
+      f(m)
+    }
   }
 
   final class Marker(private val m: PsiBuilder.Marker) extends AnyVal {

@@ -4,12 +4,13 @@ Haskell File
       PsiElement(HaskellTokenType.module)('module')
       MODULE_NAME
         QCONID
-          CONID
-            PsiElement(HaskellTokenType.conidRegexp)('Path')
-          PsiElement(HaskellTokenType..)('.')
-          CONID
-            PsiElement(HaskellTokenType.conidRegexp)('To')
-          PsiElement(HaskellTokenType..)('.')
+          QUALIFIED_PREFIX
+            CONID
+              PsiElement(HaskellTokenType.conidRegexp)('Path')
+            PsiElement(HaskellTokenType..)('.')
+            CONID
+              PsiElement(HaskellTokenType.conidRegexp)('To')
+            PsiElement(HaskellTokenType..)('.')
           CONID
             PsiElement(HaskellTokenType.conidRegexp)('Module00002')
       MODULE_EXPORTS
