@@ -3,7 +3,6 @@ package com.haskforce.haskell.lang.parser
 import java.util
 
 import com.haskforce.HaskellLanguage
-import com.haskforce.haskell.lang.parser.HaskellParser2020.Psi.HElement
 import com.haskforce.haskell.lang.parser.{HaskellTokenTypes2020 => T}
 import com.haskforce.psi.HaskellTokenType
 import com.intellij.extapi.psi.ASTWrapperPsiElement
@@ -24,9 +23,7 @@ final class HaskellParser2020 extends PsiParser {
 private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(builder) {
 
   import HaskellParser2020.{Elements => E}
-  import HaskellPsiBuilder.{Parse, withMark, parseIfToken}
-
-  private implicit val self: HaskellPsiBuilder = this
+  import HaskellPsiBuilder.{Parse, Marker, MarkResult}
 
   def parseRoot(root: IElementType): ASTNode = {
     val rootMarker = mark()
@@ -60,11 +57,9 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
     }
   }
 
-  private def pModule = Parse {
-    withMark { m =>
-      pModuleDecl.run()
-      m.done(E.MODULE)
-    }.isDone
+  private def pModule = withMark { m =>
+    pModuleDecl.run()
+    m.done(E.MODULE)
   }
 
   private def pModuleDecl = parseIfToken(T.MODULETOKEN) { m =>
@@ -74,14 +69,12 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
     m.done(E.MODULE_DECL)
   }
 
-  private def pModuleName = Parse {
-    withMark { m =>
-      if (pQConid.run()) {
-        m.done(E.MODULE_NAME)
-      } else {
-        m.rollbackTo()
-      }
-    }.isDone
+  private def pModuleName = withMark { m =>
+    if (pQConid.run()) {
+      m.done(E.MODULE_NAME)
+    } else {
+      m.rollbackTo()
+    }
   }
 
   private def pModuleExports = Parse {
@@ -93,10 +86,10 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
     // LPAREN PsiWhiteSpace RPAREN, so we don't need to special case that
     // here.
     if (getTokenText == "()") {
-      val m = mark()
-      advanceLexer() // skip the "()" token
-      m.done(E.MODULE_EXPORTS)
-      true
+      withMark { m =>
+        advanceLexer() // skip the "()" token
+        m.done(E.MODULE_EXPORTS)
+      }.run()
     } else if (getTokenType != T.LPAREN) {
       false
     } else {
@@ -110,7 +103,7 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
           while (getTokenType == T.COMMA) advanceLexer()
         }
         m.done(E.MODULE_EXPORTS)
-      }.isDone
+      }.run()
     }
   }
 
@@ -124,30 +117,28 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
     m.done(E.MODULE_EXPORT_MODULE)
   }
 
-  private def pModuleExportTyCon = Parse {
-    withMark { m =>
-      if (!pQTyCon.run()) {
-        m.rollbackTo()
-      } else {
-        m.done(E.MODULE_EXPORT_TYCON)
-      }
-    }.isDone
+  private def pModuleExportTyCon = withMark { m =>
+    if (!pQTyCon.run()) {
+      m.rollbackTo()
+    } else {
+      m.done(E.MODULE_EXPORT_TYCON)
+    }
   }
 
-  private def pTyCon = Parse {
+  private def pTyCon = withMark { m =>
+    if (pConid.run()) {
+      m.done(E.TYCON_CONID)
+    } else {
+      m.rollbackTo()
+    }
+  }.orElse {
     withMark { m =>
-      if (pConid.run()) {
-        m.done(E.TYCON_CONID)
-      } else {
-        m.rollbackTo()
-      }
-    }.orElse { m =>
       if (pConsym.run()) {
         m.done(E.TYCON_CONSYM)
       } else {
         m.rollbackTo()
       }
-    }.isDone
+    }
   }
 
   private def pQTyCon = pQualified(pTyCon, E.QTYCON)
@@ -160,15 +151,13 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
 
   private def pQConsym = pQualified(pConsym, E.QCONSYM)
 
-  private def pQualified(p: Parse, e: E.HElementType) = Parse {
-    withMark { m =>
-      pQualifiedPrefix.run() // ok to ignore result
-      if (p.run()) {
-        m.done(e)
-      } else {
-        m.rollbackTo()
-      }
-    }.isDone
+  private def pQualified(p: Parse, e: E.HElementType) = withMark { m =>
+    pQualifiedPrefix.run() // ok to ignore result
+    if (p.run()) {
+      m.done(e)
+    } else {
+      m.rollbackTo()
+    }
   }
 
   private def pQualifiedPrefix = Parse {
@@ -183,18 +172,32 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
           advanceLexer()
         } while (hasMore)
         m.done(E.QUALIFIED_PREFIX)
-      }.isDone
+      }.run()
     }
   }
 
-  private def pTokenAs(t: HaskellTokenType, e: E.HElementType) = Parse {
-    if (getTokenType != t) {
+  private def pTokenAs(t: HaskellTokenType, e: E.HElementType) = {
+    parseIfToken(t) { m =>
+      m.done(e)
+    }
+  }
+
+  private def withMark(f: Marker => MarkResult): Parse = Parse {
+    f(new Marker(mark())).isDone
+  }
+
+  private def parseIf(p: => Boolean)(f: Marker => MarkResult): Parse = Parse {
+    if (!p) {
       false
     } else {
-      val m = mark()
-      advanceLexer()
-      m.done(e)
-      true
+      withMark(f).run()
+    }
+  }
+
+  private def parseIfToken(t: HaskellTokenType)(f: Marker => MarkResult): Parse = {
+    parseIf(getTokenType == t) { m =>
+      advanceLexer() // skip the checked token
+      f(m)
     }
   }
 }
@@ -207,27 +210,6 @@ object HaskellPsiBuilder {
 
   object Parse {
     def apply(run: => Boolean): Parse = new Parse(() => run)
-  }
-
-  type WithMark = (Marker => MarkResult) => MarkResult
-
-  def withMark(f: Marker => MarkResult)(implicit b: HaskellPsiBuilder): MarkResult = {
-    f(new Marker(b.mark()))
-  }
-
-  def parseIf(p: => Boolean)(f: Marker => MarkResult)(implicit b: HaskellPsiBuilder): Parse = Parse {
-    if (!p) {
-      false
-    } else {
-      withMark(f).isDone
-    }
-  }
-
-  def parseIfToken(t: HaskellTokenType)(f: Marker => MarkResult)(implicit b: HaskellPsiBuilder): Parse = {
-    parseIf(b.getTokenType == t) { m =>
-      b.advanceLexer() // skip the checked token
-      f(m)
-    }
   }
 
   final class Marker(private val m: PsiBuilder.Marker) extends AnyVal {
@@ -244,20 +226,13 @@ object HaskellPsiBuilder {
 
   sealed trait MarkResult {
     def isDone: Boolean
-    def orElse(f: Marker => MarkResult)(implicit b: HaskellPsiBuilder): MarkResult
   }
   object MarkResult {
     case object Done extends MarkResult {
       override def isDone: Boolean = true
-      override def orElse(f: Marker => MarkResult)(implicit b: HaskellPsiBuilder): MarkResult = {
-        this
-      }
     }
     case object Rollback extends MarkResult {
       override def isDone: Boolean = false
-      override def orElse(f: Marker => MarkResult)(implicit b: HaskellPsiBuilder): MarkResult = {
-        withMark(f)
-      }
     }
   }
 }
@@ -372,18 +347,18 @@ object HaskellParser2020 {
 
   object PsiImpl {
 
-    abstract class HElementImpl(node: ASTNode) extends ASTWrapperPsiElement(node) with HElement {
+    abstract class HElementImpl(node: ASTNode) extends ASTWrapperPsiElement(node) with Psi.HElement {
       override def toString: String = node.getElementType.toString
 
-      protected def one[A <: HElement](implicit ct: ClassTag[A]): A = {
+      protected def one[A <: Psi.HElement](implicit ct: ClassTag[A]): A = {
         notNullChild(PsiTreeUtil.getChildOfType[A](this, cls[A]))
       }
 
-      protected def option[A <: HElement](implicit ct: ClassTag[A]): Option[A] = {
+      protected def option[A <: Psi.HElement](implicit ct: ClassTag[A]): Option[A] = {
         Option(PsiTreeUtil.getChildOfType[A](this, cls[A]))
       }
 
-      protected def list[A <: HElement](implicit ct: ClassTag[A]): util.List[A] = {
+      protected def list[A <: Psi.HElement](implicit ct: ClassTag[A]): util.List[A] = {
         PsiTreeUtil.getChildrenOfTypeAsList[A](this, cls[A])
       }
 
