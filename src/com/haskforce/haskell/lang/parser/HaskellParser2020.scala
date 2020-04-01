@@ -25,18 +25,37 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
   import HaskellParser2020.{Elements => E}
   import HaskellPsiBuilder.{Parse, Marker, MarkResult}
 
+  // In prod we want this to be 'false' but can be useful as 'true' for testing.
+  private val DEBUG = true
+  // In prod we want this to be 'true' but can be useful as 'false' for testing.
+  private val PARSE_UNPARSED = false
+
+  private def debug(message: => String): Unit = {
+    if (DEBUG) {
+      System.err.println(
+        message
+          + s"; offset=$getCurrentOffset"
+          + s"; token='$getTokenType'"
+          + s"; text='$getTokenText'"
+      )
+    }
+  }
+
   def parseRoot(root: IElementType): ASTNode = {
     val rootMarker = mark()
     pModule.run()
-    remapUnparsedWhitespace()
-    handleUnparsedInput()
+    if (PARSE_UNPARSED) {
+      remapUnparsedSyntheticWhitespace()
+      handleUnparsedInput()
+    }
     rootMarker.done(root)
     getTreeBuilt
   }
 
-  private def remapUnparsedWhitespace(): Unit = {
+  private def remapUnparsedSyntheticWhitespace(): Unit = {
     if (eof()) return
     while (isSyntheticWhitespace(getTokenType)) {
+      debug("Remapping unparsed synthetic whitespace")
       remapCurrentToken(TokenType.WHITE_SPACE)
       advanceLexer()
     }
@@ -51,15 +70,54 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
 
   private def handleUnparsedInput(): Unit = {
     if (eof()) return
+    debug("Encountered unparsed input; parsing as UNKNOWN")
     withMark { m =>
       while (!eof()) advanceLexer()
       m.done(E.UNKNOWN)
-    }
+    }.run()
   }
 
   private def pModule = withMark { m =>
     pModuleDecl.run()
+    pModuleBody.run()
     m.done(E.MODULE)
+  }
+
+  private def pModuleBody = withMark { m =>
+    val lbrace = getTokenType
+    val optRBrace: Option[HaskellTokenType] = lbrace match {
+      case T.WHITESPACELBRACETOK =>
+        remapCurrentToken(TokenType.WHITE_SPACE)
+        advanceLexer()
+        Some(T.WHITESPACERBRACETOK)
+      case T.LBRACE =>
+        advanceLexer()
+        Some(T.RBRACE)
+      case _ =>
+        debug("Unexpectedly found no real nor synthetic lbrace in module body")
+        None
+    }
+    while (
+      optRBrace.contains(getTokenType) && lookAhead(1) == null
+        || optRBrace.isEmpty && getTokenType == null
+    ) {
+      pModuleBodyItem.run()
+    }
+    m.done(E.MODULE_BODY)
+  }
+
+  private def pModuleBodyItem = {
+    pImportStmt
+  }
+
+
+  private def pImportStmt = parseIfToken(T.IMPORT) { m =>
+    // Consume 'qualified' if it exists.
+    if (getTokenType == T.QUALIFIED) advanceLexer()
+    if (!pConid.run()) {
+
+    }
+    m.done(E.IMPORT_STMT)
   }
 
   private def pModuleDecl = parseIfToken(T.MODULETOKEN) { m =>
@@ -249,6 +307,8 @@ object HaskellParser2020 {
     object MODULE_EXPORT_MODULE extends HElementType("MODULE_EXPORT_MODULE")
     object MODULE_EXPORT_TYCON extends HElementType("MODULE_EXPORT_TYCON")
     object MODULE_EXPORT_VAR extends HElementType("MODULE_EXPORT_VAR")
+    object MODULE_BODY extends HElementType("MODULE_BODY")
+    object IMPORT_STMT extends HElementType("IMPORT_STMT")
     object QUALIFIED_PREFIX extends HElementType("QUALIFIED_PREFIX")
     object CONID extends HElementType("CONID")
     object QCONID extends HElementType("QCONID")
