@@ -1,16 +1,14 @@
 package com.haskforce.cabal.completion
 
+import com.haskforce.cabal.CabalLanguage
+import com.haskforce.cabal.lang.psi
+import com.haskforce.cabal.lang.psi.CabalPsiUtil
+import com.haskforce.constants.GhcLanguageExtensions
 import com.intellij.codeInsight.completion._
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.psi.PsiElement
 import com.intellij.util.ProcessingContext
-import com.haskforce.cabal.CabalLanguage
-import com.haskforce.cabal.lang.psi
-import com.haskforce.cabal.lang.psi.CabalPsiUtil
-import com.haskforce.constants.GhcLanguageExtensions
-
-import scala.collection.JavaConverters._
 
 final class CabalCompletionContributor extends CompletionContributor {
 
@@ -27,12 +25,11 @@ final class CabalCompletionContributor extends CompletionContributor {
          context: ProcessingContext,
          result: CompletionResultSet)
         : Unit
-        = new CompletionWrapper(parameters, context, result).run()
+        = new CompletionWrapper(parameters, result).run()
   }
 
   private class CompletionWrapper(
     parameters: CompletionParameters,
-    context: ProcessingContext,
     result: CompletionResultSet
   ) {
 

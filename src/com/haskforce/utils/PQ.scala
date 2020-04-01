@@ -1,12 +1,11 @@
 package com.haskforce.utils
 
-import scala.collection.JavaConverters._
 import com.intellij.lang.ASTNode
-import com.intellij.openapi.util.Condition
-import com.intellij.psi.PsiElement
 import com.intellij.psi.tree.{IElementType, TokenSet}
 import com.intellij.psi.util.PsiTreeUtil
+import com.intellij.psi.{PsiElement, SyntaxTraverser}
 
+import scala.collection.JavaConverters._
 import scala.reflect.ClassTag
 
 /**
@@ -24,20 +23,19 @@ object PQ {
   }
 
   def streamChildren[T <: PsiElement](el: PsiElement, cls: Class[T]): Stream[T] = {
-    PsiTreeUtil.childIterator(el, cls).asScala.toStream
+    SyntaxTraverser.psiTraverser().children(el).filter(cls).iterator().asScala.toStream
   }
 
   /** Analogous to PsiTreeUtil.findFirstParent */
   def findFirstParent[T <: PsiElement](el: PsiElement)(implicit ct: ClassTag[T]): Option[T] = {
-    Option(PsiTreeUtil.findFirstParent(el, new Condition[PsiElement] {
-      override def value(t: PsiElement): Boolean = ct.unapply(t).isDefined
-    })).asInstanceOf[Option[T]]
+    Option(PsiTreeUtil.findFirstParent(
+      el,
+      (t: PsiElement) => ct.unapply(t).isDefined)
+    ).asInstanceOf[Option[T]]
   }
 
   /** Analogous to PsiTreeUtil.findFirstParent but via a partial function. */
   def collectFirstParent[A](el: PsiElement)(f: PartialFunction[PsiElement, A]): Option[A] = {
-    Option(PsiTreeUtil.findFirstParent(el, new Condition[PsiElement] {
-      override def value(t: PsiElement): Boolean = f.isDefinedAt(t)
-    })).map(f)
+    Option(PsiTreeUtil.findFirstParent(el, (t: PsiElement) => f.isDefinedAt(t))).map(f)
   }
 }

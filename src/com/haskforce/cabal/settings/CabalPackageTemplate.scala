@@ -4,33 +4,29 @@ import java.io.{File, PrintWriter}
 
 import com.haskforce.macros.string.dedent
 import com.haskforce.utils.Logging
-import com.haskforce.Implicits._
 
 /** Utility for creating new files for cabal packages. */
 object CabalPackageTemplate extends Logging {
 
   def createSetupFile(baseDir: String): Unit = {
-    val newSetupFile = new File(baseDir, "Setup.hs")
-    if (newSetupFile.exists()) {
-      LOG.warn(s"File '${newSetupFile.getAbsolutePath}' already exists, skipping")
-      return
-    }
-    val writer = new PrintWriter(newSetupFile, "UTF-8")
-    writer.println(dedent("""
+    createFileIfNotExists(baseDir, "Setup.hs", dedent("""
       import Distribution.Simple
       main = defaultMain
     """))
-    writer.close()
   }
 
   def createCabalFile(baseDir: String, name: String, data: CabalFileData): Unit = {
-    val newCabalFile = new File(baseDir, name + ".cabal")
-    if (newCabalFile.exists()) {
-      LOG.warn(s"File '${newCabalFile.getAbsolutePath}' already exists, skipping")
+    createFileIfNotExists(baseDir, name + ".cabal", createCabalFileText(name, data))
+  }
+
+  private def createFileIfNotExists(baseDir: String, name: String, content: => String): Unit = {
+    val newFile = new File(baseDir, name)
+    if (newFile.exists()) {
+      LOG.warn(s"File '${newFile.getAbsolutePath}' already exists, skipping'")
       return
     }
-    val writer = new PrintWriter(newCabalFile, "UTF-8")
-    writer.println(createCabalFileText(name, data))
+    val writer = new PrintWriter(newFile, "UTF-8")
+    writer.println(content)
     writer.close()
   }
 
@@ -79,8 +75,13 @@ object CabalPackageTemplate extends Logging {
       $componentText
     """)
 
-    // Note that we use `.rtrim` to remove trailing spaces which may occur
+    // Note that we use `rtrim` to remove trailing spaces which may occur
     // due to empty template values.
-    result.split('\n').map(_.rtrim).mkString("\n")
+    result.split('\n').map(rtrim).mkString("\n")
+  }
+
+  // This is clever. All characters <= ' ' are whitespace or control characters.
+  private def rtrim(s: String): String = {
+    s.reverse.dropWhile(_ <= ' ').reverse
   }
 }

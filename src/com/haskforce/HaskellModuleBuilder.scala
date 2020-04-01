@@ -2,15 +2,17 @@ package com.haskforce
 
 import java.awt.event.ActionEvent
 import java.awt.{Color, GridBagLayout}
-import java.io.{File, IOException, PrintWriter}
+import java.io.{File, IOException}
 import java.util
 import java.util.concurrent.ExecutionException
-import javax.swing._
 
-import scala.collection.mutable
+import com.haskforce.cabal.settings.CabalPackageSettingsStep
+import com.haskforce.cabal.settings.ui.NewCabalProjectForm
+import com.haskforce.settings.HaskellBuildSettings
+import com.haskforce.ui.GC
+import com.haskforce.utils.{GuiUtil, Logging}
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.ide.util.projectWizard._
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.fileTypes.FileTypeManager
 import com.intellij.openapi.module.{Module, ModuleType}
 import com.intellij.openapi.options.ConfigurationException
@@ -23,20 +25,14 @@ import com.intellij.openapi.util.Pair
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.uiDesigner.core.Spacer
+import javax.swing._
 import org.apache.commons.lang.builder.HashCodeBuilder
 import org.jetbrains.annotations.{NotNull, Nullable}
-import com.haskforce.Implicits._
-import com.haskforce.cabal.settings.{CabalComponentType, CabalPackageSettingsStep, CabalPackageTemplate}
-import com.haskforce.cabal.settings.ui.NewCabalProjectForm
-import com.haskforce.macros.string.dedent
-import com.haskforce.settings.HaskellBuildSettings
-import com.haskforce.ui.GC
-import com.haskforce.utils.{GuiUtil, Logging}
+
+import scala.collection.mutable
 
 /** Manages the creation of Haskell modules via interaction with the user. */
 class HaskellModuleBuilder extends ModuleBuilder with SourcePathsBuilder with ModuleBuilderListener {
-
-  val LOG = Logger.getInstance(getClass)
 
   /**
    * Hack to avoid this builder appearing in the top-level project wizard.
@@ -57,7 +53,7 @@ class HaskellModuleBuilder extends ModuleBuilder with SourcePathsBuilder with Mo
     // Adapted from JavaModuleBuilder.setupRootModel
     lazy val localFS = LocalFileSystem.getInstance()
     Option(doAddContentEntry(rootModel)).foreach { contentEntry =>
-      getSourcePaths.foreach { path =>
+      getSourcePaths.forEach { path =>
         val dir = new File(path.first)
         dir.mkdirs()
         Option(localFS.refreshAndFindFileByIoFile(dir)).foreach { sourceRoot =>
@@ -129,10 +125,12 @@ class HaskellModuleBuilder extends ModuleBuilder with SourcePathsBuilder with Mo
   override def setSourcePaths(paths: util.List[Pair[String, String]]): Unit = {
     sourcePaths.clear()
     sourcePaths.addAll(paths)
+    ()
   }
 
   override def addSourcePath(info: Pair[String, String]): Unit = {
     sourcePaths.add(info)
+    ()
   }
 
   override def getSourcePaths: util.List[Pair[String, String]] = sourcePaths
@@ -231,10 +229,10 @@ class HaskellBuildToolStepForm(wizardContext: WizardContext) {
     cabalFields.foreach { _.setEnabled(true) }
   }
 
-  val contentPane = new JPanel(new GridBagLayout) {
-    val gc = GC.pad(10, 5).northWest
+  val contentPane: JPanel = new JPanel(new GridBagLayout) {
+    private val gc = GC.default.pad(10, 5).northWest
 
-    var gridY = 0
+    private var gridY = 0
     add(buildWithStackRadio, gc.width(2).weight(1, 0).grid(0, gridY))
 
     gridY += 1
@@ -287,8 +285,8 @@ case class HaskellCabalPackageSettingsStep(
 
   val form = new NewCabalProjectForm
 
-  override protected def updateModule(module: Module, rootModel: ModifiableRootModel): Unit = {
-    super.updateModule(module, rootModel)
+  override protected def updateModule(rootModel: ModifiableRootModel): Unit = {
+    super.updateModule(rootModel)
     if (wizardContext.isCreatingNewProject) runStackInitIfEnabled(rootModel.getProject)
   }
 
@@ -327,9 +325,9 @@ case class HaskellModifiedSettingsStep(
   }
 
   override def validate(): Boolean = {
-    val projectName = settingsStep.getModuleNameField.getText
+    val projectName = settingsStep.getModuleNameLocationSettings.getModuleName
     if(!projectName.matches("[a-zA-Z0-9-]+")){
-      throw new ConfigurationException("Project name can only contain letters, numbers and hyphens", "Invalid Project name");
+      throw new ConfigurationException("Project name can only contain letters, numbers and hyphens", "Invalid Project name")
     }
     super.validate()
   }

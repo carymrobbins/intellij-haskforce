@@ -2,16 +2,14 @@ package com.haskforce.highlighting.annotation.external.impl
 
 import java.util.concurrent.{ExecutionException, Executors, Future}
 
+import com.haskforce.highlighting.annotation.Problems
+import com.haskforce.highlighting.annotation.external.{GhcMod, ProblemsProvider}
+import com.haskforce.utils.{ExecUtil, NotificationUtil, WrappedFuture}
 import com.intellij.notification.NotificationType
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.{Module, ModuleUtilCore}
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiFile
-
-import com.haskforce.Implicits._
-import com.haskforce.highlighting.annotation.Problems
-import com.haskforce.highlighting.annotation.external.{ProblemsProvider, GhcMod}
-import com.haskforce.utils.{WrappedFuture, NotificationUtil, ExecUtil}
 
 class GhcModCompileProblemsProvider private(
   module: Module,

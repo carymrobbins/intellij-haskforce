@@ -44,7 +44,7 @@ extends ProjectImportProvider(builder) {
       true
     } catch {
       // If we can't read the file, we can't import from it.
-      case e: java.io.IOException =>
+      case _: java.io.IOException =>
         false
     }
   }

@@ -25,6 +25,7 @@ class ReplaceWithSuggestion(
 
   override def invoke(project: Project, editor: Editor, file: PsiFile): Unit = {
     el.replaceWithText(suggestion)
+    ()
   }
 }
 

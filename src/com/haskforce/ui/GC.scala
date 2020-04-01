@@ -50,7 +50,5 @@ sealed case class GC(
 }
 
 object GC {
-  /** Allow us to refer to [[GC]] globally with the default values. */
-  implicit def toDefault(c: GC.type): GC = default
-  val default = GC()
+  val default: GC = GC()
 }

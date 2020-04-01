@@ -12,7 +12,7 @@ import com.intellij.execution.impl.ConsoleViewImpl
 import com.intellij.execution.process.{OSProcessHandler, ProcessEvent, ProcessListener}
 import com.intellij.execution.runners.ExecutionEnvironment
 import com.intellij.execution.ui.{ConsoleView, ConsoleViewContentType}
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.{Project, ProjectUtil}
 import com.intellij.openapi.util.Key
 import com.intellij.openapi.vfs.LocalFileSystem
 
@@ -117,7 +117,7 @@ class RelativeDiscoveryFileHyperlinkRawDataFinder(
     // or output to determine base relative dir instead of just guessing like this.
     res.iterator().asScala.map { data =>
       val found = FileUtil.findFilesRecursively(
-        project.getBaseDir,
+        ProjectUtil.guessProjectDir(project),
         _.getCanonicalPath.endsWith(data.getFilePath)
       )
       // Abort if we found 0 or more than 1 match since that would be ambiguous.

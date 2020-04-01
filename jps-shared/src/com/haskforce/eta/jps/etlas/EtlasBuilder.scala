@@ -54,7 +54,7 @@ class EtlasBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
       } else {
         ().success
       }
-    }.sequenceU.valueOr(errs => throw new ProjectBuildException(
+    }.sequenceU.void.valueOr(errs => throw new ProjectBuildException(
       "Failed to validate build executables:\n" + errs.list.map(" * " + _).toList.mkString("\n")
     ))
   }

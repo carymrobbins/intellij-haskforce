@@ -46,6 +46,7 @@ class CabalQueryTest extends CabalParserTestBase with AssertMixin {
     findBuildInfo(example00005, "/examples/foo.hs").!.get |> { bi =>
       assertInstanceOf[BuildInfo.Library](bi)
     }
+    ()
   }
 
   def testExtensions(): Unit = {

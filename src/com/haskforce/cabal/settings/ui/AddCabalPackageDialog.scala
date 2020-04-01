@@ -1,19 +1,15 @@
 package com.haskforce.cabal.settings.ui
 
-import prelude._
-
 import java.awt.Dimension
-import java.awt.event.{ItemEvent, KeyEvent}
 import java.io.File
-import java.util.EventObject
 
 import com.haskforce.HaskellModuleType
-import com.haskforce.Implicits._
 import com.haskforce.cabal.completion.CabalFileFinder
 import com.haskforce.cabal.settings.AddCabalPackageOptions
 import com.haskforce.ui.ComboModuleProxy
-import com.haskforce.utils.FileUtil
+import com.haskforce.utils.{FileUtil, KeyReleasedListener}
 import com.intellij.openapi.project.Project
+import prelude._
 
 class AddCabalPackageDialog(
   project: Project,
@@ -50,17 +46,17 @@ class AddCabalPackageDialog(
     }
 
     // Provide a hook so changing the packageName will also set an appropriate default rootDir.
-    packageName.getEditor.getEditorComponent.addKeyListener { (e: KeyEvent) => onPackageNameChange(e) }
-    packageName.addItemListener { (e: ItemEvent) => onPackageNameChange(e) }
+    packageName.getEditor.getEditorComponent.addKeyListener(KeyReleasedListener(_ => onPackageNameChange()))
+    packageName.addItemListener { _ => onPackageNameChange() }
   }
 
   /**
    * Update the rootDir field accordingly when the packageName field changes.
    */
-  def onPackageNameChange(e: EventObject): Unit = {
+  def onPackageNameChange(): Unit = {
     rootDir.setText(packageName.getSelectedItem match {
       case ComboModuleProxy(m) => relativeToProjectRoot(m.getModuleFile.getParent.getPath)
-      case o =>
+      case _ =>
         val text = Option(packageName.getEditor.getItem).getOrElse("")
         s".${File.separator}$text"
     })
@@ -75,7 +71,7 @@ class AddCabalPackageDialog(
         case o => (None, o.toString)
       }
       val rootDirText = Option(project.getBasePath).map(FileUtil.join(_, rootDir.getText)).getOrElse(rootDir.getText)
-      AddCabalPackageUtil.buildOptions(Some(project), this, selectedModule, selectedPackage, rootDirText)
+      AddCabalPackageUtil.buildOptions(this, selectedModule, selectedPackage, rootDirText)
     }
     super.onOK()
   }

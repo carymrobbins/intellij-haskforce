@@ -24,6 +24,7 @@ class EditPackageYaml(
 
   override def invoke(project: Project, editor: Editor, file: PsiFile): Unit = {
     FileEditorManager.getInstance(project).openFile(packageYaml, true, true)
+    ()
   }
 }
 

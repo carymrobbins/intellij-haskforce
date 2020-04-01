@@ -36,8 +36,9 @@ extends ProjectImportWizardStep(context) {
 
   setupComponents()
 
+  //noinspection DuplicatedCode
   private def setupComponents(): Unit = {
-    val gcBase = GC.pad(10, 5).northWest
+    val gcBase = GC.default.pad(10, 5).northWest
     val gcLabel = gcBase.weight(0.25)
     val gcField = gcBase.weight(0.75)
 

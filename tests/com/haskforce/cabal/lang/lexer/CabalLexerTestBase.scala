@@ -66,7 +66,7 @@ abstract class CabalLexerTestBase extends LexerTestCase {
         )
       }
     } catch {
-      case e: FileNotFoundException =>
+      case _: FileNotFoundException =>
         VfsTestUtil.overwriteTestData(expectedFileName, text)
         TestCase.fail(s"No output text found. File $expectedFileName created.")
     }
@@ -116,7 +116,7 @@ abstract class CabalLexerTestBase extends LexerTestCase {
   private def getTokenText(lexer: Lexer): String = {
     lexer.getTokenType match {
       case tokenType: TokenWrapper => tokenType.getValue
-      case tokenType =>
+      case _ =>
         StringUtil.replace(
           lexer.getBufferSequence.subSequence(
             lexer.getTokenStart, lexer.getTokenEnd

@@ -1,16 +1,14 @@
 package com.haskforce.utils
 
+import java.io.File
+
 import com.haskforce.highlighting.annotation.external.GhcModUtil
 import com.haskforce.settings.HaskellBuildSettings
+import com.haskforce.utils.ExecUtil.ExecError
 import com.intellij.execution.ExecutionException
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.process.CapturingProcessHandler
-import java.io.File
-import java.nio.charset.StandardCharsets
-
 import com.intellij.openapi.project.Project
-
-import com.haskforce.utils.ExecUtil.ExecError
 
 /**
  * Helper class to execute cabal based on compiler settings.

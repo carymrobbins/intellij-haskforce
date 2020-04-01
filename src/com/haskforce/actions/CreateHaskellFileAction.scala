@@ -1,16 +1,18 @@
 package com.haskforce.actions
 
-import com.haskforce.HaskellIcons
-import com.intellij.ide.actions.{CreateFileFromTemplateAction, CreateFileFromTemplateDialog}
-import com.intellij.openapi.ui.InputValidatorEx
 import java.util.regex.Pattern
-import CreateHaskellFileAction._
+
+import com.haskforce.HaskellIcons
+import com.haskforce.actions.CreateHaskellFileAction._
+import com.intellij.ide.actions.{CreateFileFromTemplateAction, CreateFileFromTemplateDialog}
 import com.intellij.ide.fileTemplates.{FileTemplate, FileTemplateManager, FileTemplateUtil}
 import com.intellij.openapi.fileEditor.FileEditorManager
 import com.intellij.openapi.module.ModuleUtilCore
 import com.intellij.openapi.project.{DumbAware, Project}
 import com.intellij.openapi.roots.ModuleRootManager
+import com.intellij.openapi.ui.InputValidatorEx
 import com.intellij.psi.{PsiDirectory, PsiFile}
+
 import scala.collection.mutable
 
 class CreateHaskellFileAction
@@ -19,11 +21,13 @@ class CreateHaskellFileAction
 
   override def getActionName(directory: PsiDirectory, newName: String, templateName: String): String = TITLE
 
-  override def buildDialog(project: Project, directory: PsiDirectory, builder: CreateFileFromTemplateDialog.Builder): Unit =
+  override def buildDialog(project: Project, directory: PsiDirectory, builder: CreateFileFromTemplateDialog.Builder): Unit = {
     builder
       .setTitle(TITLE)
       .addKind("Empty module", HaskellIcons.FILE, HASKEL_MODULE_TEMPLATE_NAME)
       .setValidator(MyInputValidator)
+    ()
+  }
 
   override def createFileFromTemplate(name: String, template: FileTemplate, dir: PsiDirectory): PsiFile = {
     val project = dir.getProject

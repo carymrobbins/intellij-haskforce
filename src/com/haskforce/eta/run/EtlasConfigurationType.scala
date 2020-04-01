@@ -1,9 +1,7 @@
 package com.haskforce.eta.run
 
 import com.haskforce.HaskellIcons
-import com.intellij.execution.configurations.{ConfigurationFactory, ConfigurationType, ConfigurationTypeBase, RunConfiguration}
-import com.intellij.openapi.extensions.Extensions
-import com.intellij.openapi.project.Project
+import com.intellij.execution.configurations.{ConfigurationType, ConfigurationTypeBase}
 
 class EtlasConfigurationType extends ConfigurationTypeBase(
   "Etlas Task Configuration",
@@ -11,16 +9,11 @@ class EtlasConfigurationType extends ConfigurationTypeBase(
   "Execute an Etlas task",
   HaskellIcons.ETA_FILE
 ) {
-  addFactory(new ConfigurationFactory(this) {
-    override def createTemplateConfiguration(project: Project): RunConfiguration = {
-      new EtlasRunConfiguration(project, this)
-    }
-  })
+  addFactory(EtlasConfigurationFactory)
 }
 
 object EtlasConfigurationType {
-  val INSTANCE = Extensions.findExtension(
-    ConfigurationType.CONFIGURATION_TYPE_EP,
-    classOf[EtlasConfigurationType]
-  )
+  val INSTANCE: EtlasConfigurationType =
+    ConfigurationType.CONFIGURATION_TYPE_EP
+      .findExtensionOrFail(classOf[EtlasConfigurationType])
 }

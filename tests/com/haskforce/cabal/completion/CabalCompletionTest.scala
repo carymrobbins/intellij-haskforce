@@ -2,20 +2,18 @@ package com.haskforce.cabal.completion
 
 import java.io.File
 import java.util
-import java.util.regex.Pattern
 
-import scala.collection.JavaConverters._
-
+import com.haskforce.cabal.CabalFileType
+import com.haskforce.codeInsight.HaskellCompletionTestBase
+import com.haskforce.codeInsight.HaskellCompletionTestBase.CheckType
+import com.haskforce.macros.string.dedent
 import com.intellij.codeInsight.completion.CompletionType
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.CharsetToolkit
 import com.intellij.psi.PsiFile
 
-import com.haskforce.cabal.CabalFileType
-import com.haskforce.codeInsight.HaskellCompletionTestBase
-import com.haskforce.codeInsight.HaskellCompletionTestBase.CheckType
-import com.haskforce.macros.string.dedent
+import scala.collection.JavaConverters._
 
 class CabalCompletionTest extends CabalCompletionTestBase {
 

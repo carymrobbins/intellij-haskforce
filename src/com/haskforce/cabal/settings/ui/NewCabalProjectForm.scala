@@ -2,12 +2,11 @@ package com.haskforce.cabal.settings.ui
 
 import java.awt.GridBagLayout
 import java.awt.event.ActionEvent
-import javax.swing._
 
-import com.intellij.uiDesigner.core.Spacer
-import com.haskforce.Implicits._
 import com.haskforce.cabal.settings.{CabalComponentType, CabalFileData}
-import com.haskforce.ui.GC
+import com.haskforce.ui.{GC, SComboBox}
+import com.intellij.uiDesigner.core.Spacer
+import javax.swing._
 
 /** Form presented to user to configure Cabal initialization when creating a new project */
 class NewCabalProjectForm {
@@ -16,13 +15,13 @@ class NewCabalProjectForm {
   val packageVersionField = new JTextField("0.1.0.0")
   val synopsisField = new JTextField()
   val homepageField = new JTextField()
-  val authorNameField = AddCabalPackageUtil.newAuthorField()
-  val maintainerEmailField = AddCabalPackageUtil.newEmailField()
-  val categoryField = AddCabalPackageUtil.newCategoryField()
+  val authorNameField: JTextField = AddCabalPackageUtil.newAuthorField()
+  val maintainerEmailField: JTextField = AddCabalPackageUtil.newEmailField()
+  val categoryField: SComboBox[String] = AddCabalPackageUtil.newCategoryField()
   val cabalVersionField = new JTextField(">=1.10")
-  val componentTypeField = AddCabalPackageUtil.newComponentTypeField()
+  val componentTypeField: SComboBox[CabalComponentType] = AddCabalPackageUtil.newComponentTypeField()
   val sourceDirField = new JTextField("src")
-  val languageField = AddCabalPackageUtil.newLanguageField()
+  val languageField: SComboBox[String] = AddCabalPackageUtil.newLanguageField()
 
   val fieldMap = Seq(
     "Version:" -> packageVersionField,
@@ -37,13 +36,14 @@ class NewCabalProjectForm {
     "Language:" -> languageField
   )
 
-  private val contentPane = new JPanel(new GridBagLayout) {
-    val gc = GC.pad(10, 5).northWest
+  private val contentPane: JPanel = new JPanel(new GridBagLayout) {
+    private val gc = GC.default.pad(10, 5).northWest
 
     add(initializeCabalPackageField, gc.width(2).weight(x = 1).grid(0, 0))
-    val nextY = addFieldList(y = 1)
+    private val nextY = addFieldList(y = 1)
     add(new Spacer, gc.grid(0, nextY).weight(y = 1))
 
+    //noinspection SameParameterValue
     private def addFieldList(y: Int): Int = {
       fieldMap.zipWithIndex.foreach { case ((name, field), i) =>
         add(new JLabel(name), gc.grid(0, y + i))

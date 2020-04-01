@@ -1,16 +1,14 @@
 package com.haskforce.codeInsight
 
-import com.intellij.openapi.module.{Module, ModuleUtilCore}
-import com.intellij.psi.PsiFile
-
 import com.haskforce.constants.GhcFlags
-import com.haskforce.highlighting.annotation.external.{GhcMod, GhcModi}
-import com.haskforce.utils.ExecUtil
+import com.intellij.psi.PsiFile
 
 object CompilerFlagsProviderFactory {
   def get(psiFile: PsiFile): Option[CompilerFlagsProvider] = {
-    Some(GhcCompilerFlagsProvider)
+    cached
   }
+
+  private val cached = Some(GhcCompilerFlagsProvider)
 }
 
 trait CompilerFlagsProvider {

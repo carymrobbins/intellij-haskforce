@@ -1,19 +1,13 @@
 package com.haskforce
 
-import com.intellij.openapi.projectRoots.impl.SdkConfigurationUtil
-import com.intellij.openapi.projectRoots.AdditionalDataConfigurable
-import com.intellij.openapi.projectRoots.Sdk
-import com.intellij.openapi.projectRoots.SdkAdditionalData
-import com.intellij.openapi.projectRoots.SdkModel
-import com.intellij.openapi.projectRoots.SdkModificator
-import com.intellij.openapi.projectRoots.SdkType
-import org.jdom.Element
-import org.jetbrains.annotations.NotNull
-import org.jetbrains.annotations.Nullable
-import javax.swing._
+import java.util.Comparator
 
-import com.haskforce.Implicits._
 import com.haskforce.jps.model.JpsHaskellModelSerializerExtension
+import com.intellij.openapi.projectRoots._
+import com.intellij.openapi.projectRoots.impl.SdkConfigurationUtil
+import javax.swing._
+import org.jdom.Element
+import org.jetbrains.annotations.{NotNull, Nullable}
 
 /**
  * Responsible for the mechanics when pressing "+" in the SDK configuration,
@@ -31,7 +25,7 @@ object HaskellSdkType {
     val sdkType = getInstance
     // Essentially, sorts the Sdks so that the Haskell one comes first.
     // If it doesn't exist, should create a new one.
-    val cmp = { (sdk1: Sdk, sdk2: Sdk) =>
+    val cmp: Comparator[Sdk] = { (sdk1: Sdk, sdk2: Sdk) =>
       if (sdk1.getSdkType == sdkType) -1
       else if (sdk2.getSdkType == sdkType) 1
       else 0

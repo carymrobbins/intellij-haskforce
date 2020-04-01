@@ -85,7 +85,7 @@ object Yaml {
       m.asScala.map { case (k, v) =>
         k match {
           case kk: String => fromObject(v).map(vv => (kk, vv))
-          case other => Error(s"Key in map must be String, got: $k").left
+          case _ => Error(s"Key in map must be String, got: $k").left
         }
       }.toList.sequenceU.map(kvs => YamlAssoc(kvs.toMap))
 

@@ -35,6 +35,7 @@ class HLintUtilTest extends UsefulTestCase with AssertMixin {
           throw new AssertionError(s"Assertion failed for input: ${stringAsLit(vStr)}", e)
       }
     }
+    ()
   }
 
   private def stringAsLit(s: String): String = {

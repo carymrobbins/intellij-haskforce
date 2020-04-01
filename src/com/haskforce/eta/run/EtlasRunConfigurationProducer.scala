@@ -1,25 +1,24 @@
 package com.haskforce.eta.run
 
-import prelude._
-
 import java.io.File
 
 import com.haskforce.cabal.completion.CabalFileFinder
 import com.haskforce.cabal.query.{BuildInfo, CabalQuery}
 import com.haskforce.psi.HaskellFile
 import com.haskforce.utils.{FileUtil, IJReadAction}
-import com.intellij.execution.actions.{ConfigurationContext, RunConfigurationProducer}
-import com.intellij.openapi.application.ApplicationManager
+import com.intellij.execution.actions.{ConfigurationContext, LazyRunConfigurationProducer}
+import com.intellij.execution.configurations.ConfigurationFactory
 import com.intellij.openapi.util.Ref
 import com.intellij.psi.PsiElement
+import prelude._
 
 import scala.reflect.classTag
 
-class EtlasRunConfigurationProducer extends RunConfigurationProducer[EtlasRunConfiguration](
-  EtlasConfigurationType.INSTANCE
-) {
+class EtlasRunConfigurationProducer extends LazyRunConfigurationProducer[EtlasRunConfiguration] {
 
   import EtlasRunConfigurationProducer._
+
+  override def getConfigurationFactory: ConfigurationFactory = EtlasConfigurationFactory
 
   override def setupConfigurationFromContext(
     configuration: EtlasRunConfiguration,

@@ -1,12 +1,12 @@
 package com.haskforce.eta.settings.ui
 
 import java.awt.{Color, GridBagLayout}
-import javax.swing._
 
 import com.haskforce.eta.jps.model.EtaBuildOptions
 import com.haskforce.ui.GC
 import com.haskforce.utils.GuiUtil
 import com.intellij.openapi.ui.TextFieldWithBrowseButton
+import javax.swing._
 
 /**
  * Interface for creating and interacting with the Eta compiler configuration UI.
@@ -40,14 +40,14 @@ private class EtaCompilerConfigUIImpl extends EtaCompilerConfigUI {
     etlasPath.setText(state.etlasPath)
   }
 
-  override val getComponent = new JPanel(new GridBagLayout) {
+  override val getComponent: JPanel = new JPanel(new GridBagLayout) {
     // Default grid constraints
-    val gc = GC.pad(10, 5).northWest
+    private val gc = GC.default.pad(10, 5).northWest
 
     // Start at y position 0 and increment for each vertical element.
     var gridY = 0
 
-    private def addExeField(e: ExeField) = {
+    private def addExeField(e: ExeField): Unit = {
       add(e.label, gc.grid(0, gridY))
       add(e, gc.fillHorizontal.grid(1, gridY))
       gridY += 1
