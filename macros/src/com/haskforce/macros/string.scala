@@ -2,7 +2,6 @@ package com.haskforce.macros
 
 import java.util.regex.Pattern
 
-import scala.language.experimental.macros
 import scala.reflect.macros.blackbox
 
 /**

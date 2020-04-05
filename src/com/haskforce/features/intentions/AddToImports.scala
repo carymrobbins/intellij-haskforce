@@ -1,8 +1,8 @@
 package com.haskforce.features.intentions
 
 import com.haskforce.highlighting.annotation.external.{SymbolImportProvider, SymbolImportProviderFactory}
-import com.haskforce.psi.{HaskellBody, HaskellImpdecl}
 import com.haskforce.psi.impl.HaskellElementFactory
+import com.haskforce.psi.{HaskellBody, HaskellImpdecl}
 import com.haskforce.utils.NotificationUtil
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction
 import com.intellij.notification.NotificationType
@@ -12,8 +12,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.popup.JBPopupFactory
 import com.intellij.psi.PsiFile
 import com.intellij.psi.util.PsiTreeUtil
-import com.intellij.ui.components.JBList
 import com.intellij.util.IncorrectOperationException
+
 import scala.collection.JavaConverters._
 
 class AddToImports(val symbolName: String) extends BaseIntentionAction {
@@ -40,12 +40,12 @@ class AddToImports(val symbolName: String) extends BaseIntentionAction {
       return
     }
 
-    val list = new JBList(results: _*)
+    val list = results.asJava
 
     val popup = JBPopupFactory.getInstance()
-      .createListPopupBuilder(list)
+      .createPopupChooserBuilder(list)
       .setTitle("Identifier to Import")
-      .setItemChoosenCallback(() => doAddImport(project, file, list.getSelectedValue))
+      .setItemChosenCallback(doAddImport(project, file, _))
       .createPopup()
 
     popup.showInBestPositionFor(editor)
@@ -85,6 +85,7 @@ object AddToImports {
     impDecl.addBefore(HaskellElementFactory.createComma(project), rParen)
     impDecl.addBefore(HaskellElementFactory.createSpace(project), rParen)
     impDecl.addBefore(mkImportt(project, symbolName), rParen)
+    ()
   }
 
   def createNewImport(file: PsiFile, project: Project, importName: String, symbolName: String, imports: Iterable[HaskellImpdecl]): Unit = {
@@ -96,6 +97,7 @@ object AddToImports {
         case Some(b) =>
           b.addAfter(newline, imports.last)
           b.addAfter(impDecl, imports.last.getNextSibling)
+          ()
         case None =>
           throw new RuntimeException("Impossible case! Imports found without a body!")
       }
@@ -106,11 +108,13 @@ object AddToImports {
           val impDeclAdded = b.addBefore(impDecl, firstChild)
           b.addBefore(newline, firstChild)
           b.addAfter(newline, impDeclAdded)
+          ()
         case None =>
           // This really shouldn't happen since the user can't invoke auto-import
           // without there being a non-empty Haskell body, but it's here for
           // completeness and usefulness in tests.
           file.add(impDecl)
+          ()
       }
     }
   }

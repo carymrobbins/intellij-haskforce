@@ -36,6 +36,7 @@ object HtmlUtils {
 
     override def handleText(data: Array[Char], pos: Int): Unit = {
       buf.append(data)
+      ()
     }
   }
 }

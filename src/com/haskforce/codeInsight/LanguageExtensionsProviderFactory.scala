@@ -1,16 +1,14 @@
 package com.haskforce.codeInsight
 
-import com.intellij.openapi.module.{Module, ModuleUtilCore}
-import com.intellij.psi.PsiFile
-
 import com.haskforce.constants.GhcLanguageExtensions
-import com.haskforce.highlighting.annotation.external.{GhcMod, GhcModi}
-import com.haskforce.utils.ExecUtil
+import com.intellij.psi.PsiFile
 
 object LanguageExtensionsProviderFactory {
   def get(psiFile: PsiFile): Option[LanguageExtensionsProvider] = {
-    Some(GhcLanguageExtensionsProvider)
+    cached
   }
+
+  private val cached = Some(GhcLanguageExtensionsProvider)
 }
 
 trait LanguageExtensionsProvider {

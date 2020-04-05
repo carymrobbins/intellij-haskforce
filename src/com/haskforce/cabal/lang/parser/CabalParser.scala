@@ -2,14 +2,14 @@ package com.haskforce.cabal.lang.parser
 
 import java.util.function.BooleanSupplier
 
+import com.haskforce.cabal.lang.psi.CabalTypes._
+import com.haskforce.cabal.lang.psi._
 import com.intellij.lang.impl.PsiBuilderAdapter
 import com.intellij.lang.{ASTNode, PsiBuilder, PsiParser}
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 import com.intellij.psi.impl.source.resolve.FileContextUtil
 import com.intellij.psi.tree.IElementType
-import com.haskforce.cabal.lang.psi.CabalTypes._
-import com.haskforce.cabal.lang.psi._
 
 final class CabalParser extends PsiParser {
 
@@ -139,7 +139,7 @@ final class CabalPsiBuilder(builder: PsiBuilder)
       "invalid",
       INVALID_STANZA,
       argsParser = () => advanceWhile(getTokenType != EOL && getTokenType != LBRACE) {},
-      fieldParser = () => invalidField("invalid")
+      fieldParser = () => invalidField()
     )
   }
 
@@ -182,7 +182,7 @@ final class CabalPsiBuilder(builder: PsiBuilder)
         case _: CabalLayoutTokenType => remapAdvance(WHITE_SPACE)
         case RBRACE => advanceLexer(); foundRBrace = true
         case _ =>
-          if (!(ifExpr(stanzaType, fieldParser) || fieldParser.getAsBoolean || invalidField(stanzaType))) {
+          if (!(ifExpr(stanzaType, fieldParser) || fieldParser.getAsBoolean || invalidField())) {
             errorAdvance(s"Unexpected token in $stanzaType stanza: " + getTokenType)
           }
       }
@@ -201,7 +201,7 @@ final class CabalPsiBuilder(builder: PsiBuilder)
       var break = false
       parseWhile(!break && indent > 0) {
         assert(getTokenType != INDENT, "Unexpected INDENT")
-        if (!(ifExpr(stanzaType, fieldParser) || fieldParser.getAsBoolean || invalidField(stanzaType))) {
+        if (!(ifExpr(stanzaType, fieldParser) || fieldParser.getAsBoolean || invalidField())) {
           errorAdvance(s"Unexpected token in $stanzaType stanza: " + getTokenType)
           break = true
         }
@@ -362,7 +362,7 @@ final class CabalPsiBuilder(builder: PsiBuilder)
     || exposed.getAsBoolean
     || reexportedModules.getAsBoolean
     || buildInfoField.getAsBoolean
-    || invalidField("main")
+    || invalidField()
   )
 
   val buildInfoField: BooleanSupplier = () => (
@@ -397,7 +397,7 @@ final class CabalPsiBuilder(builder: PsiBuilder)
   )
 
   /** Should be called after all valid fields have been tried. */
-  def invalidField(stanzaType: String): Boolean = getTokenType match {
+  def invalidField(): Boolean = getTokenType match {
     case _: CabalFieldKeyTokenType if lookAhead(1) == COLON =>
       val m = mark()
       advanceLexer()
@@ -570,6 +570,7 @@ final class CabalPsiBuilder(builder: PsiBuilder)
         case COMMA => advanceLexer()
         case other => errorAdvance("Unexpected token: " + other)
       }
+      ()
     }
     if (getTokenType != RPAREN) error("Missing )")
     advanceLexer()
@@ -693,7 +694,7 @@ final class CabalPsiBuilder(builder: PsiBuilder)
   val moduleList: Runnable = () => {
     val m = mark()
     indentContext {
-      case _: CabalIdentTokenType => module()
+      case _: CabalIdentTokenType => module(); ()
       case COMMA => advanceLexer() // skip commas
       case _ => errorAdvance("Expected module")
     }

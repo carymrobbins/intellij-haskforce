@@ -132,6 +132,7 @@ class StackBuildProcessAdapter(context: CompileContext) extends ProcessAdapter {
       flush()
     } else {
       state.add(text)
+      ()
     }
   }
 
@@ -149,7 +150,7 @@ class StackBuildProcessAdapter(context: CompileContext) extends ProcessAdapter {
     def msg(k: Kind, path: String, line: String, col: String, info: String) = {
       val rebuild = if (info.trim.nonEmpty) info :: tail else tail
       val joined = stripCommonWhitespace(rebuild).mkString("\n")
-      new CompilerMessage("", k, joined, path, -1L, -1L, -1L, line.toInt, col.toInt)
+      new CompilerMessage("", k, joined, path, -1L, -1L, -1L, line.toLong, col.toLong)
     }
 
     head.trim match {

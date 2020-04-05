@@ -1,8 +1,7 @@
 package com.haskforce.actions.cabal
 
-import com.haskforce.Implicits._
 import com.haskforce.cabal.settings.AddCabalPackageOptions
-import com.haskforce.cabal.settings.ui.{AddCabalPackageUtil, AddCabalPackageDialog}
+import com.haskforce.cabal.settings.ui.{AddCabalPackageDialog, AddCabalPackageUtil}
 import com.haskforce.utils.{CabalExecutor, FileUtil, NotificationUtil}
 import com.intellij.notification.NotificationType
 import com.intellij.notification.NotificationType._
@@ -56,6 +55,7 @@ object AddCabalPackageAction {
         case Some(cabalFile) => new OpenFileDescriptor(project, cabalFile).navigate(true)
       }
     }
+    ()
   }
 
   /**

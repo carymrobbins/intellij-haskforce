@@ -2,11 +2,10 @@ package com.haskforce.ui.tools
 
 import java.awt.event.ItemEvent
 import java.awt.{GridBagLayout, GridLayout}
-import java.util.regex.Pattern
-import javax.swing.{JComponent, JPanel}
 
-import scala.collection.mutable
-
+import com.haskforce.HaskellModuleType
+import com.haskforce.settings.ToolKey
+import com.haskforce.ui.{GC, SComboBox}
 import com.intellij.execution.filters.TextConsoleBuilderFactory
 import com.intellij.execution.ui.{ConsoleView, ConsoleViewContentType}
 import com.intellij.openapi.Disposable
@@ -18,12 +17,11 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Condition
 import com.intellij.openapi.wm.{ToolWindow, ToolWindowFactory}
+import com.intellij.ui.SimpleListCellRenderer
 import com.intellij.ui.content.ContentFactory
+import javax.swing.{JComponent, JPanel}
 
-import com.haskforce.HaskellModuleType
-import com.haskforce.settings.ToolKey
-import com.haskforce.ui.{GC, SComboBox}
-import com.haskforce.utils.SAMUtils
+import scala.collection.mutable
 
 /**
   * Manages the Haskell Tools Console "tool window" for a project.
@@ -56,10 +54,10 @@ final class HaskellToolsConsole private(project: Project) {
   }
 
   private def write(contentType: ConsoleViewContentType, toolKey: ToolKey, msg: String): Unit = {
-    ApplicationManager.getApplication.invokeLater(SAMUtils.runnable {
+    ApplicationManager.getApplication.invokeLater({ () =>
       val m = if (msg.isEmpty) "<empty message>" else msg
       getConsole(toolKey).view.print(m + "\n", contentType)
-    })
+    }: Runnable)
   }
 
   /** Component used for the tool window. */
@@ -68,18 +66,20 @@ final class HaskellToolsConsole private(project: Project) {
   /** Initialize the UI; should only by called by the ToolWindowFactory. */
   def initUI(): Unit = {
     toolsCombo.setEditable(false)
-    toolsCombo.setRenderer(SAMUtils.listCellRenderer((_: ToolKey).prettyName))
+    toolsCombo.setRenderer(
+      SimpleListCellRenderer.create("<null>", (_: ToolKey).prettyName)
+    )
 
     component.add(toolsCombo, toolsComboGC)
     showConsole()
 
-    toolsCombo.addItemListener(SAMUtils.itemListener { e =>
+    toolsCombo.addItemListener { e =>
       if (e.getStateChange == ItemEvent.SELECTED) showConsole()
-    })
+    }
   }
 
   // Constraints for setting up the UI.
-  private lazy val baseGC = GC.pad(10, 5).northWest
+  private lazy val baseGC = GC.default.pad(10, 5).northWest
   private lazy val toolsComboGC = baseGC.grid(0, 0)
   private lazy val consoleGC = baseGC.grid(0, 1).weight(1, 1).fillBoth
 

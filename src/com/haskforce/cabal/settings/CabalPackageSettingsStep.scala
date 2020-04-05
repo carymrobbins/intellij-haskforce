@@ -30,11 +30,11 @@ trait CabalPackageSettingsStep extends ModuleWizardStep with Logging {
 
   protected def moduleUpdater: ModuleConfigurationUpdater = new ModuleConfigurationUpdater {
     override def update(module: Module, rootModel: ModifiableRootModel): Unit = {
-      updateModule(module, rootModel)
+      updateModule(rootModel)
     }
   }
 
-  protected def updateModule(module: Module, rootModel: ModifiableRootModel): Unit = {
+  protected def updateModule(rootModel: ModifiableRootModel): Unit = {
     val project = rootModel.getProject
     if (wizardContext.isCreatingNewProject && form.shouldInitializeCabalPackage) {
       val baseDir = project.getBasePath

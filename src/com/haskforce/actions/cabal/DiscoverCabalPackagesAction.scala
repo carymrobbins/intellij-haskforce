@@ -82,6 +82,7 @@ object DiscoverCabalPackagesAction {
 
   private def displayForm(project: Project, cabalFiles: Seq[VirtualFile]): Unit = {
     new DiscoverCabalPackagesDialog(project, cabalFiles, importCabalPackages(project))
+    ()
   }
 
   private def importCabalPackages(project: Project)(files: Seq[VirtualFile]): Unit = {

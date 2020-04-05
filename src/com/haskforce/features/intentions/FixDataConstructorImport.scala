@@ -38,5 +38,7 @@ class FixDataConstructorImport(
     PsiTreeUtil
       .findFirstParent(el, _.isInstanceOf[HaskellImportt])
       .replace(importt)
+
+    ()
   }
 }

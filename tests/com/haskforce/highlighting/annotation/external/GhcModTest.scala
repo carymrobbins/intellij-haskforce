@@ -56,9 +56,10 @@ class GhcModTest extends HaskellLightPlatformCodeInsightFixtureTestCase("ghc-mod
                   "main ="
           ), "\n")
         )
-        ApplicationManager.getApplication.runWriteAction(new Runnable() {
-          def run() = file.setName("src/Main.hs")
-        })
+        ApplicationManager.getApplication.runWriteAction({ () =>
+          file.setName("src/Main.hs")
+          ()
+        }: Runnable)
 
         // Intentionally leaving both paths to /src/Main.hs the same to ensure that
         // createAnnotations sees both as the same file and handles the duplicate properly.

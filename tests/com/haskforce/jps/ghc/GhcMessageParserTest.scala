@@ -4,7 +4,7 @@ import java.io.File
 
 import com.haskforce.macros.string.dedent
 import com.haskforce.test.AssertMixin
-import junit.framework.{Test, TestCase, TestResult, TestSuite}
+import junit.framework.TestCase
 import org.jetbrains.jps.incremental.messages.BuildMessage.Kind._
 
 /** Tests for [[GhcMessageParser]]. */
@@ -13,7 +13,7 @@ class GhcMessageParserTest extends TestCase with AssertMixin {
   import GhcMessageParserTest._
 
   def testFixtures(): Unit = {
-    fixtures.zipWithIndex.foreach { case (fixture, i) =>
+    fixtures.foreach { fixture =>
       try {
         runParser(fixture) === fixture.output
       } catch {
@@ -140,9 +140,10 @@ object GhcMessageParserTest {
 
   private def warn(message: String) = Result(WARNING, message, None, None, None)
 
-  private def error(message: String, path: String, line: Long, col: Long) = Result(
-    ERROR, message, Some(moduleDir + File.separator + path), Some(line), Some(col)
-  )
+  // TODO: Add a test for this?
+  // private def error(message: String, path: String, line: Long, col: Long) = Result(
+  //   ERROR, message, Some(moduleDir + File.separator + path), Some(line), Some(col)
+  // )
 
   private def error(message: String) = Result(ERROR, message, None, None, None)
 

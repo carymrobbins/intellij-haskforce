@@ -1,15 +1,14 @@
 package com.haskforce.cabal.settings.ui
 
-import java.awt.event.{KeyEvent, ActionEvent}
+import java.awt.event.{ActionEvent, KeyEvent}
 import java.awt.{Dimension, GridBagLayout}
-import javax.swing._
 
-import com.haskforce.Implicits._
 import com.haskforce.ui.GC
 import com.haskforce.utils.FileUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.uiDesigner.core.Spacer
+import javax.swing._
 
 /**
  * Dialog for importing Cabal packages into IntelliJ modules.
@@ -92,7 +91,7 @@ class DiscoverCabalPackagesDialog(
   }
 
   private def setupComponents(): Unit = {
-    val gc = GC.weight(x = 0.5).pad(10, 5).northWest
+    val gc = GC.default.weight(x = 0.5).pad(10, 5).northWest
 
     val listPanel = new JPanel(new GridBagLayout) {
       add(checkBoxImportAll, gc.grid(0, 0))

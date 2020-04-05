@@ -6,7 +6,7 @@ import com.haskforce.psi.impl.HaskellElementFactory
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction
 import com.intellij.openapi.editor.Editor
 import com.intellij.openapi.project.Project
-import com.intellij.psi.{PsiComment, PsiFile}
+import com.intellij.psi.PsiFile
 
 class InsertHoleTypeAsComment(expr: String) extends BaseIntentionAction {
 
@@ -26,6 +26,7 @@ class InsertHoleTypeAsComment(expr: String) extends BaseIntentionAction {
     currentElement.getParent.addRangeAfter(
       elements.head, elements.last, currentElement
     )
+    ()
   }
 }
 

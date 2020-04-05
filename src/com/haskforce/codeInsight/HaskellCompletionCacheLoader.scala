@@ -2,8 +2,8 @@ package com.haskforce.codeInsight
 
 import java.util
 
-import scala.annotation.tailrec
-
+import com.haskforce.codeInsight.HaskellCompletionCacheLoader.LookupElementWrapper
+import com.haskforce.psi.{HaskellFile, HaskellPsiUtil}
 import com.intellij.AppTopics
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.application.ApplicationManager
@@ -11,13 +11,11 @@ import com.intellij.openapi.components.ProjectComponent
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.fileEditor._
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Computable
 import com.intellij.openapi.vfs._
 import com.intellij.psi.{PsiFile, PsiManager}
 
-import com.haskforce.Implicits._
-import com.haskforce.codeInsight.HaskellCompletionCacheLoader.LookupElementWrapper
-import com.haskforce.psi.{HaskellFile, HaskellPsiUtil}
-import com.haskforce.utils.SAMUtils
+import scala.annotation.tailrec
 
 /** Loads the completion cache for any Haskell files we have open. */
 class HaskellCompletionCacheLoader(project: Project) extends ProjectComponent {
@@ -40,24 +38,25 @@ class HaskellCompletionCacheLoader(project: Project) extends ProjectComponent {
 
   override def getComponentName: String = getClass.getSimpleName
 
-  class MyHandler extends FileDocumentManagerAdapter {
+  class MyHandler extends FileDocumentManagerListener {
     override def fileContentLoaded(file: VirtualFile, document: Document): Unit = {
       val app = ApplicationManager.getApplication
-      app.runReadAction(SAMUtils.runnable {
-        Option(PsiManager.getInstance(project).findFile(file)).collect {
+      app.runReadAction({ () =>
+        Option(PsiManager.getInstance(project).findFile(file)).foreach {
           case psiFile: HaskellFile =>
-            app.invokeLater(SAMUtils.runnable {
+            app.invokeLater({ () =>
               updateCache(psiFile, force = false)
-            })
+            }: Runnable)
+          case _ => // noop
         }
-      })
+      }: Runnable)
     }
   }
 
   def forceUpdateCache(file: PsiFile): Unit = updateCache(file, force = true)
 
   def updateCache(file: PsiFile, force: Boolean): Unit = {
-    ApplicationManager.getApplication.executeOnPooledThread(SAMUtils.runnable {
+    ApplicationManager.getApplication.executeOnPooledThread({ () =>
       if (force || cache.ghcFlags.isEmpty) {
         CompilerFlagsProviderFactory.get(file).foreach { provider =>
           putStrings(cache.ghcFlags, provider.getFlags)
@@ -76,7 +75,8 @@ class HaskellCompletionCacheLoader(project: Project) extends ProjectComponent {
       if (force || cache.moduleSymbols.isEmpty) {
         updateModuleSymbols(file)
       }
-    })
+    }: Runnable)
+    ()
   }
 
   private def putWrappers(s: util.Set[LookupElementWrapper], xs: Array[String]) = {
@@ -89,18 +89,21 @@ class HaskellCompletionCacheLoader(project: Project) extends ProjectComponent {
 
   private def updateModuleSymbols(file: PsiFile): Unit = {
     ModuleSymbolsProviderFactory.get(file).foreach { provider =>
-      val imports = ApplicationManager.getApplication.runReadAction(SAMUtils.computable(
+      val imports = ApplicationManager.getApplication.runReadAction({ () =>
         HaskellPsiUtil.parseImports(file)
-      ))
-      imports.foreach { imp =>
+      }: Computable[util.List[HaskellPsiUtil.Import]])
+      imports.forEach { imp =>
         val syms = provider.getSymbols(imp.module)
-        val symSet = new util.HashSet(util.Arrays.asList(syms.map(
-          b => new LookupElementWrapper(b.toLookupElement)
-        ): _*))
+        val symSet = new util.HashSet[LookupElementWrapper](
+          util.Arrays.asList(syms.map(
+            b => new LookupElementWrapper(b.toLookupElement)
+          ): _*)
+        )
         Option(cache.moduleSymbols.get(imp.module)) match {
           case None => cache.moduleSymbols.put(imp.module, symSet)
           case Some(currentSymList) => currentSymList.addAll(symSet)
         }
+        ()
       }
     }
   }

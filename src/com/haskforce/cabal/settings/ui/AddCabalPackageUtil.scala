@@ -1,12 +1,6 @@
 package com.haskforce.cabal.settings.ui
 
-import javax.swing.JTextField
-import javax.swing.text.JTextComponent
-
-import scala.annotation.tailrec
-import scalaz.syntax.id._
 import com.haskforce.HaskellModuleType
-import com.haskforce.Implicits._
 import com.haskforce.cabal.settings.{AddCabalPackageOptions, CabalComponentType}
 import com.haskforce.ui.SComboBox
 import com.haskforce.utils.{CabalExecutor, ExecUtil, FileUtil}
@@ -15,6 +9,10 @@ import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.module.{Module, ModuleManager}
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
+import javax.swing.JTextField
+import javax.swing.text.JTextComponent
+
+import scala.annotation.tailrec
 
 /**
  * Helper utility to share functionality between the various forms which create Cabal packages.
@@ -25,8 +23,7 @@ object AddCabalPackageUtil {
   private val LOGGER = Logger.getInstance(AddCabalPackageUtil.getClass)
 
   def buildOptions
-      (maybeProject: Option[Project],
-       form: AddCabalPackageForm,
+      (form: AddCabalPackageForm,
        maybeModule: Option[Module],
        packageName: String,
        rootDir: String)
@@ -65,7 +62,9 @@ object AddCabalPackageUtil {
   val languages = Seq("Haskell2010", "Haskell98")
 
   def newLanguageField(): SComboBox[String] = {
-    new SComboBox[String] <| setupLanguage
+    val comboBox = new SComboBox[String]
+    setupLanguage(comboBox)
+    comboBox
   }
 
   def setupLanguage(field: SComboBox[String]): Unit = {
@@ -98,7 +97,9 @@ object AddCabalPackageUtil {
   )
 
   def newCategoryField(): SComboBox[String] = {
-    new SComboBox[String] <| setupCategory
+    val comboBox = new SComboBox[String]
+    setupCategory(comboBox)
+    comboBox
   }
 
   def setupCategory(field: SComboBox[String]): Unit = {
@@ -110,13 +111,14 @@ object AddCabalPackageUtil {
   }
 
   def newEmailField(maybeProject: Option[Project] = None): JTextField = {
-    new JTextField() <| (f => setupEmail(maybeProject, f))
+    val textField = new JTextField()
+    setupEmail(maybeProject, textField)
+    textField
   }
 
   def setupEmail(maybeProject: Option[Project], field: JTextField): Unit = {
     maybeSetTextFromCommandLine(
-      maybeProject.nullMap(_.getBasePath), field,
-      "git", "config", "user.email"
+      maybeWorkDir(maybeProject), field, "git", "config", "user.email"
     )
   }
 
@@ -125,18 +127,23 @@ object AddCabalPackageUtil {
   }
 
   def newAuthorField(maybeProject: Option[Project] = None): JTextField = {
-    new JTextField() <| (f => setupAuthor(None, f))
+    val textField = new JTextField()
+    setupAuthor(maybeProject, textField)
+    textField
   }
 
   def setupAuthor(maybeProject: Option[Project], field: JTextField): Unit = {
     maybeSetTextFromCommandLine(
-      maybeProject.nullMap(_.getBasePath), field,
-      "git", "config", "user.name"
+      maybeWorkDir(maybeProject), field, "git", "config", "user.name"
     )
   }
 
   def setupAuthor(maybeProject: Option[Project], form: AddCabalPackageForm): Unit = {
     setupAuthor(maybeProject, form.getAuthorField)
+  }
+
+  private def maybeWorkDir(maybeProject: Option[Project]): Option[String] = {
+    maybeProject.flatMap(project => Option(project.getBasePath))
   }
 
   val licenses = Seq(
@@ -189,7 +196,9 @@ object AddCabalPackageUtil {
   }
 
   def newComponentTypeField(): SComboBox[CabalComponentType] = {
-    new SComboBox[CabalComponentType] <| setupComponentType
+    val comboBox = new SComboBox[CabalComponentType]
+    setupComponentType(comboBox)
+    comboBox
   }
 
   def setupComponentType(field: SComboBox[CabalComponentType]): Unit = {
@@ -252,6 +261,7 @@ object AddCabalPackageUtil {
     moduleBuilder.setName(moduleName)
     moduleBuilder.createModule(moduleManager.getModifiableModel)
     moduleBuilder.commit(project)
+    ()
   }
 
   /**

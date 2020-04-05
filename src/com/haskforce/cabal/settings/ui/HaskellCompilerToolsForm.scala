@@ -3,12 +3,10 @@ package com.haskforce.cabal.settings.ui
 import java.io.File
 
 import com.haskforce.HaskellModuleBuilder
-import com.haskforce.Implicits._
 import com.haskforce.jps.model.HaskellBuildOptions
 import com.haskforce.settings.{HaskellBuildSettings, ToolKey}
 import com.haskforce.utils.{ExecUtil, GuiUtil}
 import com.intellij.ide.util.PropertiesComponent
-import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.DefaultProjectFactory
 import com.intellij.openapi.projectRoots.Sdk
 import com.intellij.openapi.roots.ModifiableRootModel
@@ -19,7 +17,6 @@ import com.intellij.ui.TextAccessor
  * TODO: It would be nice to unify this with HaskellToolsConfigurable.
  */
 class HaskellCompilerToolsForm(moduleBuilder: HaskellModuleBuilder) extends HaskellCompilerToolsFormBase {
-  private val LOG = Logger.getInstance(getClass)
   private val defaultProject = DefaultProjectFactory.getInstance.getDefaultProject
   private val defaultBuildSettings = HaskellBuildSettings.getInstance(defaultProject)
   var lastAutoSetCabalPath: Option[String] = None
@@ -66,10 +63,10 @@ class HaskellCompilerToolsForm(moduleBuilder: HaskellModuleBuilder) extends Hask
    * Auto-sets the cabal and ghc paths if new ones are found and the user hasn't manually changed them.
    */
   def onSdkChange(maybeSdk: Option[Sdk]): Unit = {
-    maybeSdk.nullMap(_.getHomePath).foreach { sdkHomePath =>
+    maybeSdk.flatMap(sdk => Option(sdk.getHomePath)).foreach { sdkHomePath =>
       Seq(
-        "cabal" -> (canAutoSetCabalPath, autoSetCabalPath _),
-        "ghc" -> (canAutoSetGhcPath, autoSetGhcPath _)
+        "cabal" -> ((canAutoSetCabalPath, autoSetCabalPath _)),
+        "ghc" -> ((canAutoSetGhcPath, autoSetGhcPath _))
       ).foreach { case (name, (canAutoSet, autoSet)) =>
         if (canAutoSet) {
           val exe = new File(sdkHomePath, s"bin/$name")

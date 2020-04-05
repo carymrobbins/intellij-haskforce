@@ -26,6 +26,7 @@ class HaskellSpellcheckingTest extends HaskellLightPlatformCodeInsightFixtureTes
 
   private def doTest(): Unit = {
     myFixture.testHighlighting(false, false, true, getTestName(false) + ".hs")
+    ()
   }
 
   /**

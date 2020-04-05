@@ -71,6 +71,29 @@ allprojects {
             resources.srcDirs 'tests'
         }
     }
+
+    it.tasks.withType(ScalaCompile) {
+        scalaCompileOptions.setAdditionalParameters([
+            '-deprecation',
+            '-feature',
+            '-language:existentials',
+            '-language:experimental.macros',
+            '-language:higherKinds',
+            '-unchecked',
+            '-Xfatal-warnings',
+            '-Xlint',
+            '-Xlint:-unused,_',
+            '-Yno-adapted-args',
+            '-Ywarn-dead-code',
+            '-Ywarn-numeric-widen',
+            '-Ywarn-unused:imports',
+            '-Ywarn-unused:locals',
+            '-Ywarn-unused:patvars',
+            '-Ywarn-unused:patvars',
+            '-Ywarn-unused:privates',
+            '-Ywarn-value-discard',
+        ])
+    }
 }
 
 assemble.dependsOn(validateDic, runJFlex)

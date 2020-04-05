@@ -2,13 +2,13 @@ package com.haskforce.test
 
 import java.io.File
 import java.util
-import scala.annotation.tailrec
-import scala.concurrent.duration._
-import scala.language.existentials
+
 import com.intellij.testFramework.UsefulTestCase
 import junit.framework.{AssertionFailedError, TestCase}
 import org.jetbrains.annotations.Nullable
-import scala.reflect.ClassTag
+
+import scala.annotation.tailrec
+import scala.concurrent.duration._
 
 /** Collection of assertion helpers to mix into test cases */
 trait AssertMixin {
@@ -143,6 +143,9 @@ trait AssertMixin {
 
   implicit class RichAssertions[A](val underlying: A) {
     def ===(other: A): Unit = assertEquals(other, underlying)
-    def assertIsLeft(): Unit = assertInstanceOf[Left[_, _]](underlying)
+    def assertIsLeft(): Unit = {
+      assertInstanceOf[Left[_, _]](underlying)
+      ()
+    }
   }
 }

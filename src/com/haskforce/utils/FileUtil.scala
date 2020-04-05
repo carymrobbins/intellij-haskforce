@@ -3,10 +3,6 @@ package com.haskforce.utils
 import java.io.File
 import java.util
 
-import scala.annotation.tailrec
-import scala.collection.JavaConverters._
-import scala.language.implicitConversions
-import com.haskforce.Implicits._
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.project.Project
@@ -16,6 +12,9 @@ import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.{PsiDirectory, PsiDocumentManager, PsiFile}
 import com.intellij.util.Function
 import org.jetbrains.annotations.{NotNull, Nullable}
+
+import scala.annotation.tailrec
+import scala.collection.JavaConverters._
 
 object FileUtil {
   def updateFileText(project: Project, file: PsiFile, function: Function[String, String]) {
@@ -67,7 +66,7 @@ object FileUtil {
   @Nullable
   def getPathFromSourceRoot(project: Project, file: VirtualFile): java.util.List[String] = {
     @tailrec
-    def loop(file: VirtualFile, rootPath: String, initial: List[String] = List()): List[String] = {
+    def loop(file: VirtualFile, rootPath: String, initial: List[String]): List[String] = {
       if (rootPath == file.getCanonicalPath) initial
       else loop(file.getParent, rootPath, file.getName :: initial)
     }

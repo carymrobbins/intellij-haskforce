@@ -3,9 +3,7 @@ package com.haskforce.highlighting.annotation.external
 import com.haskforce.highlighting.annotation.external.HaskellExternalAnnotator.State
 import com.haskforce.highlighting.annotation.{HaskellAnnotationHolder, HaskellProblem, Problems}
 import com.intellij.lang.annotation.{AnnotationHolder, ExternalAnnotator}
-import com.intellij.openapi.application.{ApplicationManager, ModalityState}
 import com.intellij.openapi.editor.Editor
-import com.intellij.openapi.fileEditor.FileDocumentManager
 import com.intellij.psi.PsiFile
 import org.jetbrains.annotations.{NotNull, Nullable}
 
