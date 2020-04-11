@@ -28,6 +28,8 @@ object HaskellParser2020Elements {
 
   object IMPORT_HIDDENS extends HElementType("IMPORT_HIDDENS")
 
+  object IMPORT_MODULE extends HElementType("IMPORT_MODULE")
+
   object IMPORT_HIDDEN extends HElementType("IMPORT_HIDDEN")
 
   object MODULE_EXPORTS extends HElementType("MODULE_EXPORTS")
@@ -40,6 +42,7 @@ object HaskellParser2020Elements {
   object IMPORT_MEMBER_VARSYM extends HElementType("IMPORT_MEMBER_VARSYM")
   object IMPORT_MEMBER_CONID extends HElementType("IMPORT_MEMBER_CONID")
   object IMPORT_MEMBER_VARID extends HElementType("IMPORT_MEMBER_VARID")
+  object IMPORT_MEMBER_ALL extends HElementType("IMPORT_MEMBER_ALL")
   object IMPORT_MEMBER_CONSYM extends HElementType("IMPORT_MEMBER_CONSYM")
 
   object IMPORT_ITEM_TYPE_CONID extends HElementType("IMPORT_ITEM_TYPE_CONID")
@@ -95,6 +98,13 @@ object HaskellParser2020Psi {
   trait ImportHiddens extends HElement {
 
     def getHiddens: util.List[ImportHidden]
+  }
+
+
+
+  trait ImportModule extends HElement {
+
+    def getQconid: Qconid
   }
 
 
@@ -155,6 +165,11 @@ object HaskellParser2020Psi {
     def getVarid: Varid
   }
 
+  trait ImportMemberAll extends ImportMember {
+
+    def getDoublePeriod: HTokenElement[T.DOUBLEPERIOD.type]
+  }
+
   trait ImportMemberConsym extends ImportMember {
 
     def getConsym: Consym
@@ -205,6 +220,7 @@ object HaskellParser2020Psi {
 
   trait ImportStmt extends HElement {
 
+    def getModule: Option[ImportModule]
     def getAlias: Option[ImportAlias]
     def getHiddens: Option[ImportHiddens]
     def getExplicits: Option[ImportExplicits]
@@ -383,6 +399,13 @@ object HaskellParser2020PsiImpl {
 
 
 
+  class ImportModuleImpl(node: ASTNode) extends HElementImpl(node) with Psi.ImportModule {
+
+    override def getQconid: Qconid = one
+  }
+
+
+
   class ImportHiddenImpl(node: ASTNode) extends HElementImpl(node) with Psi.ImportHidden {
 
     override def getItem: ImportItem = one
@@ -439,6 +462,13 @@ object HaskellParser2020PsiImpl {
 
 
 
+  class ImportMemberAllImpl(node: ASTNode) extends HElementImpl(node) with Psi.ImportMemberAll {
+
+    override def getDoublePeriod: HTokenElement[T.DOUBLEPERIOD.type] = oneTok(T.DOUBLEPERIOD)
+  }
+
+
+
   class ImportMemberConsymImpl(node: ASTNode) extends HElementImpl(node) with Psi.ImportMemberConsym {
 
     override def getConsym: Consym = one
@@ -491,6 +521,7 @@ object HaskellParser2020PsiImpl {
 
   class ImportStmtImpl(node: ASTNode) extends HElementImpl(node) with Psi.ImportStmt {
 
+    override def getModule: Option[ImportModule] = option
     override def getAlias: Option[ImportAlias] = option
     override def getHiddens: Option[ImportHiddens] = option
     override def getExplicits: Option[ImportExplicits] = option
@@ -637,6 +668,7 @@ object HaskellParser2020Factory {
   private def createHElement(node: ASTNode, t: Elements.HElementType): Psi.HElement = {
     t match {
       case Elements.IMPORT_HIDDENS => new PsiImpl.ImportHiddensImpl(node)
+      case Elements.IMPORT_MODULE => new PsiImpl.ImportModuleImpl(node)
       case Elements.IMPORT_HIDDEN => new PsiImpl.ImportHiddenImpl(node)
       case Elements.MODULE_EXPORTS => new PsiImpl.ModuleExportsImpl(node)
       case Elements.VARSYM => new PsiImpl.VarsymImpl(node)
@@ -645,6 +677,7 @@ object HaskellParser2020Factory {
       case Elements.IMPORT_MEMBER_VARSYM => new PsiImpl.ImportMemberVarsymImpl(node)
       case Elements.IMPORT_MEMBER_CONID => new PsiImpl.ImportMemberConidImpl(node)
       case Elements.IMPORT_MEMBER_VARID => new PsiImpl.ImportMemberVaridImpl(node)
+      case Elements.IMPORT_MEMBER_ALL => new PsiImpl.ImportMemberAllImpl(node)
       case Elements.IMPORT_MEMBER_CONSYM => new PsiImpl.ImportMemberConsymImpl(node)
       case Elements.IMPORT_ITEM_TYPE_CONID => new PsiImpl.ImportItemTypeConidImpl(node)
       case Elements.IMPORT_ITEM_VARSYM => new PsiImpl.ImportItemVarsymImpl(node)

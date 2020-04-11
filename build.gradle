@@ -16,6 +16,10 @@ task cleanJFlex(type: Exec) {
     commandLine './tools/run-jflex', 'clean'
 }
 
+task runParser2020GenTypes(type: Exec) {
+    commandLine './tools/parser/gen-types'
+}
+
 ext {
     javaVersion = '1.8'
     scalaVersion = '2.12.4'
@@ -96,7 +100,7 @@ allprojects {
     }
 }
 
-assemble.dependsOn(validateDic, runJFlex)
+assemble.dependsOn(validateDic, runJFlex, runParser2020GenTypes)
 
 project(':jps-plugin') {
     dependencies {
@@ -134,7 +138,7 @@ def getPluginVersion() {
 
 clean.dependsOn cleanJFlex
 
-compileJava.dependsOn runJFlex
+compileJava.dependsOn runJFlex, runParser2020GenTypes
 
 // Fixes "unmappable character for encoding ASCII" when compiling files
 // containing unicode characters in strings via IntelliJ gradle tasks.

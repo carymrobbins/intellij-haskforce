@@ -29,9 +29,13 @@ ModuleExport:
     getQvar: Qvar
 
 ImportStmt:
+  getModule: Option[ImportModule]
   getAlias: Option[ImportAlias]
   getExplicits: Option[ImportExplicits]
   getHiddens: Option[ImportHiddens]
+
+ImportModule:
+  getQconid: Qconid
 
 ImportAlias:
   getQconid: Qconid
@@ -78,6 +82,9 @@ ImportMember:
 
   ImportMemberVarid:
     getVarid: Varid
+
+  ImportMemberAll:
+    getDoublePeriod: HTokenElement[T.DOUBLEPERIOD.type]
 
 QualifiedPrefix:
   getConids: util.List[Conid]

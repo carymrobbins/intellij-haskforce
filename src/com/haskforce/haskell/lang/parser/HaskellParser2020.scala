@@ -97,7 +97,12 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
         optRBrace.contains(getTokenType) && lookAhead(1) == null ||
         optRBrace.isEmpty && getTokenType == null
     }
-    while (!end()) pModuleBodyItem.run()
+    while (!end()) {
+      pModuleBodyItem.run()
+      while (getTokenType == T.WHITESPACESEMITOK || getTokenType == T.SEMICOLON) {
+        advanceLexer()
+      }
+    }
     if (optRBrace.contains(getTokenType)) advanceLexer()
     true
   }
@@ -121,7 +126,7 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
   private def pImportStmt = parseIfToken(T.IMPORT) { m =>
     // Consume 'qualified' if it exists.
     if (getTokenType == T.QUALIFIED) advanceLexer()
-    if (!pQConid.run()) {
+    if (!pWrapWith(E.IMPORT_MODULE, pQConid).run()) {
       m.error("Missing module name")
     } else {
       pImportAlias.run()
@@ -134,7 +139,7 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
     }
   }
 
-  private def pImportAlias = withMark { m =>
+  private def pImportAlias = parseIfToken(T.AS) { m =>
     if (!pQConid.run()) {
       m.error("Expected import alias name")
     } else {
@@ -182,11 +187,15 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
   }
 
   private def pImportMember = {
-    pInParens(
-      pWrapWith(E.IMPORT_MEMBER_VARSYM, pVarsym)
-        .orElse(pWrapWith(E.IMPORT_MEMBER_CONSYM, pConsym))
-    ).orElse(pWrapWith(E.IMPORT_MEMBER_CONID, pConid))
-     .orElse(pWrapWith(E.IMPORT_MEMBER_VARID, pVarid))
+    pTokenAs(T.DOUBLEPERIOD, E.IMPORT_MEMBER_ALL)
+      .orElse(
+        pInParens(
+          pWrapWith(E.IMPORT_MEMBER_VARSYM, pVarsym)
+            .orElse(pWrapWith(E.IMPORT_MEMBER_CONSYM, pConsym))
+        )
+      )
+      .orElse(pWrapWith(E.IMPORT_MEMBER_CONID, pConid))
+      .orElse(pWrapWith(E.IMPORT_MEMBER_VARID, pVarid))
   }
 
   private def pModuleDecl = parseIfToken(T.MODULETOKEN) { m =>
