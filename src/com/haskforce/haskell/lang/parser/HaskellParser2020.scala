@@ -119,25 +119,17 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
   }
 
   private def pImportStmt = parseIfToken(T.IMPORT) { m =>
-    debug("pImportStmt")
     // Consume 'qualified' if it exists.
     if (getTokenType == T.QUALIFIED) advanceLexer()
-    debug("pImportStmt - QUALIFIED check done")
     if (!pQConid.run()) {
-      debug("pImportStmt - failed to parse import module name")
       m.error("Missing module name")
     } else {
-      debug("pImportStmt - parsed import module name")
       pImportAlias.run()
-      debug("pImportStmt - alias check done")
       pImportExplicits(hiding = false).run()
-      debug("pImportStmt - import explicits done")
       if (getTokenType == T.HIDING) {
         advanceLexer()
-        debug("pImportStmt - in import hidings")
         pImportExplicits(hiding = true).run()
       }
-      debug("pImportStmt - import hidings done")
       m.done(E.IMPORT_STMT)
     }
   }
@@ -152,31 +144,33 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
 
   private def pImportExplicits(hiding: Boolean) = parseIfToken(T.LPAREN) { m =>
     while (getTokenType != T.RPAREN && pImportExplicit(hiding).run()) {
-      debug("pImportExplicits - while loop")
       while (getTokenType == T.COMMA) advanceLexer()
     }
     if (getTokenType == T.RPAREN) advanceLexer()
     m.done(if (hiding) E.IMPORT_HIDDENS else E.IMPORT_EXPLICITS)
   }
 
-  private def pImportExplicit(hiding: Boolean) = withMark { m =>
-    val p = pImportType.orElse(pImportVar)
-    if (p.run()) {
-      m.done(if (hiding) E.IMPORT_HIDDEN else E.IMPORT_EXPLICIT)
+  private def pImportExplicit(hiding: Boolean) = {
+    pWrapWith(
+      if (hiding) E.IMPORT_HIDDEN else E.IMPORT_EXPLICIT,
+      pImportItem
+    )
+  }
+
+  private def pImportItem = {
+    pWrapWith(E.IMPORT_ITEM_TYPE_CONSYM, pImportType(pConid))
+      .orElse(pWrapWith(E.IMPORT_ITEM_TYPE_CONSYM, pImportType(pConsym)))
+      .orElse(pWrapWith(E.IMPORT_ITEM_VARID, pVarid))
+      .orElse(pWrapWith(E.IMPORT_ITEM_VARSYM, pVarsym))
+  }
+
+  private def pImportType(p: Parse) = Parse {
+    if (!p.run()) {
+      false
     } else {
-      advanceLexer()
-      m.error(s"Missing ${if (hiding) "hidden" else "explicit"} import item")
+      pImportMembers.run() // ok if it fails
+      true
     }
-  }
-
-  private def pImportType = {
-    pWrapWith(E.IMPORT_TYPE_CONID, pConid)
-      .orElse(pWrapWith(E.IMPORT_TYPE_CONSYM, pInParens(pConsym)))
-  }
-
-  private def pImportVar = {
-    pWrapWith(E.IMPORT_VARID, pVarid)
-      .orElse(pWrapWith(E.IMPORT_VARSYM, pInParens(pVarsym)))
   }
 
   private def pImportMembers = parseIfToken(T.LPAREN) { m =>
@@ -187,27 +181,12 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
     m.done(E.IMPORT_MEMBERS)
   }
 
-  private def pImportMember = withMark { m =>
-    // Check for varsym or consym
-    if (getTokenType == T.LPAREN) {
-      advanceLexer()
-      val ok = pVarsym.orElse(pConsym).run()
-      // Try to consume the closing rparen if exists.
-      if (getTokenType == T.RPAREN) advanceLexer()
-      if (!ok) {
-        m.error("Expected symbol")
-      } else {
-        m.done(E.IMPORT_MEMBER)
-      }
-    } else {
-      // Check for conid or varid
-      val ok = pConid.orElse(pVarid).run()
-      if (!ok) {
-        m.rollbackTo()
-      } else {
-        m.done(E.IMPORT_MEMBER)
-      }
-    }
+  private def pImportMember = {
+    pInParens(
+      pWrapWith(E.IMPORT_MEMBER_VARSYM, pVarsym)
+        .orElse(pWrapWith(E.IMPORT_MEMBER_CONSYM, pConsym))
+    ).orElse(pWrapWith(E.IMPORT_MEMBER_CONID, pConid))
+     .orElse(pWrapWith(E.IMPORT_MEMBER_VARID, pVarid))
   }
 
   private def pModuleDecl = parseIfToken(T.MODULETOKEN) { m =>
@@ -348,14 +327,14 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
       // Use a temporary marker so we can rollback the lexer state if we fail to parse.
       val m = mark()
       advanceLexer()
-      if (!p.andThen(pToken(T.RPAREN)).run()) {
-        // Revert the lexer position such that we have not consumed the lparen.
-        m.rollbackTo()
-        false
-      } else {
+      if (p.run() && pToken(T.RPAREN).run()) {
         // Drop the temporary marker.
         m.drop()
         true
+      } else {
+        // Revert the lexer position such that we have not consumed the lparen.
+        m.rollbackTo()
+        false
       }
     }
   }
@@ -403,7 +382,6 @@ object HaskellPsiBuilder {
   /** Parser returns 'true' if it consumed input or is considered successful. */
   final class Parse(val run: () => Boolean) extends AnyVal {
     def orElse(p: Parse): Parse = Parse { run() || p.run() }
-    def andThen(p: Parse): Parse = Parse { run() && p.run() }
   }
 
   object Parse {

@@ -9,10 +9,10 @@ out_scala=./src/com/haskforce/haskell/lang/parser/gen/HaskellParserInfra2020.sca
 
 mkdir -p "$(dirname "$out_scala")"
 
-# Ensure our script has been pre-compiled.
-./tools/parser/gen-types.hs --noop
-
-# Generate the scala file.
-./tools/parser/gen-types.hs "$parser_yaml" > "$out_scala"
+# Creating a temp file which helps refresh the file in-place in the IDE
+# without first truncating.
+tmp_scala=$(mktemp -t "$(basename "$out_scala")")
+./tools/parser/gen-types.hs "$parser_yaml" > "$tmp_scala"
+mv "$tmp_scala" "$out_scala"
 
 echo "Generated scala file: $out_scala"

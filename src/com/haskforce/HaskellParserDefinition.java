@@ -137,7 +137,9 @@ public class HaskellParserDefinition implements ParserDefinition {
     @NotNull
     @Override
     public PsiElement createElement(ASTNode node) {
-        if (mode == Mode.PARSER2020) return HaskellParser2020.Factory$.MODULE$.createElement(node);
+        if (mode == Mode.PARSER2020) {
+            return com.haskforce.haskell.lang.parser.gen.Factory$.MODULE$.createElement(node);
+        }
         return HaskellTypes.Factory.createElement(node);
     }
 }

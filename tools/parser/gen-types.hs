@@ -32,6 +32,7 @@ import Data.Coerce (coerce)
 import Data.Either (partitionEithers)
 import Data.Hashable (Hashable)
 import Data.HashMap.Strict (HashMap)
+import Data.Maybe (mapMaybe)
 import Data.Proxy (Proxy(Proxy))
 import Data.Text (Text)
 import System.Environment (getArgs)
@@ -62,6 +63,8 @@ main = do
     , ""
     , "package com.haskforce.haskell.lang.parser.gen"
     , ""
+    , "import java.util"
+    , ""
     , "import com.haskforce.haskell.lang.parser.{HaskellTokenTypes2020 => T}"
     , "import com.haskforce.HaskellLanguage"
     , "import com.haskforce.psi.HaskellTokenType"
@@ -69,6 +72,9 @@ main = do
     , "import com.intellij.lang.ASTNode"
     , "import com.intellij.psi.PsiElement"
     , "import com.intellij.psi.tree.IElementType"
+    , "import com.intellij.psi.util.PsiTreeUtil"
+    , ""
+    , "import scala.reflect.ClassTag"
     , ""
     , render (Proxy @Elements) schema
     , ""
@@ -128,7 +134,7 @@ data MethodDef = MethodDef
   } deriving stock (Show, Eq)
 
 instance FromJSON MethodDef where
-  parseJSON = \case 
+  parseJSON = \case
     Aeson.String s ->
       pure MethodDef
         { final = False
@@ -151,7 +157,7 @@ class Render (t :: RenderType) a where
 instance Render Elements Schema where
   render p (Schema m) =
     "object Elements {\n\n"
-      <> "  sealed class HElementType(name: String) extends IElementType(name, HaskellLanguage.INSTANCE)\n"
+      <> "  sealed abstract class HElementType(name: String) extends IElementType(name, HaskellLanguage.INSTANCE)\n"
       <> (Text.intercalate "\n" $ render p <$> HashMap.toList m)
       <> "\n}"
 
@@ -166,40 +172,41 @@ instance Render Psi Schema where
 instance Render PsiImpl Schema where
   render p (Schema m) =
     "object PsiImpl {\n"
+      <> "  import Psi._\n"
       <> renderHElementImpl <> "\n\n"
       <> (Text.intercalate "\n\n" $ render p <$> HashMap.toList m)
       <> "\n}"
 
     where
     renderHElementImpl = Text.intercalate "\n"
-      [ "    abstract class HElementImpl(node: ASTNode) extends ASTWrapperPsiElement(node) with Psi.HElement {"
-      , "      override def toString: String = node.getElementType.toString"
+      [ "  abstract class HElementImpl(node: ASTNode) extends ASTWrapperPsiElement(node) with Psi.HElement {"
+      , "    override def toString: String = node.getElementType.toString"
       , ""
-      , "      protected def one[A <: Psi.HElement](implicit ct: ClassTag[A]): A = {"
-      , "        notNullChild(PsiTreeUtil.getChildOfType[A](this, cls[A]))"
-      , "      }"
-      , ""
-      , "      protected def option[A <: Psi.HElement](implicit ct: ClassTag[A]): Option[A] = {"
-      , "        Option(PsiTreeUtil.getChildOfType[A](this, cls[A]))"
-      , "      }"
-      , ""
-      , "      protected def list[A <: Psi.HElement](implicit ct: ClassTag[A]): util.List[A] = {"
-      , "        PsiTreeUtil.getChildrenOfTypeAsList[A](this, cls[A])"
-      , "      }"
-      , ""
-      , "      protected def oneTok(t: HaskellTokenType): PsiElement = {"
-      , "        notNullChild(findChildByType[PsiElement](t))"
-      , "      }"
-      , ""
-      , "      //noinspection SameParameterValue"
-      , "      protected def optionTok(t: HaskellTokenType): Option[PsiElement] = {"
-      , "        Option(findChildByType[PsiElement](t))"
-      , "      }"
+      , "    protected def one[A <: Psi.HElement](implicit ct: ClassTag[A]): A = {"
+      , "      notNullChild(PsiTreeUtil.getChildOfType[A](this, cls[A]))"
       , "    }"
       , ""
-      , "    private def cls[A](implicit ct: ClassTag[A]): Class[A] = {"
-      , "      ct.runtimeClass.asInstanceOf[Class[A]]"
+      , "    protected def option[A <: Psi.HElement](implicit ct: ClassTag[A]): Option[A] = {"
+      , "      Option(PsiTreeUtil.getChildOfType[A](this, cls[A]))"
       , "    }"
+      , ""
+      , "    protected def list[A <: Psi.HElement](implicit ct: ClassTag[A]): util.List[A] = {"
+      , "      PsiTreeUtil.getChildrenOfTypeAsList[A](this, cls[A])"
+      , "    }"
+      , ""
+      , "    protected def oneTok(t: HaskellTokenType): PsiElement = {"
+      , "      notNullChild(findChildByType[PsiElement](t))"
+      , "    }"
+      , ""
+      , "    //noinspection SameParameterValue"
+      , "    protected def optionTok(t: HaskellTokenType): Option[PsiElement] = {"
+      , "      Option(findChildByType[PsiElement](t))"
+      , "    }"
+      , "  }"
+      , ""
+      , "  private def cls[A](implicit ct: ClassTag[A]): Class[A] = {"
+      , "    ct.runtimeClass.asInstanceOf[Class[A]]"
+      , "  }"
       ]
 
 instance Render Factory Schema where
@@ -214,21 +221,27 @@ instance Render Factory Schema where
     , ""
     , "  private def createHElement(node: ASTNode, t: Elements.HElementType): Psi.HElement = {"
     , "    t match {"
-    , Text.intercalate "\n" $ filter (not . Text.null) $ map renderCase (HashMap.toList m)
+    , Text.intercalate "\n" $ map renderCases (HashMap.toList m)
     , "    }"
     , "  }"
+    , "}"
     ]
     where
-    renderCase (name, ElementDef attrs) =
-      if hasSubtypes attrs then
-        ""
-      else
-        "      case Elements." <> toUpperSnake (coerce name)
-          <> " => new PsiImpl." <> coerce name <> "Impl(node)"
+    renderCases (name, ElementDef attrs) =
+      Text.intercalate "\n" $
+        if null subtypeNames then
+          [renderCase (coerce name)]
+        else
+          map renderCase subtypeNames
+      where
+      subtypeNames = flip mapMaybe attrs $ \case
+        ElementSubtype (SubtypeDef name _) -> Just (coerce name)
+        _ -> Nothing
 
-    hasSubtypes = any $ \case
-      ElementSubtype _ -> True
-      _ -> False
+    renderCase name =
+      "      "
+        <> "case Elements." <> toUpperSnake name
+        <> " => new PsiImpl." <> name <> "Impl(node)"
 
 instance Render Elements (ElementName, ElementDef) where
   render p (topName, ElementDef attrs) =
@@ -291,14 +304,14 @@ instance Render PsiImpl (ElementName, ElementDef) where
       ElementSubtype def -> Right def
 
     renderSubClasses =
-      Text.intercalate "\n\n" $ fmap (render p . (topName,)) subtypes
+      Text.intercalate "\n\n" $ fmap (render p) subtypes
 
 instance Render Psi (MethodName, MethodDef) where
   render p (name, MethodDef { final, typ, impl }) =
     "\n    " <> go
     where
     defOnly = "def " <> coerce name <> ": " <> coerce typ
-    go = 
+    go =
       if final then
         case impl of
           Nothing -> error $ "In " <> show name <> ", 'final: true' requires impl"
@@ -333,7 +346,7 @@ instance Render PsiImpl (MethodName, MethodDef) where
     extractTok p s =
       maybe onFailure id $ Text.stripSuffix s =<< Text.stripPrefix p typText
       where
-      onFailure = 
+      onFailure =
         error $ "Unexpected tok type: " <> show typ <> "; expected prefix=" <> show p <> "; suffix=" <> show s
 
 instance Render Psi (ElementName, SubtypeDef) where
@@ -345,10 +358,10 @@ instance Render Psi (ElementName, SubtypeDef) where
     where
     body = foldMap (render p) (HashMap.toList methods)
 
-instance Render PsiImpl (ElementName, SubtypeDef) where
-  render p (supertypeName, SubtypeDef name methods) =
+instance Render PsiImpl SubtypeDef where
+  render p (SubtypeDef name methods) =
     "  class " <> coerce name <> "Impl(node: ASTNode) "
-      <> "extends HElementImpl(node) with Psi." <> coerce supertypeName <> " {"
+      <> "extends HElementImpl(node) with Psi." <> coerce name <> " {"
       <> body
       <> (if Text.null body then "" else "\n  ")
       <> "}"
@@ -362,6 +375,6 @@ partitionWith f xs = partitionEithers $ map f xs
 toUpperSnake :: Text -> Text
 toUpperSnake t = Text.pack $ viaString $ Text.unpack t
   where
-  viaString s = dropWhile (== '_') $ do 
+  viaString s = dropWhile (== '_') $ do
     c <- s
     if Char.isUpper c then ['_', Char.toUpper c] else [Char.toUpper c]

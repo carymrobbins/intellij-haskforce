@@ -39,22 +39,29 @@ ImportAlias:
 ImportExplicits:
   getExplicits: util.List[ImportExplicit]
 
-ImportExplicit: {} # TODO
+ImportExplicit:
+  getItem: ImportItem
 
 ImportHiddens:
   getHiddens: util.List[ImportHidden]
 
 ImportHidden:
-  getImportType: Option[ImportType]
+  getItem: ImportItem
 
-ImportType:
-  getMembers: Option[ImportMembers]
-
-  ImportTypeConid:
+ImportItem:
+  ImportItemTypeConid:
+    getMembers: Option[ImportMembers]
     getConid: Conid
 
-  ImportTypeConsym:
+  ImportItemTypeConsym:
+    getMembers: Option[ImportMembers]
     getConsym: Consym
+
+  ImportItemVarid:
+    getVarid: Varid
+
+  ImportItemVarsym:
+    getVarsym: Varsym
 
 ImportMembers:
   getMembers: util.List[ImportMember]
