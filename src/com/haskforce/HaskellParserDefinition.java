@@ -1,8 +1,10 @@
 package com.haskforce;
 
 import com.haskforce.haskell.lang.parser.HaskellParser2020;
+import com.haskforce.haskell.lang.parser.gen.HaskellParser2020Factory$;
 import com.haskforce.parser.HaskellParser;
 import com.haskforce.parsing.HaskellParsingLexer;
+import com.haskforce.psi.HaskellFile;
 import com.haskforce.psi.HaskellParserWrapper;
 import com.haskforce.psi.HaskellTypes;
 import com.haskforce.stubs.types.HaskellFileStubElementType;
@@ -18,10 +20,7 @@ import com.intellij.psi.PsiFile;
 import com.intellij.psi.TokenType;
 import com.intellij.psi.tree.IFileElementType;
 import com.intellij.psi.tree.TokenSet;
-import com.haskforce.psi.HaskellFile;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Function;
 
 /**
  * Main entry point from plugin for parsing. Returns parser, lexer and other
@@ -138,7 +137,7 @@ public class HaskellParserDefinition implements ParserDefinition {
     @Override
     public PsiElement createElement(ASTNode node) {
         if (mode == Mode.PARSER2020) {
-            return com.haskforce.haskell.lang.parser.gen.Factory$.MODULE$.createElement(node);
+            return HaskellParser2020Factory$.MODULE$.createElement(node);
         }
         return HaskellTypes.Factory.createElement(node);
     }

@@ -1,5 +1,6 @@
 package com.haskforce.haskell.lang.parser
 
+import com.haskforce.haskell.lang.parser.gen.{HaskellParser2020Elements => E}
 import com.haskforce.haskell.lang.parser.{HaskellTokenTypes2020 => T}
 import com.haskforce.psi.HaskellTokenType
 import com.intellij.lang.impl.PsiBuilderAdapter
@@ -17,7 +18,6 @@ final class HaskellParser2020 extends PsiParser {
 private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(builder) {
 
   import HaskellPsiBuilder.{MarkResult, Marker, Parse}
-  import gen.{Elements => E}
 
   // In prod we want this to be 'false' but can be useful as 'true' for testing.
   private val DEBUG = true
@@ -376,8 +376,6 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
 }
 
 object HaskellPsiBuilder {
-
-  import gen.{Elements => E}
 
   /** Parser returns 'true' if it consumed input or is considered successful. */
   final class Parse(val run: () => Boolean) extends AnyVal {

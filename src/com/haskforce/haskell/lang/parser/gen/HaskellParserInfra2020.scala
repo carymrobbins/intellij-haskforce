@@ -6,6 +6,9 @@ package com.haskforce.haskell.lang.parser.gen
 
 import java.util
 
+import com.haskforce.haskell.lang.parser.gen.{HaskellParser2020Elements => Elements}
+import com.haskforce.haskell.lang.parser.gen.{HaskellParser2020Psi => Psi}
+import com.haskforce.haskell.lang.parser.gen.{HaskellParser2020PsiImpl => PsiImpl}
 import com.haskforce.haskell.lang.parser.{HaskellTokenTypes2020 => T}
 import com.haskforce.HaskellLanguage
 import com.haskforce.psi.HaskellTokenType
@@ -17,9 +20,11 @@ import com.intellij.psi.util.PsiTreeUtil
 
 import scala.reflect.ClassTag
 
-object Elements {
+
+object HaskellParser2020Elements {
 
   sealed abstract class HElementType(name: String) extends IElementType(name, HaskellLanguage.INSTANCE)
+
 
   object IMPORT_HIDDENS extends HElementType("IMPORT_HIDDENS")
 
@@ -80,103 +85,158 @@ object Elements {
   object QTYCON extends HElementType("QTYCON")
 }
 
-object Psi {
 
+
+object HaskellParser2020Psi {
   trait HElement extends PsiElement
 
   type HTokenElement[A] = PsiElement
 
   trait ImportHiddens extends HElement {
+
     def getHiddens: util.List[ImportHidden]
   }
 
+
+
   trait ImportHidden extends HElement {
+
     def getItem: ImportItem
   }
 
+
+
   trait ModuleExports extends HElement {
+
     def getExports: util.List[ModuleExport]
   }
 
-  trait Var extends HElement {}
+
+
+  trait Var extends HElement {
+
+  }
 
   trait Varsym extends Var {
+
     def getVarsymTok: HTokenElement[T.VARSYMTOK.type]
   }
 
   trait Varid extends Var {
+
     def getVaridRegexp: HTokenElement[T.VARIDREGEXP.type]
   }
 
+
+
   trait ModuleName extends HElement {
+
     def getQconid: Qconid
   }
 
-  trait ImportMember extends HElement {}
+
+
+  trait ImportMember extends HElement {
+
+  }
 
   trait ImportMemberVarsym extends ImportMember {
+
     def getVarsym: Varsym
   }
 
   trait ImportMemberConid extends ImportMember {
+
     def getConid: Conid
   }
 
   trait ImportMemberVarid extends ImportMember {
+
     def getVarid: Varid
   }
 
   trait ImportMemberConsym extends ImportMember {
+
     def getConsym: Consym
   }
 
-  trait ImportItem extends HElement {}
+
+
+  trait ImportItem extends HElement {
+
+  }
 
   trait ImportItemTypeConid extends ImportItem {
+
     def getConid: Conid
     def getMembers: Option[ImportMembers]
   }
 
   trait ImportItemVarsym extends ImportItem {
+
     def getVarsym: Varsym
   }
 
   trait ImportItemTypeConsym extends ImportItem {
+
     def getConsym: Consym
     def getMembers: Option[ImportMembers]
   }
 
   trait ImportItemVarid extends ImportItem {
+
     def getVarid: Varid
   }
 
-  trait Unknown extends HElement {}
+
+
+  trait Unknown extends HElement {
+
+  }
+
+
 
   trait ImportExplicits extends HElement {
+
     def getExplicits: util.List[ImportExplicit]
   }
 
+
+
   trait ImportStmt extends HElement {
+
     def getAlias: Option[ImportAlias]
     def getHiddens: Option[ImportHiddens]
     def getExplicits: Option[ImportExplicits]
   }
 
+
+
   trait ImportExplicit extends HElement {
+
     def getItem: ImportItem
   }
 
+
+
   trait QualifiedPrefix extends HElement {
+
     def getConids: util.List[Conid]
   }
 
-  trait ModuleExport extends HElement {}
+
+
+  trait ModuleExport extends HElement {
+
+  }
 
   trait ModuleExportModule extends ModuleExport {
+
     def getModuleName: ModuleName
   }
 
   trait ModuleExportTycon extends ModuleExport {
+
     final def exportsAllMembers: Boolean = getDoublePeriod.isDefined
     def getDoublePeriod: Option[HTokenElement[T.DOUBLEPERIOD.type]]
     def getQtycon: Qtycon
@@ -184,66 +244,108 @@ object Psi {
   }
 
   trait ModuleExportVar extends ModuleExport {
+
     def getQvar: Qvar
   }
 
+
+
   trait Qvar extends HElement {
+
     def getQualifiedPrefix: Option[QualifiedPrefix]
     def getVar: Var
   }
 
+
+
   trait ModuleDecl extends HElement {
+
     def getModuleName: Option[ModuleName]
   }
 
+
+
   trait Qconsym extends HElement {
+
     def getQualifiedPrefix: Option[QualifiedPrefix]
     def getConsym: Consym
   }
 
-  trait Tycon extends HElement {}
+
+
+  trait Tycon extends HElement {
+
+  }
 
   trait TyconConsym extends Tycon {
+
     def getConsym: Consym
   }
 
   trait TyconConid extends Tycon {
+
     def getConid: Conid
   }
 
+
+
   trait Conid extends HElement {
+
     def getConidRegexp: HTokenElement[T.CONIDREGEXP.type]
   }
 
+
+
   trait Module extends HElement {
+
     def getModuleDecl: Option[ModuleDecl]
   }
 
+
+
   trait Consym extends HElement {
+
     def getConsymTok: HTokenElement[T.CONSYMTOK.type]
   }
 
+
+
   trait ImportAlias extends HElement {
+
     def getQconid: Qconid
   }
 
+
+
   trait ImportMembers extends HElement {
+
     def getMembers: util.List[ImportMember]
   }
 
+
+
   trait Qconid extends HElement {
+
     def getQualifiedPrefix: Option[QualifiedPrefix]
     def getConid: Conid
   }
 
+
+
   trait Qtycon extends HElement {
+
     def getQualifiedPrefix: Option[QualifiedPrefix]
     def getTycon: Tycon
   }
+
 }
 
-object PsiImpl {
+
+
+object HaskellParser2020PsiImpl {
+
   import Psi._
+
   abstract class HElementImpl(node: ASTNode) extends ASTWrapperPsiElement(node) with Psi.HElement {
     override def toString: String = node.getElementType.toString
 
@@ -273,152 +375,258 @@ object PsiImpl {
     ct.runtimeClass.asInstanceOf[Class[A]]
   }
 
+
   class ImportHiddensImpl(node: ASTNode) extends HElementImpl(node) with Psi.ImportHiddens {
+
     override def getHiddens: util.List[ImportHidden] = list
   }
 
+
+
   class ImportHiddenImpl(node: ASTNode) extends HElementImpl(node) with Psi.ImportHidden {
+
     override def getItem: ImportItem = one
   }
 
+
+
   class ModuleExportsImpl(node: ASTNode) extends HElementImpl(node) with Psi.ModuleExports {
+
     override def getExports: util.List[ModuleExport] = list
   }
 
+
+
   class VarsymImpl(node: ASTNode) extends HElementImpl(node) with Psi.Varsym {
+
     override def getVarsymTok: HTokenElement[T.VARSYMTOK.type] = oneTok(T.VARSYMTOK)
   }
 
+
+
   class VaridImpl(node: ASTNode) extends HElementImpl(node) with Psi.Varid {
+
     override def getVaridRegexp: HTokenElement[T.VARIDREGEXP.type] = oneTok(T.VARIDREGEXP)
   }
 
+
+
   class ModuleNameImpl(node: ASTNode) extends HElementImpl(node) with Psi.ModuleName {
+
     override def getQconid: Qconid = one
   }
 
+
+
   class ImportMemberVarsymImpl(node: ASTNode) extends HElementImpl(node) with Psi.ImportMemberVarsym {
+
     override def getVarsym: Varsym = one
   }
+
+
 
   class ImportMemberConidImpl(node: ASTNode) extends HElementImpl(node) with Psi.ImportMemberConid {
+
     override def getConid: Conid = one
   }
 
+
+
   class ImportMemberVaridImpl(node: ASTNode) extends HElementImpl(node) with Psi.ImportMemberVarid {
+
     override def getVarid: Varid = one
   }
 
+
+
   class ImportMemberConsymImpl(node: ASTNode) extends HElementImpl(node) with Psi.ImportMemberConsym {
+
     override def getConsym: Consym = one
   }
 
+
+
   class ImportItemTypeConidImpl(node: ASTNode) extends HElementImpl(node) with Psi.ImportItemTypeConid {
+
     override def getConid: Conid = one
     override def getMembers: Option[ImportMembers] = option
   }
 
+
+
   class ImportItemVarsymImpl(node: ASTNode) extends HElementImpl(node) with Psi.ImportItemVarsym {
+
     override def getVarsym: Varsym = one
   }
 
+
+
   class ImportItemTypeConsymImpl(node: ASTNode) extends HElementImpl(node) with Psi.ImportItemTypeConsym {
+
     override def getConsym: Consym = one
     override def getMembers: Option[ImportMembers] = option
   }
 
+
+
   class ImportItemVaridImpl(node: ASTNode) extends HElementImpl(node) with Psi.ImportItemVarid {
+
     override def getVarid: Varid = one
   }
 
-  class UnknownImpl(node: ASTNode) extends HElementImpl(node) with Psi.Unknown {}
+
+
+  class UnknownImpl(node: ASTNode) extends HElementImpl(node) with Psi.Unknown {
+
+  }
+
+
 
   class ImportExplicitsImpl(node: ASTNode) extends HElementImpl(node) with Psi.ImportExplicits {
+
     override def getExplicits: util.List[ImportExplicit] = list
   }
 
+
+
   class ImportStmtImpl(node: ASTNode) extends HElementImpl(node) with Psi.ImportStmt {
+
     override def getAlias: Option[ImportAlias] = option
     override def getHiddens: Option[ImportHiddens] = option
     override def getExplicits: Option[ImportExplicits] = option
   }
 
+
+
   class ImportExplicitImpl(node: ASTNode) extends HElementImpl(node) with Psi.ImportExplicit {
+
     override def getItem: ImportItem = one
   }
 
+
+
   class QualifiedPrefixImpl(node: ASTNode) extends HElementImpl(node) with Psi.QualifiedPrefix {
+
     override def getConids: util.List[Conid] = list
   }
 
+
+
   class ModuleExportModuleImpl(node: ASTNode) extends HElementImpl(node) with Psi.ModuleExportModule {
+
     override def getModuleName: ModuleName = one
   }
 
+
+
   class ModuleExportTyconImpl(node: ASTNode) extends HElementImpl(node) with Psi.ModuleExportTycon {
+
     override def getDoublePeriod: Option[HTokenElement[T.DOUBLEPERIOD.type]] = optionTok(T.DOUBLEPERIOD)
     override def getQtycon: Qtycon = one
     override def getExportedMembers: util.List[Qvar] = list
   }
 
+
+
   class ModuleExportVarImpl(node: ASTNode) extends HElementImpl(node) with Psi.ModuleExportVar {
+
     override def getQvar: Qvar = one
   }
 
+
+
   class QvarImpl(node: ASTNode) extends HElementImpl(node) with Psi.Qvar {
+
     override def getQualifiedPrefix: Option[QualifiedPrefix] = option
     override def getVar: Var = one
   }
 
+
+
   class ModuleDeclImpl(node: ASTNode) extends HElementImpl(node) with Psi.ModuleDecl {
+
     override def getModuleName: Option[ModuleName] = option
   }
 
+
+
   class QconsymImpl(node: ASTNode) extends HElementImpl(node) with Psi.Qconsym {
+
     override def getQualifiedPrefix: Option[QualifiedPrefix] = option
     override def getConsym: Consym = one
   }
 
+
+
   class TyconConsymImpl(node: ASTNode) extends HElementImpl(node) with Psi.TyconConsym {
+
     override def getConsym: Consym = one
   }
 
+
+
   class TyconConidImpl(node: ASTNode) extends HElementImpl(node) with Psi.TyconConid {
+
     override def getConid: Conid = one
   }
 
+
+
   class ConidImpl(node: ASTNode) extends HElementImpl(node) with Psi.Conid {
+
     override def getConidRegexp: HTokenElement[T.CONIDREGEXP.type] = oneTok(T.CONIDREGEXP)
   }
 
+
+
   class ModuleImpl(node: ASTNode) extends HElementImpl(node) with Psi.Module {
+
     override def getModuleDecl: Option[ModuleDecl] = option
   }
 
+
+
   class ConsymImpl(node: ASTNode) extends HElementImpl(node) with Psi.Consym {
+
     override def getConsymTok: HTokenElement[T.CONSYMTOK.type] = oneTok(T.CONSYMTOK)
   }
 
+
+
   class ImportAliasImpl(node: ASTNode) extends HElementImpl(node) with Psi.ImportAlias {
+
     override def getQconid: Qconid = one
   }
 
+
+
   class ImportMembersImpl(node: ASTNode) extends HElementImpl(node) with Psi.ImportMembers {
+
     override def getMembers: util.List[ImportMember] = list
   }
 
+
+
   class QconidImpl(node: ASTNode) extends HElementImpl(node) with Psi.Qconid {
+
     override def getQualifiedPrefix: Option[QualifiedPrefix] = option
     override def getConid: Conid = one
   }
 
+
+
   class QtyconImpl(node: ASTNode) extends HElementImpl(node) with Psi.Qtycon {
+
     override def getQualifiedPrefix: Option[QualifiedPrefix] = option
     override def getTycon: Tycon = one
   }
+
 }
 
-object Factory {
+
+
+object HaskellParser2020Factory {
+
   def createElement(node: ASTNode): PsiElement = {
     node.getElementType match {
       case t: Elements.HElementType => createHElement(node, t)
@@ -465,3 +673,5 @@ object Factory {
     }
   }
 }
+
+
