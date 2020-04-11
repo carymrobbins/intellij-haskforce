@@ -1,0 +1,112 @@
+Unknown: {}
+
+Module:
+  getModuleDecl: Option[ModuleDecl]
+
+ModuleDecl:
+  getModuleName: Option[ModuleName]
+
+ModuleName:
+  getQconid: Qconid
+
+ModuleExports:
+  getExports: util.List[ModuleExport]
+
+ModuleExport:
+  ModuleExportModule:
+    getModuleName: ModuleName
+
+  ModuleExportTycon:
+    getQtycon: Qtycon
+    getDoublePeriod: Option[HTokenElement[T.DOUBLEPERIOD.type]]
+    getExportedMembers: util.List[Qvar]
+    exportsAllMembers:
+      final: true
+      type: Boolean
+      impl: getDoublePeriod.isDefined
+
+  ModuleExportVar:
+    getQvar: Qvar
+
+ImportStmt:
+  getAlias: Option[ImportAlias]
+  getExplicits: Option[ImportExplicits]
+  getHiddens: Option[ImportHiddens]
+
+ImportAlias:
+  getQconid: Qconid
+
+ImportExplicits:
+  getExplicits: util.List[ImportExplicit]
+
+ImportExplicit: {} # TODO
+
+ImportHiddens:
+  getHiddens: util.List[ImportHidden]
+
+ImportHidden:
+  getImportType: Option[ImportType]
+
+ImportType:
+  getMembers: Option[ImportMembers]
+
+  ImportTypeConid:
+    getConid: Conid
+
+  ImportTypeConsym:
+    getConsym: Consym
+
+ImportMembers:
+  getMembers: util.List[ImportMember]
+
+ImportMember:
+  ImportMemberVarsym:
+    getVarsym: Varsym
+
+  ImportMemberConsym:
+    getConsym: Consym
+
+  ImportMemberConid:
+    getConid: Conid
+
+  ImportMemberVarid:
+    getVarid: Varid
+
+QualifiedPrefix:
+  getConids: util.List[Conid]
+
+Qconid:
+  getQualifiedPrefix: Option[QualifiedPrefix]
+  getConid: Conid
+
+Conid:
+  getConidRegexp: HTokenElement[T.CONIDREGEXP.type]
+
+Consym:
+  getConsymTok: HTokenElement[T.CONSYMTOK.type]
+
+Qconsym:
+  getQualifiedPrefix: Option[QualifiedPrefix]
+  getConsym: Consym
+
+Qvar:
+  getQualifiedPrefix: Option[QualifiedPrefix]
+  getVar: Var
+
+Var:
+  Varid:
+    getVaridRegexp: HTokenElement[T.VARIDREGEXP.type]
+
+  Varsym:
+    getVarsymTok: HTokenElement[T.VARSYMTOK.type]
+
+Qtycon:
+  getQualifiedPrefix: Option[QualifiedPrefix]
+  getTycon: Tycon
+
+Tycon:
+  TyconConid:
+    getConid: Conid
+
+  TyconConsym:
+    getConsym: Consym

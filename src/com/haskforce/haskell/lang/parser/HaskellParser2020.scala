@@ -1,18 +1,12 @@
 package com.haskforce.haskell.lang.parser
 
-import java.util
-
-import com.haskforce.HaskellLanguage
 import com.haskforce.haskell.lang.parser.{HaskellTokenTypes2020 => T}
 import com.haskforce.psi.HaskellTokenType
-import com.intellij.extapi.psi.ASTWrapperPsiElement
 import com.intellij.lang.impl.PsiBuilderAdapter
 import com.intellij.lang.{ASTNode, PsiBuilder, PsiParser}
-import com.intellij.psi.{PsiElement, TokenType}
+import com.intellij.openapi.util.text.StringUtil
+import com.intellij.psi.TokenType
 import com.intellij.psi.tree.IElementType
-import com.intellij.psi.util.PsiTreeUtil
-
-import scala.reflect.ClassTag
 
 final class HaskellParser2020 extends PsiParser {
   override def parse(root: IElementType, builder: PsiBuilder): ASTNode = {
@@ -22,8 +16,8 @@ final class HaskellParser2020 extends PsiParser {
 
 private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAdapter(builder) {
 
-  import HaskellParser2020.{Elements => E}
-  import HaskellPsiBuilder.{Parse, Marker, MarkResult}
+  import HaskellPsiBuilder.{MarkResult, Marker, Parse}
+  import gen.{Elements => E}
 
   // In prod we want this to be 'false' but can be useful as 'true' for testing.
   private val DEBUG = true
@@ -75,6 +69,7 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
       while (!eof()) advanceLexer()
       m.done(E.UNKNOWN)
     }.run()
+    ()
   }
 
   private def pModule = withMark { m =>
@@ -83,7 +78,7 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
     m.done(E.MODULE)
   }
 
-  private def pModuleBody = withMark { m =>
+  private def pModuleBody = Parse {
     val lbrace = getTokenType
     val optRBrace: Option[HaskellTokenType] = lbrace match {
       case T.WHITESPACELBRACETOK =>
@@ -97,27 +92,122 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
         debug("Unexpectedly found no real nor synthetic lbrace in module body")
         None
     }
-    while (
-      optRBrace.contains(getTokenType) && lookAhead(1) == null
-        || optRBrace.isEmpty && getTokenType == null
-    ) {
-      pModuleBodyItem.run()
+    def end(): Boolean = {
+      eof() ||
+        optRBrace.contains(getTokenType) && lookAhead(1) == null ||
+        optRBrace.isEmpty && getTokenType == null
     }
-    m.done(E.MODULE_BODY)
+    while (!end()) pModuleBodyItem.run()
+    if (optRBrace.contains(getTokenType)) advanceLexer()
+    true
   }
 
   private def pModuleBodyItem = {
     pImportStmt
+      .orElse(pUnknownThroughEOL("pModuleBodyItem"))
   }
 
+  //noinspection SameParameterValue
+  private def pUnknownThroughEOL(label: => String) = withMark { m =>
+    debug(s"Failed to parse at $label; parsing as UNKNOWN through EOL")
+    def getCurrentLine: Int = {
+      StringUtil.offsetToLineColumn(getOriginalText, getCurrentOffset).line
+    }
+    val line = getCurrentLine
+    while (getTokenType != null && getCurrentLine == line) advanceLexer()
+    m.done(E.UNKNOWN)
+  }
 
   private def pImportStmt = parseIfToken(T.IMPORT) { m =>
+    debug("pImportStmt")
     // Consume 'qualified' if it exists.
     if (getTokenType == T.QUALIFIED) advanceLexer()
-    if (!pConid.run()) {
-
+    debug("pImportStmt - QUALIFIED check done")
+    if (!pQConid.run()) {
+      debug("pImportStmt - failed to parse import module name")
+      m.error("Missing module name")
+    } else {
+      debug("pImportStmt - parsed import module name")
+      pImportAlias.run()
+      debug("pImportStmt - alias check done")
+      pImportExplicits(hiding = false).run()
+      debug("pImportStmt - import explicits done")
+      if (getTokenType == T.HIDING) {
+        advanceLexer()
+        debug("pImportStmt - in import hidings")
+        pImportExplicits(hiding = true).run()
+      }
+      debug("pImportStmt - import hidings done")
+      m.done(E.IMPORT_STMT)
     }
-    m.done(E.IMPORT_STMT)
+  }
+
+  private def pImportAlias = withMark { m =>
+    if (!pQConid.run()) {
+      m.error("Expected import alias name")
+    } else {
+      m.done(E.IMPORT_ALIAS)
+    }
+  }
+
+  private def pImportExplicits(hiding: Boolean) = parseIfToken(T.LPAREN) { m =>
+    while (getTokenType != T.RPAREN && pImportExplicit(hiding).run()) {
+      debug("pImportExplicits - while loop")
+      while (getTokenType == T.COMMA) advanceLexer()
+    }
+    if (getTokenType == T.RPAREN) advanceLexer()
+    m.done(if (hiding) E.IMPORT_HIDDENS else E.IMPORT_EXPLICITS)
+  }
+
+  private def pImportExplicit(hiding: Boolean) = withMark { m =>
+    val p = pImportType.orElse(pImportVar)
+    if (p.run()) {
+      m.done(if (hiding) E.IMPORT_HIDDEN else E.IMPORT_EXPLICIT)
+    } else {
+      advanceLexer()
+      m.error(s"Missing ${if (hiding) "hidden" else "explicit"} import item")
+    }
+  }
+
+  private def pImportType = {
+    pWrapWith(E.IMPORT_TYPE_CONID, pConid)
+      .orElse(pWrapWith(E.IMPORT_TYPE_CONSYM, pInParens(pConsym)))
+  }
+
+  private def pImportVar = {
+    pWrapWith(E.IMPORT_VARID, pVarid)
+      .orElse(pWrapWith(E.IMPORT_VARSYM, pInParens(pVarsym)))
+  }
+
+  private def pImportMembers = parseIfToken(T.LPAREN) { m =>
+    while (pImportMember.run()) {
+      while (getTokenType == T.COMMA) advanceLexer()
+    }
+    if (getTokenType == T.RPAREN) advanceLexer()
+    m.done(E.IMPORT_MEMBERS)
+  }
+
+  private def pImportMember = withMark { m =>
+    // Check for varsym or consym
+    if (getTokenType == T.LPAREN) {
+      advanceLexer()
+      val ok = pVarsym.orElse(pConsym).run()
+      // Try to consume the closing rparen if exists.
+      if (getTokenType == T.RPAREN) advanceLexer()
+      if (!ok) {
+        m.error("Expected symbol")
+      } else {
+        m.done(E.IMPORT_MEMBER)
+      }
+    } else {
+      // Check for conid or varid
+      val ok = pConid.orElse(pVarid).run()
+      if (!ok) {
+        m.rollbackTo()
+      } else {
+        m.done(E.IMPORT_MEMBER)
+      }
+    }
   }
 
   private def pModuleDecl = parseIfToken(T.MODULETOKEN) { m =>
@@ -207,7 +297,16 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
 
   private def pConsym = pTokenAs(T.CONSYMTOK, E.CONSYM)
 
-  private def pQConsym = pQualified(pConsym, E.QCONSYM)
+  // TODO private def pQConsym = pQualified(pConsym, E.QCONSYM)
+
+  private def pVarid = pTokenAs(T.VARIDREGEXP, E.VARID)
+
+  // TODO private def pQVarid = pQualified(pVarid, E.QVARID)
+
+  // NOTE: The HaskellParsingLexer does not emit 'VARSYMTOK'.
+  private def pVarsym = pTokenAs(T.VARSYMTOKPLUS, E.VARSYM)
+
+  // TODO private def pQVarsym = pQualified(pVarsym, E.QVARSYM)
 
   private def pQualified(p: Parse, e: E.HElementType) = withMark { m =>
     pQualifiedPrefix.run() // ok to ignore result
@@ -234,6 +333,43 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
     }
   }
 
+  private def pWrapWith(e: E.HElementType, p: Parse) = withMark { m =>
+    if (p.run()) {
+      m.done(e)
+    } else {
+      m.rollbackTo()
+    }
+  }
+
+  private def pInParens(p: Parse) = Parse {
+    if (getTokenType != T.LPAREN) {
+      false
+    } else {
+      // Use a temporary marker so we can rollback the lexer state if we fail to parse.
+      val m = mark()
+      advanceLexer()
+      if (!p.andThen(pToken(T.RPAREN)).run()) {
+        // Revert the lexer position such that we have not consumed the lparen.
+        m.rollbackTo()
+        false
+      } else {
+        // Drop the temporary marker.
+        m.drop()
+        true
+      }
+    }
+  }
+
+  //noinspection SameParameterValue
+  private def pToken(t: HaskellTokenType) = Parse {
+    if (getTokenType == t) {
+      advanceLexer()
+      true
+    } else {
+      false
+    }
+  }
+
   private def pTokenAs(t: HaskellTokenType, e: E.HElementType) = {
     parseIfToken(t) { m =>
       m.done(e)
@@ -241,7 +377,7 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
   }
 
   private def withMark(f: Marker => MarkResult): Parse = Parse {
-    f(new Marker(mark())).isDone
+    f(new Marker(mark())).consumed
   }
 
   private def parseIf(p: => Boolean)(f: Marker => MarkResult): Parse = Parse {
@@ -262,16 +398,21 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
 
 object HaskellPsiBuilder {
 
+  import gen.{Elements => E}
+
+  /** Parser returns 'true' if it consumed input or is considered successful. */
   final class Parse(val run: () => Boolean) extends AnyVal {
     def orElse(p: Parse): Parse = Parse { run() || p.run() }
+    def andThen(p: Parse): Parse = Parse { run() && p.run() }
   }
 
   object Parse {
     def apply(run: => Boolean): Parse = new Parse(() => run)
+    val ok: Parse = Parse(true)
   }
 
   final class Marker(private val m: PsiBuilder.Marker) extends AnyVal {
-    def done(t: HaskellParser2020.Elements.HElementType): MarkResult = {
+    def done(t: E.HElementType): MarkResult = {
       m.done(t)
       MarkResult.Done
     }
@@ -280,265 +421,34 @@ object HaskellPsiBuilder {
       m.rollbackTo()
       MarkResult.Rollback
     }
+
+    def error(message: String): MarkResult = {
+      m.error(message)
+      MarkResult.Error
+    }
+
+    def drop(): MarkResult = {
+      m.drop()
+      MarkResult.Drop
+    }
   }
 
   sealed trait MarkResult {
-    def isDone: Boolean
+    /** Indicates whether the 'Marker' action consumed input. */
+    def consumed: Boolean
   }
   object MarkResult {
     case object Done extends MarkResult {
-      override def isDone: Boolean = true
+      override def consumed: Boolean = true
     }
     case object Rollback extends MarkResult {
-      override def isDone: Boolean = false
+      override def consumed: Boolean = false
     }
-  }
-}
-
-object HaskellParser2020 {
-
-  object Elements {
-    sealed class HElementType(name: String) extends IElementType(name, HaskellLanguage.INSTANCE)
-    object UNKNOWN extends HElementType("UNKNOWN")
-    object MODULE extends HElementType("MODULE")
-    object MODULE_DECL extends HElementType("MODULE_DECL")
-    object MODULE_NAME extends HElementType("MODULE_NAME")
-    object MODULE_EXPORTS extends HElementType("MODULE_EXPORTS")
-    object MODULE_EXPORT_MODULE extends HElementType("MODULE_EXPORT_MODULE")
-    object MODULE_EXPORT_TYCON extends HElementType("MODULE_EXPORT_TYCON")
-    object MODULE_EXPORT_VAR extends HElementType("MODULE_EXPORT_VAR")
-    object MODULE_BODY extends HElementType("MODULE_BODY")
-    object IMPORT_STMT extends HElementType("IMPORT_STMT")
-    object QUALIFIED_PREFIX extends HElementType("QUALIFIED_PREFIX")
-    object CONID extends HElementType("CONID")
-    object QCONID extends HElementType("QCONID")
-    object CONSYM extends HElementType("CONSYM")
-    object QCONSYM extends HElementType("QCONSYM")
-    object TYCON_CONID extends HElementType("TYCON_CONID")
-    object TYCON_CONSYM extends HElementType("TYCON_CONSYM")
-    object QTYCON extends HElementType("QTYCON")
-  }
-
-  object Psi {
-    trait HElement extends PsiElement
-
-    trait Unknown extends HElement
-
-    trait Module extends HElement {
-      def getModuleDecl: Option[ModuleDecl]
+    case object Error extends MarkResult {
+      override def consumed: Boolean = true
     }
-
-    trait ModuleDecl extends HElement {
-      def getModuleName: Option[ModuleName]
-    }
-
-    trait ModuleName extends HElement {
-      def getQConid: QConid
-    }
-
-    trait ModuleExports extends HElement {
-      def getExports: util.List[ModuleExport]
-    }
-
-    sealed trait ModuleExport extends HElement
-
-    trait ModuleExportModule extends ModuleExport {
-      def getModuleName: ModuleName
-    }
-
-    trait ModuleExportTyCon extends ModuleExport {
-      def getQTyCon: QTyCon
-      def getDoublePeriod: Option[PsiElement]
-      final def exportsAllMembers: Boolean = getDoublePeriod.isDefined
-      def getExportedMembers: util.List[QVar]
-    }
-
-    trait ModuleExportVar extends ModuleExport {
-      def getQVar: QVar
-    }
-
-    trait QualifiedPrefix extends HElement {
-      def getConids: util.List[Conid]
-    }
-
-    trait QConid extends HElement {
-      def getQualifiedPrefix: Option[QualifiedPrefix]
-      def getConid: Conid
-    }
-
-    trait Conid extends HElement {
-      def getConidRegexp: PsiElement
-    }
-
-    trait Consym extends HElement {
-      def getConsymTok: PsiElement
-    }
-
-    trait QVar extends HElement {
-      def getQualifiedPrefix: Option[QualifiedPrefix]
-      def getVar: Var
-    }
-
-    sealed trait Var extends HElement
-
-    trait Varid extends Var {
-      def getVaridRegexp: PsiElement
-    }
-
-    trait Varsym extends Var {
-      def getVarsymTok: PsiElement
-    }
-
-    trait QTyCon extends HElement {
-      def getQualifiedPrefix: Option[QualifiedPrefix]
-      def getTyCon: TyCon
-    }
-
-    sealed trait TyCon extends HElement
-
-    trait TyConConid extends TyCon {
-      def getConid: Conid
-    }
-
-    trait TyConConsym extends TyCon {
-      def getConsym: Consym
-    }
-  }
-
-  object PsiImpl {
-
-    abstract class HElementImpl(node: ASTNode) extends ASTWrapperPsiElement(node) with Psi.HElement {
-      override def toString: String = node.getElementType.toString
-
-      protected def one[A <: Psi.HElement](implicit ct: ClassTag[A]): A = {
-        notNullChild(PsiTreeUtil.getChildOfType[A](this, cls[A]))
-      }
-
-      protected def option[A <: Psi.HElement](implicit ct: ClassTag[A]): Option[A] = {
-        Option(PsiTreeUtil.getChildOfType[A](this, cls[A]))
-      }
-
-      protected def list[A <: Psi.HElement](implicit ct: ClassTag[A]): util.List[A] = {
-        PsiTreeUtil.getChildrenOfTypeAsList[A](this, cls[A])
-      }
-
-      protected def oneTok(t: HaskellTokenType): PsiElement = {
-        notNullChild(findChildByType(t))
-      }
-
-      protected def optionTok(t: HaskellTokenType): Option[PsiElement] = {
-        Option(findChildByType(t))
-      }
-    }
-
-    private def cls[A](implicit ct: ClassTag[A]): Class[A] = {
-      ct.runtimeClass.asInstanceOf[Class[A]]
-    }
-
-    class UnknownImpl(node: ASTNode) extends HElementImpl(node) with Psi.Unknown
-
-    class ModuleImpl(node: ASTNode) extends HElementImpl(node) with Psi.Module {
-      def getModuleDecl: Option[Psi.ModuleDecl] = option
-    }
-
-    class ModuleDeclImpl(node: ASTNode) extends HElementImpl(node) with Psi.ModuleDecl {
-      def getModuleName: Option[Psi.ModuleName] = option
-    }
-
-    class ModuleNameImpl(node: ASTNode) extends HElementImpl(node) with Psi.ModuleName {
-      def getQConid: Psi.QConid = one
-    }
-
-    class ModuleExportsImpl(node: ASTNode) extends HElementImpl(node) with Psi.ModuleExports {
-      def getExports: util.List[Psi.ModuleExport] = list
-    }
-
-    class ModuleExportModuleImpl(node: ASTNode) extends HElementImpl(node) with Psi.ModuleExportModule {
-      def getModuleName: Psi.ModuleName = one
-    }
-
-    class ModuleExportTyConImpl(node: ASTNode) extends HElementImpl(node) with Psi.ModuleExportTyCon {
-      def getQTyCon: Psi.QTyCon = one
-      def getDoublePeriod: Option[PsiElement] = optionTok(T.DOUBLEPERIOD)
-      def getExportedMembers: util.List[Psi.QVar] = list
-    }
-
-    class ModuleExportVarImpl(node: ASTNode) extends HElementImpl(node) with Psi.ModuleExport {
-      def getQVar: Psi.QVar = one
-    }
-
-    class QualifiedPrefixImpl(node: ASTNode) extends HElementImpl(node) with Psi.QualifiedPrefix {
-      def getConids: util.List[Psi.Conid] = list
-    }
-
-    class QConidImpl(node: ASTNode) extends HElementImpl(node) with Psi.QConid {
-      def getQualifiedPrefix: Option[Psi.QualifiedPrefix] = option
-      def getConid: Psi.Conid = one
-    }
-
-    class ConidImpl(node: ASTNode) extends HElementImpl(node) with Psi.Conid {
-      def getConidRegexp: PsiElement = oneTok(T.CONIDREGEXP)
-    }
-
-    class ConsymImpl(node: ASTNode) extends HElementImpl(node) with Psi.Consym {
-      def getConsymTok: PsiElement = oneTok(T.CONSYMTOK)
-    }
-
-    class QVarImpl(node: ASTNode) extends HElementImpl(node) with Psi.QVar {
-      def getQualifiedPrefix: Option[Psi.QualifiedPrefix] = option
-      def getVar: Psi.Var = one
-    }
-
-    class VaridImpl(node: ASTNode) extends HElementImpl(node) with Psi.Varid {
-      def getVaridRegexp: PsiElement = oneTok(T.VARIDREGEXP)
-    }
-
-    class VarsymImpl(node: ASTNode) extends HElementImpl(node) with Psi.Varsym {
-      def getVarsymTok: PsiElement = oneTok(T.VARSYMTOK)
-    }
-
-    class QTyConImpl(node: ASTNode) extends HElementImpl(node) with Psi.QTyCon {
-      def getQualifiedPrefix: Option[Psi.QualifiedPrefix] = option
-      def getTyCon: Psi.TyCon = one
-    }
-
-    class TyConConidImpl(node: ASTNode) extends HElementImpl(node) with Psi.TyConConid {
-      def getConid: Psi.Conid = one
-    }
-
-    class TyConConsymImpl(node: ASTNode) extends HElementImpl(node) with Psi.TyConConsym {
-      def getConsym: Psi.Consym = one
-    }
-  }
-
-  object Factory {
-    def createElement(node: ASTNode): PsiElement = {
-      node.getElementType match {
-        case t: Elements.HElementType => createHElement(node, t)
-        case t => throw new AssertionError(s"Unexpected element type: $t")
-      }
-    }
-
-    private def createHElement(node: ASTNode, t: Elements.HElementType): Psi.HElement = {
-      t match {
-        case Elements.UNKNOWN => new PsiImpl.UnknownImpl(node)
-        case Elements.MODULE => new PsiImpl.ModuleImpl(node)
-        case Elements.MODULE_DECL => new PsiImpl.ModuleDeclImpl(node)
-        case Elements.MODULE_NAME => new PsiImpl.ModuleNameImpl(node)
-        case Elements.MODULE_EXPORTS => new PsiImpl.ModuleExportsImpl(node)
-        case Elements.MODULE_EXPORT_MODULE => new PsiImpl.ModuleExportModuleImpl(node)
-        case Elements.MODULE_EXPORT_TYCON => new PsiImpl.ModuleExportTyConImpl(node)
-        case Elements.MODULE_EXPORT_VAR => new PsiImpl.ModuleExportVarImpl(node)
-        case Elements.QUALIFIED_PREFIX => new PsiImpl.QualifiedPrefixImpl(node)
-        case Elements.CONID => new PsiImpl.ConidImpl(node)
-        case Elements.QCONID => new PsiImpl.QConidImpl(node)
-        case Elements.CONSYM => new PsiImpl.ConsymImpl(node)
-        // TODO case Elements.QCONSYM => new PsiImpl.QConsymImpl(node)
-        case Elements.TYCON_CONID => new PsiImpl.TyConConidImpl(node)
-        case Elements.TYCON_CONSYM => new PsiImpl.TyConConsymImpl(node)
-        case Elements.QTYCON => new PsiImpl.QTyConImpl(node)
-        case _ => throw new AssertionError(s"Unexpected Haskell element type '$t' for node '$node'")
-      }
+    case object Drop extends MarkResult {
+      override def consumed: Boolean = true
     }
   }
 }

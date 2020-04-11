@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -e
+
+cd "$(dirname "$0")/../.."
+
+parser_yaml=./tools/parser/parser2020.yaml
+out_scala=./src/com/haskforce/haskell/lang/parser/gen/HaskellParserInfra2020.scala
+
+mkdir -p "$(dirname "$out_scala")"
+
+# Ensure our script has been pre-compiled.
+./tools/parser/gen-types.hs --noop
+
+# Generate the scala file.
+./tools/parser/gen-types.hs "$parser_yaml" > "$out_scala"
+
+echo "Generated scala file: $out_scala"
