@@ -107,6 +107,28 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
     true
   }
 
+  private def pDataDecl = parseIfToken(T.DATA) { m =>
+    pDataDeclType.run()
+    // TODO: pDataDeclCtors
+    m.done(E.DATA_DECL)
+  }
+
+  private def pDataDeclType = withMark { m =>
+    if (pTycon.run()) {
+      while (pTyvar.run()) {}
+      if (getTokenType == T.EQUALS) {
+        advanceLexer()
+      } else {
+        error("Missing = in data declaration")
+      }
+    } else {
+      // TODO: handle TyconConsym, operators and backticks, e.g. 'data a `Type` b'
+    }
+    m.done(E.DATA_DECL_TYPE)
+  }
+
+  private def pTyvar = pWrapWith(E.TYVAR, pVarid)
+
   private def pModuleBodyItem = {
     pImportStmt
       .orElse(pUnknownThroughEOL("pModuleBodyItem"))
@@ -261,7 +283,7 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
     }
   }
 
-  private def pTyCon = withMark { m =>
+  private def pTycon = withMark { m =>
     if (pConid.run()) {
       m.done(E.TYCON_CONID)
     } else {
@@ -277,7 +299,7 @@ private final class HaskellPsiBuilder(builder: PsiBuilder) extends PsiBuilderAda
     }
   }
 
-  private def pQTyCon = pQualified(pTyCon, E.QTYCON)
+  private def pQTyCon = pQualified(pTycon, E.QTYCON)
 
   private def pConid = pTokenAs(T.CONIDREGEXP, E.CONID)
 

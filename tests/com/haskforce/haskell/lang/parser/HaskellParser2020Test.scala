@@ -31,6 +31,7 @@ class HaskellParser2020Test
   }
 
   def testImport00001(): Unit = doTest(true, true)
+  def testImport00002(): Unit = doTest(true, true)
   def testModule00001(): Unit = doTest(true, true)
   def testModule00002(): Unit = doTest(true, true)
 
@@ -62,7 +63,6 @@ class HaskellParser2020Test
   // def testHello00001(): Unit = doTest(true, true)
   // def testHello00002(): Unit = doTest(true, true)
   // def testHello00003(): Unit = doTest(true, false)
-  // def testImport00002(): Unit = doTest(true, true)
   // def testImport00003(): Unit = doTest(true, true)
   // def testImport00004(): Unit = doTest(true, true)
   // def testImport00005(): Unit = doTest(true, true)
