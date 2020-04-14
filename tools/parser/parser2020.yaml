@@ -124,3 +124,13 @@ Tycon:
 
   TyconConsym:
     getConsym: Consym
+
+DataDecl:
+  getType: Option[DataDeclType]
+
+DataDeclType:
+  getTycon: Option[Tycon]
+  getTyvars: Option[Tyvar]
+
+Tyvar:
+  getVarid: Varid

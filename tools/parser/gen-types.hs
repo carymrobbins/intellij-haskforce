@@ -5,6 +5,7 @@
   --package aeson
   --package bytestring
   --package hashable
+  --package process
   --package string-interpolate
   --package text
   --package unordered-containers
@@ -32,13 +33,16 @@ import Data.Aeson (FromJSON(parseJSON), FromJSONKey, (.:))
 import Data.Aeson.Types (FromJSONKey)
 import Data.Coerce (Coercible, coerce)
 import Data.Either (partitionEithers)
+import Data.Functor ((<&>))
 import Data.HashMap.Strict (HashMap)
 import Data.Hashable (Hashable)
-import Data.Maybe (mapMaybe)
+import Data.IORef (IORef, newIORef, readIORef, writeIORef)
+import Data.Maybe (fromJust, mapMaybe)
+import Data.Ord (comparing)
 import Data.Proxy (Proxy(Proxy))
 import Data.Text (Text)
 import System.Environment (getArgs)
-import System.Exit (exitFailure, exitSuccess)
+import System.Exit (ExitCode(ExitFailure, ExitSuccess), exitFailure, exitSuccess)
 import qualified Data.Aeson as Aeson
 import qualified Data.Char as Char
 import qualified Data.HashMap.Strict as HashMap
@@ -48,11 +52,12 @@ import qualified Data.Text as Text
 import qualified Data.Text.IO as Text
 import qualified Data.Yaml as Yaml
 import qualified System.IO as IO
+import qualified System.IO.Unsafe
+import qualified System.Process as Proc
 
 main :: IO ()
 main = do
-  parserYaml <- getParserYaml
-  schema :: Schema <- Yaml.decodeFileThrow parserYaml
+  schema <- readSchema =<< getParserYaml
   Text.putStrLn $ stripNewlinesStart [Interpolate.i|
 ////////////////////////////////////////////
 // THIS IS A GENERATED FILE; DO NOT EDIT! //
@@ -85,6 +90,7 @@ import scala.reflect.ClassTag
 #{render (Proxy :: Proxy Factory) schema}
 |]
 
+-- | Gets the path to the parser yaml file as a command line argument.
 getParserYaml :: IO FilePath
 getParserYaml = getArgs >>= \case
   [parserYaml] -> pure parserYaml
@@ -92,9 +98,51 @@ getParserYaml = getArgs >>= \case
     IO.hPutStrLn IO.stderr ("Invalid arguments: " <> show args)
     exitFailure
 
-newtype Schema = Schema (HashMap ElementName ElementDef)
+-- | Used to set the 'globalKeyOrder'. Reads the yaml file to determine the order of
+-- keys in the file so we can preserve them.
+getKeyOrder :: FilePath -> IO (HashMap Text Int)
+getKeyOrder parserYaml = do
+  runBash "grep -io '^ *[a-z][a-z]*' \"$1\" | tr -d ' '" [parserYaml] <&> \case
+    (ExitSuccess, out, _err) ->
+      HashMap.fromList $ zip (map Text.pack $ lines out) [0..]
+
+    (ExitFailure n, out, err) ->
+      error $ "getKeyOrder failed with code " <> show n
+        <> "; stdout: <> " <> show out
+        <> "; stderr: <> " <> show err
+
+  where
+  runBash expr args = Proc.readProcessWithExitCode "bash" ("-c" : expr : "bash" : args) ""
+
+-- | Used in 'FromJSON' instances so we can preserve the order of keys as they
+-- exist in the yaml file. See 'globalKeyOrder' and 'getKeyOrder'.
+keySortOn :: (a -> Text) -> [a] -> [a]
+keySortOn f = List.sortBy $ comparing $ (globalKeyOrder HashMap.!) . f
+
+{-# NOINLINE globalKeyOrder #-}
+globalKeyOrder :: HashMap Text Int
+globalKeyOrder = fromJust $ System.IO.Unsafe.unsafePerformIO $ readIORef globalKeyOrderRef
+
+{-# NOINLINE globalKeyOrderRef #-}
+globalKeyOrderRef :: IORef (Maybe (HashMap Text Int))
+globalKeyOrderRef = System.IO.Unsafe.unsafePerformIO $ newIORef Nothing
+
+initGlobalKeyOrder :: HashMap Text Int -> IO ()
+initGlobalKeyOrder = writeIORef globalKeyOrderRef . Just
+
+readSchema :: FilePath -> IO Schema
+readSchema parserYaml = do
+  initGlobalKeyOrder =<< getKeyOrder parserYaml
+  Yaml.decodeFileThrow parserYaml
+
+newtype Schema = Schema [(ElementName, ElementDef)]
   deriving stock (Show, Eq)
-  deriving newtype (FromJSON)
+
+instance FromJSON Schema where
+  parseJSON v = go <$> parseJSON v
+    where
+    go :: HashMap ElementName ElementDef -> Schema
+    go = Schema . keySortOn (text . fst) . HashMap.toList
 
 newtype ElementName = ElementName Text
   deriving stock (Show, Eq)
@@ -105,14 +153,23 @@ newtype ElementDef = ElementDef [ElementAttr]
 
 instance FromJSON ElementDef where
   parseJSON =
-    Aeson.withObject "ElementDef" $ fmap ElementDef . traverse go . HashMap.toList
+    Aeson.withObject "ElementDef" $ \o -> do
+      ElementDef . keySortOn thisAttrSortKey
+        <$> traverse go (HashMap.toList o)
     where
     go (k, v) = do
       when (Text.null k) $ fail "Invalid empty key found"
       if Char.isUpper (Text.head k) then
-        ElementSubtype . SubtypeDef (ElementName k) <$> parseJSON v
+        ElementSubtype . SubtypeDef (ElementName k) . keySortOn subtypeAttrSortKey . HashMap.toList
+          <$> parseJSON v
       else
         ElementAttrMethod (MethodName k) <$> parseJSON v
+
+    thisAttrSortKey = \case
+      ElementAttrMethod (MethodName k) _ -> k
+      ElementSubtype (SubtypeDef (ElementName k) _) -> k
+
+    subtypeAttrSortKey = text . fst
 
 newtype MethodName = MethodName Text
   deriving stock (Show, Eq)
@@ -123,7 +180,7 @@ data ElementAttr =
   | ElementSubtype SubtypeDef
   deriving stock (Show, Eq)
 
-data SubtypeDef = SubtypeDef ElementName (HashMap MethodName MethodDef)
+data SubtypeDef = SubtypeDef ElementName [(MethodName, MethodDef)]
   deriving stock (Show, Eq)
 
 newtype TypeExpr = TypeExpr Text
@@ -167,7 +224,7 @@ object HaskellParser2020Elements {
 
   sealed abstract class HElementType(name: String) extends IElementType(name, HaskellLanguage.INSTANCE)
 
-#{Text.intercalate "\n" $ render p <$> HashMap.toList m}
+#{Text.intercalate "\n" $ render p <$> m}
 }
 |]
 
@@ -177,7 +234,7 @@ object HaskellParser2020Psi {
   trait HElement extends PsiElement
 
   type HTokenElement[A] = PsiElement
-#{Text.intercalate "\n\n" $ render p <$> HashMap.toList m}
+#{Text.intercalate "\n\n" $ render p <$> m}
 }
 |]
 
@@ -216,7 +273,7 @@ object HaskellParser2020PsiImpl {
     ct.runtimeClass.asInstanceOf[Class[A]]
   }
 
-#{Text.intercalate "\n\n" $ render p <$> HashMap.toList m}
+#{Text.intercalate "\n\n" $ render p <$> m}
 }
 |]
 
@@ -233,7 +290,7 @@ object HaskellParser2020Factory {
 
   private def createHElement(node: ASTNode, t: Elements.HElementType): Psi.HElement = {
     t match {
-#{Text.intercalate "\n" $ map renderCases (HashMap.toList m)}
+#{Text.intercalate "\n" $ map renderCases m}
     }
   }
 }
@@ -361,14 +418,14 @@ instance Render PsiImpl (MethodName, MethodDef) where
 instance Render Psi (ElementName, SubtypeDef) where
   render p (supertypeName, SubtypeDef name methods) = [Interpolate.i|
   trait #{text name} extends #{text supertypeName} {
-#{foldMap (render p) (HashMap.toList methods)}
+#{foldMap (render p) methods}
   }
 |]
 
 instance Render PsiImpl SubtypeDef where
   render p (SubtypeDef name methods) = [Interpolate.i|
   class #{text name}Impl(node: ASTNode) extends HElementImpl(node) with Psi.#{text name} {
-#{foldMap (render p) (HashMap.toList methods)}
+#{foldMap (render p) methods}
   }
 |]
 
