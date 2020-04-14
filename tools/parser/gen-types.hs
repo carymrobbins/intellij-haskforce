@@ -29,7 +29,7 @@
 {-# LANGUAGE TypeApplications #-}
 
 import Control.Monad (when)
-import Data.Aeson (FromJSON(parseJSON), FromJSONKey, (.:))
+import Data.Aeson (FromJSON(parseJSON), (.:), FromJSONKey)
 import Data.Aeson.Types (FromJSONKey)
 import Data.Coerce (Coercible, coerce)
 import Data.Either (partitionEithers)
@@ -44,6 +44,7 @@ import Data.Text (Text)
 import System.Environment (getArgs)
 import System.Exit (ExitCode(ExitFailure, ExitSuccess), exitFailure, exitSuccess)
 import qualified Data.Aeson as Aeson
+import qualified Data.Aeson.Types as Aeson
 import qualified Data.Char as Char
 import qualified Data.HashMap.Strict as HashMap
 import qualified Data.List as List
@@ -151,25 +152,37 @@ newtype ElementName = ElementName Text
 newtype ElementDef = ElementDef [ElementAttr]
   deriving stock (Show, Eq)
 
+collectMethods :: ElementDef -> [(MethodName, MethodDef)]
+collectMethods (ElementDef attrs) = attrs >>= \case
+  ElementAttrMethod name def -> [(name, def)]
+  _ -> []
+
+collectSubtypes :: ElementDef -> [(ElementName, ElementDef)]
+collectSubtypes (ElementDef attrs) = attrs >>= \case
+  ElementSubtype name def -> [(name, def)]
+  _ -> []
+
 instance FromJSON ElementDef where
   parseJSON =
     Aeson.withObject "ElementDef" $ \o -> do
-      ElementDef . keySortOn thisAttrSortKey
-        <$> traverse go (HashMap.toList o)
+      attrs :: [ElementAttr] <- traverse go $ HashMap.toList o
+      pure $ ElementDef $ keySortOn sortKey attrs
     where
+    go :: (Text, Aeson.Value) -> Aeson.Parser ElementAttr
     go (k, v) = do
       when (Text.null k) $ fail "Invalid empty key found"
-      if Char.isUpper (Text.head k) then
-        ElementSubtype . SubtypeDef (ElementName k) . keySortOn subtypeAttrSortKey . HashMap.toList
-          <$> parseJSON v
-      else
+      if Char.isUpper (Text.head k) then do
+        ElementDef attrs <- parseJSON v
+        pure
+          $ ElementSubtype (ElementName k)
+          $ ElementDef
+          $ keySortOn sortKey attrs
+      else do
         ElementAttrMethod (MethodName k) <$> parseJSON v
 
-    thisAttrSortKey = \case
+    sortKey = \case
       ElementAttrMethod (MethodName k) _ -> k
-      ElementSubtype (SubtypeDef (ElementName k) _) -> k
-
-    subtypeAttrSortKey = text . fst
+      ElementSubtype (ElementName k) _ -> k
 
 newtype MethodName = MethodName Text
   deriving stock (Show, Eq)
@@ -177,10 +190,7 @@ newtype MethodName = MethodName Text
 
 data ElementAttr =
     ElementAttrMethod MethodName MethodDef
-  | ElementSubtype SubtypeDef
-  deriving stock (Show, Eq)
-
-data SubtypeDef = SubtypeDef ElementName [(MethodName, MethodDef)]
+  | ElementSubtype ElementName ElementDef
   deriving stock (Show, Eq)
 
 newtype TypeExpr = TypeExpr Text
@@ -224,7 +234,7 @@ object HaskellParser2020Elements {
 
   sealed abstract class HElementType(name: String) extends IElementType(name, HaskellLanguage.INSTANCE)
 
-#{Text.intercalate "\n" $ render p <$> m}
+#{Text.intercalate "\n" $ map (render p) m}
 }
 |]
 
@@ -296,78 +306,80 @@ object HaskellParser2020Factory {
 }
 |]
     where
-    renderCases (name, ElementDef attrs) =
-      Text.intercalate "\n" $
-        if null subtypeNames then
-          [renderCase (text name)]
-        else
-          map renderCase subtypeNames
-      where
-      subtypeNames = flip mapMaybe attrs $ \case
-        ElementSubtype (SubtypeDef name _) -> Just (text name)
-        _ -> Nothing
+    renderCases (name, def) =
+      Text.intercalate "\n"
+        $ map renderCase
+        $ text name `ifEmpty` subtypeNames def
+
+    subtypeNames (ElementDef attrs) = attrs >>= \case
+      ElementSubtype name def -> text name : subtypeNames def
+      _ -> []
 
     renderCase name = stripNewlines [Interpolate.i|
       case Elements.#{toUpperSnake name} => new PsiImpl.#{name}Impl(node)
 |]
 
 instance Render Elements (ElementName, ElementDef) where
-  render p (topName, ElementDef attrs) =
+  render p (topName, ElementDef topAttrs) =
+    renderLeaves
+    where
     -- We don't render the 'top' type if we have subtypes since the 'top' type
     -- in those cases is abstract.
-    if (Text.null renderSubs) then renderTop else renderSubs
-    where
+    renderLeaves =
+      foldMap renderName $
+        topName `ifEmpty` leafNames topAttrs
+
     topUpperSnakeName = toUpperSnake topName
 
     renderTop = renderObj topUpperSnakeName
 
     renderObj n = "\n  object " <> n <> " extends HElementType(\"" <> n <> "\")"
 
-    renderSubs = foldMap renderSub subtypes
+    renderName name = renderObj (toUpperSnake name)
 
-    renderSub (SubtypeDef name _) = renderObj (toUpperSnake name)
-
-    (_, subtypes) = flip partitionWith attrs $ \case
-      ElementAttrMethod name def -> Left (name, def)
-      ElementSubtype def -> Right def
+    leafNames attrs = attrs >>= \case
+      ElementAttrMethod _ _ -> []
+      ElementSubtype name (ElementDef attrs') ->
+        name `ifEmpty` leafNames attrs'
 
 instance Render Psi (ElementName, ElementDef) where
-  render p (topName, ElementDef attrs) =
+  render p (topName, topDef) =
     renderTopTrait <> renderSubTraits
     where
+    topBody = foldMap (render p) $ collectMethods topDef
+
+    renderSubTraits =
+      foldMap (render p . (`Extends` topName)) $ collectSubtypes topDef
+
     renderTopTrait = [Interpolate.i|
   trait #{text topName} extends HElement {
 #{topBody}
   }
 |]
 
-    topBody = foldMap (render p) topMethods
+data Extends = (ElementName, ElementDef) `Extends` ElementName
 
-    (topMethods, subtypes) = flip partitionWith attrs $ \case
-      ElementAttrMethod name def -> Left (name, def)
-      ElementSubtype def -> Right def
-
-    renderSubTraits =
-      foldMap (render p . (topName,)) subtypes
+instance Render Psi Extends where
+  render p ((name, def) `Extends` superName) = [Interpolate.i|
+  trait #{text name} extends #{text superName} {
+#{foldMap (render p) $ collectMethods def}
+  }
+|]
 
 instance Render PsiImpl (ElementName, ElementDef) where
-  render p (topName, ElementDef attrs) =
+  render p (topName, topDef) =
     -- We don't render the 'top' type if we have subtypes since the 'top' type
     -- in those cases is abstract.
     if Text.null renderSubClasses then renderTopClass else renderSubClasses
     where
+    renderSubClasses =
+      Text.intercalate "\n\n" $ map (render p) $ collectSubtypes topDef
+
     renderTopClass = [Interpolate.i|
   class #{text topName}Impl(node: ASTNode) extends HElementImpl(node) with Psi.#{text topName} {
-#{foldMap (render p) topMethods}
+#{foldMap (render p) $ collectMethods topDef}
   }
 |]
-
-    (topMethods, subtypes) = flip partitionWith attrs $ \case
-      ElementAttrMethod name def -> Left (name, def)
-      ElementSubtype def -> Right def
-
-    renderSubClasses =
-      Text.intercalate "\n\n" $ fmap (render p) subtypes
 
 instance Render Psi (MethodName, MethodDef) where
   render p (name, MethodDef { final, typ, impl }) =
@@ -415,20 +427,6 @@ instance Render PsiImpl (MethodName, MethodDef) where
             <> "; expected prefix=" <> show p
             <> "; expected suffix=" <> show s
 
-instance Render Psi (ElementName, SubtypeDef) where
-  render p (supertypeName, SubtypeDef name methods) = [Interpolate.i|
-  trait #{text name} extends #{text supertypeName} {
-#{foldMap (render p) methods}
-  }
-|]
-
-instance Render PsiImpl SubtypeDef where
-  render p (SubtypeDef name methods) = [Interpolate.i|
-  class #{text name}Impl(node: ASTNode) extends HElementImpl(node) with Psi.#{text name} {
-#{foldMap (render p) methods}
-  }
-|]
-
 partitionWith :: (a -> Either b c) -> [a] -> ([b], [c])
 partitionWith f xs = partitionEithers $ map f xs
 
@@ -448,3 +446,6 @@ stripNewlinesStart = Text.dropWhile (== '\n')
 
 stripNewlines :: Text -> Text
 stripNewlines = Text.dropWhile (== '\n') . Text.dropWhileEnd (== '\n')
+
+ifEmpty :: (Foldable f, Applicative f) => a -> f a -> f a
+ifEmpty a fa = if null fa then pure a else fa
