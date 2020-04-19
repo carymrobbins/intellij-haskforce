@@ -135,7 +135,7 @@ object HaskellParser2020Psi {
 
 
 
-  trait ModuleExport extends HElement {
+  sealed trait ModuleExport extends HElement {
 
   }
 
@@ -211,7 +211,7 @@ object HaskellParser2020Psi {
 
 
 
-  trait ImportItem extends HElement {
+  sealed trait ImportItem extends HElement {
 
   }
 
@@ -246,7 +246,7 @@ object HaskellParser2020Psi {
 
 
 
-  trait ImportMember extends HElement {
+  sealed trait ImportMember extends HElement {
 
   }
 
@@ -322,7 +322,7 @@ object HaskellParser2020Psi {
 
 
 
-  trait Var extends HElement {
+  sealed trait Var extends HElement {
 
   }
 
@@ -346,7 +346,7 @@ object HaskellParser2020Psi {
 
 
 
-  trait Tycon extends HElement {
+  sealed trait Tycon extends HElement {
 
   }
 

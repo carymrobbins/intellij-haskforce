@@ -351,8 +351,13 @@ instance Render Psi (ElementName, ElementDef) where
     renderSubTraits =
       foldMap (render p . (`Extends` topName)) $ collectSubtypes topDef
 
+    -- Gives us exhaustive pattern matching on this trait since it has subtype
+    -- elements.
+    trait :: Text
+    trait = if Text.null renderSubTraits then "trait" else "sealed trait"
+
     renderTopTrait = [Interpolate.i|
-  trait #{text topName} extends HElement {
+  #{trait} #{text topName} extends HElement {
 #{topBody}
   }
 |]
