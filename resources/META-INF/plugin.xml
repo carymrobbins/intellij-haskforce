@@ -432,7 +432,6 @@
   </actions>
 
   <extensions defaultExtensionNs="com.intellij">
-     <!-- ApplicationInitializedListener  -->
       <applicationInitializedListener implementation="com.haskforce.ide.HaskForceInitializedListener"/>
     <!-- Haskell support -->
     <projectTemplatesFactory implementation="com.haskforce.haskell.project.template.HaskellProjectTemplatesFactory"/>
