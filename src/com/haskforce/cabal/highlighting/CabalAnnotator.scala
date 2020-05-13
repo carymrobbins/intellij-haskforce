@@ -1,6 +1,6 @@
 package com.haskforce.cabal.highlighting
 
-import com.intellij.lang.annotation.{AnnotationHolder, Annotator, HighlightSeverity}
+import com.intellij.lang.annotation.{AnnotationHolder, Annotator}
 import com.intellij.openapi.editor.colors.{EditorColorsManager, TextAttributesKey}
 import com.intellij.psi.PsiElement
 import com.haskforce.cabal.lang.psi._
@@ -20,8 +20,7 @@ class CabalAnnotator extends Annotator {
 
   private def setHighlighting(element: PsiElement, holder: AnnotationHolder, key: TextAttributesKey) {
     holder
-      .newSilentAnnotation(HighlightSeverity.INFORMATION)
-      .enforcedTextAttributes(EditorColorsManager.getInstance.getGlobalScheme.getAttributes(key))
-      .create()
+        .createWeakWarningAnnotation(element, "Message")
+      .setEnforcedTextAttributes(EditorColorsManager.getInstance.getGlobalScheme.getAttributes(key))
   }
 }

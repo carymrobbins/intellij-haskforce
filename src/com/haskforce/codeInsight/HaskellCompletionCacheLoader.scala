@@ -7,10 +7,9 @@ import com.haskforce.psi.{HaskellFile, HaskellPsiUtil}
 import com.intellij.AppTopics
 import com.intellij.codeInsight.lookup.LookupElement
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.ProjectComponent
 import com.intellij.openapi.editor.Document
 import com.intellij.openapi.fileEditor._
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.project.{Project, ProjectManagerListener}
 import com.intellij.openapi.util.Computable
 import com.intellij.openapi.vfs._
 import com.intellij.psi.{PsiFile, PsiManager}
@@ -18,27 +17,16 @@ import com.intellij.psi.{PsiFile, PsiManager}
 import scala.annotation.tailrec
 
 /** Loads the completion cache for any Haskell files we have open. */
-class HaskellCompletionCacheLoader(project: Project) extends ProjectComponent {
+class HaskellCompletionCacheLoader extends ProjectManagerListener {
+
+  override def projectOpened(project: Project): Unit = {
+    project.getMessageBus.connect().subscribe(AppTopics.FILE_DOCUMENT_SYNC, new MyHandler(project))
+  }
 
   val cache = new HaskellCompletionCacheLoader.Cache()
 
-  private val connection = project.getMessageBus.connect()
 
-  override def initComponent(): Unit = {
-    connection.subscribe(AppTopics.FILE_DOCUMENT_SYNC, new MyHandler)
-  }
-
-  override def disposeComponent(): Unit = {
-    connection.disconnect()
-  }
-
-  override def projectOpened(): Unit = {}
-
-  override def projectClosed(): Unit = {}
-
-  override def getComponentName: String = getClass.getSimpleName
-
-  class MyHandler extends FileDocumentManagerListener {
+  class MyHandler(project : Project) extends FileDocumentManagerListener {
     override def fileContentLoaded(file: VirtualFile, document: Document): Unit = {
       val app = ApplicationManager.getApplication
       app.runReadAction({ () =>
