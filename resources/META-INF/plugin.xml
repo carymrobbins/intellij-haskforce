@@ -388,14 +388,6 @@
     <!-- Add your application components here -->
   </application-components>
 
-  <project-components>
-    <component>
-      <implementation-class>
-        com.haskforce.codeInsight.HaskellCompletionCacheLoader
-      </implementation-class>
-    </component>
-  </project-components>
-
   <actions>
     <action id="Haskell.NewHaskellFile" class="com.haskforce.actions.CreateHaskellFileAction"
             text="Haskell File" description="Create new Haskell file">
@@ -440,6 +432,8 @@
   </actions>
 
   <extensions defaultExtensionNs="com.intellij">
+     <!-- ApplicationInitializedListener  -->
+      <applicationInitializedListener implementation="com.haskforce.internal.HaskForceInternal"/>
     <!-- Haskell support -->
     <projectTemplatesFactory implementation="com.haskforce.haskell.project.template.HaskellProjectTemplatesFactory"/>
     <internalFileTemplate name="Haskell Module"/>
