@@ -1,6 +1,7 @@
 package com.haskforce.eta.jps.etlas
 
 import java.io.File
+import java.util
 
 import com.haskforce.eta.jps.model.{EtaBuildOptions, JpsEtaBuildOptionsExtension, JpsEtlasModuleType}
 import com.haskforce.jps.ghc.GhcMessageParser
@@ -13,10 +14,10 @@ import org.jetbrains.jps.incremental._
 import org.jetbrains.jps.incremental.messages.{BuildMessage, CompilerMessage}
 import org.jetbrains.jps.model.module.JpsModule
 import org.jetbrains.jps.model.serialization.JpsModelSerializationDataService
+import scalaz.Scalaz._
 
 import scala.collection.JavaConverters._
 import scala.concurrent.ExecutionException
-import scalaz.Scalaz._
 
 /** External builder which leverages Etlas to build Eta projects. */
 class EtlasBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
@@ -107,4 +108,7 @@ class EtlasBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
       }
     }
   }
+
+  // We don't compile individual files, so this returns an empty list.
+  override def getCompilableFileExtensions: util.List[String] = util.Collections.emptyList()
 }
