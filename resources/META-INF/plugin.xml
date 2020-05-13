@@ -459,7 +459,8 @@
     <langCodeStyleSettingsProvider
         implementation="com.haskforce.language.formatting.HaskellLanguageCodeStyleSettingsProvider"/>
     <highlightErrorFilter implementation="com.haskforce.codeInsight.highlighting.HaskellHighlightErrorFilter"/>
-
+    <!-- Cache-->
+    <projectService serviceImplementation="com.haskforce.codeInsight.HaskellCompletionCacheService"/>
     <!-- Eta support -->
     <moduleType id="ETLAS_MODULE" implementationClass="com.haskforce.eta.project.module.EtlasModuleType"/>
     <projectConfigurable instance="com.haskforce.eta.settings.EtaCompilerConfigurable"
