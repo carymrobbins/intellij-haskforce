@@ -388,14 +388,6 @@
     <!-- Add your application components here -->
   </application-components>
 
-  <project-components>
-    <component>
-      <implementation-class>
-        com.haskforce.codeInsight.HaskellCompletionCacheLoader
-      </implementation-class>
-    </component>
-  </project-components>
-
   <actions>
     <action id="Haskell.NewHaskellFile" class="com.haskforce.actions.CreateHaskellFileAction"
             text="Haskell File" description="Create new Haskell file">
@@ -440,6 +432,7 @@
   </actions>
 
   <extensions defaultExtensionNs="com.intellij">
+      <applicationInitializedListener implementation="com.haskforce.ide.HaskForceInitializedListener"/>
     <!-- Haskell support -->
     <projectTemplatesFactory implementation="com.haskforce.haskell.project.template.HaskellProjectTemplatesFactory"/>
     <internalFileTemplate name="Haskell Module"/>
@@ -466,7 +459,8 @@
     <langCodeStyleSettingsProvider
         implementation="com.haskforce.language.formatting.HaskellLanguageCodeStyleSettingsProvider"/>
     <highlightErrorFilter implementation="com.haskforce.codeInsight.highlighting.HaskellHighlightErrorFilter"/>
-
+    <!-- Cache-->
+    <projectService serviceImplementation="com.haskforce.codeInsight.HaskellCompletionCacheService"/>
     <!-- Eta support -->
     <moduleType id="ETLAS_MODULE" implementationClass="com.haskforce.eta.project.module.EtlasModuleType"/>
     <projectConfigurable instance="com.haskforce.eta.settings.EtaCompilerConfigurable"
