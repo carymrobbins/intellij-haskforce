@@ -17,7 +17,6 @@ class HaskellCompletionCacheService {
 
   def forceUpdateCache(file: PsiFile): Unit = updateCache(file, force = true)
 
-
   def updateCache(file: PsiFile, force: Boolean): Unit = {
     ApplicationManager.getApplication.executeOnPooledThread({ () =>
       if (force || cache.ghcFlags.isEmpty) {

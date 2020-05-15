@@ -18,29 +18,16 @@ import scala.annotation.tailrec
 class HaskellCompletionCacheLoader extends ProjectManagerListener {
 
   override def projectOpened(project: Project): Unit = {
-    project.getMessageBus.connect().subscribe(AppTopics.FILE_DOCUMENT_SYNC, new MyHandler(project))
+    project.getMessageBus.connect().subscribe(
+      AppTopics.FILE_DOCUMENT_SYNC,
+      new HaskellCompletionCacheLoader.Handler(project)
+    )
   }
-
-  class MyHandler(project: Project) extends FileDocumentManagerListener {
-    override def fileContentLoaded(file: VirtualFile, document: Document): Unit = {
-      val app = ApplicationManager.getApplication
-      app.runReadAction({ () =>
-        Option(PsiManager.getInstance(project).findFile(file)).foreach {
-          case psiFile: HaskellFile =>
-            app.invokeLater({ () =>
-              HaskellCompletionCacheLoader.get(project).updateCache(psiFile, force = false)
-            }: Runnable)
-          case _ => // noop
-        }
-      }: Runnable)
-    }
-  }
-
 }
 
 object HaskellCompletionCacheLoader {
 
-  def get(project: Project): HaskellCompletionCacheService = {
+  def getService(project: Project): HaskellCompletionCacheService = {
     project.getService(classOf[HaskellCompletionCacheService])
   }
 
@@ -72,4 +59,18 @@ object HaskellCompletionCacheLoader {
     }
   }
 
+  private class Handler(project: Project) extends FileDocumentManagerListener {
+    override def fileContentLoaded(file: VirtualFile, document: Document): Unit = {
+      val app = ApplicationManager.getApplication
+      app.runReadAction({ () =>
+        Option(PsiManager.getInstance(project).findFile(file)).foreach {
+          case psiFile: HaskellFile =>
+            app.invokeLater({ () =>
+              HaskellCompletionCacheLoader.getService(project).updateCache(psiFile, force = false)
+            }: Runnable)
+          case _ => // noop
+        }
+      }: Runnable)
+    }
+  }
 }

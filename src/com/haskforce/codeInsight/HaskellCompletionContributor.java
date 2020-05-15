@@ -73,7 +73,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
     }
 
     private static Cache getCache(PsiFile file) {
-        return HaskellCompletionCacheLoader.get(file.getProject()).cache();
+        return HaskellCompletionCacheLoader.getService(file.getProject()).cache();
     }
 
     public static void completeKeywordImport(@NotNull final PsiElement position, @NotNull final CompletionResultSet result) {

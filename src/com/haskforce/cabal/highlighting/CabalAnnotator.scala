@@ -19,7 +19,8 @@ class CabalAnnotator extends Annotator {
   }
 
   private def setHighlighting(element: PsiElement, holder: AnnotationHolder, key: TextAttributesKey): Unit = {
-    holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
+    holder
+      .newSilentAnnotation(HighlightSeverity.INFORMATION)
       .enforcedTextAttributes(EditorColorsManager.getInstance.getGlobalScheme.getAttributes(key))
       .create()
   }

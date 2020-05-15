@@ -98,7 +98,7 @@ abstract public class HaskellCompletionTestBase extends HaskellLightPlatformCode
                                   String... variants) throws Throwable {
         myFixture.configureByText(getFileType(), txt);
         PsiFile file = myFixture.getFile();
-        HaskellCompletionCacheLoader.Cache cacheHolder = HaskellCompletionCacheLoader.get(file.getProject()).cache();
+        HaskellCompletionCacheLoader.Cache cacheHolder = HaskellCompletionCacheLoader.getService(file.getProject()).cache();
         for (Function<HaskellCompletionCacheLoader.Cache, Void> f : cacheLoaders) {
             f.fun(cacheHolder);
         }

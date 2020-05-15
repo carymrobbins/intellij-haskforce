@@ -14,7 +14,7 @@ class HaskellCacheReloadCompletionProvider extends CompletionProvider[Completion
     // If the invocation count is > 0, then the user explicitly invoked completion,
     // usually via ctrl+space. Use this event to reload the cache for further completions.
     if (parameters.getInvocationCount > 0) {
-      val cache = HaskellCompletionCacheLoader.get(parameters.getPosition.getProject)
+      val cache = HaskellCompletionCacheLoader.getService(parameters.getPosition.getProject)
       cache.forceUpdateCache(parameters.getPosition.getContainingFile)
     }
   }
