@@ -462,6 +462,13 @@
     <langCodeStyleSettingsProvider
         implementation="com.haskforce.language.formatting.HaskellLanguageCodeStyleSettingsProvider"/>
     <highlightErrorFilter implementation="com.haskforce.codeInsight.highlighting.HaskellHighlightErrorFilter"/>
+
+    <!-- LSP (Language Server Protocol) -->
+    <backgroundPostStartupActivity implementation="com.haskforce.lsp.startup.HaskForceLSPProjectStartupActivity"/>
+    <externalAnnotator id="LSPAnnotator"
+                       language="Haskell"
+                       implementationClass="com.haskforce.lsp.annotator.HaskForceLSPAnnotator"/>
+
     <!-- Cache-->
     <projectService serviceImplementation="com.haskforce.codeInsight.HaskellCompletionCacheService"/>
     <!-- Eta support -->
@@ -581,8 +588,12 @@
     <!-- Note that the classpath is needed for plugin deployment to export a zip archive. -->
     <compileServer.plugin classpath="jps-plugin.jar;jps-shared.jar"/>
     <buildProcess.parametersProvider implementation="com.haskforce.HaskForceBuildProcessParametersProvider"/>
-
   </extensions>
+  <application-components>
+    <component>
+      <implementation-class>org.wso2.lsp4intellij.IntellijLanguageClient</implementation-class>
+    </component>
+  </application-components>
   <module-components>
     <component>
       <implementation-class>com.haskforce.highlighting.annotation.external.GhcModi</implementation-class>
