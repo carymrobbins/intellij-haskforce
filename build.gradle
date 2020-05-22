@@ -104,10 +104,20 @@ project(':jps-plugin') {
     }
 }
 
+repositories {
+    /* lsp4intellij */
+    // maven { url 'https://jitpack.io' }
+    flatDir {
+        dirs 'lib/lsp4intellij/lib'
+    }
+}
+
 dependencies {
     compile project(':macros')
     compile project(':jps-shared')
     compile project(':jps-plugin')
+    // implementation 'com.github.ballerina-platform:lsp4intellij:06842e724c'
+    compile fileTree(dir: 'lib/lsp4intellij/lib', include: ['*.jar'])
 }
 
 static def getGitRev() {
