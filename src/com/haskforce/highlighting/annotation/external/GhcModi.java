@@ -216,7 +216,7 @@ public class GhcModi implements ModuleComponent, SettingsChangeNotifier {
                 final String command = "type " + canonicalPath + ' ' + startPosition.line + ' ' + startPosition.column;
                 final String stdout = simpleExec(command);
                 try {
-                    return stdout == null ? "Type info not found" : GhcModUtil.handleTypeInfo(startPosition, stopPosition, stdout);
+                    return stdout == null ? null : GhcModUtil.handleTypeInfo(startPosition, stopPosition, stdout);
                 } catch (GhcModUtil.TypeInfoParseException e) {
                     NotificationUtil.displayToolsNotification(
                       NotificationType.ERROR, module.getProject(), "Type Info Error",
