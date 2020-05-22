@@ -254,7 +254,7 @@ public class GhcMod {
                               VisualPosition startPosition, @NotNull VisualPosition stopPosition) {
         final String stdout = simpleExec(module, workDir, getFlags(module.getProject()), "type" , canonicalPath,
                 String.valueOf(startPosition.line), String.valueOf(startPosition.column));
-        if (stdout == null) return "Type info not found";
+        if (stdout == null) return null;
         try {
             return GhcModUtil.handleTypeInfo(startPosition, stopPosition, stdout);
         } catch (GhcModUtil.TypeInfoParseException e) {

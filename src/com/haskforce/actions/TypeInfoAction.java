@@ -45,7 +45,6 @@ public class TypeInfoAction extends AnAction {
         FileEditorManager fileEditorManager = FileEditorManager.getInstance(project);
         String typeInfo = TypeInfoUtil.getTypeInfo(project);
         if (typeInfo == null) {
-            // TODO: getTypeInfo should probably be @NotNull
             return;
         }
         JComponent label = HintUtil.createInformationLabel(typeInfo);

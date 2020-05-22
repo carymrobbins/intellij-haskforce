@@ -23,6 +23,7 @@ import org.jetbrains.annotations.Nullable;
  */
 
 public class HaskellDocumentationProvider extends AbstractDocumentationProvider {
+    @Nullable
     @Override
     public String generateDoc(PsiElement element, @Nullable PsiElement originalElement) {
         int startOffset = element.getTextRange().getStartOffset();

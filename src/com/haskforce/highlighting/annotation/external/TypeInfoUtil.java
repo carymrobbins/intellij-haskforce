@@ -11,6 +11,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.util.PsiUtilBase;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * This class will return the type info of the type under cursor or the selection. It seems to be necessary
@@ -23,6 +24,7 @@ import com.intellij.psi.util.PsiUtilBase;
  * it will report the error encountered instead of the type info.
  */
 public class TypeInfoUtil {
+    @Nullable
     public static String getTypeInfo(Project project) {
         FileEditorManager fileEditorManager = FileEditorManager.getInstance(
                 project);
@@ -53,10 +55,11 @@ public class TypeInfoUtil {
         return getTypeInfo(module, blockStart, blockEnd, projectFile);
     }
 
+    @Nullable
     public static String getTypeInfo(Module module, VisualPosition blockStart, VisualPosition blockEnd, VirtualFile projectFile) {
         final String canonicalPath = projectFile.getCanonicalPath();
         if (canonicalPath == null){
-            return "canonical path is null";
+            return null;
         }
         final String workDir = ExecUtil.guessWorkDir(module);
         if (ToolKey.GHC_MODI_KEY.getPath(module.getProject()) != null) {
@@ -66,7 +69,7 @@ public class TypeInfoUtil {
                         blockStart, blockEnd));
 
             } else {
-                return "ghcModi is not configured";
+                return null;
             }
         } else {
             return GhcMod.type(module, workDir, canonicalPath, blockStart, blockEnd);
