@@ -1,7 +1,7 @@
 package com.haskforce.eta.run
 
 import com.haskforce.HaskellIcons
-import com.intellij.execution.configurations.{ConfigurationType, ConfigurationTypeBase}
+import com.intellij.execution.configurations.{ConfigurationFactory, ConfigurationType, ConfigurationTypeBase}
 
 class EtlasConfigurationType extends ConfigurationTypeBase(
   "Etlas Task Configuration",
@@ -9,7 +9,9 @@ class EtlasConfigurationType extends ConfigurationTypeBase(
   "Execute an Etlas task",
   HaskellIcons.ETA_FILE
 ) {
-  addFactory(EtlasConfigurationFactory)
+  override val getConfigurationFactories: Array[ConfigurationFactory] = {
+    Array(EtlasConfigurationFactory)
+  }
 }
 
 object EtlasConfigurationType {
