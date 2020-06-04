@@ -1,6 +1,7 @@
 package com.haskforce.features.intentions
 
 import com.haskforce.psi.HaskellFile
+import com.haskforce.tooling.hpack.{PackageYamlFinder, PackageYamlUpdater}
 import com.haskforce.utils.FileUtil
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction
 import com.intellij.lang.annotation.Annotation
@@ -35,7 +36,7 @@ class AddLanguagePragma(target: AddLanguagePragma.Target) extends BaseIntentionA
 
   private def invoke(t: AddLanguagePragma.Target.PackageYamlTop): Unit = {
     // TODO: Insert it sorted, as best as we can.
-    PackageYamlUpdateUtil.maybeUpdatePackageYamlAndReloadExternalTools(t.packageYaml, text => {
+    PackageYamlUpdater.maybeUpdatePackageYamlAndReloadExternalTools(t.packageYaml, text => {
       // TODO: Fix this copy pasta; adapted from AddPackageDependency.
       val lines = text.split('\n').toVector
       lines.zipWithIndex.find {

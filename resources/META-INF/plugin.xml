@@ -464,6 +464,7 @@
     <highlightErrorFilter implementation="com.haskforce.codeInsight.highlighting.HaskellHighlightErrorFilter"/>
     <!-- Cache-->
     <projectService serviceImplementation="com.haskforce.codeInsight.HaskellCompletionCacheService"/>
+    <projectService serviceImplementation="com.haskforce.tooling.ghcPkg.GhcPkgDumpProjectCacheService"/>
 
     <!-- Language injections -->
     <lang.elementManipulator forClass="com.haskforce.psi.HaskellQqblob"
@@ -517,8 +518,14 @@
                          displayName="Haskell Compiler"/>
     <!-- Persistent data + build server communication for compiler settings -->
     <projectService serviceImplementation="com.haskforce.settings.HaskellBuildSettings"/>
+
     <!-- Tab in IntelliJ -> Preferences -->
     <projectConfigurable instance="com.haskforce.settings.HaskellToolsConfigurable"/>
+
+    <projectConfigurable
+      instance="com.haskforce.settings.experimental.HaskForceExperimentalSettingsConfigurable"
+      groupId="language"
+    />
 
     <!-- File -> Project Structure dialogue. -->
     <moduleConfigurationEditorProvider
@@ -571,7 +578,6 @@
     <!-- Note that the classpath is needed for plugin deployment to export a zip archive. -->
     <compileServer.plugin classpath="jps-plugin.jar;jps-shared.jar"/>
     <buildProcess.parametersProvider implementation="com.haskforce.HaskForceBuildProcessParametersProvider"/>
-
   </extensions>
   <module-components>
     <component>

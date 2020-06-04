@@ -1,0 +1,298 @@
+name:                 base
+version:              4.13.0.0
+visibility:           public
+id:                   base-4.13.0.0
+key:                  base-4.13.0.0
+license:              BSD-3-Clause
+maintainer:           libraries@haskell.org
+synopsis:             Basic libraries
+description:
+    This package contains the Standard Haskell "Prelude" and its support libraries,
+    and a large collection of useful libraries ranging from data
+    structures to parsing combinators and debugging utilities.
+
+category:             Prelude
+abi:                  be21f279592f9ad2a7b067256b99b2c9
+exposed:              True
+exposed-modules:
+    Control.Applicative Control.Arrow Control.Category
+    Control.Concurrent Control.Concurrent.Chan Control.Concurrent.MVar
+    Control.Concurrent.QSem Control.Concurrent.QSemN Control.Exception
+    Control.Exception.Base Control.Monad Control.Monad.Fail
+    Control.Monad.Fix Control.Monad.IO.Class Control.Monad.Instances
+    Control.Monad.ST Control.Monad.ST.Lazy Control.Monad.ST.Lazy.Safe
+    Control.Monad.ST.Lazy.Unsafe Control.Monad.ST.Safe
+    Control.Monad.ST.Strict Control.Monad.ST.Unsafe Control.Monad.Zip
+    Data.Bifoldable Data.Bifunctor Data.Bitraversable Data.Bits
+    Data.Bool Data.Char Data.Coerce Data.Complex Data.Data Data.Dynamic
+    Data.Either Data.Eq Data.Fixed Data.Foldable Data.Function
+    Data.Functor Data.Functor.Classes Data.Functor.Compose
+    Data.Functor.Const Data.Functor.Contravariant Data.Functor.Identity
+    Data.Functor.Product Data.Functor.Sum Data.IORef Data.Int Data.Ix
+    Data.Kind Data.List Data.List.NonEmpty Data.Maybe Data.Monoid
+    Data.Ord Data.Proxy Data.Ratio Data.STRef Data.STRef.Lazy
+    Data.STRef.Strict Data.Semigroup Data.String Data.Traversable
+    Data.Tuple Data.Type.Bool Data.Type.Coercion Data.Type.Equality
+    Data.Typeable Data.Unique Data.Version Data.Void Data.Word
+    Debug.Trace Foreign Foreign.C Foreign.C.Error Foreign.C.String
+    Foreign.C.Types Foreign.Concurrent Foreign.ForeignPtr
+    Foreign.ForeignPtr.Safe Foreign.ForeignPtr.Unsafe Foreign.Marshal
+    Foreign.Marshal.Alloc Foreign.Marshal.Array Foreign.Marshal.Error
+    Foreign.Marshal.Pool Foreign.Marshal.Safe Foreign.Marshal.Unsafe
+    Foreign.Marshal.Utils Foreign.Ptr Foreign.Safe Foreign.StablePtr
+    Foreign.Storable GHC.Arr GHC.Base GHC.ByteOrder GHC.Char GHC.Clock
+    GHC.Conc GHC.Conc.IO GHC.Conc.Signal GHC.Conc.Sync
+    GHC.ConsoleHandler GHC.Constants GHC.Desugar GHC.Enum
+    GHC.Environment GHC.Err GHC.Event GHC.Exception GHC.Exception.Type
+    GHC.ExecutionStack GHC.ExecutionStack.Internal GHC.Exts
+    GHC.Fingerprint GHC.Fingerprint.Type GHC.Float
+    GHC.Float.ConversionUtils GHC.Float.RealFracMethods GHC.Foreign
+    GHC.ForeignPtr GHC.GHCi GHC.GHCi.Helpers GHC.Generics GHC.IO
+    GHC.IO.Buffer GHC.IO.BufferedIO GHC.IO.Device GHC.IO.Encoding
+    GHC.IO.Encoding.CodePage GHC.IO.Encoding.Failure
+    GHC.IO.Encoding.Iconv GHC.IO.Encoding.Latin1 GHC.IO.Encoding.Types
+    GHC.IO.Encoding.UTF16 GHC.IO.Encoding.UTF32 GHC.IO.Encoding.UTF8
+    GHC.IO.Exception GHC.IO.FD GHC.IO.Handle GHC.IO.Handle.FD
+    GHC.IO.Handle.Internals GHC.IO.Handle.Lock GHC.IO.Handle.Text
+    GHC.IO.Handle.Types GHC.IO.IOMode GHC.IO.Unsafe GHC.IOArray
+    GHC.IORef GHC.Int GHC.List GHC.MVar GHC.Maybe GHC.Natural GHC.Num
+    GHC.OldList GHC.OverloadedLabels GHC.Pack GHC.Profiling GHC.Ptr
+    GHC.RTS.Flags GHC.Read GHC.Real GHC.Records GHC.ResponseFile GHC.ST
+    GHC.STRef GHC.Show GHC.Stable GHC.StableName GHC.Stack
+    GHC.Stack.CCS GHC.Stack.Types GHC.StaticPtr GHC.Stats GHC.Storable
+    GHC.TopHandler GHC.TypeLits GHC.TypeNats GHC.Unicode GHC.Weak
+    GHC.Word Numeric Numeric.Natural Prelude System.CPUTime
+    System.Console.GetOpt System.Environment System.Environment.Blank
+    System.Exit System.IO System.IO.Error System.IO.Unsafe System.Info
+    System.Mem System.Mem.StableName System.Mem.Weak
+    System.Posix.Internals System.Posix.Types System.Timeout
+    Text.ParserCombinators.ReadP Text.ParserCombinators.ReadPrec
+    Text.Printf Text.Read Text.Read.Lex Text.Show Text.Show.Functions
+    Type.Reflection Type.Reflection.Unsafe Unsafe.Coerce
+
+hidden-modules:
+    Control.Monad.ST.Imp Control.Monad.ST.Lazy.Imp Data.Functor.Utils
+    Data.OldList Data.Semigroup.Internal Data.Typeable.Internal
+    Foreign.ForeignPtr.Imp GHC.StaticPtr.Internal
+    System.Environment.ExecutablePath System.CPUTime.Utils
+    GHC.Event.Arr GHC.Event.Array GHC.Event.Control GHC.Event.EPoll
+    GHC.Event.IntTable GHC.Event.Internal GHC.Event.KQueue
+    GHC.Event.Manager GHC.Event.PSQ GHC.Event.Poll GHC.Event.Thread
+    GHC.Event.TimerManager GHC.Event.Unique
+    System.CPUTime.Posix.ClockGetTime System.CPUTime.Posix.Times
+    System.CPUTime.Posix.RUsage System.CPUTime.Unsupported
+
+import-dirs:
+    /Users/crobbins/.stack-new/programs/x86_64-osx/ghc-8.8.3/lib/ghc-8.8.3/base-4.13.0.0
+
+library-dirs:
+    /Users/crobbins/.stack-new/programs/x86_64-osx/ghc-8.8.3/lib/ghc-8.8.3/base-4.13.0.0
+
+dynamic-library-dirs:
+    /Users/crobbins/.stack-new/programs/x86_64-osx/ghc-8.8.3/lib/ghc-8.8.3/base-4.13.0.0
+
+data-dir:
+    /Users/crobbins/.stack-new/programs/x86_64-osx/ghc-8.8.3/share/x86_64-osx-ghc-8.8.3/base-4.13.0.0
+
+hs-libraries:         HSbase-4.13.0.0
+extra-libraries:      iconv
+include-dirs:
+    /Users/crobbins/.stack-new/programs/x86_64-osx/ghc-8.8.3/lib/ghc-8.8.3/base-4.13.0.0/include
+
+includes:             HsBase.h
+depends:              ghc-prim-0.5.3 integer-gmp-1.0.2.0 rts
+haddock-interfaces:
+    /Users/crobbins/.stack-new/programs/x86_64-osx/ghc-8.8.3/share/doc/ghc-8.8.3/html/libraries/base-4.13.0.0/base.haddock
+
+haddock-html:
+    /Users/crobbins/.stack-new/programs/x86_64-osx/ghc-8.8.3/share/doc/ghc-8.8.3/html/libraries/base-4.13.0.0
+pkgroot: "/Users/crobbins/.stack/programs/x86_64-osx/ghc-8.8.3/lib/ghc-8.8.3"
+---
+name:                 aeson-qq
+version:              0.8.3
+visibility:           public
+id:                   aeson-qq-0.8.3-Fx9KwbGmTMSLuCGcE3laQo
+key:                  aeson-qq-0.8.3-Fx9KwbGmTMSLuCGcE3laQo
+license:              MIT
+maintainer:           Simon Hengel <sol@typeful.net>
+author:               Oscar Finnsson
+homepage:             https://github.com/sol/aeson-qq#readme
+synopsis:             JSON quasiquoter for Haskell
+description:
+    @aeson-qq@ provides a JSON quasiquoter for Haskell.
+
+    This package exposes the function `aesonQQ` that compile-time
+    converts a string representation of a JSON value into a
+    `Data.Aeson.Value`.  `aesonQQ` has the signature
+
+    >aesonQQ :: QuasiQuoter
+
+    Consult the @README@ for documentation:
+    <https://github.com/sol/aeson-qq#readme>
+
+category:             JSON
+abi:                  b4f484e35ca3056ae70cc9f2e72ca18c
+exposed:              True
+exposed-modules:      Data.Aeson.QQ
+hidden-modules:       Data.JSON.QQ Paths_aeson_qq
+import-dirs:
+    /Users/crobbins/.stack-new/snapshots/x86_64-osx/b8903e7ff8d71768b032fcfab94872de2bc1275815afb36b8080d3df8a95a39a/8.8.3/lib/x86_64-osx-ghc-8.8.3/aeson-qq-0.8.3-Fx9KwbGmTMSLuCGcE3laQo
+
+library-dirs:
+    /Users/crobbins/.stack-new/snapshots/x86_64-osx/b8903e7ff8d71768b032fcfab94872de2bc1275815afb36b8080d3df8a95a39a/8.8.3/lib/x86_64-osx-ghc-8.8.3/aeson-qq-0.8.3-Fx9KwbGmTMSLuCGcE3laQo
+
+dynamic-library-dirs:
+    /Users/crobbins/.stack-new/snapshots/x86_64-osx/b8903e7ff8d71768b032fcfab94872de2bc1275815afb36b8080d3df8a95a39a/8.8.3/lib/x86_64-osx-ghc-8.8.3
+
+data-dir:
+    /Users/crobbins/.stack-new/snapshots/x86_64-osx/b8903e7ff8d71768b032fcfab94872de2bc1275815afb36b8080d3df8a95a39a/8.8.3/share/x86_64-osx-ghc-8.8.3/aeson-qq-0.8.3
+
+hs-libraries:         HSaeson-qq-0.8.3-Fx9KwbGmTMSLuCGcE3laQo
+depends:
+    aeson-1.4.7.1-Ciol5WshPeQHXYbIgccxCw
+    attoparsec-0.13.2.4-K4YDSisk3Ve1wRNN9lhNEg base-4.13.0.0
+    base-compat-0.11.1-4oueEGUxmwHC6tuHqQ6hE2
+    haskell-src-meta-0.8.5-HtgaKCEq8J8KmOySo77C2U parsec-3.1.14.0
+    scientific-0.3.6.2-88AAZ2094ShCvz9CIiUOKQ template-haskell-2.15.0.0
+    text-1.2.4.0 vector-0.12.1.2-AWRYcz9jfa25Avs2q9Jg9V
+
+haddock-interfaces:
+    /Users/crobbins/.stack-new/snapshots/x86_64-osx/b8903e7ff8d71768b032fcfab94872de2bc1275815afb36b8080d3df8a95a39a/8.8.3/doc/aeson-qq-0.8.3/aeson-qq.haddock
+
+haddock-html:
+    /Users/crobbins/.stack-new/snapshots/x86_64-osx/b8903e7ff8d71768b032fcfab94872de2bc1275815afb36b8080d3df8a95a39a/8.8.3/doc/aeson-qq-0.8.3
+pkgroot: "/Users/crobbins/.stack/snapshots/x86_64-osx/0c2732824c3b4bc5ad0874f22460019d44d69ee507667f976f8950efbb77c102/8.8.3"
+---
+name:                 aeson
+version:              1.4.7.1
+visibility:           public
+id:                   aeson-1.4.7.1-Ciol5WshPeQHXYbIgccxCw
+key:                  aeson-1.4.7.1-Ciol5WshPeQHXYbIgccxCw
+license:              BSD-3-Clause
+copyright:
+    (c) 2011-2016 Bryan O'Sullivan
+    (c) 2011 MailRank, Inc.
+
+maintainer:           Adam Bergmark <adam@bergmark.nl>
+author:               Bryan O'Sullivan <bos@serpentine.com>
+stability:            experimental
+homepage:             https://github.com/bos/aeson
+synopsis:             Fast JSON parsing and encoding
+description:
+    A JSON parsing and encoding library optimized for ease of use
+    and high performance.
+
+    To get started, see the documentation for the @Data.Aeson@ module
+    below.
+
+    (A note on naming: in Greek mythology, Aeson was the father of Jason.)
+
+category:             Text, Web, JSON
+abi:                  205869812a33aa6626b5866f2fa10012
+exposed:              True
+exposed-modules:
+    Data.Aeson Data.Aeson.Encode Data.Aeson.Encoding
+    Data.Aeson.Encoding.Internal Data.Aeson.Internal
+    Data.Aeson.Internal.Time Data.Aeson.Parser
+    Data.Aeson.Parser.Internal Data.Aeson.QQ.Simple Data.Aeson.TH
+    Data.Aeson.Text Data.Aeson.Types
+
+hidden-modules:
+    Data.Aeson.Encoding.Builder Data.Aeson.Internal.Functions
+    Data.Aeson.Parser.Unescape Data.Aeson.Parser.Time
+    Data.Aeson.Types.FromJSON Data.Aeson.Types.Generic
+    Data.Aeson.Types.ToJSON Data.Aeson.Types.Class
+    Data.Aeson.Types.Internal Data.Attoparsec.Time
+    Data.Attoparsec.Time.Internal Data.Aeson.Parser.UnescapePure
+
+import-dirs:
+    /Users/crobbins/.stack-new/snapshots/x86_64-osx/b8903e7ff8d71768b032fcfab94872de2bc1275815afb36b8080d3df8a95a39a/8.8.3/lib/x86_64-osx-ghc-8.8.3/aeson-1.4.7.1-Ciol5WshPeQHXYbIgccxCw
+
+library-dirs:
+    /Users/crobbins/.stack-new/snapshots/x86_64-osx/b8903e7ff8d71768b032fcfab94872de2bc1275815afb36b8080d3df8a95a39a/8.8.3/lib/x86_64-osx-ghc-8.8.3/aeson-1.4.7.1-Ciol5WshPeQHXYbIgccxCw
+
+dynamic-library-dirs:
+    /Users/crobbins/.stack-new/snapshots/x86_64-osx/b8903e7ff8d71768b032fcfab94872de2bc1275815afb36b8080d3df8a95a39a/8.8.3/lib/x86_64-osx-ghc-8.8.3
+
+data-dir:
+    /Users/crobbins/.stack-new/snapshots/x86_64-osx/b8903e7ff8d71768b032fcfab94872de2bc1275815afb36b8080d3df8a95a39a/8.8.3/share/x86_64-osx-ghc-8.8.3/aeson-1.4.7.1
+
+hs-libraries:         HSaeson-1.4.7.1-Ciol5WshPeQHXYbIgccxCw
+depends:
+    attoparsec-0.13.2.4-K4YDSisk3Ve1wRNN9lhNEg base-4.13.0.0
+    base-compat-batteries-0.11.1-LOY5lyev4zYDDSw7XooUgP
+    bytestring-0.10.10.0 containers-0.6.2.1 deepseq-1.4.4.0
+    dlist-0.8.0.7-1z22Z0xT8xxKPJiNF8Wtg8 ghc-prim-0.5.3
+    hashable-1.3.0.0-CzctMgLWbfP4pv5F2JiKgj
+    primitive-0.7.0.1-CN4ea3Jrhra6yENuqrDg51
+    scientific-0.3.6.2-88AAZ2094ShCvz9CIiUOKQ
+    tagged-0.8.6-LfhHZ57rMjK9JkdnSRh9cF template-haskell-2.15.0.0
+    text-1.2.4.0 th-abstraction-0.3.2.0-D5zRQZUNFcq6kU1WHIrSvs
+    time-1.9.3 time-compat-1.9.3-CbmRqTfoveBHLasOnzaYEd
+    unordered-containers-0.2.10.0-KujsThAgCnwGXBG7PJnkNO
+    uuid-types-1.0.3-Hdhjbfza64Z9j295dhULU2
+    vector-0.12.1.2-AWRYcz9jfa25Avs2q9Jg9V
+
+haddock-interfaces:
+    /Users/crobbins/.stack-new/snapshots/x86_64-osx/b8903e7ff8d71768b032fcfab94872de2bc1275815afb36b8080d3df8a95a39a/8.8.3/doc/aeson-1.4.7.1/aeson.haddock
+
+haddock-html:
+    /Users/crobbins/.stack-new/snapshots/x86_64-osx/b8903e7ff8d71768b032fcfab94872de2bc1275815afb36b8080d3df8a95a39a/8.8.3/doc/aeson-1.4.7.1
+pkgroot: "/Users/crobbins/.stack/snapshots/x86_64-osx/0c2732824c3b4bc5ad0874f22460019d44d69ee507667f976f8950efbb77c102/8.8.3"
+---
+name:                 binary
+version:              0.8.7.0
+visibility:           public
+id:                   binary-0.8.7.0
+key:                  binary-0.8.7.0
+license:              BSD-3-Clause
+maintainer:           Lennart Kolmodin, Don Stewart <dons00@gmail.com>
+author:               Lennart Kolmodin <kolmodin@gmail.com>
+stability:            provisional
+homepage:             https://github.com/kolmodin/binary
+synopsis:
+    Binary serialisation for Haskell values using lazy ByteStrings
+
+description:
+    Efficient, pure binary serialisation using lazy ByteStrings.
+    Haskell values may be encoded to and from binary formats,
+    written to disk as binary, or sent over the network.
+    The format used can be automatically generated, or
+    you can choose to implement a custom format if needed.
+    Serialisation speeds of over 1 G\/sec have been observed,
+    so this library should be suitable for high performance
+    scenarios.
+
+category:             Data, Parsing
+abi:                  699273594c40e40117bf99da12019c84
+exposed:              True
+exposed-modules:
+    Data.Binary Data.Binary.Builder Data.Binary.Get
+    Data.Binary.Get.Internal Data.Binary.Put
+
+hidden-modules:
+    Data.Binary.Class Data.Binary.Internal Data.Binary.Generic
+    Data.Binary.FloatCast
+
+import-dirs:
+    /Users/crobbins/.stack-new/programs/x86_64-osx/ghc-8.8.3/lib/ghc-8.8.3/binary-0.8.7.0
+
+library-dirs:
+    /Users/crobbins/.stack-new/programs/x86_64-osx/ghc-8.8.3/lib/ghc-8.8.3/binary-0.8.7.0
+
+dynamic-library-dirs:
+    /Users/crobbins/.stack-new/programs/x86_64-osx/ghc-8.8.3/lib/ghc-8.8.3/binary-0.8.7.0
+
+data-dir:
+    /Users/crobbins/.stack-new/programs/x86_64-osx/ghc-8.8.3/share/x86_64-osx-ghc-8.8.3/binary-0.8.7.0
+
+hs-libraries:         HSbinary-0.8.7.0
+depends:
+    array-0.5.4.0 base-4.13.0.0 bytestring-0.10.10.0 containers-0.6.2.1
+
+haddock-interfaces:
+    /Users/crobbins/.stack-new/programs/x86_64-osx/ghc-8.8.3/share/doc/ghc-8.8.3/html/libraries/binary-0.8.7.0/binary.haddock
+
+haddock-html:
+    /Users/crobbins/.stack-new/programs/x86_64-osx/ghc-8.8.3/share/doc/ghc-8.8.3/html/libraries/binary-0.8.7.0
+pkgroot: "/Users/crobbins/.stack/programs/x86_64-osx/ghc-8.8.3/lib/ghc-8.8.3"
