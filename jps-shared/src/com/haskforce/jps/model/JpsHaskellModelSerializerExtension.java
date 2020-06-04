@@ -1,7 +1,5 @@
 package com.haskforce.jps.model;
 
-import com.haskforce.eta.jps.model.JpsEtaBuildOptionsSerializer;
-import com.haskforce.eta.jps.model.JpsEtlasModuleType;
 import com.intellij.util.xmlb.SkipDefaultValuesSerializationFilters;
 import com.intellij.util.xmlb.XmlSerializer;
 import org.jdom.Element;
@@ -38,9 +36,8 @@ public class JpsHaskellModelSerializerExtension extends JpsModelSerializerExtens
     @NotNull
     @Override
     public List<? extends JpsModulePropertiesSerializer<?>> getModulePropertiesSerializers() {
-        return Arrays.asList(
-            new JpsDummyModulePropertiesSerializer(JpsHaskellModuleType.INSTANCE, "HASKELL_MODULE"),
-            new JpsDummyModulePropertiesSerializer(JpsEtlasModuleType.INSTANCE(), "ETLAS_MODULE")
+        return Collections.singletonList(
+          new JpsDummyModulePropertiesSerializer(JpsHaskellModuleType.INSTANCE, "HASKELL_MODULE")
         );
     }
 
@@ -81,8 +78,7 @@ public class JpsHaskellModelSerializerExtension extends JpsModelSerializerExtens
     @Override
     public List<? extends JpsProjectExtensionSerializer> getProjectExtensionSerializers() {
         return Arrays.asList(
-            new JpsHaskellBuildOptionsSerializer(),
-            new JpsEtaBuildOptionsSerializer()
+            new JpsHaskellBuildOptionsSerializer()
         );
     }
 }

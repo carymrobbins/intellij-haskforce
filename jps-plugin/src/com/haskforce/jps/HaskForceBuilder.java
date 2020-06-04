@@ -1,6 +1,5 @@
 package com.haskforce.jps;
 
-import com.haskforce.eta.jps.etlas.EtlasBuilder;
 import com.haskforce.jps.stack.StackBuilder;
 import com.haskforce.utils.JavaVersionUtil;
 import org.jetbrains.annotations.NotNull;
@@ -24,8 +23,7 @@ public class HaskForceBuilder extends BuilderService {
         // Only Java projects will use something older.
         if (!JavaVersionUtil.isAtLeastJava8()) return Collections.emptyList();
         return Arrays.asList(
-            new CabalBuilder(),
-            new EtlasBuilder()
+            new CabalBuilder()
         );
     }
 
