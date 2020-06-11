@@ -15,7 +15,7 @@ class GhcPkgDumpParserTest extends UsefulTestCase with AssertMixin {
 
   def test00001(): Unit = {
     val is = fixtureInputStream()
-    val pkgs = CachedPkgs.fromIterator(GhcPkgDumpParser.parse(is).iterator)
+    val pkgs = CachedPkgs.fromIterator(GhcPkgDumpParser.parse(is))
     assertPkgNames(pkgs, """
       generic-override generic-override-aeson aeson-pretty aeson vector
       attoparsec cmdargs scientific time-compat th-abstraction base-compat
@@ -121,7 +121,7 @@ class GhcPkgDumpParserTest extends UsefulTestCase with AssertMixin {
 
   def test00002(): Unit = {
     val is = fixtureInputStream()
-    val pkgs = CachedPkgs.fromIterator(GhcPkgDumpParser.parse(is).iterator)
+    val pkgs = CachedPkgs.fromIterator(GhcPkgDumpParser.parse(is))
     assertPkgNames(pkgs, """
       base aeson-qq aeson binary
     """)

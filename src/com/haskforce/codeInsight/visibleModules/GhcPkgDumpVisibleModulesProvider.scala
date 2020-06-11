@@ -79,8 +79,7 @@ object GhcPkgDumpVisibleModulesProvider {
       psiFile,
       project,
       projectDir,
-      stackPath,
-      experimentalSettings.ghcPkgTimeoutMillis
+      stackPath
     )
   }
 }

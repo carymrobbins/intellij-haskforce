@@ -7,5 +7,4 @@ import javax.swing.*;
 public abstract class AbstractHaskForceExperimentalSettingsConfigurable implements SearchableConfigurable {
   JPanel mainPanel;
   JCheckBox ghcPkgEnabled;
-  JTextField ghcPkgTimeoutMillis;
 }
