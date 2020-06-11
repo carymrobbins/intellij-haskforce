@@ -5,11 +5,12 @@ import com.intellij.openapi.options.ConfigurationException
 import com.intellij.openapi.project.Project
 import javax.swing.JComponent
 
-class HaskForceExperimentalSettingsConfigurable(
+/** Settings for experimental features in HaskForce. */
+class HaskForceExperimentalConfigurable(
   project: Project
 ) extends AbstractHaskForceExperimentalSettingsConfigurable {
 
-  import HaskForceExperimentalSettingsConfigurable._
+  import HaskForceExperimentalConfigurable._
 
   private val props = PropertiesComponent.getInstance(project)
 
@@ -43,12 +44,12 @@ class HaskForceExperimentalSettingsConfigurable(
   }
 }
 
-object HaskForceExperimentalSettingsConfigurable {
+object HaskForceExperimentalConfigurable {
 
   // Do not change this value as it is used for decoding in 'State.load()'.
   val ID = "haskforce.experimental.settings"
 
-  val DISPLAY_NAME = "HaskForce Experimental Settings"
+  val DISPLAY_NAME = "HaskForce (Experimental)"
 
   /** Parsed state from HaskForceExperimentalSettingsConfigurable */
   final case class State(
@@ -77,7 +78,7 @@ object HaskForceExperimentalSettingsConfigurable {
       props.setValue(s"$ID.ghcPkgEnabled", state.ghcPkgEnabled.toString)
     }
 
-    def parse(c: HaskForceExperimentalSettingsConfigurable): State = {
+    def parse(c: HaskForceExperimentalConfigurable): State = {
       State(
         c.ghcPkgEnabled.isSelected
       )

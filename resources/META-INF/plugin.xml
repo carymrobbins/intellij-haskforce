@@ -523,7 +523,7 @@
     <projectConfigurable instance="com.haskforce.settings.HaskellToolsConfigurable"/>
 
     <projectConfigurable
-      instance="com.haskforce.settings.experimental.HaskForceExperimentalSettingsConfigurable"
+      instance="com.haskforce.settings.experimental.HaskForceExperimentalConfigurable"
       groupId="language"
     />
 

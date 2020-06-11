@@ -1,7 +1,7 @@
 package com.haskforce.codeInsight.visibleModules
 
 import com.haskforce.settings.HaskellBuildSettings
-import com.haskforce.settings.experimental.HaskForceExperimentalSettingsConfigurable
+import com.haskforce.settings.experimental.HaskForceExperimentalConfigurable
 import com.haskforce.tooling.ghcPkg.{CachedPkgs, GhcPkgDumpExecutor, GhcPkgDumpParser, GhcPkgDumpProjectCacheService}
 import com.haskforce.tooling.hpack.{PackageYamlFinder, PackageYamlQuery}
 import com.intellij.ide.util.PropertiesComponent
@@ -66,7 +66,7 @@ object GhcPkgDumpVisibleModulesProvider {
   def create(psiFile: PsiFile): Option[GhcPkgDumpVisibleModulesProvider] = {
     val props = PropertiesComponent.getInstance(psiFile.getProject)
     val experimentalSettings =
-      HaskForceExperimentalSettingsConfigurable.State.load(props)
+      HaskForceExperimentalConfigurable.State.load(props)
     if (!experimentalSettings.ghcPkgEnabled) {
       return None
     }
