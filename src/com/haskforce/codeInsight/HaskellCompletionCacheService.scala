@@ -3,6 +3,7 @@ package com.haskforce.codeInsight
 import java.util
 
 import com.haskforce.codeInsight.HaskellCompletionCacheLoader.LookupElementWrapper
+import com.haskforce.codeInsight.visibleModules.VisibleModulesProviderFactory
 import com.haskforce.psi.HaskellPsiUtil
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.util.Computable

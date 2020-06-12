@@ -1,5 +1,6 @@
 package com.haskforce.features.intentions
 
+import com.haskforce.tooling.hpack.PackageYamlFinder
 import com.intellij.codeInsight.intention.impl.BaseIntentionAction
 import com.intellij.lang.annotation.Annotation
 import com.intellij.openapi.editor.Editor

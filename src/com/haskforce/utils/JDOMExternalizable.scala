@@ -175,6 +175,19 @@ object JDOMFieldExternalizable {
     writeFieldFromToString
   )
 
+  implicit val long: JDOMFieldExternalizable[Long] = instance(
+    readFieldParser {
+      s =>
+        try {
+          s.toLong
+        } catch {
+          case _: NumberFormatException =>
+            throw new IllegalArgumentException(s"JDOMFieldExternalizable expected long but got string: $s")
+        }
+    },
+    writeFieldFromToString
+  )
+
   implicit val envVarData: JDOMFieldExternalizable[EnvironmentVariablesData] = instance(
     (_, e) => EnvironmentVariablesData.readExternal(e),
     (_, e, a) => EnvironmentVariablesComponent.writeExternal(e, a.getEnvs)
