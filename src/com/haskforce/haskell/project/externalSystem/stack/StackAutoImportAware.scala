@@ -45,6 +45,7 @@ class StackAutoImportAware extends ExternalSystemAutoImportAware {
       .fold(ContainerUtil.set(projectPath))(_.getModules)
       .forEach { modulePath =>
         res.add(new File(modulePath, "package.yaml"))
+        ()
       }
 
     res
