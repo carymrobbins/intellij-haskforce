@@ -3,13 +3,55 @@ package com.haskforce.haskell.project.externalSystem.stack
 import java.io.File
 
 import com.haskforce.test.AssertMixin
+import com.haskforce.utils.NonEmptySet
 import com.intellij.testFramework.fixtures.BasePlatformTestCase
 
 class PackageConfigTest extends BasePlatformTestCase with AssertMixin {
 
   def test00001(): Unit = {
     cabalFileShouldBe("foo", PackageConfig(
-      name = "foo"
+      name = "foo",
+      components = List(
+        PackageConfig.Component(
+          typ = PackageConfig.Component.Type.Library,
+          name = "foo",
+          hsSourceDirs = NonEmptySet("src"),
+          mainIs = None,
+          dependencies = Set(
+            "aeson",
+            "base",
+            "bytestring",
+            "containers",
+            "filepath",
+            "text",
+            "time",
+            "uuid"
+          ),
+          extensions = Set(
+            "BlockArguments",
+            "ConstraintKinds",
+            "DataKinds",
+            "DeriveAnyClass"
+          )
+        ),
+        PackageConfig.Component(
+          typ = PackageConfig.Component.Type.TestSuite,
+          name = "foo-tests",
+          hsSourceDirs = NonEmptySet("test"),
+          mainIs = Some("Main.hs"),
+          dependencies = Set(
+            "aeson",
+            "aeson-qq",
+            "base",
+            "hspec"
+          ),
+          extensions = Set(
+            "BlockArguments",
+            "ConstraintKinds",
+            "DataKinds"
+          )
+        )
+      )
     ))
   }
 

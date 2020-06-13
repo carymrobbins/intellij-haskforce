@@ -1,1 +1,46 @@
+cabal-version: 1.12
+
 name: foo
+version: 0.0.0.0
+
+library
+  exposed-modules:
+      A
+      A.B
+      A.B.C
+  other-modules:
+      Paths_foo
+  hs-source-dirs:
+      src
+  default-extensions: BlockArguments ConstraintKinds DataKinds DeriveAnyClass
+  ghc-options: -Wall -Wincomplete-uni-patterns
+  build-depends:
+      aeson
+    , base
+    , bytestring
+    , containers
+    , filepath
+    , text
+    , time
+    , uuid
+  default-language: Haskell2010
+
+test-suite foo-tests
+  type: exitcode-stdio-1.0
+  main-is: Main.hs
+  other-modules:
+      A.B.C.D
+      A.B.C.D.E
+      Paths_foo
+  hs-source-dirs:
+      test
+  default-extensions: BlockArguments ConstraintKinds DataKinds
+  ghc-options: -Wall -Wincomplete-uni-patterns -threaded -rtsopts "-with-rtsopts=-N -T"
+  build-tool-depends:
+      hspec-discover:hspec-discover
+  build-depends:
+      aeson
+    , aeson-qq
+    , base
+    , hspec
+  default-language: Haskell2010
