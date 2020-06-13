@@ -8,26 +8,12 @@ import com.intellij.testFramework.fixtures.BasePlatformTestCase
 class PackageConfigTest extends BasePlatformTestCase with AssertMixin {
 
   def test00001(): Unit = {
-    packageYamlShouldBe(PackageConfig(
-      name = "foo"
-    ))
-  }
-
-  def test00002(): Unit = {
     cabalFileShouldBe("foo", PackageConfig(
       name = "foo"
     ))
   }
 
   private def testName: String = getTestName(false)
-
-  private def packageYamlShouldBe(c: PackageConfig): Unit = {
-    assertEquals(c, packageYamlFixture())
-  }
-
-  private def packageYamlFixture(): PackageConfig = {
-    namedFixture(s"$testName/package.yaml")
-  }
 
   private def cabalFileShouldBe(name: String, c: PackageConfig): Unit = {
     assertEquals(c, cabalFileFixture(name))
