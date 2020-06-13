@@ -2,6 +2,7 @@ package prelude.ops
 
 import scalaz.{NonEmptyList, Semigroup, Validation, ValidationNel}
 
+import scala.language.implicitConversions
 import scala.util.control.NonFatal
 
 final class EitherObjOps(private val self: Either.type) extends AnyVal {

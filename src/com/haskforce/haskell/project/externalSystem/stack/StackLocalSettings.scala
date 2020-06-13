@@ -9,7 +9,13 @@ import com.intellij.openapi.project.Project
   storages = Array(new Storage(StoragePathMacros.WORKSPACE_FILE))
 )
 final class StackLocalSettings(project: Project)
-  extends AbstractExternalSystemLocalSettings(
+  extends AbstractStackLocalSettings[StackLocalSettings.State](
     StackManager.PROJECT_SYSTEM_ID,
-    project
-  )
+    project,
+    new StackLocalSettings.State
+  ) {
+}
+
+object StackLocalSettings {
+  class State extends AbstractExternalSystemLocalSettings.State
+}
