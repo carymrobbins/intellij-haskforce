@@ -3,6 +3,7 @@ package com.haskforce.highlighting.annotation.external
 import com.haskforce.HaskellLightPlatformCodeInsightFixtureTestCase
 import com.haskforce.highlighting.annotation.HaskellAnnotationHolder
 import com.haskforce.psi.impl.HaskellElementFactory
+import com.haskforce.test.AssertMixin
 import com.intellij.codeInsight.daemon.impl.AnnotationHolderImpl
 import com.intellij.lang.annotation.{AnnotationHolder, AnnotationSession}
 import com.intellij.openapi.application.ApplicationManager
@@ -14,8 +15,7 @@ import scala.collection.JavaConverters._
 /**
  * Tests for consuming output from ghc-mod.
  */
-class GhcModTest extends HaskellLightPlatformCodeInsightFixtureTestCase("ghc-mod") {
-    import junit.framework.Assert._
+class GhcModTest extends HaskellLightPlatformCodeInsightFixtureTestCase("ghc-mod") with AssertMixin {
 
     def testParseProblems(): Unit = {
         val stdout = StringUtil.join(util.Arrays.asList(

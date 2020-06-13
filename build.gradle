@@ -47,7 +47,9 @@ allprojects {
     configurations {
         provided
         compile.extendsFrom provided
+        paradise
     }
+    configurations.paradise.transitive = false
 
     dependencies {
 
@@ -56,7 +58,8 @@ allprojects {
         compile "org.scala-lang:scala-reflect:${scalaVersion}"
         compile "org.scala-lang:scala-library:${scalaVersion}"
 
-        compile "io.estatico:newtype_${scalaBinaryVersion}:0.4.2"
+        paradise "org.scalamacros:paradise_${scalaVersion}:2.1.1"
+        compile "io.estatico:newtype_${scalaBinaryVersion}:0.4.4"
         compile "org.scalaz:scalaz-core_${scalaBinaryVersion}:7.2.17"
         compile "org.yaml:snakeyaml:1.16"
 
@@ -79,6 +82,7 @@ allprojects {
     }
 
     it.tasks.withType(ScalaCompile) {
+        String paradiseJar = configurations.paradise.singleFile.path
         scalaCompileOptions.setAdditionalParameters([
             '-deprecation',
             '-feature',
@@ -98,6 +102,8 @@ allprojects {
             '-Ywarn-unused:patvars',
             '-Ywarn-unused:privates',
             '-Ywarn-value-discard',
+            // Use '-Ymacro-annotations' once moved to scala 2.13
+            "-Xplugin:${paradiseJar}".toString()
         ])
     }
 }

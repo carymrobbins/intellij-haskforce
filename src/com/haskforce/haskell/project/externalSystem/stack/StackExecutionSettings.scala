@@ -1,9 +1,11 @@
 package com.haskforce.haskell.project.externalSystem.stack
 
 import com.intellij.openapi.externalSystem.model.settings.ExternalSystemExecutionSettings
+import com.intellij.openapi.project.Project
 
 final case class StackExecutionSettings(
-  projectPath: String,
+  project: Project,
+  linkedProjectPath: String,
   stackExePath: String
 ) extends ExternalSystemExecutionSettings
 

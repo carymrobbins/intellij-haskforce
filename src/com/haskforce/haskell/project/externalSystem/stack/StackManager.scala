@@ -1,9 +1,9 @@
 package com.haskforce.haskell.project.externalSystem.stack
 
 import java.io.File
-import java.net.URL
 import java.util
 
+import com.haskforce.settings.HaskellBuildSettings
 import com.intellij.execution.configurations.SimpleJavaParameters
 import com.intellij.ide.actions.OpenProjectFileChooserDescriptor
 import com.intellij.openapi.externalSystem.model.ProjectSystemId
@@ -33,9 +33,15 @@ final class StackManager
   override val getLocalSettingsProvider: Function[Project, StackLocalSettings] =
     new StackLocalSettings(_)
 
-  override def getExecutionSettingsProvider
-    : Function[Pair[Project, String], StackExecutionSettings]
-    = _ => new StackExecutionSettings() // TODO: Do we need this?
+  override def getExecutionSettingsProvider: Function[
+    Pair[Project, String],
+    StackExecutionSettings
+  ] = args => {
+    val project = args.first
+    val linkedProjectPath = args.second
+    val stackExePath = HaskellBuildSettings.getInstance(project).getStackPath
+    StackExecutionSettings(project, linkedProjectPath, stackExePath)
+  }
 
   override val getProjectResolverClass: Class[StackProjectResolver] =
     classOf[StackProjectResolver]
@@ -46,11 +52,7 @@ final class StackManager
   override def getExternalProjectDescriptor: FileChooserDescriptor =
     new OpenProjectFileChooserDescriptor(true) // TODO: Is this right?
 
-  override def enhanceRemoteProcessing(parameters: SimpleJavaParameters): Unit =
-    () // TODO: What is this for?
-
-  override def enhanceLocalProcessing(urls: util.List[URL]): Unit =
-    () // TODO: What is this for?
+  override def enhanceRemoteProcessing(parameters: SimpleJavaParameters): Unit = ()
 
   private val autoImport = new CachingExternalSystemAutoImportAware(
     new StackAutoImportAware
@@ -66,5 +68,5 @@ final class StackManager
 }
 
 object StackManager {
-  val PROJECT_SYSTEM_ID = new ProjectSystemId("STACK")
+  val PROJECT_SYSTEM_ID = new ProjectSystemId("HASKELL_STACK")
 }

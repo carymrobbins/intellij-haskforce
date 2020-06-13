@@ -5,8 +5,7 @@ import java.util
 import com.intellij.openapi.components.{PersistentStateComponent, ServiceManager, State, Storage}
 import com.intellij.openapi.externalSystem.settings.{AbstractExternalSystemSettings, ExternalSystemSettingsListener}
 import com.intellij.openapi.project.Project
-import com.intellij.util.containers.ContainerUtilRt
-import com.intellij.util.xmlb.annotations.AbstractCollection
+import com.intellij.util.xmlb.annotations.XCollection
 
 @State(name = "StackSettings", storages = Array(new Storage("stack.xml")))
 final class StackSettings(
@@ -48,17 +47,18 @@ object StackSettings {
 
     // NOTE: When adding fields, use @scala.beans.BeanProperty
 
-    private val linkedProjectSettings: util.TreeSet[StackProjectSettings] =
-      ContainerUtilRt.newTreeSet()
+    private val linkedProjectSettings: util.TreeSet[StackProjectSettings] = {
+      new util.TreeSet[StackProjectSettings]()
+    }
 
-    @AbstractCollection(
-      surroundWithTag = false,
-      elementTypes = Array(classOf[StackProjectSettings])
-    )
-    override def getLinkedExternalProjectsSettings: util.Set[StackProjectSettings] =
+    @XCollection(elementTypes = Array(classOf[StackProjectSettings]))
+    override def getLinkedExternalProjectsSettings: util.Set[StackProjectSettings] = {
       linkedProjectSettings
+    }
 
-    override def setLinkedExternalProjectsSettings(settings: util.Set[StackProjectSettings]): Unit =
+    override def setLinkedExternalProjectsSettings(settings: util.Set[StackProjectSettings]): Unit = {
       linkedProjectSettings.addAll(settings)
+      ()
+    }
   }
 }
