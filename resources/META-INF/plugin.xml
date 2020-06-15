@@ -197,6 +197,7 @@
 
     <!-- Stack support -->
     <externalSystemManager implementation="com.haskforce.haskell.project.externalSystem.stack.StackManager"/>
+    <externalIconProvider implementationClass="com.haskforce.haskell.project.externalSystem.stack.StackIconProvider"/>
     <externalSystemTaskNotificationListener implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectImportNotificationListener"/>
     <externalSystemSettingsListener implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectSettingsUpdater"/>
     <projectImportProvider
