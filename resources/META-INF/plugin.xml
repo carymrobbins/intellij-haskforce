@@ -6,6 +6,8 @@
   <description>Plugin for Haskell language support.</description>
 
   <depends>org.jetbrains.plugins.yaml</depends>
+  <depends>com.intellij.modules.externalSystem</depends>
+
 
   <change-notes><![CDATA[
     <p>
@@ -582,6 +584,8 @@
 
     <!-- Stack support -->
     <externalSystemManager implementation="com.haskforce.haskell.project.externalSystem.stack.StackManager"/>
+    <externalSystemTaskNotificationListener implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectImportNotificationListener"/>
+    <externalSystemSettingsListener implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectSettingsUpdater"/>
     <projectImportProvider
         implementation="com.haskforce.importWizard.stack.StackProjectImportProvider"/>
     <projectImportBuilder
