@@ -1,53 +1,35 @@
 package com.haskforce.haskell.project.externalSystem.stack
 
 import java.io.File
-import java.util
 
+import com.haskforce.settings.HaskellBuildSettings
 import com.intellij.openapi.externalSystem.ExternalSystemAutoImportAware
 import com.intellij.openapi.project.Project
-import com.intellij.util.containers.ContainerUtil
 
 /**
   * Handle auto-import logic for stack projects.
   * Mostly adapted from GradleAutoImportAware
   */
-class StackAutoImportAware extends ExternalSystemAutoImportAware {
+object StackAutoImportAware extends ExternalSystemAutoImportAware {
+
   override def getAffectedExternalProjectPath(
-    changedFileOrDirPath: String, project: Project
+    changedFileOrDirPath: String,
+    project: Project
   ): String = {
-    // TODO: Very hacky, what's the point of getAffectedExternalProjectFiles??
     val file = new File(changedFileOrDirPath)
     if (file.isDirectory) return null
-    // TODO: Probably needs to figure out the configured stack.yaml name
-    // This is good for 99% of use cases though
-    if (file.getName == "stack.yaml" || file.getName == "package.yaml") {
-      return project.getBasePath
-    }
+    // Get the project stack.yaml
+    val stackFile = HaskellBuildSettings.getInstance(project).getStackFile
+    // If we don't have a stack.yaml configured, don't auto-import.
+    if (stackFile == null) return null
+    // Check if the changed file is our configured stack.yaml.
+    if (file.getCanonicalPath == new File(stackFile).getCanonicalPath) return stackFile
+    // Assume a modified package.yaml/.cabal file requires auto-import.
+    // TODO: We could check to ensure it's configured in the stack.yaml, but
+    // this function is called often so we need to come up with some sort of
+    // caching for it.
+    if (file.getName == "package.yaml") return stackFile
+    if (file.getName.endsWith(".cabal")) return stackFile
     null
-  }
-
-  override def getAffectedExternalProjectFiles(
-    projectPath: String, project: Project
-  ): util.List[File] = {
-    val res = new util.ArrayList[File]()
-    val optProjectSettings = Option(
-      StackSettings.getInstance(project).getLinkedProjectSettings(projectPath)
-    )
-
-    // TODO: Not sure if we actually want project settings to have stack.yaml
-    // or if that belongs in some sort of system-level settings.
-    res.add(new File(
-      projectPath,
-      optProjectSettings.fold("stack.yaml")(_.stackYamlPath)
-    ))
-
-    optProjectSettings
-      .fold(ContainerUtil.set(projectPath))(_.getModules)
-      .forEach { modulePath =>
-        res.add(new File(modulePath, "package.yaml"))
-        ()
-      }
-
-    res
   }
 }

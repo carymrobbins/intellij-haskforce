@@ -7,7 +7,6 @@ import com.haskforce.settings.HaskellBuildSettings
 import com.intellij.execution.configurations.SimpleJavaParameters
 import com.intellij.ide.actions.OpenProjectFileChooserDescriptor
 import com.intellij.openapi.externalSystem.model.ProjectSystemId
-import com.intellij.openapi.externalSystem.service.project.autoimport.CachingExternalSystemAutoImportAware
 import com.intellij.openapi.externalSystem.{ExternalSystemAutoImportAware, ExternalSystemManager}
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.project.Project
@@ -54,9 +53,7 @@ final class StackManager
 
   override def enhanceRemoteProcessing(parameters: SimpleJavaParameters): Unit = ()
 
-  private val autoImport = new CachingExternalSystemAutoImportAware(
-    new StackAutoImportAware
-  )
+  private val autoImport = StackAutoImportAware
 
   override def getAffectedExternalProjectPath(
     changedFileOrDirPath: String, project: Project
