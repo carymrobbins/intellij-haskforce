@@ -366,6 +366,6 @@ object StackProjectResolver {
   //private val LOG = Logger.getInstance(classOf[StackProjectResolver])
 
   // 5 seconds should be plenty long enough.
-  private val STACK_REGEN_CABAL_FILE_TIMEOUT_MILLIS = 5000
-  private val STACK_GET_CABAL_FILES_TIMEOUT_MILLIS = 5000
+  private val STACK_REGEN_CABAL_FILE_TIMEOUT_MILLIS: Long = 5000
+  private val STACK_GET_CABAL_FILES_TIMEOUT_MILLIS: Long = 5000
 }
