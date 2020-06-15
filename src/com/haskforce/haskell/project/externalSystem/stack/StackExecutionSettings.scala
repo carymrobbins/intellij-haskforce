@@ -6,6 +6,7 @@ import com.intellij.openapi.project.Project
 final case class StackExecutionSettings(
   project: Project,
   linkedProjectPath: String,
-  stackExePath: String
+  stackExePath: String,
+  stackYamlPath: String
 ) extends ExternalSystemExecutionSettings
 

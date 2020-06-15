@@ -6,7 +6,7 @@ import java.util
 import com.haskforce.settings.HaskellBuildSettings
 import com.intellij.execution.configurations.SimpleJavaParameters
 import com.intellij.ide.actions.OpenProjectFileChooserDescriptor
-import com.intellij.openapi.externalSystem.model.ProjectSystemId
+import com.intellij.openapi.externalSystem.model.{ExternalSystemException, ProjectSystemId}
 import com.intellij.openapi.externalSystem.{ExternalSystemAutoImportAware, ExternalSystemManager}
 import com.intellij.openapi.fileChooser.FileChooserDescriptor
 import com.intellij.openapi.project.Project
@@ -32,14 +32,31 @@ final class StackManager
   override val getLocalSettingsProvider: Function[Project, StackLocalSettings] =
     new StackLocalSettings(_)
 
-  override def getExecutionSettingsProvider: Function[
+  override val getExecutionSettingsProvider: Function[
     Pair[Project, String],
     StackExecutionSettings
   ] = args => {
     val project = args.first
     val linkedProjectPath = args.second
-    val stackExePath = HaskellBuildSettings.getInstance(project).getStackPath
-    StackExecutionSettings(project, linkedProjectPath, stackExePath)
+    val projectBuildSettings = HaskellBuildSettings.getInstance(project)
+    val stackExePath = projectBuildSettings.getStackPath
+    if (stackExePath == null) {
+      throw new ExternalSystemException(
+        "The Haskell 'stack' executable path is not set"
+      )
+    }
+    val stackYamlPath = projectBuildSettings.getStackFile
+    if (stackYamlPath == null) {
+      throw new ExternalSystemException(
+        "The Haskell 'stack.yaml' path is not set"
+      )
+    }
+    StackExecutionSettings(
+      project = project,
+      linkedProjectPath = linkedProjectPath,
+      stackExePath = stackExePath,
+      stackYamlPath = stackYamlPath
+    )
   }
 
   override val getProjectResolverClass: Class[StackProjectResolver] =
