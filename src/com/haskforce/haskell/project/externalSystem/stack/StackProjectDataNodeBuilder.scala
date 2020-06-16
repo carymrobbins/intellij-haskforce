@@ -3,9 +3,9 @@ package com.haskforce.haskell.project.externalSystem.stack
 import java.io.File
 
 import com.haskforce.HaskellModuleType
-import com.intellij.openapi.externalSystem.model.{DataNode, Key, ProjectKeys}
 import com.intellij.openapi.externalSystem.model.project.{ContentRootData, ExternalSystemSourceType, ModuleData, ProjectData}
 import com.intellij.openapi.externalSystem.model.task.{ExternalSystemTaskId, ExternalSystemTaskNotificationListener}
+import com.intellij.openapi.externalSystem.model.{DataNode, Key, ProjectKeys}
 
 class StackProjectDataNodeBuilder(
   id: ExternalSystemTaskId,
@@ -14,27 +14,23 @@ class StackProjectDataNodeBuilder(
   listener: ExternalSystemTaskNotificationListener
 ) {
 
-  private val logToConsole: Boolean = true
-
-  private def LOG(text: => String, stdOut: Boolean = true): Unit = {
-    if (logToConsole) listener.onTaskOutput(id, text + "\n", stdOut)
+  private def LOG(text: String, stdOut: Boolean = true): Unit = {
+    listener.onTaskOutput(id, text + "\n", stdOut)
   }
 
   def create(): DataNode[ProjectData] = {
-    LOG("resolveProjectInfo")
-    LOG(s"packageConfigAssocs={\n${settings.packageConfigAssocs.mkString("\n")}\n}")
+    LOG(s"rootProjectName=${settings.rootProjectName}")
     val projectDataNode = mkProjectDataNode(
-      rootProjectName = settings.rootProjectName,
-      projectPath = projectPath
+      rootProjectName = settings.rootProjectName
     )
     settings.packageConfigAssocs.foreach { assoc =>
-      projectDataNode.addChild(
-        mkPackageModuleDataNode(
-          projectPath = projectPath,
-          packageDir = assoc.packageDir,
-          packageConfig = assoc.packageConfig,
-        )
-      )
+      LOG(s"packageConfigAssoc=$assoc")
+      mkModuleDataNodes(
+        packageDir = assoc.packageDir,
+        packageConfig = assoc.packageConfig,
+      ).foreach { moduleDataNode =>
+        projectDataNode.addChild(moduleDataNode)
+      }
     }
     projectDataNode
   }
@@ -53,8 +49,7 @@ class StackProjectDataNodeBuilder(
 
   private def mkModuleData(
     id: String,
-    externalName: String,
-    projectPath: String
+    externalName: String
   ): ModuleData = {
     new ModuleData(
       id,
@@ -73,8 +68,7 @@ class StackProjectDataNodeBuilder(
   }
 
   private def mkProjectDataNode(
-    rootProjectName: String,
-    projectPath: String
+    rootProjectName: String
   ): DataNode[ProjectData] = {
     mkDataNode(
       ProjectKeys.PROJECT,
@@ -87,18 +81,14 @@ class StackProjectDataNodeBuilder(
     )
   }
 
-  private def mkPackageModuleDataNode(
-    projectPath: String,
+  private def mkModuleDataNodes(
     packageDir: String,
     packageConfig: PackageConfig
-  ): DataNode[ModuleData] = {
-    LOG("mkPackageModuleDataNode")
+  ): List[DataNode[ModuleData]] = {
     // Note that 'exes' here consists of exe, test, and/or bench.
     val (libs, exes) = packageConfig.components.partition(
       _.typ == PackageConfig.Component.Type.Library
     )
-    LOG(s"libs.name=${libs.map(_.name)}")
-    LOG(s"exes.name=${exes.map(_.name)}")
     val maybeLib = libs match {
       case Nil => None
       case List(lib) => Some(lib)
@@ -112,93 +102,50 @@ class StackProjectDataNodeBuilder(
           )
         )
     }
-    val moduleDataNode = mkMaybeLibPackageModuleDataNode(
-      projectPath = projectPath,
-      packageDir = packageDir,
-      packageConfig = packageConfig,
-      maybeLib = maybeLib
-    )
-    exes.foreach { exe =>
+    val maybeLibModuleDataNode = maybeLib.map(lib =>
       mkComponentModuleDataNode(
-        projectPath = projectPath,
+        packageDir = packageDir,
+        packageConfig = packageConfig,
+        component = lib
+      )
+    )
+    val exeModuleDataNodes = exes.map { exe =>
+      mkComponentModuleDataNode(
         packageDir = packageDir,
         packageConfig = packageConfig,
         component = exe
       )
     }
-    moduleDataNode
-  }
-
-  private def mkMaybeLibPackageModuleDataNode(
-    projectPath: String,
-    packageDir: String,
-    packageConfig: PackageConfig,
-    maybeLib: Option[PackageConfig.Component]
-  ): DataNode[ModuleData] = {
-    maybeLib match {
-      case Some(lib) =>
-        mkComponentModuleDataNode(
-          projectPath = projectPath,
-          packageDir = packageDir,
-          packageConfig = packageConfig,
-          component = lib
-        )
-
-      case None =>
-        mkNoLibPackageModuleDataNode(
-          projectPath = projectPath,
-          packageDir = packageDir,
-          packageConfig = packageConfig
-        )
-    }
-  }
-
-  private def mkNoLibPackageModuleDataNode(
-    projectPath: String,
-    packageDir: String,
-    packageConfig: PackageConfig,
-  ): DataNode[ModuleData] = {
-    val id = packageConfig.name
-    val moduleDataNode = mkDataNode(
-      ProjectKeys.MODULE,
-      mkModuleData(
-        id = id,
-        externalName = id,
-        projectPath = projectPath
-      )
-    )
-    moduleDataNode.addChild(
-      mkDataNode(
-        ProjectKeys.CONTENT_ROOT,
-        mkContentRootData(packageDir)
-      )
-    )
-    moduleDataNode
+    maybeLibModuleDataNode.toList ++ exeModuleDataNodes
   }
 
   private def mkComponentModuleDataNode(
-    projectPath: String,
     packageDir: String,
     packageConfig: PackageConfig,
     component: PackageConfig.Component,
   ): DataNode[ModuleData] = {
     val id = mkComponentModuleId(packageConfig, component)
-    val exeDataNode =
+    val moduleDataNode =
       mkDataNode(
         ProjectKeys.MODULE,
         mkModuleData(
           id = id,
-          externalName = id,
-          projectPath = projectPath
+          externalName = id
         )
       )
     val contentRootData = mkContentRootData(packageDir)
+    moduleDataNode.addChild(
+      mkDataNode(
+        ProjectKeys.CONTENT_ROOT,
+        contentRootData
+      )
+    )
     val srcType = getComponentSourceType(component)
     component.hsSourceDirs.foreach { relSrcDir =>
       val canonicalSrcDir = new File(packageDir, relSrcDir).getCanonicalPath
       contentRootData.storePath(srcType, canonicalSrcDir)
     }
-    exeDataNode
+    moduleDataNode
   }
 
   private def mkComponentModuleId(
