@@ -25,7 +25,8 @@ class HaskForceBuildProcessParametersProvider extends BuildProcessParametersProv
       jarPath[scala.reflect.runtime.JavaUniverse]("scala-reflect"),
       jarPath[scalaz.Scalaz.type]("scalaz-core"),
       jarPath[org.yaml.snakeyaml.Yaml]("snakeyaml"),
-      jarPath[io.estatico.newtype.NewType]("newtype")
+      jarPath[io.estatico.newtype.NewType]("newtype"),
+      jarPath[org.jetbrains.yaml.YAMLLanguage]("yaml")
     )
   }
 

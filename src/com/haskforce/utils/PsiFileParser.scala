@@ -25,30 +25,36 @@ object PsiFileParser {
 
   def parse[F <: PsiFile : PsiFileParser, I : Parseable](
     factory: PsiFileFactory, input: I
-  ): Either[Throwable, F] =
+  ): Either[Throwable, F] = {
     Parseable[I].getInput(input).flatMap(apply[F].parse(factory, _))
+  }
 
   def parseForProject[F <: PsiFile : PsiFileParser, I : Parseable](
     project: Project, input: I
-  ): Either[Throwable, F] =
-    Parseable[I].getInput(input).flatMap(
-      apply[F].parse(PsiFileFactory.getInstance(project), _)
-    )
+  ): Either[Throwable, F] = {
+    for {
+      psiFileFactory <- Either.catchNonFatal {
+        PsiFileFactory.getInstance(project)
+      }
+      psiFile <- parse[F, I](psiFileFactory, input)
+    } yield psiFile
+  }
 
   def parseForDefaultProject[F <: PsiFile : PsiFileParser, I : Parseable](
     input: I
-  ): Either[Throwable, F] =
-    Parseable[I].getInput(input).flatMap(
-      apply[F].parse(
-        PsiFileFactory.getInstance(ProjectManager.getInstance.getDefaultProject),
-        _
-      )
-    )
+  ): Either[Throwable, F] = {
+    for {
+      project <- Either.catchNonFatal {
+        ProjectManager.getInstance.getDefaultProject
+      }
+      psiFile <- parseForProject[F, I](project, input)
+    } yield psiFile
+  }
 
   implicit val yaml: PsiFileParser[YAMLFile] = fromLanguage(YAMLLanguage.INSTANCE)
   implicit val cabal: PsiFileParser[CabalFile] = fromLanguage(CabalLanguage.INSTANCE)
 
-  def fromLanguage[F <: PsiFile](lang: Language)(implicit ct: ClassTag[F]): PsiFileParser[F] =
+  def fromLanguage[F <: PsiFile](lang: Language)(implicit ct: ClassTag[F]): PsiFileParser[F] = {
     (factory: PsiFileFactory, input: String) =>
       Either.catchNonFatal {
         factory.createFileFromText(lang, input)
@@ -59,6 +65,7 @@ object PsiFileParser {
             s"PsiFileParser expected ${ct.runtimeClass} but got ${x.getClass}"
           ))
       }
+  }
 
   trait Parseable[A] {
     def getInput(a: A): Either[Throwable, String]

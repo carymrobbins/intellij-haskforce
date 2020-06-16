@@ -6,7 +6,6 @@
   <description>Plugin for Haskell language support.</description>
 
   <depends>org.jetbrains.plugins.yaml</depends>
-  <depends>com.intellij.modules.externalSystem</depends>
 
 
   <!-- please see http://confluence.jetbrains.net/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
@@ -14,6 +13,9 @@
   <!-- uncomment to enable plugin in all products
   <depends>com.intellij.modules.lang</depends>
   -->
+
+  <depends>com.intellij.modules.java</depends>
+  <depends>com.intellij.modules.externalSystem</depends>
 
   <application-components>
     <!-- Add your application components here -->
@@ -200,10 +202,20 @@
     <externalIconProvider implementationClass="com.haskforce.haskell.project.externalSystem.stack.StackIconProvider"/>
     <externalSystemTaskNotificationListener implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectImportNotificationListener"/>
     <externalSystemSettingsListener implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectSettingsUpdater"/>
+    <externalSystemConfigLocator implementation="com.haskforce.haskell.project.externalSystem.stack.StackConfigLocator"/>
+<!--    <externalSystemExecutionConsoleManager-->
+<!--      implementation="com.haskforce.haskell.project.externalSystem.stack.StackExecutionConsoleManager"/>-->
+<!--    <projectImportBuilder-->
+<!--      implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectImportBuilder"/>-->
+<!--    <projectImportProvider-->
+<!--      implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectImportProvider"/>-->
+
+    <!-- TODO: REMOVE ME
     <projectImportProvider
         implementation="com.haskforce.importWizard.stack.StackProjectImportProvider"/>
     <projectImportBuilder
         implementation="com.haskforce.importWizard.stack.StackProjectImportBuilder"/>
+    -->
 
     <!-- External builder support -->
     <!-- Note that the classpath is needed for plugin deployment to export a zip archive. -->
