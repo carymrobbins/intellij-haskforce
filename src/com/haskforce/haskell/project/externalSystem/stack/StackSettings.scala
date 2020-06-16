@@ -18,6 +18,22 @@ final class StackSettings(
   ](StackTopic, project)
   with PersistentStateComponent[StackSettings.State] {
 
+  override def getLinkedProjectsSettings: util.Collection[StackProjectSettings] = {
+    // TODO: Hack?
+    val res =
+      util.Arrays.asList(
+        StackProjectSettings(
+          projectPath = project.getBasePath
+        )
+      )
+    res
+  }
+
+  override def getLinkedProjectSettings(linkedProjectPath: String): StackProjectSettings = {
+    // TODO: Do we need this?
+    null
+  }
+
   override def getState: StackSettings.State = {
     val state = new StackSettings.State
     fillState(state)

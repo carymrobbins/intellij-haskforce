@@ -4,11 +4,9 @@ import java.util
 
 import com.intellij.openapi.externalSystem.model.task.{ExternalSystemTaskId, ExternalSystemTaskNotificationListener}
 import com.intellij.openapi.externalSystem.task.ExternalSystemTaskManager
-import com.intellij.openapi.project.Project
 
-final class StackTaskManager(
-  project: Project
-) extends ExternalSystemTaskManager[StackExecutionSettings] {
+final class StackTaskManager
+  extends ExternalSystemTaskManager[StackExecutionSettings] {
 
   override def executeTasks(
     id: ExternalSystemTaskId,

@@ -7,6 +7,7 @@ import com.intellij.projectImport.ProjectImportProvider
 
 /**
  * Provides the UI for importing a Stack project.
+ * TODO: REMOVE ME
  */
 class StackProjectImportProvider(builder: StackProjectImportBuilder)
 extends ProjectImportProvider(builder) {

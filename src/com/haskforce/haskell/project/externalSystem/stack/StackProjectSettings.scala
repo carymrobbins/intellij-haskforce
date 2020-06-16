@@ -5,13 +5,16 @@ import com.intellij.openapi.externalSystem.settings.ExternalProjectSettings
 import scala.beans.BeanProperty
 
 final case class StackProjectSettings(
-  @BeanProperty var stackYamlPath: String,
-  @BeanProperty var packageConfigs: Array[PackageConfig]
+  @BeanProperty var projectPath: String
 ) extends ExternalProjectSettings {
 
   override def clone(): StackProjectSettings = {
     val res = this.copy()
     copyTo(res)
     res
+  }
+
+  override def getExternalProjectPath: String = {
+    projectPath
   }
 }

@@ -3,6 +3,7 @@ package com.haskforce.haskell.project.externalSystem.stack
 import java.io.File
 import java.util
 
+import com.haskforce.HaskForceBuildProcessParametersProvider
 import com.haskforce.settings.HaskellBuildSettings
 import com.intellij.execution.configurations.SimpleJavaParameters
 import com.intellij.ide.actions.OpenProjectFileChooserDescriptor
@@ -26,18 +27,23 @@ final class StackManager
   override def getSystemId: ProjectSystemId =
     StackManager.PROJECT_SYSTEM_ID
 
-  override val getSettingsProvider: Function[Project, StackSettings] =
-    new StackSettings(_)
+  override val getSettingsProvider: Function[Project, StackSettings] = {
+    project => {
+      new StackSettings(project)
+    }
+  }
 
-  override val getLocalSettingsProvider: Function[Project, StackLocalSettings] =
-    new StackLocalSettings(_)
+  override val getLocalSettingsProvider: Function[Project, StackLocalSettings] = {
+    project => {
+      new StackLocalSettings(project)
+    }
+  }
 
   override val getExecutionSettingsProvider: Function[
     Pair[Project, String],
     StackExecutionSettings
   ] = args => {
     val project = args.first
-    val linkedProjectPath = args.second
     val projectBuildSettings = HaskellBuildSettings.getInstance(project)
     val stackExePath = projectBuildSettings.getStackPath
     if (stackExePath == null) {
@@ -51,12 +57,7 @@ final class StackManager
         "The Haskell 'stack.yaml' path is not set"
       )
     }
-    StackExecutionSettings(
-      project = project,
-      linkedProjectPath = linkedProjectPath,
-      stackExePath = stackExePath,
-      stackYamlPath = stackYamlPath
-    )
+    StackExecutionSettingsBuilder.forProject(project).create()
   }
 
   override val getProjectResolverClass: Class[StackProjectResolver] =
@@ -68,17 +69,24 @@ final class StackManager
   override def getExternalProjectDescriptor: FileChooserDescriptor =
     new OpenProjectFileChooserDescriptor(true) // TODO: Is this right?
 
-  override def enhanceRemoteProcessing(parameters: SimpleJavaParameters): Unit = ()
+  override def enhanceRemoteProcessing(parameters: SimpleJavaParameters): Unit = {
+    val jars = (new HaskForceBuildProcessParametersProvider).getClassPath
+    parameters.getClassPath.addAll(jars)
+  }
 
   private val autoImport = StackAutoImportAware
 
   override def getAffectedExternalProjectPath(
     changedFileOrDirPath: String, project: Project
-  ): String = autoImport.getAffectedExternalProjectPath(changedFileOrDirPath, project)
+  ): String = {
+    autoImport.getAffectedExternalProjectPath(changedFileOrDirPath, project)
+  }
 
   override def getAffectedExternalProjectFiles(
     projectPath: String, project: Project
-  ): util.List[File] = autoImport.getAffectedExternalProjectFiles(projectPath, project)
+  ): util.List[File] = {
+    autoImport.getAffectedExternalProjectFiles(projectPath, project)
+  }
 }
 
 object StackManager {
