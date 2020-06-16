@@ -51,6 +51,7 @@ class StackProjectDataNodeBuilder(
     id: String,
     externalName: String
   ): ModuleData = {
+    LOG(s"ModuleData: externalName=$externalName")
     new ModuleData(
       id,
       StackManager.PROJECT_SYSTEM_ID,
@@ -64,12 +65,14 @@ class StackProjectDataNodeBuilder(
   private def mkContentRootData(
     rootPath: String
   ): ContentRootData = {
+    LOG(s"ContentRootData: rootPath=$rootPath")
     new ContentRootData(StackManager.PROJECT_SYSTEM_ID, rootPath)
   }
 
   private def mkProjectDataNode(
     rootProjectName: String
   ): DataNode[ProjectData] = {
+    LOG(s"ProjectData: rootProjectName: $rootProjectName")
     mkDataNode(
       ProjectKeys.PROJECT,
       new ProjectData(
@@ -102,50 +105,83 @@ class StackProjectDataNodeBuilder(
           )
         )
     }
-    val maybeLibModuleDataNode = maybeLib.map(lib =>
-      mkComponentModuleDataNode(
+    val maybeLibModuleDataNode = maybeLib.toList.flatMap(lib =>
+      mkComponentModuleDataNodes(
         packageDir = packageDir,
         packageConfig = packageConfig,
         component = lib
       )
     )
-    val exeModuleDataNodes = exes.map { exe =>
-      mkComponentModuleDataNode(
+    val exeModuleDataNodes = exes.flatMap { exe =>
+      mkComponentModuleDataNodes(
         packageDir = packageDir,
         packageConfig = packageConfig,
         component = exe
       )
     }
-    maybeLibModuleDataNode.toList ++ exeModuleDataNodes
+    maybeLibModuleDataNode ++ exeModuleDataNodes
   }
 
-  private def mkComponentModuleDataNode(
+  /**
+   * Creates a separate module data node per source dir.
+   * The reason we need to do this is that we can't have multiple component
+   * modules point to the same content root. For example -
+   *
+   * my-pkg:lib
+   *  - hs-source-dirs: ./src
+   * my-pkg:exe:my-exe
+   *  - hs-source-dirs: ./app
+   * my-pkg:test:my-test
+   *  - hs-source-dirs: ./test ./it
+   *
+   * For this package, we'll create the following module hierarchy -
+   *
+   * my-pkg [.]
+   *  - my-pkg:lib [./src]
+   *  - my-pkg:exe:my-exe [./app]
+   *  - my-pkg:test:my-test::test [./test]
+   *  - my-pkg:test:my-test::it [./it]
+   *
+   * It's a little weird to have multiple modules for components with multiple
+   * src dirs, but it's not entirely clear the best way to handle this in Intellij.
+   *
+   * You might be tempted to do something fancy like find the nearest ancestor
+   * directory above all of the source dirs for a component and make that the
+   * content root, but as you can see, that won't work for the example above.
+   */
+  private def mkComponentModuleDataNodes(
     packageDir: String,
     packageConfig: PackageConfig,
     component: PackageConfig.Component,
-  ): DataNode[ModuleData] = {
-    val id = mkComponentModuleId(packageConfig, component)
-    val moduleDataNode =
-      mkDataNode(
-        ProjectKeys.MODULE,
-        mkModuleData(
-          id = id,
-          externalName = id
-        )
-      )
-    val contentRootData = mkContentRootData(packageDir)
-    moduleDataNode.addChild(
-      mkDataNode(
-        ProjectKeys.CONTENT_ROOT,
-        contentRootData
-      )
-    )
-    val srcType = getComponentSourceType(component)
-    component.hsSourceDirs.foreach { relSrcDir =>
-      val canonicalSrcDir = new File(packageDir, relSrcDir).getCanonicalPath
-      contentRootData.storePath(srcType, canonicalSrcDir)
+  ): List[DataNode[ModuleData]] = {
+    val id0 = mkComponentModuleId(packageConfig, component)
+
+    // We the component only has a single src dir, we can just use
+    // the component id, e.g. 'my-pkg:lib'. Otherwise, we need
+    // to disambiguate, e.g. 'my-pkg:lib::src', 'my-package:lib::app'
+    val getId: String => String = {
+      if (component.hsSourceDirs.toSet.size == 1) {
+        (_: String) => id0
+      } else {
+        (relSrcDir: String) => s"$id0::$relSrcDir"
+      }
     }
-    moduleDataNode
+
+    val srcType = getComponentSourceType(component)
+    component.hsSourceDirs.iterator.map { relSrcDir =>
+      val moduleId = getId(relSrcDir)
+      val moduleDataNode = mkDataNode(
+        ProjectKeys.MODULE,
+        mkModuleData(id = moduleId, externalName = moduleId)
+      )
+      val canonicalSrcDir = new File(packageDir, relSrcDir).getCanonicalPath
+      val contentRootData = mkContentRootData(canonicalSrcDir)
+      contentRootData.storePath(srcType, canonicalSrcDir)
+      moduleDataNode.addChild(
+        mkDataNode(ProjectKeys.CONTENT_ROOT, contentRootData)
+      )
+      moduleDataNode
+    }.toList
   }
 
   private def mkComponentModuleId(
