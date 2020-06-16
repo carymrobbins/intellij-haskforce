@@ -4,7 +4,6 @@ import java.io.{BufferedReader, File, InputStream, InputStreamReader}
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
 
-import com.haskforce.cabal.lang.psi.CabalFile
 import com.haskforce.settings.HaskellBuildSettings
 import com.haskforce.tooling.hpack.PackageYamlQuery
 import com.haskforce.utils.PsiFileParser
@@ -26,8 +25,7 @@ class StackExecutionSettingsBuilder(
     val packageConfigAssocs = stackIterCabalFilePaths().map { path =>
       val file = new File(path)
       val packageDir = file.getParentFile.getCanonicalPath
-      val cabalFile = parseCabalFile(file)
-      val packageConfig = parsePackageConfig(path, cabalFile)
+      val packageConfig = parsePackageConfig(file)
       PackageConfigAssoc(
         packageDir = packageDir,
         packageConfig = packageConfig
@@ -114,30 +112,19 @@ class StackExecutionSettingsBuilder(
     Iterator.continually(r.readLine()).takeWhile(_ != null)
   }
 
-  private def parseCabalFile(file: File): CabalFile = {
-    PsiFileParser.parseForDefaultProject[CabalFile, File](file) match {
-      case Right(cabalFile) => cabalFile
-      case Left(e) =>
+  private def parsePackageConfig(file: File): PackageConfig = {
+    PackageConfig.fromFile(file) match {
+      case Right(Some(packageConfig)) => packageConfig
+      case Right(None) =>
         throw new StackSystemException(
-          "Failed to parse cabal file",
-          cause = e,
-          vars = List(
-            "filePath" -> file.getPath,
-          )
+          "Invalid package config file",
+          vars = List("file" -> file)
         )
-    }
-  }
-
-  private def parsePackageConfig(path: String, cabalFile: CabalFile): PackageConfig = {
-    PackageConfig.fromCabalFile(cabalFile) match {
-      case Right(packageConfig) => packageConfig
       case Left(e) =>
         throw new StackSystemException(
           "Failed to parse package config from cabal file",
           cause = e,
-          vars = List(
-            "filePath" -> path
-          )
+          vars = List("file" -> file)
         )
     }
   }
