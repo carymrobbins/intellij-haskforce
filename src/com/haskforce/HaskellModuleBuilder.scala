@@ -38,7 +38,9 @@ class HaskellModuleBuilder extends ModuleBuilder with SourcePathsBuilder with Mo
    * Hack to avoid this builder appearing in the top-level project wizard.
    * Prefer HaskellProjectTemplatesFactory
    */
-  override def isAvailable: Boolean = false
+  override def isAvailable: Boolean = {
+    false
+  }
 
   @throws(classOf[ConfigurationException])
   override def setupRootModel(rootModel: ModifiableRootModel) {
@@ -84,12 +86,16 @@ class HaskellModuleBuilder extends ModuleBuilder with SourcePathsBuilder with Mo
   /**
    * Returns the Haskell module type.
    */
-  override def getModuleType: ModuleType[_ <: ModuleBuilder] = HaskellModuleType.getInstance
+  override def getModuleType: ModuleType[_ <: ModuleBuilder] = {
+    HaskellModuleType.getInstance
+  }
 
   /**
    * Ensures that SDK type is a Haskell SDK.
    */
-  override def isSuitableSdkType(sdkType: SdkTypeId): Boolean = sdkType == HaskellSdkType.getInstance
+  override def isSuitableSdkType(sdkType: SdkTypeId): Boolean = {
+    sdkType == HaskellSdkType.getInstance
+  }
 
   /**
    * Called after module is created.
@@ -133,7 +139,9 @@ class HaskellModuleBuilder extends ModuleBuilder with SourcePathsBuilder with Mo
     ()
   }
 
-  override def getSourcePaths: util.List[Pair[String, String]] = sourcePaths
+  override def getSourcePaths: util.List[Pair[String, String]] = {
+    sourcePaths
+  }
 
   override def hashCode: Int = HashCodeBuilder.reflectionHashCode(this)
 }
