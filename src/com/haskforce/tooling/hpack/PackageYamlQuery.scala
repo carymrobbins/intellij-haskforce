@@ -7,10 +7,11 @@ import org.jetbrains.yaml.psi.YAMLFile
 /** TODO: Mostly a hack for us until we get proper package.yaml parser. */
 object PackageYamlQuery {
 
-  def getName(x: YAMLFile): Either[Throwable, String] =
-    Option(YAMLUtil.getQualifiedKeyInFile(x, "name"))
-      .map(_.getValueText)
-      .toRight(new NoSuchElementException(s"'name' field in ${x.getName}"))
+   def getName(x: YAMLFile): Either[Throwable, String] = {
+     Option(YAMLUtil.getQualifiedKeyInFile(x, "name"))
+       .map(_.getValueText)
+       .toRight(new NoSuchElementException(s"'name' field in ${x.getName}"))
+   }
 
   def getTopLevelDeps(packageYaml: PsiFile): Option[List[String]] = {
     val res =

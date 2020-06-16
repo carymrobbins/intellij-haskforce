@@ -23,6 +23,7 @@ import scala.collection.JavaConverters._
 
 /**
  * Imports a Stack project and configures modules from the stack.yaml file.
+ * TODO: REMOVE ME
  */
 class StackProjectImportBuilder extends ProjectImportBuilder[StackYaml.Package] {
   override def getName: String = "Stack"
