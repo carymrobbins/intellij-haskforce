@@ -16,10 +16,29 @@ final case class PackageConfig(
 
 object PackageConfig {
 
-  def fromCabalFile(cabalFile: CabalFile): Either[Throwable, PackageConfig] = {
+  def fromFile(file: File): Either[Throwable, Option[PackageConfig]] = {
+    val name = file.getName
+    if (!name.endsWith(".cabal")) return Right(None)
+    val packageName = name.stripSuffix(".cabal")
+    for {
+      cabalFile <- PsiFileParser.parseForDefaultProject[CabalFile, File](file)
+      packageConfig <- fromCabalFile(
+        packageName = packageName,
+        cabalFile = cabalFile
+      )
+    } yield Option(packageConfig)
+  }
+
+  // NOTE: We can't depend on 'getName' or 'getVirtualFile' of 'cabalFile' here
+  // because the 'cabalFile' was parsed via text, so it has no name or file
+  // path; thus, we explicitly supply the 'packageName' here.
+  private def fromCabalFile(
+    packageName: String,
+    cabalFile: CabalFile
+  ): Either[Throwable, PackageConfig] = {
     Either.catchNonFatal {
       fromCabalQuery(
-        packageName = cabalFile.getName.split('.').head,
+        packageName = packageName,
         q = new CabalQuery(SPsiFile(cabalFile))
       ).run(ApplicationManager.getApplication)
     }
@@ -36,17 +55,6 @@ object PackageConfig {
       packageName,
       components
     )
-  }
-
-  def fromFile(file: File): Either[Throwable, Option[PackageConfig]] = {
-    file.getName match {
-      case name if name.endsWith(".cabal") =>
-        PsiFileParser.parseForDefaultProject[CabalFile, File](file)
-          .flatMap(fromCabalFile)
-          .map(Option.apply)
-      case _ =>
-        Right(None)
-    }
   }
 
   private def mkComponent(

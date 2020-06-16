@@ -7,6 +7,7 @@ import java.nio.file.{Files, Path}
 import com.haskforce.cabal.CabalLanguage
 import com.haskforce.cabal.lang.psi.CabalFile
 import com.intellij.lang.Language
+import com.intellij.openapi.application.ReadAction
 import com.intellij.openapi.project.{Project, ProjectManager}
 import com.intellij.psi.{PsiFile, PsiFileFactory}
 import org.jetbrains.yaml.YAMLLanguage
@@ -57,7 +58,7 @@ object PsiFileParser {
   def fromLanguage[F <: PsiFile](lang: Language)(implicit ct: ClassTag[F]): PsiFileParser[F] = {
     (factory: PsiFileFactory, input: String) =>
       Either.catchNonFatal {
-        factory.createFileFromText(lang, input)
+        ReadAction.compute(() => factory.createFileFromText(lang, input))
       }.flatMap {
         case ct(psiFile) => Right(psiFile)
         case x =>
