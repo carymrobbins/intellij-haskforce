@@ -23,6 +23,19 @@ class StackProjectDataNodeBuilder(
     val projectDataNode = mkProjectDataNode(
       rootProjectName = settings.rootProjectName
     )
+    if (!hasRootPackageConfig()) {
+      val projectModuleDataNode = mkDataNode(
+        ProjectKeys.MODULE,
+        mkModuleData(s"${settings.rootProjectName}:project")
+      )
+      projectModuleDataNode.addChild(
+        mkDataNode(
+          ProjectKeys.CONTENT_ROOT,
+          mkContentRootData(settings.linkedProjectPath)
+        )
+      )
+      projectDataNode.addChild(projectModuleDataNode)
+    }
     settings.packageConfigAssocs.foreach { assoc =>
       LOG(s"packageConfigAssoc=$assoc")
       mkModuleDataNodes(
@@ -33,6 +46,13 @@ class StackProjectDataNodeBuilder(
       }
     }
     projectDataNode
+  }
+
+  private def hasRootPackageConfig(): Boolean = {
+    val canonicalProjectPath = new File(projectPath).getCanonicalPath
+    settings.packageConfigAssocs.exists(assoc =>
+      new File(assoc.packageDir).getCanonicalPath == canonicalProjectPath
+    )
   }
 
   /**
@@ -48,15 +68,14 @@ class StackProjectDataNodeBuilder(
   }
 
   private def mkModuleData(
-    id: String,
-    externalName: String
+    id: String
   ): ModuleData = {
-    LOG(s"ModuleData: externalName=$externalName")
+    LOG(s"ModuleData: id=$id")
     new ModuleData(
       id,
       StackManager.PROJECT_SYSTEM_ID,
       HaskellModuleType.MODULE_TYPE_ID,
-      externalName,
+      id,
       projectPath,
       projectPath
     )
@@ -88,6 +107,22 @@ class StackProjectDataNodeBuilder(
     packageDir: String,
     packageConfig: PackageConfig
   ): List[DataNode[ModuleData]] = {
+    val packageModuleDataNode = mkDataNode(
+      ProjectKeys.MODULE,
+      mkModuleData(s"${packageConfig.name}:package")
+    )
+    val packageModuleContentRootData = mkContentRootData(packageDir)
+    packageModuleDataNode.addChild(
+      mkDataNode(ProjectKeys.CONTENT_ROOT, packageModuleContentRootData)
+    )
+    packageModuleContentRootData.storePath(
+      ExternalSystemSourceType.EXCLUDED,
+      new File(packageDir, "dist").getCanonicalPath
+    )
+    packageModuleContentRootData.storePath(
+      ExternalSystemSourceType.EXCLUDED,
+      new File(packageDir, ".stack-work").getCanonicalPath
+    )
     // Note that 'exes' here consists of exe, test, and/or bench.
     val (libs, exes) = packageConfig.components.partition(
       _.typ == PackageConfig.Component.Type.Library
@@ -119,7 +154,7 @@ class StackProjectDataNodeBuilder(
         component = exe
       )
     }
-    maybeLibModuleDataNode ++ exeModuleDataNodes
+    List(packageModuleDataNode) ++ maybeLibModuleDataNode ++ exeModuleDataNodes
   }
 
   /**
@@ -169,10 +204,9 @@ class StackProjectDataNodeBuilder(
 
     val srcType = getComponentSourceType(component)
     component.hsSourceDirs.iterator.map { relSrcDir =>
-      val moduleId = getId(relSrcDir)
       val moduleDataNode = mkDataNode(
         ProjectKeys.MODULE,
-        mkModuleData(id = moduleId, externalName = moduleId)
+        mkModuleData(getId(relSrcDir))
       )
       val canonicalSrcDir = new File(packageDir, relSrcDir).getCanonicalPath
       val contentRootData = mkContentRootData(canonicalSrcDir)
@@ -195,8 +229,7 @@ class StackProjectDataNodeBuilder(
         s"${packageConfig.name}:exe:${component.name}"
       case PackageConfig.Component.Type.TestSuite =>
         s"${packageConfig.name}:test:${component.name}"
-      case PackageConfig.Component.Type.Benchmark =>
-        s"${packageConfig.name}:bench:${component.name}"
+      case PackageConfig.Component.Type.Benchmark => s"${packageConfig.name}:bench:${component.name}"
     }
   }
 

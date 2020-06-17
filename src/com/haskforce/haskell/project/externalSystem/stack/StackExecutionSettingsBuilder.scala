@@ -8,16 +8,21 @@ import com.haskforce.settings.HaskellBuildSettings
 import com.haskforce.tooling.hpack.PackageYamlQuery
 import com.haskforce.utils.PsiFileParser
 import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
 import org.apache.commons.io.IOUtils
 import org.jetbrains.yaml.psi.YAMLFile
 import prelude._
+
+import scala.util.control.NonFatal
 
 class StackExecutionSettingsBuilder(
   projectPath: String,
   stackExePath: String,
   stackYamlPath: String
 ) {
+
+  import StackExecutionSettingsBuilder._
 
   def create(): StackExecutionSettings = {
     stackRegenCabalFiles()
@@ -48,28 +53,46 @@ class StackExecutionSettingsBuilder(
     c.setWorkDirectory(projectPath)
     val p = c.createProcess()
     val timedOut = !p.waitFor(
-      StackExecutionSettingsBuilder.STACK_REGEN_CABAL_FILE_TIMEOUT_MILLIS,
+      STACK_REGEN_CABAL_FILE_TIMEOUT_MILLIS,
       TimeUnit.MILLISECONDS
     )
     if (timedOut) {
-      throw new StackSystemException(
-        "Regenerating cabal files via 'stack' failed to complete within timeout",
-        vars = List(
-          "timeoutMillis" -> StackExecutionSettingsBuilder.STACK_REGEN_CABAL_FILE_TIMEOUT_MILLIS,
-          "commandLine" -> c.getCommandLineString,
+      LOG.warn(
+        new StackSystemException(
+          "Regenerating cabal files via 'stack' failed to complete within timeout",
+          vars = List(
+            "timeoutMillis" -> STACK_REGEN_CABAL_FILE_TIMEOUT_MILLIS,
+            "commandLine" -> c.getCommandLineString,
+            "workDir" -> projectPath,
+          )
+        )
+      )
+    } else if (p.exitValue() != 0) {
+      val out: String = readInputStreamToStringOrFallback(p.getInputStream)
+      val err: String = readInputStreamToStringOrFallback(p.getErrorStream)
+      LOG.warn(
+        new StackSystemException(
+          "Failed to regenerate cabal files via 'stack'",
+          vars = List(
+            "exitCode" -> p.exitValue(),
+            "commandLine" -> c.getCommandLineString,
+            "workDir" -> projectPath,
+            "stdout" -> s"{\n$out\n}",
+            "stderr" -> s"{\n$err\n}",
+          )
         )
       )
     }
-    if (p.exitValue() != 0) {
-      val err = IOUtils.toString(p.getErrorStream, StandardCharsets.UTF_8)
-      throw new StackSystemException(
-        "Failed to regenerate cabal files via 'stack'",
-        vars = List(
-          "exitCode" -> p.exitValue(),
-          "commandLine" -> c.getCommandLineString,
-          "stderr" -> err,
-        )
-      )
+  }
+
+  private def readInputStreamToStringOrFallback(
+    is: InputStream,
+    fallback: String = "?"
+  ): String = {
+    try {
+      IOUtils.toString(is, StandardCharsets.UTF_8)
+    } catch {
+      case NonFatal(_) => fallback
     }
   }
 
@@ -81,14 +104,14 @@ class StackExecutionSettingsBuilder(
     c.setWorkDirectory(projectPath)
     val p = c.createProcess()
     val timedOut = !p.waitFor(
-      StackExecutionSettingsBuilder.STACK_GET_CABAL_FILES_TIMEOUT_MILLIS,
+      STACK_GET_CABAL_FILES_TIMEOUT_MILLIS,
       TimeUnit.MILLISECONDS
     )
     if (timedOut) {
       throw new StackSystemException(
         "Getting cabal files via 'stack' failed to complete within timeout",
         vars = List(
-          "timeoutMillis" -> StackExecutionSettingsBuilder.STACK_GET_CABAL_FILES_TIMEOUT_MILLIS,
+          "timeoutMillis" -> STACK_GET_CABAL_FILES_TIMEOUT_MILLIS,
           "commandLine" -> c.getCommandLineString,
         )
       )
@@ -159,9 +182,11 @@ class StackExecutionSettingsBuilder(
 
 object StackExecutionSettingsBuilder {
 
-  // 5 seconds should be plenty long enough.
-  private val STACK_REGEN_CABAL_FILE_TIMEOUT_MILLIS: Long = 5000
-  private val STACK_GET_CABAL_FILES_TIMEOUT_MILLIS: Long = 5000
+  // 10 seconds should be plenty long enough.
+  private val STACK_REGEN_CABAL_FILE_TIMEOUT_MILLIS: Long = 10000
+  private val STACK_GET_CABAL_FILES_TIMEOUT_MILLIS: Long = 10000
+
+  private val LOG = Logger.getInstance(classOf[StackExecutionSettingsBuilder])
 
   def forProject(project: Project): StackExecutionSettingsBuilder = {
     val projectPath = Option(project.getBasePath).getOrElse(
