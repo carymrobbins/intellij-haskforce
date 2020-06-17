@@ -19,19 +19,20 @@ final class StackSettings(
   with PersistentStateComponent[StackSettings.State] {
 
   override def getLinkedProjectsSettings: util.Collection[StackProjectSettings] = {
-    // TODO: Hack?
-    val res =
-      util.Arrays.asList(
-        StackProjectSettings(
-          projectPath = project.getBasePath
-        )
-      )
-    res
+    util.Collections.singleton(
+      getStackProjectSettings()
+    )
   }
 
   override def getLinkedProjectSettings(linkedProjectPath: String): StackProjectSettings = {
-    // TODO: Do we need this?
-    null
+    // TODO: We're ignoring the linkedProjectPath; is this ok?
+    getStackProjectSettings()
+  }
+
+  private def getStackProjectSettings(): StackProjectSettings = {
+    StackProjectSettings(
+      StackExecutionSettingsBuilder.forProject(project).create()
+    )
   }
 
   override def getState: StackSettings.State = {
@@ -63,7 +64,10 @@ final class StackSettings(
     )
   }
 
-  override def copyExtraSettingsFrom(settings: StackSettings): Unit = {}
+  override def copyExtraSettingsFrom(settings: StackSettings): Unit = {
+    // TODO: Impl?
+    ()
+  }
 
   override def checkSettings(
     old: StackProjectSettings,
@@ -93,7 +97,7 @@ object StackSettings {
     }
 
     override def setLinkedExternalProjectsSettings(settings: util.Set[StackProjectSettings]): Unit = {
-      linkedProjectSettings.addAll(settings)
+      if (settings != null) linkedProjectSettings.addAll(settings)
       ()
     }
   }

@@ -5,7 +5,8 @@ import com.intellij.openapi.externalSystem.settings.ExternalProjectSettings
 import scala.beans.BeanProperty
 
 final case class StackProjectSettings(
-  @BeanProperty var projectPath: String
+  // TODO: This is a hack
+  @BeanProperty var executionSettings: StackExecutionSettings
 ) extends ExternalProjectSettings {
 
   override def clone(): StackProjectSettings = {
@@ -15,6 +16,6 @@ final case class StackProjectSettings(
   }
 
   override def getExternalProjectPath: String = {
-    projectPath
+    executionSettings.linkedProjectPath
   }
 }
