@@ -28,22 +28,28 @@ class StackProjectDataNodeBuilder(
         ProjectKeys.MODULE,
         mkModuleData(s"${settings.rootProjectName}:project")
       )
+      val projectModuleContentRootData = mkContentRootData(settings.linkedProjectPath)
+      projectModuleContentRootData.storePath(
+        ExternalSystemSourceType.EXCLUDED,
+        new File(settings.linkedProjectPath, ".stack-work").getCanonicalPath
+      )
+      projectModuleContentRootData.storePath(
+        ExternalSystemSourceType.EXCLUDED,
+        new File(settings.linkedProjectPath, "dist").getCanonicalPath
+      )
       projectModuleDataNode.addChild(
-        mkDataNode(
-          ProjectKeys.CONTENT_ROOT,
-          mkContentRootData(settings.linkedProjectPath)
-        )
+        mkDataNode(ProjectKeys.CONTENT_ROOT, projectModuleContentRootData)
       )
       projectDataNode.addChild(projectModuleDataNode)
     }
     settings.packageConfigAssocs.foreach { assoc =>
       LOG(s"packageConfigAssoc=$assoc")
-      mkModuleDataNodes(
-        packageDir = assoc.packageDir,
-        packageConfig = assoc.packageConfig,
-      ).foreach { moduleDataNode =>
-        projectDataNode.addChild(moduleDataNode)
-      }
+      projectDataNode.addChild(
+        mkPackageModuleDataNode(
+          packageDir = assoc.packageDir,
+          packageConfig = assoc.packageConfig,
+        )
+      )
     }
     projectDataNode
   }
@@ -103,13 +109,13 @@ class StackProjectDataNodeBuilder(
     )
   }
 
-  private def mkModuleDataNodes(
+  private def mkPackageModuleDataNode(
     packageDir: String,
     packageConfig: PackageConfig
-  ): List[DataNode[ModuleData]] = {
+  ): DataNode[ModuleData] = {
     val packageModuleDataNode = mkDataNode(
       ProjectKeys.MODULE,
-      mkModuleData(s"${packageConfig.name}:package")
+      mkModuleData(packageConfig.name)
     )
     val packageModuleContentRootData = mkContentRootData(packageDir)
     packageModuleDataNode.addChild(
@@ -123,114 +129,15 @@ class StackProjectDataNodeBuilder(
       ExternalSystemSourceType.EXCLUDED,
       new File(packageDir, ".stack-work").getCanonicalPath
     )
-    // Note that 'exes' here consists of exe, test, and/or bench.
-    val (libs, exes) = packageConfig.components.partition(
-      _.typ == PackageConfig.Component.Type.Library
-    )
-    val maybeLib = libs match {
-      case Nil => None
-      case List(lib) => Some(lib)
-      case _ =>
-        throw new StackSystemException(
-          "Too many 'library' components for package",
-          vars = List(
-            "libraryCount" -> libs.length,
-            "packageConfig" -> packageConfig.name,
-            "packageDir" -> packageDir,
-          )
+    packageConfig.components.foreach { component =>
+      component.hsSourceDirs.foreach { relSrcDir =>
+        packageModuleContentRootData.storePath(
+          getComponentSourceType(component),
+          new File(packageDir, relSrcDir).getCanonicalPath
         )
-    }
-    val maybeLibModuleDataNode = maybeLib.toList.flatMap(lib =>
-      mkComponentModuleDataNodes(
-        packageDir = packageDir,
-        packageConfig = packageConfig,
-        component = lib
-      )
-    )
-    val exeModuleDataNodes = exes.flatMap { exe =>
-      mkComponentModuleDataNodes(
-        packageDir = packageDir,
-        packageConfig = packageConfig,
-        component = exe
-      )
-    }
-    List(packageModuleDataNode) ++ maybeLibModuleDataNode ++ exeModuleDataNodes
-  }
-
-  /**
-   * Creates a separate module data node per source dir.
-   * The reason we need to do this is that we can't have multiple component
-   * modules point to the same content root. For example -
-   *
-   * my-pkg:lib
-   *  - hs-source-dirs: ./src
-   * my-pkg:exe:my-exe
-   *  - hs-source-dirs: ./app
-   * my-pkg:test:my-test
-   *  - hs-source-dirs: ./test ./it
-   *
-   * For this package, we'll create the following module hierarchy -
-   *
-   * my-pkg [.]
-   *  - my-pkg:lib [./src]
-   *  - my-pkg:exe:my-exe [./app]
-   *  - my-pkg:test:my-test::test [./test]
-   *  - my-pkg:test:my-test::it [./it]
-   *
-   * It's a little weird to have multiple modules for components with multiple
-   * src dirs, but it's not entirely clear the best way to handle this in Intellij.
-   *
-   * You might be tempted to do something fancy like find the nearest ancestor
-   * directory above all of the source dirs for a component and make that the
-   * content root, but as you can see, that won't work for the example above.
-   */
-  private def mkComponentModuleDataNodes(
-    packageDir: String,
-    packageConfig: PackageConfig,
-    component: PackageConfig.Component,
-  ): List[DataNode[ModuleData]] = {
-    val id0 = mkComponentModuleId(packageConfig, component)
-
-    // We the component only has a single src dir, we can just use
-    // the component id, e.g. 'my-pkg:lib'. Otherwise, we need
-    // to disambiguate, e.g. 'my-pkg:lib::src', 'my-package:lib::app'
-    val getId: String => String = {
-      if (component.hsSourceDirs.toSet.size == 1) {
-        (_: String) => id0
-      } else {
-        (relSrcDir: String) => s"$id0::$relSrcDir"
       }
     }
-
-    val srcType = getComponentSourceType(component)
-    component.hsSourceDirs.iterator.map { relSrcDir =>
-      val moduleDataNode = mkDataNode(
-        ProjectKeys.MODULE,
-        mkModuleData(getId(relSrcDir))
-      )
-      val canonicalSrcDir = new File(packageDir, relSrcDir).getCanonicalPath
-      val contentRootData = mkContentRootData(canonicalSrcDir)
-      contentRootData.storePath(srcType, canonicalSrcDir)
-      moduleDataNode.addChild(
-        mkDataNode(ProjectKeys.CONTENT_ROOT, contentRootData)
-      )
-      moduleDataNode
-    }.toList
-  }
-
-  private def mkComponentModuleId(
-    packageConfig: PackageConfig,
-    component: PackageConfig.Component
-  ): String = {
-    component.typ match {
-      case PackageConfig.Component.Type.Library =>
-        s"${packageConfig.name}:lib"
-      case PackageConfig.Component.Type.Executable =>
-        s"${packageConfig.name}:exe:${component.name}"
-      case PackageConfig.Component.Type.TestSuite =>
-        s"${packageConfig.name}:test:${component.name}"
-      case PackageConfig.Component.Type.Benchmark => s"${packageConfig.name}:bench:${component.name}"
-    }
+    packageModuleDataNode
   }
 
   private def getComponentSourceType(
