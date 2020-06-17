@@ -24,8 +24,9 @@ final class StackManager
   ]
   with ExternalSystemAutoImportAware {
 
-  override def getSystemId: ProjectSystemId =
+  override def getSystemId: ProjectSystemId = {
     StackManager.PROJECT_SYSTEM_ID
+  }
 
   override val getSettingsProvider: Function[Project, StackSettings] = {
     project => {
@@ -60,11 +61,13 @@ final class StackManager
     StackExecutionSettingsBuilder.forProject(project).create()
   }
 
-  override val getProjectResolverClass: Class[StackProjectResolver] =
+  override val getProjectResolverClass: Class[StackProjectResolver] = {
     classOf[StackProjectResolver]
+  }
 
-  override def getTaskManagerClass: Class[StackTaskManager] =
+  override def getTaskManagerClass: Class[StackTaskManager] = {
     classOf[StackTaskManager]
+  }
 
   override def getExternalProjectDescriptor: FileChooserDescriptor =
     new OpenProjectFileChooserDescriptor(true) // TODO: Is this right?
@@ -89,5 +92,5 @@ final class StackManager
 }
 
 object StackManager {
-  val PROJECT_SYSTEM_ID = new ProjectSystemId("HASKELL_STACK")
+  val PROJECT_SYSTEM_ID = new ProjectSystemId("HASKELL_STACK", "Stack")
 }
