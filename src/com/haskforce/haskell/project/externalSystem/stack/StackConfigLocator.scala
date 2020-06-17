@@ -1,6 +1,7 @@
 package com.haskforce.haskell.project.externalSystem.stack
 
 import java.util
+import java.util.regex.Pattern
 
 import com.intellij.openapi.externalSystem.model.ProjectSystemId
 import com.intellij.openapi.externalSystem.service.settings.ExternalSystemConfigLocator
@@ -29,17 +30,26 @@ class StackConfigLocator extends ExternalSystemConfigLocator {
     // TODO: This is a guess, I have no idea.
     val res = new util.ArrayList[VirtualFile]()
     val localFileSystem = LocalFileSystem.getInstance()
-    val configFiles = Set("package.yaml", "stack.yaml")
+
     externalProjectSettings.getModules.forEach { path =>
       val vFile = localFileSystem.refreshAndFindFileByPath(path)
       if (vFile != null) {
         vFile.getChildren.foreach { child =>
-          if (!child.isDirectory && configFiles.contains(child.getName)) {
+          if (StackConfigLocator.isPossibleConfigFile(child)) {
             res.add(child)
           }
         }
       }
     }
     res
+  }
+}
+
+object StackConfigLocator {
+
+  private val configFileRegex = Pattern.compile("^(package\\.yaml|stack\\.yaml|.*\\.cabal)$")
+
+  private def isPossibleConfigFile(vFile: VirtualFile): Boolean = {
+    !vFile.isDirectory && configFileRegex.matcher(vFile.getName).matches()
   }
 }
