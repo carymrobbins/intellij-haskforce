@@ -196,18 +196,36 @@ object StackExecutionSettingsBuilder {
       )
     )
     val haskellBuildSettings = HaskellBuildSettings.getInstance(project)
-    val stackExePath = Option(haskellBuildSettings.getStackPath).getOrElse(
-      throw new StackSystemException(
-        "Missing haskell build setting for stack exe path",
-        vars = List("project" -> project)
-      )
-    )
-    val stackYamlPath = Option(haskellBuildSettings.getStackFile).getOrElse(
-      throw new StackSystemException(
-        "Missing Haskell build setting for stack.yaml path",
-        vars = List("project" -> project)
-      )
-    )
+    val stackExePath =
+      Option(haskellBuildSettings.getStackPath)
+        .filter(_.nonEmpty)
+        .orElse {
+          //TODO
+          //try {
+          //  Option(ExecUtil.locateExecutableByGuessing("stack"))
+          //} catch {
+          //  case NonFatal(_) => None
+          //}
+          Some("stack")
+        }.getOrElse {
+          throw new StackSystemException(
+            "Missing haskell build setting for stack exe path",
+            vars = List("project" -> project)
+          )
+        }
+    val stackYamlPath =
+      Option(haskellBuildSettings.getStackFile)
+        .filter(_.nonEmpty)
+        .orElse {
+          Option(new File(projectPath, "stack.yaml"))
+            .filter(f => f.exists() && !f.isDirectory)
+            .map(_.getCanonicalPath)
+        }.getOrElse {
+          throw new StackSystemException(
+            "Missing Haskell build setting for stack.yaml path",
+            vars = List("project" -> project)
+          )
+        }
     new StackExecutionSettingsBuilder(
       projectPath = projectPath,
       stackExePath = stackExePath,

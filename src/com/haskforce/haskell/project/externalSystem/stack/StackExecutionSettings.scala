@@ -9,5 +9,21 @@ final case class StackExecutionSettings(
   stackExePath: String,
   stackYamlPath: String,
   rootProjectName: String,
+  // TODO: Does this need to be Array? List or Vector would be nice to
+  // get a derived equals() method.
   packageConfigAssocs: Array[PackageConfigAssoc]
-) extends ExternalSystemExecutionSettings
+) extends ExternalSystemExecutionSettings {
+
+  override def equals(o: Any): Boolean = {
+    o match {
+      case x: StackExecutionSettings =>
+        (
+          linkedProjectPath == x.linkedProjectPath
+            && stackExePath == x.stackExePath
+            && stackYamlPath == x.stackYamlPath
+            && rootProjectName == x.rootProjectName
+            && packageConfigAssocs.toVector == x.packageConfigAssocs.toVector
+        )
+    }
+  }
+}

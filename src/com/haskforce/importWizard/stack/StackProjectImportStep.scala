@@ -1,9 +1,9 @@
 package com.haskforce.importWizard.stack
 
 import prelude._
-
 import java.awt.GridBagLayout
 import java.io.File
+
 import javax.swing._
 import java.util
 
@@ -15,7 +15,9 @@ import com.haskforce.HaskellModuleType
 import com.haskforce.cabal.completion.CabalFileFinder
 import com.haskforce.settings.HaskellBuildSettings
 import com.haskforce.ui.GC
-import com.haskforce.utils.GuiUtil
+import com.haskforce.utils.{ExecUtil, GuiUtil}
+
+import scala.util.control.NonFatal
 
 /**
  * Initial UI for user to set the stack executable and stack.yaml via the import wizard.
@@ -79,7 +81,7 @@ extends ProjectImportWizardStep(context) {
     }.asJava
   }
 
-  private def setError(label: JLabel, err: String) = {
+  private def setError(label: JLabel, err: String): Unit = {
     label.setText(s"<html><p style='color: red'>$err</p></html>")
   }
 
@@ -127,7 +129,31 @@ extends ProjectImportWizardStep(context) {
   }
 
   override def updateStep(): Unit = {
-    stackPathField.setText(parameters.stackPath.getOrElse(defaultBuildSettings.guessStackPath()))
-    stackYamlField.setText(parameters.stackYamlPath.getOrElse(builder.getFileToImport))
+    stackPathOrGuess().foreach { stackPath =>
+      stackPathField.setText(stackPath)
+    }
+    stackYamlOrImportFile().foreach { stackYaml =>
+      stackYamlField.setText(stackYaml)
+    }
+  }
+
+  private def stackPathOrGuess(): Option[String] = {
+    parameters.stackPath.orElse {
+      Option(defaultBuildSettings.getStackPath)
+    }.orElse {
+      try {
+        Option(ExecUtil.locateExecutableByGuessing("stack"))
+      } catch {
+        case NonFatal(_) => None
+      }
+    }
+  }
+
+  private def stackYamlOrImportFile(): Option[String] = {
+    parameters.stackYamlPath.orElse {
+      Option(defaultBuildSettings.getStackFile)
+    }.orElse {
+      Option(builder.getFileToImport)
+    }
   }
 }
