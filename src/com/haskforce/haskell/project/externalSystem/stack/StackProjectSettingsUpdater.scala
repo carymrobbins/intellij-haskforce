@@ -13,6 +13,7 @@ class StackProjectSettingsUpdater extends ExternalSystemSettingsListenerEx {
     manager: ExternalSystemManager[_, _, _, _, _],
     settings: util.Collection[_ <: ExternalProjectSettings]
   ): Unit = {
+    println("StackProjectSettingsUpdater.onProjectsLinked")
     throw new NotImplementedError("StackProjectSettingsUpdater.onProjectsLinked")
   }
 
@@ -21,6 +22,7 @@ class StackProjectSettingsUpdater extends ExternalSystemSettingsListenerEx {
     manager: ExternalSystemManager[_, _, _, _, _],
     settings: util.Collection[_ <: ExternalProjectSettings]
   ): Unit = {
+    println("StackProjectSettingsUpdater.onProjectsLoaded")
     throw new NotImplementedError("StackProjectSettingsUpdater.onProjectsLoaded")
   }
 
@@ -29,6 +31,7 @@ class StackProjectSettingsUpdater extends ExternalSystemSettingsListenerEx {
     manager: ExternalSystemManager[_, _, _, _, _],
     linkedProjectPaths: util.Set[String]
   ): Unit = {
+    println("StackProjectSettingsUpdater.onProjectsUnlinked")
     throw new NotImplementedError("StackProjectSettingsUpdater.onProjectsUnlinked")
   }
 }
