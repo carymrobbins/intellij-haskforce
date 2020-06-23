@@ -202,12 +202,20 @@
       implementation="com.haskforce.haskell.roots.HaskellDirectoryIndexExcludePolicy"/>
 
     <!-- Stack support -->
+    <registryKey
+      key="HASKELL_STACK.system.in.process"
+      defaultValue="true"
+      restartRequired="true"
+      description="Whether IDE should use 'in-process' mode for the Haskell Stack external system"
+    />
+    <projectOpenProcessor implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectOpenProcessor"/>
     <externalSystemManager implementation="com.haskforce.haskell.project.externalSystem.stack.StackManager"/>
     <externalIconProvider key="HASKELL_STACK" implementationClass="com.haskforce.haskell.project.externalSystem.stack.StackIconProvider"/>
     <externalSystemTaskNotificationListener implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectImportNotificationListener"/>
-    <externalSystemSettingsListener implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectSettingsUpdater"/>
-    <externalSystemConfigLocator implementation="com.haskforce.haskell.project.externalSystem.stack.StackConfigLocator"/>
-    <projectService serviceImplementation="com.haskforce.haskell.project.externalSystem.stack.StackSettings"/>
+<!--    <externalSystemSettingsListener implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectSettingsUpdater"/>-->
+<!--    <externalSystemConfigLocator implementation="com.haskforce.haskell.project.externalSystem.stack.StackConfigLocator"/>-->
+<!--    <projectService serviceImplementation="com.haskforce.haskell.project.externalSystem.stack.StackSettings"/>-->
+
 <!--    <externalSystemExecutionConsoleManager-->
 <!--      implementation="com.haskforce.haskell.project.externalSystem.stack.StackExecutionConsoleManager"/>-->
 <!--    <projectImportBuilder-->

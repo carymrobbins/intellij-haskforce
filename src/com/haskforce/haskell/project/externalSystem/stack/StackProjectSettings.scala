@@ -2,11 +2,8 @@ package com.haskforce.haskell.project.externalSystem.stack
 
 import com.intellij.openapi.externalSystem.settings.ExternalProjectSettings
 
-import scala.beans.BeanProperty
-
 final case class StackProjectSettings(
-  // TODO: This is a hack
-  @BeanProperty var executionSettings: StackExecutionSettings
+  var executionSettings: StackExecutionSettings
 ) extends ExternalProjectSettings {
 
   override def clone(): StackProjectSettings = {
@@ -17,5 +14,11 @@ final case class StackProjectSettings(
 
   override def getExternalProjectPath: String = {
     executionSettings.linkedProjectPath
+  }
+
+  override def setExternalProjectPath(externalProjectPath: String): Unit = {
+    this.executionSettings = this.executionSettings.copy(
+      linkedProjectPath = externalProjectPath
+    )
   }
 }
