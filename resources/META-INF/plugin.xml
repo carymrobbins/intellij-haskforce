@@ -216,20 +216,8 @@
     <externalSystemTaskNotificationListener implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectImportNotificationListener"/>
     <projectService serviceImplementation="com.haskforce.haskell.project.externalSystem.stack.StackSettings"/>
     <projectService serviceImplementation="com.haskforce.haskell.project.externalSystem.stack.StackLocalSettings"/>
-
-<!--    <externalSystemExecutionConsoleManager-->
-<!--      implementation="com.haskforce.haskell.project.externalSystem.stack.StackExecutionConsoleManager"/>-->
-<!--    <projectImportBuilder-->
-<!--      implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectImportBuilder"/>-->
-<!--    <projectImportProvider-->
-<!--      implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectImportProvider"/>-->
-
-    <!-- TODO: REMOVE ME
-    <projectImportProvider
-        implementation="com.haskforce.importWizard.stack.StackProjectImportProvider"/>
-    <projectImportBuilder
-        implementation="com.haskforce.importWizard.stack.StackProjectImportBuilder"/>
-    -->
+    <projectImportBuilder implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectImportBuilder"/>
+    <projectImportProvider implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectImportProvider"/>
 
     <!-- External builder support -->
     <!-- Note that the classpath is needed for plugin deployment to export a zip archive. -->
