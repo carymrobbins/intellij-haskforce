@@ -14,7 +14,7 @@ import javax.swing.Icon
 class StackProjectImportBuilder extends
     AbstractExternalProjectImportBuilder[StackSettingsControl](
       ProjectDataManager.getInstance(),
-      () => StackSettingsControl.default,
+      () => StackSettingsControl.forDefaultProject(),
       StackManager.PROJECT_SYSTEM_ID
     ) {
 
@@ -26,16 +26,12 @@ class StackProjectImportBuilder extends
     getControl(context.getProject).setLinkedProjectPath(getFileToImport)
   }
 
-  override def beforeCommit(dataNode: DataNode[ProjectData], project: Project): Unit = {
-    ()
-  }
+  override def beforeCommit(dataNode: DataNode[ProjectData], project: Project): Unit = {}
 
   override def getExternalProjectConfigToUse(file: File): File = {
     // TODO: The 'stack.yaml' should be configurable...somehow?
     file.listFiles(_.getName == "stack.yaml").headOption.orNull
   }
 
-  override def applyExtraSettings(context: WizardContext): Unit = {
-    ()
-  }
+  override def applyExtraSettings(context: WizardContext): Unit = {}
 }
