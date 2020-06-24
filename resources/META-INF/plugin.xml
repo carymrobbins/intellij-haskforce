@@ -598,8 +598,6 @@
     <externalSystemManager implementation="com.haskforce.haskell.project.externalSystem.stack.StackManager"/>
     <externalIconProvider key="HASKELL_STACK" implementationClass="com.haskforce.haskell.project.externalSystem.stack.StackIconProvider"/>
     <externalSystemTaskNotificationListener implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectImportNotificationListener"/>
-<!--    <externalSystemSettingsListener implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectSettingsUpdater"/>-->
-<!--    <externalSystemConfigLocator implementation="com.haskforce.haskell.project.externalSystem.stack.StackConfigLocator"/>-->
     <projectService serviceImplementation="com.haskforce.haskell.project.externalSystem.stack.StackSettings"/>
     <projectService serviceImplementation="com.haskforce.haskell.project.externalSystem.stack.StackLocalSettings"/>
 
