@@ -1,6 +1,7 @@
 package com.haskforce.haskell.project.externalSystem.stack
 
 import java.io.File
+import java.nio.file.{Files, Paths}
 import java.util
 
 import com.haskforce.settings.HaskellBuildSettings
@@ -43,12 +44,23 @@ object StackAutoImportAware extends ExternalSystemAutoImportAware {
     projectPath: String,
     project: Project
   ): util.List[File] = {
-    // TODO: Hack?
-    util.Arrays.asList(
-      List(
-        Option(new File(projectPath, "stack.yaml")),
-        Option(HaskellBuildSettings.getInstance(project).getStackFile).map(new File(_))
-      ).flatten[File].filter(_.exists()): _*
-    )
+    val files = new util.ArrayList[File]()
+    val configuredStackFile = HaskellBuildSettings.getInstance(project).getStackFile
+    if (configuredStackFile != null) {
+      files.add(new File(configuredStackFile))
+    }
+    // Quick and dirty way to guess at what files might be config files.
+    // Could do this more cleverly by caching the PackageConfigAssoc values
+    // or something.
+    Files.walk(Paths.get(projectPath)).forEach { path =>
+      val fileName = path.getFileName.toString
+      if (fileName == "stack.yaml" || fileName == "package.yaml") {
+        files.add(path.toFile)
+      } else if (fileName.endsWith(".cabal")) {
+        files.add(path.toFile)
+      }
+      ()
+    }
+    files
   }
 }
