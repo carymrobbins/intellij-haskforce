@@ -201,12 +201,15 @@
       implementation="com.haskforce.haskell.roots.HaskellDirectoryIndexExcludePolicy"/>
 
     <!-- Stack support -->
+
+    <!-- Is set to 'false', which is already the default. Leaving here so we can easily toggle it for testing. -->
     <registryKey
       key="HASKELL_STACK.system.in.process"
-      defaultValue="true"
+      defaultValue="false"
       restartRequired="true"
       description="Whether IDE should use 'in-process' mode for the Haskell Stack external system"
     />
+
     <projectOpenProcessor implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectOpenProcessor"/>
     <externalSystemManager implementation="com.haskforce.haskell.project.externalSystem.stack.StackManager"/>
     <externalIconProvider key="HASKELL_STACK" implementationClass="com.haskforce.haskell.project.externalSystem.stack.StackIconProvider"/>
