@@ -188,13 +188,10 @@ object StackExecutionSettingsBuilder {
 
   private val LOG = Logger.getInstance(classOf[StackExecutionSettingsBuilder])
 
-  def forProject(project: Project): StackExecutionSettingsBuilder = {
-    val projectPath = Option(project.getBasePath).getOrElse(
-      throw new StackSystemException(
-        "PackageConfigLoader.forProject: Supplied project has no base path",
-        vars = List("project" -> project)
-      )
-    )
+  def forProject(
+    project: Project,
+    projectPath: String
+  ): StackExecutionSettingsBuilder = {
     val haskellBuildSettings = HaskellBuildSettings.getInstance(project)
     val stackExePath =
       Option(haskellBuildSettings.getStackPath)

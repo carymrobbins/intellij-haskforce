@@ -214,7 +214,8 @@
     <externalSystemTaskNotificationListener implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectImportNotificationListener"/>
 <!--    <externalSystemSettingsListener implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectSettingsUpdater"/>-->
 <!--    <externalSystemConfigLocator implementation="com.haskforce.haskell.project.externalSystem.stack.StackConfigLocator"/>-->
-<!--    <projectService serviceImplementation="com.haskforce.haskell.project.externalSystem.stack.StackSettings"/>-->
+    <projectService serviceImplementation="com.haskforce.haskell.project.externalSystem.stack.StackSettings"/>
+    <projectService serviceImplementation="com.haskforce.haskell.project.externalSystem.stack.StackLocalSettings"/>
 
 <!--    <externalSystemExecutionConsoleManager-->
 <!--      implementation="com.haskforce.haskell.project.externalSystem.stack.StackExecutionConsoleManager"/>-->

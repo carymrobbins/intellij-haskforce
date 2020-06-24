@@ -3,16 +3,19 @@ package com.haskforce.haskell.project.externalSystem.stack
 import java.io.File
 import java.util
 
-import com.haskforce.HaskForceRuntime
+import com.haskforce.{HaskForceRuntime, HaskellIcons}
 import com.haskforce.settings.HaskellBuildSettings
 import com.intellij.execution.configurations.SimpleJavaParameters
 import com.intellij.ide.actions.OpenProjectFileChooserDescriptor
 import com.intellij.openapi.externalSystem.model.{ExternalSystemException, ProjectSystemId}
-import com.intellij.openapi.externalSystem.{ExternalSystemAutoImportAware, ExternalSystemManager}
-import com.intellij.openapi.fileChooser.FileChooserDescriptor
+import com.intellij.openapi.externalSystem.service.ui.DefaultExternalSystemUiAware
+import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
+import com.intellij.openapi.externalSystem.{ExternalSystemAutoImportAware, ExternalSystemManager, ExternalSystemUiAware}
+import com.intellij.openapi.fileChooser.{FileChooserDescriptor, FileChooserDescriptorFactory}
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.Pair
 import com.intellij.util.Function
+import javax.swing.Icon
 
 final class StackManager
   extends ExternalSystemManager[
@@ -22,6 +25,7 @@ final class StackManager
     StackLocalSettings,
     StackExecutionSettings
   ]
+  with ExternalSystemUiAware
   with ExternalSystemAutoImportAware {
 
   override def getSystemId: ProjectSystemId = {
@@ -30,13 +34,13 @@ final class StackManager
 
   override val getSettingsProvider: Function[Project, StackSettings] = {
     project => {
-      new StackSettings(project)
+      StackSettings.getInstance(project)
     }
   }
 
   override val getLocalSettingsProvider: Function[Project, StackLocalSettings] = {
     project => {
-      new StackLocalSettings(project)
+      StackLocalSettings.getInstance(project)
     }
   }
 
@@ -45,6 +49,7 @@ final class StackManager
     StackExecutionSettings
   ] = args => {
     val project = args.first
+    val projectPath = args.second
     val projectBuildSettings = HaskellBuildSettings.getInstance(project)
     val stackExePath = projectBuildSettings.getStackPath
     if (stackExePath == null) {
@@ -58,7 +63,7 @@ final class StackManager
         "The Haskell 'stack.yaml' path is not set"
       )
     }
-    StackExecutionSettingsBuilder.forProject(project).create()
+    StackExecutionSettingsBuilder.forProject(project, projectPath).create()
   }
 
   override val getProjectResolverClass: Class[StackProjectResolver] = {
@@ -88,6 +93,28 @@ final class StackManager
     projectPath: String, project: Project
   ): util.List[File] = {
     autoImport.getAffectedExternalProjectFiles(projectPath, project)
+  }
+
+  override def getProjectRepresentationName(
+    targetProjectPath: String,
+    rootProjectPath: String
+  ): String = {
+    ExternalSystemApiUtil.getProjectRepresentationName(
+      targetProjectPath,
+      rootProjectPath
+    )
+  }
+
+  override def getExternalProjectConfigDescriptor: FileChooserDescriptor = {
+    FileChooserDescriptorFactory.createSingleFolderDescriptor()
+  }
+
+  override def getProjectIcon: Icon = {
+    HaskellIcons.FILE
+  }
+
+  override def getTaskIcon: Icon = {
+    DefaultExternalSystemUiAware.INSTANCE.getTaskIcon
   }
 }
 
