@@ -119,5 +119,20 @@ final class StackManager
 }
 
 object StackManager {
+
   val PROJECT_SYSTEM_ID = new ProjectSystemId("HASKELL_STACK", "Stack")
+
+  def getInstance(project: Project): StackManager = {
+    ExternalSystemApiUtil.getManager(PROJECT_SYSTEM_ID) match {
+      case m: StackManager => m
+      case null =>
+        throw new IllegalStateException(
+          s"StackManager.getInstance: Failed to get the StackManager for project $project"
+        )
+      case o =>
+        throw new IllegalStateException(
+          s"StackManager.getInstance: Expected StackManager but got ${o.getClass}"
+        )
+    }
+  }
 }
