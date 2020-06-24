@@ -8,6 +8,7 @@ import com.haskforce.settings.HaskellBuildSettings
 import com.intellij.execution.configurations.SimpleJavaParameters
 import com.intellij.ide.actions.OpenProjectFileChooserDescriptor
 import com.intellij.openapi.externalSystem.model.{ExternalSystemException, ProjectSystemId}
+import com.intellij.openapi.externalSystem.service.project.autoimport.CachingExternalSystemAutoImportAware
 import com.intellij.openapi.externalSystem.service.ui.DefaultExternalSystemUiAware
 import com.intellij.openapi.externalSystem.util.ExternalSystemApiUtil
 import com.intellij.openapi.externalSystem.{ExternalSystemAutoImportAware, ExternalSystemManager, ExternalSystemUiAware}
@@ -81,7 +82,7 @@ final class StackManager
     parameters.getClassPath.addAll(HaskForceRuntime.classPath)
   }
 
-  private val autoImport = StackAutoImportAware
+  private val autoImport = new CachingExternalSystemAutoImportAware(StackAutoImportAware)
 
   override def getAffectedExternalProjectPath(
     changedFileOrDirPath: String, project: Project
