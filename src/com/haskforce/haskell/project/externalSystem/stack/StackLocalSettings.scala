@@ -6,7 +6,7 @@ import com.intellij.openapi.project.Project
 
 @State(
   name = "StackLocalSettings",
-  storages = Array(new Storage(StoragePathMacros.WORKSPACE_FILE))
+  storages = Array(new Storage(StoragePathMacros.CACHE_FILE))
 )
 final class StackLocalSettings(project: Project)
   extends AbstractStackLocalSettings[StackLocalSettings.State](
@@ -17,5 +17,10 @@ final class StackLocalSettings(project: Project)
 }
 
 object StackLocalSettings {
+
+  def getInstance(project: Project): StackLocalSettings = {
+    project.getService(classOf[StackLocalSettings])
+  }
+
   class State extends AbstractExternalSystemLocalSettings.State
 }

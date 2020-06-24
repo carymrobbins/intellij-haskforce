@@ -27,11 +27,7 @@ class StackOpenProjectProvider extends AbstractOpenProjectProvider {
         StackManager.PROJECT_SYSTEM_ID
       )
     })
-    val executionSettings: StackExecutionSettings =
-      StackExecutionSettingsBuilder.forProject(project).create()
-    val projectSettings = StackProjectSettings(
-      executionSettings
-    )
+    val projectSettings = StackProjectSettings.of(projectDirectory)
     //TODO: This doesn't work! StackSettings.getInstance(project).linkProject(projectSettings)
     val stackSettings: StackSettings =
       ExternalSystemApiUtil.getSettings(

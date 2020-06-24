@@ -33,6 +33,11 @@ public class HaskellBuildSettings implements PersistentStateComponent<HaskellBui
         myBuildOptions = state;
     }
 
+    @Override
+    public void initializeComponent() {
+        System.out.println("HaskellBuildSettings.initializeComponent");
+    }
+
     public boolean isCabalEnabled() {
         return myBuildOptions.myUseCabal;
     }
