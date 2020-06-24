@@ -603,8 +603,6 @@
     <externalSystemTaskNotificationListener implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectImportNotificationListener"/>
     <projectService serviceImplementation="com.haskforce.haskell.project.externalSystem.stack.StackSettings"/>
     <projectService serviceImplementation="com.haskforce.haskell.project.externalSystem.stack.StackLocalSettings"/>
-    <projectImportBuilder implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectImportBuilder"/>
-    <projectImportProvider implementation="com.haskforce.haskell.project.externalSystem.stack.StackProjectImportProvider"/>
 
     <!-- External builder support -->
     <!-- Note that the classpath is needed for plugin deployment to export a zip archive. -->
