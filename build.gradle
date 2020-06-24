@@ -31,8 +31,7 @@ allprojects {
     intellij {
         version = '2021.1'
         pluginName = 'HaskForce'
-        updateSinceUntilBuild = false
-        plugins = ['java', 'gradle', 'yaml']
+        plugins = ['java', 'yaml']
     }
 
     repositories {
