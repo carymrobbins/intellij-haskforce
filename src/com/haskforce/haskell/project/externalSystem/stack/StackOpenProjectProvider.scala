@@ -6,7 +6,7 @@ import com.intellij.openapi.externalSystem.model.project.ProjectData
 import com.intellij.openapi.externalSystem.service.execution.ProgressExecutionMode
 import com.intellij.openapi.externalSystem.service.project.manage.ExternalProjectsManagerImpl
 import com.intellij.openapi.externalSystem.service.project.{ExternalProjectRefreshCallback, ProjectDataManager}
-import com.intellij.openapi.externalSystem.util.{ExternalSystemApiUtil, ExternalSystemUtil}
+import com.intellij.openapi.externalSystem.util.ExternalSystemUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 
@@ -28,21 +28,18 @@ class StackOpenProjectProvider extends AbstractOpenProjectProvider {
       )
     })
     val projectSettings = StackProjectSettings.of(projectDirectory)
-    //TODO: This doesn't work! StackSettings.getInstance(project).linkProject(projectSettings)
     val stackSettings: StackSettings =
-      ExternalSystemApiUtil.getSettings(
-        project, StackManager.PROJECT_SYSTEM_ID
-      ) match {
-        case s: StackSettings => s
-        case o => throw new IllegalStateException(s"Expected StackSettings; got: ${o.getClass}")
-      }
+      StackManager.getInstance(project).getSettingsProvider.fun(project)
     stackSettings.linkProject(projectSettings)
+
+    // TODO: Not sure if this step is strictly necessary, cargo culted from GradleOpenProjectProvider.
     ExternalSystemUtil.refreshProject(
       projectDirectory,
       new ImportSpecBuilder(project, StackManager.PROJECT_SYSTEM_ID)
         .usePreviewMode()
         .use(ProgressExecutionMode.MODAL_SYNC)
     )
+
     ExternalSystemUtil.refreshProject(
       projectDirectory,
       new ImportSpecBuilder(project, StackManager.PROJECT_SYSTEM_ID)
