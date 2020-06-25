@@ -61,6 +61,11 @@
             description="Finds Cabal packages in your project and imports them as Haskell modules.">
       <add-to-group group-id="ToolsMenu" anchor="first"/>
     </action>
+    <action id="HaskForce.ImportStackProject"
+            class="com.haskforce.haskell.project.externalSystem.stack.ImportStackProjectAction"
+            text="Import Current Project Using Haskell Stack">
+      <add-to-group group-id="ExternalSystem.Actions" anchor="last"/>
+    </action>
   </actions>
 
   <extensions defaultExtensionNs="com.intellij">
