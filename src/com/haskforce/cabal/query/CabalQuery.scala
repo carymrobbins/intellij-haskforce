@@ -34,7 +34,6 @@ final class CabalQuery(val cabalFile: SPsiFile[CabalFile]) {
     text <- ff.getText.liftM[OptionT]
   } yield text).run
 
-  /** If 'library' stanza exists, returns it; otherwise, implicitly uses root stanza. */
   def getLibrary: IJReadAction[Option[BuildInfo.Library]] = {
     cabalFile.getChildOfType[psi.Library].map { maybeEl =>
       maybeEl.map(el =>
