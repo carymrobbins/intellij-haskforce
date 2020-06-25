@@ -16,7 +16,15 @@ import prelude._
 
 import scala.util.control.NonFatal
 
-/** Builder to produce a [[StackExecutionSettings]] for a given project. */
+/**
+ * Builder to produce a [[StackExecutionSettings]] for a given project.
+ *
+ * Note that a side effect of running this builder is that it will
+ * regenerate cabal files for the given project.
+ *
+ * The builder should be invoked with
+ * [[StackExecutionSettingsBuilder.buildForProject]].
+ */
 object StackExecutionSettingsBuilder {
 
   def buildForProject(
@@ -72,6 +80,10 @@ object StackExecutionSettingsBuilder {
 
   private val LOG = Logger.getInstance(classOf[Builder])
 
+  /**
+   * Internal class used to regenerate cabal files for a project
+   * and parse them to [[PackageConfig]]s.
+   */
   private class Builder(
     projectPath: String,
     stackExePath: String,
