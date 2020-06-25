@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit
 
 import com.haskforce.settings.HaskellBuildSettings
 import com.haskforce.tooling.hpack.PackageYamlQuery
-import com.haskforce.utils.PsiFileParser
+import com.haskforce.utils.{ExecUtil, PsiFileParser}
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.diagnostic.Logger
 import com.intellij.openapi.project.Project
@@ -35,13 +35,11 @@ object StackExecutionSettingsBuilder {
       Option(haskellBuildSettings.getStackPath)
         .filter(_.nonEmpty)
         .orElse {
-          //TODO
-          //try {
-          //  Option(ExecUtil.locateExecutableByGuessing("stack"))
-          //} catch {
-          //  case NonFatal(_) => None
-          //}
-          Some("stack")
+          try {
+            Option(ExecUtil.locateExecutableByGuessing("stack"))
+          } catch {
+            case NonFatal(_) => None
+          }
         }.getOrElse {
           throw new StackSystemException(
             "Missing haskell build setting for stack exe path",
