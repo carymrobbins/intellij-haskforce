@@ -16,13 +16,14 @@ final class StackTaskManager
     jvmAgentSetup: String,
     listener: ExternalSystemTaskNotificationListener
   ): Unit = {
-    throw new NotImplementedError("StackTaskManager.executeTasks")
+    // TODO
   }
 
   override def cancelTask(
     id: ExternalSystemTaskId,
     listener: ExternalSystemTaskNotificationListener
   ): Boolean = {
-    throw new NotImplementedError("StackTaskManager.cancelTask")
+    // TODO
+    false
   }
 }
