@@ -9,7 +9,7 @@ import com.intellij.openapi.project.Project
   storages = Array(new Storage(StoragePathMacros.CACHE_FILE))
 )
 final class StackLocalSettings(project: Project)
-  extends AbstractStackLocalSettings[StackLocalSettings.State](
+  extends AbstractExternalSystemLocalSettings[StackLocalSettings.State](
     StackManager.PROJECT_SYSTEM_ID,
     project,
     new StackLocalSettings.State
