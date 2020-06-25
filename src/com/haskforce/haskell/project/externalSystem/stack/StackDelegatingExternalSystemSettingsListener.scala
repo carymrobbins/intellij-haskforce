@@ -2,7 +2,11 @@ package com.haskforce.haskell.project.externalSystem.stack
 
 import com.intellij.openapi.externalSystem.settings.{DelegatingExternalSystemSettingsListener, ExternalSystemSettingsListener}
 
-// Cargo cult from 'DelegatingGradleSettingsListenerAdapter'
+/**
+ * Allows us to create a [[StackProjectSettingsListener]] from a supplied
+ * listener delegate. This is particularly useful for implementing
+ * [[StackSettings.subscribe]].
+ */
 class StackDelegatingExternalSystemSettingsListener(
   delegate: ExternalSystemSettingsListener[StackProjectSettings]
 ) extends
@@ -10,7 +14,6 @@ class StackDelegatingExternalSystemSettingsListener(
       StackProjectSettings
     ](delegate)
   with StackProjectSettingsListener {
-  override def onStackProjectSettingsChange(): Unit = {
-    println("StackDelegatingExternalSystemSettingsListener.onStackProjectSettingsChange")
-  }
+
+  override def onStackProjectSettingsChange(): Unit = {}
 }

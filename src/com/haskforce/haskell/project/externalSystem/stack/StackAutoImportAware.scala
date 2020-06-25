@@ -11,9 +11,12 @@ import com.intellij.openapi.externalSystem.ExternalSystemAutoImportAware
 import com.intellij.openapi.project.Project
 
 /**
-  * Handle auto-import logic for stack projects.
-  * Mostly adapted from GradleAutoImportAware
-  */
+ * Handle auto-import logic for stack projects.
+ * Implemented as a singleton for use in [[StackManager]]. Performs
+ * no caching; [[StackManager]] is responsible for wrapping it in
+ * [[com.intellij.openapi.externalSystem.service.project.autoimport.CachingExternalSystemAutoImportAware]]
+ * since its methods are called often.
+ */
 object StackAutoImportAware extends ExternalSystemAutoImportAware {
 
   private val LOG = Logger.getInstance(getClass)
@@ -30,7 +33,7 @@ object StackAutoImportAware extends ExternalSystemAutoImportAware {
 
     // Get the project stack.yaml
     val stackFile = HaskellBuildSettings.getInstance(project).getStackFile
-    // If we don't have a stack.yaml configured, don't auto-import.
+    // If we don't have a stack.yaml configured, don't trigger the refresh.
     if (stackFile == null) return null
 
     // Check if the changed file is our configured stack.yaml.
