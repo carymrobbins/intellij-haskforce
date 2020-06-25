@@ -64,7 +64,7 @@ final class StackManager
         "The Haskell 'stack.yaml' path is not set"
       )
     }
-    StackExecutionSettingsBuilder.forProject(project, projectPath).create()
+    StackExecutionSettingsBuilder.buildForProject(project, projectPath)
   }
 
   override val getProjectResolverClass: Class[StackProjectResolver] = {
