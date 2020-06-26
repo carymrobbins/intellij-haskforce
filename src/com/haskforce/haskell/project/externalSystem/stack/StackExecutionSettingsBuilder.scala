@@ -78,7 +78,7 @@ object StackExecutionSettingsBuilder {
   private val STACK_REGEN_CABAL_FILE_TIMEOUT_MILLIS: Long = 10000
   private val STACK_GET_CABAL_FILES_TIMEOUT_MILLIS: Long = 10000
 
-  private val LOG = Logger.getInstance(classOf[Builder])
+  private val LOG = Logger.getInstance(getClass)
 
   /**
    * Internal class used to regenerate cabal files for a project
