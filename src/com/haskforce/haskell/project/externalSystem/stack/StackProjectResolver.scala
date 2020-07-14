@@ -26,13 +26,13 @@ final class StackProjectResolver
     settings: StackExecutionSettings,
     listener: ExternalSystemTaskNotificationListener
   ): DataNode[ProjectData] = {
-    new StackProjectDataNodeBuilder(
+    new StackProjectInfoResolver(
       id = id,
       projectPath = projectPath,
       settings = settings,
       listener = listener,
       new WorkManager(id, processMap, executorMap)
-    ).create()
+    ).resolve()
   }
 
   override def cancelTask(

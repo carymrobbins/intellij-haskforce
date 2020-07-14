@@ -10,7 +10,7 @@ import com.intellij.openapi.externalSystem.task.ExternalSystemTaskManager
  *
  * Once we're ready, here's vaguely what we'll need to do.
  *
- * Update [[StackProjectResolver]], and thus, [[StackProjectDataNodeBuilder]],
+ * Update [[StackProjectResolver]], and thus, [[StackProjectInfoResolver]],
  * to construct [[com.intellij.openapi.externalSystem.model.task.TaskData]]
  * nodes and insert them into the built tree.
  *
