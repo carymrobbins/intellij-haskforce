@@ -15,7 +15,7 @@ import org.apache.commons.io.IOUtils
 import org.jetbrains.yaml.psi.YAMLFile
 import prelude._
 
-class StackProjectDataNodeBuilder(
+class StackProjectInfoResolver(
   id: ExternalSystemTaskId,
   projectPath: String,
   settings: StackExecutionSettings,
@@ -27,9 +27,13 @@ class StackProjectDataNodeBuilder(
     listener.onTaskOutput(id, text + "\n", stdOut)
   }
 
-  def create(): DataNode[ProjectData] = workManager.compute {
+  // Runs in 'workManager.compute' to ensure that the thread is cancellable.
+  // Any subprocesses should be spawned via the 'workManager' to ensure
+  // they are cancellable.
+  def resolve(): DataNode[ProjectData] = workManager.compute {
     val rootProjectName = inferRootProjectName(projectPath)
     LOG(s"rootProjectName=$rootProjectName")
+    buildStackDeps()
     val projectDataNode = mkProjectDataNode(
       rootProjectName = rootProjectName
     )
@@ -63,6 +67,29 @@ class StackProjectDataNodeBuilder(
       )
     }
     projectDataNode
+  }
+
+  private def buildStackDeps(): Unit = {
+    LOG(s"Building dependencies...")
+    val c = new GeneralCommandLine(
+      settings.stackExePath, "--stack-yaml", settings.stackYamlPath,
+      "build", "--dependencies-only"
+    )
+    c.setWorkDirectory(settings.linkedProjectPath)
+    workManager.proc(c) { p =>
+      val exitCode = p.waitFor()
+      if (exitCode != 0) {
+        val err = IOUtils.toString(p.getErrorStream, StandardCharsets.UTF_8)
+        throw new StackSystemException(
+          "Building stack dependencies failed",
+          vars = List(
+            "exitCode" -> exitCode,
+            "commandLine" -> c.getCommandLineString,
+            "stderr" -> err,
+          )
+        )
+      }
+    }
   }
 
   private def buildPackageConfigAssocs(): List[PackageConfigAssoc] = {
