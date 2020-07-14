@@ -594,10 +594,17 @@
 
     <!-- Stack support -->
 
-    <!-- Is set to 'false', which is already the default. Leaving here so we can easily toggle it for testing. -->
+    <!--
+      We take advantage of being able to use the PSI model and other IDE
+      features while performing a stack project import, so we need to
+      do this in-process with the IDE and not via the external system.
+      The out-of-process external system is mostly useful for JVM build tools
+      which may be leaky. We are not leveraging any such JVM tool so doing
+      this in-process is better for us.
+     -->
     <registryKey
       key="HASKELL_STACK.system.in.process"
-      defaultValue="false"
+      defaultValue="true"
       restartRequired="true"
       description="Whether IDE should use 'in-process' mode for the Haskell Stack external system"
     />
