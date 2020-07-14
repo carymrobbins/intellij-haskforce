@@ -2,12 +2,8 @@ package com.haskforce.haskell.project.externalSystem.stack
 
 import java.io.File
 
-import com.haskforce.HaskellModuleType
-import com.haskforce.codeInsight.visibleModules.GhcPkgDumpProjectDependencyCache
 import com.haskforce.settings.HaskellBuildSettings
-import com.haskforce.tooling.ghcPkg.GhcPkgDumpProjectCacheService
 import com.haskforce.utils.ExecUtil
-import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.externalSystem.importing.ImportSpecBuilder
 import com.intellij.openapi.externalSystem.model.DataNode
 import com.intellij.openapi.externalSystem.model.project.ProjectData
@@ -61,8 +57,6 @@ object StackProjectImporter {
     override def onSuccess(externalProject: DataNode[ProjectData]): Unit = {
       if (externalProject == null) return
       importData(externalProject)
-      GhcPkgDumpProjectDependencyCache.getInstance(project).reload()
-      ()
     }
 
     private def importData(externalProject: DataNode[ProjectData]): Unit = {

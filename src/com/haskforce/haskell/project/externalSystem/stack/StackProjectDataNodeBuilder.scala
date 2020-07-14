@@ -1,33 +1,43 @@
 package com.haskforce.haskell.project.externalSystem.stack
 
-import java.io.File
+import java.io.{BufferedReader, File, InputStream, InputStreamReader}
+import java.nio.charset.StandardCharsets
 
 import com.haskforce.HaskellModuleType
-import com.intellij.openapi.externalSystem.model.project.{ContentRootData, ExternalSystemSourceType, LibraryData, LibraryDependencyData, LibraryLevel, ModuleData, ProjectData}
+import com.haskforce.tooling.hpack.PackageYamlQuery
+import com.haskforce.utils.PsiFileParser
+import com.intellij.execution.configurations.GeneralCommandLine
+import com.intellij.openapi.externalSystem.model.project._
 import com.intellij.openapi.externalSystem.model.task.{ExternalSystemTaskId, ExternalSystemTaskNotificationListener}
 import com.intellij.openapi.externalSystem.model.{DataNode, Key, ProjectKeys}
 import com.intellij.openapi.roots.DependencyScope
+import org.apache.commons.io.IOUtils
+import org.jetbrains.yaml.psi.YAMLFile
+import prelude._
 
 class StackProjectDataNodeBuilder(
   id: ExternalSystemTaskId,
   projectPath: String,
   settings: StackExecutionSettings,
-  listener: ExternalSystemTaskNotificationListener
+  listener: ExternalSystemTaskNotificationListener,
+  workManager: StackProjectResolver.WorkManager
 ) {
 
   private def LOG(text: String, stdOut: Boolean = true): Unit = {
     listener.onTaskOutput(id, text + "\n", stdOut)
   }
 
-  def create(): DataNode[ProjectData] = {
-    LOG(s"rootProjectName=${settings.rootProjectName}")
+  def create(): DataNode[ProjectData] = workManager.compute {
+    val rootProjectName = inferRootProjectName(projectPath)
+    LOG(s"rootProjectName=$rootProjectName")
     val projectDataNode = mkProjectDataNode(
-      rootProjectName = settings.rootProjectName
+      rootProjectName = rootProjectName
     )
-    if (!hasRootPackageConfig()) {
+    val packageConfigAssocs = buildPackageConfigAssocs()
+    if (!hasRootPackageConfig(packageConfigAssocs)) {
       val projectModuleDataNode = mkDataNode(
         ProjectKeys.MODULE,
-        mkModuleData(s"${settings.rootProjectName}:project")
+        mkModuleData(s"$rootProjectName:project")
       )
       val projectModuleContentRootData = mkContentRootData(settings.linkedProjectPath)
       projectModuleContentRootData.storePath(
@@ -43,7 +53,7 @@ class StackProjectDataNodeBuilder(
       )
       projectDataNode.addChild(projectModuleDataNode)
     }
-    settings.packageConfigAssocs.foreach { assoc =>
+    packageConfigAssocs.foreach { assoc =>
       LOG(s"packageConfigAssoc=$assoc")
       projectDataNode.addChild(
         mkPackageModuleDataNode(
@@ -55,9 +65,97 @@ class StackProjectDataNodeBuilder(
     projectDataNode
   }
 
-  private def hasRootPackageConfig(): Boolean = {
+  private def buildPackageConfigAssocs(): List[PackageConfigAssoc] = {
+    stackIterCabalFilePaths { it =>
+      it.map { path =>
+        val file = new File(path)
+        val packageDir = file.getParentFile.getCanonicalPath
+        val packageConfig = parsePackageConfig(file)
+        PackageConfigAssoc(
+          packageDir = packageDir,
+          packageConfig = packageConfig
+        )
+      }.toList
+    }
+  }
+
+  private def parsePackageConfig(file: File): PackageConfig = {
+    PackageConfig.fromFile(file) match {
+      case Right(Some(packageConfig)) => packageConfig
+      case Right(None) =>
+        throw new StackSystemException(
+          "Invalid package config file",
+          vars = List("file" -> file)
+        )
+      case Left(e) =>
+        throw new StackSystemException(
+          "Failed to parse package config from cabal file",
+          cause = e,
+          vars = List("file" -> file)
+        )
+    }
+  }
+
+  private def stackIterCabalFilePaths[A](f: Iterator[String] => A): A = {
+    val c = new GeneralCommandLine(
+      settings.stackExePath, "--stack-yaml", settings.stackYamlPath,
+      "ide", "packages", "--stdout", "--cabal-files"
+    )
+    c.setWorkDirectory(projectPath)
+    workManager.proc(c) { p =>
+      val exitCode = p.waitFor()
+      if (exitCode != 0) {
+        val err = IOUtils.toString(p.getErrorStream, StandardCharsets.UTF_8)
+        throw new StackSystemException(
+          "Failed to get cabal files via 'stack'",
+          vars = List(
+            "exitCode" -> exitCode,
+            "commandLine" -> c.getCommandLineString,
+            "stderr" -> err,
+          )
+        )
+      }
+      f(inputStreamIterLines(p.getInputStream))
+    }
+  }
+
+  private def inputStreamIterLines(is: InputStream): Iterator[String] = {
+    val r = new BufferedReader(new InputStreamReader(is))
+    Iterator.continually(r.readLine()).takeWhile(_ != null)
+  }
+
+  private def inferRootProjectName(projectPath: String): String = {
+    val root = new File(projectPath)
+    val rootPackageYaml = new File(root, "package.yaml")
+    if (!rootPackageYaml.exists()) {
+      if (!root.isDirectory) {
+        throw new StackSystemException(
+          "Failed to infer root project name; project path points to non-directory",
+          vars = List(
+            "projectPath" -> projectPath,
+          )
+        )
+      }
+      return root.getName
+    }
+    PsiFileParser.parseForDefaultProject[YAMLFile, File](rootPackageYaml)
+      .flatMap(PackageYamlQuery.getName)
+      .valueOr { e =>
+        throw new StackSystemException(
+          "Failed to infer root project name; failed to parse 'name' from root package.yaml",
+          cause = e,
+          vars = List(
+            "rootPackageYaml" -> rootPackageYaml,
+          )
+        )
+      }
+  }
+
+  private def hasRootPackageConfig(
+    packageConfigAssocs: List[PackageConfigAssoc]
+  ): Boolean = {
     val canonicalProjectPath = new File(projectPath).getCanonicalPath
-    settings.packageConfigAssocs.exists(assoc =>
+    packageConfigAssocs.exists(assoc =>
       new File(assoc.packageDir).getCanonicalPath == canonicalProjectPath
     )
   }
