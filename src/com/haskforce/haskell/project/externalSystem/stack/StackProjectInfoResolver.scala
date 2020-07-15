@@ -30,7 +30,13 @@ class StackProjectInfoResolver(
   // Runs in 'workManager.compute' to ensure that the thread is cancellable.
   // Any subprocesses should be spawned via the 'workManager' to ensure
   // they are cancellable.
-  def resolve(): DataNode[ProjectData] = workManager.compute {
+  def resolve(): DataNode[ProjectData] = {
+    workManager.compute {
+      buildDataNode()
+    }
+  }
+
+  private def buildDataNode(): DataNode[ProjectData] = {
     val rootProjectName = inferRootProjectName(projectPath)
     LOG(s"rootProjectName=$rootProjectName")
     buildStackDeps()
