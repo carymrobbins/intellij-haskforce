@@ -76,23 +76,22 @@ class StackProjectInfoResolver(
   }
 
   private def buildStackDeps(): Unit = {
-    LOG(s"Building dependencies...")
+    LOG(s"Building dependencies with stack...")
     val c = new GeneralCommandLine(
       settings.stackExePath, "--stack-yaml", settings.stackYamlPath,
       "build", "--dependencies-only"
     )
     c.setWorkDirectory(settings.linkedProjectPath)
+    c.setRedirectErrorStream(true)
+    LOG(c.getCommandLineString)
     workManager.proc(c) { p =>
+      inputStreamIterLines(p.getInputStream).foreach { line =>
+        LOG(line)
+      }
       val exitCode = p.waitFor()
       if (exitCode != 0) {
-        val err = IOUtils.toString(p.getErrorStream, StandardCharsets.UTF_8)
         throw new StackSystemException(
-          "Building stack dependencies failed",
-          vars = List(
-            "exitCode" -> exitCode,
-            "commandLine" -> c.getCommandLineString,
-            "stderr" -> err,
-          )
+          s"Building stack dependencies failed with exit code $exitCode"
         )
       }
     }
