@@ -4,6 +4,7 @@ import java.io.{BufferedReader, File, InputStream, InputStreamReader}
 import java.nio.charset.StandardCharsets
 
 import com.haskforce.HaskellModuleType
+import com.haskforce.tooling.ghcPkg.{GhcPkgDumpExecutor, GhcPkgDumpProjectCacheService}
 import com.haskforce.tooling.hpack.PackageYamlQuery
 import com.haskforce.utils.PsiFileParser
 import com.intellij.execution.configurations.GeneralCommandLine
@@ -32,6 +33,8 @@ class StackProjectInfoResolver(
   // they are cancellable.
   def resolve(): DataNode[ProjectData] = {
     workManager.compute {
+      buildStackDeps()
+      loadGhcPkgCache()
       buildDataNode()
     }
   }
@@ -39,7 +42,6 @@ class StackProjectInfoResolver(
   private def buildDataNode(): DataNode[ProjectData] = {
     val rootProjectName = inferRootProjectName(projectPath)
     LOG(s"rootProjectName=$rootProjectName")
-    buildStackDeps()
     val projectDataNode = mkProjectDataNode(
       rootProjectName = rootProjectName
     )
@@ -95,6 +97,13 @@ class StackProjectInfoResolver(
         )
       }
     }
+  }
+
+  private def loadGhcPkgCache(): Unit = {
+    val cachedPkgs = new GhcPkgDumpExecutor(
+      projectPath, settings.stackExePath, settings.stackYamlPath
+    ).run()
+    GhcPkgDumpProjectCacheService.getInstance(settings.project).put(cachedPkgs)
   }
 
   private def buildPackageConfigAssocs(): List[PackageConfigAssoc] = {

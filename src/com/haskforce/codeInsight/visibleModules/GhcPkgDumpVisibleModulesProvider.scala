@@ -2,7 +2,7 @@ package com.haskforce.codeInsight.visibleModules
 
 import com.haskforce.settings.HaskellBuildSettings
 import com.haskforce.settings.experimental.HaskForceExperimentalConfigurable
-import com.haskforce.tooling.ghcPkg.{CachedPkgs, GhcPkgDumpExecutor, GhcPkgDumpParser, GhcPkgDumpProjectCacheService}
+import com.haskforce.tooling.ghcPkg.{CachedPkgs, GhcPkgDumpExecutor, GhcPkgDumpProjectCacheService}
 import com.haskforce.tooling.hpack.{PackageYamlFinder, PackageYamlQuery}
 import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.project.Project
@@ -12,7 +12,8 @@ class GhcPkgDumpVisibleModulesProvider private(
   psiFile: PsiFile,
   project: Project,
   projectDir: String,
-  stackPath: String
+  stackExePath: String,
+  stackYamlPath: String
 ) extends VisibleModulesProvider {
 
   override def getVisibleModules: Array[String] = {
@@ -56,8 +57,7 @@ class GhcPkgDumpVisibleModulesProvider private(
   }
 
   private def runGhcPkgDump(): CachedPkgs = {
-    val is = GhcPkgDumpExecutor.runWithStack(stackPath, projectDir)
-    CachedPkgs.fromIterator(GhcPkgDumpParser.parse(is))
+    new GhcPkgDumpExecutor(projectDir, stackExePath, stackYamlPath).run()
   }
 }
 
@@ -74,12 +74,14 @@ object GhcPkgDumpVisibleModulesProvider {
     val project = psiFile.getProject
     for {
       projectDir <- Option(project.getBasePath)
-      stackPath <- Option(settings.getStackPath)
+      stackExePath <- Option(settings.getStackPath)
+      stackYamlPath <- Option(settings.getStackFile)
     } yield new GhcPkgDumpVisibleModulesProvider(
       psiFile,
       project,
       projectDir,
-      stackPath
+      stackExePath,
+      stackYamlPath
     )
   }
 }
