@@ -31,7 +31,11 @@ object StackProjectImporter {
     val projectSettings = StackProjectSettings.of(projectDirectory)
     val stackSettings: StackSettings =
       StackManager.getInstance(project).getSettingsProvider.fun(project)
-    stackSettings.linkProject(projectSettings)
+
+    // Link the stack project to the IDE if it hasn't been already.
+    if (stackSettings.getLinkedProjectSettings(projectSettings.getExternalProjectPath) == null) {
+      stackSettings.linkProject(projectSettings)
+    }
 
     // TODO: Not sure if this step is strictly necessary, cargo culted from GradleOpenProjectProvider.
     ExternalSystemUtil.refreshProject(
