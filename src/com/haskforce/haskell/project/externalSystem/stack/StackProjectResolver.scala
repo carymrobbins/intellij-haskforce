@@ -60,7 +60,7 @@ object StackProjectResolver {
       processMap.add(taskId, p)
       try {
         val res = f(p)
-        p.destroy()
+        if (p.isAlive) p.destroy()
         res
       } finally {
         processMap.remove(taskId, p)
