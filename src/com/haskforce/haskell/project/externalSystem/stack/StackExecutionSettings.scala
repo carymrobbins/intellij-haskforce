@@ -11,17 +11,9 @@ import com.intellij.openapi.util.Pair
  * an in-process external system so we can benefit from IDE features,
  * especially the PSI model. The out-of-process external system is mostly
  * for integrating with JVM build tools which may be leaky and affect the IDE.
- *
- * Note: All of the fields must be marshallable so the instance can be
- * serialized and sent to the external system process. For example, you cannot
- * add a 'Project' field since 'ProjectImpl' is not marshallable. If you
- * mess this up, you will end up with an exception in the Build
- * console stating:
- *
- *    error marshalling arguments; nested exception is:
- *        java.io.NotSerializableException: path.to.Class
  */
 final case class StackExecutionSettings(
+  project: Project,
   linkedProjectPath: String,
   stackExePath: String,
   stackYamlPath: String
@@ -45,6 +37,7 @@ object StackExecutionSettings {
         throw new StackSystemException("The Haskell 'stack.yaml' path is not set")
       }
     StackExecutionSettings(
+      project = project,
       linkedProjectPath = linkedProjectPath,
       stackExePath = stackExePath,
       stackYamlPath = stackYamlPath

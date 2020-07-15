@@ -3,7 +3,7 @@ package com.haskforce.haskell.project.externalSystem.stack
 import java.io.File
 import java.util
 
-import com.haskforce.{HaskForceRuntime, HaskellIcons}
+import com.haskforce.HaskellIcons
 import com.intellij
 import com.intellij.execution.configurations.SimpleJavaParameters
 import com.intellij.ide.actions.OpenProjectFileChooserDescriptor
@@ -56,7 +56,9 @@ final class StackManager
     new OpenProjectFileChooserDescriptor(true) // TODO: Is this right?
 
   override def enhanceRemoteProcessing(parameters: SimpleJavaParameters): Unit = {
-    parameters.getClassPath.addAll(HaskForceRuntime.classPath)
+    // We run this in-process, so no need for passing runtime parameters.
+    // If this changes for some reason, use the following implementation -
+    // parameters.getClassPath.addAll(HaskForceRuntime.classPath)
   }
 
   private val autoImport = new CachingExternalSystemAutoImportAware(StackAutoImportAware)
