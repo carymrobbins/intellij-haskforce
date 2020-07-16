@@ -58,16 +58,13 @@ public class HaskellCompletionContributor extends CompletionContributor {
                         List<HaskellPsiUtil.Import> imports = HaskellPsiUtil.parseImports(file);
                         Cache cache = getCache(file);
 
-                        // TODO: A bit of a hack; should fix this up into Cache above somehow.
-                        Option<VisibleModulesProvider> visibleModulesProvider = VisibleModulesProviderFactory.get(file);
-
                         // Completion methods should return either void or boolean.  If boolean, then it should indicate
                         // whether or not we were in the appropriate context.  This is useful to determine if following
                         // completions should be added.
                         completeKeywordImport(position, result);
                         completeKeywordQualified(position, result);
                         if (completePragma(position, cache, result)) return;
-                        if (completeModuleImport(position, visibleModulesProvider, result)) return;
+                        if (completeModuleImport(position, cache, result)) return;
                         if (completeQualifiedNames(position, imports, cache, result)) return;
                         if (completeNameImport(position, cache, result)) return;
                         completeFunctionDeclName(position, result);
@@ -172,7 +169,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
     }
 
     public static boolean completeModuleImport(@NotNull final PsiElement position,
-                                               @NotNull final Option<VisibleModulesProvider> visibleModulesProvider,
+                                               final Cache cache,
                                                @NotNull final CompletionResultSet result) {
         // TODO: Refactor this implementation.
         PsiElement el = position.getParent();
@@ -189,7 +186,11 @@ public class HaskellCompletionContributor extends CompletionContributor {
         }
         // Regardless of whether we actually have cache data to work with, we still want to return true
         // after this point since we've already identified that we are in the appropriate context.
-        final String[] list = visibleModulesProvider.fold(() -> null, VisibleModulesProvider::getVisibleModules);
+        final String[] list =
+          Option.apply(position.getContainingFile().getVirtualFile())
+            .flatMap(vFile -> Option.apply(vFile.getCanonicalPath()))
+            .flatMap(filePath -> Option.apply(cache.visibleModulesByFile().get(filePath)))
+            .getOrElse(() -> null);
         if (list != null && list.length != 0) {
             StringBuilder builder = new StringBuilder(0);
             el = position.getParent();

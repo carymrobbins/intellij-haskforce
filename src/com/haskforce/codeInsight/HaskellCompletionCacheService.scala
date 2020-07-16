@@ -3,6 +3,7 @@ package com.haskforce.codeInsight
 import java.util
 
 import com.haskforce.codeInsight.HaskellCompletionCacheLoader.LookupElementWrapper
+import com.haskforce.codeInsight.visibleModules.VisibleModulesProviderFactory
 import com.haskforce.psi.HaskellPsiUtil
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.util.Computable
@@ -29,6 +30,13 @@ class HaskellCompletionCacheService {
           putWrappers(cache.languageExtensions, provider.getLanguages)
         }
       }
+      val maybeVFile = Option(file.getVirtualFile)
+      val maybeFilePath = maybeVFile.map(_.getCanonicalPath)
+      maybeFilePath.foreach { filePath =>
+        if (force || cache.visibleModulesByFile.get(filePath) == null) {
+          updateVisibleModules(file, filePath)
+        }
+      }
       if (force || cache.moduleSymbols.isEmpty) {
         updateModuleSymbols(file)
       }
@@ -42,6 +50,12 @@ class HaskellCompletionCacheService {
 
   private def putStrings(s: util.Set[String], xs: Array[String]) = {
     util.Collections.addAll[String](s, xs: _*)
+  }
+
+  private def updateVisibleModules(file: PsiFile, filePath: String): Unit = {
+    VisibleModulesProviderFactory.get(file).foreach { provider =>
+      cache.visibleModulesByFile.put(filePath, provider.getVisibleModules)
+    }
   }
 
   private def updateModuleSymbols(file: PsiFile): Unit = {
