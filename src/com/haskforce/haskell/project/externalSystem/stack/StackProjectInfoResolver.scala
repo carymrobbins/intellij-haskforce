@@ -34,18 +34,20 @@ class StackProjectInfoResolver(
   def resolve(): DataNode[ProjectData] = {
     workManager.compute {
       buildStackDeps()
-      loadGhcPkgCache()
-      buildDataNode()
+      val packageConfigAssocs = buildPackageConfigAssocs()
+      loadGhcPkgCache(packageConfigAssocs)
+      buildDataNode(packageConfigAssocs)
     }
   }
 
-  private def buildDataNode(): DataNode[ProjectData] = {
+  private def buildDataNode(
+    packageConfigAssocs: List[PackageConfigAssoc]
+  ): DataNode[ProjectData] = {
     val rootProjectName = inferRootProjectName(projectPath)
     LOG(s"rootProjectName=$rootProjectName")
     val projectDataNode = mkProjectDataNode(
       rootProjectName = rootProjectName
     )
-    val packageConfigAssocs = buildPackageConfigAssocs()
     if (!hasRootPackageConfig(packageConfigAssocs)) {
       val projectModuleDataNode = mkDataNode(
         ProjectKeys.MODULE,
@@ -99,11 +101,24 @@ class StackProjectInfoResolver(
     }
   }
 
-  private def loadGhcPkgCache(): Unit = {
+  private def loadGhcPkgCache(
+    packageConfigAssocs: List[PackageConfigAssoc]
+  ): Unit = {
     val cachedPkgs = new GhcPkgDumpExecutor(
       projectPath, settings.stackExePath, settings.stackYamlPath
     ).run()
-    GhcPkgDumpProjectCacheService.getInstance(settings.project).put(cachedPkgs)
+    val cacheService = GhcPkgDumpProjectCacheService.getInstance(settings.project)
+    cacheService.putPkgs(cachedPkgs)
+    packageConfigAssocs.foreach { assoc =>
+      assoc.packageConfig.components.foreach { component =>
+        val depPkgs = component.dependencies.flatMap(cachedPkgs.firstNamed)
+        component.hsSourceDirs.foreach { srcDir =>
+          cacheService.sourcePathDependencyIndex.addDependencyForSourcePath(
+            new File(assoc.packageDir, srcDir).getCanonicalPath, depPkgs
+          )
+        }
+      }
+    }
   }
 
   private def buildPackageConfigAssocs(): List[PackageConfigAssoc] = {

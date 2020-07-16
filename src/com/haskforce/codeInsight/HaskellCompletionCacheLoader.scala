@@ -33,7 +33,6 @@ object HaskellCompletionCacheLoader {
 
   final class Cache {
     val ghcFlags: util.Set[String] = new util.HashSet(300)
-    val visibleModules: util.Set[String] = new util.HashSet(1000)
     val languageExtensions: util.Set[LookupElementWrapper] = new util.HashSet(300)
     val moduleSymbols: util.Map[String, util.Set[LookupElementWrapper]] = new util.HashMap(10)
   }

@@ -5,6 +5,8 @@ import com.google.common.collect.Iterables;
 import com.haskforce.HaskellLanguage;
 import com.haskforce.codeInsight.HaskellCompletionCacheLoader.Cache;
 import com.haskforce.codeInsight.HaskellCompletionCacheLoader.LookupElementWrapper;
+import com.haskforce.codeInsight.visibleModules.VisibleModulesProvider;
+import com.haskforce.codeInsight.visibleModules.VisibleModulesProviderFactory;
 import com.haskforce.psi.*;
 import com.haskforce.utils.HaskellUtil;
 import com.intellij.codeInsight.completion.*;
@@ -21,6 +23,7 @@ import com.intellij.util.ProcessingContext;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import scala.Option;
 
 import java.util.*;
 
@@ -54,13 +57,17 @@ public class HaskellCompletionContributor extends CompletionContributor {
                         PsiFile file = parameters.getOriginalFile();
                         List<HaskellPsiUtil.Import> imports = HaskellPsiUtil.parseImports(file);
                         Cache cache = getCache(file);
+
+                        // TODO: A bit of a hack; should fix this up into Cache above somehow.
+                        Option<VisibleModulesProvider> visibleModulesProvider = VisibleModulesProviderFactory.get(file);
+
                         // Completion methods should return either void or boolean.  If boolean, then it should indicate
                         // whether or not we were in the appropriate context.  This is useful to determine if following
                         // completions should be added.
                         completeKeywordImport(position, result);
                         completeKeywordQualified(position, result);
                         if (completePragma(position, cache, result)) return;
-                        if (completeModuleImport(position, cache, result)) return;
+                        if (completeModuleImport(position, visibleModulesProvider, result)) return;
                         if (completeQualifiedNames(position, imports, cache, result)) return;
                         if (completeNameImport(position, cache, result)) return;
                         completeFunctionDeclName(position, result);
@@ -165,7 +172,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
     }
 
     public static boolean completeModuleImport(@NotNull final PsiElement position,
-                                               @NotNull final Cache cache,
+                                               @NotNull final Option<VisibleModulesProvider> visibleModulesProvider,
                                                @NotNull final CompletionResultSet result) {
         // TODO: Refactor this implementation.
         PsiElement el = position.getParent();
@@ -182,8 +189,8 @@ public class HaskellCompletionContributor extends CompletionContributor {
         }
         // Regardless of whether we actually have cache data to work with, we still want to return true
         // after this point since we've already identified that we are in the appropriate context.
-        final Set<String> list = cache.visibleModules();
-        if (list != null) {
+        final String[] list = visibleModulesProvider.fold(() -> null, VisibleModulesProvider::getVisibleModules);
+        if (list != null && list.length != 0) {
             StringBuilder builder = new StringBuilder(0);
             el = position.getParent();
             while (el != null) {
