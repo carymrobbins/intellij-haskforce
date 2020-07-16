@@ -30,13 +30,13 @@ class HaskellCompletionCacheService {
           putWrappers(cache.languageExtensions, provider.getLanguages)
         }
       }
-      val maybeVFile = Option(file.getVirtualFile)
-      val maybeFilePath = maybeVFile.map(_.getCanonicalPath)
-      maybeFilePath.foreach { filePath =>
-        if (force || cache.visibleModulesByFile.get(filePath) == null) {
-          updateVisibleModules(file, filePath)
+      Option(file.getOriginalFile.getVirtualFile)
+        .flatMap(vFile => Option(vFile.getCanonicalPath))
+        .foreach { filePath =>
+          if (force || shouldUpdateVisibleModules(filePath)) {
+            updateVisibleModules(file, filePath)
+          }
         }
-      }
       if (force || cache.moduleSymbols.isEmpty) {
         updateModuleSymbols(file)
       }
@@ -52,9 +52,16 @@ class HaskellCompletionCacheService {
     util.Collections.addAll[String](s, xs: _*)
   }
 
+  private def shouldUpdateVisibleModules(filePath: String): Boolean = {
+    Option(cache.visibleModulesByFile.get(filePath)).forall(_.length == 0)
+  }
+
   private def updateVisibleModules(file: PsiFile, filePath: String): Unit = {
     VisibleModulesProviderFactory.get(file).foreach { provider =>
-      cache.visibleModulesByFile.put(filePath, provider.getVisibleModules)
+      val visibleModules = provider.getVisibleModules
+      if (visibleModules.length != 0) {
+        cache.visibleModulesByFile.put(filePath, visibleModules)
+      }
     }
   }
 

@@ -13,7 +13,7 @@ class GhcPkgDumpVisibleModulesProvider private(
   override def getVisibleModules: Array[String] = {
     GhcPkgDumpProjectCacheService.getInstance(project)
       .sourcePathDependencyIndex
-      .getDependenciesForFile(vFile)
+      .getDependenciesForVirtualFile(vFile)
       .map { pkgs =>
         pkgs.iterator.flatMap(_.exposedModules).toArray
       }.getOrElse(Array.empty)
@@ -24,7 +24,7 @@ object GhcPkgDumpVisibleModulesProvider {
 
   def create(psiFile: PsiFile): Option[GhcPkgDumpVisibleModulesProvider] = {
     for {
-      vFile <- Option(psiFile.getVirtualFile)
+      vFile <- Option(psiFile.getOriginalFile.getVirtualFile)
     } yield new GhcPkgDumpVisibleModulesProvider(
       psiFile.getProject,
       vFile,

@@ -14,6 +14,7 @@ import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -186,34 +187,33 @@ public class HaskellCompletionContributor extends CompletionContributor {
         }
         // Regardless of whether we actually have cache data to work with, we still want to return true
         // after this point since we've already identified that we are in the appropriate context.
-        final String[] list =
-          Option.apply(position.getContainingFile().getVirtualFile())
-            .flatMap(vFile -> Option.apply(vFile.getCanonicalPath()))
-            .flatMap(filePath -> Option.apply(cache.visibleModulesByFile().get(filePath)))
-            .getOrElse(() -> null);
-        if (list != null && list.length != 0) {
-            StringBuilder builder = new StringBuilder(0);
-            el = position.getParent();
-            while (el != null) {
-                el = el.getPrevSibling();
-                if (el != null) {
-                    builder.insert(0, el.getText());
-                }
+        VirtualFile vFile = position.getContainingFile().getOriginalFile().getVirtualFile();
+        if (vFile == null) return true;
+        String filePath = vFile.getCanonicalPath();
+        if (filePath == null) return true;
+        final String[] list = cache.visibleModulesByFile().get(filePath);
+        if (list == null || list.length == 0) return true;
+        StringBuilder builder = new StringBuilder(0);
+        el = position.getParent();
+        while (el != null) {
+            el = el.getPrevSibling();
+            if (el != null) {
+                builder.insert(0, el.getText());
             }
-            final String partialModule = builder.toString();
-            Set<String> newLines = new HashSet<String>(0);
-            for (String line : list) {
-                if (line.startsWith(partialModule)) {
-                    String newLine = line.replace(partialModule, "");
-                    final int firstDotPos = newLine.indexOf('.');
-                    if (firstDotPos != -1) {
-                        newLine = newLine.substring(0, firstDotPos);
-                    }
-                    newLines.add(newLine);
-                }
-            }
-            addAllElements(result, LookupElementUtil.fromStrings(newLines));
         }
+        final String partialModule = builder.toString();
+        Set<String> newLines = new HashSet<String>(0);
+        for (String line : list) {
+            if (line.startsWith(partialModule)) {
+                String newLine = line.replace(partialModule, "");
+                final int firstDotPos = newLine.indexOf('.');
+                if (firstDotPos != -1) {
+                    newLine = newLine.substring(0, firstDotPos);
+                }
+                newLines.add(newLine);
+            }
+        }
+        addAllElements(result, LookupElementUtil.fromStrings(newLines));
         return true;
     }
 
