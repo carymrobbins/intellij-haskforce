@@ -6,6 +6,7 @@ import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ProjectRootManager
 import com.intellij.openapi.vfs.VirtualFile
+import com.intellij.psi.PsiFile
 
 import scala.collection.JavaConverters._
 
@@ -36,7 +37,11 @@ object GhcPkgDumpProjectCacheService {
       internal.clear()
     }
 
-    def getDependenciesForFile(vFile: VirtualFile): Option[Set[Pkg]] = {
+    def getDependenciesForPsiFile(psiFile: PsiFile): Option[Set[Pkg]] = {
+      Option(psiFile.getOriginalFile.getVirtualFile).flatMap(getDependenciesForVirtualFile)
+    }
+
+    def getDependenciesForVirtualFile(vFile: VirtualFile): Option[Set[Pkg]] = {
       getDependenciesForSourcePath(vFile.getCanonicalPath)
         .orElse(getDependenciesForSourceFolder(vFile))
     }
