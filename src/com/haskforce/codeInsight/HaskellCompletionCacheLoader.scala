@@ -1,5 +1,8 @@
 package com.haskforce.codeInsight
 
+import java.util
+import java.util.concurrent.ConcurrentHashMap
+
 import com.haskforce.psi.HaskellFile
 import com.intellij.AppTopics
 import com.intellij.codeInsight.lookup.LookupElement
@@ -33,6 +36,7 @@ object HaskellCompletionCacheLoader {
   final class Cache {
     val ghcFlags: util.Set[String] = new util.HashSet(300)
     val languageExtensions: util.Set[LookupElementWrapper] = new util.HashSet(300)
+    val visibleModulesByFile: ConcurrentHashMap[String, Array[String]] = new ConcurrentHashMap(100)
     val moduleSymbols: util.Map[String, util.Set[LookupElementWrapper]] = new util.HashMap(10)
   }
 
