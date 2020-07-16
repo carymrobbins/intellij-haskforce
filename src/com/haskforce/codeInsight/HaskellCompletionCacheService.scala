@@ -3,7 +3,6 @@ package com.haskforce.codeInsight
 import java.util
 
 import com.haskforce.codeInsight.HaskellCompletionCacheLoader.LookupElementWrapper
-import com.haskforce.codeInsight.visibleModules.VisibleModulesProviderFactory
 import com.haskforce.psi.HaskellPsiUtil
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.util.Computable
@@ -23,11 +22,6 @@ class HaskellCompletionCacheService {
       if (force || cache.ghcFlags.isEmpty) {
         CompilerFlagsProviderFactory.get(file).foreach { provider =>
           putStrings(cache.ghcFlags, provider.getFlags)
-        }
-      }
-      if (force || cache.visibleModules.isEmpty) {
-        VisibleModulesProviderFactory.get(file).foreach { provider =>
-          putStrings(cache.visibleModules, provider.getVisibleModules)
         }
       }
       if (force || cache.languageExtensions.isEmpty) {
