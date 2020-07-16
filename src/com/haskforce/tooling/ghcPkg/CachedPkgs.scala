@@ -4,6 +4,8 @@ final class CachedPkgs(
   val toMap: Map[String, CachedPkgs.Versions]
 ) extends AnyVal {
 
+  def firstNamed(name: String): Option[Pkg] = named(name).flatMap(_.head)
+
   def named(name: String): Option[CachedPkgs.Versions] = toMap.get(name)
 
   def add(pkg: Pkg): CachedPkgs = {
