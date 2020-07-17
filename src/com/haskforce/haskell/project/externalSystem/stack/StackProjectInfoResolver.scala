@@ -4,6 +4,7 @@ import java.io.{BufferedReader, File, InputStream, InputStreamReader}
 import java.nio.charset.StandardCharsets
 
 import com.haskforce.HaskellModuleType
+import com.haskforce.settings.experimental.HaskForceExperimentalConfigurable
 import com.haskforce.tooling.ghcPkg.{GhcPkgDumpExecutor, GhcPkgDumpProjectCacheService}
 import com.haskforce.tooling.hpack.PackageYamlQuery
 import com.haskforce.utils.PsiFileParser
@@ -104,6 +105,7 @@ class StackProjectInfoResolver(
   private def loadGhcPkgCache(
     packageConfigAssocs: List[PackageConfigAssoc]
   ): Unit = {
+    if (!HaskForceExperimentalConfigurable.isGhcPkgEnabled(settings.project)) return
     val cachedPkgs = new GhcPkgDumpExecutor(
       projectPath, settings.stackExePath, settings.stackYamlPath
     ).run()
