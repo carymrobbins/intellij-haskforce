@@ -1,5 +1,6 @@
 package com.haskforce.codeInsight.visibleModules
 
+import com.haskforce.settings.experimental.HaskForceExperimentalConfigurable
 import com.haskforce.tooling.ghcPkg.GhcPkgDumpProjectCacheService
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
@@ -23,10 +24,12 @@ class GhcPkgDumpVisibleModulesProvider private(
 object GhcPkgDumpVisibleModulesProvider {
 
   def create(psiFile: PsiFile): Option[GhcPkgDumpVisibleModulesProvider] = {
+    val project = psiFile.getProject
+    if (!HaskForceExperimentalConfigurable.isGhcPkgEnabled(project)) return None
     for {
       vFile <- Option(psiFile.getOriginalFile.getVirtualFile)
     } yield new GhcPkgDumpVisibleModulesProvider(
-      psiFile.getProject,
+      project,
       vFile,
     )
   }
