@@ -13,7 +13,7 @@ import scala.beans.BeanProperty
 
 @State(
   name = "GhcPkgDumpProjectCacheService",
-  storages = Array(new Storage(StoragePathMacros.CACHE_FILE))
+  storages = Array(new Storage("ghc-pkg-dump.xml"))
 )
 class GhcPkgDumpProjectCacheService(project: Project)
   extends PersistentStateComponent[GhcPkgDumpProjectCacheService.State] {
