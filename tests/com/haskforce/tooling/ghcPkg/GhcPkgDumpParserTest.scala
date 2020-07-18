@@ -201,7 +201,7 @@ class GhcPkgDumpParserTest extends UsefulTestCase with AssertMixin {
   ): Unit = {
     assertEquals(
       words(names).toSet,
-      pkgs.toMap.keySet
+      pkgs.internal.keySet
     )
   }
 
