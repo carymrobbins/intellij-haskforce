@@ -115,7 +115,7 @@ class StackProjectInfoResolver(
       assoc.packageConfig.components.foreach { component =>
         val depPkgs = component.dependencies.flatMap(cachedPkgs.firstNamed)
         component.hsSourceDirs.foreach { srcDir =>
-          cacheService.sourcePathDependencyIndex.addDependencyForSourcePath(
+          cacheService.addDependencyForSourcePath(
             new File(assoc.packageDir, srcDir).getCanonicalPath, depPkgs
           )
         }
