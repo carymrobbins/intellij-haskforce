@@ -6,6 +6,8 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
 import com.intellij.psi.PsiFile
 
+import scala.collection.JavaConverters._
+
 class GhcPkgDumpVisibleModulesProvider private(
   project: Project,
   vFile: VirtualFile
@@ -13,10 +15,11 @@ class GhcPkgDumpVisibleModulesProvider private(
 
   override def getVisibleModules: Array[String] = {
     GhcPkgDumpProjectCacheService.getInstance(project)
-      .sourcePathDependencyIndex
       .getDependenciesForVirtualFile(vFile)
       .map { pkgs =>
-        pkgs.iterator.flatMap(_.exposedModules).toArray
+        pkgs.iterator.asScala
+          .flatMap(_.exposedModules.iterator().asScala)
+          .toArray
       }.getOrElse(Array.empty)
   }
 }
