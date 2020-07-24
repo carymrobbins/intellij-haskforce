@@ -99,6 +99,7 @@
     <!-- Cache-->
     <projectService serviceImplementation="com.haskforce.codeInsight.HaskellCompletionCacheService"/>
     <projectService serviceImplementation="com.haskforce.tooling.ghcPkg.GhcPkgDumpProjectCacheService"/>
+    <projectService serviceImplementation="com.haskforce.tooling.stack.PackageConfigCacheService"/>
 
     <!-- Language injections -->
     <lang.elementManipulator forClass="com.haskforce.psi.HaskellQqblob"
