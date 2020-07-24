@@ -4,9 +4,8 @@ import java.io.{BufferedReader, File, InputStream, InputStreamReader}
 import java.nio.charset.StandardCharsets
 
 import com.haskforce.HaskellModuleType
-import com.haskforce.settings.experimental.HaskForceExperimentalConfigurable
-import com.haskforce.tooling.ghcPkg.{GhcPkgDumpExecutor, GhcPkgDumpProjectCacheService}
 import com.haskforce.tooling.hpack.PackageYamlQuery
+import com.haskforce.tooling.stack.PackageConfigCacheService
 import com.haskforce.utils.PsiFileParser
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.openapi.externalSystem.model.project._
@@ -34,10 +33,37 @@ class StackProjectInfoResolver(
   // they are cancellable.
   def resolve(): DataNode[ProjectData] = {
     workManager.compute {
-      buildStackDeps()
+      syncCabalFiles()
       val packageConfigAssocs = buildPackageConfigAssocs()
-      loadGhcPkgCache(packageConfigAssocs)
+      PackageConfigCacheService
+        .getInstance(settings.project)
+        .setPackageConfigAssocs(packageConfigAssocs)
       buildDataNode(packageConfigAssocs)
+    }
+  }
+
+  private def syncCabalFiles(): Unit = {
+    LOG("Synchronizing cabal files...")
+    val c = new GeneralCommandLine(
+      settings.stackExePath, "--stack-yaml", settings.stackYamlPath,
+      "build", "--dependencies-only", "--dry-run"
+    )
+    c.setWorkDirectory(settings.linkedProjectPath)
+    c.setRedirectErrorStream(true)
+    workManager.proc(c) { p =>
+      inputStreamIterLines(p.getInputStream).foreach { line =>
+        LOG(line)
+      }
+      val exitCode = p.waitFor()
+      if (exitCode != 0) {
+        throw new StackSystemException(
+          "Failed to synchronize cabal files",
+          vars = List(
+            "exitCode" -> exitCode,
+            "command" -> c.getCommandLineString
+          )
+        )
+      }
     }
   }
 
@@ -78,49 +104,6 @@ class StackProjectInfoResolver(
       )
     }
     projectDataNode
-  }
-
-  private def buildStackDeps(): Unit = {
-    LOG(s"Building dependencies with stack...")
-    val c = new GeneralCommandLine(
-      settings.stackExePath, "--stack-yaml", settings.stackYamlPath,
-      "build", "--dependencies-only"
-    )
-    c.setWorkDirectory(settings.linkedProjectPath)
-    c.setRedirectErrorStream(true)
-    LOG(c.getCommandLineString)
-    workManager.proc(c) { p =>
-      inputStreamIterLines(p.getInputStream).foreach { line =>
-        LOG(line)
-      }
-      val exitCode = p.waitFor()
-      if (exitCode != 0) {
-        throw new StackSystemException(
-          s"Building stack dependencies failed with exit code $exitCode"
-        )
-      }
-    }
-  }
-
-  private def loadGhcPkgCache(
-    packageConfigAssocs: List[PackageConfigAssoc]
-  ): Unit = {
-    if (!HaskForceExperimentalConfigurable.isGhcPkgEnabled(settings.project)) return
-    val cachedPkgs = new GhcPkgDumpExecutor(
-      projectPath, settings.stackExePath, settings.stackYamlPath
-    ).run()
-    val cacheService = GhcPkgDumpProjectCacheService.getInstance(settings.project)
-    cacheService.putPkgs(cachedPkgs)
-    packageConfigAssocs.foreach { assoc =>
-      assoc.packageConfig.components.foreach { component =>
-        val depPkgs = component.dependencies.flatMap(cachedPkgs.firstNamed)
-        component.hsSourceDirs.foreach { srcDir =>
-          cacheService.addDependencyForSourcePath(
-            new File(assoc.packageDir, srcDir).getCanonicalPath, depPkgs
-          )
-        }
-      }
-    }
   }
 
   private def buildPackageConfigAssocs(): List[PackageConfigAssoc] = {

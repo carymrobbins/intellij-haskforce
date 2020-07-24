@@ -34,8 +34,22 @@ object NonEmptySet {
     if (s.isEmpty) None else Some(new NonEmptySet(s.toSet))
   }
 
+  def fromIterator[A](it: Iterator[A]): Option[NonEmptySet[A]] = {
+    if (it.isEmpty) None else Some(new NonEmptySet(it.toSet))
+  }
+
   def fromTraversables[A](ss: Traversable[Traversable[A]]): Option[NonEmptySet[A]] = {
     fromSets(ss.toStream.map(_.toSet))
   }
-}
 
+  implicit def jdom[A](
+    implicit A: JDOMExternalizable[A]
+  ): JDOMFieldExternalizable[NonEmptySet[A]] = {
+    JDOMFieldExternalizable.iter[A].imap(
+      it => fromIterator(it).getOrElse {
+        throw new IllegalArgumentException("Unexpected empty set")
+      },
+      _.iterator
+    )
+  }
+}

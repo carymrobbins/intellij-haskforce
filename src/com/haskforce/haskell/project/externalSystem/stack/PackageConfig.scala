@@ -4,7 +4,7 @@ import java.io.File
 
 import com.haskforce.cabal.lang.psi.CabalFile
 import com.haskforce.cabal.query.{BuildInfo, CabalQuery}
-import com.haskforce.utils.{IJReadAction, NonEmptySet, PsiFileParser}
+import com.haskforce.utils._
 import com.intellij.openapi.application.ApplicationManager
 import prelude._
 import scalaz.std.list._
@@ -104,10 +104,13 @@ object PackageConfig {
   object Component {
     sealed trait Type
     object Type {
+
       case object Library extends Type
       case object Executable extends Type
       case object TestSuite extends Type
       case object Benchmark extends Type
+
+      private val ALL = List[Type](Library, Executable, TestSuite, Benchmark)
 
       def fromBuildInfoType(t: BuildInfo.Type): Type = t match {
         case BuildInfo.Type.Library => Library
@@ -115,13 +118,32 @@ object PackageConfig {
         case BuildInfo.Type.TestSuite => TestSuite
         case BuildInfo.Type.Benchmark => Benchmark
       }
+
+      implicit val jdom: JDOMFieldExternalizable[Type] = {
+        JDOMFieldExternalizable.string.imap(
+          s => {
+            ALL.find(_.toString == s).getOrElse {
+              throw new IllegalArgumentException(s"Invalid Component.Type: $s")
+            }
+          },
+          _.toString
+        )
+      }
     }
+
+    implicit val jdom: JDOMExternalizable[Component] =
+      JDOMExternalizable.derive6(apply, unapply)
   }
 
   final case class Dependency(
     name: String,
     version: String
   )
+
+  implicit val jdom: JDOMFieldExternalizable[PackageConfig] =
+    JDOMFieldExternalizable.fromJDOMExternalizable(
+      JDOMExternalizable.derive2(apply, unapply)
+    )
 }
 
 final class InvalidPackageConfigException(override val getMessage: String)
