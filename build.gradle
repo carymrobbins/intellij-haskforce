@@ -32,6 +32,10 @@ allprojects {
         version = '2021.1'
         pluginName = 'HaskForce'
         plugins = ['java', 'yaml']
+        // Useful plugins to default-install when developing.
+        if (System.properties['DEV_MODE'] == "true") {
+            plugins += ['gradle', 'IdeaVIM:0.58']
+        }
     }
 
     repositories {
