@@ -38,6 +38,10 @@ allprojects {
         version = properties('platformVersion')
         type = properties('platformType')
         plugins = ['java', 'yaml']
+        // Useful plugins to default-install when developing.
+        if (System.properties['DEV_MODE'] == "true") {
+            plugins += ['gradle', 'IdeaVIM:0.58']
+        }
     }
 
     repositories {
