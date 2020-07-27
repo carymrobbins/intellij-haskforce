@@ -617,6 +617,11 @@
     <projectService serviceImplementation="com.haskforce.haskell.project.externalSystem.stack.StackSettings"/>
     <projectService serviceImplementation="com.haskforce.haskell.project.externalSystem.stack.StackLocalSettings"/>
 
+    <toolWindow
+      id="Stack" anchor="right" icon="/icons/haskell-13px.png"
+      factoryClass="com.haskforce.haskell.project.externalSystem.stack.ui.StackToolWindowFactory"
+    />
+
     <!-- External builder support -->
     <!-- Note that the classpath is needed for plugin deployment to export a zip archive. -->
     <compileServer.plugin classpath="jps-plugin.jar;jps-shared.jar"/>
