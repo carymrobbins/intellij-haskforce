@@ -195,7 +195,7 @@ object JDOMExternalizable {
         cField.writeField(cName, el, c)
         dField.writeField(dName, el, d)
         eField.writeField(eName, el, e)
-        fField.writeField(eName, el, f)
+        fField.writeField(fName, el, f)
       }
     )
   }
