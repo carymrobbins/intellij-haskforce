@@ -74,10 +74,8 @@ object StackProjectImporter {
       if (externalProject == null) return
       importData(externalProject)
       if (HaskForceExperimentalConfigurable.isGhcPkgEnabled(project)) {
-        GhcPkgDumpProjectCacheService.getInstance(project).getPkgs.foreach { cachedPkgs =>
-          buildStackDeps(project, projectDirectory, configuredStack)
-          loadGhcPkgCache(project, projectDirectory, configuredStack)
-        }
+        buildStackDeps(project, projectDirectory, configuredStack)
+        loadGhcPkgCache(project, projectDirectory, configuredStack)
       }
     }
 
