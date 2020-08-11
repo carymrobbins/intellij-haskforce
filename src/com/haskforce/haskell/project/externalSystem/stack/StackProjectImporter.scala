@@ -176,7 +176,7 @@ object StackProjectImporter {
     cacheService.putPkgs(cachedPkgs)
     packageConfigAssocs.foreach { assoc =>
       assoc.packageConfig.components.foreach { component =>
-        val depPkgs = component.dependencies.flatMap(cachedPkgs.firstNamed)
+        val depPkgs = component.dependencies.flatMap(d => cachedPkgs.first(d.name, d.version))
         component.hsSourceDirs.foreach { srcDir =>
           cacheService.addDependencyForSourcePath(
             new File(assoc.packageDir, srcDir).getCanonicalPath, depPkgs
