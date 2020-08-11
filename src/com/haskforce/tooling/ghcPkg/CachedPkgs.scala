@@ -14,6 +14,17 @@ final class CachedPkgs(
 
   def named(name: String): Option[CachedPkgs.Versions] = Option(internal.get(name))
 
+  def get(name: String, version: String): Option[Pkg] = {
+    named(name).flatMap(_.versioned(version))
+  }
+
+  def first(name: String, version: Option[String]): Option[Pkg] = {
+    version match {
+      case None => firstNamed(name)
+      case Some(v) => get(name, v)
+    }
+  }
+
   def add(pkg: Pkg): Unit = {
     internal.computeIfAbsent(pkg.name, _ => new CachedPkgs.Versions).add(pkg)
   }
