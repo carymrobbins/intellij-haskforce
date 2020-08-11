@@ -1,6 +1,7 @@
 package com.haskforce.haskell.project.externalSystem.stack
 
 import java.io.File
+import java.util.regex.Pattern
 
 import com.haskforce.cabal.lang.psi.CabalFile
 import com.haskforce.cabal.query.{BuildInfo, CabalQuery}
@@ -80,7 +81,8 @@ object PackageConfig {
         case x: BuildInfo.TestSuite => x.getMainIs
         case x: BuildInfo.Benchmark => x.getMainIs
       }
-      dependencies <- buildInfo.getDependencies
+      dependencyNames <- buildInfo.getDependencies
+      dependencies = dependencyNames.map(name => Dependency(name = name, version = None))
       extensions <- buildInfo.getExtensions
     } yield Component(
       typ = typ,
@@ -97,11 +99,12 @@ object PackageConfig {
     name: String,
     hsSourceDirs: NonEmptySet[String],
     mainIs: Option[String],
-    dependencies: Set[String],
+    dependencies: Set[Dependency],
     extensions: Set[String]
   )
 
   object Component {
+
     sealed trait Type
     object Type {
 
@@ -137,8 +140,22 @@ object PackageConfig {
 
   final case class Dependency(
     name: String,
-    version: String
+    version: Option[String]
   )
+
+  object Dependency {
+
+    def parseString(s: String): Dependency = {
+      val m = DEPENDENCY_VERSION_REGEX.matcher(s)
+      if (!m.matches()) return Dependency(name = s, version = None)
+      Dependency(name = m.group(1), version = Option(m.group(2)))
+    }
+
+    private val DEPENDENCY_VERSION_REGEX = Pattern.compile("""(.*)-(\d+[\.\d+]+)""")
+
+    implicit val jdom: JDOMExternalizable[Dependency] =
+      JDOMExternalizable.derive2(apply, unapply)
+  }
 
   implicit val jdom: JDOMFieldExternalizable[PackageConfig] =
     JDOMFieldExternalizable.fromJDOMExternalizable(

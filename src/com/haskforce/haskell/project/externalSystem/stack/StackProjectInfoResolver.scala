@@ -2,6 +2,7 @@ package com.haskforce.haskell.project.externalSystem.stack
 
 import java.io.{BufferedReader, File, InputStream, InputStreamReader}
 import java.nio.charset.StandardCharsets
+import java.util
 
 import com.haskforce.HaskellModuleType
 import com.haskforce.tooling.hpack.PackageYamlQuery
@@ -24,6 +25,8 @@ class StackProjectInfoResolver(
   workManager: StackProjectResolver.WorkManager
 ) {
 
+  import StackProjectInfoResolver._
+
   private def LOG(text: String, stdOut: Boolean = true): Unit = {
     listener.onTaskOutput(id, text + "\n", stdOut)
   }
@@ -34,7 +37,8 @@ class StackProjectInfoResolver(
   def resolve(): DataNode[ProjectData] = {
     workManager.compute {
       syncCabalFiles()
-      val packageConfigAssocs = buildPackageConfigAssocs()
+      val dependencyVersionResolver = getDependencyVersionResolver()
+      val packageConfigAssocs = buildPackageConfigAssocs(dependencyVersionResolver)
       PackageConfigCacheService
         .getInstance(settings.project)
         .setPackageConfigAssocs(packageConfigAssocs)
@@ -64,6 +68,46 @@ class StackProjectInfoResolver(
           )
         )
       }
+    }
+  }
+
+  private def getDependencyVersionResolver(): DependencyVersionResolver = {
+    LOG("Getting dependency versions...")
+    val c = new GeneralCommandLine(
+      settings.stackExePath, "--stack-yaml", settings.stackYamlPath,
+      "ls", "dependencies", "--separator", ":"
+    )
+    c.setWorkDirectory(settings.linkedProjectPath)
+    workManager.proc(c) { p =>
+      val dependencyVersionResolver = new DependencyVersionResolver
+      inputStreamIterLines(p.getInputStream).foreach { line =>
+        line.split(":", 2) match {
+          case Array(dep, version) =>
+            dependencyVersionResolver.addDependencyVersion(dep, version)
+          case _ =>
+            throw new StackSystemException(
+              "Invalid dependency line encountered",
+              vars = List(
+                "command" -> c.getCommandLineString,
+                "line" -> line,
+              )
+            )
+        }
+      }
+      val exitCode = p.waitFor()
+      if (exitCode != 0) {
+        inputStreamIterLines(p.getErrorStream).foreach { line =>
+          LOG(line, stdOut = false)
+        }
+        throw new StackSystemException(
+          "Failed to get dependency versions",
+          vars = List(
+            "exitCode" -> exitCode,
+            "command" -> c.getCommandLineString,
+          )
+        )
+      }
+      dependencyVersionResolver
     }
   }
 
@@ -106,7 +150,9 @@ class StackProjectInfoResolver(
     projectDataNode
   }
 
-  private def buildPackageConfigAssocs(): List[PackageConfigAssoc] = {
+  private def buildPackageConfigAssocs(
+    dependencyVersionResolver: DependencyVersionResolver
+  ): List[PackageConfigAssoc] = {
     stackIterCabalFilePaths { it =>
       it.map { path =>
         val file = new File(path)
@@ -114,10 +160,28 @@ class StackProjectInfoResolver(
         val packageConfig = parsePackageConfig(file)
         PackageConfigAssoc(
           packageDir = packageDir,
-          packageConfig = packageConfig
+          packageConfig = withDependencyVersions(
+            packageConfig,
+            dependencyVersionResolver
+          )
         )
       }.toList
     }
+  }
+
+  private def withDependencyVersions(
+    packageConfig: PackageConfig,
+    dependencyVersionResolver: DependencyVersionResolver
+  ): PackageConfig = {
+    packageConfig.copy(
+      components = packageConfig.components.map(c =>
+        c.copy(
+          dependencies = c.dependencies.map(d =>
+            dependencyVersionResolver.resolveDependencyVersion(d)
+          )
+        )
+      )
+    )
   }
 
   private def parsePackageConfig(file: File): PackageConfig = {
@@ -279,23 +343,23 @@ class StackProjectInfoResolver(
       }
     }
 
-    val deps = new java.util.HashMap[String, DependencyScope]
+    val deps = new java.util.HashMap[String, (PackageConfig.Dependency, DependencyScope)]
     packageConfig.components.foreach { component =>
       getDependencyType(component) match {
         case DependencyType.Compile =>
           // This may, intentionally, overwrite any TEST deps as COMPILE deps.
           component.dependencies.foreach { dep =>
-            deps.put(dep, DependencyScope.COMPILE)
+            deps.put(dep.name, (dep, DependencyScope.COMPILE))
           }
         case DependencyType.Test =>
           // We don't want duplicate deps. Any already included in COMPILE
           // don't need to be re-included in TEST.
           component.dependencies.foreach { dep =>
-            deps.putIfAbsent(dep, DependencyScope.TEST)
+            deps.putIfAbsent(dep.name, (dep, DependencyScope.TEST))
           }
       }
     }
-    deps.forEach { (dep, scope) =>
+    deps.forEach { case (_, (dep, scope)) =>
       packageModuleDataNode.addChild(
         mkLibDepNode(packageModuleData, dep, scope)
       )
@@ -306,13 +370,17 @@ class StackProjectInfoResolver(
 
   private def mkLibDepNode(
     ownerModule: ModuleData,
-    name: String,
+    dep: PackageConfig.Dependency,
     dependencyScope: DependencyScope
   ): DataNode[LibraryDependencyData] = {
     val libData = new LibraryData(
       StackManager.PROJECT_SYSTEM_ID,
-      name
+      dep.name
     )
+    dep.version.foreach { v =>
+      libData.setExternalName(s"${dep.name}:$v")
+      libData.setVersion(v)
+    }
     val libDepData = new LibraryDependencyData(
       ownerModule,
       libData,
@@ -354,9 +422,36 @@ class StackProjectInfoResolver(
         DependencyType.Test
     }
   }
+}
 
-  private sealed trait DependencyType
-  private object DependencyType {
+object StackProjectInfoResolver {
+
+  private[StackProjectInfoResolver] class DependencyVersionResolver {
+
+    /**
+     * If the supplied 'dep' already has its 'version' field set, simply return it.
+     * Otherwise, attempt to set its 'version' from our internal mapping.
+     */
+    def resolveDependencyVersion(dep: PackageConfig.Dependency): PackageConfig.Dependency = {
+      if (dep.version.isDefined) return dep
+      dep.copy(version = Option(internal.get(dep.name)))
+    }
+
+    /** Adds a configured dependency to the internal mapping. */
+    def addDependencyVersion(dep: String, version: String): Unit = {
+      val existing = internal.put(dep, version)
+      if (existing != null) {
+        throw new IllegalStateException(
+          s"Dependency specified multiple times: $dep; versions: $existing, $version"
+        )
+      }
+    }
+
+    private val internal = new util.HashMap[String, String]
+  }
+
+  private[StackProjectInfoResolver] sealed trait DependencyType
+  private[StackProjectInfoResolver] object DependencyType {
     case object Compile extends DependencyType
     case object Test extends DependencyType
   }
