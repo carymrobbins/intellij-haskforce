@@ -488,8 +488,6 @@
                             implementationClass="com.haskforce.codeInsight.HaskellCompletionContributor"/>
 
     <!-- References/navigation -->
-    <codeInsight.lineMarkerProvider language="Haskell"
-                                    implementationClass="com.haskforce.codeInsight.HaskellLineMarkerProvider"/>
     <psi.referenceContributor
         implementation="com.haskforce.psi.references.HaskellReferenceContributor"/>
     <lang.findUsagesProvider language="Haskell"
