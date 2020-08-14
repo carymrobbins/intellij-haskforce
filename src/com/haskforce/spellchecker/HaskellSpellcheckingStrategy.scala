@@ -6,22 +6,37 @@ import com.haskforce.psi._
 import com.haskforce.utils.CastUtil.Ops
 import com.haskforce.utils.PQ
 import com.intellij.psi.{PsiComment, PsiElement}
-import com.intellij.spellchecker.tokenizer.SpellcheckingStrategy
+import com.intellij.spellchecker.inspections.PlainTextSplitter
+import com.intellij.spellchecker.tokenizer.{SpellcheckingStrategy, Tokenizer, TokenizerBase}
 
 /**
  * Provide spellchecker support for Haskell/Cabal sources.
  */
 class HaskellSpellcheckingStrategy extends SpellcheckingStrategy {
 
+  override def getTokenizer(element: PsiElement): Tokenizer[_ <: PsiElement] = {
+    // We need to split on apostrophes when spellchecking Haskell identifiers.
+    if (isHaskellIdent(element)) {
+      HaskellSpellcheckingStrategy.HASKELL_IDENT_TOKENIZER
+    } else {
+      HaskellSpellcheckingStrategy.STANDARD_TOKENIZER
+    }
+  }
+
   override def isMyContext(e: PsiElement): Boolean = {
-    isHaskell(e) && isDefinitionNode(e)
+    (isHaskell(e) || isCabal(e)) && isDefinitionNode(e)
   }
 
   private def isHaskell(e: PsiElement): Boolean = {
-    Seq(
-      HaskellLanguage.INSTANCE,
-      CabalLanguage.INSTANCE
-    ).exists(_.is(e.getLanguage))
+    HaskellLanguage.INSTANCE.is(e.getLanguage)
+  }
+
+  private def isHaskellIdent(e: PsiElement): Boolean = {
+    e.isInstanceOf[HaskellNamedElement]
+  }
+
+  private def isCabal(e: PsiElement): Boolean = {
+    CabalLanguage.INSTANCE.is(e.getLanguage)
   }
 
   private def isDefinitionNode(e: PsiElement): Boolean = {
@@ -128,4 +143,15 @@ class HaskellSpellcheckingStrategy extends SpellcheckingStrategy {
     e.getParent.cast[HaskellTyvar]
       .flatMap(_.getParent.cast[HaskellNewtypedecl])
   }
+}
+
+object HaskellSpellcheckingStrategy {
+
+  private val HASKELL_IDENT_TOKENIZER = new TokenizerBase[PsiElement](
+    HaskellSpellcheckingSplitter.getInstance()
+  )
+
+  private val STANDARD_TOKENIZER = new TokenizerBase[PsiElement](
+    PlainTextSplitter.getInstance()
+  )
 }
