@@ -6,6 +6,7 @@ import com.intellij.util.containers.HashSet;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 /**
  * Ensures names are legal Haskell. Used by refactoring.
@@ -35,14 +36,16 @@ public class HaskellNamesValidator implements NamesValidator {
      */
     @Override
     public boolean isIdentifier(@NotNull String name, Project project) {
-        String[] parts = name.split("\\.");
-
+        String[] parts = DOT_REGEX.split(name);
+        if (parts.length == 0) return false;
         for (int i = 0; i < parts.length - 1; i++) {
             String word = parts[i];
             if (!isModid(word, project)) return false;
         }
         return isOneid(parts[parts.length - 1], project, true);
     }
+
+    static Pattern DOT_REGEX = Pattern.compile("\\.");
 
     /**
      * Extended grammar for varid/conid from Haskell 2010 specification. Also allows

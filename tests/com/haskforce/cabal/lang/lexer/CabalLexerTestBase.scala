@@ -1,10 +1,10 @@
 package com.haskforce.cabal.lang.lexer
 
 import java.io.{File, FileNotFoundException, IOException}
+import java.util.Objects
 
 import com.intellij.lang.TokenWrapper
 import com.intellij.lexer.Lexer
-import com.intellij.openapi.util.Comparing
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.util.text.StringUtil
 import com.intellij.openapi.vfs.CharsetToolkit
@@ -60,7 +60,7 @@ abstract class CabalLexerTestBase extends LexerTestCase {
     }
     try {
       val expectedText = doLoadFile(fullPath, targetDataName)
-      if (!Comparing.equal(expectedText, text)) {
+      if (!Objects.equals(expectedText, text)) {
         throw new FileComparisonFailure(
           targetDataName, expectedText, text, expectedFileName
         )
