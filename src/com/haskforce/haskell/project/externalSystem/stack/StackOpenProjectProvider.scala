@@ -1,5 +1,7 @@
 package com.haskforce.haskell.project.externalSystem.stack
 
+import java.nio.file.Path
+
 import com.intellij.openapi.externalSystem.importing.AbstractOpenProjectProvider
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VirtualFile
@@ -12,9 +14,9 @@ class StackOpenProjectProvider extends AbstractOpenProjectProvider {
   }
 
   override def linkAndRefreshProject(
-    projectDirectory: String,
+    projectDirectory: Path,
     project: Project
   ): Unit = {
-    StackProjectImporter.importProject(project, projectDirectory)
+    StackProjectImporter.importProject(project, projectDirectory.toString)
   }
 }
