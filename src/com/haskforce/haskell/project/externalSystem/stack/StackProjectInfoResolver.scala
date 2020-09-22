@@ -39,11 +39,18 @@ class StackProjectInfoResolver(
       syncCabalFiles()
       val dependencyVersionResolver = getDependencyVersionResolver()
       val packageConfigAssocs = buildPackageConfigAssocs(dependencyVersionResolver)
-      PackageConfigCacheService
-        .getInstance(settings.project)
-        .setPackageConfigAssocs(packageConfigAssocs)
+      cachePackageConfigAssocs(packageConfigAssocs)
       buildDataNode(packageConfigAssocs)
     }
+  }
+
+  private def cachePackageConfigAssocs(
+    packageConfigAssocs: List[PackageConfigAssoc]
+  ): Unit = {
+    LOG("Caching package configurations...")
+    PackageConfigCacheService
+      .getInstance(settings.project)
+      .setPackageConfigAssocs(packageConfigAssocs)
   }
 
   private def syncCabalFiles(): Unit = {
@@ -114,6 +121,7 @@ class StackProjectInfoResolver(
   private def buildDataNode(
     packageConfigAssocs: List[PackageConfigAssoc]
   ): DataNode[ProjectData] = {
+    LOG("Building data nodes...")
     val rootProjectName = inferRootProjectName(projectPath)
     LOG(s"rootProjectName=$rootProjectName")
     val projectDataNode = mkProjectDataNode(
@@ -153,8 +161,9 @@ class StackProjectInfoResolver(
   private def buildPackageConfigAssocs(
     dependencyVersionResolver: DependencyVersionResolver
   ): List[PackageConfigAssoc] = {
-    stackIterCabalFilePaths { it =>
-      it.map { path =>
+    LOG("Loading package configurations...")
+    stackWithCabalFilePaths { paths =>
+      paths.map { path =>
         val file = new File(path)
         val packageDir = file.getParentFile.getCanonicalPath
         val packageConfig = parsePackageConfig(file)
@@ -165,7 +174,7 @@ class StackProjectInfoResolver(
             dependencyVersionResolver
           )
         )
-      }.toList
+      }
     }
   }
 
@@ -201,13 +210,15 @@ class StackProjectInfoResolver(
     }
   }
 
-  private def stackIterCabalFilePaths[A](f: Iterator[String] => A): A = {
+  private def stackWithCabalFilePaths[A](f: List[String] => A): A = {
+    LOG("Getting cabal file list...")
     val c = new GeneralCommandLine(
       settings.stackExePath, "--stack-yaml", settings.stackYamlPath,
       "ide", "packages", "--stdout", "--cabal-files"
     )
     c.setWorkDirectory(projectPath)
     workManager.proc(c) { p =>
+      val cabalFilePaths = inputStreamLines(p.getInputStream)
       val exitCode = p.waitFor()
       if (exitCode != 0) {
         val err = IOUtils.toString(p.getErrorStream, StandardCharsets.UTF_8)
@@ -220,8 +231,12 @@ class StackProjectInfoResolver(
           )
         )
       }
-      f(inputStreamIterLines(p.getInputStream))
+      f(cabalFilePaths)
     }
+  }
+
+  private def inputStreamLines(is: InputStream): List[String] = {
+    inputStreamIterLines(is).toList
   }
 
   private def inputStreamIterLines(is: InputStream): Iterator[String] = {
