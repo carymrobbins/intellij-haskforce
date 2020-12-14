@@ -18,6 +18,15 @@
       <a href="https://github.com/carymrobbins/intellij-haskforce/issues">bug tracker</a>.
     </p>
     <p>
+      <b>v0.3.45</b>
+      <ul>
+        <li>IDEA 2020.3 Support</li>
+        <li>Avoid indexing an empty array in HaskellNamesValidator (#439)</li>
+        <li>Fix the spellchecker for identifiers with apostrophes</li>
+        <li>Module completion from ghc-pkg (optional, experimental)</li>
+        <li>Remove Eta support</li>
+        <li>Stop displaying 'Type info not found' tooltip</li>
+      </ul>
       <b>v0.3.44</b>
       <ul>
         <li>IDEA 2020.1 Support (#426)</li>
