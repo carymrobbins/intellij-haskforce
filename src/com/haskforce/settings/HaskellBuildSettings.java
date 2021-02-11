@@ -144,14 +144,8 @@ public class HaskellBuildSettings implements PersistentStateComponent<HaskellBui
 
     @NotNull
     public static HaskellBuildSettings getInstance(@NotNull Project project) {
-        HaskellBuildSettings settings = project.getService(HaskellBuildSettings.class);
-        if (settings == null) settings = new HaskellBuildSettings();
-
-        // TODO: Yeah this seems bad. Although we may be relying on this in places,
-        // probably better to fix it up at the call sites.
-        // settings.updatePaths();
-
-        return settings;
+        HaskellBuildSettings settings = ServiceManager.getService(project, HaskellBuildSettings.class);
+        return settings == null ? new HaskellBuildSettings() : settings;
     }
 
     @NotNull
