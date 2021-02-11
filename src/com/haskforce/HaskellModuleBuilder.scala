@@ -5,12 +5,11 @@ import java.awt.{Color, GridBagLayout}
 import java.io.{File, IOException}
 import java.util
 import java.util.concurrent.ExecutionException
-
 import com.haskforce.cabal.settings.CabalPackageSettingsStep
 import com.haskforce.cabal.settings.ui.NewCabalProjectForm
 import com.haskforce.settings.HaskellBuildSettings
 import com.haskforce.ui.GC
-import com.haskforce.utils.{GuiUtil, Logging}
+import com.haskforce.utils.{ExecUtil, GuiUtil, Logging}
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.ide.util.projectWizard._
 import com.intellij.openapi.fileTypes.FileTypeManager
@@ -25,6 +24,7 @@ import com.intellij.openapi.util.Pair
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.uiDesigner.core.Spacer
+
 import javax.swing._
 import org.apache.commons.lang.builder.HashCodeBuilder
 import org.jetbrains.annotations.{NotNull, Nullable}
@@ -273,6 +273,7 @@ class HaskellBuildToolStepForm(wizardContext: WizardContext) {
     ProjectManager.getInstance.getDefaultProject
   )
   private val buildSettings = HaskellBuildSettings.getInstance(project)
+
   // Select the appropriate radio button, defaulting to Stack, and disable the other's fields.
   if (buildSettings.isCabalEnabled) {
     buildWithCabalRadio.setSelected(true)
@@ -281,9 +282,21 @@ class HaskellBuildToolStepForm(wizardContext: WizardContext) {
     buildWithStackRadio.setSelected(true)
     cabalFields.foreach { _.setEnabled(false) }
   }
-  stackPathField.setText(buildSettings.getStackPath)
-  ghcPathField.setText(buildSettings.getGhcPath)
-  cabalPathField.setText(buildSettings.getCabalPath)
+
+  // Set paths for stack, ghc, and cabal from the buildSettings or, if it is not set, by guessing.
+  def setPath(
+    setter: String => Unit,
+    pathFromSettings: String,
+    exeToGuess: String
+  ): Unit = {
+    Option(pathFromSettings)
+      .filter(_.nonEmpty)
+      .orElse(Option(ExecUtil.locateExecutableByGuessing(exeToGuess)))
+      .foreach(setter)
+  }
+  setPath(stackPathField.setText, buildSettings.getStackPath, "stack")
+  setPath(ghcPathField.setText, buildSettings.getGhcPath, "ghc")
+  setPath(cabalPathField.setText, buildSettings.getCabalPath, "cabal")
 }
 
 case class HaskellCabalPackageSettingsStep(
