@@ -119,9 +119,11 @@ abstract public class HaskellCompletionTestBase extends HaskellLightPlatformCode
     }
 
     protected void loadVisibleModules(final String... ss) {
-        cacheLoaders.add(cache ->
-            cache.visibleModulesByFile().put(myFixture.getTestDataPath(), ss)
-        );
+        cacheLoaders.add(cache -> {
+            String filePath = myFixture.getFile().getVirtualFile().getCanonicalPath();
+            assertNotNull(filePath);
+            cache.visibleModulesByFile().put(filePath, ss);
+        });
     }
 
     protected void loadModuleSymbols(final Map<String, List<LookupElement>> m) {
