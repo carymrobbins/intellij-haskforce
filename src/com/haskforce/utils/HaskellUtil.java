@@ -49,8 +49,9 @@ public class HaskellUtil {
             List<HaskellFile> files = HaskellModuleIndex.getFilesByModuleName(project, potentialModule.module, GlobalSearchScope.allScope(project));
             for (HaskellFile f : files) {
                 final boolean returnAllReferences = name == null;
-                final boolean inLocalModule = qPrefix == null && f.equals(psiFile);
-                if (returnAllReferences || inLocalModule) {
+                final boolean inLocalModule = f != null && qPrefix == null && f.equals(psiFile);
+                final boolean inImportedModule = f != null && potentialModuleNames.contains(f.getModuleName());
+                if (returnAllReferences || inLocalModule || inImportedModule) {
                     findDefinitionNode(f, name, e, result);
                     findDefinitionNodeInExport(project, f, name, e, result);
 
