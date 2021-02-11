@@ -26,7 +26,7 @@ class PackageConfigTest extends BasePlatformTestCase with AssertMixin {
             "text",
             "time",
             "uuid"
-          ),
+          ).map(PackageConfig.Dependency(_, None)),
           extensions = Set(
             "BlockArguments",
             "ConstraintKinds",
@@ -44,7 +44,7 @@ class PackageConfigTest extends BasePlatformTestCase with AssertMixin {
             "aeson-qq",
             "base",
             "hspec"
-          ),
+          ).map(PackageConfig.Dependency(_, None)),
           extensions = Set(
             "BlockArguments",
             "ConstraintKinds",
