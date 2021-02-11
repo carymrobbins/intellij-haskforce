@@ -4,6 +4,7 @@ import java.io.{FileInputStream, InputStream}
 
 import com.haskforce.test.AssertMixin
 import com.intellij.testFramework.UsefulTestCase
+import scala.collection.JavaConverters._
 
 class GhcPkgDumpParserTest extends UsefulTestCase with AssertMixin {
 
@@ -201,7 +202,7 @@ class GhcPkgDumpParserTest extends UsefulTestCase with AssertMixin {
   ): Unit = {
     assertEquals(
       words(names).toSet,
-      pkgs.internal.keySet
+      pkgs.internal.keySet.asScala
     )
   }
 
@@ -211,14 +212,14 @@ class GhcPkgDumpParserTest extends UsefulTestCase with AssertMixin {
     version: String,
     exposedModules: String
   ): Unit = {
-    assertExposedModules(pkgs, name, version, words(exposedModules).toList)
+    assertExposedModules(pkgs, name, version, words(exposedModules).toSet)
   }
 
   private def assertExposedModules(
     pkgs: CachedPkgs,
     name: String,
     version: String,
-    exposedModules: List[String]
+    exposedModules: Set[String]
   ): Unit = {
     assertEquals(
       exposedModules,
@@ -226,7 +227,7 @@ class GhcPkgDumpParserTest extends UsefulTestCase with AssertMixin {
         throw new AssertionError(s"Package '$name' not found")
       }.versioned(version).getOrElse {
         throw new AssertionError(s"Package '$name' with version '$version' not found")
-      }.exposedModules
+      }.exposedModules.asScala
     )
   }
 }

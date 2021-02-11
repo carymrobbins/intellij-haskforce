@@ -27,20 +27,19 @@ import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.psi.PsiFile;
 import com.intellij.testFramework.UsefulTestCase;
-import com.intellij.util.Function;
-import com.intellij.util.containers.HashSet;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * Common functionality for completion tests
  */
 abstract public class HaskellCompletionTestBase extends HaskellLightPlatformCodeInsightFixtureTestCase {
-    final protected List<Function<HaskellCompletionCacheLoader.Cache, Void>> cacheLoaders;
+    final protected List<Consumer<HaskellCompletionCacheLoader.Cache>> cacheLoaders;
 
     protected HaskellCompletionTestBase(String srcName) {
         super(srcName, srcName);
-        cacheLoaders = new ArrayList<Function<HaskellCompletionCacheLoader.Cache, Void>>(0);
+        cacheLoaders = new ArrayList<>(0);
     }
 
     protected HaskellCompletionTestBase() {
@@ -77,82 +76,65 @@ abstract public class HaskellCompletionTestBase extends HaskellLightPlatformCode
       }
 */
 
-    protected void doTestEqual(String txt, String... variants) throws Throwable {
-        doTestVariants(txt, CompletionType.BASIC, 1, CheckType.EQUALS, variants);
+    protected void doTestEqual(String txt, String... variants) {
+        doTestVariants(txt, CheckType.EQUALS, variants);
     }
 
-    protected void doTestInclude(String txt, String... variants) throws Throwable {
-        doTestVariants(txt, CompletionType.BASIC, 1, CheckType.INCLUDES, variants);
+    protected void doTestInclude(String txt, String... variants) {
+        doTestVariants(txt, CheckType.INCLUDES, variants);
     }
 
-    protected void doTestExclude(String txt, String... variants) throws Throwable {
-        doTestVariants(txt, CompletionType.BASIC, 1, CheckType.EXCLUDES, variants);
+    protected void doTestExclude(String txt, String... variants) {
+        doTestVariants(txt, CheckType.EXCLUDES, variants);
     }
 
     protected FileType getFileType() {
         return HaskellFileType.INSTANCE;
     }
 
-    protected void doTestVariants(String txt, CompletionType type, int count,
-                                  CheckType checkType,
-                                  String... variants) throws Throwable {
+    protected void doTestVariants(
+      String txt,
+      CheckType checkType,
+      String... variants
+    ) {
         myFixture.configureByText(getFileType(), txt);
         PsiFile file = myFixture.getFile();
         HaskellCompletionCacheLoader.Cache cacheHolder = HaskellCompletionCacheLoader.getService(file.getProject()).cache();
-        for (Function<HaskellCompletionCacheLoader.Cache, Void> f : cacheLoaders) {
-            f.fun(cacheHolder);
-        }
-        doTestVariantsInner(type, count, checkType, variants);
+        cacheLoaders.forEach(f -> f.accept(cacheHolder));
+        doTestVariantsInner(CompletionType.BASIC, 1, checkType, variants);
     }
 
     protected void loadLanguageExtensions(final String... ss) {
-        cacheLoaders.add(new Function<HaskellCompletionCacheLoader.Cache, Void>() {
-            @Override
-            public Void fun(HaskellCompletionCacheLoader.Cache cache) {
-                for (String s : ss) {
-                    cache.languageExtensions().add(LookupElementWrapper$.MODULE$.fromString(s));
-                }
-                return null;
-            }
-        });
+        cacheLoaders.add(cache ->
+            Arrays.stream(ss).forEach(s ->
+                cache.languageExtensions().add(LookupElementWrapper$.MODULE$.fromString(s))
+            )
+        );
     }
 
     protected void loadGhcFlags(final String... ss) {
-        cacheLoaders.add(new Function<HaskellCompletionCacheLoader.Cache, Void>() {
-            @Override
-            public Void fun(HaskellCompletionCacheLoader.Cache cache) {
-                Collections.addAll(cache.ghcFlags(), ss);
-                return null;
-            }
-        });
+        cacheLoaders.add(cache ->
+            Collections.addAll(cache.ghcFlags(), ss)
+        );
     }
 
     protected void loadVisibleModules(final String... ss) {
-        cacheLoaders.add(new Function<HaskellCompletionCacheLoader.Cache, Void>() {
-            @Override
-            public Void fun(HaskellCompletionCacheLoader.Cache cache) {
-                Collections.addAll(cache.visibleModules(), ss);
-                return null;
-            }
-        });
+        cacheLoaders.add(cache ->
+            cache.visibleModulesByFile().put(myFixture.getTestDataPath(), ss)
+        );
     }
 
     protected void loadModuleSymbols(final Map<String, List<LookupElement>> m) {
-        cacheLoaders.add(new Function<HaskellCompletionCacheLoader.Cache, Void>() {
-            @Override
-            public Void fun(HaskellCompletionCacheLoader.Cache cache) {
-                Map<String, Set<LookupElementWrapper>> syms = cache.moduleSymbols();
-                for (Map.Entry<String, List<LookupElement>> kvp : m.entrySet()) {
-                    Set<LookupElementWrapper> v = syms.get(kvp.getKey());
-                    if (v == null) {
-                        v = new HashSet<LookupElementWrapper>(kvp.getValue().size());
-                        syms.put(kvp.getKey(), v);
-                    }
-                    for (LookupElement e : kvp.getValue()) {
-                        v.add(new LookupElementWrapper(e));
-                    }
+        cacheLoaders.add(cache -> {
+            Map<String, Set<LookupElementWrapper>> syms = cache.moduleSymbols();
+            for (Map.Entry<String, List<LookupElement>> kvp : m.entrySet()) {
+                Set<LookupElementWrapper> v = syms.computeIfAbsent(
+                  kvp.getKey(),
+                  k -> new HashSet<>(kvp.getValue().size())
+                );
+                for (LookupElement e : kvp.getValue()) {
+                    v.add(new LookupElementWrapper(e));
                 }
-                return null;
             }
         });
     }
@@ -163,7 +145,7 @@ abstract public class HaskellCompletionTestBase extends HaskellLightPlatformCode
 
     protected void doTestVariantsInner(CompletionType type, int count,
                                        CheckType checkType,
-                                       String... variants) throws Throwable {
+                                       String... variants) {
         myFixture.complete(type, count);
         List<String> stringList = myFixture.getLookupElementStrings();
 
@@ -171,7 +153,7 @@ abstract public class HaskellCompletionTestBase extends HaskellLightPlatformCode
                         "File after:\n" +
                         myFixture.getFile().getText(),
                 stringList);
-        Collection<String> varList = new ArrayList<String>(Arrays.asList(variants));
+        Collection<String> varList = new ArrayList<>(Arrays.asList(variants));
         if (checkType == CheckType.EQUALS) {
             UsefulTestCase.assertSameElements(stringList, variants);
         }
