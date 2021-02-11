@@ -1,9 +1,10 @@
 package com.haskforce.haskell.roots
 
-import java.nio.file.{Files, Paths}
-
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.impl.DirectoryIndexExcludePolicy
+
+import java.nio.file.attribute.BasicFileAttributes
+import java.nio.file.{Files, Path, Paths}
 
 /**
  * Prevent indexing of directories, namely '.stack-work' and 'dist'.
@@ -14,14 +15,19 @@ class HaskellDirectoryIndexExcludePolicy(
 ) extends DirectoryIndexExcludePolicy {
 
   override def getExcludeUrlsForProject: Array[String] = {
-    Files.find(
-      Paths.get(project.getBasePath),
-      HaskellDirectoryIndexExcludePolicy.MAX_DEPTH,
-      (path, attrs) => (
-        attrs.isDirectory
-          && HaskellDirectoryIndexExcludePolicy.EXCLUDED_DIRS.contains(path.getFileName.toString)
-      )
-    ).map[String](_.toUri.toString).toArray(new Array[String](_))
+    val start = Paths.get(project.getBasePath)
+    // In tests this may point to a non-existent directory, so avoid a
+    // NoSuchFileException we bail out early.
+    if (!start.toFile.exists()) return Array.empty
+    Files
+      .find(start, HaskellDirectoryIndexExcludePolicy.MAX_DEPTH, matcher)
+      .map[String](_.toUri.toString)
+      .toArray(new Array[String](_))
+  }
+
+  private def matcher(path: Path, attrs: BasicFileAttributes): Boolean = {
+    attrs.isDirectory &&
+      HaskellDirectoryIndexExcludePolicy.EXCLUDED_DIRS.contains(path.getFileName.toString)
   }
 }
 
