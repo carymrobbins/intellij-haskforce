@@ -1,6 +1,6 @@
 # HaskForce
 
-[![Build Status](https://travis-ci.org/carymrobbins/intellij-haskforce.svg?branch=master)](https://travis-ci.org/carymrobbins/intellij-haskforce)
+[![Build Status](https://travis-ci.com/carymrobbins/intellij-haskforce.svg?branch=master)](https://travis-ci.com/carymrobbins/intellij-haskforce)
 [![Join the chat at https://gitter.im/carymrobbins/intellij-haskforce](https://badges.gitter.im/carymrobbins/intellij-haskforce.svg)](https://gitter.im/carymrobbins/intellij-haskforce?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## The IntelliJ plugin for Haskell.
