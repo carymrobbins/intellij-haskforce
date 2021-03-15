@@ -2,7 +2,6 @@ package com.haskforce.codeInsight
 
 import java.util
 import java.util.concurrent.ConcurrentHashMap
-
 import com.haskforce.psi.HaskellFile
 import com.intellij.AppTopics
 import com.intellij.codeInsight.lookup.LookupElement
@@ -64,12 +63,25 @@ object HaskellCompletionCacheLoader {
     override def fileContentLoaded(file: VirtualFile, document: Document): Unit = {
       val app = ApplicationManager.getApplication
       app.runReadAction({ () =>
-        Option(PsiManager.getInstance(project).findFile(file)).foreach {
-          case psiFile: HaskellFile =>
-            app.invokeLater({ () =>
-              HaskellCompletionCacheLoader.getService(project).updateCache(psiFile, force = false)
-            }: Runnable)
-          case _ => // noop
+        file.getParent match {
+          case null => // noop
+          case dir =>
+            val psiManager = PsiManager.getInstance(project)
+            psiManager.findDirectory(dir) match {
+              // Ensure the PSI belongs to this project. Checks the parent directory
+              // before retrieving the PsiFile.
+              // See: https://github.com/carymrobbins/intellij-haskforce/issues/442
+              case psiDir if psiDir == null || psiDir.getProject != project => // noop
+              case _ =>
+                PsiManager.getInstance(project).findFile(file) match {
+                  case psiFile: HaskellFile =>
+                    app.invokeLater({ () =>
+                      HaskellCompletionCacheLoader.getService(project).updateCache(psiFile, force = false)
+                    }: Runnable)
+
+                  case _ => // noop
+                }
+            }
         }
       }: Runnable)
     }
