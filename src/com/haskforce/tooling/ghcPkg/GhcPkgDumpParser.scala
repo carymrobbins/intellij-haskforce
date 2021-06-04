@@ -2,6 +2,7 @@ package com.haskforce.tooling.ghcPkg
 
 import java.io.{BufferedReader, InputStream, InputStreamReader}
 import java.nio.charset.StandardCharsets
+import java.util
 import java.util.regex.Pattern
 
 object GhcPkgDumpParser {
@@ -52,11 +53,13 @@ object GhcPkgDumpParser {
     parseField("version", chunk)
   }
 
-  private def parseExposedModules(chunk: List[String]): List[String] = {
+  private def parseExposedModules(chunk: List[String]): util.Set[String] = {
     val it = chunk.iterator.dropWhile(s => !s.startsWith("exposed-modules:"))
-    if (!it.hasNext) return Nil
+    if (!it.hasNext) return util.Collections.emptySet()
     val wordIt = words(it.next()).iterator.drop(1)
     val valuesIt = wordIt ++ it.takeWhile(_.startsWith(" "))
-    valuesIt.flatMap(s => words(s).iterator).toList
+    val res = new util.HashSet[String]()
+    valuesIt.foreach { s => words(s).foreach { w => res.add(w) } }
+    res
   }
 }

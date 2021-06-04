@@ -3,7 +3,6 @@ package com.haskforce.ui.tools
 import java.awt.event.ItemEvent
 import java.awt.{GridBagLayout, GridLayout}
 
-import com.haskforce.HaskellModuleType
 import com.haskforce.settings.ToolKey
 import com.haskforce.ui.{GC, SComboBox}
 import com.intellij.execution.filters.TextConsoleBuilderFactory
@@ -12,7 +11,6 @@ import com.intellij.openapi.Disposable
 import com.intellij.openapi.actionSystem.{ActionManager, DefaultActionGroup}
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.diagnostic.Logger
-import com.intellij.openapi.module.ModuleUtil
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.SimpleToolWindowPanel
 import com.intellij.openapi.util.Condition
@@ -209,6 +207,8 @@ class HaskellToolsConsoleWindowFactory extends ToolWindowFactory with Condition[
    * Only display this tool window if our project has at least one Haskell module.
    */
   override def value(project: Project): Boolean = {
-    !ModuleUtil.getModulesOfType(project, HaskellModuleType.getInstance).isEmpty
+    //TODO
+    false
+    //!ModuleUtil.getModulesOfType(project, HaskellModuleType.getInstance).isEmpty
   }
 }

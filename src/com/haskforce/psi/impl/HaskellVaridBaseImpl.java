@@ -7,6 +7,7 @@ import com.haskforce.psi.references.HaskellReference;
 import com.haskforce.stubs.HaskellVaridStub;
 import com.intellij.lang.ASTNode;
 import com.intellij.navigation.ItemPresentation;
+import com.intellij.openapi.util.StackOverflowPreventedException;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.psi.PsiElement;
@@ -75,8 +76,13 @@ abstract class HaskellVaridBaseImpl
       @Override
       @Nullable
       public String getLocationString() {
-        final PsiFile psiFile = HaskellVaridBaseImpl.this.getContainingFile();
-        return psiFile instanceof HaskellFile ? ((HaskellFile) psiFile).getModuleOrFileName() : null;
+        try {
+          final PsiFile psiFile = HaskellVaridBaseImpl.this.getContainingFile();
+          return psiFile instanceof HaskellFile ? ((HaskellFile) psiFile).getModuleOrFileName() : null;
+        } catch (StackOverflowPreventedException e) {
+          // TODO: Figure out why this happens.
+          throw e;
+        }
       }
 
       @Override

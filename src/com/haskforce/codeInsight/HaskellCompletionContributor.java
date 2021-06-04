@@ -5,6 +5,8 @@ import com.google.common.collect.Iterables;
 import com.haskforce.HaskellLanguage;
 import com.haskforce.codeInsight.HaskellCompletionCacheLoader.Cache;
 import com.haskforce.codeInsight.HaskellCompletionCacheLoader.LookupElementWrapper;
+import com.haskforce.codeInsight.visibleModules.VisibleModulesProvider;
+import com.haskforce.codeInsight.visibleModules.VisibleModulesProviderFactory;
 import com.haskforce.psi.*;
 import com.haskforce.utils.HaskellUtil;
 import com.intellij.codeInsight.completion.*;
@@ -12,6 +14,7 @@ import com.intellij.codeInsight.lookup.LookupElement;
 import com.intellij.codeInsight.lookup.LookupElementBuilder;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Editor;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.patterns.PlatformPatterns;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -21,6 +24,7 @@ import com.intellij.util.ProcessingContext;
 import com.intellij.util.containers.ContainerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import scala.Option;
 
 import java.util.*;
 
@@ -54,6 +58,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
                         PsiFile file = parameters.getOriginalFile();
                         List<HaskellPsiUtil.Import> imports = HaskellPsiUtil.parseImports(file);
                         Cache cache = getCache(file);
+
                         // Completion methods should return either void or boolean.  If boolean, then it should indicate
                         // whether or not we were in the appropriate context.  This is useful to determine if following
                         // completions should be added.
@@ -165,7 +170,7 @@ public class HaskellCompletionContributor extends CompletionContributor {
     }
 
     public static boolean completeModuleImport(@NotNull final PsiElement position,
-                                               @NotNull final Cache cache,
+                                               final Cache cache,
                                                @NotNull final CompletionResultSet result) {
         // TODO: Refactor this implementation.
         PsiElement el = position.getParent();
@@ -182,30 +187,33 @@ public class HaskellCompletionContributor extends CompletionContributor {
         }
         // Regardless of whether we actually have cache data to work with, we still want to return true
         // after this point since we've already identified that we are in the appropriate context.
-        final Set<String> list = cache.visibleModules();
-        if (list != null) {
-            StringBuilder builder = new StringBuilder(0);
-            el = position.getParent();
-            while (el != null) {
-                el = el.getPrevSibling();
-                if (el != null) {
-                    builder.insert(0, el.getText());
-                }
+        VirtualFile vFile = position.getContainingFile().getOriginalFile().getVirtualFile();
+        if (vFile == null) return true;
+        String filePath = vFile.getCanonicalPath();
+        if (filePath == null) return true;
+        final String[] list = cache.visibleModulesByFile().get(filePath);
+        if (list == null || list.length == 0) return true;
+        StringBuilder builder = new StringBuilder(0);
+        el = position.getParent();
+        while (el != null) {
+            el = el.getPrevSibling();
+            if (el != null) {
+                builder.insert(0, el.getText());
             }
-            final String partialModule = builder.toString();
-            Set<String> newLines = new HashSet<String>(0);
-            for (String line : list) {
-                if (line.startsWith(partialModule)) {
-                    String newLine = line.replace(partialModule, "");
-                    final int firstDotPos = newLine.indexOf('.');
-                    if (firstDotPos != -1) {
-                        newLine = newLine.substring(0, firstDotPos);
-                    }
-                    newLines.add(newLine);
-                }
-            }
-            addAllElements(result, LookupElementUtil.fromStrings(newLines));
         }
+        final String partialModule = builder.toString();
+        Set<String> newLines = new HashSet<String>(0);
+        for (String line : list) {
+            if (line.startsWith(partialModule)) {
+                String newLine = line.replace(partialModule, "");
+                final int firstDotPos = newLine.indexOf('.');
+                if (firstDotPos != -1) {
+                    newLine = newLine.substring(0, firstDotPos);
+                }
+                newLines.add(newLine);
+            }
+        }
+        addAllElements(result, LookupElementUtil.fromStrings(newLines));
         return true;
     }
 

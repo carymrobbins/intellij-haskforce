@@ -14,6 +14,8 @@ import com.intellij.openapi.util.io.FileUtil
 
 /**
  * The parse result of a stack.yaml file.
+ *
+ * TODO: Remove in favor of a PSI interface.
  */
 sealed case class StackYaml(packages: util.List[StackYaml.Package])
 

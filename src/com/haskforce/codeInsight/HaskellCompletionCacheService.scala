@@ -25,16 +25,18 @@ class HaskellCompletionCacheService {
           putStrings(cache.ghcFlags, provider.getFlags)
         }
       }
-      if (force || cache.visibleModules.isEmpty) {
-        VisibleModulesProviderFactory.get(file).foreach { provider =>
-          putStrings(cache.visibleModules, provider.getVisibleModules)
-        }
-      }
       if (force || cache.languageExtensions.isEmpty) {
         LanguageExtensionsProviderFactory.get(file).foreach { provider =>
           putWrappers(cache.languageExtensions, provider.getLanguages)
         }
       }
+      Option(file.getOriginalFile.getVirtualFile)
+        .flatMap(vFile => Option(vFile.getCanonicalPath))
+        .foreach { filePath =>
+          if (force || shouldUpdateVisibleModules(filePath)) {
+            updateVisibleModules(file, filePath)
+          }
+        }
       if (force || cache.moduleSymbols.isEmpty) {
         updateModuleSymbols(file)
       }
@@ -48,6 +50,19 @@ class HaskellCompletionCacheService {
 
   private def putStrings(s: util.Set[String], xs: Array[String]) = {
     util.Collections.addAll[String](s, xs: _*)
+  }
+
+  private def shouldUpdateVisibleModules(filePath: String): Boolean = {
+    Option(cache.visibleModulesByFile.get(filePath)).forall(_.length == 0)
+  }
+
+  private def updateVisibleModules(file: PsiFile, filePath: String): Unit = {
+    VisibleModulesProviderFactory.get(file).foreach { provider =>
+      val visibleModules = provider.getVisibleModules
+      if (visibleModules.length != 0) {
+        cache.visibleModulesByFile.put(filePath, visibleModules)
+      }
+    }
   }
 
   private def updateModuleSymbols(file: PsiFile): Unit = {

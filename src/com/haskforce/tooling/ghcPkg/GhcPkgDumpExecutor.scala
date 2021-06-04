@@ -4,10 +4,20 @@ import java.io.InputStream
 
 import com.intellij.execution.configurations.GeneralCommandLine
 
-object GhcPkgDumpExecutor {
+class GhcPkgDumpExecutor(
+  workDir: String,
+  stackExePath: String,
+  stackYamlPath: String
+) {
 
-  def runWithStack(stackPath: String, workDir: String): InputStream = {
-    val c = new GeneralCommandLine(stackPath, "exec", "ghc-pkg", "dump")
+  def run(): CachedPkgs = {
+    CachedPkgs.fromIterator(GhcPkgDumpParser.parse(streamViaStack()))
+  }
+
+  private def streamViaStack(): InputStream = {
+    val c = new GeneralCommandLine(
+      stackExePath, "--stack-yaml", stackYamlPath, "exec", "ghc-pkg", "dump"
+    )
     c.setWorkDirectory(workDir)
     val p = c.createProcess()
     p.getInputStream

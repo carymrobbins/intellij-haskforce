@@ -5,7 +5,6 @@ import com.intellij.openapi.util.IconLoader;
 import javax.swing.*;
 
 public class HaskellIcons {
-    public static final Icon FILE = IconLoader.getIcon("/icons/haskell.png");
-    public static final Icon TEST_FILE = IconLoader.getIcon("/icons/haskell-test.png");
-    public static final Icon ETA_FILE = IconLoader.getIcon("/icons/eta.png");
+    public static final Icon FILE = IconLoader.getIcon("/icons/haskell.svg");
+    public static final Icon LOAD_CHANGES = IconLoader.getIcon("/icons/haskell-load-changes.svg");
 }
