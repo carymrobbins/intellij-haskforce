@@ -25,7 +25,7 @@ before_install:
   # Download and unpack the haskell stack executable, used for tests.
   - mkdir -p ~/.local/bin
   - export PATH=$HOME/.local/bin:$PATH
-  - travis_retry curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
+  - curl -L https://www.stackage.org/stack/linux-x86_64 | tar xz --wildcards --strip-components=1 -C ~/.local/bin '*/stack'
 
 # Travis will automatically run ./gradlew assemble, so no need to run it again.
 script: ./gradlew test
