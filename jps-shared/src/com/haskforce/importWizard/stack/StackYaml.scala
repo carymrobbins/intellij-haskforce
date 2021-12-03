@@ -1,16 +1,14 @@
 package com.haskforce.importWizard.stack
 
-import java.io.File
-import java.util
-
-import scala.collection.JavaConverters._
-import scala.util.control.NonFatal
+import com.intellij.openapi.util.io.FileUtil
 import scalaz.\/
+import scalaz.std.list._
 import scalaz.syntax.either._
 import scalaz.syntax.traverse._
-import scalaz.std.list._
 
-import com.intellij.openapi.util.io.FileUtil
+import java.io.File
+import java.util
+import scala.collection.JavaConverters._
 
 /**
  * The parse result of a stack.yaml file.
@@ -38,7 +36,7 @@ object StackYaml {
   def fromString(doc: String): String \/ StackYaml = for {
     assoc <- Yaml.parse(doc).flatMap(_.assoc).leftMap(_.message)
     packages <- parsePackages(assoc)
-  } yield StackYaml(packages.map(Package(_)).asJava)
+  } yield StackYaml(packages.map(Package).asJava)
 
   private def parsePackages(assoc: Map[String, Yaml]): String \/ List[String] = {
     assoc.get("packages") match {
@@ -73,11 +71,9 @@ object Yaml {
   final case class Error(message: String)
 
   def parse(doc: String): Error \/ Yaml = {
-    try {
-      fromObject(new org.yaml.snakeyaml.Yaml().load(doc))
-    } catch {
-      case NonFatal(e) => Error(e.getMessage).left
-    }
+    \/.fromTryCatchNonFatal(new org.yaml.snakeyaml.Yaml().load(doc))
+      .leftMap(e => Error(e.getMessage))
+      .flatMap(fromObject)
   }
 
   def fromObject(o: Any): Error \/ Yaml = o match {

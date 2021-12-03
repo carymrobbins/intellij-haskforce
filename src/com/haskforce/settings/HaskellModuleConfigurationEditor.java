@@ -12,7 +12,7 @@ import com.intellij.openapi.roots.ui.configuration.ModuleConfigurationState;
 /** Provides the editors available in Project Structure > Modules. */
 public class HaskellModuleConfigurationEditor extends DefaultModuleEditorsProvider {
     public ModuleConfigurationEditor[] createEditors(ModuleConfigurationState state) {
-        Module module = state.getRootModel().getModule();
+        Module module = state.getCurrentRootModel().getModule();
         if (!(ModuleType.get(module) instanceof HaskellModuleType)) {
             return ModuleConfigurationEditor.EMPTY;
         }
