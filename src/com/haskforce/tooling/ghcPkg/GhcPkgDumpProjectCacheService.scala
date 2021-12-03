@@ -1,6 +1,5 @@
 package com.haskforce.tooling.ghcPkg
 
-import com.intellij.openapi.components.ServiceManager
 import com.intellij.openapi.project.Project
 
 class GhcPkgDumpProjectCacheService {
@@ -16,6 +15,6 @@ class GhcPkgDumpProjectCacheService {
 
 object GhcPkgDumpProjectCacheService {
   def getInstance(project: Project): GhcPkgDumpProjectCacheService = {
-    ServiceManager.getService(project, classOf[GhcPkgDumpProjectCacheService])
+    project.getService(classOf[GhcPkgDumpProjectCacheService])
   }
 }
