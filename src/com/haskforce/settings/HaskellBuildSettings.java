@@ -4,10 +4,8 @@ import com.haskforce.jps.model.HaskellBuildOptions;
 import com.haskforce.jps.model.JpsHaskellBuildOptionsSerializer;
 import com.haskforce.utils.ExecUtil;
 import com.intellij.openapi.components.PersistentStateComponent;
-import com.intellij.openapi.components.ServiceManager;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.components.StorageScheme;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import org.jetbrains.annotations.NotNull;
@@ -178,7 +176,7 @@ public class HaskellBuildSettings implements PersistentStateComponent<HaskellBui
 
     @NotNull
     public static HaskellBuildSettings getInstance(@NotNull Project project) {
-        HaskellBuildSettings settings = ServiceManager.getService(project, HaskellBuildSettings.class);
+        HaskellBuildSettings settings = project.getService(HaskellBuildSettings.class);
         if (settings == null) settings = new HaskellBuildSettings();
         settings.updatePaths();
         return settings;
