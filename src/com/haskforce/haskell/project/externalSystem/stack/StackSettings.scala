@@ -3,7 +3,7 @@ package com.haskforce.haskell.project.externalSystem.stack
 import java.util
 
 import com.intellij.openapi.Disposable
-import com.intellij.openapi.components.{PersistentStateComponent, ServiceManager, State, Storage}
+import com.intellij.openapi.components.{PersistentStateComponent, State, Storage}
 import com.intellij.openapi.externalSystem.settings.{AbstractExternalSystemSettings, ExternalSystemSettingsListener}
 import com.intellij.openapi.project.Project
 import com.intellij.util.xmlb.annotations.XCollection
@@ -60,7 +60,7 @@ final class StackSettings(
 object StackSettings {
 
   def getInstance(project: Project): StackSettings = {
-    ServiceManager.getService(project, classOf[StackSettings])
+    project.getService(classOf[StackSettings])
   }
 
   class State extends AbstractExternalSystemSettings.State[StackProjectSettings] {

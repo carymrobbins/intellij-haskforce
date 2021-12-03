@@ -72,7 +72,7 @@ class GhcPkgDumpProjectCacheService(project: Project)
 object GhcPkgDumpProjectCacheService {
 
   def getInstance(project: Project): GhcPkgDumpProjectCacheService = {
-    ServiceManager.getService(project, classOf[GhcPkgDumpProjectCacheService])
+    project.getService(classOf[GhcPkgDumpProjectCacheService])
   }
 
   class State(
