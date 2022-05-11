@@ -1,7 +1,5 @@
 package com.haskforce.codeInsight
 
-import java.util
-import java.util.concurrent.ConcurrentHashMap
 import com.haskforce.psi.HaskellFile
 import com.intellij.AppTopics
 import com.intellij.codeInsight.lookup.LookupElement
@@ -12,6 +10,8 @@ import com.intellij.openapi.project.{Project, ProjectManagerListener}
 import com.intellij.openapi.vfs._
 import com.intellij.psi.PsiManager
 
+import java.util
+import java.util.concurrent.ConcurrentHashMap
 import scala.annotation.tailrec
 
 /** Loads the completion cache for any Haskell files we have open. */

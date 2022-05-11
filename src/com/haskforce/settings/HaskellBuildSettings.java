@@ -2,7 +2,9 @@ package com.haskforce.settings;
 
 import com.haskforce.jps.model.HaskellBuildOptions;
 import com.haskforce.jps.model.JpsHaskellBuildOptionsSerializer;
-import com.intellij.openapi.components.*;
+import com.intellij.openapi.components.PersistentStateComponent;
+import com.intellij.openapi.components.State;
+import com.intellij.openapi.components.Storage;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
 import org.jetbrains.annotations.NotNull;

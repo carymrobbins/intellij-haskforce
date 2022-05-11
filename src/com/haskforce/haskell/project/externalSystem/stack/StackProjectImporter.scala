@@ -29,7 +29,7 @@ object StackProjectImporter {
       configureStack(projectDirectory, project).getOrElse(return)
 
     ExternalProjectsManagerImpl.getInstance(project).runWhenInitialized(() => {
-      ExternalSystemUtil.ensureToolWindowInitialized(
+      val _ = ExternalSystemUtil.ensureToolWindowContentInitialized(
         project,
         StackManager.PROJECT_SYSTEM_ID
       )
