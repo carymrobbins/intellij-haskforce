@@ -1,5 +1,5 @@
 plugins {
-    id "org.jetbrains.intellij" version "1.5.3"
+    id "org.jetbrains.intellij" version "1.7.0"
 }
 
 version = file('version.txt').text.trim()
@@ -37,6 +37,8 @@ allprojects {
             plugins.addAll(['gradle', 'IdeaVIM:1.8.0'])
         }
     }
+
+    buildSearchableOptions.enabled = false
 
     repositories {
         mavenCentral()
