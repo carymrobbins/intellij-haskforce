@@ -1,8 +1,13 @@
 plugins {
     id "org.jetbrains.intellij" version "1.7.0"
+    id "org.jetbrains.changelog" version "1.3.1"
 }
 
-version = file('version.txt').text.trim()
+String properties(String key) {
+    return project.findProperty(key).toString()
+}
+
+version = properties('pluginVersion')
 
 task validateDic(type: Exec) {
     commandLine './tools/validate-dic'
@@ -17,9 +22,9 @@ task cleanJFlex(type: Exec) {
 }
 
 ext {
-    javaVersion = '1.8'
-    scalaVersion = '2.12.4'
-    scalaBinaryVersion = '2.12'
+    javaVersion = properties('javaVersion')
+    scalaVersion = properties('scalaVersion')
+    scalaBinaryVersion = scalaVersion.split('\\.').take(2).join('.')
 }
 
 allprojects {
@@ -29,8 +34,9 @@ allprojects {
     apply plugin: 'org.jetbrains.intellij'
 
     intellij {
-        version = '2022.1'
-        pluginName = 'HaskForce'
+        pluginName = properties('pluginName')
+        version = properties('platformVersion')
+        type = properties('platformType')
         plugins = ['java', 'yaml']
     }
 
@@ -110,6 +116,14 @@ dependencies {
     compile project(':jps-plugin')
 }
 
+// These are libraries, not plugins, so we disable building them as such.
+[':macros', ':jps-shared', ':jps-plugin'].each {
+    project(it) {
+        buildPlugin.enabled = false
+        verifyPlugin.enabled = false
+    }
+}
+
 static def getGitRev() {
     def proc = "git rev-parse --short HEAD".execute()
     proc.waitFor()
@@ -158,4 +172,8 @@ test {
     if ("1" == System.getenv("OVERWRITE_FIXTURES")) {
         systemProperties.put("idea.tests.overwrite.data", "true")
     }
+}
+
+changelog {
+    version = properties('pluginVersion')
 }
