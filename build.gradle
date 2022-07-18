@@ -2,7 +2,11 @@ plugins {
     id "org.jetbrains.intellij" version "1.7.0"
 }
 
-version = file('version.txt').text.trim()
+def properties(String key) {
+    return project.findProperty(key).toString()
+}
+
+version = properties('pluginVersion')
 
 task validateDic(type: Exec) {
     commandLine './tools/validate-dic'
@@ -17,9 +21,9 @@ task cleanJFlex(type: Exec) {
 }
 
 ext {
-    javaVersion = '1.8'
-    scalaVersion = '2.12.4'
-    scalaBinaryVersion = '2.12'
+    javaVersion = properties('javaVersion')
+    scalaVersion = properties('scalaVersion')
+    scalaBinaryVersion = scalaVersion.split('\\.').take(2).join('.')
 }
 
 allprojects {
@@ -29,8 +33,9 @@ allprojects {
     apply plugin: 'org.jetbrains.intellij'
 
     intellij {
-        version = '2022.1'
-        pluginName = 'HaskForce'
+        pluginName = properties('pluginName')
+        version = properties('platformVersion')
+        type = properties('platformType')
         plugins = ['java', 'yaml']
     }
 
