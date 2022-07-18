@@ -116,6 +116,14 @@ dependencies {
     compile project(':jps-plugin')
 }
 
+// These are libraries, not plugins, so we disable building them as such.
+[':macros', ':jps-shared', ':jps-plugin'].each {
+    project(it) {
+        buildPlugin.enabled = false
+        verifyPlugin.enabled = false
+    }
+}
+
 static def getGitRev() {
     def proc = "git rev-parse --short HEAD".execute()
     proc.waitFor()
