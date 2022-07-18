@@ -1,7 +1,7 @@
 package com.haskforce.importWizard.stack
 
 import com.intellij.openapi.util.io.FileUtil
-import scalaz.\/
+import scalaz.{-\/, \/}
 import scalaz.std.list._
 import scalaz.syntax.either._
 import scalaz.syntax.traverse._
@@ -9,6 +9,7 @@ import scalaz.syntax.traverse._
 import java.io.File
 import java.util
 import scala.collection.JavaConverters._
+import scala.util.control.NonFatal
 
 /**
  * The parse result of a stack.yaml file.
@@ -64,16 +65,19 @@ object StackYamlUtil {
   }
 }
 
-
 /** A wrapper around snakeyaml to provide a safer interface. */
 object Yaml {
 
   final case class Error(message: String)
 
   def parse(doc: String): Error \/ Yaml = {
-    \/.fromTryCatchNonFatal(new org.yaml.snakeyaml.Yaml().load(doc))
-      .leftMap(e => Error(e.getMessage))
-      .flatMap(fromObject)
+    try {
+      // The ':Object' type annotation is needed to prevent inferring 'Nothing'
+      // which triggers a class cast exception. Seems to be a bug in scalac 2.12.4.
+      fromObject(new org.yaml.snakeyaml.Yaml().load(doc): Object)
+    } catch {
+      case NonFatal(e) => -\/(Error(e.getMessage))
+    }
   }
 
   def fromObject(o: Any): Error \/ Yaml = o match {
