@@ -2,7 +2,6 @@ package com.haskforce.importWizard.stack
 
 import java.util
 
-import scalaz.\/
 import scalaz.syntax.either._
 
 import junit.framework.TestCase
@@ -44,7 +43,7 @@ class StackYamlTest extends TestCase {
 
     val expected = StackYaml(packages("."))
 
-    assertRight(expected, actual)
+    TestCase.assertEquals(expected.right, actual)
   }
 
   def testLocationPackages(): Unit = {
@@ -70,14 +69,10 @@ class StackYamlTest extends TestCase {
 
     val expected = StackYaml(packages("."))
 
-    assertRight(expected, actual)
+    TestCase.assertEquals(expected.right, actual)
   }
 
   private def packages(ps: String*): util.List[StackYaml.Package] = {
     util.Arrays.asList(ps.map(StackYaml.Package): _*)
-  }
-
-  private def assertRight[A](expected: A, actual: _ \/ A) = {
-    TestCase.assertEquals(expected.right, actual)
   }
 }
