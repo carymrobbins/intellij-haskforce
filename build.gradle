@@ -179,9 +179,18 @@ changelog {
     version = properties('pluginVersion')
 }
 
+Boolean getEnvBool(String key, Boolean defaultValue) {
+  String v = System.getenv(key)
+  if (v == null) {
+    return defaultValue
+  } else {
+    return v.toBoolean()
+  }
+}
+
 qodana {
-    cachePath.set(projectDir.resolve(".qodana").canonicalPath)
-    reportPath.set(projectDir.resolve("build/reports/inspections").canonicalPath)
-    saveReport.set(true)
-    showReport.set(System.getenv("QODANA_SHOW_REPORT")?.toBoolean() ?: false)
+    cachePath = "$projectDir/.qodana"
+    reportPath = "$projectDir/build/reports/inspections"
+    saveReport = true
+    showReport = getEnvBool('QODANA_SHOW_REPORT', false)
 }
