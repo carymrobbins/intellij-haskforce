@@ -1,15 +1,15 @@
 package com.haskforce.highlighting.annotation.external
 
-import java.util
-
-import scala.collection.JavaConverters._
 import com.haskforce.HaskellLightPlatformCodeInsightFixtureTestCase
 import com.haskforce.highlighting.annotation.HaskellAnnotationHolder
 import com.haskforce.psi.impl.HaskellElementFactory
 import com.intellij.codeInsight.daemon.impl.AnnotationHolderImpl
-import com.intellij.lang.annotation.AnnotationSession
+import com.intellij.lang.annotation.{AnnotationHolder, AnnotationSession}
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.util.text.StringUtil
+
+import java.util
+import scala.collection.JavaConverters._
 
 /**
  * Tests for consuming output from ghc-mod.
@@ -73,11 +73,20 @@ class GhcModTest extends HaskellLightPlatformCodeInsightFixtureTestCase("ghc-mod
         val problems = GhcMod.parseProblems(myFixture.getModule, scanner).asScala.toStream
 
         val holder = new HaskellAnnotationHolder(
-          new AnnotationHolderImpl(new AnnotationSession(file))
+          newAnnotationHolderImpl(new AnnotationSession(file))
         )
 
         HaskellExternalAnnotator.createAnnotations(file, problems, holder)
 
         assertEquals(1, holder.holder.asInstanceOf[AnnotationHolderImpl].size())
+    }
+
+    // Temporarily bypass that AnnotationHolderImpl is deprecated.
+    // TODO: It would be better to test like this: https://plugins.jetbrains.com/docs/intellij/annotator-test.html#define-a-test-method
+    private def newAnnotationHolderImpl(session: AnnotationSession): AnnotationHolder = {
+      getClass.getClassLoader.loadClass("com.intellij.codeInsight.daemon.impl.AnnotationHolderImpl")
+        .getConstructor(classOf[AnnotationSession])
+        .newInstance(session)
+        .asInstanceOf[AnnotationHolder]
     }
 }
