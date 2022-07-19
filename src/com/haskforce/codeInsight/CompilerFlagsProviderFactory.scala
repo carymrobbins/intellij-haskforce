@@ -16,5 +16,5 @@ trait CompilerFlagsProvider {
 }
 
 object GhcCompilerFlagsProvider extends CompilerFlagsProvider {
-  override def getFlags: Array[String] = GhcFlags.list
+  override def getFlags: Array[String] = GhcFlags.get
 }

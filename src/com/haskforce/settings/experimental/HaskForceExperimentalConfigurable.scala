@@ -51,6 +51,10 @@ object HaskForceExperimentalConfigurable {
 
   val DISPLAY_NAME = "HaskForce (Experimental)"
 
+  def isGhcPkgEnabled(project: Project): Boolean = {
+    State.load(PropertiesComponent.getInstance(project)).ghcPkgEnabled
+  }
+
   /** Parsed state from HaskForceExperimentalSettingsConfigurable */
   final case class State(
     ghcPkgEnabled: Boolean

@@ -2,7 +2,6 @@ package com.haskforce.settings;
 
 import com.haskforce.jps.model.HaskellBuildOptions;
 import com.haskforce.jps.model.JpsHaskellBuildOptionsSerializer;
-import com.haskforce.utils.ExecUtil;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
@@ -39,6 +38,7 @@ public class HaskellBuildSettings implements PersistentStateComponent<HaskellBui
 
     public void setUseCabal(boolean useCabal) {
         myBuildOptions.myUseCabal = useCabal;
+        if (useCabal) myBuildOptions.myUseStack = false;
     }
 
     public boolean isCabalSandboxEnabled() {
@@ -113,8 +113,9 @@ public class HaskellBuildSettings implements PersistentStateComponent<HaskellBui
         return myBuildOptions.myUseStack;
     }
 
-    public void setUseStack(boolean enable) {
-        myBuildOptions.myUseStack = enable;
+    public void setUseStack(boolean useStack) {
+        myBuildOptions.myUseStack = useStack;
+        if (useStack) myBuildOptions.myUseCabal = false;
     }
 
     public String getStackPath() {
@@ -141,45 +142,10 @@ public class HaskellBuildSettings implements PersistentStateComponent<HaskellBui
         myBuildOptions.myStackFile = file;
     }
 
-    public void updatePaths() {
-        myBuildOptions.myGhcPath = guessGhcPath();
-        myBuildOptions.myCabalPath = guessCabalPath();
-        myBuildOptions.myStackPath = guessStackPath();
-    }
-
-    public String guessGhcPath() {
-        String path = myBuildOptions.myGhcPath;
-        if (path == null || path.isEmpty()) {
-            String guessed = ExecUtil.locateExecutableByGuessing("ghc");
-            if (guessed != null) return guessed;
-        }
-        return path;
-    }
-
-    public String guessCabalPath() {
-        String path = myBuildOptions.myCabalPath;
-        if (path == null || path.isEmpty()) {
-            String guessed = ExecUtil.locateExecutableByGuessing("cabal");
-            if (guessed != null) return guessed;
-        }
-        return path;
-    }
-
-    public String guessStackPath() {
-        String path = myBuildOptions.myStackPath;
-        if (path == null || path.isEmpty()) {
-            String guessed = ExecUtil.locateExecutableByGuessing("stack");
-            if (guessed != null) return guessed;
-        }
-        return path;
-    }
-
     @NotNull
     public static HaskellBuildSettings getInstance(@NotNull Project project) {
-        HaskellBuildSettings settings = project.getService(HaskellBuildSettings.class);
-        if (settings == null) settings = new HaskellBuildSettings();
-        settings.updatePaths();
-        return settings;
+        HaskellBuildSettings settings = ServiceManager.getService(project, HaskellBuildSettings.class);
+        return settings == null ? new HaskellBuildSettings() : settings;
     }
 
     @NotNull

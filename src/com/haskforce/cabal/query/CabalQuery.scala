@@ -34,10 +34,12 @@ final class CabalQuery(val cabalFile: SPsiFile[CabalFile]) {
     text <- ff.getText.liftM[OptionT]
   } yield text).run
 
-  /** If 'library' stanza exists, returns it; otherwise, implicitly uses root stanza. */
-  def getLibrary: IJReadAction[BuildInfo.Library] = cabalFile.getChildOfType[psi.Library].map {
-    case Some(c) => new BuildInfo.ExplicitLibrary(c)
-    case None => new BuildInfo.ImplicitLibrary(cabalFile.asElement)
+  def getLibrary: IJReadAction[Option[BuildInfo.Library]] = {
+    cabalFile.getChildOfType[psi.Library].map { maybeEl =>
+      maybeEl.map(el =>
+        new BuildInfo.Library(el)
+      )
+    }
   }
 
   def getExecutables: IJReadAction[Vector[BuildInfo.Executable]] = {
@@ -52,14 +54,14 @@ final class CabalQuery(val cabalFile: SPsiFile[CabalFile]) {
     cabalFile.getChildrenOfType[psi.Benchmark].map(_.map(new BuildInfo.Benchmark(_)))
   }
 
-  def getBuildInfo: IJReadAction[Array[BuildInfo]] = getLibrary.map { library =>
+  def getBuildInfo: IJReadAction[Array[BuildInfo]] = getLibrary.map { maybeLibrary =>
     // Since we're in a .map, the .getChildren access is safe.
     val others = cabalFile.toPsiFile.getChildren.collect {
       case c: psi.Executable => new BuildInfo.Executable(SPsiElement(c))
       case c: psi.TestSuite => new BuildInfo.TestSuite(SPsiElement(c))
       case c: psi.Benchmark => new BuildInfo.Benchmark(SPsiElement(c))
     }
-    library +: others
+    maybeLibrary.toArray ++ others
   }
 
   def findBuildInfoForFilePath(sourceFilePath: String): IJReadAction[Option[BuildInfo]] = {
@@ -86,11 +88,15 @@ final class CabalQuery(val cabalFile: SPsiFile[CabalFile]) {
 
   /** Determined from 'library' and 'executable' or root stanza; defaults to "." */
   def getSourceRoots: IJReadAction[NonEmptySet[String]] = for {
-    lib <- getLibrary
-    libSourceDirs <- lib.getSourceDirs
+    maybeLib <- getLibrary
+    maybeLibSourceDirs <- maybeLib.traverse(_.getSourceDirs)
+    libSourceDirs = maybeLibSourceDirs.map(_.toSet).getOrElse(Set.empty)
     exes <- getExecutables
     exeSourceDirSets <- exes.traverse(_.getSourceDirs)
-  } yield libSourceDirs.append(exeSourceDirSets: _*)
+    exeSourceDirs = exeSourceDirSets.iterator.flatMap(_.iterator).toSet
+    allSourceDirs = libSourceDirs ++ exeSourceDirs
+    res = NonEmptySet.fromSet(allSourceDirs).getOrElse(NonEmptySet("."))
+  } yield res
 
   /** Determined from 'test-suite' or 'benchmark' stanzas, if any exist. */
   def getTestSourceRoots: IJReadAction[Option[NonEmptySet[String]]] = for {
@@ -234,18 +240,9 @@ object BuildInfo {
   }
 
   val LIBRARY_TYPE_NAME = "library"
-  sealed trait Library extends BuildInfo {
-    override val typ = Type.Library
-  }
-
-  /** Library implicitly from root stanza when no 'library' stanza exists. */
-  final class ImplicitLibrary(val el: SPsiElement[psi.CabalFile]) extends Library {
-    override type PsiType = psi.CabalFile
-  }
-
-  /** Library explicitly listed as 'library'. */
-  final class ExplicitLibrary(val el: SPsiElement[psi.Library]) extends Library {
+  final class Library(val el: SPsiElement[psi.Library]) extends BuildInfo {
     override type PsiType = psi.Library
+    override val typ = Type.Library
   }
 
   val EXECUTABLE_TYPE_NAME = "executable"

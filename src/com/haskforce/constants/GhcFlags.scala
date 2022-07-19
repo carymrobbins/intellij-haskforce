@@ -3,1276 +3,1318 @@ package com.haskforce.constants
 /** Compiler flags supported by GHC. */
 object GhcFlags {
 
-  // Flags list generated with: ghc --show-options | grep -v '-?' | grep -v '^--' | sort | xargs -n1 printf ', "%s"\n'
-  val list = Array(
-      "-auto"
-    , "-auto-all"
-    , "-c"
-    , "-C"
-    , "-caf-all"
-    , "-clear-package-db"
-    , "-copy-libs-when-linking"
-    , "-cpp"
-    , "-D"
-    , "-dannot-lint"
-    , "-dasm-lint"
-    , "-dcmm-lint"
-    , "-dcore-lint"
-    , "-ddebug-output"
-    , "-ddump-asm"
-    , "-ddump-asm-conflicts"
-    , "-ddump-asm-expanded"
-    , "-ddump-asm-liveness"
-    , "-ddump-asm-native"
-    , "-ddump-asm-regalloc"
-    , "-ddump-asm-regalloc-stages"
-    , "-ddump-asm-stats"
-    , "-ddump-bcos"
-    , "-ddump-call-arity"
-    , "-ddump-cmm"
-    , "-ddump-cmm-caf"
-    , "-ddump-cmm-cbe"
-    , "-ddump-cmm-cfg"
-    , "-ddump-cmm-cps"
-    , "-ddump-cmm-from-stg"
-    , "-ddump-cmm-info"
-    , "-ddump-cmm-proc"
-    , "-ddump-cmm-procmap"
-    , "-ddump-cmm-raw"
-    , "-ddump-cmm-sink"
-    , "-ddump-cmm-sp"
-    , "-ddump-cmm-split"
-    , "-ddump-cmm-switch"
-    , "-ddump-cmm-verbose"
-    , "-ddump-core-stats"
-    , "-ddump-cse"
-    , "-ddump-cs-trace"
-    , "-ddump-debug"
-    , "-ddump-deriv"
-    , "-ddump-ds"
-    , "-ddump-ds-preopt"
-    , "-ddump-ec-trace"
-    , "-ddump-exitify"
-    , "-ddump-file-prefix"
-    , "-ddump-foreign"
-    , "-ddump-hi"
-    , "-ddump-hi-diffs"
-    , "-ddump-hpc"
-    , "-ddump-if-trace"
-    , "-ddump-inlinings"
-    , "-ddump-json"
-    , "-ddump-llvm"
-    , "-ddump-minimal-imports"
-    , "-ddump-mod-cycles"
-    , "-ddump-mod-map"
-    , "-ddump-occur-anal"
-    , "-ddump-opt-cmm"
-    , "-ddump-parsed"
-    , "-ddump-parsed-ast"
-    , "-ddump-prep"
-    , "-ddump-rn"
-    , "-ddump-rn-ast"
-    , "-ddump-rn-stats"
-    , "-ddump-rn-trace"
-    , "-ddump-rtti"
-    , "-ddump-rule-firings"
-    , "-ddump-rule-rewrites"
-    , "-ddump-rules"
-    , "-ddump-shape"
-    , "-ddump-simpl"
-    , "-ddump-simpl-iterations"
-    , "-ddump-simpl-stats"
-    , "-ddump-simpl-trace"
-    , "-ddump-spec"
-    , "-ddump-splices"
-    , "-ddump-stg"
-    , "-ddump-stranal"
-    , "-ddump-str-signatures"
-    , "-ddump-tc"
-    , "-ddump-tc-ast"
-    , "-ddump-tc-trace"
-    , "-ddump-ticked"
-    , "-ddump-timings"
-    , "-ddump-to-file"
-    , "-ddump-types"
-    , "-ddump-view-pattern-commoning"
-    , "-ddump-vt-trace"
-    , "-ddump-worker-wrapper"
-    , "-debug"
-    , "-dep-makefile"
-    , "-dep-suffix"
-    , "-dfaststring-stats"
-    , "-dhex-word-literals"
-    , "-dinitial-unique"
-    , "-dinline-check"
-    , "-distrust"
-    , "-distrust-all-packages"
-    , "-dno-debug-output"
-    , "-dno-llvm-mangler"
-    , "-dno-ppr-case-as-let"
-    , "-dno-ppr-ticks"
-    , "-dno-suppress-coercions"
-    , "-dno-suppress-idinfo"
-    , "-dno-suppress-module-prefixes"
-    , "-dno-suppress-stg-free-vars"
-    , "-dno-suppress-ticks"
-    , "-dno-suppress-timestamps"
-    , "-dno-suppress-type-applications"
-    , "-dno-suppress-type-signatures"
-    , "-dno-suppress-unfoldings"
-    , "-dno-suppress-uniques"
-    , "-dno-suppress-var-kinds"
-    , "-dppr-case-as-let"
-    , "-dppr-cols"
-    , "-dppr-debug"
-    , "-dppr-ticks"
-    , "-dppr-user-length"
-    , "-drule-check"
-    , "-dshow-passes"
-    , "-dsource-stats"
-    , "-dstg-lint"
-    , "-dstg-stats"
-    , "-dsuppress-all"
-    , "-dsuppress-coercions"
-    , "-dsuppress-idinfo"
-    , "-dsuppress-module-prefixes"
-    , "-dsuppress-stg-free-vars"
-    , "-dsuppress-ticks"
-    , "-dsuppress-timestamps"
-    , "-dsuppress-type-applications"
-    , "-dsuppress-type-signatures"
-    , "-dsuppress-unfoldings"
-    , "-dsuppress-uniques"
-    , "-dsuppress-var-kinds"
-    , "-dth-dec-file"
-    , "-dumpdir"
-    , "-dunique-increment"
-    , "-dverbose-core2core"
-    , "-dverbose-stg2stg"
-    , "-dylib-install-name"
-    , "-dynamic"
-    , "-dynamic-too"
-    , "-dynhisuf"
-    , "-dynload"
-    , "-dyno"
-    , "-dynosuf"
-    , "-e"
-    , "-E"
-    , "-eventlog"
-    , "-exclude-module"
-    , "-F"
-    , "-fabstract-refinement-hole-fits"
-    , "-falignment-sanitisation"
-    , "-fallow-incoherent-instances"
-    , "-fallow-overlapping-instances"
-    , "-fallow-undecidable-instances"
-    , "-farrows"
-    , "-fasm"
-    , "-fasm-shortcutting"
-    , "-fast-llvm"
-    , "-fbang-patterns"
-    , "-fbuilding-cabal-package"
-    , "-fbyte-code"
-    , "-fcall-arity"
-    , "-fcase-folding"
-    , "-fcase-merge"
-    , "-fcatch-bottoms"
-    , "-fcmm-elim-common-blocks"
-    , "-fcmm-sink"
-    , "-fconstraint-solver-iterations"
-    , "-fcontext-stack"
-    , "-fcpr-anal"
-    , "-fcross-module-specialise"
-    , "-fcross-module-specialize"
-    , "-fcse"
-    , "-fdefer-out-of-scope-variables"
-    , "-fdefer-typed-holes"
-    , "-fdefer-type-errors"
-    , "-fdiagnostics-color=always"
-    , "-fdiagnostics-color=auto"
-    , "-fdiagnostics-color=never"
-    , "-fdiagnostics-show-caret"
-    , "-fdicts-cheap"
-    , "-fdicts-strict"
-    , "-fdmd-tx-dict-sel"
-    , "-fdo-eta-reduction"
-    , "-fdo-lambda-eta-expansion"
-    , "-feager-blackholing"
-    , "-fembed-manifest"
-    , "-fenable-rewrite-rules"
-    , "-ferror-spans"
-    , "-fexcess-precision"
-    , "-fexitification"
-    , "-fexpose-all-unfoldings"
-    , "-fextended-default-rules"
-    , "-fexternal-dynamic-refs"
-    , "-fexternal-interpreter"
-    , "-fffi"
-    , "-ffi"
-    , "-fflat-cache"
-    , "-ffloat-all-lams"
-    , "-ffloat-in"
-    , "-ffloat-lam-args"
-    , "-fforce-recomp"
-    , "-ffrontend-opt"
-    , "-ffull-laziness"
-    , "-ffun-to-thunk"
-    , "-fgen-manifest"
-    , "-fghci-history"
-    , "-fghci-leak-check"
-    , "-fghci-sandbox"
-    , "-fglasgow-exts"
-    , "-fhelpful-errors"
-    , "-fhide-source-paths"
-    , "-fhistory-size"
-    , "-fhpc"
-    , "-fignore-asserts"
-    , "-fignore-hpc-changes"
-    , "-fignore-interface-pragmas"
-    , "-fignore-optim-changes"
-    , "-fimplicit-params"
-    , "-fimplicit-prelude"
-    , "-firrefutable-tuples"
-    , "-fkill-absence"
-    , "-fkill-one-shot"
-    , "-flate-dmd-anal"
-    , "-flate-specialise"
-    , "-fliberate-case"
-    , "-fliberate-case-threshold"
-    , "-fllvm"
-    , "-fllvm-pass-vectors-in-regs"
-    , "-floopification"
-    , "-fmax-errors"
-    , "-fmax-inline-alloc-size"
-    , "-fmax-inline-memcpy-insns"
-    , "-fmax-inline-memset-insns"
-    , "-fmax-pmcheck-iterations"
-    , "-fmax-refinement-hole-fits"
-    , "-fmax-relevant-binds"
-    , "-fmax-simplifier-iterations"
-    , "-fmax-uncovered-patterns"
-    , "-fmax-valid-hole-fits"
-    , "-fmax-worker-args"
-    , "-fmonomorphism-restriction"
-    , "-fmono-pat-binds"
-    , "-fno-abstract-refinement-hole-fits"
-    , "-fno-alignment-sanitisation"
-    , "-fno-allow-incoherent-instances"
-    , "-fno-allow-overlapping-instances"
-    , "-fno-allow-undecidable-instances"
-    , "-fno-arrows"
-    , "-fno-asm-shortcutting"
-    , "-fno-bang-patterns"
-    , "-fno-building-cabal-package"
-    , "-fno-call-arity"
-    , "-fno-case-folding"
-    , "-fno-case-merge"
-    , "-fno-catch-bottoms"
-    , "-fno-cmm-elim-common-blocks"
-    , "-fno-cmm-sink"
-    , "-fno-code"
-    , "-fno-cpr-anal"
-    , "-fno-cross-module-specialise"
-    , "-fno-cross-module-specialize"
-    , "-fno-cse"
-    , "-fno-defer-out-of-scope-variables"
-    , "-fno-defer-typed-holes"
-    , "-fno-defer-type-errors"
-    , "-fno-diagnostics-show-caret"
-    , "-fno-dicts-cheap"
-    , "-fno-dicts-strict"
-    , "-fno-dmd-tx-dict-sel"
-    , "-fno-do-eta-reduction"
-    , "-fno-do-lambda-eta-expansion"
-    , "-fno-eager-blackholing"
-    , "-fno-embed-manifest"
-    , "-fno-enable-rewrite-rules"
-    , "-fno-error-spans"
-    , "-fno-excess-precision"
-    , "-fno-exitification"
-    , "-fno-expose-all-unfoldings"
-    , "-fno-extended-default-rules"
-    , "-fno-external-dynamic-refs"
-    , "-fno-external-interpreter"
-    , "-fno-ffi"
-    , "-fno-fi"
-    , "-fno-flat-cache"
-    , "-fno-float-in"
-    , "-fno-force-recomp"
-    , "-fno-full-laziness"
-    , "-fno-fun-to-thunk"
-    , "-fno-gen-manifest"
-    , "-fno-ghci-history"
-    , "-fno-ghci-leak-check"
-    , "-fno-ghci-sandbox"
-    , "-fno-glasgow-exts"
-    , "-fno-helpful-errors"
-    , "-fno-hide-source-paths"
-    , "-fno-hpc"
-    , "-fno-ignore-asserts"
-    , "-fno-ignore-hpc-changes"
-    , "-fno-ignore-interface-pragmas"
-    , "-fno-ignore-optim-changes"
-    , "-fno-implicit-params"
-    , "-fno-implicit-prelude"
-    , "-fno-irrefutable-tuples"
-    , "-fno-kill-absence"
-    , "-fno-kill-one-shot"
-    , "-fno-late-dmd-anal"
-    , "-fno-late-specialise"
-    , "-fno-liberate-case"
-    , "-fno-liberate-case-threshold"
-    , "-fno-llvm-pass-vectors-in-regs"
-    , "-fno-loopification"
-    , "-fno-max-errors"
-    , "-fno-max-refinement-hole-fits"
-    , "-fno-max-relevant-binds"
-    , "-fno-max-valid-hole-fits"
-    , "-fno-monomorphism-restriction"
-    , "-fno-mono-pat-binds"
-    , "-fno-num-constant-folding"
-    , "-fno-omit-interface-pragmas"
-    , "-fno-omit-yields"
-    , "-fno-opt-coercion"
-    , "-fno-optimal-applicative-do"
-    , "-fno-pedantic-bottoms"
-    , "-fno-PIC"
-    , "-fno-PIE"
-    , "-fno-pre-inlining"
-    , "-fno-print-equality-relations"
-    , "-fno-print-expanded-synonyms"
-    , "-fno-print-explicit-coercions"
-    , "-fno-print-explicit-foralls"
-    , "-fno-print-explicit-kinds"
-    , "-fno-print-explicit-runtime-reps"
-    , "-fno-print-potential-instances"
-    , "-fno-print-typechecker-elaboration"
-    , "-fno-print-unicode-syntax"
-    , "-fno-prof-auto"
-    , "-fno-prof-cafs"
-    , "-fno-prof-count-entries"
-    , "-fno-refinement-level-hole-fits"
-    , "-fno-regs-graph"
-    , "-fno-regs-iterative"
-    , "-fno-reverse-errors"
-    , "-fno-rewrite-rules"
-    , "-fno-safe-infer"
-    , "-fno-scoped-type-variables"
-    , "-fno-shared-implib"
-    , "-fno-show-hole-constraints"
-    , "-fno-show-hole-matches-of-hole-fits"
-    , "-fno-show-loaded-modules"
-    , "-fno-show-provenance-of-hole-fits"
-    , "-fno-show-type-app-of-hole-fits"
-    , "-fno-show-type-app-vars-of-hole-fits"
-    , "-fno-show-type-of-hole-fits"
-    , "-fno-show-valid-hole-fits"
-    , "-fno-show-valid-substitutions"
-    , "-fno-show-warning-groups"
-    , "-fno-solve-constant-dicts"
-    , "-fno-sort-by-size-hole-fits"
-    , "-fno-sort-by-subsumption-hole-fits"
-    , "-fno-sort-valid-hole-fits"
-    , "-fno-spec-constr"
-    , "-fno-spec-constr-count"
-    , "-fno-spec-constr-keen"
-    , "-fno-spec-constr-threshold"
-    , "-fno-specialise"
-    , "-fno-specialise-aggressively"
-    , "-fno-specialize"
-    , "-fno-specialize-aggressively"
-    , "-fno-state-hack"
-    , "-fno-static-argument-transformation"
-    , "-fno-stg-cse"
-    , "-fno-strictness"
-    , "-fno-th"
-    , "-fno-unbox-small-strict-fields"
-    , "-fno-unbox-strict-fields"
-    , "-fno-unclutter-valid-hole-fits"
-    , "-fno-use-rpaths"
-    , "-fno-version-macros"
-    , "-fno-whole-archive-hs-libs"
-    , "-fno-worker-wrapper"
-    , "-fno-write-interface"
-    , "-fnum-constant-folding"
-    , "-fobject-code"
-    , "-fomit-interface-pragmas"
-    , "-fomit-yields"
-    , "-foptimal-applicative-do"
-    , "-fpackage-trust"
-    , "-fpedantic-bottoms"
-    , "-fPIC"
-    , "-fPIE"
-    , "-fplugin"
-    , "-fplugin-opt"
-    , "-fpre-inlining"
-    , "-fprint-equality-relations"
-    , "-fprint-expanded-synonyms"
-    , "-fprint-explicit-coercions"
-    , "-fprint-explicit-foralls"
-    , "-fprint-explicit-kinds"
-    , "-fprint-explicit-runtime-reps"
-    , "-fprint-potential-instances"
-    , "-fprint-typechecker-elaboration"
-    , "-fprint-unicode-syntax"
-    , "-fproc-alignment"
-    , "-fprof-auto"
-    , "-fprof-auto-calls"
-    , "-fprof-auto-exported"
-    , "-fprof-auto-top"
-    , "-fprof-cafs"
-    , "-fprof-count-entries"
-    , "-framework"
-    , "-framework-path"
-    , "-freduction-depth"
-    , "-frefinement-level-hole-fits"
-    , "-fregs-graph"
-    , "-fregs-iterative"
-    , "-freverse-errors"
-    , "-frewrite-rules"
-    , "-fscoped-type-variables"
-    , "-fshared-implib"
-    , "-fshow-hole-constraints"
-    , "-fshow-hole-matches-of-hole-fits"
-    , "-fshow-loaded-modules"
-    , "-fshow-provenance-of-hole-fits"
-    , "-fshow-type-app-of-hole-fits"
-    , "-fshow-type-app-vars-of-hole-fits"
-    , "-fshow-type-of-hole-fits"
-    , "-fshow-valid-hole-fits"
-    , "-fshow-valid-substitutions"
-    , "-fshow-warning-groups"
-    , "-fsimplifier-phases"
-    , "-fsimpl-tick-factor"
-    , "-fsolve-constant-dicts"
-    , "-fsort-by-size-hole-fits"
-    , "-fsort-by-subsumption-hole-fits"
-    , "-fsort-valid-hole-fits"
-    , "-fspec-constr"
-    , "-fspec-constr-count"
-    , "-fspec-constr-keen"
-    , "-fspec-constr-recursive"
-    , "-fspec-constr-threshold"
-    , "-fspecialise"
-    , "-fspecialise-aggressively"
-    , "-fspecialize"
-    , "-fspecialize-aggressively"
-    , "-fstatic-argument-transformation"
-    , "-fstg-cse"
-    , "-fstrictness"
-    , "-fstrictness-before"
-    , "-fth"
-    , "-ftype-function-depth"
-    , "-funbox-small-strict-fields"
-    , "-funbox-strict-fields"
-    , "-funclutter-valid-hole-fits"
-    , "-funfolding-creation-threshold"
-    , "-funfolding-dict-discount"
-    , "-funfolding-fun-discount"
-    , "-funfolding-keeness-factor"
-    , "-funfolding-use-threshold"
-    , "-fuse-rpaths"
-    , "-fversion-macros"
-    , "-fvia-c"
-    , "-fvia-C"
-    , "-fwhole-archive-hs-libs"
-    , "-fworker-wrapper"
-    , "-fwrite-interface"
-    , "-g"
-    , "-ghcversion-file"
-    , "-global-package-db"
-    , "-H"
-    , "-haddock"
-    , "-haddock-opts"
-    , "-hcsuf"
-    , "-hide-all-packages"
-    , "-hide-all-plugin-packages"
-    , "-hide-package"
-    , "-hidir"
-    , "-hisuf"
-    , "-hpcdir"
-    , "-i"
-    , "-I"
-    , "-ignore-package"
-    , "-#include"
-    , "-include-pkg-deps"
-    , "-instantiated-with"
-    , "-j"
-    , "-keep-hc-file"
-    , "-keep-hc-files"
-    , "-keep-hi-file"
-    , "-keep-hi-files"
-    , "-keep-llvm-file"
-    , "-keep-llvm-files"
-    , "-keep-o-file"
-    , "-keep-o-files"
-    , "-keep-s-file"
-    , "-keep-s-files"
-    , "-keep-tmp-files"
-    , "-l"
-    , "-L"
-    , "-M"
-    , "-main-is"
-    , "-mavx"
-    , "-mavx2"
-    , "-mavx512cd"
-    , "-mavx512er"
-    , "-mavx512f"
-    , "-mavx512pf"
-    , "-mbmi"
-    , "-mbmi2"
-    , "-msse"
-    , "-msse2"
-    , "-msse3"
-    , "-msse4"
-    , "-msse4.2"
-    , "-n"
-    , "-no-auto"
-    , "-no-auto-all"
-    , "-no-auto-link-packages"
-    , "-no-caf-all"
-    , "-no-global-package-db"
-    , "-no-hs-main"
-    , "-no-keep-hi-file"
-    , "-no-keep-hi-files"
-    , "-no-keep-o-file"
-    , "-no-keep-o-files"
-    , "-no-link"
-    , "-no-pie"
-    , "-no-recomp"
-    , "-no-rtsopts"
-    , "-no-rtsopts-suggestions"
-    , "-no-user-package-conf"
-    , "-no-user-package-db"
-    , "-o"
-    , "-O"
-    , "-odir"
-    , "-ohi"
-    , "-Onot"
-    , "-opta"
-    , "-optc"
-    , "-optF"
-    , "-opti"
-    , "-optl"
-    , "-optL"
-    , "-optlc"
-    , "-optlo"
-    , "-optP"
-    , "-optwindres"
-    , "-osuf"
-    , "-outputdir"
-    , "-package"
-    , "-package-conf"
-    , "-package-db"
-    , "-package-env"
-    , "-package-id"
-    , "-package-name"
-    , "-pgma"
-    , "-pgmar"
-    , "-pgmc"
-    , "-pgmdll"
-    , "-pgmF"
-    , "-pgmi"
-    , "-pgml"
-    , "-pgmL"
-    , "-pgmlc"
-    , "-pgmlibtool"
-    , "-pgmlo"
-    , "-pgmP"
-    , "-pgmranlib"
-    , "-pgms"
-    , "-pgmwindres"
-    , "-pie"
-    , "-plugin-package"
-    , "-plugin-package-id"
-    , "-prof"
-    , "-rdynamic"
-    , "-recomp"
-    , "-relative-dynlib-paths"
-    , "-Rghc-timing"
-    , "-rtsopts"
-    , "-rtsopts=all"
-    , "-rtsopts=ignore"
-    , "-rtsopts=ignoreAll"
-    , "-rtsopts=none"
-    , "-rtsopts=some"
-    , "-S"
-    , "-shared"
-    , "-smp"
-    , "-split-objs"
-    , "-split-sections"
-    , "-static"
-    , "-staticlib"
-    , "-stubdir"
-    , "-syslib"
-    , "-this-component-id"
-    , "-this-package-key"
-    , "-this-unit-id"
-    , "-threaded"
-    , "-ticky"
-    , "-ticky-allocd"
-    , "-ticky-dyn-thunk"
-    , "-ticky-LNE"
-    , "-tmpdir"
-    , "-trust"
-    , "-U"
-    , "-user-package-db"
-    , "-v"
-    , "-V"
-    , "-w"
-    , "-W"
-    , "-Wall"
-    , "-Wall-missed-specialisations"
-    , "-Wall-missed-specializations"
-    , "-Walternative-layout-rule-transitional"
-    , "-Wamp"
-    , "-Wauto-orphans"
-    , "-Wcompat"
-    , "-Wcpp-undef"
-    , "-Wdefault"
-    , "-Wdeferred-out-of-scope-variables"
-    , "-Wdeferred-type-errors"
-    , "-Wdeprecated-flags"
-    , "-Wdeprecations"
-    , "-Wderiving-typeable"
-    , "-Wdodgy-exports"
-    , "-Wdodgy-foreign-imports"
-    , "-Wdodgy-imports"
-    , "-Wduplicate-constraints"
-    , "-Wduplicate-exports"
-    , "-Wempty-enumerations"
-    , "-Werror"
-    , "-Werror=all-missed-specialisations"
-    , "-Werror=all-missed-specializations"
-    , "-Werror=alternative-layout-rule-transitional"
-    , "-Werror=amp"
-    , "-Werror=auto-orphans"
-    , "-Werror=compat"
-    , "-Werror=cpp-undef"
-    , "-Werror=deferred-out-of-scope-variables"
-    , "-Werror=deferred-type-errors"
-    , "-Werror=deprecated-flags"
-    , "-Werror=deprecations"
-    , "-Werror=deriving-typeable"
-    , "-Werror=dodgy-exports"
-    , "-Werror=dodgy-foreign-imports"
-    , "-Werror=dodgy-imports"
-    , "-Werror=duplicate-constraints"
-    , "-Werror=duplicate-exports"
-    , "-Werror=empty-enumerations"
-    , "-Werror=hi-shadowing"
-    , "-Werror=identities"
-    , "-Werror=implicit-kind-vars"
-    , "-Werror=implicit-prelude"
-    , "-Werror=inaccessible-code"
-    , "-Werror=incomplete-patterns"
-    , "-Werror=incomplete-record-updates"
-    , "-Werror=incomplete-uni-patterns"
-    , "-Werror=inline-rule-shadowing"
-    , "-Werror=missed-specialisations"
-    , "-Werror=missed-specializations"
-    , "-Werror=missing-exported-signatures"
-    , "-Werror=missing-exported-sigs"
-    , "-Werror=missing-export-lists"
-    , "-Werror=missing-fields"
-    , "-Werror=missing-home-modules"
-    , "-Werror=missing-import-lists"
-    , "-Werror=missing-local-signatures"
-    , "-Werror=missing-local-sigs"
-    , "-Werror=missing-methods"
-    , "-Werror=missing-monadfail-instances"
-    , "-Werror=missing-pattern-synonym-signatures"
-    , "-Werror=missing-signatures"
-    , "-Werror=monomorphism-restriction"
-    , "-Werror=name-shadowing"
-    , "-Werror=noncanonical-monadfail-instances"
-    , "-Werror=noncanonical-monad-instances"
-    , "-Werror=noncanonical-monoid-instances"
-    , "-Werror=orphans"
-    , "-Werror=overflowed-literals"
-    , "-Werror=overlapping-patterns"
-    , "-Werror=partial-fields"
-    , "-Werror=partial-type-signatures"
-    , "-Werror=redundant-constraints"
-    , "-Werror=safe"
-    , "-Werror=semigroup"
-    , "-Werror=simplifiable-class-constraints"
-    , "-Werror=star-binder"
-    , "-Werror=star-is-type"
-    , "-Werror=tabs"
-    , "-Werror=trustworthy-safe"
-    , "-Werror=type-defaults"
-    , "-Werror=typed-holes"
-    , "-Werror=unbanged-strict-patterns"
-    , "-Werror=unrecognised-pragmas"
-    , "-Werror=unrecognised-warning-flags"
-    , "-Werror=unsafe"
-    , "-Werror=unsupported-calling-conventions"
-    , "-Werror=unsupported-llvm-version"
-    , "-Werror=unticked-promoted-constructors"
-    , "-Werror=unused-do-bind"
-    , "-Werror=unused-foralls"
-    , "-Werror=unused-imports"
-    , "-Werror=unused-local-binds"
-    , "-Werror=unused-matches"
-    , "-Werror=unused-pattern-binds"
-    , "-Werror=unused-top-binds"
-    , "-Werror=unused-type-patterns"
-    , "-Werror=warnings-deprecations"
-    , "-Werror=wrong-do-bind"
-    , "-Weverything"
-    , "-Wextra"
-    , "-Whi-shadowing"
-    , "-Widentities"
-    , "-Wimplicit-kind-vars"
-    , "-Wimplicit-prelude"
-    , "-Winaccessible-code"
-    , "-Wincomplete-patterns"
-    , "-Wincomplete-record-updates"
-    , "-Wincomplete-uni-patterns"
-    , "-Winline-rule-shadowing"
-    , "-with-rtsopts"
-    , "-Wmissed-specialisations"
-    , "-Wmissed-specializations"
-    , "-Wmissing-exported-signatures"
-    , "-Wmissing-exported-sigs"
-    , "-Wmissing-export-lists"
-    , "-Wmissing-fields"
-    , "-Wmissing-home-modules"
-    , "-Wmissing-import-lists"
-    , "-Wmissing-local-signatures"
-    , "-Wmissing-local-sigs"
-    , "-Wmissing-methods"
-    , "-Wmissing-monadfail-instances"
-    , "-Wmissing-pattern-synonym-signatures"
-    , "-Wmissing-signatures"
-    , "-Wmonomorphism-restriction"
-    , "-Wname-shadowing"
-    , "-Wno-all"
-    , "-Wno-all-missed-specialisations"
-    , "-Wno-all-missed-specializations"
-    , "-Wno-alternative-layout-rule-transitional"
-    , "-Wno-amp"
-    , "-Wno-auto-orphans"
-    , "-Wno-compat"
-    , "-Wno-cpp-undef"
-    , "-Wno-default"
-    , "-Wno-deferred-out-of-scope-variables"
-    , "-Wno-deferred-type-errors"
-    , "-Wno-deprecated-flags"
-    , "-Wno-deprecations"
-    , "-Wno-deriving-typeable"
-    , "-Wno-dodgy-exports"
-    , "-Wno-dodgy-foreign-imports"
-    , "-Wno-dodgy-imports"
-    , "-Wno-duplicate-constraints"
-    , "-Wno-duplicate-exports"
-    , "-Wno-empty-enumerations"
-    , "-Wno-error=all-missed-specialisations"
-    , "-Wno-error=all-missed-specializations"
-    , "-Wno-error=alternative-layout-rule-transitional"
-    , "-Wno-error=amp"
-    , "-Wno-error=auto-orphans"
-    , "-Wno-error=compat"
-    , "-Wno-error=cpp-undef"
-    , "-Wno-error=deferred-out-of-scope-variables"
-    , "-Wno-error=deferred-type-errors"
-    , "-Wno-error=deprecated-flags"
-    , "-Wno-error=deprecations"
-    , "-Wno-error=deriving-typeable"
-    , "-Wno-error=dodgy-exports"
-    , "-Wno-error=dodgy-foreign-imports"
-    , "-Wno-error=dodgy-imports"
-    , "-Wno-error=duplicate-constraints"
-    , "-Wno-error=duplicate-exports"
-    , "-Wno-error=empty-enumerations"
-    , "-Wno-error=hi-shadowing"
-    , "-Wno-error=identities"
-    , "-Wno-error=implicit-kind-vars"
-    , "-Wno-error=implicit-prelude"
-    , "-Wno-error=inaccessible-code"
-    , "-Wno-error=incomplete-patterns"
-    , "-Wno-error=incomplete-record-updates"
-    , "-Wno-error=incomplete-uni-patterns"
-    , "-Wno-error=inline-rule-shadowing"
-    , "-Wno-error=missed-specialisations"
-    , "-Wno-error=missed-specializations"
-    , "-Wno-error=missing-exported-signatures"
-    , "-Wno-error=missing-exported-sigs"
-    , "-Wno-error=missing-export-lists"
-    , "-Wno-error=missing-fields"
-    , "-Wno-error=missing-home-modules"
-    , "-Wno-error=missing-import-lists"
-    , "-Wno-error=missing-local-signatures"
-    , "-Wno-error=missing-local-sigs"
-    , "-Wno-error=missing-methods"
-    , "-Wno-error=missing-monadfail-instances"
-    , "-Wno-error=missing-pattern-synonym-signatures"
-    , "-Wno-error=missing-signatures"
-    , "-Wno-error=monomorphism-restriction"
-    , "-Wno-error=name-shadowing"
-    , "-Wno-error=noncanonical-monadfail-instances"
-    , "-Wno-error=noncanonical-monad-instances"
-    , "-Wno-error=noncanonical-monoid-instances"
-    , "-Wno-error=orphans"
-    , "-Wno-error=overflowed-literals"
-    , "-Wno-error=overlapping-patterns"
-    , "-Wno-error=partial-fields"
-    , "-Wno-error=partial-type-signatures"
-    , "-Wno-error=redundant-constraints"
-    , "-Wno-error=safe"
-    , "-Wno-error=semigroup"
-    , "-Wno-error=simplifiable-class-constraints"
-    , "-Wno-error=star-binder"
-    , "-Wno-error=star-is-type"
-    , "-Wno-error=tabs"
-    , "-Wno-error=trustworthy-safe"
-    , "-Wno-error=type-defaults"
-    , "-Wno-error=typed-holes"
-    , "-Wno-error=unbanged-strict-patterns"
-    , "-Wno-error=unrecognised-pragmas"
-    , "-Wno-error=unrecognised-warning-flags"
-    , "-Wno-error=unsafe"
-    , "-Wno-error=unsupported-calling-conventions"
-    , "-Wno-error=unsupported-llvm-version"
-    , "-Wno-error=unticked-promoted-constructors"
-    , "-Wno-error=unused-do-bind"
-    , "-Wno-error=unused-foralls"
-    , "-Wno-error=unused-imports"
-    , "-Wno-error=unused-local-binds"
-    , "-Wno-error=unused-matches"
-    , "-Wno-error=unused-pattern-binds"
-    , "-Wno-error=unused-top-binds"
-    , "-Wno-error=unused-type-patterns"
-    , "-Wno-error=warnings-deprecations"
-    , "-Wno-error=wrong-do-bind"
-    , "-Wno-everything"
-    , "-Wno-extra"
-    , "-Wno-hi-shadowing"
-    , "-Wno-identities"
-    , "-Wno-implicit-kind-vars"
-    , "-Wno-implicit-prelude"
-    , "-Wno-inaccessible-code"
-    , "-Wno-incomplete-patterns"
-    , "-Wno-incomplete-record-updates"
-    , "-Wno-incomplete-uni-patterns"
-    , "-Wno-inline-rule-shadowing"
-    , "-Wno-missed-specialisations"
-    , "-Wno-missed-specializations"
-    , "-Wno-missing-exported-signatures"
-    , "-Wno-missing-exported-sigs"
-    , "-Wno-missing-export-lists"
-    , "-Wno-missing-fields"
-    , "-Wno-missing-home-modules"
-    , "-Wno-missing-import-lists"
-    , "-Wno-missing-local-signatures"
-    , "-Wno-missing-local-sigs"
-    , "-Wno-missing-methods"
-    , "-Wno-missing-monadfail-instances"
-    , "-Wno-missing-pattern-synonym-signatures"
-    , "-Wno-missing-signatures"
-    , "-Wno-monomorphism-restriction"
-    , "-Wno-name-shadowing"
-    , "-Wnoncanonical-monadfail-instances"
-    , "-Wnoncanonical-monad-instances"
-    , "-Wnoncanonical-monoid-instances"
-    , "-Wno-noncanonical-monadfail-instances"
-    , "-Wno-noncanonical-monad-instances"
-    , "-Wno-noncanonical-monoid-instances"
-    , "-Wno-orphans"
-    , "-Wno-overflowed-literals"
-    , "-Wno-overlapping-patterns"
-    , "-Wno-partial-fields"
-    , "-Wno-partial-type-signatures"
-    , "-Wno-redundant-constraints"
-    , "-Wno-safe"
-    , "-Wno-semigroup"
-    , "-Wno-simplifiable-class-constraints"
-    , "-Wno-star-binder"
-    , "-Wno-star-is-type"
-    , "-Wnot"
-    , "-Wno-tabs"
-    , "-Wno-trustworthy-safe"
-    , "-Wno-type-defaults"
-    , "-Wno-typed-holes"
-    , "-Wno-unbanged-strict-patterns"
-    , "-Wno-unrecognised-pragmas"
-    , "-Wno-unrecognised-warning-flags"
-    , "-Wno-unsafe"
-    , "-Wno-unsupported-calling-conventions"
-    , "-Wno-unsupported-llvm-version"
-    , "-Wno-unticked-promoted-constructors"
-    , "-Wno-unused-binds"
-    , "-Wno-unused-do-bind"
-    , "-Wno-unused-foralls"
-    , "-Wno-unused-imports"
-    , "-Wno-unused-local-binds"
-    , "-Wno-unused-matches"
-    , "-Wno-unused-pattern-binds"
-    , "-Wno-unused-top-binds"
-    , "-Wno-unused-type-patterns"
-    , "-Wno-warnings-deprecations"
-    , "-Wno-wrong-do-bind"
-    , "-Worphans"
-    , "-Woverflowed-literals"
-    , "-Woverlapping-patterns"
-    , "-Wpartial-fields"
-    , "-Wpartial-type-signatures"
-    , "-Wredundant-constraints"
-    , "-Wsafe"
-    , "-Wsemigroup"
-    , "-Wsimplifiable-class-constraints"
-    , "-Wstar-binder"
-    , "-Wstar-is-type"
-    , "-Wtabs"
-    , "-Wtrustworthy-safe"
-    , "-Wtype-defaults"
-    , "-Wtyped-holes"
-    , "-Wunbanged-strict-patterns"
-    , "-Wunrecognised-pragmas"
-    , "-Wunrecognised-warning-flags"
-    , "-Wunsafe"
-    , "-Wunsupported-calling-conventions"
-    , "-Wunsupported-llvm-version"
-    , "-Wunticked-promoted-constructors"
-    , "-Wunused-binds"
-    , "-Wunused-do-bind"
-    , "-Wunused-foralls"
-    , "-Wunused-imports"
-    , "-Wunused-local-binds"
-    , "-Wunused-matches"
-    , "-Wunused-pattern-binds"
-    , "-Wunused-top-binds"
-    , "-Wunused-type-patterns"
-    , "-Wwarn"
-    , "-Wwarn=all-missed-specialisations"
-    , "-Wwarn=all-missed-specializations"
-    , "-Wwarn=alternative-layout-rule-transitional"
-    , "-Wwarn=amp"
-    , "-Wwarn=auto-orphans"
-    , "-Wwarn=compat"
-    , "-Wwarn=cpp-undef"
-    , "-Wwarn=deferred-out-of-scope-variables"
-    , "-Wwarn=deferred-type-errors"
-    , "-Wwarn=deprecated-flags"
-    , "-Wwarn=deprecations"
-    , "-Wwarn=deriving-typeable"
-    , "-Wwarn=dodgy-exports"
-    , "-Wwarn=dodgy-foreign-imports"
-    , "-Wwarn=dodgy-imports"
-    , "-Wwarn=duplicate-constraints"
-    , "-Wwarn=duplicate-exports"
-    , "-Wwarn=empty-enumerations"
-    , "-Wwarn=hi-shadowing"
-    , "-Wwarn=identities"
-    , "-Wwarn=implicit-kind-vars"
-    , "-Wwarn=implicit-prelude"
-    , "-Wwarn=inaccessible-code"
-    , "-Wwarn=incomplete-patterns"
-    , "-Wwarn=incomplete-record-updates"
-    , "-Wwarn=incomplete-uni-patterns"
-    , "-Wwarnings-deprecations"
-    , "-Wwarn=inline-rule-shadowing"
-    , "-Wwarn=missed-specialisations"
-    , "-Wwarn=missed-specializations"
-    , "-Wwarn=missing-exported-signatures"
-    , "-Wwarn=missing-exported-sigs"
-    , "-Wwarn=missing-export-lists"
-    , "-Wwarn=missing-fields"
-    , "-Wwarn=missing-home-modules"
-    , "-Wwarn=missing-import-lists"
-    , "-Wwarn=missing-local-signatures"
-    , "-Wwarn=missing-local-sigs"
-    , "-Wwarn=missing-methods"
-    , "-Wwarn=missing-monadfail-instances"
-    , "-Wwarn=missing-pattern-synonym-signatures"
-    , "-Wwarn=missing-signatures"
-    , "-Wwarn=monomorphism-restriction"
-    , "-Wwarn=name-shadowing"
-    , "-Wwarn=noncanonical-monadfail-instances"
-    , "-Wwarn=noncanonical-monad-instances"
-    , "-Wwarn=noncanonical-monoid-instances"
-    , "-Wwarn=orphans"
-    , "-Wwarn=overflowed-literals"
-    , "-Wwarn=overlapping-patterns"
-    , "-Wwarn=partial-fields"
-    , "-Wwarn=partial-type-signatures"
-    , "-Wwarn=redundant-constraints"
-    , "-Wwarn=safe"
-    , "-Wwarn=semigroup"
-    , "-Wwarn=simplifiable-class-constraints"
-    , "-Wwarn=star-binder"
-    , "-Wwarn=star-is-type"
-    , "-Wwarn=tabs"
-    , "-Wwarn=trustworthy-safe"
-    , "-Wwarn=type-defaults"
-    , "-Wwarn=typed-holes"
-    , "-Wwarn=unbanged-strict-patterns"
-    , "-Wwarn=unrecognised-pragmas"
-    , "-Wwarn=unrecognised-warning-flags"
-    , "-Wwarn=unsafe"
-    , "-Wwarn=unsupported-calling-conventions"
-    , "-Wwarn=unsupported-llvm-version"
-    , "-Wwarn=unticked-promoted-constructors"
-    , "-Wwarn=unused-do-bind"
-    , "-Wwarn=unused-foralls"
-    , "-Wwarn=unused-imports"
-    , "-Wwarn=unused-local-binds"
-    , "-Wwarn=unused-matches"
-    , "-Wwarn=unused-pattern-binds"
-    , "-Wwarn=unused-top-binds"
-    , "-Wwarn=unused-type-patterns"
-    , "-Wwarn=warnings-deprecations"
-    , "-Wwarn=wrong-do-bind"
-    , "-Wwrong-do-bind"
-    , "-XAllowAmbiguousTypes"
-    , "-XAlternativeLayoutRule"
-    , "-XAlternativeLayoutRuleTransitional"
-    , "-XApplicativeDo"
-    , "-XArrows"
-    , "-XAutoDeriveTypeable"
-    , "-XBangPatterns"
-    , "-XBinaryLiterals"
-    , "-XBlockArguments"
-    , "-XCApiFFI"
-    , "-XConstrainedClassMethods"
-    , "-XConstraintKinds"
-    , "-XCPP"
-    , "-XDataKinds"
-    , "-XDatatypeContexts"
-    , "-XDefaultSignatures"
-    , "-XDeriveAnyClass"
-    , "-XDeriveDataTypeable"
-    , "-XDeriveFoldable"
-    , "-XDeriveFunctor"
-    , "-XDeriveGeneric"
-    , "-XDeriveLift"
-    , "-XDeriveTraversable"
-    , "-XDerivingStrategies"
-    , "-XDerivingVia"
-    , "-XDisambiguateRecordFields"
-    , "-XDoAndIfThenElse"
-    , "-XDoRec"
-    , "-XDuplicateRecordFields"
-    , "-XEmptyCase"
-    , "-XEmptyDataDecls"
-    , "-XEmptyDataDeriving"
-    , "-XExistentialQuantification"
-    , "-XExplicitForAll"
-    , "-XExplicitNamespaces"
-    , "-XExtendedDefaultRules"
-    , "-XFlexibleContexts"
-    , "-XFlexibleInstances"
-    , "-XForeignFunctionInterface"
-    , "-XFunctionalDependencies"
-    , "-XGADTs"
-    , "-XGADTSyntax"
-    , "-XGeneralisedNewtypeDeriving"
-    , "-XGeneralizedNewtypeDeriving"
-    , "-XGenerics"
-    , "-XGHCForeignImportPrim"
-    , "-XHaskell2010"
-    , "-XHaskell98"
-    , "-XHexFloatLiterals"
-    , "-XImplicitParams"
-    , "-XImplicitPrelude"
-    , "-XImpredicativeTypes"
-    , "-XIncoherentInstances"
-    , "-XInstanceSigs"
-    , "-XInterruptibleFFI"
-    , "-XJavaScriptFFI"
-    , "-XKindSignatures"
-    , "-XLambdaCase"
-    , "-XLiberalTypeSynonyms"
-    , "-XMagicHash"
-    , "-XMonadComprehensions"
-    , "-XMonadFailDesugaring"
-    , "-XMonoLocalBinds"
-    , "-XMonomorphismRestriction"
-    , "-XMonoPatBinds"
-    , "-XMultiParamTypeClasses"
-    , "-XMultiWayIf"
-    , "-XNamedFieldPuns"
-    , "-XNamedWildCards"
-    , "-XNegativeLiterals"
-    , "-XNoAllowAmbiguousTypes"
-    , "-XNoAlternativeLayoutRule"
-    , "-XNoAlternativeLayoutRuleTransitional"
-    , "-XNoApplicativeDo"
-    , "-XNoArrows"
-    , "-XNoAutoDeriveTypeable"
-    , "-XNoBangPatterns"
-    , "-XNoBinaryLiterals"
-    , "-XNoBlockArguments"
-    , "-XNoCApiFFI"
-    , "-XNoConstrainedClassMethods"
-    , "-XNoConstraintKinds"
-    , "-XNoCPP"
-    , "-XNoDataKinds"
-    , "-XNoDatatypeContexts"
-    , "-XNoDefaultSignatures"
-    , "-XNoDeriveAnyClass"
-    , "-XNoDeriveDataTypeable"
-    , "-XNoDeriveFoldable"
-    , "-XNoDeriveFunctor"
-    , "-XNoDeriveGeneric"
-    , "-XNoDeriveLift"
-    , "-XNoDeriveTraversable"
-    , "-XNoDerivingStrategies"
-    , "-XNoDerivingVia"
-    , "-XNoDisambiguateRecordFields"
-    , "-XNoDoAndIfThenElse"
-    , "-XNoDoRec"
-    , "-XNoDuplicateRecordFields"
-    , "-XNoEmptyCase"
-    , "-XNoEmptyDataDecls"
-    , "-XNoEmptyDataDeriving"
-    , "-XNoExistentialQuantification"
-    , "-XNoExplicitForAll"
-    , "-XNoExplicitNamespaces"
-    , "-XNoExtendedDefaultRules"
-    , "-XNoFlexibleContexts"
-    , "-XNoFlexibleInstances"
-    , "-XNoForeignFunctionInterface"
-    , "-XNoFunctionalDependencies"
-    , "-XNoGADTs"
-    , "-XNoGADTSyntax"
-    , "-XNoGeneralisedNewtypeDeriving"
-    , "-XNoGeneralizedNewtypeDeriving"
-    , "-XNoGenerics"
-    , "-XNoGHCForeignImportPrim"
-    , "-XNoHexFloatLiterals"
-    , "-XNoImplicitParams"
-    , "-XNoImplicitPrelude"
-    , "-XNoImpredicativeTypes"
-    , "-XNoIncoherentInstances"
-    , "-XNoInstanceSigs"
-    , "-XNoInterruptibleFFI"
-    , "-XNoJavaScriptFFI"
-    , "-XNoKindSignatures"
-    , "-XNoLambdaCase"
-    , "-XNoLiberalTypeSynonyms"
-    , "-XNoMagicHash"
-    , "-XNoMonadComprehensions"
-    , "-XNoMonadFailDesugaring"
-    , "-XNoMonoLocalBinds"
-    , "-XNoMonomorphismRestriction"
-    , "-XNoMonoPatBinds"
-    , "-XNoMultiParamTypeClasses"
-    , "-XNoMultiWayIf"
-    , "-XNoNamedFieldPuns"
-    , "-XNoNamedWildCards"
-    , "-XNondecreasingIndentation"
-    , "-XNoNegativeLiterals"
-    , "-XNoNondecreasingIndentation"
-    , "-XNoNPlusKPatterns"
-    , "-XNoNullaryTypeClasses"
-    , "-XNoNumDecimals"
-    , "-XNoNumericUnderscores"
-    , "-XNoOverlappingInstances"
-    , "-XNoOverloadedLabels"
-    , "-XNoOverloadedLists"
-    , "-XNoOverloadedStrings"
-    , "-XNoPackageImports"
-    , "-XNoParallelArrays"
-    , "-XNoParallelListComp"
-    , "-XNoPartialTypeSignatures"
-    , "-XNoPatternGuards"
-    , "-XNoPatternSignatures"
-    , "-XNoPatternSynonyms"
-    , "-XNoPolyKinds"
-    , "-XNoPolymorphicComponents"
-    , "-XNoPostfixOperators"
-    , "-XNoQuantifiedConstraints"
-    , "-XNoQuasiQuotes"
-    , "-XNoRank2Types"
-    , "-XNoRankNTypes"
-    , "-XNoRebindableSyntax"
-    , "-XNoRecordPuns"
-    , "-XNoRecordWildCards"
-    , "-XNoRecursiveDo"
-    , "-XNoRelaxedLayout"
-    , "-XNoRelaxedPolyRec"
-    , "-XNoRoleAnnotations"
-    , "-XNoScopedTypeVariables"
-    , "-XNoStandaloneDeriving"
-    , "-XNoStarIsType"
-    , "-XNoStaticPointers"
-    , "-XNoStrict"
-    , "-XNoStrictData"
-    , "-XNoTemplateHaskell"
-    , "-XNoTemplateHaskellQuotes"
-    , "-XNoTraditionalRecordSyntax"
-    , "-XNoTransformListComp"
-    , "-XNoTupleSections"
-    , "-XNoTypeApplications"
-    , "-XNoTypeFamilies"
-    , "-XNoTypeFamilyDependencies"
-    , "-XNoTypeInType"
-    , "-XNoTypeOperators"
-    , "-XNoTypeSynonymInstances"
-    , "-XNoUnboxedSums"
-    , "-XNoUnboxedTuples"
-    , "-XNoUndecidableInstances"
-    , "-XNoUndecidableSuperClasses"
-    , "-XNoUnicodeSyntax"
-    , "-XNoUnliftedFFITypes"
-    , "-XNoViewPatterns"
-    , "-XNPlusKPatterns"
-    , "-XNullaryTypeClasses"
-    , "-XNumDecimals"
-    , "-XNumericUnderscores"
-    , "-XOverlappingInstances"
-    , "-XOverloadedLabels"
-    , "-XOverloadedLists"
-    , "-XOverloadedStrings"
-    , "-XPackageImports"
-    , "-XParallelArrays"
-    , "-XParallelListComp"
-    , "-XPartialTypeSignatures"
-    , "-XPatternGuards"
-    , "-XPatternSignatures"
-    , "-XPatternSynonyms"
-    , "-XPolyKinds"
-    , "-XPolymorphicComponents"
-    , "-XPostfixOperators"
-    , "-XQuantifiedConstraints"
-    , "-XQuasiQuotes"
-    , "-XRank2Types"
-    , "-XRankNTypes"
-    , "-XRebindableSyntax"
-    , "-XRecordPuns"
-    , "-XRecordWildCards"
-    , "-XRecursiveDo"
-    , "-XRelaxedLayout"
-    , "-XRelaxedPolyRec"
-    , "-XRoleAnnotations"
-    , "-XSafe"
-    , "-XScopedTypeVariables"
-    , "-XStandaloneDeriving"
-    , "-XStarIsType"
-    , "-XStaticPointers"
-    , "-XStrict"
-    , "-XStrictData"
-    , "-XTemplateHaskell"
-    , "-XTemplateHaskellQuotes"
-    , "-XTraditionalRecordSyntax"
-    , "-XTransformListComp"
-    , "-XTrustworthy"
-    , "-XTupleSections"
-    , "-XTypeApplications"
-    , "-XTypeFamilies"
-    , "-XTypeFamilyDependencies"
-    , "-XTypeInType"
-    , "-XTypeOperators"
-    , "-XTypeSynonymInstances"
-    , "-XUnboxedSums"
-    , "-XUnboxedTuples"
-    , "-XUndecidableInstances"
-    , "-XUndecidableSuperClasses"
-    , "-XUnicodeSyntax"
-    , "-XUnliftedFFITypes"
-    , "-XUnsafe"
-    , "-XViewPatterns"
+  def get: Array[String] = Array(
+    // Flags that are valid but NOT reported by 'ghc --show-options'
+    "-fno-warn-orphans",
+
+    // Flags list generated with: ghc --show-options | grep -v '\-?' | grep -v '^--' | sort | xargs -n1 printf '    "%s",\n'
+    "-#include",
+    "-C",
+    "-D",
+    "-E",
+    "-F",
+    "-H",
+    "-I",
+    "-L",
+    "-M",
+    "-O",
+    "-Onot",
+    "-Rghc-timing",
+    "-S",
+    "-U",
+    "-V",
+    "-W",
+    "-Wall",
+    "-Wall-missed-specialisations",
+    "-Wall-missed-specializations",
+    "-Walternative-layout-rule-transitional",
+    "-Wauto-orphans",
+    "-Wcompat",
+    "-Wcpp-undef",
+    "-Wdefault",
+    "-Wdeferred-out-of-scope-variables",
+    "-Wdeferred-type-errors",
+    "-Wdeprecated-flags",
+    "-Wdeprecations",
+    "-Wderiving-typeable",
+    "-Wdodgy-exports",
+    "-Wdodgy-foreign-imports",
+    "-Wdodgy-imports",
+    "-Wduplicate-constraints",
+    "-Wduplicate-exports",
+    "-Wempty-enumerations",
+    "-Werror",
+    "-Werror=all-missed-specialisations",
+    "-Werror=all-missed-specializations",
+    "-Werror=alternative-layout-rule-transitional",
+    "-Werror=auto-orphans",
+    "-Werror=compat",
+    "-Werror=cpp-undef",
+    "-Werror=deferred-out-of-scope-variables",
+    "-Werror=deferred-type-errors",
+    "-Werror=deprecated-flags",
+    "-Werror=deprecations",
+    "-Werror=deriving-typeable",
+    "-Werror=dodgy-exports",
+    "-Werror=dodgy-foreign-imports",
+    "-Werror=dodgy-imports",
+    "-Werror=duplicate-constraints",
+    "-Werror=duplicate-exports",
+    "-Werror=empty-enumerations",
+    "-Werror=hi-shadowing",
+    "-Werror=identities",
+    "-Werror=implicit-kind-vars",
+    "-Werror=implicit-prelude",
+    "-Werror=inaccessible-code",
+    "-Werror=incomplete-patterns",
+    "-Werror=incomplete-record-updates",
+    "-Werror=incomplete-uni-patterns",
+    "-Werror=inline-rule-shadowing",
+    "-Werror=missed-extra-shared-lib",
+    "-Werror=missed-specialisations",
+    "-Werror=missed-specializations",
+    "-Werror=missing-deriving-strategies",
+    "-Werror=missing-export-lists",
+    "-Werror=missing-exported-signatures",
+    "-Werror=missing-exported-sigs",
+    "-Werror=missing-fields",
+    "-Werror=missing-home-modules",
+    "-Werror=missing-import-lists",
+    "-Werror=missing-local-signatures",
+    "-Werror=missing-local-sigs",
+    "-Werror=missing-methods",
+    "-Werror=missing-monadfail-instances",
+    "-Werror=missing-pattern-synonym-signatures",
+    "-Werror=missing-signatures",
+    "-Werror=missing-space-after-bang",
+    "-Werror=monomorphism-restriction",
+    "-Werror=name-shadowing",
+    "-Werror=noncanonical-monad-instances",
+    "-Werror=noncanonical-monadfail-instances",
+    "-Werror=noncanonical-monoid-instances",
+    "-Werror=orphans",
+    "-Werror=overflowed-literals",
+    "-Werror=overlapping-patterns",
+    "-Werror=partial-fields",
+    "-Werror=partial-type-signatures",
+    "-Werror=redundant-constraints",
+    "-Werror=safe",
+    "-Werror=semigroup",
+    "-Werror=simplifiable-class-constraints",
+    "-Werror=star-binder",
+    "-Werror=star-is-type",
+    "-Werror=tabs",
+    "-Werror=trustworthy-safe",
+    "-Werror=type-defaults",
+    "-Werror=typed-holes",
+    "-Werror=unbanged-strict-patterns",
+    "-Werror=unrecognised-pragmas",
+    "-Werror=unrecognised-warning-flags",
+    "-Werror=unsafe",
+    "-Werror=unsupported-calling-conventions",
+    "-Werror=unsupported-llvm-version",
+    "-Werror=unticked-promoted-constructors",
+    "-Werror=unused-do-bind",
+    "-Werror=unused-foralls",
+    "-Werror=unused-imports",
+    "-Werror=unused-local-binds",
+    "-Werror=unused-matches",
+    "-Werror=unused-pattern-binds",
+    "-Werror=unused-top-binds",
+    "-Werror=unused-type-patterns",
+    "-Werror=warnings-deprecations",
+    "-Werror=wrong-do-bind",
+    "-Weverything",
+    "-Wextra",
+    "-Whi-shadowing",
+    "-Widentities",
+    "-Wimplicit-kind-vars",
+    "-Wimplicit-prelude",
+    "-Winaccessible-code",
+    "-Wincomplete-patterns",
+    "-Wincomplete-record-updates",
+    "-Wincomplete-uni-patterns",
+    "-Winline-rule-shadowing",
+    "-Wmissed-extra-shared-lib",
+    "-Wmissed-specialisations",
+    "-Wmissed-specializations",
+    "-Wmissing-deriving-strategies",
+    "-Wmissing-export-lists",
+    "-Wmissing-exported-signatures",
+    "-Wmissing-exported-sigs",
+    "-Wmissing-fields",
+    "-Wmissing-home-modules",
+    "-Wmissing-import-lists",
+    "-Wmissing-local-signatures",
+    "-Wmissing-local-sigs",
+    "-Wmissing-methods",
+    "-Wmissing-monadfail-instances",
+    "-Wmissing-pattern-synonym-signatures",
+    "-Wmissing-signatures",
+    "-Wmissing-space-after-bang",
+    "-Wmonomorphism-restriction",
+    "-Wname-shadowing",
+    "-Wno-all",
+    "-Wno-all-missed-specialisations",
+    "-Wno-all-missed-specializations",
+    "-Wno-alternative-layout-rule-transitional",
+    "-Wno-auto-orphans",
+    "-Wno-compat",
+    "-Wno-cpp-undef",
+    "-Wno-default",
+    "-Wno-deferred-out-of-scope-variables",
+    "-Wno-deferred-type-errors",
+    "-Wno-deprecated-flags",
+    "-Wno-deprecations",
+    "-Wno-deriving-typeable",
+    "-Wno-dodgy-exports",
+    "-Wno-dodgy-foreign-imports",
+    "-Wno-dodgy-imports",
+    "-Wno-duplicate-constraints",
+    "-Wno-duplicate-exports",
+    "-Wno-empty-enumerations",
+    "-Wno-error=all-missed-specialisations",
+    "-Wno-error=all-missed-specializations",
+    "-Wno-error=alternative-layout-rule-transitional",
+    "-Wno-error=auto-orphans",
+    "-Wno-error=compat",
+    "-Wno-error=cpp-undef",
+    "-Wno-error=deferred-out-of-scope-variables",
+    "-Wno-error=deferred-type-errors",
+    "-Wno-error=deprecated-flags",
+    "-Wno-error=deprecations",
+    "-Wno-error=deriving-typeable",
+    "-Wno-error=dodgy-exports",
+    "-Wno-error=dodgy-foreign-imports",
+    "-Wno-error=dodgy-imports",
+    "-Wno-error=duplicate-constraints",
+    "-Wno-error=duplicate-exports",
+    "-Wno-error=empty-enumerations",
+    "-Wno-error=hi-shadowing",
+    "-Wno-error=identities",
+    "-Wno-error=implicit-kind-vars",
+    "-Wno-error=implicit-prelude",
+    "-Wno-error=inaccessible-code",
+    "-Wno-error=incomplete-patterns",
+    "-Wno-error=incomplete-record-updates",
+    "-Wno-error=incomplete-uni-patterns",
+    "-Wno-error=inline-rule-shadowing",
+    "-Wno-error=missed-extra-shared-lib",
+    "-Wno-error=missed-specialisations",
+    "-Wno-error=missed-specializations",
+    "-Wno-error=missing-deriving-strategies",
+    "-Wno-error=missing-export-lists",
+    "-Wno-error=missing-exported-signatures",
+    "-Wno-error=missing-exported-sigs",
+    "-Wno-error=missing-fields",
+    "-Wno-error=missing-home-modules",
+    "-Wno-error=missing-import-lists",
+    "-Wno-error=missing-local-signatures",
+    "-Wno-error=missing-local-sigs",
+    "-Wno-error=missing-methods",
+    "-Wno-error=missing-monadfail-instances",
+    "-Wno-error=missing-pattern-synonym-signatures",
+    "-Wno-error=missing-signatures",
+    "-Wno-error=missing-space-after-bang",
+    "-Wno-error=monomorphism-restriction",
+    "-Wno-error=name-shadowing",
+    "-Wno-error=noncanonical-monad-instances",
+    "-Wno-error=noncanonical-monadfail-instances",
+    "-Wno-error=noncanonical-monoid-instances",
+    "-Wno-error=orphans",
+    "-Wno-error=overflowed-literals",
+    "-Wno-error=overlapping-patterns",
+    "-Wno-error=partial-fields",
+    "-Wno-error=partial-type-signatures",
+    "-Wno-error=redundant-constraints",
+    "-Wno-error=safe",
+    "-Wno-error=semigroup",
+    "-Wno-error=simplifiable-class-constraints",
+    "-Wno-error=star-binder",
+    "-Wno-error=star-is-type",
+    "-Wno-error=tabs",
+    "-Wno-error=trustworthy-safe",
+    "-Wno-error=type-defaults",
+    "-Wno-error=typed-holes",
+    "-Wno-error=unbanged-strict-patterns",
+    "-Wno-error=unrecognised-pragmas",
+    "-Wno-error=unrecognised-warning-flags",
+    "-Wno-error=unsafe",
+    "-Wno-error=unsupported-calling-conventions",
+    "-Wno-error=unsupported-llvm-version",
+    "-Wno-error=unticked-promoted-constructors",
+    "-Wno-error=unused-do-bind",
+    "-Wno-error=unused-foralls",
+    "-Wno-error=unused-imports",
+    "-Wno-error=unused-local-binds",
+    "-Wno-error=unused-matches",
+    "-Wno-error=unused-pattern-binds",
+    "-Wno-error=unused-top-binds",
+    "-Wno-error=unused-type-patterns",
+    "-Wno-error=warnings-deprecations",
+    "-Wno-error=wrong-do-bind",
+    "-Wno-everything",
+    "-Wno-extra",
+    "-Wno-hi-shadowing",
+    "-Wno-identities",
+    "-Wno-implicit-kind-vars",
+    "-Wno-implicit-prelude",
+    "-Wno-inaccessible-code",
+    "-Wno-incomplete-patterns",
+    "-Wno-incomplete-record-updates",
+    "-Wno-incomplete-uni-patterns",
+    "-Wno-inline-rule-shadowing",
+    "-Wno-missed-extra-shared-lib",
+    "-Wno-missed-specialisations",
+    "-Wno-missed-specializations",
+    "-Wno-missing-deriving-strategies",
+    "-Wno-missing-export-lists",
+    "-Wno-missing-exported-signatures",
+    "-Wno-missing-exported-sigs",
+    "-Wno-missing-fields",
+    "-Wno-missing-home-modules",
+    "-Wno-missing-import-lists",
+    "-Wno-missing-local-signatures",
+    "-Wno-missing-local-sigs",
+    "-Wno-missing-methods",
+    "-Wno-missing-monadfail-instances",
+    "-Wno-missing-pattern-synonym-signatures",
+    "-Wno-missing-signatures",
+    "-Wno-missing-space-after-bang",
+    "-Wno-monomorphism-restriction",
+    "-Wno-name-shadowing",
+    "-Wno-noncanonical-monad-instances",
+    "-Wno-noncanonical-monadfail-instances",
+    "-Wno-noncanonical-monoid-instances",
+    "-Wno-orphans",
+    "-Wno-overflowed-literals",
+    "-Wno-overlapping-patterns",
+    "-Wno-partial-fields",
+    "-Wno-partial-type-signatures",
+    "-Wno-redundant-constraints",
+    "-Wno-safe",
+    "-Wno-semigroup",
+    "-Wno-simplifiable-class-constraints",
+    "-Wno-star-binder",
+    "-Wno-star-is-type",
+    "-Wno-tabs",
+    "-Wno-trustworthy-safe",
+    "-Wno-type-defaults",
+    "-Wno-typed-holes",
+    "-Wno-unbanged-strict-patterns",
+    "-Wno-unrecognised-pragmas",
+    "-Wno-unrecognised-warning-flags",
+    "-Wno-unsafe",
+    "-Wno-unsupported-calling-conventions",
+    "-Wno-unsupported-llvm-version",
+    "-Wno-unticked-promoted-constructors",
+    "-Wno-unused-binds",
+    "-Wno-unused-do-bind",
+    "-Wno-unused-foralls",
+    "-Wno-unused-imports",
+    "-Wno-unused-local-binds",
+    "-Wno-unused-matches",
+    "-Wno-unused-pattern-binds",
+    "-Wno-unused-top-binds",
+    "-Wno-unused-type-patterns",
+    "-Wno-warnings-deprecations",
+    "-Wno-wrong-do-bind",
+    "-Wnoncanonical-monad-instances",
+    "-Wnoncanonical-monadfail-instances",
+    "-Wnoncanonical-monoid-instances",
+    "-Wnot",
+    "-Worphans",
+    "-Woverflowed-literals",
+    "-Woverlapping-patterns",
+    "-Wpartial-fields",
+    "-Wpartial-type-signatures",
+    "-Wredundant-constraints",
+    "-Wsafe",
+    "-Wsemigroup",
+    "-Wsimplifiable-class-constraints",
+    "-Wstar-binder",
+    "-Wstar-is-type",
+    "-Wtabs",
+    "-Wtrustworthy-safe",
+    "-Wtype-defaults",
+    "-Wtyped-holes",
+    "-Wunbanged-strict-patterns",
+    "-Wunrecognised-pragmas",
+    "-Wunrecognised-warning-flags",
+    "-Wunsafe",
+    "-Wunsupported-calling-conventions",
+    "-Wunsupported-llvm-version",
+    "-Wunticked-promoted-constructors",
+    "-Wunused-binds",
+    "-Wunused-do-bind",
+    "-Wunused-foralls",
+    "-Wunused-imports",
+    "-Wunused-local-binds",
+    "-Wunused-matches",
+    "-Wunused-pattern-binds",
+    "-Wunused-top-binds",
+    "-Wunused-type-patterns",
+    "-Wwarn",
+    "-Wwarn=all-missed-specialisations",
+    "-Wwarn=all-missed-specializations",
+    "-Wwarn=alternative-layout-rule-transitional",
+    "-Wwarn=auto-orphans",
+    "-Wwarn=compat",
+    "-Wwarn=cpp-undef",
+    "-Wwarn=deferred-out-of-scope-variables",
+    "-Wwarn=deferred-type-errors",
+    "-Wwarn=deprecated-flags",
+    "-Wwarn=deprecations",
+    "-Wwarn=deriving-typeable",
+    "-Wwarn=dodgy-exports",
+    "-Wwarn=dodgy-foreign-imports",
+    "-Wwarn=dodgy-imports",
+    "-Wwarn=duplicate-constraints",
+    "-Wwarn=duplicate-exports",
+    "-Wwarn=empty-enumerations",
+    "-Wwarn=hi-shadowing",
+    "-Wwarn=identities",
+    "-Wwarn=implicit-kind-vars",
+    "-Wwarn=implicit-prelude",
+    "-Wwarn=inaccessible-code",
+    "-Wwarn=incomplete-patterns",
+    "-Wwarn=incomplete-record-updates",
+    "-Wwarn=incomplete-uni-patterns",
+    "-Wwarn=inline-rule-shadowing",
+    "-Wwarn=missed-extra-shared-lib",
+    "-Wwarn=missed-specialisations",
+    "-Wwarn=missed-specializations",
+    "-Wwarn=missing-deriving-strategies",
+    "-Wwarn=missing-export-lists",
+    "-Wwarn=missing-exported-signatures",
+    "-Wwarn=missing-exported-sigs",
+    "-Wwarn=missing-fields",
+    "-Wwarn=missing-home-modules",
+    "-Wwarn=missing-import-lists",
+    "-Wwarn=missing-local-signatures",
+    "-Wwarn=missing-local-sigs",
+    "-Wwarn=missing-methods",
+    "-Wwarn=missing-monadfail-instances",
+    "-Wwarn=missing-pattern-synonym-signatures",
+    "-Wwarn=missing-signatures",
+    "-Wwarn=missing-space-after-bang",
+    "-Wwarn=monomorphism-restriction",
+    "-Wwarn=name-shadowing",
+    "-Wwarn=noncanonical-monad-instances",
+    "-Wwarn=noncanonical-monadfail-instances",
+    "-Wwarn=noncanonical-monoid-instances",
+    "-Wwarn=orphans",
+    "-Wwarn=overflowed-literals",
+    "-Wwarn=overlapping-patterns",
+    "-Wwarn=partial-fields",
+    "-Wwarn=partial-type-signatures",
+    "-Wwarn=redundant-constraints",
+    "-Wwarn=safe",
+    "-Wwarn=semigroup",
+    "-Wwarn=simplifiable-class-constraints",
+    "-Wwarn=star-binder",
+    "-Wwarn=star-is-type",
+    "-Wwarn=tabs",
+    "-Wwarn=trustworthy-safe",
+    "-Wwarn=type-defaults",
+    "-Wwarn=typed-holes",
+    "-Wwarn=unbanged-strict-patterns",
+    "-Wwarn=unrecognised-pragmas",
+    "-Wwarn=unrecognised-warning-flags",
+    "-Wwarn=unsafe",
+    "-Wwarn=unsupported-calling-conventions",
+    "-Wwarn=unsupported-llvm-version",
+    "-Wwarn=unticked-promoted-constructors",
+    "-Wwarn=unused-do-bind",
+    "-Wwarn=unused-foralls",
+    "-Wwarn=unused-imports",
+    "-Wwarn=unused-local-binds",
+    "-Wwarn=unused-matches",
+    "-Wwarn=unused-pattern-binds",
+    "-Wwarn=unused-top-binds",
+    "-Wwarn=unused-type-patterns",
+    "-Wwarn=warnings-deprecations",
+    "-Wwarn=wrong-do-bind",
+    "-Wwarnings-deprecations",
+    "-Wwrong-do-bind",
+    "-XAllowAmbiguousTypes",
+    "-XAlternativeLayoutRule",
+    "-XAlternativeLayoutRuleTransitional",
+    "-XApplicativeDo",
+    "-XArrows",
+    "-XAutoDeriveTypeable",
+    "-XBangPatterns",
+    "-XBinaryLiterals",
+    "-XBlockArguments",
+    "-XCApiFFI",
+    "-XCPP",
+    "-XConstrainedClassMethods",
+    "-XConstraintKinds",
+    "-XDataKinds",
+    "-XDatatypeContexts",
+    "-XDefaultSignatures",
+    "-XDeriveAnyClass",
+    "-XDeriveDataTypeable",
+    "-XDeriveFoldable",
+    "-XDeriveFunctor",
+    "-XDeriveGeneric",
+    "-XDeriveLift",
+    "-XDeriveTraversable",
+    "-XDerivingStrategies",
+    "-XDerivingVia",
+    "-XDisambiguateRecordFields",
+    "-XDoAndIfThenElse",
+    "-XDoRec",
+    "-XDuplicateRecordFields",
+    "-XEmptyCase",
+    "-XEmptyDataDecls",
+    "-XEmptyDataDeriving",
+    "-XExistentialQuantification",
+    "-XExplicitForAll",
+    "-XExplicitNamespaces",
+    "-XExtendedDefaultRules",
+    "-XFlexibleContexts",
+    "-XFlexibleInstances",
+    "-XForeignFunctionInterface",
+    "-XFunctionalDependencies",
+    "-XGADTSyntax",
+    "-XGADTs",
+    "-XGHCForeignImportPrim",
+    "-XGeneralisedNewtypeDeriving",
+    "-XGeneralizedNewtypeDeriving",
+    "-XGenerics",
+    "-XHaskell2010",
+    "-XHaskell98",
+    "-XHexFloatLiterals",
+    "-XImplicitParams",
+    "-XImplicitPrelude",
+    "-XImpredicativeTypes",
+    "-XIncoherentInstances",
+    "-XInstanceSigs",
+    "-XInterruptibleFFI",
+    "-XJavaScriptFFI",
+    "-XKindSignatures",
+    "-XLambdaCase",
+    "-XLiberalTypeSynonyms",
+    "-XMagicHash",
+    "-XMonadComprehensions",
+    "-XMonadFailDesugaring",
+    "-XMonoLocalBinds",
+    "-XMonoPatBinds",
+    "-XMonomorphismRestriction",
+    "-XMultiParamTypeClasses",
+    "-XMultiWayIf",
+    "-XNPlusKPatterns",
+    "-XNamedFieldPuns",
+    "-XNamedWildCards",
+    "-XNegativeLiterals",
+    "-XNoAllowAmbiguousTypes",
+    "-XNoAlternativeLayoutRule",
+    "-XNoAlternativeLayoutRuleTransitional",
+    "-XNoApplicativeDo",
+    "-XNoArrows",
+    "-XNoAutoDeriveTypeable",
+    "-XNoBangPatterns",
+    "-XNoBinaryLiterals",
+    "-XNoBlockArguments",
+    "-XNoCApiFFI",
+    "-XNoCPP",
+    "-XNoConstrainedClassMethods",
+    "-XNoConstraintKinds",
+    "-XNoDataKinds",
+    "-XNoDatatypeContexts",
+    "-XNoDefaultSignatures",
+    "-XNoDeriveAnyClass",
+    "-XNoDeriveDataTypeable",
+    "-XNoDeriveFoldable",
+    "-XNoDeriveFunctor",
+    "-XNoDeriveGeneric",
+    "-XNoDeriveLift",
+    "-XNoDeriveTraversable",
+    "-XNoDerivingStrategies",
+    "-XNoDerivingVia",
+    "-XNoDisambiguateRecordFields",
+    "-XNoDoAndIfThenElse",
+    "-XNoDoRec",
+    "-XNoDuplicateRecordFields",
+    "-XNoEmptyCase",
+    "-XNoEmptyDataDecls",
+    "-XNoEmptyDataDeriving",
+    "-XNoExistentialQuantification",
+    "-XNoExplicitForAll",
+    "-XNoExplicitNamespaces",
+    "-XNoExtendedDefaultRules",
+    "-XNoFlexibleContexts",
+    "-XNoFlexibleInstances",
+    "-XNoForeignFunctionInterface",
+    "-XNoFunctionalDependencies",
+    "-XNoGADTSyntax",
+    "-XNoGADTs",
+    "-XNoGHCForeignImportPrim",
+    "-XNoGeneralisedNewtypeDeriving",
+    "-XNoGeneralizedNewtypeDeriving",
+    "-XNoGenerics",
+    "-XNoHexFloatLiterals",
+    "-XNoImplicitParams",
+    "-XNoImplicitPrelude",
+    "-XNoImpredicativeTypes",
+    "-XNoIncoherentInstances",
+    "-XNoInstanceSigs",
+    "-XNoInterruptibleFFI",
+    "-XNoJavaScriptFFI",
+    "-XNoKindSignatures",
+    "-XNoLambdaCase",
+    "-XNoLiberalTypeSynonyms",
+    "-XNoMagicHash",
+    "-XNoMonadComprehensions",
+    "-XNoMonadFailDesugaring",
+    "-XNoMonoLocalBinds",
+    "-XNoMonoPatBinds",
+    "-XNoMonomorphismRestriction",
+    "-XNoMultiParamTypeClasses",
+    "-XNoMultiWayIf",
+    "-XNoNPlusKPatterns",
+    "-XNoNamedFieldPuns",
+    "-XNoNamedWildCards",
+    "-XNoNegativeLiterals",
+    "-XNoNondecreasingIndentation",
+    "-XNoNullaryTypeClasses",
+    "-XNoNumDecimals",
+    "-XNoNumericUnderscores",
+    "-XNoOverlappingInstances",
+    "-XNoOverloadedLabels",
+    "-XNoOverloadedLists",
+    "-XNoOverloadedStrings",
+    "-XNoPackageImports",
+    "-XNoParallelArrays",
+    "-XNoParallelListComp",
+    "-XNoPartialTypeSignatures",
+    "-XNoPatternGuards",
+    "-XNoPatternSignatures",
+    "-XNoPatternSynonyms",
+    "-XNoPolyKinds",
+    "-XNoPolymorphicComponents",
+    "-XNoPostfixOperators",
+    "-XNoQuantifiedConstraints",
+    "-XNoQuasiQuotes",
+    "-XNoRank2Types",
+    "-XNoRankNTypes",
+    "-XNoRebindableSyntax",
+    "-XNoRecordPuns",
+    "-XNoRecordWildCards",
+    "-XNoRecursiveDo",
+    "-XNoRelaxedLayout",
+    "-XNoRelaxedPolyRec",
+    "-XNoRoleAnnotations",
+    "-XNoScopedTypeVariables",
+    "-XNoStandaloneDeriving",
+    "-XNoStarIsType",
+    "-XNoStaticPointers",
+    "-XNoStrict",
+    "-XNoStrictData",
+    "-XNoTemplateHaskell",
+    "-XNoTemplateHaskellQuotes",
+    "-XNoTraditionalRecordSyntax",
+    "-XNoTransformListComp",
+    "-XNoTupleSections",
+    "-XNoTypeApplications",
+    "-XNoTypeFamilies",
+    "-XNoTypeFamilyDependencies",
+    "-XNoTypeInType",
+    "-XNoTypeOperators",
+    "-XNoTypeSynonymInstances",
+    "-XNoUnboxedSums",
+    "-XNoUnboxedTuples",
+    "-XNoUndecidableInstances",
+    "-XNoUndecidableSuperClasses",
+    "-XNoUnicodeSyntax",
+    "-XNoUnliftedFFITypes",
+    "-XNoViewPatterns",
+    "-XNondecreasingIndentation",
+    "-XNullaryTypeClasses",
+    "-XNumDecimals",
+    "-XNumericUnderscores",
+    "-XOverlappingInstances",
+    "-XOverloadedLabels",
+    "-XOverloadedLists",
+    "-XOverloadedStrings",
+    "-XPackageImports",
+    "-XParallelArrays",
+    "-XParallelListComp",
+    "-XPartialTypeSignatures",
+    "-XPatternGuards",
+    "-XPatternSignatures",
+    "-XPatternSynonyms",
+    "-XPolyKinds",
+    "-XPolymorphicComponents",
+    "-XPostfixOperators",
+    "-XQuantifiedConstraints",
+    "-XQuasiQuotes",
+    "-XRank2Types",
+    "-XRankNTypes",
+    "-XRebindableSyntax",
+    "-XRecordPuns",
+    "-XRecordWildCards",
+    "-XRecursiveDo",
+    "-XRelaxedLayout",
+    "-XRelaxedPolyRec",
+    "-XRoleAnnotations",
+    "-XSafe",
+    "-XScopedTypeVariables",
+    "-XStandaloneDeriving",
+    "-XStarIsType",
+    "-XStaticPointers",
+    "-XStrict",
+    "-XStrictData",
+    "-XTemplateHaskell",
+    "-XTemplateHaskellQuotes",
+    "-XTraditionalRecordSyntax",
+    "-XTransformListComp",
+    "-XTrustworthy",
+    "-XTupleSections",
+    "-XTypeApplications",
+    "-XTypeFamilies",
+    "-XTypeFamilyDependencies",
+    "-XTypeInType",
+    "-XTypeOperators",
+    "-XTypeSynonymInstances",
+    "-XUnboxedSums",
+    "-XUnboxedTuples",
+    "-XUndecidableInstances",
+    "-XUndecidableSuperClasses",
+    "-XUnicodeSyntax",
+    "-XUnliftedFFITypes",
+    "-XUnsafe",
+    "-XViewPatterns",
+    "-auto",
+    "-auto-all",
+    "-c",
+    "-caf-all",
+    "-clear-package-db",
+    "-copy-libs-when-linking",
+    "-cpp",
+    "-dannot-lint",
+    "-dasm-lint",
+    "-dcmm-lint",
+    "-dcore-lint",
+    "-ddebug-output",
+    "-ddump-asm",
+    "-ddump-asm-conflicts",
+    "-ddump-asm-expanded",
+    "-ddump-asm-liveness",
+    "-ddump-asm-native",
+    "-ddump-asm-regalloc",
+    "-ddump-asm-regalloc-stages",
+    "-ddump-asm-stats",
+    "-ddump-bcos",
+    "-ddump-call-arity",
+    "-ddump-cfg-weights",
+    "-ddump-cmm",
+    "-ddump-cmm-caf",
+    "-ddump-cmm-cbe",
+    "-ddump-cmm-cfg",
+    "-ddump-cmm-cps",
+    "-ddump-cmm-from-stg",
+    "-ddump-cmm-info",
+    "-ddump-cmm-proc",
+    "-ddump-cmm-procmap",
+    "-ddump-cmm-raw",
+    "-ddump-cmm-sink",
+    "-ddump-cmm-sp",
+    "-ddump-cmm-split",
+    "-ddump-cmm-switch",
+    "-ddump-cmm-verbose",
+    "-ddump-core-stats",
+    "-ddump-cs-trace",
+    "-ddump-cse",
+    "-ddump-debug",
+    "-ddump-deriv",
+    "-ddump-ds",
+    "-ddump-ds-preopt",
+    "-ddump-ec-trace",
+    "-ddump-exitify",
+    "-ddump-file-prefix",
+    "-ddump-foreign",
+    "-ddump-hi",
+    "-ddump-hi-diffs",
+    "-ddump-hpc",
+    "-ddump-if-trace",
+    "-ddump-inlinings",
+    "-ddump-json",
+    "-ddump-llvm",
+    "-ddump-minimal-imports",
+    "-ddump-mod-cycles",
+    "-ddump-mod-map",
+    "-ddump-occur-anal",
+    "-ddump-opt-cmm",
+    "-ddump-parsed",
+    "-ddump-parsed-ast",
+    "-ddump-prep",
+    "-ddump-rn",
+    "-ddump-rn-ast",
+    "-ddump-rn-stats",
+    "-ddump-rn-trace",
+    "-ddump-rtti",
+    "-ddump-rule-firings",
+    "-ddump-rule-rewrites",
+    "-ddump-rules",
+    "-ddump-shape",
+    "-ddump-simpl",
+    "-ddump-simpl-iterations",
+    "-ddump-simpl-stats",
+    "-ddump-simpl-trace",
+    "-ddump-spec",
+    "-ddump-splices",
+    "-ddump-stg",
+    "-ddump-str-signatures",
+    "-ddump-stranal",
+    "-ddump-tc",
+    "-ddump-tc-ast",
+    "-ddump-tc-trace",
+    "-ddump-ticked",
+    "-ddump-timings",
+    "-ddump-to-file",
+    "-ddump-types",
+    "-ddump-view-pattern-commoning",
+    "-ddump-vt-trace",
+    "-ddump-worker-wrapper",
+    "-debug",
+    "-dep-makefile",
+    "-dep-suffix",
+    "-dfaststring-stats",
+    "-dhex-word-literals",
+    "-dinitial-unique",
+    "-dinline-check",
+    "-distrust",
+    "-distrust-all-packages",
+    "-dno-debug-output",
+    "-dno-llvm-mangler",
+    "-dno-ppr-case-as-let",
+    "-dno-ppr-ticks",
+    "-dno-suppress-coercions",
+    "-dno-suppress-idinfo",
+    "-dno-suppress-module-prefixes",
+    "-dno-suppress-stg-exts",
+    "-dno-suppress-stg-free-vars",
+    "-dno-suppress-ticks",
+    "-dno-suppress-timestamps",
+    "-dno-suppress-type-applications",
+    "-dno-suppress-type-signatures",
+    "-dno-suppress-unfoldings",
+    "-dno-suppress-uniques",
+    "-dno-suppress-var-kinds",
+    "-dppr-case-as-let",
+    "-dppr-cols",
+    "-dppr-debug",
+    "-dppr-ticks",
+    "-dppr-user-length",
+    "-drule-check",
+    "-dshow-passes",
+    "-dsource-stats",
+    "-dstg-lint",
+    "-dstg-stats",
+    "-dsuppress-all",
+    "-dsuppress-coercions",
+    "-dsuppress-idinfo",
+    "-dsuppress-module-prefixes",
+    "-dsuppress-stg-exts",
+    "-dsuppress-stg-free-vars",
+    "-dsuppress-ticks",
+    "-dsuppress-timestamps",
+    "-dsuppress-type-applications",
+    "-dsuppress-type-signatures",
+    "-dsuppress-unfoldings",
+    "-dsuppress-uniques",
+    "-dsuppress-var-kinds",
+    "-dth-dec-file",
+    "-dumpdir",
+    "-dunique-increment",
+    "-dverbose-core2core",
+    "-dverbose-stg2stg",
+    "-dylib-install-name",
+    "-dynamic",
+    "-dynamic-too",
+    "-dynhisuf",
+    "-dynload",
+    "-dyno",
+    "-dynosuf",
+    "-e",
+    "-eventlog",
+    "-exclude-module",
+    "-fPIC",
+    "-fPIE",
+    "-fabstract-refinement-hole-fits",
+    "-falignment-sanitisation",
+    "-fallow-incoherent-instances",
+    "-fallow-overlapping-instances",
+    "-fallow-undecidable-instances",
+    "-farrows",
+    "-fasm",
+    "-fasm-shortcutting",
+    "-fast-llvm",
+    "-fbang-patterns",
+    "-fblock-layout-cfg",
+    "-fblock-layout-weightless",
+    "-fblock-layout-weights",
+    "-fbuilding-cabal-package",
+    "-fbyte-code",
+    "-fcall-arity",
+    "-fcase-folding",
+    "-fcase-merge",
+    "-fcatch-bottoms",
+    "-fclear-plugins",
+    "-fcmm-elim-common-blocks",
+    "-fcmm-sink",
+    "-fconstraint-solver-iterations",
+    "-fcontext-stack",
+    "-fcpr-anal",
+    "-fcross-module-specialise",
+    "-fcross-module-specialize",
+    "-fcse",
+    "-fdefer-out-of-scope-variables",
+    "-fdefer-type-errors",
+    "-fdefer-typed-holes",
+    "-fdiagnostics-color=always",
+    "-fdiagnostics-color=auto",
+    "-fdiagnostics-color=never",
+    "-fdiagnostics-show-caret",
+    "-fdicts-cheap",
+    "-fdicts-strict",
+    "-fdmd-tx-dict-sel",
+    "-fdo-eta-reduction",
+    "-fdo-lambda-eta-expansion",
+    "-feager-blackholing",
+    "-fembed-manifest",
+    "-fenable-rewrite-rules",
+    "-ferror-spans",
+    "-fexcess-precision",
+    "-fexitification",
+    "-fexpose-all-unfoldings",
+    "-fextended-default-rules",
+    "-fexternal-dynamic-refs",
+    "-fexternal-interpreter",
+    "-fffi",
+    "-ffi",
+    "-fflat-cache",
+    "-ffloat-all-lams",
+    "-ffloat-in",
+    "-ffloat-lam-args",
+    "-fforce-recomp",
+    "-ffrontend-opt",
+    "-ffull-laziness",
+    "-ffun-to-thunk",
+    "-fgen-manifest",
+    "-fghci-history",
+    "-fghci-leak-check",
+    "-fghci-sandbox",
+    "-fglasgow-exts",
+    "-fhelpful-errors",
+    "-fhide-source-paths",
+    "-fhistory-size",
+    "-fhpc",
+    "-fignore-asserts",
+    "-fignore-hpc-changes",
+    "-fignore-interface-pragmas",
+    "-fignore-optim-changes",
+    "-fimplicit-params",
+    "-fimplicit-prelude",
+    "-firrefutable-tuples",
+    "-fkeep-cafs",
+    "-fkill-absence",
+    "-fkill-one-shot",
+    "-flate-dmd-anal",
+    "-flate-specialise",
+    "-fliberate-case",
+    "-fliberate-case-threshold",
+    "-fllvm",
+    "-fllvm-pass-vectors-in-regs",
+    "-floopification",
+    "-fmax-errors",
+    "-fmax-inline-alloc-size",
+    "-fmax-inline-memcpy-insns",
+    "-fmax-inline-memset-insns",
+    "-fmax-pmcheck-iterations",
+    "-fmax-refinement-hole-fits",
+    "-fmax-relevant-binds",
+    "-fmax-simplifier-iterations",
+    "-fmax-uncovered-patterns",
+    "-fmax-valid-hole-fits",
+    "-fmax-worker-args",
+    "-fmono-pat-binds",
+    "-fmonomorphism-restriction",
+    "-fno-PIC",
+    "-fno-PIE",
+    "-fno-abstract-refinement-hole-fits",
+    "-fno-alignment-sanitisation",
+    "-fno-allow-incoherent-instances",
+    "-fno-allow-overlapping-instances",
+    "-fno-allow-undecidable-instances",
+    "-fno-arrows",
+    "-fno-asm-shortcutting",
+    "-fno-bang-patterns",
+    "-fno-block-layout-cfg",
+    "-fno-block-layout-weightless",
+    "-fno-building-cabal-package",
+    "-fno-call-arity",
+    "-fno-case-folding",
+    "-fno-case-merge",
+    "-fno-catch-bottoms",
+    "-fno-cmm-elim-common-blocks",
+    "-fno-cmm-sink",
+    "-fno-code",
+    "-fno-cpr-anal",
+    "-fno-cross-module-specialise",
+    "-fno-cross-module-specialize",
+    "-fno-cse",
+    "-fno-defer-out-of-scope-variables",
+    "-fno-defer-type-errors",
+    "-fno-defer-typed-holes",
+    "-fno-diagnostics-show-caret",
+    "-fno-dicts-cheap",
+    "-fno-dicts-strict",
+    "-fno-dmd-tx-dict-sel",
+    "-fno-do-eta-reduction",
+    "-fno-do-lambda-eta-expansion",
+    "-fno-eager-blackholing",
+    "-fno-embed-manifest",
+    "-fno-enable-rewrite-rules",
+    "-fno-error-spans",
+    "-fno-excess-precision",
+    "-fno-exitification",
+    "-fno-expose-all-unfoldings",
+    "-fno-extended-default-rules",
+    "-fno-external-dynamic-refs",
+    "-fno-external-interpreter",
+    "-fno-ffi",
+    "-fno-fi",
+    "-fno-flat-cache",
+    "-fno-float-in",
+    "-fno-force-recomp",
+    "-fno-full-laziness",
+    "-fno-fun-to-thunk",
+    "-fno-gen-manifest",
+    "-fno-ghci-history",
+    "-fno-ghci-leak-check",
+    "-fno-ghci-sandbox",
+    "-fno-glasgow-exts",
+    "-fno-helpful-errors",
+    "-fno-hide-source-paths",
+    "-fno-hpc",
+    "-fno-ignore-asserts",
+    "-fno-ignore-hpc-changes",
+    "-fno-ignore-interface-pragmas",
+    "-fno-ignore-optim-changes",
+    "-fno-implicit-params",
+    "-fno-implicit-prelude",
+    "-fno-irrefutable-tuples",
+    "-fno-keep-cafs",
+    "-fno-kill-absence",
+    "-fno-kill-one-shot",
+    "-fno-late-dmd-anal",
+    "-fno-late-specialise",
+    "-fno-liberate-case",
+    "-fno-liberate-case-threshold",
+    "-fno-loopification",
+    "-fno-max-errors",
+    "-fno-max-refinement-hole-fits",
+    "-fno-max-relevant-binds",
+    "-fno-max-valid-hole-fits",
+    "-fno-mono-pat-binds",
+    "-fno-monomorphism-restriction",
+    "-fno-num-constant-folding",
+    "-fno-omit-interface-pragmas",
+    "-fno-omit-yields",
+    "-fno-opt-coercion",
+    "-fno-optimal-applicative-do",
+    "-fno-pedantic-bottoms",
+    "-fno-pre-inlining",
+    "-fno-print-equality-relations",
+    "-fno-print-expanded-synonyms",
+    "-fno-print-explicit-coercions",
+    "-fno-print-explicit-foralls",
+    "-fno-print-explicit-kinds",
+    "-fno-print-explicit-runtime-reps",
+    "-fno-print-potential-instances",
+    "-fno-print-typechecker-elaboration",
+    "-fno-print-unicode-syntax",
+    "-fno-prof-auto",
+    "-fno-prof-cafs",
+    "-fno-prof-count-entries",
+    "-fno-refinement-level-hole-fits",
+    "-fno-regs-graph",
+    "-fno-regs-iterative",
+    "-fno-reverse-errors",
+    "-fno-rewrite-rules",
+    "-fno-safe-haskell",
+    "-fno-safe-infer",
+    "-fno-scoped-type-variables",
+    "-fno-shared-implib",
+    "-fno-show-docs-of-hole-fits",
+    "-fno-show-hole-constraints",
+    "-fno-show-hole-matches-of-hole-fits",
+    "-fno-show-loaded-modules",
+    "-fno-show-provenance-of-hole-fits",
+    "-fno-show-type-app-of-hole-fits",
+    "-fno-show-type-app-vars-of-hole-fits",
+    "-fno-show-type-of-hole-fits",
+    "-fno-show-valid-hole-fits",
+    "-fno-show-valid-substitutions",
+    "-fno-show-warning-groups",
+    "-fno-solve-constant-dicts",
+    "-fno-sort-by-size-hole-fits",
+    "-fno-sort-by-subsumption-hole-fits",
+    "-fno-sort-valid-hole-fits",
+    "-fno-spec-constr",
+    "-fno-spec-constr-count",
+    "-fno-spec-constr-keen",
+    "-fno-spec-constr-threshold",
+    "-fno-specialise",
+    "-fno-specialise-aggressively",
+    "-fno-specialize",
+    "-fno-specialize-aggressively",
+    "-fno-state-hack",
+    "-fno-static-argument-transformation",
+    "-fno-stg-cse",
+    "-fno-stg-lift-lams",
+    "-fno-stg-lift-lams-known",
+    "-fno-strictness",
+    "-fno-th",
+    "-fno-unbox-small-strict-fields",
+    "-fno-unbox-strict-fields",
+    "-fno-unclutter-valid-hole-fits",
+    "-fno-use-rpaths",
+    "-fno-validate-ide-info",
+    "-fno-version-macros",
+    "-fno-whole-archive-hs-libs",
+    "-fno-worker-wrapper",
+    "-fno-write-ide-info",
+    "-fno-write-interface",
+    "-fnum-constant-folding",
+    "-fobject-code",
+    "-fomit-interface-pragmas",
+    "-fomit-yields",
+    "-foptimal-applicative-do",
+    "-fpackage-trust",
+    "-fpedantic-bottoms",
+    "-fplugin",
+    "-fplugin-opt",
+    "-fpre-inlining",
+    "-fprint-equality-relations",
+    "-fprint-expanded-synonyms",
+    "-fprint-explicit-coercions",
+    "-fprint-explicit-foralls",
+    "-fprint-explicit-kinds",
+    "-fprint-explicit-runtime-reps",
+    "-fprint-potential-instances",
+    "-fprint-typechecker-elaboration",
+    "-fprint-unicode-syntax",
+    "-fproc-alignment",
+    "-fprof-auto",
+    "-fprof-auto-calls",
+    "-fprof-auto-exported",
+    "-fprof-auto-top",
+    "-fprof-cafs",
+    "-fprof-count-entries",
+    "-framework",
+    "-framework-path",
+    "-freduction-depth",
+    "-frefinement-level-hole-fits",
+    "-fregs-graph",
+    "-fregs-iterative",
+    "-freverse-errors",
+    "-frewrite-rules",
+    "-fscoped-type-variables",
+    "-fshared-implib",
+    "-fshow-docs-of-hole-fits",
+    "-fshow-hole-constraints",
+    "-fshow-hole-matches-of-hole-fits",
+    "-fshow-loaded-modules",
+    "-fshow-provenance-of-hole-fits",
+    "-fshow-type-app-of-hole-fits",
+    "-fshow-type-app-vars-of-hole-fits",
+    "-fshow-type-of-hole-fits",
+    "-fshow-valid-hole-fits",
+    "-fshow-valid-substitutions",
+    "-fshow-warning-groups",
+    "-fsimpl-tick-factor",
+    "-fsimplifier-phases",
+    "-fsolve-constant-dicts",
+    "-fsort-by-size-hole-fits",
+    "-fsort-by-subsumption-hole-fits",
+    "-fsort-valid-hole-fits",
+    "-fspec-constr",
+    "-fspec-constr-count",
+    "-fspec-constr-keen",
+    "-fspec-constr-recursive",
+    "-fspec-constr-threshold",
+    "-fspecialise",
+    "-fspecialise-aggressively",
+    "-fspecialize",
+    "-fspecialize-aggressively",
+    "-fstatic-argument-transformation",
+    "-fstg-cse",
+    "-fstg-lift-lams",
+    "-fstg-lift-lams-known",
+    "-fstg-lift-lams-non-rec-args",
+    "-fstg-lift-lams-non-rec-args-any",
+    "-fstg-lift-lams-rec-args",
+    "-fstg-lift-lams-rec-args-any",
+    "-fstrictness",
+    "-fstrictness-before",
+    "-fth",
+    "-ftype-function-depth",
+    "-funbox-small-strict-fields",
+    "-funbox-strict-fields",
+    "-funclutter-valid-hole-fits",
+    "-funfolding-creation-threshold",
+    "-funfolding-dict-discount",
+    "-funfolding-fun-discount",
+    "-funfolding-keeness-factor",
+    "-funfolding-use-threshold",
+    "-fuse-rpaths",
+    "-fvalidate-ide-info",
+    "-fversion-macros",
+    "-fvia-C",
+    "-fvia-c",
+    "-fwhole-archive-hs-libs",
+    "-fworker-wrapper",
+    "-fwrite-ide-info",
+    "-fwrite-interface",
+    "-g",
+    "-ghcversion-file",
+    "-global-package-db",
+    "-haddock",
+    "-haddock-opts",
+    "-hcsuf",
+    "-hide-all-packages",
+    "-hide-all-plugin-packages",
+    "-hide-package",
+    "-hidir",
+    "-hiedir",
+    "-hiesuf",
+    "-hisuf",
+    "-hpcdir",
+    "-i",
+    "-ignore-package",
+    "-include-pkg-deps",
+    "-instantiated-with",
+    "-j",
+    "-keep-hc-file",
+    "-keep-hc-files",
+    "-keep-hi-file",
+    "-keep-hi-files",
+    "-keep-hscpp-file",
+    "-keep-hscpp-files",
+    "-keep-llvm-file",
+    "-keep-llvm-files",
+    "-keep-o-file",
+    "-keep-o-files",
+    "-keep-s-file",
+    "-keep-s-files",
+    "-keep-tmp-files",
+    "-l",
+    "-main-is",
+    "-mavx",
+    "-mavx2",
+    "-mavx512cd",
+    "-mavx512er",
+    "-mavx512f",
+    "-mavx512pf",
+    "-mbmi",
+    "-mbmi2",
+    "-msse",
+    "-msse2",
+    "-msse3",
+    "-msse4",
+    "-msse4.2",
+    "-n",
+    "-no-auto",
+    "-no-auto-all",
+    "-no-auto-link-packages",
+    "-no-caf-all",
+    "-no-global-package-db",
+    "-no-hs-main",
+    "-no-keep-hi-file",
+    "-no-keep-hi-files",
+    "-no-keep-o-file",
+    "-no-keep-o-files",
+    "-no-link",
+    "-no-pie",
+    "-no-recomp",
+    "-no-rtsopts",
+    "-no-rtsopts-suggestions",
+    "-no-user-package-conf",
+    "-no-user-package-db",
+    "-o",
+    "-odir",
+    "-ohi",
+    "-optF",
+    "-optL",
+    "-optP",
+    "-opta",
+    "-optc",
+    "-opti",
+    "-optl",
+    "-optlc",
+    "-optlo",
+    "-optwindres",
+    "-osuf",
+    "-outputdir",
+    "-package",
+    "-package-conf",
+    "-package-db",
+    "-package-env",
+    "-package-id",
+    "-package-name",
+    "-pgmF",
+    "-pgmL",
+    "-pgmP",
+    "-pgma",
+    "-pgmar",
+    "-pgmc",
+    "-pgmdll",
+    "-pgmi",
+    "-pgml",
+    "-pgmlc",
+    "-pgmlibtool",
+    "-pgmlo",
+    "-pgmranlib",
+    "-pgms",
+    "-pgmwindres",
+    "-pie",
+    "-plugin-package",
+    "-plugin-package-id",
+    "-prof",
+    "-rdynamic",
+    "-recomp",
+    "-relative-dynlib-paths",
+    "-rtsopts",
+    "-rtsopts=all",
+    "-rtsopts=ignore",
+    "-rtsopts=ignoreAll",
+    "-rtsopts=none",
+    "-rtsopts=some",
+    "-shared",
+    "-smp",
+    "-split-objs",
+    "-split-sections",
+    "-static",
+    "-staticlib",
+    "-stubdir",
+    "-syslib",
+    "-this-component-id",
+    "-this-package-key",
+    "-this-unit-id",
+    "-threaded",
+    "-ticky",
+    "-ticky-LNE",
+    "-ticky-allocd",
+    "-ticky-dyn-thunk",
+    "-tmpdir",
+    "-trust",
+    "-user-package-db",
+    "-v",
+    "-w",
+    "-with-rtsopts",
   )
 }

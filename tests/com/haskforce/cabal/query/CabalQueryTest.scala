@@ -50,7 +50,7 @@ class CabalQueryTest extends CabalParserTestBase with AssertMixin {
   }
 
   def testExtensions(): Unit = {
-    braces00001.getLibrary.!.getExtensions.! === Set(
+    braces00001.getLibrary.!.head.getExtensions.! === Set(
       "CPP"
     )
     example00001.getTestSuites.!.head.getExtensions.! === Set(
@@ -80,7 +80,7 @@ class CabalQueryTest extends CabalParserTestBase with AssertMixin {
   }
 
   def testDependencies(): Unit = {
-    example00005.getLibrary.!.getDependencies.! === Set(
+    example00005.getLibrary.!.head.getDependencies.! === Set(
       "array",
       "base",
       "containers",
@@ -100,7 +100,7 @@ class CabalQueryTest extends CabalParserTestBase with AssertMixin {
   }
 
   def testGhcOptions(): Unit = {
-    example00001.getLibrary.!.getGhcOptions.! === Set(
+    example00001.getLibrary.!.head.getGhcOptions.! === Set(
       "-fcontext-stack=30",
       "-Wall",
       "-fno-warn-missing-signatures",
@@ -125,7 +125,7 @@ class CabalQueryTest extends CabalParserTestBase with AssertMixin {
   }
 
   def testSourceDirs(): Unit = {
-    sourceDirs00001.getLibrary.!.getSourceDirs.! === NonEmptySet(".")
+    sourceDirs00001.getLibrary.!.head.getSourceDirs.! === NonEmptySet(".")
     sourceDirs00001.getSourceRoots.! === NonEmptySet(".", "app")
     sourceDirs00001.getTestSourceRoots.! === Some(NonEmptySet("tests", "bench1", "bench2"))
   }

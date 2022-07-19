@@ -18,9 +18,12 @@ object HaskellModuleType {
 }
 
 class HaskellModuleType extends ModuleType[HaskellModuleBuilder](HaskellModuleType.MODULE_TYPE_ID) {
-    def createModuleBuilder(): HaskellModuleBuilder = new HaskellModuleBuilder()
-    def getName: String = "Haskell Module"
-    def getDescription: String = "Haskell modules are used for developing <b>Haskell</b> applications."
-    def getBigIcon: Icon = HaskellIcons.FILE
-    def getNodeIcon(@Deprecated isOpened: Boolean) = HaskellIcons.FILE
+  def getName: String = "Haskell Module"
+  def getDescription: String = "Haskell modules are used for developing <b>Haskell</b> applications."
+  def getBigIcon: Icon = HaskellIcons.FILE
+  def getNodeIcon(@Deprecated isOpened: Boolean): Icon = HaskellIcons.FILE
+
+  def createModuleBuilder(): HaskellModuleBuilder = {
+    new HaskellModuleBuilder()
+  }
 }
